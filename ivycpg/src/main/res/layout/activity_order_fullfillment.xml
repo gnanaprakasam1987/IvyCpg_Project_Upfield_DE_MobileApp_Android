@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/list_margin"
+        app:cardBackgroundColor="@android:color/transparent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/list_title_bg_color"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/orderno"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:tag="ordernumber"
+                    android:text="@string/order_number" />
+
+                <TextView
+                    android:id="@+id/fullfilled"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:tag="fullfilled"
+                    android:text="@string/fullfilled" />
+
+                <TextView
+                    android:id="@+id/rejected"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:tag="rejected"
+                    android:text="@string/rejected" />
+
+                <TextView
+                    android:id="@+id/partiallyfullfikked"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:tag="partiallyfullfilled"
+                    android:text="@string/partially_fullfilled" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/listView1"
+                android:layout_below="@id/header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:padding="@dimen/dimen_1dp"
+                android:fitsSystemWindows="true" />
+
+            <!--<LinearLayout
+                android:id="@+id/footer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/GRAY"/>
+
+                <Button
+                    android:id="@+id/btn_save"
+                    style="?attr/roundedCustomButtonNormal"
+                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/target_top_margin"
+                    android:text="@string/save"
+                    android:textAllCaps="false" />
+            </LinearLayout>-->
+
+            <RelativeLayout
+                android:id="@+id/footer"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/footer_height"
+                android:layout_alignParentBottom="true"
+                android:background="@color/footer_bg"
+                android:orientation="horizontal"
+                android:padding="@dimen/footer_padding">
+
+                <Button
+                    android:id="@+id/btn_save"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/save"
+                    android:textAllCaps="false" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/menu_all"
+        android:orderInCategory="100"
+        android:title="ALL"
+        android:visible="false"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_product_filter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="99"
+        android:title="P.F"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_remarks"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="99"
+        android:title="@string/order_remarks"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/ic_new_task"
+        android:orderInCategory="97"
+        android:title="Add new posm"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_remove"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Remove posm"
+        ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_survey"
+        android:icon="@drawable/icon_survey"
+        android:orderInCategory="101"
+        android:title="Survey"
+        android:visible="false"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_loc_filter"
+        android:icon="@drawable/ic_action_location_place"
+        android:orderInCategory="102"
+        android:title="Location Filter"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="95"
+        android:title="@string/fivefilter"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+</menu>
+

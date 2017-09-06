@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.ivy.sd.png.view.NewOutlet">
+
+    <TextView
+        android:id="@+id/title"
+        style="?textTitleStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/scrollview2"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/profile_botton_layout_height"
+        android:layout_marginLeft="@dimen/dimen_12dp"
+        android:layout_marginRight="@dimen/dimen_12dp"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        android:scrollbars="none"></ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/profile_history_10dp"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/reason_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/reason_btns"
+            android:layout_gravity="left"
+            android:background="@color/GRAY"
+            android:src="@drawable/downloadsuccess" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/footer_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bottom_bg"
+            android:gravity="bottom|center"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/new_outlet_save"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:onClick="onClick"
+                android:text="@string/add_label" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

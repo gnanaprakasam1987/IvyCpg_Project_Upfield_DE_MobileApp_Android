@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_back"
+        android:icon="@drawable/ic_back"
+        android:orderInCategory="100"
+        android:title="Back"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_barcode"
+        android:icon="@drawable/ic_barcode"
+        android:orderInCategory="101"
+        android:title="Barcode"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_move"
+        android:icon="@drawable/right_arrow"
+        android:orderInCategory="102"
+        android:title="Barcode"
+        ivydist:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_plus"
+        android:icon="@drawable/plus_new"
+        android:orderInCategory="102"
+        android:title="Barcode"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_next"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="103"
+        android:title="Next"
+        ivydist:showAsAction="always"/>
+    </menu>

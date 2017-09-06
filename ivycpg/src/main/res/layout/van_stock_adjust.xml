@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/productName"
+        android:textSize="@dimen/font_small"
+        android:layout_width="@dimen/order_stock_list_product_name_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="left|center"
+        android:padding="3dp"
+        android:singleLine="true" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/stock_and_order_listview_batchno"
+        android:textSize="@dimen/font_small"
+        android:layout_width="@dimen/order_stock_list_item_width_large"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/stock_and_order_listview_sih"
+        android:textSize="@dimen/font_small"
+        android:layout_width="@dimen/order_stock_list_item_width_large"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/adjusted_sih"
+        style="@style/EditTextDoubleLine"
+       android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="@dimen/order_stock_list_item_width_large"
+        android:layout_height="wrap_content"
+        android:text="@string/zero"  />
+    
+    <EditText
+        android:id="@+id/ajusted_sih1"
+        style="@style/EditTextDoubleLine"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="@dimen/list_item_width"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    
+
+    <EditText
+        android:id="@+id/productqtyPieces"
+        style="@style/EditTextDoubleLine"
+        android:layout_width="@dimen/order_stock_list_item_width"
+        android:text="@string/zero"
+        android:visibility="gone" 
+        />
+
+</LinearLayout>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="zero">0</string>
+    <string name="app_name">IvyCpg</string>
+    <string name="hiffen">-</string>
+    <string name="jpg">jpg</string>
+    <string name="png">png</string>
+    <string name="gif">gif</string>
+    <string name="cq">CQ</string>
+    <string name="ca">CA</string>
+    <string name="dummy_txt">text</string>
+    <string name="da">DA</string>
+    <string name="nan">NaN</string>
+    <string name="path">path</string>
+
+    <string-array name="languageList">
+        <item name="en">English</item>
+    </string-array>
+    <string-array name="languageListValues">
+        <item name="en">en</item>
+    </string-array>
+
+    <string-array name="printerList">
+        <item name="en">Zebra</item>
+    </string-array>
+    <string-array name="printerListValues">
+        <item name="en">PRINT101</item>
+    </string-array>
+
+    <string-array name="productFilterArray"></string-array>
+
+    <string name="orginalarabic">برنامج المخزن</string>
+    <string name="netduearabic">رجاء الحصول على الطلب لإنشاء فاتورة.</string>
+    <string name="netsalesarabic">المبيعات</string>
+    <string name="freegoodsarabic">لمنتجات المجانية</string>
+    <string name="expirysreturnarabic">جارٍ حفظ عائد المبيعات</string>
+    <string name="goodsreturnarabic">جارٍ حفظ عائد المبيعات</string>
+    <string name="cashpaidarabic">النقد</string>
+    <string name="itemno_arabic">الصنف</string>
+    <string name="description_arabic">الصنف</string>
+    <string name="upc_arabic">إغلاق</string>
+    <string name="case_unit_arabic">حجم الحالة</string>
+    <string name="outer_price_arabic">حجم الحالة</string>
+    <string name="case_price_arabic">أدخل المبلغ</string>
+    <string name="unit_price_arabic">سعر الوحدة</string>
+    <string name="discount_arabic">الخصم</string>
+    <string name="amount_arabic">أدخل المبلغ</string>
+    <string name="arabian_trading_supplies_arabic">جارٍ المصادقة على الأ</string>
+    <string name="print_invoice_print">Facture</string>
+    <string name="product_name_print">Nom Produit</string>
+    <string name="qty_print">Qte</string>
+    <string name="price_print">Prix</string>
+    <string name="bt_default_address">00:06:66:00:85:33</string>
+    <string name="print_footer1">Remise logistique .4% TTC</string>
+    <string name="print_footer2"> Montant total net H.T</string>
+    <string name="charset">UTF-8</string>
+    <string name="m1">M-1</string>
+    <string name="m2">M-2</string>
+    <string name="m3">M-3</string>
+
+    <string name="visit_frequency" >-0</string>
+    <string name="baidu_from" >From : </string>
+    <string name="baidu_to" >To : </string>
+    <string name="zero_zero" >0.0</string>
+    <string name="io">IO</string>
+    <string name="co">CO</string>
+
+    <plurals name="password_expires">
+        <item quantity="zero">Password Expires Today</item>
+        <item quantity="one">Password Expires in a day</item>
+        <item quantity="other">Password Expires in %d days</item>
+    </plurals>
+
+    <string name="tax_not_availble_for_some_product">Tax not available for some Product.</string>
+    <string name="free">Free</string>
+
+    <string name="rfield1_klgs">RField1</string>
+    <string name="rfield2_klgs">RField2</string>
+    <string name="rfield3_klgs">RField3</string>
+
+    <string name="no_match_found">No Match Found</string>
+
+    <!--history fragment-->
+    <string name="normal_product">Normal product</string>
+    <string name="valid_discount_amt">Enter Valid Discount Amt</string>
+    <string name="valid_amt">Enter Valid Amt</string>
+    <string name="variance">Variance</string>
+
+    <string name="export_and_share">Export and Share</string>
+    <string name="export_and_email">Export and Email</string>
+
+
+    <!--For Non Visit Fragment-->
+    <string name="select_beat">Select Beat</string>
+
+    <string name="exporting_orders">Exporting Orders..</string>
+    <string name="share_order_report_using">Share order report using..</string>
+    <string name="invalid_credentials_mail_not_sent">Invalid Credentials. Email not sent.</string>
+    <string name="export_failed">Export Failed</string>
+    <string name="successfully_exported">Successfully Exported</string>
+
+    <string name="please_fill_adherence">Please Fill Adherence</string>
+    <string name="enter_variance_reason_for_all_qty">"Kindly Enter Variance For All The Qty</string>
+    <string name="attendance_activity_not_completed">Attendance Activity Not Completed</string>
+
+    <string name="deviceId_change_msg_title">You are already logged in on another device</string>
+    <string name="deviceId_change_msg">Do you want to continue in this device?</string>
+    <string name="authentication_error">Error in authentication</string>
+
+    <string name="mock_location_enabled">Disable Mock Location and Login.</string>
+    <string name="profile_updated_scccess">Profile updated successfully.</string>
+
+    <string name="select_remarks">Select Remarks</string>
+    <string name="select_noorder_reason">Enter No Order Reason</string>
+    <string name="pm">PM</string>
+    <string name="select_location">Select Location</string>
+    <string name="reason_required_for">Reason required for  </string>
+    <string name="title_opportunity">Opportunity</string>
+    <string name="apply_or_test_feedback">Apply/Test Feedback</string>
+    <string name="date_label">Date</string>
+    <string name="customer_feedback">Customer FeedBack</string>
+
+</resources>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="@dimen/card_elevation"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/pdt_image"
+                        android:layout_width="@dimen/pdt_image"
+                        android:layout_height="@dimen/pdt_image"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center_vertical"
+                        android:padding="5dp"
+                        android:src="@drawable/no_image_available" />
+
+
+                    <LinearLayout
+                        android:id="@+id/pdt_details_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="2dp">
+
+                        <TextView
+                            android:id="@+id/catalog_order_listview_productname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:maxLines="2"
+                            android:minLines="2"
+                            android:paddingBottom="0dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/Black"
+                            android:textSize="@dimen/text_sz_small"
+                            android:textStyle="normal|bold"
+                            tools:text="seg rstfsdrfdgf bfdg fdg d rsdg dfg dg \n fghfdkl ghdfkgdklfgdkflgdfkgkdflg kdfgk " />
+
+                        <TextView
+                            android:id="@+id/catalog_order_listview_ppq"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="PPQ : 50" />
+
+                        <TextView
+                            android:id="@+id/catalog_order_listview_sih"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            android:visibility="visible"
+                            tools:text="SIH : 0" />
+
+                        <TextView
+                            android:id="@+id/catalog_order_listview_wsih"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            android:visibility="visible"
+                            tools:text="SIH : 0" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp">
+
+                            <TextView
+                                android:id="@+id/catalog_order_listview_srp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/Black"
+                                android:textSize="@dimen/font_small"
+                                tools:text="$150"
+
+                                />
+
+                            <TextView
+                                android:id="@+id/catalog_order_listview_mrp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:paddingLeft="2dp"
+                                android:textColor="@color/GRAY_TEXT"
+                                android:textSize="@dimen/text_sz_small"
+                                tools:text="MRP :" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/catalog_order_listview_product_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="1"
+                                android:padding="1dp"
+                                android:textColor="@color/textColorPrimaryGreen"
+                                android:textSize="@dimen/font_small"
+                                tools:text="000000" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/list_view_stock_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/order_lay_height"
+                        android:layout_weight="1"
+                        android:text="STOCK"
+                        android:textSize="@dimen/text_sz_small"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/textColorPrimaryNBlue"></View>
+
+                    <Button
+                        android:id="@+id/list_view_order_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/order_lay_height"
+                        android:layout_weight="1"
+                        android:text="ORDER"
+                        android:textSize="@dimen/text_sz_small"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/slant_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:visibility="visible">
+
+                <com.ivy.sd.png.view.SlantView
+                    android:id="@+id/slant_view_bg"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:background="@color/RED"
+                    android:visibility="visible">
+
+                </com.ivy.sd.png.view.SlantView>
+
+                <ImageView
+                    android:id="@+id/scheme_star"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/ic_action_star_01" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

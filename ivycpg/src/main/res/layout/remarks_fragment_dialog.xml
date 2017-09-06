@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleBar"
+            style="?textTitleStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:padding="6dp"
+            android:text="@string/order_remarks" />
+
+        <LinearLayout
+            android:id="@+id/editText_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/enter_remark_to_set"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/list_primary" />
+
+            <EditText
+                android:id="@+id/remarks"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
+                android:hint="@string/enter_remark_to_set"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:tag="@string/remark"
+                android:textSize="@dimen/font_small"></EditText>
+        </LinearLayout>
+
+        <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/editText_layout1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginTop="35dp">-->
+
+        <!--<EditText-->
+        <!--android:id="@+id/remarks"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
+        <!--android:hint="@string/enter_remark_to_set"-->
+        <!--android:maxLength="50"-->
+        <!--android:maxLines="1"-->
+        <!--android:paddingLeft="6dp"-->
+        <!--android:paddingRight="6dp"-->
+        <!--android:textSize="@dimen/font_small"-->
+        <!--android:tag="@string/remark"></EditText>-->
+        <!--</android.support.design.widget.TextInputLayout>-->
+
+        <LinearLayout
+            android:id="@+id/editText_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/rfield1"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/list_primary" />
+
+            <EditText
+                android:id="@+id/rField1"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
+                android:hint="@string/rfield1"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:tag="@string/remark"
+                android:textSize="@dimen/font_small"></EditText>
+        </LinearLayout>
+
+        <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/editText_layout2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginTop="35dp"-->
+        <!--android:visibility="gone">-->
+
+        <!--<EditText-->
+        <!--android:id="@+id/rField1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
+        <!--android:hint="@string/rfield1"-->
+        <!--android:maxLength="50"-->
+        <!--android:maxLines="1"-->
+        <!--android:paddingLeft="6dp"-->
+        <!--android:paddingRight="6dp"-->
+        <!--android:textSize="@dimen/font_small"-->
+        <!--android:tag="@string/field1"></EditText>-->
+
+        <!--</android.support.design.widget.TextInputLayout>-->
+
+        <LinearLayout
+            android:id="@+id/lnrRField1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/rfield1"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/list_primary" />
+
+            <Spinner
+                android:id="@+id/spnrField1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:overlapAnchor="false" />
+        </LinearLayout>
+
+        <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/editText_layout3"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginTop="35dp"-->
+        <!--android:visibility="gone">-->
+
+        <!--<EditText-->
+        <!--android:id="@+id/rField2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
+        <!--android:hint="@string/rfield2"-->
+        <!--android:maxLength="50"-->
+        <!--android:maxLines="1"-->
+        <!--android:paddingLeft="6dp"-->
+        <!--android:paddingRight="6dp"-->
+        <!--android:textSize="@dimen/font_small"-->
+        <!--android:tag="@string/field2"></EditText>-->
+        <!--</android.support.design.widget.TextInputLayout>-->
+
+        <LinearLayout
+            android:id="@+id/editText_layout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="35dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/rfield2"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/list_primary" />
+
+            <EditText
+                android:id="@+id/rField2"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
+                android:hint="@string/rfield2"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:tag="@string/remark"
+                android:textSize="@dimen/font_small"></EditText>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/my_location_color" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="4dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonSmallGrey"
+            android:text="@string/cancel"
+            android:textColor="@color/black_bg1" />
+
+        <Button
+            android:id="@+id/btn_ok"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_marginLeft="15dp"
+            android:text="@string/ok" />
+    </LinearLayout>
+</LinearLayout>

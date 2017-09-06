@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/list_item_height_reports"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/text"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/eighteen_characters_width"
+        android:layout_height="35dp"
+        android:gravity="left"
+        android:singleLine="true"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal"></TextView>
+
+    <TextView
+        android:id="@+id/ap3m"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/eighteen_characters_width"
+        android:layout_height="35dp"
+        android:gravity="right"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/target"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/eighteen_characters_width"
+        android:layout_height="35dp"
+        android:gravity="right"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/ach"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/eighteen_characters_width"
+        android:layout_height="35dp"
+        android:gravity="right"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/index"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/list_item_width_double"
+        android:layout_height="35dp"
+        android:gravity="right"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal" />
+
+</LinearLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dimen_10dp"
+
+        android:layout_alignParentTop="true">
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/order_stock_list_product_name_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/product_name"
+            />
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/serial_no_qty_width"
+            android:layout_height="match_parent"
+            android:text="@string/qty"
+            android:layout_gravity="center"/>
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/serial_no_qty_width"
+            android:layout_height="match_parent"
+            android:text="@string/scanned"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/lv_productlist"
+        android:layout_width="@dimen/list_view_width"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:footerDividersEnabled="false"
+        android:layout_below="@+id/ll1"
+       >
+    </ListView>
+    <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_alignParentBottom="true"
+       >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            style="?textFieldStyle"
+            android:text="@string/total"/>
+        <TextView
+            android:id="@+id/tv_total_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text=""/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            style="?textFieldStyle"
+            android:text="@string/scanned"/>
+        <TextView
+            android:id="@+id/tv_total_scanned"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/total"/>
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

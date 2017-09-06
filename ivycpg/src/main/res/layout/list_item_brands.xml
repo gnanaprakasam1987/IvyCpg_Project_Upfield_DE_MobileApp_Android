@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_base"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/row_top_margin"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/button_round_corner_transparent"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/ivIndicator"
+        android:layout_width="@dimen/cicle_radus"
+        android:layout_height="@dimen/cicle_radus"
+        android:layout_margin="@dimen/cicle_margin"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/dot_circle"/>
+
+    <TextView
+        android:id="@+id/txtBrandNameListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center"
+        android:layout_margin="@dimen/dimen_10dp"
+        android:maxLines="1"
+        android:text="@string/choose_brand"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/list_item_secondary_text_color"
+        android:textSize="@dimen/text_sz_small" />
+
+</LinearLayout>

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/card_margin"
+            android:paddingRight="@dimen/card_margin">
+
+            <LinearLayout
+                android:id="@+id/ll_invoie_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_invoiceno_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inv_no"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/invoiceno"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/"
+                    android:gravity="left|center_vertical"
+                    android:maxLength="25"
+                    android:text="@string/zero" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lot_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_lotno_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lot_number"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/lotnumber"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*"
+                    android:gravity="left|center_vertical"
+                    android:maxLength="25"
+                    android:text="@string/zero"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_oldmrp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_oldmrp_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/old_mrp"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/oldMrp"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:inputType="number"
+                    android:keepScreenOn="true"
+                    android:maxLength="8"
+                    android:selectAllOnFocus="true"
+                    android:tag="DOT"
+                    android:text="@string/zero_zero"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_srpedit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_srpEdit_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/srp_text"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/srpedit"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:inputType="number"
+                    android:keepScreenOn="true"
+                    android:maxLength="10"
+                    android:selectAllOnFocus="true"
+                    android:tag="DOT"
+                    android:text="@string/zero"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll2"
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll1"
+            android:gravity="center_vertical"
+            android:padding="@dimen/card_margin">
+
+            <Spinner
+                android:id="@+id/reasonSpinner"
+                android:background="@android:color/transparent"
+                android:overlapAnchor="false"
+                android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+                android:layout_height="1dp"
+                android:layout_below="@+id/reasonSpinner"
+                android:background="@color/GRAY" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll2"
+            android:layout_marginBottom="@dimen/list_margin"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/card_margin"
+            android:paddingRight="@dimen/card_margin">
+
+            <LinearLayout
+                android:id="@+id/ll_piece"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_piece_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avail_pcs"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/productqtyPieces"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:gravity="left|center_vertical"
+                    android:maxLength="4"
+                    android:text="@string/zero" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_case_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avail_cases"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/productqtyCases"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:gravity="left|center_vertical"
+                    android:maxLength="4"
+                    android:text="@string/zero" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_outer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_outer_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avail_outer"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <EditText
+                    android:id="@+id/outerproductqtyCases"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:gravity="left|center_vertical"
+                    android:maxLength="4"
+                    android:text="@string/zero" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_mfd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1.5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_mfd_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfg_date"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <Button
+                    android:id="@+id/mfgDate"
+                    style="@style/datePickerButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_exp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_weight="1.5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_exp_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exp_date"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <Button
+                    android:id="@+id/expDate"
+                    style="@style/datePickerButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center"
+                    android:text="" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="@dimen/close_icon_size"
+            android:layout_height="@dimen/close_icon_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:padding="@dimen/close_icon_pading"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_close" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/productnamelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/productcode"
+            android:layout_width="@dimen/ppd_code"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:text="@string/no"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/product_name_tv"
+            android:layout_width="@dimen/ppd_brand"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/batchlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/productnamelayout"
+        android:layout_marginLeft="@dimen/dimen_40dp">
+
+
+    </LinearLayout>
+</RelativeLayout>

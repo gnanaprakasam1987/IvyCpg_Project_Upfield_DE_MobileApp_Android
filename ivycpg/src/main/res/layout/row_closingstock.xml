@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical" >
+
+    <TextView
+        android:id="@+id/closePRODNAME"
+        style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/list_product_name_width_medium"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:singleLine="true"
+        android:text="@string/product_name"
+        />
+
+    <EditText
+        android:id="@+id/woqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/souterqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/shpqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/shcqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/checkstock"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/whcqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="match_parent"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/whpqty"
+        style="@style/EditText"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="match_parent"
+        android:text="@string/zero" />
+
+</LinearLayout>

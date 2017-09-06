@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+    <!-- Competitor Tracking Fragment -->
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/rl_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout1"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/list_margin"
+            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardCornerRadius="0dp"
+            card_view:cardElevation="5dp"
+            card_view:cardPreventCornerOverlap="true"
+            card_view:cardUseCompatPadding="true"
+            card_view:contentPadding="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/list_header_height"
+                    android:background="@color/store_title"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:id="@+id/tvTitleTrackingList"
+                        style="?attr/customListTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/target_top_margin"
+                        android:layout_weight="2"
+                        android:gravity="center|left"
+                        android:text="@string/tracking_list"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/tvTitlePeriod"
+                        style="?attr/customListTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:text="@string/period"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/tvTitlePhoto"
+                        style="?attr/customListTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/photo"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTitleAvaialabilty"
+                        style="?attr/customListTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/comp_availability"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/header"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin_top"
+            android:layout_above="@+id/footer"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/edt_feedback"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/competitor_edt_height"
+                android:background="@drawable/feedback_edit_selector"
+                android:gravity="left"
+                android:padding="@dimen/row_top_margin"
+                android:cursorVisible="true"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:hint="@string/feedback_ifany"
+                android:maxLength="250"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/GRAY"/>
+
+            <Button
+                android:id="@+id/btn_save"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/target_top_margin"
+                android:text="@string/save"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

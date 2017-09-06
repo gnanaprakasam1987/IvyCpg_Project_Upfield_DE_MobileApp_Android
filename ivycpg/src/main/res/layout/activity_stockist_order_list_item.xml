@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_margin"
+            android:layout_marginTop="@dimen/list_margin"
+            android:padding="@dimen/activity_screen_padding">
+
+            <ImageView
+                android:id="@+id/img_arrow"
+                android:layout_width="@dimen/profile_history_20dp"
+                android:layout_height="@dimen/activity_list_icon_size"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_list_item_left_margin"
+                android:src="@drawable/activity_icon_next"
+                android:tint="@color/new_grey" />
+
+            <TextView
+                android:id="@+id/outletName_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+                android:text="Outlet Name"
+                android:layout_marginRight="@dimen/activity_margin3"
+                android:layout_toLeftOf="@id/img_arrow"
+                android:textColor="#000000"
+                android:textSize="@dimen/font_medium" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

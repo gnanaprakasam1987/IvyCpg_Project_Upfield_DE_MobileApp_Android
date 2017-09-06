@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tv_date"
+            style="@style/TextViewListItem"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:gravity="center"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv_reason"
+            style="@style/TextViewListItem"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:gravity="center"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/contractname"
+        android:layout_width="@dimen/sr_list_view_width_large"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="2dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_small" />
+
+    <TextView
+        android:id="@+id/contracttype"
+        android:layout_width="@dimen/avail_barcode"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="2dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_small" />
+
+    <TextView
+        android:id="@+id/strDate1"
+        android:layout_width="@dimen/sr_list_view_width"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_small" />
+
+    <TextView
+        android:id="@+id/endDate1"
+        android:layout_width="@dimen/sr_list_view_width"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_small" />
+
+
+    <ImageButton
+        android:id="@+id/btn_audit"
+        android:layout_width="@dimen/audit_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:padding="2dp" />
+
+
+</LinearLayout>

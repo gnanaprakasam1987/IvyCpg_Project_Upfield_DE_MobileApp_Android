@@ -1,0 +1,178 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.ivy.sd.png.view.BillPaymentActivityFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_10dp">
+
+            <LinearLayout
+                android:id="@+id/ll_disc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Discount Amount"
+                    android:textColor="?attr/primarycolor"
+                    android:textSize="@dimen/font_micro_small"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_disc_amt"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tv_osamt_height"
+                    android:gravity="center"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_medium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dimens_1dp"
+                android:layout_height="@dimen/dimens_40dp"
+                android:layout_gravity="center"
+                android:background="@color/new_grey"
+                android:gravity="center"
+                android:padding="@dimen/dimens_4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Payment Amount"
+                    android:textColor="?attr/primarycolor"
+                    android:textSize="@dimen/font_micro_small"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_paidamt"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tv_osamt_height"
+                    android:gravity="center"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_medium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dimens_1dp"
+                android:layout_height="@dimen/dimens_40dp"
+                android:layout_gravity="center"
+                android:background="@color/new_grey"
+                android:gravity="center"
+                android:padding="@dimen/dimens_4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Balance Amount"
+                    android:textColor="?attr/primarycolor"
+                    android:textSize="@dimen/font_micro_small"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_balanceamt"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tv_osamt_height"
+                    android:gravity="center"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_medium" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/paymentmode_recycview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/windowBackground"
+            android:padding="@dimen/margin_5px"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_80dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/list_title_bg_color"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/dimens_6dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Collective Amount"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/font_nano_small" />
+
+            <TextView
+                android:id="@+id/tv_collectionamt"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tv_osamt_height"
+                android:gravity="center"
+                android:textColor="@color/WHITE"
+                android:textSize="@dimen/font_medium" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/paybtn"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_width="@dimen/dimens_100dp"
+            android:layout_height="@dimen/dimens_40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimens_6dp"
+            android:layout_marginTop="@dimen/dimens_14dp"
+            android:text="@string/save"
+            android:textSize="@dimen/font_micro_small"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

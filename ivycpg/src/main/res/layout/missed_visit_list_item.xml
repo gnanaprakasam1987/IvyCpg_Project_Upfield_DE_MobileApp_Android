@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tv_retailer_name"
+            style="@style/TextViewListItem"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.40"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tv_missed"
+            style="@style/TextViewListItem"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:gravity="center"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv_planned"
+            style="@style/TextViewListItem"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:gravity="center"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

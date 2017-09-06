@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/primarycolor"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/sbdmerchandising"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="?attr/primarycolor"
+            android:tag="focus_merchandising"
+            android:text="@string/focus_merchandising"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/initiativemerchandising"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_header_height"
+
+            android:layout_weight="1"
+            android:background="?attr/primarycolor"
+            android:text="@string/merch_initiative"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/icon_close"
+            android:gravity="right"
+            android:textColor="@android:color/black"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </FrameLayout>
+</LinearLayout>

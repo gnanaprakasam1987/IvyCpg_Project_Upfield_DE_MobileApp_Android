@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/productnamelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tax_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_micro_small" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tax_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.1"
+            android:gravity="center"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+
+
+        <TextView
+            android:id="@+id/taxamt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

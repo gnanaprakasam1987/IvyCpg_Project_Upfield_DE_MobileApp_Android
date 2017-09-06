@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_filter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="101"
+        android:title="Filter"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="102"
+        android:title="Save"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_skutgt"
+        android:icon="@drawable/icon_collection"
+        android:orderInCategory="102"
+        android:title="SKUWise Target"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_next"
+        android:icon="@drawable/ic_action_navigation_next_item"
+        android:orderInCategory="103"
+        android:title="@string/next"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+
+</menu>

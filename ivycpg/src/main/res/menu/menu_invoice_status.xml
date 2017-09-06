@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="101"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+</menu>

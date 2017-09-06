@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/LL_titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/titlebar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minHeight="@dimen/retake_img_wd_ht"
+            android:padding="8dp"
+            android:text="@string/vaload_heder_text"
+            android:textColor="?attr/primarycolor"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/closeButton"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center"
+            android:background="@drawable/ic_action_cancel"
+            android:gravity="right"
+            android:text=""
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/keypad"
+        android:layout_below="@+id/LL_titleBar"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal">
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="1dp">
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/batch_no"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/caseTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:tag="vanload_case"
+                    android:text="@string/item_case"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/outercaseTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:tag="vanload_outer"
+                    android:text="@string/item_outer"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/pcsTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:tag="vanload_piece"
+                    android:text="@string/item_piece"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/reason_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/profile_history_20dp"
+                    android:layout_marginRight="@dimen/profile_history_20dp"
+                    android:background="@color/GRAY"
+                    android:src="@drawable/downloadsuccess" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lvwplist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true"
+                android:padding="1dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/keypad"
+        layout="@layout/keypad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_marginTop="@dimen/profile_history_10dp" />
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/profile_history_10dp"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/dialog_reason_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/reason_btns"
+            android:layout_gravity="center"
+            android:background="@color/GRAY"
+            android:src="@drawable/downloadsuccess" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/footer_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bottom_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/add_load"
+                style="?attr/roundedCustomButtonNormal"
+                android:onClick="onClick"
+                android:text="@string/done"
+                android:textAllCaps="false"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

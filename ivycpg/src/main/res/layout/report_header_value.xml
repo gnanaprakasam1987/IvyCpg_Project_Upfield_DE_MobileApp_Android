@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black_bg1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/resetbox_header_height"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/lbl_avg_lines"
+            style="?textFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:text="@string/avg_lines"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:textColor="@color/GREEN"
+
+            android:textStyle="bold"
+            android:textSize="@dimen/text_sz_small"/>
+
+        <TextView
+            android:id="@+id/txtavglines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="0"
+            style="?textFieldStyle"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:layout_below="@+id/lbl_avg_lines"
+            android:layout_marginLeft="@dimen/margin_20px"/>
+        <View
+            android:id="@+id/view00"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:background="@android:color/darker_gray"
+            android:layout_toRightOf="@+id/lbl_avg_lines"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/lbl_total_lines"
+            style="?textFieldStyle"
+
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:text="@string/tot_line"
+            android:layout_toRightOf="@+id/view00"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:visibility="gone"
+            android:textColor="@color/GREEN"
+
+            android:textSize="@dimen/text_sz_small"
+            />
+
+        <TextView
+            android:id="@+id/txttotallines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text=""
+            style="?textFieldStyle"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/view00"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_below="@+id/lbl_total_lines"
+            android:textColor="@color/GREEN"
+            android:textSize="@dimen/text_sz_small"
+            android:visibility="gone"/>
+        <View
+            android:id="@+id/view0"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:background="@android:color/darker_gray"
+            android:layout_toRightOf="@+id/lbl_total_lines"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/totalvaluetitle"
+            style="?textFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:adjustViewBounds="true"
+            android:text="@string/total_value"
+            android:textColor="?attr/accentcolor"
+            android:textSize="@dimen/text_sz_small"
+            android:layout_toRightOf="@+id/view0"
+            android:layout_marginLeft="@dimen/margin_20px"
+            />
+
+        <TextView
+            android:id="@+id/txttotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:adjustViewBounds="true"
+            android:text="@string/zero"
+            style="?textFieldStyle"
+            android:textSize="@dimen/login_edittext_text_size"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/view0"
+            android:layout_below="@+id/totalvaluetitle"
+            android:layout_marginLeft="@dimen/margin_20px"
+
+            />
+        <View
+            android:id="@+id/view1"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:background="@android:color/darker_gray"
+            android:layout_toRightOf="@+id/totalvaluetitle"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            />
+        <TextView
+            android:id="@+id/lab_dist_pre_post"
+            style="?textFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:text="@string/order_report_avg_line"
+            android:textColor="?attr/accentcolor"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_sz_small"
+            android:layout_toRightOf="@+id/view1"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            />
+
+        <TextView
+            android:id="@+id/txt_dist_pre_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:adjustViewBounds="true"
+            style="?textFieldStyle"
+            android:text="0/0"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_edittext_text_size"
+            android:layout_below="@+id/lab_dist_pre_post"
+            android:layout_toRightOf="@+id/view1"
+            android:layout_marginLeft="@dimen/store_margin_top"/>
+        <TextView
+            style="?textFieldStyle"
+            android:id="@+id/lab_total_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:tag="total_value_or_volume"
+            android:text="@string/total_value"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_export"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentRight="true"
+            android:text="@string/export"
+            android:textAllCaps="false"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

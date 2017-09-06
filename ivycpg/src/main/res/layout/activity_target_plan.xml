@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/targetRemainder"
+            android:layout_width="@dimen/list_item_width_double"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:text="@string/reminder"
+            android:textColor="@android:color/black"
+            android:visibility="gone"></Button>
+
+        <LinearLayout
+            android:id="@+id/layout_keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/keypad"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/targetBack"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:text="@string/back"></Button>
+
+            <Button
+                android:id="@+id/targetSave"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:text="@string/save"
+                android:visibility="gone"></Button>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--
+         <TextView
+        android:id="@+id/title"
+        style="@style/TextViewScreenTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/title_target_plan" />
+    -->
+
+    <LinearLayout
+        android:id="@+id/tittle_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_title_height"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/target_plan_name_width"
+            android:layout_height="match_parent"
+            android:text="@string/plan" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/target_plan_reference_width"
+            android:layout_height="wrap_content"
+            android:text="@string/reference" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_below="@+id/tittle_layout"
+        android:padding="2dp">
+
+        <LinearLayout
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/base"
+                    android:textStyle="normal" />
+
+                <EditText
+                    android:id="@+id/edt_base"
+                    style="@style/EditBox"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:maxLength="15"></EditText>
+
+                <TextView
+                    android:id="@+id/ref_base"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/balance"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:id="@+id/focus_title"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:tag="focus"
+                    android:text="@string/focus"
+                    android:textStyle="normal" />
+
+                <EditText
+                    android:id="@+id/edt_sbd"
+                    style="@style/EditBox"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:maxLength="15"></EditText>
+
+                <TextView
+                    android:id="@+id/ref_sbd"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/balance"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_init1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable1"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init1"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init1"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init1"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable2"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init2"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init2"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init2"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable3"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init3"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init3"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init3"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init4"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable4"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init4"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init4"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init4"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init5"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable5"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init5"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init5"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init5"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init6"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable6"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init6"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init6"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init6"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init7"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable7"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init7"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init7"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init7"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init8"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable8"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init8"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init8"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init8"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init9"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable9"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init9"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init9"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init9"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_init10"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/TextViewLable10"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="none"
+                        android:maxLines="2"
+                        android:text="@string/init10"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/edt_init10"
+                        style="@style/EditBox"
+                        android:layout_width="@dimen/target_plan_editbox_width"
+                        android:maxLength="15"></EditText>
+
+                    <TextView
+                        android:id="@+id/ref_init10"
+                        style="?textFieldStyle"
+                        android:layout_width="@dimen/target_plan_reference_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/balance"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plan_tgt"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/plan_tgt"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/ref_plantgt"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/sum"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/suggest_tgt"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/suggest_tgt"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    android:id="@+id/mtd_actual"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:tag="mtd_actual"
+                    android:text="@string/mtd_actual"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/mon_act_obj"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/store_prog"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/store_prog"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/golden_points"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tv_goldenPoints"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_lines"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tv_lines"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/store_balance"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tv_store_balance"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_reference_width"
+                    android:layout_height="wrap_content"
+                    android:text="@string/highest_ever_sale"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tv_hvp3m"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/target_plan_editbox_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/zero"
+                    android:textStyle="normal" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

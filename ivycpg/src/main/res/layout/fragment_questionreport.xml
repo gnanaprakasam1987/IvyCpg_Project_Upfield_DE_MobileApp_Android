@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/list_title_bg">
+
+            <LinearLayout
+                android:layout_width="@dimen/ordersplit_heder_name_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="false"
+                    android:text="@string/plannedoutlet_month"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/plannedoutlet_mtd"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/visited_outlets"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/available_outletcount"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/availability"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_availcheckreport_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:cacheColorHint="@null"
+            android:divider="@android:color/white"
+            android:dividerHeight="1dp"
+            android:fitsSystemWindows="true"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+    </LinearLayout>
+
+</HorizontalScrollView>

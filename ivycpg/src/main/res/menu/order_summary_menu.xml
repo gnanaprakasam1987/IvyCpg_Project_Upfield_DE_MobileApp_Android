@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_print"
+        android:icon="@drawable/ic_action_print"
+        android:orderInCategory="101"
+        android:title="Print"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_review"
+        android:icon="@drawable/ic_action_collections_labels"
+        android:orderInCategory="101"
+        android:title="Review"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_discount"
+        android:icon="@drawable/icon_order"
+        android:orderInCategory="104"
+        android:title="Discount"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_calculator"
+        android:icon="@drawable/ic_action_calculator"
+        android:orderInCategory="101"
+        android:title="Calculator"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_store_wise_discount"
+        android:icon="@drawable/icon_discount"
+        android:orderInCategory="103"
+        android:title="Store Discount"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_product_return"
+        android:icon="@drawable/ic_action_bottle_return"
+        android:orderInCategory="102"
+        android:title="Bottles Return"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_collection"
+        android:icon="@drawable/ic_action_icon_collection"
+        android:orderInCategory="103"
+        android:title="Collection"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_signature"
+        android:icon="@drawable/ic_action_signature"
+        android:orderInCategory="103"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_summary_dialog"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="102"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_serialno"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="104"
+        android:title="Next"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_action_edit"
+        android:orderInCategory="105"
+        android:title="Edit"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_action_action_delete"
+        android:orderInCategory="105"
+        android:title="Delete"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+</menu>

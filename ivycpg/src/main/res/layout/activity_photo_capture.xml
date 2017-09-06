@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.ivy.sd.png.view.PhotoCaptureActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/photo_capture_app_bar_height"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:expanded="true">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="?attr/primarycolor"
+                app:titleEnabled="false">
+                <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/capture_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/dummy_capture_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/retake_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/white"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/material_tool_bar_photo_capture" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cardview_lay_margintop"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/photocapturetitle"
+            style="?textTitleStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+
+            android:text="@string/photo_capture"
+            android:visibility="gone"></TextView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/cardview_marginleftright"
+            android:layout_marginRight="@dimen/cardview_marginleftright"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardUseCompatPadding="true">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/card_rel_margin">
+
+
+                <LinearLayout
+                    android:id="@+id/lay_spin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/spin_linlay_margin"
+                    android:layout_marginRight="@dimen/spin_linlay_margin"
+
+                    android:orientation="horizontal">
+                    <!--android:layout_marginTop="@dimen/lay_spin_margintop"-->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spin_linlay_margin"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spin_linlay_padding">
+
+                        <Spinner
+                            android:id="@+id/spin_parentlevel"
+                            android:layout_width="0dip"
+                            android:layout_height="@dimen/spin_ht"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:overlapAnchor="false" />
+
+                    </LinearLayout>
+
+                    <!--</LinearLayout>-->
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spin_linlay_margin"
+
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spin_linlay_padding">
+
+                        <Spinner
+                            android:id="@+id/phototype"
+                            android:layout_width="0dip"
+                            android:layout_height="@dimen/spin_ht"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:overlapAnchor="false" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lay_feed"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lay_spin"
+
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding">
+                    <!--android:descendantFocusability="beforeDescendants"-->
+                    <!--android:focusableInTouchMode="true"-->
+
+                    <EditText
+                        android:id="@+id/etFeedback"
+                        style="@style/EditText_ListItem"
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/feedbck_edit_ht"
+
+
+                        android:layout_marginBottom="@dimen/feedbck_edit_margintopbtm"
+                        android:layout_marginLeft="@dimen/feedbck_edit_marginleftright"
+                        android:layout_marginRight="@dimen/feedbck_edit_marginleftright"
+                        android:layout_marginTop="@dimen/feedbck_edit_margintopbtm"
+                        android:background="@drawable/feedback_edit_selector"
+
+                        android:cursorVisible="true"
+
+                        android:gravity="top|left"
+                        android:hint="@string/comments"
+                        android:imeOptions="actionDone"
+
+                        android:inputType="textMultiLine"
+                        android:maxLength="250"
+                        android:padding="@dimen/spin_linlay_margin"
+
+                        android:singleLine="false"
+                        android:textColor="@color/Black"
+                        android:textColorHighlight="@color/GRAY_TEXT"
+
+                        android:textColorHint="@color/list_item_secondary_text_color"
+
+                        android:textSize="@dimen/font_micro_small" />
+                    <!--android:background="@drawable/dashed_edit_border"-->
+                    <!--android:textCursorDrawable="@null"-->
+                    <!--android:layout_weight="1"-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lay_feed"
+
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding"
+
+                    >
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_fromdate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/date_lay_margin"
+                        android:layout_marginRight="@dimen/date_lay_margin"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+
+
+                        android:visibility="gone">
+                        <!--android:layout_margin="@dimen/date_lay_margin"-->
+
+                        <!--android:padding="@dimen/padding" now-->
+                        <Button
+                            android:id="@+id/btn_fromdate"
+                            style="@style/datePickerButton"
+                            android:layout_width="@dimen/promo_photo"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/date_btn_padding"
+                            android:text="@string/fromdate"
+                            android:textStyle="bold" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_todate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/date_lay_margin"
+                        android:layout_marginRight="@dimen/date_lay_margin"
+
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+
+
+                        android:visibility="gone">
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:layout_margin="@dimen/date_lay_margin"-->
+
+                        <!--android:padding="@dimen/padding" now-->
+                        <Button
+                            android:id="@+id/btn_todate"
+                            style="@style/datePickerButton"
+                            android:layout_width="@dimen/promo_photo"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/date_btn_padding"
+                            android:text="@string/todate"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <!--android:clipChildren="false"-->
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/card_view1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/cardview_marginleftright"
+            android:layout_marginRight="@dimen/cardview_marginleftright"
+            android:layout_marginTop="@dimen/card_two_margintop"
+            android:visibility="gone"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardUseCompatPadding="true">
+
+            <!--<RelativeLayout-->
+
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="@dimen/card_rel_margin">-->
+            <!--</RelativeLayout>-->
+
+            <LinearLayout
+                android:id="@+id/ll_pl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_rel_margin"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_two_lay_margin"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding">
+
+                    <TextView
+                        style="?textFieldStyle"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/product_name"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/etSkuName"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/product_name"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@color/Black"
+                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColorHint="@color/list_item_secondary_text_color"
+                        android:textSize="@dimen/font_micro_small"></EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_two_lay_margin"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding">
+
+                    <TextView
+                        style="?textFieldStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/ABVC"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/etABV"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/ABVC"
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@color/Black"
+                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColorHint="@color/list_item_secondary_text_color"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <TextView
+                        style="?textFieldStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/lot_number"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/etLotCode"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/lot_number"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/Black"
+                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColorHint="@color/list_item_secondary_text_color"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <TextView
+                        style="?textFieldStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/seq_no"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/etSeqNum"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/seq_no"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/Black"
+                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColorHint="@color/list_item_secondary_text_color"
+
+                        android:textSize="@dimen/font_micro_small" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_show_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/image_desc"
+                android:src="@drawable/no_image_available"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/photoBack"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/back"></Button>
+
+        <Button
+            android:id="@+id/photocapture"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/capture" />
+
+        <Button
+            android:id="@+id/photogallery"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="@string/gallery"></Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_divider_height"
+            android:background="@color/divider_view_color" />
+
+
+        <Button
+            android:id="@+id/save_btn"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_margin1"
+            android:layout_marginTop="@dimen/activity_margin1"
+            android:paddingLeft="@dimen/savebtn_paddingleftright"
+            android:paddingRight="@dimen/savebtn_paddingleftright"
+            android:text="@string/save" />
+    </LinearLayout>
+</RelativeLayout>

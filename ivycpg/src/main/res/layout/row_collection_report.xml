@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dimens_2dp"
+    android:paddingBottom="@dimen/dimens_2dp"
+    android:paddingLeft="@dimen/dimens_4dp"
+    android:paddingRight="@dimen/dimens_4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/retailer_ll">
+
+        <TextView
+            android:id="@+id/retailerNameTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingLeft="3dp"
+            android:paddingTop="@dimen/text_sz_extra_small"
+            android:singleLine="true"
+            android:text="Retailer Name"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_medium"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/retailer_ll"
+        android:weightSum="2"
+        android:id="@+id/invoice_ll">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/invoice_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:paddingLeft="3dp"
+                android:text="@string/invoice_no"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/invNoTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:paddingLeft="3dp"
+                android:text="12345"
+                android:textColor="?attr/primarycolor"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimens_20dp">
+
+            <TextView
+                android:id="@+id/invoice_amt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/amount"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/invAmtTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0000"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/ll2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/invoice_ll"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/invoice_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:paddingLeft="3dp"
+                android:text="@string/inv_date"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/invDateTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:paddingLeft="3dp"
+                android:text="12345"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimens_20dp">
+
+            <TextView
+                android:id="@+id/os_amt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/os_amt"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/outAmtTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0000"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_arrow"
+        android:layout_width="@dimen/icon_drop_list"
+        android:layout_height="@dimen/icon_drop_list"
+        android:layout_marginRight="@dimen/dimen_14dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/activity_icon_next"/>
+
+    <LinearLayout
+        android:layout_below="@id/ll2"
+        android:id="@+id/line"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_gravity="center"
+        android:background="@color/new_grey"
+        android:gravity="center"
+        android:padding="@dimen/dimens_4dp"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        android:layout_marginBottom="@dimen/dimen_12dp"
+        android:visibility="gone"/>
+</RelativeLayout>

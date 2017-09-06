@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
+        android:layout_above="@+id/spin_absent_user" />
+
+    <Spinner
+        android:id="@+id/spin_absent_user"
+        android:layout_width="@dimen/absentees_lv_width"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"></Spinner>
+
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="@dimen/absentees_lv_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spin_absent_user"
+        android:layout_margin="2dp"
+        android:layout_marginTop="20dp"
+
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="@dimen/absentees_lv_width"
+            android:layout_height="@dimen/absentees_tv_height"
+            android:background="#2196F3"
+            android:gravity="center"
+            android:text="@string/absentees_retailer"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_small" />
+
+        <ListView
+            android:id="@+id/lv_absentees_retailers"
+            android:layout_width="@dimen/absentees_lv_width"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0dp"></ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/present_lv_width"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:layout_toRightOf="@+id/layout1"
+
+        >
+
+
+        <ListView
+            android:id="@+id/lv_allocate_retailer"
+            android:layout_width="@dimen/present_lv_width"
+            android:layout_height="wrap_content"
+
+            android:divider="@null"
+            android:dividerHeight="0dp"></ListView>
+    </LinearLayout>
+
+
+</RelativeLayout>

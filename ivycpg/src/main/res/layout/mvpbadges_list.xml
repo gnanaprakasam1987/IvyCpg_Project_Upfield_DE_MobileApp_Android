@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/mvpbadgelayoutwidth"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_badge_name"
+        android:layout_width="@dimen/mvpbadgelayoutwidth"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="Badge Name"
+        android:textColor="@color/Black"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/font_small"/>
+
+    <ImageView
+        android:id="@+id/badge"
+        android:layout_width="@dimen/mvpbadgewidth"
+        android:layout_height="@dimen/mvpbadgewidth"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_badge_name"
+        android:paddingLeft="@dimen/mvpbadgepadding"></ImageView>
+
+    <TextView
+        android:id="@+id/badge_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/badge"
+        android:padding="@dimen/dimen_10dp"
+        android:textColor="@color/Black"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/font_small"
+        android:textStyle="bold"
+        />
+
+
+</RelativeLayout>

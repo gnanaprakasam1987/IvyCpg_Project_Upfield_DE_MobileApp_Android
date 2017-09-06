@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/productname"
+        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/dimen_4dp"
+         />
+    <TextView
+        android:id="@+id/io_case"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        />
+    <TextView
+        android:id="@+id/co_case"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+         />
+    <TextView
+        android:id="@+id/ordered_case"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        />
+    <TextView
+        android:id="@+id/ordered_outer"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        />
+    <TextView
+        android:id="@+id/ordered_pcs"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        />
+    <Spinner
+        android:id="@+id/reason"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+         />
+
+</LinearLayout>

@@ -1,0 +1,98 @@
+package com.ivy.sd.png.commons;
+
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
+
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.ApplicationConfigs;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+
+import java.util.Locale;
+
+public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
+
+
+    TextView mScreenTitleTV;
+    BusinessModel bmodel;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+
+
+        Configuration config = new Configuration();
+        Locale locale = config.locale;
+        if (!Locale.getDefault().equals(
+                sharedPrefs.getString("languagePref", LANGUAGE))) {
+            locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
+            Locale.setDefault(locale);
+            config.locale = locale;
+            getActivity().getResources().updateConfiguration(config,
+                    getActivity().getResources().getDisplayMetrics());
+        }
+        super.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+    }
+
+    public void setScreenTitle(String title) {
+
+        mScreenTitleTV = (TextView) getActivity().findViewById(R.id.tv_toolbar_title);
+        if (mScreenTitleTV != null) {
+            mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            mScreenTitleTV.setText(title);
+        }
+    }
+
+    public void setToolbarColor(Bitmap bitmap) {
+        // Generate the palette and get the vibrant swatch
+        // See the createPaletteSync() and checkVibrantSwatch() methods
+        // from the code snippets above
+        Palette p = createPaletteSync(bitmap);
+        Palette.Swatch vibrantSwatch = checkVibrantSwatch(p);
+
+        // Set the toolbar background and text colors
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        if (vibrantSwatch != null)
+            toolbar.setBackgroundColor(vibrantSwatch.getRgb());
+//        toolbar.setTitleTextColor(vibrantSwatch.getTitleTextColor());
+    }
+
+    // Generate palette synchronously and return it
+    public Palette createPaletteSync(Bitmap bitmap) {
+        Palette p = Palette.from(bitmap).generate();
+        return p;
+    }
+
+    // Return a palette's vibrant swatch after checking that it exists
+    private Palette.Swatch checkVibrantSwatch(Palette p) {
+        if (p != null) {
+            Palette.Swatch vibrant = p.getVibrantSwatch();
+            if (vibrant != null) {
+                return vibrant;
+            }
+            // Throw error
+        }
+        return null;
+    }
+
+    public void onBackPressed() {
+    }
+}

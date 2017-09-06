@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/planning_tab_new">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        card_view:cardBackgroundColor="@color/black_bg1"
+        card_view:cardCornerRadius="@dimen/margin_5px"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="33.3"
+                android:background="@color/black_bg1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/img_beatloc"
+                    android:layout_width="@dimen/ret_card_image"
+                    android:layout_height="@dimen/ret_card_image"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/arealocation" />
+
+                <TextView
+                    android:id="@+id/label_BeatLoc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_child_margin"
+                    android:tag="label_beat"
+                    android:gravity="center"
+                    android:text="@string/beat_loc"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_small" />
+
+                <TextView
+                    android:id="@+id/daytv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="GHKW"
+                    android:maxLines="1"
+                    android:textColor="@color/font_inactive"
+                    android:textSize="@dimen/highlight_large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="33.4"
+                android:background="@color/black_bg2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/ret_card_image"
+                    android:layout_height="@dimen/ret_card_image"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/store" />
+
+                <TextView
+                    android:id="@+id/label_StoreToVisit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="@string/stores_visit"
+                    android:tag="label_storevst"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_small" />
+
+                <TextView
+                    android:id="@+id/tv_store_visit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="125"
+                    android:textColor="@color/font_inactive"
+                    android:textSize="@dimen/highlight_large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="33.3"
+                android:background="@color/black_bg3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/ret_card_image"
+                    android:layout_height="@dimen/ret_card_image"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/target" />
+
+                <TextView
+                    android:id="@+id/label_TodayTgt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="@string/today_achvd"
+                    android:tag="label_todaytgt"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_small" />
+
+                <TextView
+                    android:id="@+id/tv_tgt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="30,000"
+                    android:maxLines="1"
+                    android:textColor="@color/font_inactive"
+                    android:textSize="@dimen/highlight_large" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        card_view:cardBackgroundColor="@color/black_bg1"
+        card_view:cardCornerRadius="@dimen/margin_5px"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/ret_card_image"
+                    android:layout_height="@dimen/ret_card_image"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/arealocation" />
+
+                <TextView
+                    android:id="@+id/spinnerLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="@string/day"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_small" />
+
+                <Spinner
+                    android:id="@+id/routeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/card_child_margin"
+                    android:background="@color/black_bg1"
+                    android:dropDownSelector="@color/light_grey"
+                    android:dropDownVerticalOffset="@dimen/margin_height"
+                    android:gravity="center"
+                    android:minHeight="@dimen/beat_spinner_min"
+                    android:visibility="gone" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteTextView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:ems="10"
+                    android:hint=" Search"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textColor="?attr/colorAccent"
+                    android:textColorHint="?attr/colorAccent"
+                    android:textSize="@dimen/spinner_normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@color/black_bg2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/ret_card_image"
+                    android:layout_height="@dimen/ret_card_image"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/target" />
+
+                <TextView
+                    android:id="@+id/label_TodayTgt1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="@string/today_achvd"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_small" />
+
+                <TextView
+                    android:id="@+id/tv_tgt1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:gravity="center"
+                    android:text="30,000"
+                    android:textColor="@color/font_inactive"
+                    android:textSize="@dimen/highlight_large" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</merge>

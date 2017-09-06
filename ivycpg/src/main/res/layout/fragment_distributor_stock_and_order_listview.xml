@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height_double_line"
+    android:gravity="center_vertical"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/dist_stock_and_order_listview_productname"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_weight="4"
+        android:gravity="left|center"
+        android:maxLines="1"
+        android:padding="3dp"
+        android:text="@string/product_name"
+        android:textSize="@dimen/font_small" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_sc_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_shelfouter_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_sp_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_case_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_outer_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/dist_stock_and_order_listview_piece_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/dist_stock_and_order_listview_total"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textSize="@dimen/font_small" />
+
+</LinearLayout>

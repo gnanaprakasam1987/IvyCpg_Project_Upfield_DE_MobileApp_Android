@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/list_margin"
+        android:background="@drawable/bg_card"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/card_margin">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fromDatetxt"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:text="@string/fromdate"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/font_small" />
+
+        <Button
+            android:id="@+id/fromDatetxt"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="18-March-2015"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/todatetext"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/fromDatetxt"
+            android:layout_marginTop="@dimen/card_margin"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:text="@string/todate"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/font_small" />
+
+        <Button
+            android:id="@+id/todatetext"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/fromDatetxt"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_toLeftOf="@+id/textView2"
+            android:text="18-March-2015"
+            android:textSize="@dimen/font_small" />
+
+
+        <TextView
+            android:id="@+id/reasonTextViewId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/sp_reason"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView2"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/store_margin_top"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:text="@string/reason"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/font_small" />
+
+        <Spinner
+            android:id="@+id/sp_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/todatetext"
+            android:layout_marginTop="@dimen/store_margin_top"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false" />
+
+
+        <TextView
+            android:id="@+id/leavereasonTextViewId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/sp_special_reason"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/reasonTextViewId"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/store_margin_top"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:text="@string/detail"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/font_small" />
+
+        <Spinner
+            android:id="@+id/sp_special_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/sp_reason"
+            android:layout_marginTop="@dimen/store_margin_top"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false" />
+
+        <Button
+            android:id="@+id/buttonproceed"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_below="@+id/sp_special_reason"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/card_margin"
+            android:layout_marginTop="@dimen/card_margin"
+            android:text="@string/bt_proceed" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

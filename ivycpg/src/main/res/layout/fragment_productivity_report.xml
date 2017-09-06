@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/list_title_bg_color"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_outlet_class"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_product_name_width_tiny"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/outlet_class" />
+
+                <TextView
+                    android:id="@+id/tv_total_call"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/tc" />
+
+                <TextView
+                    android:id="@+id/tv_productive_call"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/pc" />
+
+                <TextView
+                    android:id="@+id/tv_value_per_day"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/vpd" />
+
+                <TextView
+                    android:id="@+id/tv_non_productive_call"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_product_name_width_tiny"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/zero_bpo" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.9">
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:drawSelectorOnTop="false"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true">
+
+                </ListView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

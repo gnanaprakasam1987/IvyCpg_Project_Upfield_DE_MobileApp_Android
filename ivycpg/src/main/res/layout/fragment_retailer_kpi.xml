@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        android:layout_marginTop="10dp"
+        android:background="@color/GRAY"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+
+
+        >
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+
+            >
+
+            <TextView
+                android:id="@+id/kpi_title"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="Retailer Kpi"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/volume"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/kpi_title"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="SVOL"
+
+
+                />
+
+            <TextView
+                android:id="@+id/line"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/volume"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="LINE" />
+
+            <TextView
+                android:id="@+id/no_of_invoice"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/line"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="NUMINV" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/cell_shape"
+            android:visibility="gone"
+
+
+            >
+
+
+            <TextView
+                android:id="@+id/month1"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/cell_shape"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="month1"
+
+                />
+
+            <TextView
+                android:id="@+id/month1_ach1"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month1"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"></TextView>
+
+
+            <TextView
+                android:id="@+id/month1_ach2"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month1_ach1"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+            />
+
+            <TextView
+                android:id="@+id/month1_ach3"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month1_ach2"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+            />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/cell_shape"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/month2"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/cell_shape"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="month2" />
+
+            <TextView
+                android:id="@+id/month2_ach1"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month2"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+            />
+
+            <TextView
+                android:id="@+id/month2_ach2"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month2_ach1"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+            />
+
+            <TextView
+                android:id="@+id/month2_ach3"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month2_ach2"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/cell_shape"
+            android:visibility="gone"
+
+            >
+
+            <TextView
+                android:id="@+id/month3"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/cell_shape"
+
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="month2" />
+
+            <TextView
+                android:id="@+id/month3_ach1"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month3"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+            />
+
+            <TextView
+                android:id="@+id/month3_ach2"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month3_ach1"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/month3_ach3"
+                android:layout_width="@dimen/title_width"
+                android:layout_height="50dp"
+                android:layout_below="@id/month3_ach2"
+                android:background="@drawable/cell_shape"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+
+                />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</HorizontalScrollView>

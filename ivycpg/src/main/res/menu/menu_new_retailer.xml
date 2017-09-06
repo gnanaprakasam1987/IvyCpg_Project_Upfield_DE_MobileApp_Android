@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_oppr"
+        android:icon="@drawable/icon_order_split"
+        android:orderInCategory="105"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_order"
+        android:icon="@drawable/icon_order"
+        android:orderInCategory="104"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_updown_arrow"
+        android:orderInCategory="103"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/ic_add"
+        android:orderInCategory="102"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_capture"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="101"
+        android:title="Capture"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_survey"
+        android:icon="@drawable/icon_survey"
+        android:orderInCategory="100"
+        android:title="Survey"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+
+</menu>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.20"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnStatus"
+                android:layout_width="@dimen/dimen_30dp"
+                android:layout_height="@dimen/dimen_20dp"
+                android:layout_gravity="center"
+                android:background="@color/BLUE"
+                android:text="JE"
+                android:textColor="@color/WHITE" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.80"
+            android:padding="@dimen/dimen_8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_retailer_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/font_medium"
+                android:text="Retailer Name" />
+
+            <TextView
+                android:id="@+id/tv_time_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textStyle="italic"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/font_medium"
+                android:text="10.00AM - 10.30AM"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_marginTop="@dimen/dimen_6dp"
+                android:background="@color/Black" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

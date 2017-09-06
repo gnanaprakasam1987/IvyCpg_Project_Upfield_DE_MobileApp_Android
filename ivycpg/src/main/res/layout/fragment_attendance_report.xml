@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/monthSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/atd_marigin_top"
+        android:layout_marginBottom="@dimen/atd_marigin_top" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/llFooter"
+        android:layout_below="@+id/monthSpinner"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:id="@+id/dateTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date" />
+
+                <TextView
+                    android:id="@+id/dayTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_height="wrap_content"
+                    android:text="@string/day" />
+
+                <TextView
+                    android:id="@+id/attendanceTitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attend" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lvwplist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="1dp"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/llFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dimen_8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTotalDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tvActualDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+    </LinearLayout>
+
+</RelativeLayout>

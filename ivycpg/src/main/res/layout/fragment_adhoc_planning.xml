@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+    <Spinner
+        android:id="@+id/spn_users"
+        android:layout_width="@dimen/first_layout_width"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:layout_alignParentTop="true"/>
+
+    <com.ivy.sd.png.view.CardLayout
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="@dimen/first_layout_width"
+        android:layout_height="@dimen/first_layout_height"
+        android:id="@+id/cardview1"
+        card_view:cardCornerRadius="4dp"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/spn_users"
+        android:background="@color/GRAY"
+        >
+
+
+        <ListView
+            android:id="@+id/lv_first"
+            android:layout_width="@dimen/first_layout_lv_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"/>
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="@dimen/add_btn_widht"
+            android:layout_height="@dimen/add_btn_widht"
+            android:layout_toRightOf="@id/lv_first"
+            android:background="@drawable/plus_new"
+            android:layout_margin="@dimen/dimen_6dp"/>
+        <Button
+            android:id="@+id/btn_refresh1"
+            android:layout_width="@dimen/add_btn_widht"
+            android:layout_height="@dimen/add_btn_widht"
+            android:layout_toRightOf="@id/lv_first"
+            android:layout_below="@id/btn_add"
+            android:background="@drawable/refresh"
+            android:layout_margin="@dimen/dimen_6dp"/>
+
+
+    </com.ivy.sd.png.view.CardLayout>
+    <com.ivy.sd.png.view.CardLayout
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="@dimen/first_layout_width"
+        android:layout_height="@dimen/second_layout_height"
+        android:id="@+id/cardview2"
+        card_view:cardCornerRadius="4dp"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/cardview1"
+        android:background="@color/GRAY">
+
+
+        <ListView
+            android:id="@+id/lv_second"
+            android:layout_width="@dimen/first_layout_lv_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"/>
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="@dimen/add_btn_widht"
+            android:layout_height="@dimen/add_btn_widht"
+            android:layout_toRightOf="@id/lv_second"
+            android:background="@drawable/minus_new"
+            android:layout_margin="@dimen/dimen_6dp"
+
+            />
+        <Button
+            android:id="@+id/btn_refresh2"
+            android:layout_width="@dimen/add_btn_widht"
+            android:layout_height="@dimen/add_btn_widht"
+            android:layout_toRightOf="@id/lv_second"
+            android:layout_below="@id/btn_delete"
+            android:background="@drawable/refresh"
+            android:layout_margin="@dimen/dimen_6dp"/>
+    </com.ivy.sd.png.view.CardLayout>
+    <LinearLayout
+        android:layout_width="@dimen/first_layout_width"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+
+
+
+
+        android:layout_below="@+id/cardview2">
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/dimen_40dp"
+            android:text="@string/download"
+            android:layout_gravity="center"
+
+
+
+            />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

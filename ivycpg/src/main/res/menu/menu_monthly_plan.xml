@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_clear"
+        android:icon="@drawable/ic_clear_map"
+        android:orderInCategory="97"
+        android:title="@string/clear"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_lock"
+        android:icon="@drawable/ic_action_logout"
+        android:orderInCategory="99"
+        android:title="@string/lock"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_save_draft"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="101"
+        android:title="@string/save"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:orderInCategory="99"
+        android:title="Refresh"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+
+</menu>

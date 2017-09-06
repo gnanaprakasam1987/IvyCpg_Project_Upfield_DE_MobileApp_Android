@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_shelfs_bg"
+            android:gravity="center" >
+
+            <LinearLayout
+                android:id="@+id/lnrLytShelfWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_60dp"
+                android:layout_margin="@dimen/dimen_10dp"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/relLytFirst"
+                    android:layout_width="@dimen/dimen_60dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:background="@color/competitor_brand" />
+
+                <RelativeLayout
+                    android:id="@+id/relLytSecond"
+                    android:layout_width="@dimen/dimen_60dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:background="@color/competitor_brand" />
+
+                <RelativeLayout
+                    android:id="@+id/relLytThird"
+                    android:layout_width="@dimen/dimen_60dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:background="@color/competitor_brand" />
+
+                <RelativeLayout
+                    android:id="@+id/relLytFourth"
+                    android:layout_width="@dimen/dimen_60dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/competitor_brand" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnDialogCancel"
+
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:textSize="@dimen/font_small"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/ic_close"
+                android:contentDescription="@string/cancel"
+                android:textStyle="bold"
+                android:scaleType="centerInside" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_below="@+id/lnrLytShelfWrapper" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

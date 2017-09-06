@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <ListView
+        android:id="@+id/lv_invoicelist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/screen_bg_color"
+        android:cacheColorHint="@null"
+        android:divider="@null"
+        android:dividerHeight="@dimen/ret_list_div"
+        android:fitsSystemWindows="true"
+        android:scrollbars="none"
+        android:listSelector="@color/GRAY_TEXT" />
+
+</LinearLayout>

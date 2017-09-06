@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/competitor_recycler_view_height"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/activity_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="left"
+            android:paddingLeft="@dimen/dimen_10dp"
+            android:text="Select to start store activities"
+            android:textColor="@color/FullBlack"
+            android:textSize="@dimen/list_item_primary_text_size" />
+
+
+
+        <LinearLayout
+            android:id="@+id/icon_ll"
+            android:layout_width="@dimen/activity_list_height"
+            android:layout_height="@dimen/activity_list_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/activity_icon_bg_normal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/list_item_icon_iv"
+                android:layout_width="@dimen/activity_list_icon_size"
+                android:layout_height="@dimen/activity_list_icon_size"
+                android:src="@drawable/activity_icon_next" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

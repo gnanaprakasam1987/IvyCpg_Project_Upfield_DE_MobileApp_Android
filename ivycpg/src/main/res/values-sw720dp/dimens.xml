@@ -1,0 +1,106 @@
+<!--
+  Copyright 2011 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+
+    <!-- Asset Tracking Screen -->
+
+    <!-- New Visit Targe Screen -->
+
+    <!-- UI Elements -->
+    <dimen name="list_title_height">30dp</dimen>
+    <dimen name="list_product_name_width">400dp</dimen>
+    <dimen name="list_item_width">150dp</dimen>
+    <dimen name="list_item_width_large">160dp</dimen>
+    <dimen name="list_item_width_dashboard_small">180dp</dimen>
+    <dimen name="list_item_width_dashboard_medium">250dp</dimen>
+
+    <!-- Order Summary Screen -->
+    <dimen name="sku_text_qty">180dp</dimen>
+
+    <!-- Visit List Item Screen -->
+    <dimen name="visit_lst_img_width">32dp</dimen>
+    <dimen name="visit_info_img_width">42dp</dimen>
+
+    <!-- Order and Stocj Screen -->
+    <dimen name="order_stock_list_product_name_width">400dp</dimen>
+    <dimen name="order_stock_list_item_width">100dp</dimen>
+    <dimen name="order_stock_list_item_width_small">60dp</dimen>
+    <dimen name="meter_value_width_large">140dp</dimen>
+    <dimen name="order_stock_list_item_width_xlarge">90dp</dimen>
+    <dimen name="order_stock_list_product_name_width_xlarge">400dp</dimen>
+
+
+    <!--Distributor StockCheck Screen-->
+
+    <!-- Target Plan Screen -->
+    <dimen name="ordersplit_heder_name_width">300dp</dimen>
+    <dimen name="ordersplit_heder_qty_width">180dp</dimen>
+    <!-- digital Screen -->
+    <dimen name="digital_screen_name_width">750dp</dimen>
+
+    <!-- about screen -->
+    <dimen name="list_item_height_double_line">70dp</dimen>
+
+    <!-- Sales Return Activity -->
+    <dimen name="sr_list_view_width">120dp</dimen>
+    <dimen name="sr_list_view_width_large">200dp</dimen>
+
+    <!-- print preview -->
+    <dimen name="pp_case_unit">110dp</dimen>
+    <dimen name="pp_outer_price">150dp</dimen>
+    <dimen name="pp_case_price">150dp</dimen>
+    <dimen name="pp_unit_price">130dp</dimen>
+    <dimen name="pp_discount">140dp</dimen>
+    <dimen name="pp_row_case_unit">140dp</dimen>
+    <dimen name="pp_row_outer_price">160dp</dimen>
+    <dimen name="pp_row_discount">140dp</dimen>
+    <dimen name="pp_row_upc">250dp</dimen>
+    <dimen name="pp_row_upc_padding">230dp</dimen>
+    <dimen name="pp_row_amount">120dp</dimen>
+
+    <!-- New Visit Fragment -->
+
+    <dimen name="avail_barcode">225dp</dimen>
+    <dimen name="task_retname">220dp</dimen>
+
+    <!-- NEAR EXPIRY -->
+
+
+    <!-- sku wise target -->
+    <dimen name="swt_target_width">180dp</dimen>
+    <dimen name="swt_achieved_width">200dp</dimen>
+
+    <dimen name="crown_list_title_height">60dp</dimen>
+
+
+    <dimen name="report_base_sbd">342dp</dimen>
+
+    <dimen name="product_name_twenty_five_character">300dp</dimen>
+    <dimen name="product_name_twenty_character">240dp</dimen>
+
+    <dimen name="sno_width">45dp</dimen>
+    <dimen name="eighteen_characters_width">185dp</dimen>
+    <dimen name="five_character_width">75dp</dimen>
+
+
+    <dimen name="dashreportnamewidth">160dp</dimen>
+
+    <!--profile screem-->
+    <dimen name="profile_collopsing_layout_height">350dp</dimen>
+    <dimen name="profile_header_frame_layout_height">180dp</dimen>
+
+
+</resources>

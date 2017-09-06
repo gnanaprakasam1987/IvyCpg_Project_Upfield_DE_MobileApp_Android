@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height_double_line"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/productnamecheckbox"
+        style="?textFieldStyle"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:checked="true"
+        android:gravity="center_vertical" />
+
+    <EditText
+        android:id="@+id/stock_and_order_listview_case_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/stock_and_order_listview_outer_case_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/stock_and_order_listview_pcs_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:text="@string/zero" />
+</LinearLayout>

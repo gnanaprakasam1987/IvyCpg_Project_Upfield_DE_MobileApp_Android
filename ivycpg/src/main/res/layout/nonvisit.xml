@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/weekBackground">
+
+            <TextView
+                android:id="@+id/week_title"
+                android:layout_width="@dimen/select_week_width"
+                android:layout_height="@dimen/factor_title_size"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/margin_week_layout"
+                android:layout_toRightOf="@+id/brandSpinner"
+                android:text="@string/select_week"
+                android:textColor="?attr/selectWeekBackground"
+                android:textSize="@dimen/text_sz_medium" />
+
+            <HorizontalScrollView
+                android:id="@+id/horiScroll"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/week_scroll_height"
+                android:layout_below="@+id/week_title"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="@dimen/margin_week_layout"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginRight="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimen_12dp"
+                android:layout_toRightOf="@+id/brandSpinner"
+                android:overScrollMode="never">
+
+                <RadioGroup
+                    android:id="@+id/week_radiogroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checkedButton="@+id/rb_all"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
+                    <RadioButton
+                        android:id="@+id/rb_all"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/all"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rb_week1"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/week1"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <RadioButton
+                        android:id="@+id/rb_week2"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/week2"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <RadioButton
+                        android:id="@+id/rb_week3"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/week3"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <RadioButton
+                        android:id="@+id/rb_week4"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+
+                        android:gravity="center"
+                        android:text="@string/week4"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <RadioButton
+                        android:id="@+id/rb_week5"
+                        android:layout_width="@dimen/week_button_width"
+                        android:layout_height="@dimen/week_button_height"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_corner_selected"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/week5"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/font_micro_small" />
+                </RadioGroup>
+
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/day_title"
+                android:layout_width="@dimen/select_week_width"
+                android:layout_height="@dimen/factor_title_size"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/margin_week_layout"
+                android:layout_marginTop="@dimen/margin_week_layout"
+                android:text="@string/select_day"
+                android:textColor="?attr/selectWeekBackground"
+                android:textSize="@dimen/text_sz_medium" />
+
+            <Spinner
+                android:id="@+id/brandSpinner"
+                android:layout_width="@dimen/day_spinner_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/day_title"
+                android:layout_marginLeft="@dimen/retailer_list_margin_left"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="start"
+                android:overlapAnchor="false" />
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/filter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/weekBackground"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/ll_weekfilter"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/daytv"
+                        android:layout_width="@dimen/select_week_width"
+                        android:layout_height="@dimen/factor_title_size"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/margin_week_layout"
+                        android:layout_marginTop="@dimen/margin_week_layout"
+                        android:tag="all_day"
+                        android:text="@string/day"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/text_sz_medium" />
+
+                    <Spinner
+                        android:id="@+id/daySpinner"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimens_16dp"
+                        android:layout_marginLeft="@dimen/retailer_list_margin_left"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:background="@android:color/transparent"
+                        android:focusable="true"
+                        android:overlapAnchor="false" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/weektv"
+                        android:layout_width="@dimen/select_week_width"
+                        android:layout_height="@dimen/factor_title_size"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/margin_week_layout"
+                        android:layout_marginTop="@dimen/margin_week_layout"
+                        android:tag="all_week"
+                        android:text="@string/week"
+                        android:textColor="?attr/selectWeekBackground"
+                        android:textSize="@dimen/text_sz_medium" />
+
+                    <Spinner
+                        android:id="@+id/spn_week"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimens_16dp"
+                        android:layout_marginLeft="@dimen/retailer_list_margin_left"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:background="@android:color/transparent"
+                        android:focusable="true"
+                        android:overlapAnchor="false" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_datefilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="5dp">
+
+
+                <TextView
+                    android:layout_width="@dimen/select_week_width"
+                    android:layout_height="@dimen/factor_title_size"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_week_layout"
+                    android:layout_marginTop="@dimen/margin_week_layout"
+                    android:text="@string/select_date"
+                    android:textColor="?attr/selectWeekBackground"
+                    android:textSize="@dimen/text_sz_medium" />
+
+                <Spinner
+                    android:id="@+id/spin_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimens_16dp"
+                    android:layout_marginLeft="@dimen/retailer_list_margin_left"
+                    android:layout_marginTop="@dimen/dimens_16dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="true"
+                    android:overlapAnchor="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_beatfilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="5dp">
+
+
+                <TextView
+                    android:id="@+id/beat_title"
+                    android:layout_width="@dimen/select_week_width"
+                    android:layout_height="@dimen/factor_title_size"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_week_layout"
+                    android:layout_marginTop="@dimen/margin_week_layout"
+                    android:text="@string/select_beat"
+                    android:textColor="?attr/selectWeekBackground"
+                    android:tag="all_beat"
+                    android:textSize="@dimen/text_sz_medium" />
+
+                <Spinner
+                    android:id="@+id/spin_beat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimens_16dp"
+                    android:layout_marginLeft="@dimen/retailer_list_margin_left"
+                    android:layout_marginTop="@dimen/dimens_16dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="true"
+                    android:overlapAnchor="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                style="?attr/customListTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="left"
+                android:text="@string/day" />
+
+            <TextView
+                style="?attr/customListTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text=" " />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/nonvisitlistView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearlayout"
+        android:layout_marginLeft="@dimen/store_margin_top"
+        android:layout_marginRight="@dimen/store_margin_top"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:cacheColorHint="@null"
+        android:divider="@null"
+        android:dividerHeight="@dimen/margin_10px"
+        android:fitsSystemWindows="true"
+        android:scrollbars="none" />
+
+
+</RelativeLayout>

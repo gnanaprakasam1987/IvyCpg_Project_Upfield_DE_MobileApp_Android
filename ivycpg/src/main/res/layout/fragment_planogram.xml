@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/pope_buttons_linear_layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/plano_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footerLine"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/plano_list_left_margin"
+            android:layout_marginRight="@dimen/plano_list_right_margin"
+            android:layout_marginTop="@dimen/plano_list_top_margin"></android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/filterscreenlayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_pgfiltername"
+                style="?attr/customListTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/planogram" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/image_linear_layout_new"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!--  <android.support.v7.widget.RecyclerView
+                  android:id="@+id/plano_recycler"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/plano_list_top_margin"
+                  android:layout_marginLeft="@dimen/plano_list_left_margin"
+                  android:layout_marginRight="@dimen/plano_list_right_margin">
+              </android.support.v7.widget.RecyclerView>-->
+
+            <ImageView
+                android:id="@+id/planogram_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/login_box_bg"
+                android:clickable="true"
+                android:contentDescription="@string/image_desc"
+                android:scaleType="fitXY"
+                android:src="@drawable/no_image_available"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/supervisor_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/login_box_bg"
+                android:clickable="true"
+                android:contentDescription="@string/image_desc"
+                android:scaleType="fitXY"
+                android:src="@drawable/no_image_available"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/capture_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/login_box_bg"
+                android:clickable="true"
+                android:contentDescription="@string/image_desc"
+                android:scaleType="fitXY"
+                android:src="@drawable/no_image_available"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/footerLine"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/plano_list_footer_line"
+            android:layout_above="@+id/saveButton"
+            android:layout_marginBottom="@dimen/plano_save_padding"
+            android:background="@color/plano_footer_line" />
+
+        <Button
+            android:id="@+id/saveButton"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:layout_marginTop="@dimen/dimen_2dp"
+            android:gravity="center"
+            android:text="@string/save" />
+
+        <LinearLayout
+            android:id="@+id/image_capturing_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="@dimen/screen_title_padding"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/aduit_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/adherence_text_view1"
+                            style="?textFieldStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/audit"
+                            android:textColor="@android:color/black" />
+
+                        <ImageView
+                            android:id="@+id/btn_audit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/image_desc"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/adherence_text_view"
+                            style="?textFieldStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@string/adherence"
+                            android:textColor="@android:color/black" />
+
+                        <RadioButton
+                            android:id="@+id/yes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="@string/yes"
+                            android:textColor="@android:color/black" />
+
+                        <RadioButton
+                            android:id="@+id/no"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no"
+                            android:textColor="@android:color/black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/reason_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingLeft="20dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="?textFieldStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="6dip"
+                            android:text="@string/reason"
+                            android:textColor="@android:color/black" />
+
+                        <Spinner
+                            android:id="@+id/sp_reason"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="-4dip"
+                            android:gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/right_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@drawable/background_noise" />
+
+</android.support.v4.widget.DrawerLayout>

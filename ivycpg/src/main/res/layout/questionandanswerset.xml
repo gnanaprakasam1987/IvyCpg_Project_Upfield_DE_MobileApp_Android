@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_groupname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+            <TextView
+                android:id="@+id/groupname"
+                style="?attr/customListItemValue"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/survey_group_margin_left"
+                android:textSize="@dimen/font_large"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:background="#1F000000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/survey_group_margin_height"
+                    android:paddingTop="@dimen/survey_group_margin_height">
+
+                    <TextView
+                        android:id="@+id/imp"
+                        android:layout_width="@dimen/survey_group_margin_left"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:text="*"
+                        android:textColor="@color/RED"
+                        android:textSize="@dimen/font_small"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/questionno"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/questionTV"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:layout_toRightOf="@+id/questionno"
+                        android:padding="@dimen/list_item_padding"
+                        android:text="Thats the question Description text?"
+                        android:textSize="@dimen/font_small" />
+                </LinearLayout>
+
+
+                <!-- <HorizontalScrollView
+                     android:id="@+id/horizontalScrollView"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content">-->
+
+                <LinearLayout
+                    android:id="@+id/answerLL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/list_margin"
+                    android:layout_marginLeft="@dimen/survey_answer_left"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/list_margin"
+                    android:orientation="horizontal"
+                    android:padding="2dp">
+
+                    <RadioGroup
+                        android:id="@+id/radiogroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone" />
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+                </LinearLayout>
+                <!--</HorizontalScrollView>-->
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/right_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:paddingBottom="@dimen/side_layout_margin_bottom">
+
+                <TextView
+                    android:id="@+id/scoreTV"
+                    android:layout_width="@dimen/main_photo_width"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/highlight_normal" />
+
+                <LinearLayout
+                    android:id="@+id/ll_photo"
+                    android:layout_width="@dimen/main_photo_width"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/scoreTV"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/minphotoTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="0 Photos Required"
+                        android:textSize="@dimen/font_nano_small" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/icon_height"
+                                android:layout_weight="6"
+                                android:gravity="center|right">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/imgBtn"
+                                        android:layout_width="@dimen/icon"
+                                        android:layout_height="@dimen/icon"
+                                        android:background="@null"
+                                        android:padding="@dimen/dimen_0dp"
+                                        android:scaleType="center"
+                                        android:src="@drawable/ic_photo_camera" />
+
+                                    <TextView
+                                        android:id="@+id/textOne"
+                                        android:layout_width="20sp"
+                                        android:layout_height="20sp"
+                                        android:layout_alignRight="@id/imgBtn"
+                                        android:layout_alignTop="@id/imgBtn"
+                                        android:background="@drawable/badge_circle"
+                                        android:gravity="center_horizontal|center_vertical|center"
+                                        android:textColor="?attr/colorPrimary"
+                                        android:textSize="@dimen/font_nano_small"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/indicator_view"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/one_dp_width"
+                                android:layout_marginRight="@dimen/one_dp_width"
+                                android:layout_weight="1"
+                                android:visibility="gone"
+                                android:orientation="horizontal">
+
+                                <View
+                                    android:layout_width="@dimen/dimen_1dp"
+                                    android:layout_height="20dp"
+                                    android:background="@color/new_grey"></View>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/icon_height"
+                                android:layout_weight="6"
+                                android:visibility="gone"
+                                android:gravity="center|left">
+
+                                <ImageView
+                                    android:id="@+id/photos"
+                                    android:layout_width="@dimen/icon"
+                                    android:layout_height="@dimen/icon"
+                                    android:background="@null"
+                                    android:padding="@dimen/dimen_0dp"
+                                    android:scaleType="center"
+                                    android:src="@drawable/camera_new" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subqLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_30dp"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_margin"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gallery_card_margin"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="false">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/prod_img"
+                android:layout_width="250dp"
+                android:layout_height="@dimen/digital_content_image_height"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/no_image_available" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pdt_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/digital_bottom_margin"
+            android:minHeight="40dp"
+            android:paddingRight="@dimen/list_margin"
+            android:paddingBottom="@dimen/list_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/type_loc_txt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:minLines="2"
+                android:paddingLeft="5dp"
+                android:textColor="?attr/primarycolor"
+                android:textStyle="normal"
+                tools:text="est weter" />
+
+            <TextView
+                android:id="@+id/loc_txt"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/type_loc_txt"
+                android:layout_centerVertical="true"
+                android:paddingRight="5dp"
+                android:text="hihi"
+                android:textColor="@color/GRAY_TEXT"
+                tools:text="ser fser es" />
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

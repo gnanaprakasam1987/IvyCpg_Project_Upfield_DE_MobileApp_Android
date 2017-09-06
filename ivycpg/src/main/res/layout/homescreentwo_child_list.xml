@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/sub_activity_list_height"
+    android:clickable="true"
+    style="@style/ActivitySubListClickEffect">
+
+    <RelativeLayout
+        android:id="@+id/activity_icon1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_margin4">
+
+        <ImageView
+            android:id="@+id/circle"
+            android:layout_width="@dimen/sub_activity_list_icon_circle"
+            android:layout_height="@dimen/sub_activity_list_icon_circle"
+            android:layout_centerVertical="true"
+            android:src="@drawable/activity_icon_bg_normal"
+            android:tint="#000000"/>
+
+        <ImageView
+            android:id="@+id/top_line"
+            android:layout_width="@dimen/sub_activity_list_icon_line_width"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/circle"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#000000" />
+
+        <ImageView
+            android:id="@+id/bottom_line"
+            android:layout_width="@dimen/sub_activity_list_icon_line_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/circle"
+            android:layout_centerHorizontal="true"
+            android:background="#000000" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_arrow"
+        android:layout_width="@dimen/activity_list_icon_size"
+        android:layout_height="@dimen/activity_list_icon_size"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/activity_margin3"
+        android:src="@drawable/activity_icon_next"
+        android:tint="#ffffff" />
+
+    <TextView
+        android:id="@+id/activityName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_margin3"
+        android:layout_marginRight="@dimen/activity_margin3"
+        android:layout_toLeftOf="@id/img_arrow"
+        android:layout_toRightOf="@id/activity_icon1"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/sub_activity_name_text_size" />
+
+</RelativeLayout>

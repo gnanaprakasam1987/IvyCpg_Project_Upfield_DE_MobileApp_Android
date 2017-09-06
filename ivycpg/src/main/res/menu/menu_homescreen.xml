@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_notification"
+        android:icon="@drawable/ic_action_action_report_problem"
+        android:orderInCategory="10"
+        android:title="Notification"
+        ivydist:actionLayout="@layout/task_ico_layout"
+        ivydist:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_back"
+        android:icon="@drawable/ic_action_action_lock_open"
+        android:orderInCategory="20"
+        android:title="Log Out"
+        ivydist:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_pswd"
+        android:icon="@drawable/ic_pswd"
+        android:orderInCategory="30"
+        android:title="Change Password"
+        ivydist:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/menu_chat"
+        android:icon="@drawable/ic_action_communication_comment"
+        android:orderInCategory="1"
+        android:title="Chat"
+        ivydist:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_about"
+        android:icon="@drawable/ic_action_ic_action_action_about2"
+        android:orderInCategory="50"
+        android:title="About"
+        ivydist:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/menu_device_status"
+        android:icon="@drawable/ic_action_ic_action_collections_view_as_grid1"
+        android:orderInCategory="60"
+        android:title="Device Status"
+        ivydist:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/menu_setting"
+        android:orderInCategory="70"
+        android:title="Settings"
+        ivydist:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/menu_feedback"
+        android:orderInCategory="80"
+        android:title="Feedback"
+        ivydist:showAsAction="collapseActionView"/>
+
+</menu>

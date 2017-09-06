@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_40dp">
+    <TextView
+        android:id="@+id/tv_product_name"
+        android:layout_width="@dimen/order_stock_list_product_name_width"
+        android:textSize="@dimen/font_small"
+
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:text="@string/product_name" />
+    <TextView
+        android:id="@+id/tv_qty"
+        android:layout_width="@dimen/serial_no_qty_width"
+        android:textSize="@dimen/font_small"
+
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero"/>
+    <TextView
+        android:id="@+id/tv_scanned"
+        android:textSize="@dimen/font_small"
+        android:layout_width="@dimen/serial_no_qty_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero"/>
+
+</LinearLayout>

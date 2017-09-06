@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Normal Colors in general -->
+    <color name="Black">#616161</color>
+    <color name="Orange">#FDB813</color>
+    <color name="Orange100">#FFF3E0</color>
+    <color name="Yellow">#FFFF00</color>
+    <color name="Burgundy">#800000</color>
+    <color name="RED">#FF0000</color>
+    <color name="GREEN">#00bd35</color>
+    <color name="GREEN_LIGHT">#1ff25a</color>
+    <color name="GRAY_TEXT">#89000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_red">#ffcc0000</color>
+
+    <color name="GRAY">#DDDDDD</color>
+    <color name="ink_blue">#053368</color>
+    <color name="light_grey">#F4F2F1</color>
+
+    <!-- login screen line.xml -->
+    <color name="line_start">#f7f7f7</color>
+    <color name="line_center">#23587b</color>
+    <!-- login screen White Transparent -->
+    <color name="white_box_start">#BBFFFFFF</color>
+    <color name="white_box_end">#EEFFFFFF</color>
+    <color name="white_box_border">#f7f7f7</color>
+
+    <!-- home_list_menu_left_bg.xml -->
+    <color name="list_menu_left_start">#DBDDDD</color>
+    <color name="list_menu_left_end">#D3D3D3</color>
+    <color name="list_menu_left_center">#E0E0E0</color>
+
+    <color name="order_split_green_color">#b8c483</color>
+
+    <!-- Shelf Share Dialog -->
+
+    <color name="shelfs_bg_semi_transperant">#40101010</color>
+
+
+    <color name="competitor_brand">#999999</color>
+
+
+    <!--     Button border effects colors -->
+    <!-- BLUE THEME -->
+    <color name="blue_btn_normal_border">#006FA3</color>
+    <color name="blue_btn_normal_start">#009be4</color>
+    <color name="blue_btn_normal_center">#00A5FF</color>
+    <color name="blue_btn_normal_end">#0082C4</color>
+    <color name="highlighter">#08597b</color>
+    <color name="blue_btn_selected_border">#60CFFF</color>
+    <color name="blue_btn_selected_start">#6DD3FF</color>
+    <color name="blue_btn_selected_center">#91DEFF</color>
+    <color name="blue_btn_selected_end">#89DBFF</color>
+    <color name="blue_btn_txt">#004360</color>
+    <color name="BLUE">#0091D8</color>
+    <!-- ORANGE THEME -->
+    <!--<color name="blue_btn_normal_border">#FBCA57</color>
+    <color name="blue_btn_normal_start">#FDB813</color>
+    <color name="blue_btn_normal_center">#FDB813</color>
+    <color name="blue_btn_normal_end">#FDB813</color>
+    <color name="highlighter">#FDB813</color>
+    <color name="blue_btn_selected_border">#F7D076</color>
+
+    <color name="blue_btn_selected_center">#FDB813</color>
+    <color name="blue_btn_selected_end">#FDB813</color>
+    <color name="blue_btn_txt">#FDB813</color>
+    <color name="BLUE">#FDB813</color>-->
+    <!-- <color name="blue_btn_selected_start">#F7D076</color>-->
+    <!-- List effects colors -->
+    <!-- BLUE THEME -->
+
+    <!--ORANGE THEME
+   <color name="blue_list">#FDEFCD</color>
+   <color name="blue_list_alt">#FBE6B5</color>
+   <color name="holo_blue">#FDB813</color>
+   <color name="tab_selected_new">#FBD988</color>
+   <color name="tab_normal_new">#FBD988</color>-->
+
+    <color name="windowBackground">#FAFFFFFF</color>
+
+    <color name="colorPrimaryAlpha">#96175fab</color>
+    <color name="colorPrimary">#175fab</color>
+    <color name="colorPrimaryDark">#039BE5</color>
+    <color name="colorAccent">#83c341</color>
+
+    <color name="textColorPrimary">#004360</color>
+    <color name="WHITE">#F2FFFFFF</color>
+
+    <color name="colorPrimaryGreen">#009688</color>
+    <color name="colorPrimaryDarkGreen">#004D40</color>
+    <color name="textColorPrimaryGreen">#00796B</color>
+
+    <!-- N BLUE THEME -->
+
+    <color name="colorPrimaryNBlue">#283593</color>
+    <color name="colorPrimaryDarkNBlue">#00136f</color>
+    <color name="textColorPrimaryNBlue">#3f51b5</color>
+
+    <!-- RED THEME -->
+
+    <color name="colorPrimaryRed">#F40009</color>
+    <color name="colorPrimaryDarkRed">#e1050d</color>
+    <color name="colorAccentRed">#83c341</color>
+    <color name="textColorPrimaryRed">#fd0a13</color>
+
+    <!-- ORANGE THEME -->
+
+    <color name="colorPrimaryOrange">#FDB813</color>
+    <color name="colorPrimaryDarkOrange">#FDB813</color>
+    <!--<color name="colorAccentOrange">#009B3A</color>-->
+    <color name="colorAccentOrange">#cd202c</color>
+    <color name="textColorSecondaryOrange">#FDB813</color>
+    <color name="textColorPrimaryOrange">#009B3A</color>
+
+    <!--CARLSBERG THEME-->
+    <color name="colorPrimaryCB">#0A4704</color>
+    <color name="colorPrimaryDarkCB">#0A4704</color>
+    <color name="colorAccentCB">#FFA000</color>
+    <color name="textColorSecondaryCB">#296126</color>
+    <color name="textColorPrimaryCB">#297304</color>
+
+    <!--LOeral THEME-->
+    <color name="colorPrimaryPink">#ff0370</color>
+    <color name="colorPrimaryDarkPink">#be065f</color>
+    <color name="colorAccentPink">#ffd900</color>
+    <color name="textColorSecondaryPink">#f451b0</color>
+    <color name="textColorPrimaryPink">#fa1779</color>
+
+
+    <!-- Added for Ripple effect for button -->
+
+    <color name="ColorOrangeripple_default">#FDB813</color>
+    <color name="colorOrangeripple_pressed">#fee09a</color>
+    <color name="colorOrangeripple_selected">#fed881</color>
+    <color name="colorOrangeripple_focused">#fee8b3</color>
+
+    <color name="colorBlueripple_pressed">#b4e5fe</color>
+    <color name="colorBlueripple_selected">#81d4fd</color>
+    <color name="colorBlueripple_focused">#4fc3fc</color>
+    <color name="colorControlNormal">#80010101</color>
+
+
+    <color name="colorGreenripple_pressed">#015416</color>
+    <color name="colorGreenripple_selected">#267037</color>
+    <color name="colorGreenripple_focused">#016924</color>
+
+    <color name="colorPinkripple_pressed">#f42578</color>
+    <color name="colorPinkripple_selected">#fa0c6c</color>
+    <color name="colorPinkripple_focused">#e65891</color>
+
+
+    <color name="colorRedripple_pressed">#f13239</color>
+    <color name="colorRedripple_selected">#ef454b</color>
+    <color name="colorRedripple_focused">#f13239</color>
+
+
+    <color name="screen_bg_color">#f8f8f8</color>
+
+    <!--Leave Approval-->
+    <color name="collection_tab_indicateColor">#87a5f9</color>
+
+    <!--For Retailer Selection-->
+    <color name="floating_bg">#175fab</color>
+    <color name="black_bg1">#121212</color>
+    <color name="black_bg2">#1f1f1f</color>
+    <color name="black_bg3">#2e2e2e</color>
+    <color name="font_green">#83c341</color>
+    <color name="font_inactive">#ffffff</color>
+    <color name="new_grey">#c6c6c6</color>
+    <color name="new_orange">#ed7c0d</color>
+    <color name="dead_store_name">#b3080808</color>
+    <color name="dead_store_score">#803f3f3f</color>
+    <color name="store_title">#212121</color>
+    <color name="store_label">#000000</color>
+    <color name="toolbar_title">#fffefe</color>
+    <color name="retailer_map_bottom">#104174</color>
+    <color name="map_car_color">#134c88</color>
+    <color name="from_to_color">#66ffffff</color>
+    <color name="my_location_color">#33000000</color>
+    <!--End Retailer Selection-->
+
+    <!-- New Design - Button Color -->
+    <color name="btn_round_green">#83c341</color>
+    <color name="btn_round_grey">#f2f2f2</color>
+    <color name="btn_round_text_color">#ffffff</color>
+
+
+    <!-- Burger Menu -->
+    <color name="user_name">#ffffff</color>
+    <color name="burgermenu_line_color">#0A3225</color>
+    <color name="FullBlack">#000000</color>
+    <color name="DependentBlack">#cc010101</color>
+    <color name="row_alternate_grey">#ebebeb</color>
+    <color name="edit_text_grey">#b6b6b6</color>
+
+    <!--Dashboard-->
+    <color name="drop_down_black">#ec252323</color>
+
+    <!-- Task Execution -->
+    <color name="white_smoke_color">#f5f5f5</color>
+    <color name="task_description_color">#b3262626</color>
+    <color name="task_title">#262626</color>
+
+    <!--Login screen-->
+    <color name="forgot_pswd_text_color">#6ea238</color>
+    <color name="version_name_text_color">#99010101</color>
+
+    <color name="resetbox_header_text_color">#00459F</color>
+    <!--Login screen-->
+
+    <!--For Planogram-->
+    <color name="plano_list_header">#787878</color>
+    <color name="plano_adherence">#f2010101</color>
+    <color name="plano_click_picture">#66000000</color>
+    <color name="plano_yes_green">#f283c341</color>
+    <color name="plano_yes_grey">#80575757</color>
+    <color name="plano_no_red">#ff4e00</color>
+    <color name="plano_footer_line">#e6e6e6</color>
+    <!--End Planogram-->
+
+    <color name="divider_view_color">#f1f1f1</color>
+    <color name="activty_sub_list_bg_color">#3a3a3a</color>
+
+
+    <!--common-->
+    <color name="list_header_text_color">#ffffff</color>
+    <color name="list_item_text_primary_color">#DE262626</color>
+    <color name="list_title_bg_color">#212121</color>
+    <color name="list_item_secondary_text_color">#ae000000</color>
+    <color name="list_item_values_text_color">#262626</color>
+    <color name="footer_bg">#212121</color>
+    <color name="keypad_bg_color">#606060</color>
+    <color name="keypad_betwn_color">#444444</color>
+    <color name="footer_lbl_text_color">#a1a1a1</color>
+    <color name="footer_value_text_color">#ffffff</color>
+    <color name="list_header_secendory_text_color">#80ffffff</color>
+    <color name="list_odd_item_bg">#26f3f3f3</color>
+    <color name="list_even_item_bg">#ffffff</color>
+
+    <color name="filer_level_text_color">#040404</color>
+    <color name="date_picker_text_color">#cc262626</color>
+
+    <!--common-->
+
+    <!--Asset screen-->
+    <color name="add_asset_dialog_label_text_color">#89000000</color>
+    <!--Asset screen-->
+
+
+    <!-- non visit spinner color-->
+
+    <!-- history carview bg color-->
+    <color name="history_card_bg">#2a2a2a</color>
+    <color name="history_invbtn_color">#737373</color>
+    <color name="history_list_bg">#F9F9F9</color>
+    <color name="history_label_color">#818181</color>
+    <color name="history_date_color">#060606</color>
+    <color name="profile_edit_spinner_color">#66040404</color>
+    <color name="profile_devider_color">#EEEEEE</color>
+    <color name="tab_unselcted_text_color">#80000000</color>
+
+    <!--Deviate Retailer -->
+    <color name="blue_week_background">#103e6f</color>
+    <color name="green_week_background">#1a330d</color>
+    <color name="pink_week_background">#fa1779</color>
+    <color name="select_week_color">#93c1f2</color>
+    <color name="red_week_background">#844D50</color>
+    <color name="select_week_color_red">#FFCCCD</color>
+    <color name="select_week_color_green">#c5f9ac</color>
+
+    <!-- Deviate Reason Dialog -->
+    <color name="dialog_title">#1664c4</color>
+
+
+    <!-- Call analysis screen-->
+    <color name="call_duration_value_text_color">#ffffff</color>
+    <color name="store_status_text_color">#000000</color>
+    <color name="kpi_value_text_color">#cc000000</color>
+
+    <!--Collection Screen-->
+    <color name="collection_toptitle_color">#949494</color>
+    <color name="collection_textlight_color">#fffffe</color>
+
+    <!-- Call analysis screen-->
+
+    <!--photo capture-->
+    <color name="photocapture_toolbar_bg">#1A000000</color>
+
+    <!-- New Outlet scree-->
+    <color name="bottom_bg">#f5f4f4</color>
+
+    <!-- Load Managment Screen-->
+
+    <!--Scheme view -->
+    <!--<color name="scheme_title_grey">#acacac</color>-->
+    <!--<color name="scheme_title_grey">#cccccc</color>-->
+    <color name="scheme_title_grey">#E9E7E7</color>
+
+</resources>

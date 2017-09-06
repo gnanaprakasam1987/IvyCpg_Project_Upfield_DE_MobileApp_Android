@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height_reports"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal">
+
+
+    <TextView
+        android:id="@+id/tv_outlet_class"
+        style="@style/TextViewListItem"
+        android:layout_width="@dimen/list_product_name_width_tiny"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_total_call"
+        style="@style/TextViewListItem"
+        android:layout_width="@dimen/list_item_width"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_productive_call"
+        style="@style/TextViewListItem"
+        android:layout_width="@dimen/list_item_width"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_value_per_day"
+        style="@style/TextViewListItem"
+        android:layout_width="@dimen/list_item_width_double"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_non_productive_call"
+        style="@style/TextViewListItem"
+        android:layout_width="@dimen/list_product_name_width_tiny"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+
+
+</LinearLayout>

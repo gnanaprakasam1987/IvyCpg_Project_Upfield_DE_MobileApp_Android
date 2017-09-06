@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/target_top_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/factorName_dashboard_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingLeft="@dimen/whats_on_item_padding"
+                android:text="Value"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/factor_title_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/incentive_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center|right"
+                android:paddingRight="@dimen/recycler_margin"
+                android:tag="incentive_day"
+                android:text="Incentives"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/greyed_text_size"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/initiative_dashboard_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center|left"
+                android:paddingLeft="@dimen/recycler_margin"
+                android:text="50"
+                android:textColor="@color/RED"
+                android:textSize="@dimen/incentive_value_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/score_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center|right"
+                android:paddingRight="@dimen/recycler_margin"
+                android:tag="score"
+                android:text="Score"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/greyed_text_size"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/score_dashboard_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center|left"
+                android:paddingLeft="@dimen/recycler_margin"
+                android:text="50"
+                android:textColor="@color/RED"
+                android:textSize="@dimen/incentive_value_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="@dimen/margin_10px"
+            android:layout_marginRight="@dimen/margin_10px"
+            android:background="@color/GRAY"></View>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/dimen_40dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/row_dot_blue"
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/dot_circle_blue"></View>
+
+                        <TextView
+                            android:id="@+id/achived_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:tag="achieved_day"
+                            android:text="Achieved"
+                            android:textColor="?primarycolor"
+                            android:textSize="@dimen/greyed_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"></View>
+
+                        <TextView
+                            android:id="@+id/acheived_dashboard_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="0"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/value_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/verticalSeparatorBalance"
+                    android:layout_width="0.3dp"
+                    android:layout_height="@dimen/divder_margin"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginRight="@dimen/target_top_margin"
+                    android:background="@color/GRAY" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/dimen_40dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/row_dot_orange"
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/dot_circle_orange"></View>
+
+                        <TextView
+                            android:id="@+id/balance_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:tag="balance_day"
+                            android:text="@string/balance"
+                            android:textColor="@color/Orange"
+                            android:textSize="@dimen/greyed_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="5dp" />
+
+                        <TextView
+                            android:id="@+id/balance_dashboard_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="0"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/value_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/verticalSeparatorTarget"
+                    android:layout_width="0.3dp"
+                    android:layout_height="@dimen/divder_margin"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginRight="@dimen/target_top_margin"
+                    android:background="@color/GRAY" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/dimen_40dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/row_dot_orange1"
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/dot_circle_orange"></View>
+
+                        <TextView
+                            android:id="@+id/flex_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:tag="flex_day"
+                            android:text="Flex"
+                            android:textColor="@color/Orange"
+                            android:textSize="@dimen/greyed_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="5dp" />
+
+                        <TextView
+                            android:id="@+id/flex_dashboard_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="0"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/value_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/verticalSeparatorFlex"
+                    android:layout_width="0.3dp"
+                    android:layout_height="@dimen/divder_margin"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginRight="@dimen/target_top_margin"
+                    android:background="@color/GRAY" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/dimen_40dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/row_dot_green"
+                            android:layout_width="5dp"
+                            android:layout_height="5dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/dot_circle_green"></View>
+
+                        <TextView
+                            android:id="@+id/target_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:tag="target_day"
+                            android:text="Target"
+                            android:textColor="?accentcolor"
+                            android:textSize="@dimen/greyed_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="5dp" />
+
+                        <TextView
+                            android:id="@+id/target_dashboard_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="0"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/value_text_size"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/dimen_40dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_skuwise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/skuwise_right_margin"
+                    android:gravity="center"
+                    android:tag="details"
+                    android:text="Details"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/greyed_text_size"
+                    android:textStyle="normal" />
+
+                <View
+                    android:id="@+id/verticalSeparatorSkuWise"
+                    android:layout_width="0.3dp"
+                    android:layout_height="@dimen/divder_margin"
+                    android:background="@color/competitor_brand"></View>
+
+                <TextView
+                    android:id="@+id/index_dashboard_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:text="0%"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/percent_value_size"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="@dimen/piechart_radius"
+                        android:layout_height="@dimen/piechart_radius"
+                        android:layout_marginRight="@dimen/pie_chart_margin_right" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

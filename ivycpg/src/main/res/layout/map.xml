@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.ivy.sd.png.commons.CustomMapFragment"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/marker_view_incl"
+        android:gravity="top"
+        android:visibility="visible"
+        android:orientation="vertical"
+        >
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/search_view_lty"
+        android:layout_margin="@dimen/dimen_14dp"
+        android:background="@color/WHITE"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/dimen_10dp"
+            android:id="@+id/search_img_view"
+            android:background="@android:drawable/ic_menu_search"
+            />
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:id="@+id/txt_layout"
+           android:padding="@dimen/dimen_10dp"
+           >
+
+
+        <TextView
+            android:id="@+id/locTxtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_2dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="12sp" />
+       </LinearLayout>
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_txt_view"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:hint="Search Location"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:padding="@dimen/dimen_10dp"
+            android:singleLine="true"
+            />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/marker_icon_view"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:layout_centerInParent="true"
+        android:tint="@color/colorPrimaryNBlue"
+        android:layout_gravity="center"
+        android:src="@drawable/redmarker"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="visible"
+        android:orientation="vertical"
+        >
+        <android.support.v7.widget.CardView
+            android:layout_width="180dp"
+            android:layout_height="20dp"
+            android:id="@+id/set_loc_cardview"
+            android:layout_marginBottom="50dp"
+            card_view:cardCornerRadius="@dimen/dimen_14dp"
+            android:clickable="true"
+            card_view:cardBackgroundColor="@color/colorPrimaryNBlue"
+            android:visibility="visible"
+            >
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:id="@+id/locationTxt"
+               android:layout_marginLeft="@dimen/dimen_8dp"
+                android:text="Set Selected Location"
+                android:textColor="@color/WHITE"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:id="@+id/location_img"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@drawable/circlefarrow"
+                android:scaleType="fitXY"
+                />
+        </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</FrameLayout>

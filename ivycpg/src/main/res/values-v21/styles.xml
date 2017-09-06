@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Blue Theme Start-->
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleBlue" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/MyButtonBlue</item>
+    </style>
+
+
+    <!-- Blue Theme End-->
+
+
+    <!-- Red Theme Start-->
+
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleRed" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentRed</item>
+        <item name="android:buttonStyle">@style/MyButtonRed</item>
+    </style>
+
+    <!-- Red Theme End-->
+
+
+    <!-- Orange Theme Start-->
+
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleOrange" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentOrange</item>
+        <item name="android:buttonStyle">@style/MyButtonOrange</item>
+    </style>
+
+    <!-- Orange Theme End-->
+
+    <!-- Green Theme Start-->
+
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleCarlsberg" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentCB</item>
+        <item name="android:buttonStyle">@style/MyButtonCarlsberg</item>
+    </style>
+
+    <!-- Green Theme End-->
+
+    <!-- Pink Theme Start-->
+
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStylePink" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentPink</item>
+        <item name="android:buttonStyle">@style/MyButtonPink</item>
+    </style>
+
+    <!-- Pink Theme End-->
+
+
+    <style name="ActivitySubListClickEffect" parent="@android:style/Widget">
+        <item name="android:background">@drawable/activity_sub_list_click_ripple_effect</item>
+    </style>
+
+
+    <!-- New Design - Common Themes  -->
+    <style name="EditText_ListItem" parent="@android:style/Widget.EditText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:keepScreenOn">true</item>
+        <item name="android:layout_marginRight">@dimen/list_margin</item>
+        <item name="android:maxLength">4</item>
+        <item name="android:selectAllOnFocus">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/list_item_values_text_color</item>
+        <item name="android:textSize">@dimen/list_item_primary_text_size</item>
+        <item name="android:cursorVisible">false</item>
+    </style>
+    <!-- New Design - Common Themes  -->
+
+
+    <style name="ActivityListClickEffect" parent="@android:style/Widget">
+        <item name="android:background">@drawable/activity_list_click_ripple_effect</item>
+    </style>
+
+
+    <!--Button Rounded styles-->
+    <style name="ButtonSmallRoundCornerBlue" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_blue</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerBlue" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_blue</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerRed" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_red</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerRed" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_red</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerOrange" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_orange</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerOrange" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_orange</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerGreen" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_green</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerGreen" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_green</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerPink" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_pink</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerPink" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_pink</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerGrey" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_round_corner_grey</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerGrey" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/button_round_corner_grey</item>
+    </style>
+
+    <!--Button Rounded styles-->
+</resources>

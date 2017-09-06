@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dimens_2dp"
+    android:paddingBottom="@dimen/dimens_2dp"
+    android:paddingLeft="@dimen/dimens_4dp"
+    android:paddingRight="@dimen/dimens_4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/modeTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingLeft="3dp"
+            android:text="mode"
+            android:textColor="?attr/colorAccent"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/paymentOrChqDateTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="3dp"
+            android:text="03-05-2017"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/chqRefTitleTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text="Ref No"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/chqRefTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text="12345"
+                android:textColor="?attr/primarycolor"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/line1"
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimens_10dp"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/amountPaidTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/amount_paid"
+                android:textColor="@color/Black"
+                android:paddingLeft="3dp"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/paidAmtTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="0000.00"
+                android:textStyle="bold"
+                android:paddingLeft="3dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/line2"
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/ll_collection_disc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/dimens_10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/discAmtTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/discounted_amt"
+                android:gravity="center_vertical"
+                android:textColor="@color/Black"
+                android:paddingLeft="3dp"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/disAmtTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="0000.00"
+                android:paddingLeft="3dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small" />
+            </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/top_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layerType="software"
+        android:src="@drawable/dotted_line"
+        android:layout_marginTop="@dimen/dimen_4dp"/>
+
+</LinearLayout>

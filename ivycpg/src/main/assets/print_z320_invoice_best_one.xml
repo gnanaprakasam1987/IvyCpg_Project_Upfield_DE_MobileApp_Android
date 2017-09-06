@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sanmpleprint>
+    <property total_length="48" special=".,"/>
+
+    <newline count="2"/>
+
+    <line> <view name="print_type" length="10" align="right"/> </line>
+
+
+    <line> <view name="dist_name" length="40" align="center" padding="left" bold="yes" /> </line>
+    <line> <view name="dist_address1" length="40" align="center" padding="left" /></line>
+    <line> <view name="dist_address2" length="40" align="center" padding="left" /></line>
+    <line>
+        <view name="dist_number" length="24" align="left" padding="right" text="Tel:" space="1"/>
+        <view name="dist_fax_no" length="24" align="right" padding="left" text="Fax:"/>
+    </line>
+    <line> <view name="dist_tin" length="40" align="center" padding="left" text="Co./GST Reg No:" /> </line>
+
+    <line> <view name="invoice_number" length="40" align="center" bold="yes" text="Tax Invoice No: "/> </line>
+
+    <newline count="1"/>
+
+
+    <line> <view name="ret_name"      length="45" align="left" padding="left" bold="yes" /> </line>
+    <line> <view name="ret_address1"  length="45" align="left" padding="left" /> </line>
+    <line> <view name="ret_address2"  length="45" align="left" padding="left" /> </line>
+    <line> <view name="ret_address3"  length="45" align="left" padding="left" /> </line>
+
+
+    <line> <view name="seller_name" length="45" align="right" padding="right" text="UserID: "/> </line>
+    <line> <view name="date" length="45" align="right" padding="right" text="Date:"/> </line>
+    <line> <view name="time" length="45" align="right" padding="right" text="Time:"/> </line>
+
+
+    <line>
+        <view name="label" length="9" text="Copy No:"  space="28"/>
+        <view name="print_no" length="8" padding="left"/>
+    </line>
+
+    <line group ="product_details" batch="no" scheme_free_product="no" prod_name_single_line ="yes" >
+        <view name="prod_code" length="6" text="P.Code"  />
+        <view name="prod_name" length="10" text="P Name" space="1"/>
+        <view name="prod_qty_total_piece_with_rep" length="4" text="Iss" space="1" padding="right"/>
+        <view name="prod_qty_replace_piece" length="4" text="Exc" space="1" padding="right"/>
+        <view name="prod_qty_total_piece" length="4" text="Net" space="1" padding="right"/>
+        <view name="prod_price_piece" length="5" text="Price" space="1" padding="right"/>
+        <view name="prod_line_value" length="7" text="Amt" space="1" padding="right"/>
+    </line>
+
+    <newline count="1"/>
+    <line> <view name="label" length="48" text="-" align="left" padding="left" repeat = "yes" /> </line>
+    <line> <view name="line_total" length="45" align="right" padding="right" text="Sub Total : "/> </line>
+    <line> <view name="tax_bill" length="45" align="left" padding="left"/> </line>
+    <line> <view name="net_amount" length="45" align="left" padding="left" text="Grand Total : "/> </line>
+
+    <line> <view name="label" length="48" text="-" align="left" padding="left" repeat = "yes" /> </line>
+    <line><view name="label" length="45" text="Customer Signature and Company Stamp" align="left" padding="left"/></line>
+
+    <newline count="4"/>
+
+    <line><view name="label" length="48" text="-" align="left" padding="left" repeat = "yes" /></line>
+    <line><view name="label" length="48" text="THIS IS A COMPUTER GENERATED INVOICE." align="left" padding="left"/></line>
+    <line><view name="label" length="48" text="NO SIGNATURE REQUIRED" align="left" padding="left"/></line>
+    <line><view name="label" length="48" text="RECEIVED ABOVE GOODS IN GOOD ORDER AND CONDITION" /></line>
+
+    <newline count="3"/>
+    <line><view name="label" length="9" text=""  space="2"/></line>
+
+
+
+</sanmpleprint>

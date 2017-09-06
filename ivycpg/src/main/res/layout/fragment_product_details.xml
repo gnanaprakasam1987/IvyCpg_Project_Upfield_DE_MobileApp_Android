@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TabHost01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="0dp">
+
+        <LinearLayout
+            android:id="@+id/product_tab_widget"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/dimens_4dp"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/product_info_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_60dp"
+                android:layout_gravity="center"
+                android:background="@android:color/white"
+                android:gravity="center|left"
+                android:paddingLeft="@dimen/dimens_4dp"
+                android:text="productname"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/product_details_recycview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dimens_2dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

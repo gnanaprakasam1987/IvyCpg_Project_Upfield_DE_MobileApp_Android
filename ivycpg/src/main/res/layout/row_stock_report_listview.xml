@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/header_listlty"
+    android:layout_height="@dimen/retake_img_wd_ht"
+    android:layout_margin="@dimen/profile_history_10dp" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/skuwise_right_margin" >
+
+        <TextView
+            android:id="@+id/productname"
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            style="?attr/customListItemPrimary"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/profile_history_25dp"
+            android:gravity="left|center"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/batchid"
+            style="?attr/customListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/productname"
+            android:gravity="left|center"
+            android:textStyle="bold"
+            android:text="@string/zero" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/caseqty"
+        style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/outerqty"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        style="?attr/customListItemPrimary"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/pieceqty"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        style="?attr/customListItemPrimary"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/unitprice"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        style="?attr/customListItemPrimary"
+         android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+</LinearLayout>

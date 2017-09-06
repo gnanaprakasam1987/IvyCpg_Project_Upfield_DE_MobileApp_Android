@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/search"
+        ivydist:actionViewClass="android.support.v7.widget.SearchView"
+        ivydist:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/menu_deviate_retailers"
+        android:icon="@drawable/ic_menu_order"
+        ivydist:showAsAction="always"
+        android:title="@string/deviate_retailers"
+        android:visible="true">
+    </item>
+  <item
+        android:id="@+id/menu_joincall"
+        android:icon="@drawable/icon_call"
+        android:orderInCategory="101"
+        android:title="Join call"
+         android:visible="false"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_selection_filter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="102"
+        android:title="Selection filter"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+</menu>

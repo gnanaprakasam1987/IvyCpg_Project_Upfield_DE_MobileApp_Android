@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_card_height"
+    android:foreground="?attr/selectableItemBackground"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="@dimen/ret_card_elevation"
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPaddingLeft="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/line_order_without_invoice"
+            android:layout_width="@dimen/date_picker_drawable_padding"
+            android:layout_height="match_parent"
+            android:background="?attr/colorAccent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/retailer_margin_right"
+            android:layout_weight="54.9"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/icons_left_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/outletName_tv"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
+                    android:text="Outlet name" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/icons_left_margin"
+                android:layout_marginTop="@dimen/icons_top_margin"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/iv_outlet_color"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_dashboard_golden_store"
+                    android:visibility="visible" />
+                <ImageView
+                    android:id="@+id/iv_gold_dead"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_dashboard_golden_store"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_invoice"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_dashboard_invoice"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_indicative"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_dashboard_indicative"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_deviate"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:src="@drawable/ic_dashboard_deviated"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_freq"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/black_bg3"
+                    android:textSize="@dimen/text_sz_extra_small"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_scoreParent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="44.6"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img_line1"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/list_vertical_seperator"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/margin_20px"
+                android:background="@color/list_menu_left_center"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/ll_score1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/margin_20px"
+                android:layout_weight="4.9"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/labelTgt1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/achv_tgt"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_extra_small" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_achvTgt1"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="@dimen/list_primary" />
+
+                    <TextView
+                        android:id="@+id/tv_actualTgt1"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5px"
+                        android:text=""
+                        android:textSize="@dimen/text_sz_small" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_line2"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/list_vertical_seperator"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/margin_20px"
+                android:background="@color/list_menu_left_center"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/ll_score2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/margin_5px"
+                android:layout_weight="4.9"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+
+                <TextView
+                    android:id="@+id/labelTgt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/achv_tgt"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_sz_extra_small" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_achvTgt2"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="@dimen/list_primary" />
+
+                    <TextView
+                        android:id="@+id/tv_actualTgt2"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5px"
+                        android:text=""
+                        android:textSize="@dimen/text_sz_small" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/outlet_new"
+        android:layout_width="@dimen/new_ret_width"
+        android:layout_height="@dimen/new_ret_height"
+        android:layout_gravity="right|bottom"
+        android:background="@drawable/new_ret_tag"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_10px"
+        android:text="@string/new1"
+        android:textColor="?attr/textColor"
+        android:textSize="8sp"
+        android:visibility="visible" />
+</android.support.v7.widget.CardView>

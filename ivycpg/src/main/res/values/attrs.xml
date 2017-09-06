@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FontStyle">
+        <attr name="font_small" format="dimension" />
+        <attr name="font_medium" format="dimension" />
+        <attr name="font_large" format="dimension" />
+        <attr name="font_xlarge" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="MyTextView">
+        <attr name="textFieldStyle" format="reference" />
+        <attr name="textTitleStyle" format="reference" />
+        <attr name="filterStyle" format="reference" />
+        <attr name="listcolor" format="color|reference" />
+        <attr name="listcolor_alt" format="color|reference" />
+        <attr name="primarycolor" format="color|reference" />
+        <attr name="accentcolor" format="color|reference" />
+        <attr name="textColorPrimary" format="color|reference" />
+        <attr name="tablayout" format="color|reference" />
+        <attr name="textColorSecondary" format="color|reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="weekBackground" format="color|reference" />
+        <attr name="selectWeekBackground" format="color|reference" />
+        <attr name="buttonBackground" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MaterialSpinner">
+        <attr name="ms_baseColor" format="integer" />
+        <attr name="ms_highlightColor" format="integer" />
+        <attr name="ms_errorColor" format="integer" />
+        <attr name="ms_floatingLabelText" format="string" />
+        <attr name="ms_floatingLabelColor" format="color" />
+        <attr name="ms_typeface" format="string" />
+        <attr name="ms_arrowSize" format="dimension" />
+        <attr name="ms_arrowColor" format="color" />
+        <attr name="ms_enableFloatingLabel" format="boolean" />
+        <attr name="ms_enableErrorLabel" format="boolean" />
+        <attr name="ms_textcolor" format="color" />
+        <attr name="ms_textSize" format="float" />
+        <attr name="ms_firstPostextcolor" format="color" />
+
+    </declare-styleable>
+
+    <declare-styleable name="MyCustomButton">
+        <attr name="roundedCustomButtonSmallGrey" format="reference" />
+        <attr name="roundedCustomButtonSmall" format="reference" />
+        <attr name="roundedCustomButtonSmallTransparent" format="reference" />
+        <attr name="roundedCustomButtonNormalGrey" format="reference" />
+        <attr name="roundedCustomButtonNormal" format="reference" />
+        <attr name="roundedCustomButtonNormalTransparent" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MyCustomSpinner">
+        <attr name="cs_baseColor" format="color" />
+        <attr name="cs_highlightColor" format="integer" />
+        <attr name="cs_errorColor" format="integer" />
+        <attr name="cs_floatingLabelText" format="string" />
+        <attr name="cs_floatingLabelColor" format="color" />
+        <attr name="cs_typeface" format="string" />
+        <attr name="cs_arrowSize" format="dimension" />
+        <attr name="cs_arrowColor" format="color" />
+        <attr name="cs_enableFloatingLabel" format="boolean" />
+        <attr name="cs_enableErrorLabel" format="boolean" />
+        <attr name="cs_textcolor" format="color" />
+        <attr name="cs_disableText" format="color" />
+        <attr name="cs_textSize" format="float" />
+        <attr name="cs_verticalOffset" format="dimension" />
+        <attr name="customSpinner" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="customTextView">
+        <attr name="customListTitle" format="reference" />
+        <attr name="customListTitleSecondary" format="reference" />
+        <attr name="customListItemPrimary" format="reference" />
+        <attr name="customListItemSecondary" format="reference" />
+        <attr name="customListItemValue" format="reference" />
+        <attr name="customListTitleBlack" format="reference" />
+        <attr name="customdialogLabel" format="reference" />
+    </declare-styleable>
+</resources>

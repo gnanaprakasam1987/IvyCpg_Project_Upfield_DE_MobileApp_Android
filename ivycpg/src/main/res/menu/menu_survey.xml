@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="95"
+        android:title="@string/fivefilter"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="101"
+        android:title="Next"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_product_filter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="99"
+        android:title="P.F"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_joint_call_survey"
+        android:icon="@drawable/ic_action_circle_close"
+        android:orderInCategory="99"
+        android:title="Supervisior"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_photo_capture"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="96"
+        android:title="Message"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_msg"
+        android:icon="@drawable/ic_email"
+        android:orderInCategory="97"
+        android:title="Photo Capture"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_reason"
+        android:icon="@drawable/icon_review_plan"
+        android:orderInCategory="103"
+        android:title="@string/Noorderreason"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_select"
+        android:icon="@drawable/ic_people_white_36px"
+        android:orderInCategory="98"
+        android:title="Select"
+        ivydist:showAsAction="always" />
+
+
+</menu>

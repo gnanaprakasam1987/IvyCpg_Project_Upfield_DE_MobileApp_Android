@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_list_row"
+        android:background="?attr/primarycolor"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?attr/customListTitle"
+            android:text="@string/product_name"
+            android:textSize="@dimen/font_medium"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen_6dp"
+            android:textColor="@color/Black"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_msl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@null"
+        android:divider="@color/GRAY"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="none" />
+</LinearLayout>

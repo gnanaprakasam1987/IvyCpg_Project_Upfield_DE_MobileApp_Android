@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Frame Layout to display menus in Listview -->
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+
+        <TextView
+            android:id="@+id/tv_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/toolbar"
+            android:gravity="center"
+            android:textColor="@color/highlighter"
+            android:textSize="@dimen/font_small" />
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_product_name"
+            android:orientation="horizontal">
+
+            <TextView
+
+                style="?attr/customListTitle"
+                android:layout_width="225dp"
+                android:layout_height="wrap_content"
+                android:text="FromNo" />
+
+            <TextView
+
+                style="?attr/customListTitle"
+                android:layout_width="225dp"
+                android:layout_height="wrap_content"
+
+                android:text="ToNo" />
+
+            <TextView
+
+                style="?attr/customListTitle"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="ScannedQty" />
+
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_serialno_enty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_add"
+            android:layout_below="@+id/ll1"
+            android:layout_marginBottom="@dimen/dimen_10dp" />
+
+
+        <LinearLayout
+            android:id="@+id/ll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/keypad"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/total" />
+
+            <TextView
+                android:id="@+id/tv_total_qty"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/scanned" />
+
+            <TextView
+                android:id="@+id/tv_total_scanned"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/total" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+    <!-- Fragment to display Content -->
+    <FrameLayout
+        android:id="@+id/left_drawer"
+        android:layout_width="@dimen/homethreelist_view_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/background_noise">
+
+        <fragment
+            android:id="@+id/serialno_fragment"
+            android:name="com.ivy.sd.png.view.SerialNoFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+</android.support.v4.widget.DrawerLayout>

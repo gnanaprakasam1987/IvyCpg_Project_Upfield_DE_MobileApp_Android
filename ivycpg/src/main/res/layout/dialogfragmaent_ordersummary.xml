@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/windowBackground">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Order Summary Dialog"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        style="?attr/customListTitle"
+        android:textStyle="normal"
+       />
+    <HorizontalScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/order_summary_dialog_height"
+        android:layout_below="@+id/title"
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/order_stock_list_product_name_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/product_name"
+            android:textStyle="normal"/>
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/qty"
+            android:textStyle="normal"
+            />
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/mrp"
+            android:textStyle="normal"
+            />
+        <TextView
+            android:id="@+id/tv_title_price_off"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/priceoff"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/tv_title_disc1"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Disc1"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_title_disc2"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Disc2"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_title_disc3"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Disc3"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_title_disc4"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Disc4"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_title_disc5"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Disc5"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_title_cash_discount"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Cash Disc"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_title_tax"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Tax Value"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="Line Value"
+            android:textStyle="normal"/>
+
+
+    </LinearLayout>
+        <ListView
+            android:id="@+id/lv_ordersummary_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+        </LinearLayout>
+    </HorizontalScrollView>
+    <LinearLayout
+        android:id="@+id/ll_footer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:weightSum="9"
+        android:layout_below="@+id/scrollview">
+        <TextView
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="TotalQty "/>
+        <TextView
+            android:id="@+id/tv_total_qty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <TextView
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Total MRP "
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/tv_totalmrp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+        <TextView
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Scheme UCP"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/tv_totalschemeucp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_close"
+
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"
+        android:layout_gravity="center"
+
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:text="@string/close"
+        android:textStyle="normal"
+
+        android:layout_below="@+id/ll_footer"
+      />
+
+
+</RelativeLayout>

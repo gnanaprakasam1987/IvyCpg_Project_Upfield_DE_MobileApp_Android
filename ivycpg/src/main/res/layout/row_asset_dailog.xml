@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/asset_dailog_ListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:gravity="center_vertical"
+    android:weightSum="10"
+    android:paddingLeft="@dimen/list_padding_left_n_right"
+    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    >
+
+    <LinearLayout
+        android:layout_width="@dimen/dimen_40dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <CheckBox
+            android:id="@+id/chk"
+            android:theme="@style/checkBox_for_remove_asset_Style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="7">
+
+        <TextView
+            android:id="@+id/tv_lt_assetname"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/tv_lt_sno"
+            style="?attr/customListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_lt_install"
+        style="?attr/customListItemValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=""
+        android:visibility="gone"
+        android:layout_weight="3"
+        />
+
+
+</LinearLayout>

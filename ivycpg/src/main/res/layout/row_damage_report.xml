@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/retake_img_wd_ht"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+     >
+
+
+
+    <RelativeLayout
+        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/skuwise_right_margin">
+
+        <TextView
+            android:id="@+id/productname"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:gravity="left|center"
+            android:textStyle="bold"
+            ></TextView>
+
+        <TextView
+            android:id="@+id/batchnum"
+            style="?attr/customListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/productname"
+            android:layout_marginTop="@dimen/profile_margin_top_minus2"
+            android:layout_gravity="left|center"
+            android:gravity="left|center"
+            android:text="@string/zero"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/caseqty"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        style="?attr/customListItemPrimary"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/outerqty"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        style="?attr/customListItemPrimary"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/pieceqty"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        style="?attr/customListItemPrimary"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/reason"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        style="?attr/customListItemPrimary"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="" />
+
+</LinearLayout>

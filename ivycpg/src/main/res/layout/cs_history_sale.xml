@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_5dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/ll_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/tv_date_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/date_label"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_outlet_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/retailer"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_counter_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/counter"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_location_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/location"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small"
+
+                    />
+
+                <TextView
+                    android:id="@+id/tv_retailer"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small" />
+                <TextView
+                    android:id="@+id/tv_counter"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small" />
+            </LinearLayout>
+            <View
+                android:id="@+id/view_dotted_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:background="@drawable/line_dotted"
+                android:layout_margin="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/tv_pname_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="@string/product_name"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_pc_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/item_piece"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_value_header"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/value"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_prod_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="10">
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

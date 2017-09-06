@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_60dp"
+    android:background="@drawable/round_dialog_bg">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:src="@drawable/no_image_available"
+                android:id="@+id/dialog_img"
+                android:scaleType="fitXY"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/title"
+                    android:text="@string/about_ivy"
+                    android:textSize="16sp"
+                    android:padding="4dp"
+                    android:textColor="@color/FullBlack"
+                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/msg_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_ivy"
+                    android:textSize="15sp"
+                    android:paddingLeft="4dp"
+                    android:paddingStart="4dp"
+                    android:paddingTop="2dp"
+
+                    android:textColor="@color/Black"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:padding="4dp">
+                <Button
+                    android:id="@+id/btn_cancel"
+                    style="?attr/roundedCustomButtonSmallTransparent"
+                    android:layout_gravity="center"
+                   android:layout_margin="@dimen/profile_history_10dp"
+                    android:text="@string/cancel"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_micro_small"
+                    android:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btn_done"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:text="@string/ok"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/text_move_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:gravity="center"
+                android:textSize="@dimen/forgot_text_size"
+                android:text="Next Activity"
+                android:layout_marginBottom="@dimen/profile_history_10dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

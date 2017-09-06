@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ProdName"
+        style="?attr/customListItemPrimary"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:padding="@dimen/gall_rec_item_padding"
+        android:text="@string/gallery"
+        android:textColor="@color/DependentBlack"/>
+
+    <com.ivy.sd.png.commons.MyGridView
+        android:id="@+id/PhoneCaptureGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:numColumns="3"
+        android:columnWidth="320dp"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="-15dp"
+        android:stretchMode="columnWidth"/>
+
+</LinearLayout>

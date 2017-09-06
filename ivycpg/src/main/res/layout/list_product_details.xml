@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="@dimen/dimens_180dp"
+        android:layout_height="@dimen/dimens_100dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dimens_6dp">
+
+        <TextView
+            android:id="@+id/tv_menu_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:gravity="center"
+            android:padding="@dimen/margin_5px"
+            android:text="Distributor"
+            android:textColor="@color/kpi_value_text_color"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/text_sz_small"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_values"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:gravity="center"
+            android:padding="@dimen/margin_5px"
+            android:text="Values"
+            android:textColor="@color/FullBlack"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_small"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:layout_width="@dimen/dimens_1dp"
+        android:layout_height="@dimen/dimens_60dp"
+        android:layout_marginRight="@dimen/dimens_1dp"
+        android:background="@color/new_grey"
+        android:orientation="vertical"
+        android:padding="@dimen/dimens_2dp"
+        android:visibility="gone" />
+
+</LinearLayout>

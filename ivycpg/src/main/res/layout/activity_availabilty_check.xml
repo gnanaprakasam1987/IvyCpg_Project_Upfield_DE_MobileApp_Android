@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:windowSoftInputMode="stateAlwaysHidden">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_margin"
+            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardCornerRadius="0dp"
+            card_view:cardElevation="5dp"
+            card_view:cardPreventCornerOverlap="true"
+            card_view:cardUseCompatPadding="true"
+            card_view:contentPadding="0dp">
+
+            <android.support.v4.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:orientation="vertical"
+                android:scrollbars="none"
+                tools:context="com.ivyretail.views.AvailabiltyCheckActivity">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/list_odd_item_bg"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/card_margin">
+
+                            <TextView
+                                android:id="@+id/tvTitleAvaialabilty"
+                                style="?attr/customListItemPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:text="@string/combined_availability"
+                                android:textSize="@dimen/font_small"
+                                android:textStyle="bold" />
+
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_is_distributed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/right_margin"
+                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginTop="@dimen/target_top_margin"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_is_distributed"
+                                    style="?attr/customListItemSecondary"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:tag="item_exp_facing"
+                                    android:text="@string/is_distributed"
+                                    android:textSize="@dimen/card_margin" />
+
+                                <android.support.v7.widget.AppCompatCheckBox
+                                    android:id="@+id/is_distributed"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_is_listed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/right_margin"
+                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginTop="@dimen/target_top_margin"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_is_listed"
+                                    style="?attr/customListItemSecondary"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:tag="item_exp_facing"
+                                    android:text="@string/is_Listed"
+                                    android:textSize="@dimen/card_margin" />
+
+                                <android.support.v7.widget.AppCompatCheckBox
+                                    android:id="@+id/is_listed"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center" />
+                            </LinearLayout>
+
+
+                            <RadioGroup
+                                android:id="@+id/rg_available"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:id="@+id/availyes"
+                                    style="?attr/customListItemSecondary"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/radio_margin"
+                                    android:layout_marginRight="@dimen/radio_margin"
+                                    android:button="@drawable/ic_tick_disable"
+                                    android:paddingLeft="@dimen/plano_rb_padding"
+                                    android:text="@string/yes"
+                                    android:textSize="@dimen/text_sz_medium" />
+
+                                <RadioButton
+                                    android:id="@+id/availno"
+                                    style="?attr/customListItemSecondary"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@id/availyes"
+                                    android:button="@drawable/ic_cross_disable"
+                                    android:paddingLeft="@dimen/plano_rb_padding"
+                                    android:paddingRight="@dimen/plano_rb_padding"
+                                    android:text="@string/no"
+                                    android:textSize="@dimen/text_sz_medium" />
+
+                            </RadioGroup>
+
+                            <LinearLayout
+                                android:id="@+id/ll_reason"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right|center|bottom"
+                                android:layout_marginLeft="@dimen/right_margin"
+                                android:layout_marginTop="@dimen/target_top_margin"
+                                android:orientation="vertical">
+
+                                <Spinner
+                                    android:id="@+id/mreason"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@android:color/transparent"
+                                    android:gravity="left|center"
+                                    android:overlapAnchor="false">
+
+
+                                </Spinner>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/view_dotted_line_avg"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimen_2dp"
+                            android:layout_marginBottom="@dimen/list_item_inter_margin"
+                            android:layout_marginTop="@dimen/list_item_inter_margin"
+                            android:background="@drawable/line_dotted" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/card_margin"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTitleCurrentStock"
+                                style="?attr/customListItemPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:text="@string/current_stock"
+                                android:textSize="@dimen/font_small"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avail_piece"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_avail_pctitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_pcs"
+                                        android:textSize="@dimen/greyed_text_size" />
+
+                                    <EditText
+                                        android:id="@+id/et_avail_pcValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avail_case"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_avail_cstitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_cases"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_avail_csValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avail_outer"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_avail_outitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_outer"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_avail_ouValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_face_qty"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_faceqty_cstitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:tag="item_exp_facing"
+                                        android:text="@string/facing"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_faceqty_csValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <View
+                                android:id="@+id/view_dotted_line"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dimen_2dp"
+                                android:layout_marginTop="@dimen/dimen_2dp"
+                                android:background="@drawable/line_dotted" />
+                            <LinearLayout
+                                android:id="@+id/ll_avgdays"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avg_qty"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_qty_label"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/qty"
+                                        android:tag="avg_qty"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                    <TextView
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/dimen_1dp"
+                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:maxLines="1"
+                                        android:text=":" />
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_qty_value"
+                                        style="?attr/customListItemPrimary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/zero"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avg_rfield1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield1_label"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/rfield1_klgs"
+                                        android:tag="avg_rfield1"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                    <TextView
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/dimen_1dp"
+                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:maxLines="1"
+                                        android:text=":" />
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield1_value"
+                                        style="?attr/customListItemPrimary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/zero"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avg_rfield2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield2_label"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/rfield2_klgs"
+                                        android:tag="avg_rfield2"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                    <TextView
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/dimen_1dp"
+                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:maxLines="1"
+                                        android:text=":" />
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield2_value"
+                                        style="?attr/customListItemPrimary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/zero"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_avg_rfield3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield3_label"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/rfield3_klgs"
+                                        android:tag="avg_rfield3"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                    <TextView
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/dimen_1dp"
+                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:maxLines="1"
+                                        android:text=":" />
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rfield3_value"
+                                        style="?attr/customListItemPrimary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/zero"
+                                        android:textSize="@dimen/greyed_text_size" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/target_top_margin"
+                        android:background="@color/list_even_item_bg"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/card_margin"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTitlePriceCheck"
+                                style="?attr/customListItemPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:text="@string/price_check"
+                                android:textSize="@dimen/font_small"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/target_top_margin"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:id="@+id/ll_price_piece"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_price_pcTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_pcs"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_price_pcValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_price_case"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_price_csTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_cases"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_price_csValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_price_outer"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_price_ouTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/avail_outer"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_price_ouValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_centerVertical="true"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_change_price"
+                                        style="?attr/customListItemPrimary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/change_in_price"
+                                        android:textSize="@dimen/greyed_text_size" />
+
+                                    <RadioGroup
+                                        android:id="@+id/rg_price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="3dp"
+                                        android:orientation="horizontal">
+
+                                        <RadioButton
+                                            android:id="@+id/priceYes"
+                                            style="?attr/customListItemSecondary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="@dimen/radio_margin"
+                                            android:button="@drawable/ic_tick_disable"
+                                            android:paddingLeft="@dimen/plano_rb_padding"
+                                            android:text="@string/yes"
+                                            android:textSize="@dimen/text_sz_medium" />
+
+                                        <RadioButton
+                                            android:id="@+id/priceno"
+                                            style="?attr/customListItemSecondary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_toRightOf="@id/priceYes"
+                                            android:button="@drawable/ic_cross_disable"
+                                            android:paddingLeft="@dimen/plano_rb_padding"
+                                            android:paddingRight="@dimen/plano_rb_padding"
+                                            android:text="@string/no"
+                                            android:textSize="@dimen/text_sz_medium" />
+
+                                    </RadioGroup>
+                                </LinearLayout>
+                            </RelativeLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/target_top_margin"
+                        android:background="@color/list_odd_item_bg"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/card_margin"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTitleExpiryCheck"
+                                style="?attr/customListItemPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:text="@string/expiry_check"
+                                android:textSize="@dimen/font_small"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/target_top_margin"
+                                android:orientation="horizontal">
+
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginTop="@dimen/target_top_margin">
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_exp_piece"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="@dimen/right_margin"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/tv_exp_pcTitle"
+                                            style="?attr/customListItemSecondary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/avail_pcs"
+                                            android:textSize="@dimen/card_margin" />
+
+                                        <EditText
+                                            android:id="@+id/et_exp_pcValue"
+                                            style="@style/EditText_ListItem"
+                                            android:layout_width="@dimen/discount_editbox_width"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:gravity="left"
+                                            android:text="@string/zero" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_exp_case"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="@dimen/right_margin"
+                                        android:layout_toRightOf="@+id/ll_exp_piece"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/tv_exp_csTitle"
+                                            style="?attr/customListItemSecondary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/avail_cases"
+                                            android:textSize="@dimen/card_margin" />
+
+                                        <EditText
+                                            android:id="@+id/et_exp_csValue"
+                                            style="@style/EditText_ListItem"
+                                            android:layout_width="@dimen/discount_editbox_width"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:gravity="left"
+                                            android:text="@string/zero" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_exp_outer"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/right_margin"
+                                        android:layout_toRightOf="@+id/ll_exp_case"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/tv_exp_ouTitle"
+                                            style="?attr/customListItemSecondary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/avail_outer"
+                                            android:textSize="@dimen/card_margin" />
+
+                                        <EditText
+                                            android:id="@+id/et_exp_ouValue"
+                                            style="@style/EditText_ListItem"
+                                            android:layout_width="@dimen/discount_editbox_width"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:gravity="left"
+                                            android:text="@string/zero" />
+                                    </LinearLayout>
+
+                                </RelativeLayout>
+                            </RelativeLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.v7.widget.CardView>
+
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_marginBottom="@dimen/target_top_margin" />
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/GRAY" />
+
+            <Button
+                android:id="@+id/btn_save"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/target_top_margin"
+                android:gravity="center"
+                android:text="@string/done"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

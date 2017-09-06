@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/productnamelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/product_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+
+            <TextView
+                android:id="@+id/product_batch_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_micro_small" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/ucp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/payable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

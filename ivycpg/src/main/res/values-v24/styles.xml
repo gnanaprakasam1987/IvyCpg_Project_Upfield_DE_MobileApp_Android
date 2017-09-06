@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- To apply theme to dialogs
+           buttonBarButonStyle: to apply theme accent color to default OK(positive) and CANCEL(Negative) buttons in api 24
+            colorAccent: To apply color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleBlue" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyleBlue</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/MyButtonBlue</item>
+    </style>
+
+    <style name="DialogButtonStyleBlue" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+
+    <style name="DialogStyleOrange" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyleOrange</item>
+        <item name="colorAccent">@color/colorAccentOrange</item>
+        <item name="android:buttonStyle">@style/MyButtonOrange</item>
+    </style>
+
+    <style name="DialogButtonStyleOrange" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccentOrange</item>
+    </style>
+
+
+    <style name="DialogStyleRed" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyleRed</item>
+        <item name="colorAccent">@color/colorAccentRed</item>
+        <item name="android:buttonStyle">@style/MyButtonRed</item>
+    </style>
+
+    <style name="DialogButtonStyleRed" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccentRed</item>
+    </style>
+
+
+    <style name="DialogStyleCarlsberg" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyleCarlsberg</item>
+        <item name="colorAccent">@color/colorAccentCB</item>
+        <item name="android:buttonStyle">@style/MyButtonCarlsberg</item>
+    </style>
+
+    <style name="DialogButtonStyleCarlsberg" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccentCB</item>
+    </style>
+
+    <style name="DialogStylePink" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStylePink</item>
+        <item name="colorAccent">@color/colorAccentPink</item>
+        <item name="android:buttonStyle">@style/MyButtonPink</item>
+    </style>
+
+    <style name="DialogButtonStylePink" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccentPink</item>
+    </style>
+</resources>

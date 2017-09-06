@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/dimen_5dp">
+            <LinearLayout
+                android:id="@+id/ListHeader"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/list_title_bg_color"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/list_padding_left_n_right"
+                android:paddingRight="@dimen/list_padding_left_n_right"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/list_margin"
+                android:layout_marginRight="@dimen/list_margin">
+
+
+                <TextView
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Customer List"
+                    android:textColor="@color/white"
+                    />
+
+
+                <!--<TextView-->
+                    <!--android:id="@+id/pcsTitle"-->
+                    <!--style="?attr/customListTitle"-->
+                    <!--android:layout_width="@dimen/dimen_0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:tag="item_piece"-->
+                    <!--android:text="@string/item_piece"-->
+                    <!--android:layout_weight="1.2"/>-->
+
+
+
+
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/lvwplist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar"
+                android:layout_above="@id/footer"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true" />
+        </LinearLayout>
+</LinearLayout>

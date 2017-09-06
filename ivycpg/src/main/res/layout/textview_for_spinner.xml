@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:drawablePadding="@dimen/drop_draw_pading"
+    android:drawableRight="@android:drawable/arrow_down_float"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:maxLines="1"
+    android:textSize="@dimen/kpi_spinner_title_size"
+    android:textColor="@color/WHITE" />

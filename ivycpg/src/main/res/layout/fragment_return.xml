@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:windowSoftInputMode="stateAlwaysHidden">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/list_margin"
+            android:layout_above="@+id/keypad">
+
+            <ListView
+                android:id="@+id/lvwplist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true" />
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_marginBottom="@dimen/target_top_margin" />
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/footer_bg"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/icon_ll"
+                    android:layout_width="@dimen/activity_list_icon_size"
+                    android:layout_height="@dimen/activity_list_icon_size"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:background="@drawable/activity_icon_bg_normal"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/list_item_icon_iv"
+                        android:layout_width="@dimen/cicle_radus"
+                        android:layout_height="@dimen/cicle_radus"
+                        android:src="@drawable/ic_add" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvAddreason"
+                    style="?attr/customListTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/icon_ll"
+                    android:text="@string/add_another_reason"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/target_top_margin"
+                    android:gravity="center"
+                    android:text="@string/done"
+                    android:textAllCaps="false" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

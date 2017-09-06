@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!--  Scheme Config  -->
+  
+    <bool name="config_is_achieved_max_100">false</bool>
+    <bool name="config_is_sih_considered">false</bool>
+    
+
+</resources>

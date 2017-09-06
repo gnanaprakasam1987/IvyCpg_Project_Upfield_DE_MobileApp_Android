@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card"
+    android:orientation="vertical"
+    tools:context="com.ivy.sd.png.view.HomeScreenActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"
+        android:background="@color/blue_btn_normal_center">
+
+        <Button
+            android:id="@+id/saveBTN"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_6dp"
+            android:background="@drawable/icon_save" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/reason_with_photo_title"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/closeBTN"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_6dp"
+            android:background="@drawable/ic_close" />
+    </RelativeLayout>
+
+    <Spinner
+        android:id="@+id/sp_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_10dp" />
+
+    <ImageView
+        android:id="@+id/reason_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dimen_16dp"
+        android:background="@drawable/login_box_bg"
+        android:clickable="true"
+        android:contentDescription="@string/image_desc"
+        android:scaleType="fitXY"
+        android:src="@drawable/no_image_available" />
+
+
+</LinearLayout>

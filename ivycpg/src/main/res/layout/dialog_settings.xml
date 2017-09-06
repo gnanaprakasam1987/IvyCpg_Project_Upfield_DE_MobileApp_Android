@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/WHITE">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Would you like to add this store \n in today's plan?"
+        android:layout_gravity="center"
+        android:textSize="@dimen/font_small"
+        android:padding="@dimen/profile_header_txt_layout_marginleft"
+        android:textColor="#175fab"
+        android:gravity="center"
+        android:minHeight="@dimen/competitor_heder_width"
+        android:id="@+id/dialog_title" />
+
+    <GridView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:listSelector="@drawable/list_selector"
+        android:visibility="visible"
+        android:layout_marginBottom="@dimen/profile_floatingbtn_marginright"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/downloadsuccess"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:background="@color/GRAY" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/downloadsuccess"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/profile_history_20dp"
+        android:background="@color/GRAY"
+        android:id="@+id/reason_view" />
+
+    <LinearLayout
+        android:id="@+id/btns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom|center"
+        android:layout_alignParentBottom="true">
+
+
+        <Button
+            android:id="@+id/cancel_btn"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:text="Cancel"
+            android:layout_marginTop="@dimen/profile_history_10dp"
+            android:layout_marginBottom="@dimen/profile_history_10dp"
+            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_gravity="center"
+            />
+
+        <Button
+            android:id="@+id/ok_btn"
+            style="?attr/roundedCustomButtonNormal"
+            android:text="Ok"
+            android:layout_marginTop="@dimen/profile_history_10dp"
+            android:layout_marginBottom="@dimen/profile_history_10dp"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
+</LinearLayout>

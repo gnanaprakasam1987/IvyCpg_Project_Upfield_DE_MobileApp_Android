@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:keepScreenOn="true"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:id="@+id/volumelayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Title Layout -->
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/title"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/dashreportnamewidth"
+                    android:layout_height="match_parent"
+                    android:text="@string/report"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_kpi"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="1dp"/>
+
+            </LinearLayout>
+
+            <!-- Center Part -->
+
+            <LinearLayout
+                android:id="@+id/middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/footer"
+                android:layout_below="@+id/header"
+                android:orientation="vertical">
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="@null"
+                    android:divider="@color/white_box_border"
+                    android:dividerHeight="1dp"
+                    android:drawSelectorOnTop="false"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+            </LinearLayout>
+
+            <!-- Footer -->
+
+            <LinearLayout
+                android:id="@+id/footer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <!-- Footer Layout -->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dashreportnamewidth"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/list_title_bg"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/tv_total"
+                                style="@style/TextViewListOrder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/total"
+                                android:textColor="@android:color/white" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_fot_target"
+                                style="@style/TextViewBold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/target"
+                                android:textColor="@android:color/white" />
+
+                            <TextView
+                                android:id="@+id/tv_fot_acheived"
+                                style="@style/TextViewBold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/achieved"
+                                android:textColor="@android:color/white" />
+
+                            <TextView
+                                android:id="@+id/tv_fot_per"
+                                style="@style/TextViewBold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="@dimen/dimen_10dp"
+                                android:singleLine="true"
+                                android:text="%"
+                                android:textColor="@android:color/white" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_bottom_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"></LinearLayout>
+                </LinearLayout>
+
+                <!-- <View
+                     android:layout_width="match_parent"
+                     android:layout_height="1dp"
+                     android:background="@color/white_box_border" />-->
+
+            </LinearLayout>
+        </RelativeLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

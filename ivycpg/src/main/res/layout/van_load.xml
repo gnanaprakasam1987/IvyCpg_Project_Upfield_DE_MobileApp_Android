@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_header_lty"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/retake_img_wd_ht"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/productName"
+        style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="@dimen/skuwise_right_margin"
+        android:layout_weight="1"
+        android:gravity="left|center"></TextView>
+
+    <TextView
+        android:id="@+id/stock_and_order_listview_sih"
+        style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/list_item_secondary_text_color" />
+
+
+    <EditText
+        android:id="@+id/productqtyCases"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:padding="@dimen/dimen_2dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/outerproductqtyCases"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:padding="@dimen/dimen_2dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/productqtyPieces"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:padding="@dimen/dimen_2dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+
+    <TextView
+        android:id="@+id/totalQty"
+        style="?attr/customListItemSecondary"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/inv_view_layout"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="right|center"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/inv_view_btn"
+            android:layout_width="@dimen/profile_history_10dp"
+            android:layout_height="@dimen/profile_history_25dp"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="@dimen/profile_history_10dp"
+            android:src="@drawable/activity_icon_next"
+            android:tint="@color/new_grey"
+            android:gravity="right|center"
+           />
+
+    </LinearLayout>
+
+
+</LinearLayout>

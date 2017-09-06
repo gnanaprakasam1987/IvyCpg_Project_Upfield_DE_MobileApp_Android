@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_noise"
+    android:clickable="true">
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/screen_bg_color"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalGrey"
+            android:layout_margin="@dimen/target_top_margin"
+            android:adjustViewBounds="true"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/black_bg1" />
+
+        <Button
+            android:id="@+id/btn_all"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_margin="@dimen/target_top_margin"
+            android:adjustViewBounds="true"
+            android:text="@string/all"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_ok"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_margin="@dimen/target_top_margin"
+            android:adjustViewBounds="true"
+            android:text="Ok"
+            android:textAllCaps="false"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/footer"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/chooseCategoryTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:adjustViewBounds="true"
+            android:background="@color/Black"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:tag="level1"
+            android:text="@string/choose_category"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/list_primary" />
+
+        <GridView
+            android:id="@+id/categoryGrid"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:padding="5dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp"></GridView>
+
+        <TextView
+            android:id="@+id/chooseBrandTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:adjustViewBounds="true"
+            android:background="@color/Black"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:tag="level2"
+            android:text="@string/choose_brand"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/list_primary" />
+
+        <GridView
+            android:id="@+id/brandGrid"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:padding="5dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp"></GridView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/splFilterCard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardCornerRadius="0dp"
+            card_view:cardElevation="5dp"
+            card_view:cardPreventCornerOverlap="true"
+            card_view:cardUseCompatPadding="true"
+            card_view:contentPadding="0dp">
+
+            <ListView
+                android:id="@+id/splFiterList"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:horizontalSpacing="5dp"
+                android:numColumns="3"
+                android:padding="5dp"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="5dp" />
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/top_layouts"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_row_upc_padding"
+        android:background="?attr/colorPrimaryDark"
+        android:orientation="vertical"
+        android:src="@drawable/ic_delete"
+        android:tint="@color/white"></ImageView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+       android:layout_margin="@dimen/profile_history_20dp"
+        >
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/header_txt"
+    android:padding="@dimen/retailer_5dp"
+    android:layout_marginRight="@dimen/profile_history_20dp"
+    android:layout_marginLeft="@dimen/profile_history_20dp"
+    android:text="Title"
+    android:textSize="@dimen/highlight_small"
+    android:textColor="@color/FullBlack"
+    />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/downloadsuccess"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/profile_history_10dp"
+        android:layout_marginLeft="@dimen/profile_history_10dp"
+        android:layout_marginTop="@dimen/profile_history_20dp"
+        android:layout_marginBottom="@dimen/profile_history_20dp"
+        android:background="@color/GRAY"
+        android:id="@+id/reason_view"
+        android:layout_above="@+id/reason_btns" />
+
+    <LinearLayout
+        android:id="@+id/reason_btns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="bottom|center|right">
+
+
+        <Button
+            android:id="@+id/ok_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/zxing_transparent"
+            android:onClick="onClick"
+            android:text="@string/ok"
+            android:textColor="?attr/colorPrimaryDark"
+            android:layout_marginBottom="@dimen/profile_history_10dp"
+            android:layout_gravity="right|center"
+            />
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/zxing_transparent"
+            android:onClick="onClick"
+            android:textColor="?attr/colorPrimaryDark"
+            android:text="@string/cancel"
+            android:layout_marginBottom="@dimen/profile_history_10dp"
+            android:layout_gravity="right|center"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This is used as a background for the Filter type selection button in Order and other screen -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/ic_filter_choice_access_pressed" android:state_focused="true"/>
+    <item android:drawable="@drawable/ic_filter_choice_access_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/ic_filter_choice_access_pressed" android:state_selected="true"/>
+    <item android:drawable="@drawable/ic_filter_choice_access"/>
+
+</selector>

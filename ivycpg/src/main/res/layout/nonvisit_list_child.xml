@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_card_height"
+        card_view:cardElevation="@dimen/ret_card_elevation"
+        card_view:cardCornerRadius="0dp"
+        card_view:contentPadding="0dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardBackgroundColor="@color/WHITE"
+        android:foreground="?attr/selectableItemBackground"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/outletName_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:layout_marginTop="@dimen/margin_top_retailer_name"
+                    android:text="Outlet name"
+                    style="?attr/customListItemPrimary" />
+
+                <TextView
+                    android:id="@+id/outlet_address_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:text="Outlet Address "
+                    style="?attr/customListItemSecondary" />
+
+
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/outlet"
+                android:layout_width="@dimen/visit_lst_img_width"
+                android:layout_height="@dimen/visit_lst_img_width"
+                android:gravity="center"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/info_iv"
+                android:layout_width="@dimen/visit_info_img_width"
+                android:layout_height="@dimen/visit_info_img_width"
+                android:gravity="center"
+                android:src="@drawable/ic_info_new"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/visit_frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/outletName_tv"
+                android:layout_alignBottom="@+id/outletName_tv"
+                android:layout_toRightOf="@+id/outletName_tv"
+                android:singleLine="true"
+                android:text="@string/visit_frequency"
+                android:textColor="?attr/primarycolor"
+                android:textSize="@dimen/font_small"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/outlet_iv"
+                android:layout_width="@dimen/visit_lst_img_width"
+                android:layout_height="@dimen/visit_lst_img_width"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:src="@drawable/icon_outlet_normal"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+
+
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

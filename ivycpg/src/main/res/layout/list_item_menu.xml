@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_space"
+    android:gravity="center_vertical"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingLeft="@dimen/space_betwn_icon_and_text">
+
+    <ImageView
+        android:id="@+id/list_item_icon_ib"
+        style="@style/menuIconImageView"
+        android:src="@drawable/icon_call" />
+
+    <TextView
+        android:id="@+id/list_item_menu_tv_new"
+        style="@style/menuNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/space_betwn_icon_and_text"
+        android:gravity="center_vertical"
+        android:layout_marginRight="@dimen/dimen_2dp"
+        />
+
+
+</LinearLayout>

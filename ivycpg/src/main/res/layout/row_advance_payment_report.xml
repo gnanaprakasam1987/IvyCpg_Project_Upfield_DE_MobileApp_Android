@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    <View
+        android:layout_width="@dimen/dimen_4dp"
+        android:layout_height="match_parent"
+        android:background="?attr/primarycolor"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/retailerNameTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingLeft="3dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/advTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text="@string/advance_payment"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/cashMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text=""
+                android:textColor="?attr/primarycolor"
+                android:textSize="@dimen/font_nano_small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/dimens_10dp">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:text="@string/date"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/invDateTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="4dp"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_nano_small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dimens_1dp"
+            android:layout_height="@dimen/dimens_22dp"
+            android:layout_gravity="center"
+            android:background="@color/new_grey"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/dimens_10dp">
+
+            <TextView
+                android:id="@+id/invoiceAmt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/amount"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small"/>
+
+            <TextView
+                android:id="@+id/adv_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingRight="4dp"
+                android:text="0000"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_small"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+</LinearLayout>

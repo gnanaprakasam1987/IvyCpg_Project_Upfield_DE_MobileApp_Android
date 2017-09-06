@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingLeft="@dimen/list_padding_left_n_right"
+    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
+
+    <CheckBox
+        android:id="@+id/cb_delivery"
+        android:layout_width="@dimen/order_stock_list_item_width_small"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <TextView
+            android:id="@+id/tv_productname"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:maxLines="2"
+            android:padding="3dp"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/tv_batch_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/stock_and_order_listview_productname"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/edit_outer_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:text="@string/zero" />
+
+
+    <EditText
+        android:id="@+id/edit_case_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/edit_pcs_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/sih"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+</LinearLayout>

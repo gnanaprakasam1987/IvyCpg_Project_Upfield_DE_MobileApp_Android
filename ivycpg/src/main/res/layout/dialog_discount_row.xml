@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/list_item_height_double_line"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_weight="3"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/orderPRODNAME"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:text="@string/product_name" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/orderPRODNAME"
+            android:gravity="center|left">
+
+            <TextView
+                android:id="@+id/mrp"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/mrp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/orderQTYinCase"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:tag="item_case"
+                android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/orderQTYinpiece"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/outerorderQTYinCase"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/zero" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/min_max"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="2dp"
+        android:text="0/0"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
+
+    <EditText
+        android:id="@+id/d1"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_margin="1dp"
+        android:layout_weight="1"
+        android:text="@string/zero" />
+
+    <EditText
+        android:id="@+id/da"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_margin="1dp"
+        android:layout_weight="1"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/total"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:selectAllOnFocus="true"
+        android:text="@string/zero"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

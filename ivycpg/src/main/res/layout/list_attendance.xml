@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/attendance_lv_height"
+    android:background="@color/WHITE"
+    android:orientation="horizontal"
+    android:padding="2dp" >
+    <CheckBox
+        android:id="@+id/cb_previous_status"
+        android:layout_width="@dimen/attendance_lv_width"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_10dp"
+
+        android:gravity="center" />
+
+    <CheckBox
+        android:id="@+id/cb_current_status"
+        android:layout_width="@dimen/attendance_lv_width"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_10dp"
+
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="@dimen/header_merch_name_width"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/font_small" />
+
+
+
+
+
+</LinearLayout>

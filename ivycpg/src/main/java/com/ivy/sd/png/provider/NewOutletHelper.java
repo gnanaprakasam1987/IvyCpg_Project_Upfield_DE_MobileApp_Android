@@ -1,0 +1,2062 @@
+package com.ivy.sd.png.provider;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.preference.PreferenceManager;
+import android.support.v7.widget.AppCompatEditText;
+import android.util.SparseArray;
+
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ChannelBO;
+import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.MaterialSpinner;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Vector;
+
+public class NewOutletHelper {
+
+    private Context context;
+    private int mSelectedChannelid = 0;
+    private String mSelectedChannelname = "";
+
+    public int getmSelectedChannelid() {
+        return mSelectedChannelid;
+    }
+
+    public void setmSelectedChannelid(int mSelectedChannelid) {
+        this.mSelectedChannelid = mSelectedChannelid;
+    }
+
+
+    NewOutletBO imageType;
+    ArrayList<NewOutletBO> retailerTypeList;
+    ArrayList<NewOutletBO> contactTitleList;
+    ArrayList<NewOutletBO> contractStatusList;
+    private Vector<RetailerMasterBO> mLinkRetailerList;
+    private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<StandardListBO>();
+    private ArrayList<ProductMasterBO> orderedProductList = new ArrayList<>();
+    private ArrayList<ProductMasterBO> opprProductList = new ArrayList<>();
+
+    public AppCompatEditText[] getEditText() {
+        return editText;
+    }
+
+    public void setEditText(AppCompatEditText[] editText) {
+        if (editText != null) {
+            this.editText = editText.clone();
+        } else {
+            this.editText = null;
+        }
+    }
+
+    private AppCompatEditText editText[] = null;
+
+    public MaterialSpinner[] getMaterialSpinner() {
+        return materialSpinner;
+    }
+
+    public void setMaterialSpinner(MaterialSpinner[] materialSpinner) {
+        if (materialSpinner != null)
+            this.materialSpinner = materialSpinner.clone();
+        else
+            this.materialSpinner = null;
+    }
+
+    private MaterialSpinner materialSpinner[] = null;
+
+
+    public ArrayList<StandardListBO> getSelectedPrioProducts() {
+        return selectedPrioProducts;
+    }
+
+    public void setSelectedPrioProducts(ArrayList<StandardListBO> selectedPrioProducts) {
+        this.selectedPrioProducts = selectedPrioProducts;
+    }
+
+    private SparseArray<Vector<RetailerMasterBO>> mLinkRetailerListByDistributorId;
+
+    public ArrayList<NewOutletBO> getRetailerTypeList() {
+        return retailerTypeList;
+    }
+
+    public ArrayList<NewOutletBO> getContactTitleList() {
+        return contactTitleList;
+    }
+
+    public ArrayList<NewOutletBO> getContractStatusList() {
+        return contractStatusList;
+    }
+
+    public String getContractStatus(int statusLovid) {
+        NewOutletBO beat;
+        int siz = getContractStatusList().size();
+
+        if (siz == 0)
+            return null;
+
+        for (int i = 0; i < siz; ++i) {
+            beat = getContractStatusList().get(i);
+            if (statusLovid == beat.getListId()) {
+                return beat.getListName();
+            }
+        }
+        return "";
+    }
+
+    private LinkedHashMap<Integer, ArrayList<LocationBO>> mLocationListByLevelId;
+
+    public NewOutletBO getImageType() {
+        return imageType;
+    }
+
+    Vector<ConfigureBO> profileConfig = null;
+    Vector<ConfigureBO> profileEditConfig = null;
+
+    private static NewOutletHelper instance = null;
+    BusinessModel bmodel;
+    Vector<NewOutletBO> imageTypeList = new Vector<>();
+
+    private String id;
+
+    protected NewOutletHelper(Context context) {
+        this.context = context;
+        bmodel = (BusinessModel) context;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Vector<NewOutletBO> getImageTypeList() {
+        return imageTypeList;
+    }
+
+    public void setImageTypeList(Vector<NewOutletBO> imageTypeList) {
+        this.imageTypeList = imageTypeList;
+    }
+
+    public ArrayList<ProductMasterBO> getOrderedProductList() {
+        return orderedProductList;
+    }
+
+    public void setOrderedProductList(ArrayList<ProductMasterBO> orderedProductList) {
+        this.orderedProductList = orderedProductList;
+    }
+
+    public ArrayList<ProductMasterBO> getOpprProductList() {
+        return opprProductList;
+    }
+
+    public void setOpprProductList(ArrayList<ProductMasterBO> opprProductList) {
+        this.opprProductList = opprProductList;
+    }
+
+    public static NewOutletHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new NewOutletHelper(context);
+        }
+        return instance;
+    }
+
+    public String QT(String data) // Quote
+    {
+        return "'" + data + "'";
+    }
+
+    public void loadRetailerType() {
+        NewOutletBO retailerType;
+        retailerTypeList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_TYPE'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerType = new NewOutletBO();
+                    retailerType.setListId(c.getInt(0));
+                    retailerType.setListName(c.getString(2));
+                    retailerTypeList.add(retailerType);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadContactTitle() {
+        NewOutletBO contactTitle;
+        contactTitleList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    contactTitle = new NewOutletBO();
+                    contactTitle.setListId(c.getInt(0));
+                    contactTitle.setListName(c.getString(2));
+                    contactTitleList.add(contactTitle);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadContactStatus() {
+        NewOutletBO contactStatus;
+        contractStatusList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTRACT_STATUS'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    contactStatus = new NewOutletBO();
+                    contactStatus.setListId(c.getInt(0));
+                    contactStatus.setListName(c.getString(2));
+                    contractStatusList.add(contactStatus);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    /**
+     * Update retailer details.. in RetailerMaster and RetailerEdit Header and Detail
+     */
+    public void updateRetailer() {
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            boolean isData;
+            String tid;
+            Cursor headerCursor;
+            String currentDate;
+            currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+
+
+            tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "" + bmodel.getRetailerMasterBO().getRetailerID()
+                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            // delete Header if exist
+            headerCursor = db
+                    .selectSQL("SELECT Tid FROM RetailerEditHeader"
+                            + " WHERE RetailerId = "
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + " AND Date = "
+                            + bmodel.QT(currentDate)
+                            + " AND Upload = "
+                            + bmodel.QT("N"));
+
+            if (headerCursor.getCount() > 0) {
+                headerCursor.moveToNext();
+
+                tid = headerCursor.getString(0);
+                headerCursor.close();
+
+            }
+
+            String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
+                    "values (" + bmodel.QT(tid)
+                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                    + "," + bmodel.QT(currentDate) + ")";
+            String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
+                    "values (" + bmodel.QT(tid)
+                    + ",";
+
+            String queryInsert = "";
+
+            profileEditConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+
+            Commons.print("Profile Fragment, " + " Update Retailer List size :"
+                    + profileEditConfig.size());
+
+            isData = false;
+            for (ConfigureBO configBO : profileEditConfig) {
+
+                if (configBO.getConfigCode().equalsIgnoreCase("PROFILE02") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getRetailerName().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getRetailerName().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE03") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getAddress1().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getAddress1().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE04") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getAddress2().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getAddress2().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE05") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getAddress3().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getAddress3().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE39") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getCity().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getCity().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE40") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getState().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getState().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE41") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("-1")) {
+                        if (bmodel.getRetailerMasterBO().getContact1_titlelovid().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getContact1_titlelovid().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp1id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE42") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("-1")) {
+                        if (bmodel.getRetailerMasterBO().getContact2_titlelovid().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getContact2_titlelovid().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp2id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE43") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if ((bmodel.getRetailerMasterBO().getContractLovid() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContractLovid() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("CT1TITLE") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if (bmodel.getRetailerMasterBO().getContact1_title().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getContact1_title().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp1id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("CT2TITLE") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if (bmodel.getRetailerMasterBO().getContact2_title().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getContact2_title().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp2id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE38") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getPincode().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getPincode().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE30") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getContactnumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getContactnumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE06") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if ((bmodel.getRetailerMasterBO().getChannelID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getChannelID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE07") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if ((bmodel.getRetailerMasterBO().getSubchannelid() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getSubchannelid() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE08") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0.0")) {
+                        if ((bmodel.getRetailerMasterBO().getLatitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getLatitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE31") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("0.0")) {
+                        if ((bmodel.getRetailerMasterBO().getLongitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getLongitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE63") && configBO.getModule_Order() == 1) {
+                    deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                    String imagePath = "Profile" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+                            + "/"
+                            + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                            + "/" + configBO.getMenuNumber();
+                    queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(imagePath) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                    isData = true;
+                    bmodel.profilehelper.checkFileExist(bmodel.latlongImageFileName + "", bmodel.getRetailerMasterBO().getRetailerID(), true);
+                }
+                //
+                else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE09") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactname() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactname() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp1id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE20") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRField1() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRField1() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE26") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRfield2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRfield2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE27") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getCredit_invoice_count() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getCredit_invoice_count() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE28") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRField4() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRField4() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE53") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRField5() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRField5() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE54") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRField6() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRField6() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE55") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getRField7() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getRField7() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("LNAME") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactLname() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactLname() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp1id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE10") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactnumber1() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactnumber1() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp1id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE11") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactname2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactname2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp2id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("LNAME2") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactLname2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactLname2() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp2id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE12") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getContactnumber2()).equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getContactnumber2()).equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getCp2id() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE13") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("0")) {
+                        if ((bmodel.getRetailerMasterBO().getLocationId() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if (bmodel.getRetailerMasterBO().getLocationId() != 0 && ((!(bmodel.getRetailerMasterBO().getLocationId() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber()))))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE25") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("0")) {
+
+                        if ((bmodel.getRetailerMasterBO().getCreditDays() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getCreditDays() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE36") && configBO.getModule_Order() == 1) {
+
+                    HashMap<String, String> temp = new HashMap<>();
+                    if (bmodel.getNearByRetailers().size() > 0) {
+                        isData = true;
+                        for (RetailerMasterBO bo : bmodel.getNearByRetailers()) {
+                            temp.put(bo.getRetailerID(), "N");
+                        }
+                    }
+
+                    //
+                    ArrayList<String> ids = getNearbyRetailerIds(bmodel.getRetailerMasterBO().getRetailerID());
+                    if (temp.size() > 0) {
+                        for (String id : ids) {
+                            if (temp.get(id) != null) {
+                                temp.remove(id);
+                            } else {
+                                temp.put(id, "D");
+                            }
+                        }
+                    }
+
+                    db.deleteSQL("RrtNearByEditRequest", " tid =" + bmodel.QT(tid), false);
+
+                    for (String id : temp.keySet()) {
+                        String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
+                                "values (" + bmodel.QT(tid)
+                                + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                + "," + id
+                                + "," + bmodel.QT(temp.get(id)) + ",'N')";
+                        db.executeQ(Q);
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE57") && configBO.getModule_Order() == 1) {
+
+
+                    db.deleteSQL("RetailerEditPriorityProducts", " RetailerId =" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()), false);
+
+                    for (StandardListBO bo : getSelectedPrioProducts()) {
+                        isData = true;
+                        String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
+                                "values (" + bmodel.QT(tid)
+                                + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                                + "," + SDUtil.convertToInt(bo.getListID())
+                                + "," + bmodel.QT(bo.getListCode())
+                                + "," + bmodel.QT(bo.getStatus()) + ",'N')";
+                        db.executeQ(Q);
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE58") && configBO.getModule_Order() == 1) {
+
+                    ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+                    isData = true;
+
+                    ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(bmodel.getRetailerAttribute());
+                    //    ArrayList<NewOutletAttributeBO> ids = updateRetailerMasterAttribute(bmodel.newOutletAttributeHelper.getEditAttributeList(bmodel.getRetailerMasterBO().getRetailerID()));
+                    ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(bmodel.getRetailerMasterBO().getAttributeBOArrayList());
+
+
+                    NewOutletAttributeBO tempBO1;
+                    NewOutletAttributeBO tempBO2;
+                    for (int i = 0; i < attributeList.size(); i++) {
+                        tempBO1 = attributeList.get(i);
+                        for (int j = 0; j < attList.size(); j++) {
+                            tempBO2 = attList.get(j);
+                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
+                                    tempBO1.setStatus("N");
+                                    tempList.add(tempBO1);
+                                    tempBO2.setStatus("D");
+                                    tempList.add(tempBO2);
+                                }
+                            }
+
+                        }
+                    }
+
+                    /*for (int i=0; i<tempList.size(); i++){
+                        tempBO1 = tempList.get(i);
+                        for (int j=0; j<ids.size(); j++){
+                            tempBO2 = ids.get(j);
+                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                if (tempBO1.getAttrId() != tempBO2.getAttrId() && "D".equals(tempBO1.getStatus())) {
+                                    tempBO2.setStatus("D");
+                                    tempList.set(i,tempBO2);
+                                }
+                            }
+
+                        }
+                    }*/
+
+                    db.deleteSQL("RetailerEditAttribute", " tid =" + bmodel.QT(tid), false);
+
+                    for (NewOutletAttributeBO id : tempList) {
+                        String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                                "values (" + bmodel.QT(tid)
+                                + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                + "," + id.getAttrId()
+                                + "," + id.getLevelId()
+                                + "," + bmodel.QT(id.getStatus()) + ",'N')";
+                        db.executeQ(Q);
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE60") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if ((bmodel.getRetailerMasterBO().getProfileImagePath() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                            bmodel.profilehelper.checkFileExist(configBO.getMenuNumber() + "", bmodel.getRetailerMasterBO().getRetailerID(), false);
+                        } else if ((!(bmodel.getRetailerMasterBO().getProfileImagePath() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                            String imagePath = "Profile" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+                                    + "/"
+                                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + "/" + configBO.getMenuNumber();
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(imagePath) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                            bmodel.profilehelper.checkFileExist(configBO.getMenuNumber() + "", bmodel.getRetailerMasterBO().getRetailerID(), false);
+                        }
+
+                    }
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE61") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("")) {
+
+                        if ((bmodel.getRetailerMasterBO().getGSTNumber() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getGSTNumber() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + ",'" + configBO.getMenuNumber() + "'," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE62") && configBO.getModule_Order() == 1) {
+
+                    if ((bmodel.getRetailerMasterBO().getIsSEZzone() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                        isData = true;
+                    } else if ((!(bmodel.getRetailerMasterBO().getIsSEZzone() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                            || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                        deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                        queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                        isData = true;
+                    }
+
+
+                }
+
+                if (!queryInsert.equals(""))
+                    db.executeQ(queryInsert);
+
+                queryInsert = "";
+
+            }
+            if (isData) {
+                db.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + bmodel.QT(tid), false);
+                Cursor c = db
+                        .selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail
+                                + " where Tid=" + bmodel.QT(tid));
+                Cursor c1 = db
+                        .selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest
+                                + " where Tid=" + bmodel.QT(tid));
+                Cursor c2 = db
+                        .selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts
+                                + " where Tid=" + bmodel.QT(tid));
+                Cursor c3 = db
+                        .selectSQL("SELECT status FROM RetailerEditAttribute"
+                                + " where Tid=" + bmodel.QT(tid));
+                if (c.getCount() > 0 || c1.getCount() > 0 || c2.getCount() > 0 || c3.getCount() > 0) {
+                    db.executeQ(insertHeader);
+                    c.close();
+                    c1.close();
+                    c2.close();
+                    c3.close();
+                }
+
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
+
+        ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+        int attribID;
+        int tempAttribID;
+        int parentID;
+        int tempParentID = 0;
+        String attribName = "";
+        String attribHeader = "";
+        int levelId = 0;
+        String status = "";
+        NewOutletAttributeBO tempBO;
+        for (NewOutletAttributeBO attributeBO : list) {
+            tempBO = new NewOutletAttributeBO();
+            attribID = attributeBO.getAttrId();
+            status = attributeBO.getStatus();
+            levelId = attributeBO.getLevelId();
+            for (int i = childList.size() - 1; i >= 0; i--) {
+                NewOutletAttributeBO attributeBO1 = childList.get(i);
+                tempAttribID = attributeBO1.getAttrId();
+                if (attribID == tempAttribID) {
+                    attribName = attributeBO1.getAttrName();
+                    tempParentID = attributeBO1.getParentId();
+                    continue;
+                }
+                if (tempAttribID == tempParentID)
+                    tempParentID = attributeBO1.getParentId();
+            }
+
+            for (NewOutletAttributeBO attributeBO2 : parentList) {
+                parentID = attributeBO2.getAttrId();
+                if (tempParentID == parentID)
+                    attribHeader = attributeBO2.getAttrName();
+            }
+            tempBO.setAttrId(attribID);
+            tempBO.setParentId(tempParentID);
+            tempBO.setAttrName(attribName);
+            tempBO.setAttrParent(attribHeader);
+            tempBO.setStatus(status);
+            tempBO.setLevelId(levelId);
+            tempList.add(tempBO);
+        }
+        return tempList;
+    }
+
+    public HashMap<String, String> getmPreviousProfileChangesList() {
+        return mPreviousProfileChangesList;
+    }
+
+    private HashMap<String, String> mPreviousProfileChangesList;
+
+    public void getPreviousProfileChanges(String retailerid) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        mPreviousProfileChangesList = new HashMap<>();
+        try {
+            db.openDataBase();
+            Cursor c, headerCursor;
+
+            String tid = "";
+            String currentDate;
+            currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+
+            headerCursor = db
+                    .selectSQL("SELECT Tid FROM RetailerEditHeader"
+                            + " WHERE RetailerId = "
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + " AND Date = "
+                            + bmodel.QT(currentDate)
+                            + " AND Upload = "
+                            + bmodel.QT("N"));
+
+            if (headerCursor.getCount() > 0) {
+                headerCursor.moveToNext();
+                tid = headerCursor.getString(0);
+                headerCursor.close();
+
+            }
+
+
+            c = db.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid=" + retailerid + " and REH.tid=" + bmodel.QT(tid));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public HashMap<String, NewOutletBO> getmNewRetailerById() {
+        return mNewRetailerById;
+    }
+
+    HashMap<String, NewOutletBO> mNewRetailerById;
+
+    public ArrayList<NewOutletBO> getNewRetailers() {
+        ArrayList<NewOutletBO> lst = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c;
+
+            String query = "select RM.RetailerID,RetailerName,subchannelid,beatid,visitDays ,locationid,creditlimit,RPTypeId,tinnumber,RField3," +
+                    "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
+                    ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
+                    ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
+                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State" +
+                    " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
+                    " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
+                    " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
+                    " where RM.is_new='Y' and RM.upload='N' ";
+            c = db.selectSQL(query);
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    mNewRetailerById = new HashMap<>();
+                    NewOutletBO retailer;
+                    while (c.moveToNext()) {
+                        retailer = new NewOutletBO();
+                        retailer.setRetailerId(c.getString(c.getColumnIndex("RetailerID")));
+                        retailer.setOutletName(c.getString(c.getColumnIndex("RetailerName")));
+                        retailer.setSubChannel(c.getInt(c.getColumnIndex("subchannelid")));
+                        retailer.setRouteid(c.getInt(c.getColumnIndex("beatid")));
+                        retailer.setVisitDays(c.getString(c.getColumnIndex("VisitDays")));
+                        retailer.setLocid(c.getInt(c.getColumnIndex("locationid")));
+                        retailer.setCreditLimit(c.getString(c.getColumnIndex("creditlimit")));
+                        retailer.setPayment(c.getString(c.getColumnIndex("RPTypeId")));
+                        retailer.setTinno(c.getString(c.getColumnIndex("tinnumber")));
+                        retailer.setRfield3(c.getString(c.getColumnIndex("RField3")));
+                        retailer.setDistid(c.getString(c.getColumnIndex("distributorid")));
+                        retailer.setTaxTypeId(c.getString(c.getColumnIndex("TaxTypeId")));
+                        retailer.setContractStatuslovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
+                        retailer.setClassTypeId(c.getString(c.getColumnIndex("classid")));
+
+                        //from retailer contact
+                        retailer.setContactpersonname(c.getString(c.getColumnIndex("contactName1")));
+                        retailer.setContactpersonnameLastName(c.getString(c.getColumnIndex("contactLName1")));
+                        retailer.setPhone(c.getString(c.getColumnIndex("contactNumber1")));
+                        retailer.setContact1title(c.getString(c.getColumnIndex("contact_title1")));
+                        retailer.setContact1titlelovid(c.getString(c.getColumnIndex("contact_title_lovid1")));
+
+                        retailer.setContactpersonname2(c.getString(c.getColumnIndex("contactName2")));
+                        retailer.setContactpersonname2LastName(c.getString(c.getColumnIndex("contactLName2")));
+                        retailer.setPhone2(c.getString(c.getColumnIndex("contactNumber2")));
+                        retailer.setContact2title(c.getString(c.getColumnIndex("contact_title2")));
+                        retailer.setContact2titlelovid(c.getString(c.getColumnIndex("contact_title_lovid2")));
+
+                        // from Retailer Address
+                        retailer.setAddress(c.getString(c.getColumnIndex("Address1")));
+                        retailer.setAddress2(c.getString(c.getColumnIndex("Address2")));
+                        retailer.setAddress3(c.getString(c.getColumnIndex("Address3")));
+                        retailer.setCity(c.getString(c.getColumnIndex("City")));
+                        retailer.setNewOutletlattitude(c.getDouble(c.getColumnIndex("Latitude")));
+                        retailer.setNewOutletLongitude(c.getDouble(c.getColumnIndex("Longitude")));
+                        retailer.setEmail(c.getString(c.getColumnIndex("Email")));
+                        retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
+                        retailer.setPincode(c.getString(c.getColumnIndex("pincode")));
+                        retailer.setState(c.getString(c.getColumnIndex("State")));
+
+                        lst.add(retailer);
+                        mNewRetailerById.put(retailer.getRetailerId(), retailer);
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+        return lst;
+    }
+
+    private void deleteQuery(String query, String rid) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + bmodel.QT(query) + "and RetailerId=" + rid, false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void deleteRetailerEdit(String rid) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_retailerMaster, " RetailerId=" + bmodel.QT(rid), false);
+            db.deleteSQL("RetailerContact", " RetailerId=" + bmodel.QT(rid), false);
+            db.deleteSQL("RetailerAddress", " RetailerId=" + bmodel.QT(rid), false);
+
+            if (selectQuery("NewOutletImage", rid))
+                db.deleteSQL("NewOutletImage", " RetailerId=" + bmodel.QT(rid), false);
+//                db.selectSQL("delete from NewOutletImage where RetailerId='" + rid+"'");
+
+            else if (selectQuery("NearByRetailers", rid))
+                db.deleteSQL("NearByRetailers", " rid=" + bmodel.QT(rid), false);
+                //db.selectSQL("delete from NearByRetailers where RetailerId='" + rid+"'");
+
+            else if (selectQuery("RetailerPriorityProducts", rid))
+                db.deleteSQL("RetailerPriorityProducts", " RetailerId=" + bmodel.QT(rid), false);
+            // db.selectSQL("delete from RetailerPriorityProducts where rid='" + rid+"'");
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private boolean selectQuery(String tblName, String retId) {
+
+        try {
+            String rid = tblName.equals("NearByRetailers") ? "rid" : "RetailerId";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("Select * from " + tblName
+                    + " where " + rid + "='" + retId + "'");
+
+            if (c.getCount() > 0) {
+                c.close();
+                return true;
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return false;
+        }
+        return false;
+    }
+
+
+    /**
+     * Download configuration fields for new retailer
+     *
+     * @return
+     */
+    public void loadNewOutletConfiguration(int channelid) {
+        ConfigureBO ConfigureBO;
+
+        try {
+            profileConfig = new Vector<>();
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c;
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+            StringBuilder sb = new StringBuilder();
+            sb.append("select HHTCode, flag , MName , MNumber ,RField,haslink,RField6,Regex from HhtMenuMaster where MenuType= 'MENU_NEW_RET'");
+            sb.append("  and Flag = 1 and lang=");
+            sb.append(bmodel.QT(language));
+            if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
+                sb.append(" and subchannelid=");
+                sb.append(channelid);
+                sb.append(" ");
+            }
+            sb.append(" order by Mnumber");
+            c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    ConfigureBO = new ConfigureBO();
+                    ConfigureBO.setConfigCode(c.getString(0));
+                    ConfigureBO.setFlag(c.getInt(1));
+                    ConfigureBO.setMenuName(c.getString(2));
+                    ConfigureBO.setMenuNumber((c.getString(3)));
+                    ConfigureBO.setMandatory((c.getInt(4)));
+                    ConfigureBO.setHasLink(c.getInt(5));
+                    String str = c.getString(7);
+                    if (str != null && !str.isEmpty()) {
+                        if (str.contains("<") && str.contains(">")) {
+
+                            String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                            if (minlen != null && !minlen.isEmpty()) {
+                                try {
+                                    ConfigureBO.setMaxLengthNo(Integer.parseInt(minlen));
+                                } catch (Exception ex) {
+                                    Commons.printException("min len in new outlet helper", ex);
+                                }
+                            }
+                        }
+                    }
+                    ConfigureBO.setRegex(c.getString(7));
+                    profileConfig.add(ConfigureBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public Vector<ConfigureBO> getProfileConfiguraion() {
+        return profileConfig;
+
+    }
+
+    public void loadImageType() {
+        imageTypeList.clear();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_IMAGE_TYPE'");
+            if (c.getCount() > 0) {
+                setImageTypeList(new Vector<NewOutletBO>());
+                while (c.moveToNext()) {
+                    imageType = new NewOutletBO();
+                    imageType.setListId(c.getInt(0));
+                    imageType.setListName(c.getString(2));
+                    getImageTypeList().add(imageType);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    /**
+     * @author rajesh.k
+     * Method to use download location for new retailer creation
+     */
+    public void downloadLocationMaster() {
+
+        mLocationListByLevelId = new LinkedHashMap<>();
+
+        LocationBO locationBo;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sb = "select LM.LocId,LM.LocCode,LM.LocName,LM.LocParentId,LL.id  from LocationMaster LM " +
+                    "inner join  (select distinct id from LocationLevel LL1 inner join LocationMaster LM1" +
+                    " on  LL1.id=LM1.LocLevelId order by Sequence desc  limit 3) LL " +
+                    "on LL.id=LM.LocLevelId";
+            Cursor c = db.selectSQL(sb);
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    ArrayList<LocationBO> locationList = new ArrayList<>();
+                    int levelId = 0;
+                    while (c.moveToNext()) {
+                        locationBo = new LocationBO();
+                        locationBo.setLocId(c.getInt(0));
+                        locationBo.setLocCode(c.getString(1));
+                        locationBo.setLocName(c.getString(2));
+                        locationBo.setParentId(c.getInt(3));
+
+                        if (levelId != c.getInt(4)) {
+                            if (levelId != 0) {
+                                mLocationListByLevelId.put(levelId,
+                                        locationList);
+
+                                locationList = new ArrayList<>();
+                                locationList.add(locationBo);
+                                levelId = c.getInt(4);
+
+
+                            } else {
+
+                                locationList.add(locationBo);
+                                levelId = c.getInt(4);
+
+                            }
+                        } else {
+                            locationList.add(locationBo);
+                        }
+
+                    }
+
+                    if (locationList.size() > 0) {
+                        mLocationListByLevelId.put(levelId, locationList);
+
+                    }
+                }
+                c.close();
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+
+        } finally {
+            db.closeDB();
+        }
+
+    }
+
+
+    public LinkedHashMap<Integer, ArrayList<LocationBO>> getLocationListByLevId() {
+        return mLocationListByLevelId;
+    }
+
+    public boolean isRetailerAlreadyAvailable(String retailerName, String pincode) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT A.pincode FROM  RetailerAddress A"
+                            + " WHERE A.RetailerId IN (SELECT RetailerId FROM RetailerMaster WHERE RetailerName = '" + retailerName + "')"
+                            + " AND A.pincode = '" + pincode + "'");
+            if (c.getCount() > 0) {
+                c.close();
+                return true;
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return false;
+        }
+        return false;
+    }
+
+    public ArrayList<String> getNearbyRetailerIds(String retailerId) {
+        ArrayList<String> lst = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" + retailerId + "' and upload='Y'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    lst.add(c.getString(0));
+                }
+
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+
+        }
+        return lst;
+    }
+
+    public HashMap<String, String> getLstEditRequests() {
+        return lstEditRequests;
+    }
+
+    HashMap<String, String> lstEditRequests = new HashMap<>();
+
+    public void getNearbyRetailersEditRequest(int retailerId) {
+        lstEditRequests.clear();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT nearbyrid,status from RrtNearByEditRequest where rid=" + retailerId + " and upload='N'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    lstEditRequests.put(c.getString(0), c.getString(1));
+                }
+
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+
+    public ArrayList<StandardListBO> downloadTaxType() {
+        ArrayList<StandardListBO> taxTypeList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sb = "select listid,listname from standardlistmaster where listtype='CERTIFICATE_TYPE'";
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                StandardListBO standardListBO;
+                while (c.moveToNext()) {
+                    standardListBO = new StandardListBO();
+                    standardListBO.setListID(c.getString(0));
+                    standardListBO.setListName(c.getString(1));
+                    taxTypeList.add(standardListBO);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return taxTypeList;
+
+    }
+
+    public ArrayList<StandardListBO> downloadClaasType() {
+        ArrayList<StandardListBO> classTypeList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sb = "select listid,listname from standardlistmaster where listtype='CLASS_TYPE'";
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                StandardListBO standardListBO;
+                while (c.moveToNext()) {
+                    standardListBO = new StandardListBO();
+                    standardListBO.setListID(c.getString(0));
+                    standardListBO.setListName(c.getString(1));
+                    classTypeList.add(standardListBO);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return classTypeList;
+
+    }
+
+    public ArrayList<StandardListBO> downloadPriorityProducts() {
+        ArrayList<StandardListBO> priorityproductList = null;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sb = "select  priorityproductid,pname,ProductLevelId from PriorityProducts  pp inner join productmaster pm " +
+                    " on pm.pid=pp.priorityproductid  and pm.plid=pp.productlevelid";
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                priorityproductList = new ArrayList<>();
+                StandardListBO standardListBO;
+                while (c.moveToNext()) {
+                    standardListBO = new StandardListBO();
+                    standardListBO.setListID(c.getString(0));
+                    standardListBO.setListName(c.getString(1));
+                    standardListBO.setListCode(c.getString(2));
+                    priorityproductList.add(standardListBO);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return priorityproductList;
+    }
+
+    public ArrayList<String> downloadPriorityProductsForRetailer(String retailerId) {
+        ArrayList<String> priorityproductList = null;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + bmodel.QT(retailerId);
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                priorityproductList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    priorityproductList.add(c.getString(0));
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return priorityproductList;
+    }
+
+    public ArrayList<String> downloadPriorityProductsForRetailerEdit(String retailerId) {
+        ArrayList<String> priorityproductList = null;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + bmodel.QT(retailerId);
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                priorityproductList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    priorityproductList.add(c.getString(0));
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return priorityproductList;
+    }
+
+    public ArrayList<String> downloadNearbyRetailers(String retailerId) {
+        ArrayList<String> nearByRetailers = null;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sql = "select  nearbyrid from NearByRetailers where rid=" + bmodel.QT(retailerId);
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                nearByRetailers = new ArrayList<>();
+                while (c.moveToNext()) {
+                    nearByRetailers.add(c.getString(0));
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return nearByRetailers;
+    }
+
+
+    public String getListName(int listid, String type) {
+        String name = "";
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sb = "select listname from standardlistmaster " +
+                    "where listtype=" + bmodel.QT(type) + " and listid=" + listid;
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    name = c.getString(0);
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return name;
+    }
+
+    public String getLevelame() {
+        return levelame;
+    }
+
+    String levelame = "";
+
+    public ArrayList<ChannelBO> getChannelList() {
+        ArrayList<ChannelBO> channelList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String sql = "SELECT ChName,ChId,cl.levelname FROM ChannelHierarchy ch"
+                    + " inner join channellevel cl on cl.levelid=ch.levelid WHERE ch.LevelId = (SELECT LevelId FROM ChannelLevel WHERE Sequence = (SELECT rfield FROM HhtModuleMaster WHERE hhtCode= 'FUN36' AND flag = 1))";
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                ChannelBO channelBO;
+                while (c.moveToNext()) {
+                    channelBO = new ChannelBO();
+                    channelBO.setChannelId(c.getInt(1));
+                    channelBO.setChannelName(c.getString(0));
+                    levelame = c.getString(2);
+                    channelList.add(channelBO);
+                }
+            }
+            c.close();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return channelList;
+    }
+
+    public void savePriorityProducts(NewOutletBO newOutletBO) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String columns = "RetailerId,ProductId,LevelId,upload";
+            StringBuffer sb;
+            final ArrayList<StandardListBO> productIdList = newOutletBO.getPriorityProductList();
+            if (productIdList != null) {
+                for (StandardListBO bo : productIdList) {
+                    sb = new StringBuffer();
+                    sb.append(bmodel.QT(id));
+                    sb.append(",");
+                    sb.append(bo.getListID());
+                    sb.append(",");
+                    sb.append(bo.getListCode());
+                    sb.append(",'N'");
+                    db.insertSQL("RetailerPriorityProducts", columns, sb.toString());
+
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+    }
+
+    private NewOutletBO newoutlet;
+
+    public NewOutletBO getNewoutlet() {
+        return newoutlet;
+    }
+
+    public void setNewoutlet(NewOutletBO newoutlet) {
+        this.newoutlet = newoutlet;
+    }
+
+    public boolean saveNewOutlet(boolean isEdit) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String column, value;
+
+            NewOutletBO outlet = getNewoutlet();
+
+            if (isEdit) {
+                db.deleteSQL("RetailerMaster", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerContact", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAddress", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAttribute", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
+
+            } else {
+                // edit option not allowed for image
+                for (int i = 0; i < outlet.ImageId.size(); i++) {
+
+                    column = "RetailerID,ListId,ImageName,upload";
+
+                    value = QT(getId())
+                            + ","
+                            + outlet.ImageId.get(i)
+                            + ","
+                            + QT("/RetailerImages/"
+                            + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+                            + "/"
+                            + bmodel.userMasterHelper.getUserMasterBO()
+                            .getUserid() + "/"
+                            + (outlet.ImageName.get(i))) + "," + QT("N");
+
+                    db.insertSQL("NewOutletImage", column, value);
+                }
+            }
+
+            if (bmodel.getNearByRetailers() != null
+                    && bmodel.getNearByRetailers().size() > 0) {
+                bmodel.saveNearByRetailers(getId());
+            }
+
+            if (outlet.getPriorityProductList() != null
+                    && outlet.getPriorityProductList().size() > 0) {
+                savePriorityProducts(outlet);
+            }
+
+            column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
+                    + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
+                    "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
+                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber";
+
+            value = QT(getId())
+                    + "," + QT(outlet.getOutletName())
+                    + "," + outlet.getChannel()
+                    + "," + outlet.getSubChannel()
+                    + "," + QT(outlet.getRouteid() + "")
+                    + "," + QT(outlet.getVisitDays())
+                    + "," + getNewoutlet().getLocid()
+                    + "," + getNewoutlet().getCreditLimit()
+                    + "," + getNewoutlet().getPayment()
+                    + "," + QT(getNewoutlet().getTinno())
+                    + "," + QT(getNewoutlet().getRfield3())
+                    + "," + QT(getNewoutlet().getDistid())
+                    + "," + QT(getNewoutlet().getTaxTypeId())
+                    + "," + getNewoutlet().getContractStatuslovid()
+                    + "," + getNewoutlet().getClassTypeId()
+                    + "," + 0
+                    + "," + QT("Y")
+                    + "," + QT("N")
+                    + "," + getNewoutlet().getCreditDays()
+                    + "," + getNewoutlet().getIsSEZ()
+                    + "," + getNewoutlet().getGstNum();
+
+
+            db.insertSQL("RetailerMaster", column, value);
+
+
+            column = "RetailerID,contactname,ContactName_LName,contactNumber," +
+                    "contact_title,contact_title_lovid,IsPrimary,Upload";
+
+            if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
+                value = QT(getId())
+                        + "," + QT(outlet.getContactpersonname())
+                        + "," + QT(getNewoutlet().getContactpersonnameLastName())
+                        + "," + QT(outlet.getPhone())
+                        + "," + QT(getNewoutlet().getContact1title())
+                        + "," + getNewoutlet().getContact1titlelovid()
+                        + "," + 1
+                        + "," + QT("N");
+                db.insertSQL("RetailerContact", column, value);
+            }
+            if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
+                value = QT(getId())
+                        + "," + QT(outlet.getContactpersonname2())
+                        + "," + QT(getNewoutlet().getContactpersonname2LastName())
+                        + "," + QT(outlet.getPhone2())
+                        + "," + QT(getNewoutlet().getContact2title())
+                        + "," + getNewoutlet().getContact2titlelovid()
+                        + "," + 0
+                        + "," + QT("N");
+                db.insertSQL("RetailerContact", column, value);
+            }
+
+            column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary";
+
+            value = QT(getId())
+                    + "," + QT(outlet.getAddress())
+                    + "," + QT(outlet.getAddress2())
+                    + "," + QT(outlet.getAddress3())
+                    + "," + QT(outlet.getPhone())
+                    + "," + QT(outlet.getCity())
+                    + "," + QT(outlet.getNewOutletlattitude() + "")
+                    + "," + QT(outlet.getNewOutletLongitude() + "")
+                    + "," + QT(getNewoutlet().getEmail())
+                    + "," + QT(getNewoutlet().getFax())
+                    + "," + QT(getNewoutlet().getPincode())
+                    + "," + QT(getNewoutlet().getState())
+                    + "," + QT("N")
+                    + "," + 1;
+
+            db.insertSQL("RetailerAddress", column, value);
+
+            column = "RetailerId, AttributeId, LevelId, Upload";
+            for (NewOutletAttributeBO attributeBO : outlet.getAttributeList()) {
+                value = QT(getId())
+                        + "," + attributeBO.getAttrId()
+                        + "," + attributeBO.getLevelId()
+                        + "," + QT("N");
+                db.insertSQL("RetailerAttribute", column, value);
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER && getOrderedProductList().size() > 0) {
+                String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + SDUtil.now(SDUtil.DATE_TIME_ID);
+                String uid = QT(id);
+
+                if (bmodel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+                    bmodel.insertSeqNumber("ORD");
+                    uid = QT(bmodel.downloadSequenceNo("ORD"));
+                }
+
+                column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
+                value = uid
+                        + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + "," + QT(getId())
+                        + "," + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
+                        + "," + bmodel.getOrderHeaderBO().getOrderValue()
+                        + "," + bmodel.getOrderHeaderBO().getLinesPerCall()
+                        + "," + bmodel.getOrderHeaderBO().getTotalWeight()
+                        + "," + QT(bmodel.getOrderHeaderBO().getRemark())
+                        + "," + QT(SDUtil.now(SDUtil.TIME));
+                db.insertSQL("OrderHeaderRequest", column, value);
+
+                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight";
+                for (ProductMasterBO productMasterBO : getOrderedProductList()) {
+                    if (productMasterBO.getOrderedPcsQty() > 0) {
+                        value = uid
+                                + "," + QT(productMasterBO.getProductID())
+                                + "," + productMasterBO.getOrderedPcsQty()
+                                + "," + productMasterBO.getPcUomid()
+                                + "," + productMasterBO.getSrp()
+                                + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
+                                + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight();
+                        db.insertSQL("OrderDetailRequest", column, value);
+                    }
+                    if (productMasterBO.getOrderedCaseQty() > 0) {
+                        value = uid
+                                + "," + QT(productMasterBO.getProductID())
+                                + "," + productMasterBO.getOrderedCaseQty()
+                                + "," + productMasterBO.getCaseUomId()
+                                + "," + productMasterBO.getCsrp()
+                                + "," + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
+                                + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight();
+                        db.insertSQL("OrderDetailRequest", column, value);
+                    }
+                    if (productMasterBO.getOrderedOuterQty() > 0) {
+                        value = uid
+                                + "," + QT(productMasterBO.getProductID())
+                                + "," + productMasterBO.getOrderedOuterQty()
+                                + "," + productMasterBO.getOuUomid()
+                                + "," + productMasterBO.getOsrp()
+                                + "," + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp()
+                                + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight();
+                        db.insertSQL("OrderDetailRequest", column, value);
+                    }
+                }
+            }
+            if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR && getOpprProductList().size() > 0) {
+                column = "rid, pid, facing,IsOwn,Price";
+                for (ProductMasterBO productMasterBO : getOpprProductList()) {
+
+                    value = QT(getId())
+                            + "," + QT(productMasterBO.getProductID())
+                            + "," + productMasterBO.getQty_klgs()
+                            + "," + productMasterBO.getOwn()
+                            + "," + productMasterBO.getOrderPricePiece();
+                    db.insertSQL("RetailerPotential", column, value);
+                }
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public String getRetailerId_edit() {
+        return retailerId_edit;
+    }
+
+    public void setRetailerId_edit(String retailerId_edit) {
+        this.retailerId_edit = retailerId_edit;
+    }
+
+    private String retailerId_edit;
+
+    public void downloadLinkRetailer() {
+        try {
+            mLinkRetailerList = new Vector<>();
+            mLinkRetailerListByDistributorId = new SparseArray<>();
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster " +
+                    "order by Distributorid ";
+            Cursor c = db.selectSQL(sb);
+            Vector<RetailerMasterBO> linkRetailerList = new Vector<>();
+            int distributorId = 0;
+            RetailerMasterBO linkRetailerBO;
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    linkRetailerBO = new RetailerMasterBO();
+
+                    linkRetailerBO.setDistributorId(c.getInt(0));
+                    linkRetailerBO.setRetailerID(c.getString(1));
+                    linkRetailerBO.setRetailerName(c.getString(2));
+                    linkRetailerBO.setLatitude(c.getDouble(3));
+                    linkRetailerBO.setLongitude(c.getDouble(4));
+                    linkRetailerBO.setPincode(c.getString(5));
+                    mLinkRetailerList.add(linkRetailerBO);
+                    if (distributorId != linkRetailerBO.getDistributorId()) {
+                        if (distributorId != 0) {
+                            mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
+                            linkRetailerList = new Vector<>();
+                            linkRetailerList.add(linkRetailerBO);
+                            distributorId = linkRetailerBO.getDistributorId();
+
+                        } else {
+                            linkRetailerList.add(linkRetailerBO);
+                            distributorId = linkRetailerBO.getDistributorId();
+                        }
+                    } else {
+                        linkRetailerList.add(linkRetailerBO);
+                    }
+
+
+                }
+                if (linkRetailerList.size() > 0) {
+                    mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
+                }
+            }
+            c.close();
+            db.closeDB();
+
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+
+    }
+
+    public SparseArray<Vector<RetailerMasterBO>> getLinkRetailerListByDistributorId() {
+        return mLinkRetailerListByDistributorId;
+    }
+
+    public Vector<RetailerMasterBO> getLinkRetailerList() {
+        return mLinkRetailerList;
+    }
+
+    public String getmSelectedChannelname() {
+        return mSelectedChannelname;
+    }
+
+    public void setmSelectedChannelname(String mSelectedChannelname) {
+        this.mSelectedChannelname = mSelectedChannelname;
+    }
+
+    public ArrayList<String> getRetialerIds(String suppilerID) {
+        ArrayList<String> mRetailerIds = new ArrayList<String>();
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("select distinct rid from Suppliermaster ");
+            sb.append("where sid=" + QT(suppilerID));
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mRetailerIds.add(c.getString(0));
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+            return new ArrayList<String>();
+        }
+
+        return mRetailerIds;
+    }
+
+}

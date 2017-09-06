@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/WHITE"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <Spinner
+        android:id="@+id/feedback_type"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:spinnerMode="dropdown" />
+
+    <LinearLayout
+        android:id="@+id/ranking_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_icon_outlet_gold_left_new" />
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_icon_outlet_gold_left_new" />
+
+        <ImageView
+            android:id="@+id/iv3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_icon_outlet_gold_left_new" />
+
+        <ImageView
+            android:id="@+id/iv4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_icon_outlet_gold_left_new" />
+
+        <ImageView
+            android:id="@+id/iv5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_icon_outlet_gold_left_new" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/feedback_txt"
+        style="@style/EditTextDoubleLine"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:hint="@string/feedback"
+        android:maxLength="250" />
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:text="Submit"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

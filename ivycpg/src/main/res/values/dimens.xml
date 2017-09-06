@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2011 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<resources>
+
+    <dimen name="settings_pref_margin">15dp</dimen>
+    <dimen name="dimens_1dp">1dp</dimen>
+    <dimen name="profile_margin_top_minus2">-4dp</dimen>
+
+    <dimen name="pdt_image">130dp</dimen>
+
+    <dimen name="screen_title_height">40dp</dimen>
+    <dimen name="screen_title_padding">4dp</dimen>
+    <dimen name="list_title_padding">4dp</dimen>
+    <dimen name="list_item_padding">4dp</dimen>
+
+    <dimen name="whats_on_item_padding">10dp</dimen>
+
+
+
+    <dimen name="space_between_edt">10dp</dimen>
+
+    <!-- Filter width -->
+    <dimen name="filter_slider_width">260dp</dimen>
+    <dimen name="filter_button_height">50dp</dimen>
+    <dimen name="filter_image_size">30dp</dimen>
+    <dimen name="selected_filter_image_size">15dp</dimen>
+
+    <!-- UI Elements -->
+
+    <dimen name="list_title_height">26dp</dimen>
+    <dimen name="list_item_height">40dp</dimen>
+    <dimen name="list_item_height_double_line">55dp</dimen>
+    <dimen name="list_product_name_width_tiny">140dp</dimen>
+    <dimen name="list_product_name_width_init">160dp</dimen>
+    <dimen name="list_product_name_width">180dp</dimen>
+    <dimen name="list_product_name_width_medium">185dp</dimen>
+    <dimen name="list_product_name_width_small">175dp</dimen>
+    <dimen name="list_item_width_double">80dp</dimen>
+    <dimen name="list_item_width">50dp</dimen>
+    <dimen name="list_item_width_medium">67dp</dimen>
+    <dimen name="list_item_width_large">90dp</dimen>
+
+    <!-- Dashboard -->
+    <dimen name="list_item_width_dashboard_small">90dp</dimen>
+    <dimen name="list_item_width_dashboard_medium">185dp</dimen>
+
+    <!-- Invoice creation Screen -->
+    <dimen name="discount_editbox_width">60dp</dimen>
+
+    <!-- Spinner -->
+    <dimen name="spinner_width">160dp</dimen>
+
+    <!-- Order Summary Screen -->
+    <dimen name="sku_text_product_name">250dp</dimen>
+    <dimen name="sku_text_qty">80dp</dimen>
+    <dimen name="stock_screen_txtview_height">35dp</dimen>
+    <dimen name="order_summary_dialog_height">300dp</dimen>
+
+    <!-- Visit Targe Screen -->
+    <dimen name="visit_lst_img_width">20dp</dimen>
+    <dimen name="visit_info_img_width">28dp</dimen>
+    <dimen name="visit_lst_txtvalue_width">50dp</dimen>
+
+    <!-- New Visit List Screen -->
+    <dimen name="non_visit_list_item_height_width">40dp</dimen>
+
+    <!-- Order and Stock Screen -->
+    <dimen name="order_stock_list_product_name_width">148dp</dimen>
+    <dimen name="order_stock_list_item_width">40dp</dimen>
+    <dimen name="order_stock_list_item_width_small">40dp</dimen>
+    <dimen name="order_stock_list_item_width_large">90dp</dimen>
+    <dimen name="meter_text_width">50dp</dimen>
+    <dimen name="meter_value_width_large">100dp</dimen>
+    <dimen name="visit_scree_list_two_row">60dp</dimen>
+    <dimen name="order_stock_list_item_width_xlarge">45dp</dimen>
+    <dimen name="order_stock_list_product_name_width_xlarge">148dp</dimen>
+    <dimen name="order_stock_list_barcode">140dp</dimen>
+
+    <!--Distributor StockCheck Screen-->
+
+    <!-- Target Plan Screen -->
+    <dimen name="target_plan_name_width">220dp</dimen>
+    <dimen name="target_plan_reference_width">100dp</dimen>
+    <dimen name="target_plan_editbox_width">90dp</dimen>
+    <!-- Order Split -->
+    <dimen name="ordersplit_heder_name_width">150dp</dimen>
+    <dimen name="ordersplit_heder_qty_width">100dp</dimen>
+    <dimen name="ordersplit_heder_images_width">70dp</dimen>
+
+    <!-- digital Screen -->
+    <dimen name="digital_screen_name_width">260dp</dimen>
+
+    <dimen name="digital_text_bg_height">32dp</dimen>
+    <dimen name="digital_content_image_height">100dp</dimen>
+    <dimen name="digital_bottom_margin">105dp</dimen>
+
+    <!-- Search Filter -->
+    <dimen name="filter_icon">24dp</dimen>
+    <dimen name="prodcode_width">90dp</dimen>
+
+    <!-- Activity Menu Font size -->
+    <dimen name="list_view_width">300dp</dimen>
+    <dimen name="list_item_height_reports">42dp</dimen>
+    <dimen name="sih_width_stock_view">100dp</dimen>
+
+    <dimen name="atd_marigin_top">10dp</dimen>
+
+    <!-- NEAR EXPIRY -->
+    <dimen name="audit_width">60dp</dimen>
+    <dimen name="availability_value">65dp</dimen>
+
+
+    <!-- Sales Return Activity -->
+    <dimen name="sr_list_view_width">70dp</dimen>
+    <dimen name="sr_list_view_width_large">120dp</dimen>
+    <dimen name="sr_list_view_margin_left">5dp</dimen>
+
+    <!-- print preview -->
+    <dimen name="pp_case_unit">35dp</dimen>
+    <dimen name="pp_outer_price">65dp</dimen>
+    <dimen name="pp_case_price">65dp</dimen>
+    <dimen name="pp_unit_price">50dp</dimen>
+    <dimen name="pp_discount">55dp</dimen>
+    <dimen name="pp_row_case_unit">45dp</dimen>
+    <dimen name="pp_row_outer_price">60dp</dimen>
+    <dimen name="pp_row_discount">50dp</dimen>
+    <dimen name="pp_row_upc">130dp</dimen>
+    <dimen name="pp_row_upc_padding">100dp</dimen>
+    <dimen name="pp_row_amount">50dp</dimen>
+
+    <!-- print preview diageo -->
+    <dimen name="ppd_code">35dp</dimen>
+    <dimen name="ppd_brand">100dp</dimen>
+    <dimen name="ppd_case">65dp</dimen>
+    <dimen name="ppd_bot">65dp</dimen>
+    <dimen name="ppd_unit_price">50dp</dimen>
+    <dimen name="ppd_amount">55dp</dimen>
+    <dimen name="ppd_batch">60dp</dimen>
+
+    <!-- Scheme Dialog Height -->
+    <dimen name="scheme_dialog_height">400dp</dimen>
+
+    <!-- New Visit Fragment -->
+    <dimen name="promo_photo">100dp</dimen>
+    <dimen name="avail_barcode">140dp</dimen>
+    <dimen name="task_retname">150dp</dimen>
+
+    <dimen name="homethreelist_view_width">300dp</dimen>
+
+    <!-- Price Tracking -->
+    <dimen name="price_product_name">200dp</dimen>
+    <dimen name="price_value">75dp</dimen>
+
+    <dimen name="competitor_edt_height">60dp</dimen>
+    <dimen name="competitor_heder_width">60dp</dimen>
+
+    <!-- sku wise target -->
+    <dimen name="swt_target_width">60dp</dimen>
+    <dimen name="swt_achieved_width">70dp</dimen>
+
+    <dimen name="crown_header_height">22dp</dimen>
+    <dimen name="crown_list_title_height">45dp</dimen>
+
+    <!-- OTR - Non Field-->
+    <dimen name="date">120dp</dimen>
+
+    <!-- Report -->
+    <dimen name="report_base_sbd">212dp</dimen>
+    <dimen name="sno_width">35dp</dimen>
+    <dimen name="product_name_twenty_five_character">180dp</dimen>
+    <dimen name="product_name_twenty_character">140dp</dimen>
+    <dimen name="eighteen_characters_width">135dp</dimen>
+    <dimen name="five_character_width">50dp</dimen>
+    <dimen name="list_view_height_volume_report">60dp</dimen>
+
+    <!-- Share Of Shelf Screen -->
+    <dimen name="dimen_0dp">0dp</dimen>
+    <dimen name="dimen_1dp">1dp</dimen>
+    <dimen name="dimen_2dp">2dp</dimen>
+    <dimen name="dimen_4dp">4dp</dimen>
+    <dimen name="dimen_5dp">5dp</dimen>
+    <dimen name="dimen_6dp">6dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="dimen_10dp">10dp</dimen>
+    <dimen name="dimen_12dp">12dp</dimen>
+    <dimen name="dimen_14dp">14dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_18dp">18dp</dimen>
+    <dimen name="dimen_20dp">20dp</dimen>
+    <dimen name="dimen_22dp">22dp</dimen>
+    <dimen name="dimen_30dp">30dp</dimen>
+    <dimen name="dimen_40dp">40dp</dimen>
+    <dimen name="dimen_60dp">60dp</dimen>
+    <dimen name="dimen_80dp">80dp</dimen>
+    <dimen name="dimen_100dp">100dp</dimen>
+    <dimen name="dimen_120dp">120dp</dimen>
+    <dimen name="height_default_screen_title">30dp</dimen>
+    <dimen name="height_list_row">40dp</dimen>
+
+
+    <dimen name="ivy_logo_width">200dp</dimen>
+    <dimen name="ivy_logo_height">90dp</dimen>
+    <dimen name="dialog_height">500dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="expandedTitleMarginStart">48dp</dimen>
+    <dimen name="expandedTitleMarginEnd">64dp</dimen>
+
+    <dimen name="mvpface">120dp</dimen>
+    <dimen name="mvppadding">2dp</dimen>
+    <dimen name="mvpbadgepadding">5dp</dimen>
+    <dimen name="mvpbadgelayoutwidth">55dp</dimen>
+    <dimen name="mvpbadgewidth">45dp</dimen>
+    <dimen name="mvpteambadgewidth">80dp</dimen>
+    <dimen name="mvprankpaddingtop">4dp</dimen>
+    <dimen name="mvprankpaddingright">4dp</dimen>
+
+    <dimen name="dashreportnamewidth">90dp</dimen>
+    <dimen name="homescreenlist_view_width">300dp</dimen>
+    <dimen name="mvpbadge_more_icon_width">40dp</dimen>
+    <dimen name="mvp_field_margin">3dp</dimen>
+
+
+    <!-- Retailer selection download screen-->
+
+    <dimen name="first_layout_height">180dp</dimen>
+    <dimen name="second_layout_height">180dp</dimen>
+    <dimen name="first_layout_width">320dp</dimen>
+    <dimen name="first_layout_lv_width">240dp</dimen>
+    <dimen name="add_btn_widht">50dp</dimen>
+
+
+    <!-- storewise gallery size -->
+    <dimen name="grid_item_size">90dp</dimen>
+    <dimen name="recycler_view_height">300dp</dimen>
+
+    <!-- Non Field Activity -->
+    <dimen name="add_dialog_header_height">40dp</dimen>
+    <dimen name="fromdate_width">63dp</dimen>
+    <dimen name="todate_width">40dp</dimen>
+    <dimen name="nonfield_screen_margin">2dp</dimen>
+    <dimen name="nonfield_descr_width">75dp</dimen>
+    <dimen name="description_edt_width">230dp</dimen>
+
+    <!-- Retailer Kpi -->
+    <dimen name="title_width">80dp</dimen>
+
+    <dimen name="serial_no_qty_width">50dp</dimen>
+
+
+    <!-- counter sales -->
+
+
+    <!-- Task Assign Starts -->
+    <dimen name="absentees_lv_width">280dp</dimen>
+    <dimen name="absentees_tv_height">30dp</dimen>
+
+
+    <dimen name="present_lv_width">400dp</dimen>
+
+    <!-- Task Assign Ends -->
+
+
+    <!-- TL Attendance Starts -->
+    <dimen name="header_merch_name_width">250dp</dimen>
+    <dimen name="header_attendance_width">120dp</dimen>
+    <dimen name="attendance_lv_height">40dp</dimen>
+    <dimen name="margin_top_spinner">5dp</dimen>
+    <dimen name="readiness_btn_height">35dp</dimen>
+    <dimen name="attendance_lv_width">30dp</dimen>
+    <dimen name="attendance_header_height">30dp</dimen>
+
+    <!-- TL Attendance Ends -->
+
+    <dimen name="tv_osamt_height">35dp</dimen>
+    <dimen name="mode_top_margin">0dp</dimen>
+    <dimen name="collection_total_height">35dp</dimen>
+    <dimen name="cheque_no_width">300dp</dimen>
+    <dimen name="cheque_no_height">40dp</dimen>
+    <dimen name="near_expiry_dialog_height">350dp</dimen>
+
+
+
+
+    <dimen name="order_lay_height">35dp</dimen>
+    <dimen name="card_elevation">3dp</dimen>
+    <dimen name="recycler_margin">5dp</dimen>
+    <dimen name="brand_recy_height">90dp</dimen>
+    <dimen name="brand_image">70dp</dimen>
+
+    <!-- Custom Keyboard-->
+
+    <dimen name="pdt_kb_margin">5dp</dimen>
+    <dimen name="padding_rb">2dp</dimen>
+    <dimen name="padding_l">15dp</dimen>
+
+    <dimen name="sih_so_w">70dp</dimen>
+    <dimen name="no_btn_h">40dp</dimen>
+
+    <dimen name="can_ok_btn_h">35dp</dimen>
+    <dimen name="value_txt_h">50dp</dimen>
+
+
+    <!--For Retailer Selection-->
+    <dimen name="margin_5px">5px</dimen>
+    <dimen name="margin_10px">10px</dimen>
+
+    <dimen name="margin_20px">8dp</dimen>
+
+    <dimen name="list_vertical_seperator">20dp</dimen>
+
+
+    <dimen name="toolbar_image_top">20dp</dimen>
+    <dimen name="toolbar_image_height">80dp</dimen>
+    <dimen name="floating_btn_elevation">3dp</dimen>
+    <dimen name="list_card_height">65dp</dimen>
+    <dimen name="outlet_left_margin">2.5dp</dimen>
+
+    <dimen name="icons_left_margin">12dp</dimen>
+    <dimen name="icons_top_margin">3dp</dimen>
+    <dimen name="retailer_margin_right">3dp</dimen>
+
+    <dimen name="store_margin_top">10dp</dimen>
+    <dimen name="store_margin_left">6dp</dimen>
+    <dimen name="margin_24px_width">8dp</dimen>
+    <dimen name="margin_height">16dp</dimen>
+    <dimen name="radio_button_gap">4dp</dimen>
+    <dimen name="new_ret_height">20dp</dimen>
+    <dimen name="new_ret_width">40dp</dimen>
+    <dimen name="beat_spinner_min">30dp</dimen>
+    <dimen name="card_child_margin">2dp</dimen>
+    <dimen name="ret_card_elevation">3dp</dimen>
+
+    <dimen name="ret_card_image">25dp</dimen>
+    <dimen name="ret_list_div">1dp</dimen>
+    <dimen name="fab1_bottom_margin">60dp</dimen>
+    <dimen name="fab2_bottom_margin">120dp</dimen>
+    <dimen name="fab3_bottom_margin">170dp</dimen>
+    <dimen name="retailer_map_button_hegight">20dp</dimen>
+    <dimen name="retailer_map_button_width">35dp</dimen>
+    <dimen name="ratiler_map_bottomview_height">80dp</dimen>
+    <dimen name="retailer_5dp">-1dp</dimen>
+    <!--End Retailer Selection-->
+
+    <!-- Burger Menu -->
+    <dimen name="user_logo_width">56dp</dimen>
+    <dimen name="user_logo_height">56dp</dimen>
+
+
+    <dimen name="menu_icon_width">14dp</dimen>
+    <dimen name="menu_icon_height">14dp</dimen>
+
+    <dimen name="list_item_space">38dp</dimen>
+    <dimen name="header_height">172dp</dimen>
+    <dimen name="header_top_padding">34dp</dimen>
+    <dimen name="footer_icon_width">14dp</dimen>
+    <dimen name="space_betwn_icon_and_text">12dp</dimen>
+
+    <!-- Burger Menu -->
+
+    <!--  ButtonSmallRoundCorner-->
+    <dimen name="btn_small_round_corner_height">26dp</dimen>
+    <dimen name="btn_small_round_corner_width">56dp</dimen>
+
+    <dimen name="btn_small_round_corner_padding">6dp</dimen>
+
+    <!--  ButtonRoundCorner-->
+    <dimen name="btn_round_corner_height">35dp</dimen>
+    <dimen name="btn_round_corner_width">65dp</dimen>
+
+    <dimen name="btn_round_corner_padding">8dp</dimen>
+
+
+    <dimen name="piechart_radius">50dp</dimen>
+    <dimen name="spinner_layout_height">45dp</dimen>
+    <dimen name="spinner_layout_bg_height">30dp</dimen>
+    <dimen name="target_top_margin">6dp</dimen>
+    <dimen name="divder_margin">15dp</dimen>
+    <dimen name="pie_chart_margin_right">6dp</dimen>
+    <dimen name="collasping_height">190dp</dimen>
+    <dimen name="view_pager_height">150dp</dimen>
+    <dimen name="drop_draw_pading">24dp</dimen>
+    <dimen name="skuwise_right_margin">3dp</dimen>
+    <dimen name="viewpager_indicator_height">30dp</dimen>
+    <dimen name="viewpger_padding">7dp</dimen>
+    <dimen name="dash_margin">12dp</dimen>
+
+
+    <!-- Deviate Retailer screen-->
+    <dimen name="week_button_width">55dp</dimen>
+    <dimen name="week_button_height">22dp</dimen>
+    <dimen name="day_spinner_width">95dp</dimen>
+
+    <dimen name="week_scroll_height">25dp</dimen>
+    <dimen name="margin_week_layout">16dp</dimen>
+    <dimen name="select_week_width">80dp</dimen>
+
+    <dimen name="margin_left_retailer_name">15dp</dimen>
+    <dimen name="margin_top_retailer_name">10dp</dimen>
+    <dimen name="retailer_list_margin_left">10dp</dimen>
+    <dimen name="drop_down_text_height">25dp</dimen>
+
+    <dimen name="hrs_text_margin_top">10dp</dimen>
+    <!--  Deviate Retailer selection dialog-->
+    <dimen name="reason_height">100dp</dimen>
+
+
+    <!-- Login screen -->
+    <dimen name="loginbox_header">74dp</dimen>
+    <dimen name="loginbox_width">250dp</dimen>
+    <dimen name="loginbox_height">325dp</dimen>
+    <dimen name="space_betwn_edittext">17dp</dimen>
+
+    <dimen name="header_image_height">37dp</dimen>
+    <dimen name="settings_icon_height">16dp</dimen>
+    <dimen name="login_box_footer_height">36dp</dimen>
+    <dimen name="login_content_padding">26dp</dimen>
+    <dimen name="edittext_height">40dp</dimen>
+    <dimen name="forgot_text_width">55dp</dimen>
+    <dimen name="login_btn_bottom_margin">4dp</dimen>
+    <dimen name="resetbox_header_height">54dp</dimen>
+
+    <!-- Login screen -->
+
+    <!-- New Design - Common Themes -->
+    <dimen name="tab_selection_identifier_height">3dp</dimen>
+
+
+    <dimen name="list_header_height">40dp</dimen>
+
+    <dimen name="special_filter_item_width">40dp</dimen>
+
+    <dimen name="special_filter_height">30dp</dimen>
+    <dimen name="search_edt_margin_left_n_right">9dp</dimen>
+    <dimen name="search_edt_margin_bottom">6dp</dimen>
+    <dimen name="list_margin">4dp</dimen>
+    <dimen name="footer_padding">4dp</dimen>
+
+    <dimen name="footer_height">45dp</dimen>
+
+    <dimen name="list_padding_left_n_right">5dp</dimen>
+    <dimen name="list_item_padding_top_nd_bottom">10dp</dimen>
+
+    <dimen name="filter_drawer_footer_height">50dp</dimen>
+    <dimen name="filter_level_list_width">120dp</dimen>
+    <dimen name="filter_level_height">50dp</dimen>
+
+    <dimen name="filter_secondary_list_height">36dp</dimen>
+    <dimen name="date_picker_drawable_padding">5dp</dimen>
+    <!-- New Design - Common Themes -->
+
+    <!--Asset Screen-->
+
+
+    <dimen name="list_item_inter_margin">5dp</dimen>
+    <dimen name="list_item_date_picker_width">80dp</dimen>
+    <dimen name="list_item_date_picker_height">30dp</dimen>
+
+    <!--Asset Screen-->
+
+    <!--For Planogram-->
+
+    <dimen name="plano_card_height">80dp</dimen>
+    <dimen name="plano_list_left_margin">8dp</dimen>
+    <dimen name="plano_list_right_margin">6dp</dimen>
+    <dimen name="plano_list_top_margin">5dp</dimen>
+    <dimen name="plano_rb_padding">4dp</dimen>
+    <dimen name="plano_img_margin_top">16dp</dimen>
+    <dimen name="plano_img_margin_left">6dp</dimen>
+    <dimen name="plano_list_header_left">14dp</dimen>
+    <dimen name="plano_list_header_top">5dp</dimen>
+    <dimen name="plano_list_header_bottom">8dp</dimen>
+    <dimen name="plano_img_left">8dp</dimen>
+    <dimen name="plano_img_right">20dp</dimen>
+    <dimen name="plano_rb_left">9dp</dimen>
+    <dimen name="plano_rb_gap">7dp</dimen>
+    <dimen name="plano_img_margin_right">5dp</dimen>
+    <dimen name="plano_save_padding">5dp</dimen>
+    <dimen name="plano_list_footer_line">0.5dp</dimen>
+    <dimen name="plano_save_top">10dp</dimen>
+    <dimen name="plano_adherence_bottom">3dp</dimen>
+    <!--For Planogram-->
+
+    <dimen name="spinner_height">50dp</dimen>
+
+
+    <!--Activity Screen-->
+
+    <dimen name="activity_list_height">30dp</dimen>
+    <dimen name="activity_list_icon_size">15dp</dimen>
+
+    <dimen name="sub_activity_list_height">40dp</dimen>
+    <dimen name="sub_activity_list_icon_circle">15dp</dimen>
+    <dimen name="sub_activity_list_icon_line_width">2dp</dimen>
+
+
+    <dimen name="activity_store_count_view_height">40dp</dimen>
+
+
+    <dimen name="activity_margin1">10dp</dimen>
+    <dimen name="activity_margin2">15dp</dimen>
+    <dimen name="activity_margin3">20dp</dimen>
+    <dimen name="activity_margin4">75dp</dimen>
+    <dimen name="activity_divider_height">1dp</dimen>
+    <dimen name="activity_screen_padding">5dp</dimen>
+    <dimen name="column_padding">2dp</dimen>
+
+
+    <dimen name="icon">35dp</dimen>
+    <dimen name="icon_height">36dp</dimen>
+
+    <dimen name="main_photo_width">90dp</dimen>
+    <dimen name="survey_card_margin">5dp</dimen>
+    <dimen name="survey_group_margin_left">7dp</dimen>
+    <dimen name="survey_group_margin_height">5dp</dimen>
+    <dimen name="footer_margin_left">5dp</dimen>
+    <dimen name="footer_margin_top">13dp</dimen>
+    <dimen name="side_layout_margin_bottom">5dp</dimen>
+    <dimen name="one_dp_width">1dp</dimen>
+    <!--For Survey-->
+
+    <!-- Sync screen -->
+
+    <dimen name="store_card_height">60dp</dimen>
+    <dimen name="card_margin_lr">5dp</dimen>
+    <dimen name="card_margin_top">10dp</dimen>
+    <dimen name="syn_back_margin">2dp</dimen>
+    <dimen name="content_margin_lr">30dp</dimen>
+    <!--SOS-->
+    <dimen name="ic_camera_right_margin">4dp</dimen>
+    <dimen name="ic_camera_right_padding">4dp</dimen>
+
+    <dimen name="sos_dialog_height">150dp</dimen>
+    <dimen name="sos_dialog_margin">8dp</dimen>
+    <dimen name="keyboard_height">25dp</dimen>
+    <dimen name="row_top_margin">8dp</dimen>
+    <dimen name="total_layout_height">45dp</dimen>
+
+    <!--SOS proj specific-->
+
+
+    <dimen name="values_editextWidth">50dp</dimen>
+    <dimen name="values_each_margin">10dp</dimen>
+    <dimen name="content_each_margin">5dp</dimen>
+    <dimen name="cicle_radus">7dp</dimen>
+    <dimen name="cicle_margin">4dp</dimen>
+    <dimen name="brand_text_margin">6dp</dimen>
+
+    <!--For Competitor Tracking-->
+    <dimen name="competitor_recycler_view_height">45dp</dimen>
+    <dimen name="tab_indicator_height">2dp</dimen>
+
+    <!--For Competitor Tracking-->
+
+    <!--Profile Screen -->
+
+    <dimen name="profile_collopsing_layout_height">200dp</dimen>
+    <!--<dimen name="profile_header_frame_layout_height">154dp</dimen>-->
+    <dimen name="profile_header_frame_layout_height">50dp</dimen>
+    <dimen name="profile_header_img">35dp</dimen>
+    <dimen name="profile_header_img_marginleft">12dp</dimen>
+    <dimen name="profile_header_img_height">18dp</dimen>
+    <dimen name="profile_header_img_width">22dp</dimen>
+    <dimen name="profile_header_img_margin_lftrht">10dp</dimen>
+    <dimen name="profile_header_txt_layout_marginbottom">2.5dp</dimen>
+    <dimen name="profile_header_txt_layout_marginleft">5dp</dimen>
+
+
+    <dimen name="profile_header_store_text_line_spcing">0.18dp</dimen>
+    <dimen name="profile_header_second_txt_line_spacing">0.10dp</dimen>
+    <dimen name="profile_margin_top_minus">-5dp</dimen>
+    <dimen name="profile_floatingbtn_marginright">25dp</dimen>
+    <dimen name="profile_botton_layout_height">60dp</dimen>
+    <dimen name="profile_custom_label_txt">5dp</dimen>
+    <dimen name="profile_dimention">10dp</dimen>
+    <dimen name="profile_margin_26dp">18dp</dimen>
+    <dimen name="profile_22dp">15dp</dimen>
+    <dimen name="prfoile_28dp">14dp</dimen>
+    <dimen name="profile_23dp">12dp</dimen>
+    <dimen name="profile_31dp">16dp</dimen>
+    <dimen name="profile_30dp">15dp</dimen>
+    <dimen name="profile_minus5dp">0dp</dimen>
+    <dimen name="report_minus5dp">-5dp</dimen>
+
+    <dimen name="profile_spinner_top_margin">3dp</dimen>
+    <dimen name="profile_history_10dp">5dp</dimen>
+    <dimen name="profile_history_20dp">10dp</dimen>
+    <dimen name="profile_history_25dp">12.5dp</dimen>
+    <dimen name="profile_bistoyr_line_space">0.8dp</dimen>
+
+
+
+    <!--photo capture screen-->
+    <!--checked dimen in 600*1024-->
+    <dimen name="photo_capture_app_bar_height">250dp</dimen>
+
+    <dimen name="cardview_lay_margintop">225dp</dimen>
+    <dimen name="cardview_marginleftright">15dp</dimen>
+
+
+    <dimen name="savebtn_paddingleftright">2dp</dimen>
+    <dimen name="savebtn_minwd">75dp</dimen>
+
+    <dimen name="padding">2dp</dimen>
+
+
+    <dimen name="feedbck_edit_ht">110dp</dimen>
+    <dimen name="feedbck_edit_marginleftright">8dp</dimen>
+    <dimen name="feedbck_edit_margintopbtm">0dp</dimen>
+
+    <dimen name="retake_img_wd_ht">50dp</dimen>
+
+    <dimen name="spin_linlay_margin">4dp</dimen>
+    <dimen name="spin_linlay_padding">2dp</dimen>
+
+    <dimen name="card_rel_margin">8dp</dimen>
+
+
+    <dimen name="date_btn_padding">3dp</dimen>
+    <dimen name="date_lay_margin">5dp</dimen>
+
+    <dimen name="card_two_lay_margin">2dp</dimen>
+    <dimen name="card_two_margintop">1dp</dimen>
+    <dimen name="spin_ht">50dp</dimen>
+    <!--photo capture screen-->
+
+
+    <!--Near Expiry-->
+    <dimen name="near_expiry_dialog_divider_padding">10dp</dimen>
+    <dimen name="list_items_date_picker_height">30dp</dimen>
+    <dimen name="dialog_list_item_left_margin">16dp</dimen>
+    <dimen name="dialog_list_item_margin">10dp</dimen>
+
+
+    <!--Price Screen-->
+    <dimen name="last_price_values_width">30dp</dimen>
+    <!--Price Screen-->
+
+    <!--Avalibality-->
+    <dimen name="right_margin">12dp</dimen>
+    <dimen name="radio_margin">9dp</dimen>
+    <dimen name="card_margin">7dp</dimen>
+
+    <dimen name="ret_image_size">15dp</dimen>
+
+
+    <!--spinner dropdown vertical offset-->
+    <!--spinner dropdown vertical offset-->
+
+    <!-- Call analysis Screen -->
+    <dimen name="close_call_btn_width">90dp</dimen>
+    <dimen name="call_analysis_footer_min_height">50dp</dimen>
+
+
+    <dimen name="store_status_star_width">21dp</dimen>
+    <dimen name="store_status_star_height">22dp</dimen>
+
+
+    <dimen name="sale_header_height">50dp</dimen>
+
+    <dimen name="seekbar_height">10dp</dimen>
+    <dimen name="seekbar_margin_top_n_bottom">6dp</dimen>
+
+    <dimen name="reason_spinner_height">30dp</dimen>
+
+    <dimen name="no_reason_camera_width">30dp</dimen>
+    <!-- Call analysis Screen -->
+    <!--Activation Screen-->
+    <dimen name="activation_card_view_height">200dp</dimen>
+    <dimen name="activation_ivy_logo_width">200dp</dimen>
+    <dimen name="activation_ivy_logo_height">60dp</dimen>
+    <dimen name="background_height">180dp</dimen>
+    <dimen name="activation_card_view_padding_left_n_right">10dp</dimen>
+    <dimen name="activation_card_view_margin_left_n_right">10dp</dimen>
+    <dimen name="activation_button_padding">14dp</dimen>
+
+    <dimen name="button_padding">10dp</dimen>
+    <dimen name="textview_width">80dp</dimen>
+    <!--Activation Screen-->
+
+    <!--Sales Return-->
+    <dimen name="close_icon_size">20dp</dimen>
+    <dimen name="close_icon_pading">5dp</dimen>
+
+    <!--settings screen-->
+    <dimen name="settings_margin_top_btm">10dp</dimen>
+
+    <!--settings screen-->
+
+    <!--gallery screen-->
+    <dimen name="gall_rec_item_padding">5dp</dimen>
+    <!--gallery screen-->
+
+    <!--Order Summary-->
+    <dimen name="info_icon">24dp</dimen>
+
+    <!--Collection Screen-->
+
+    <dimen name="dimens_2dp">1dp</dimen>
+    <dimen name="dimens_4dp">3dp</dimen>
+    <dimen name="dimens_6dp">3dp</dimen>
+    <dimen name="dimens_8dp">4dp</dimen>
+    <dimen name="dimens_10dp">5dp</dimen>
+    <dimen name="dimens_12dp">6dp</dimen>
+    <dimen name="dimens_14dp">8dp</dimen>
+    <dimen name="dimens_16dp">12dp</dimen>
+    <dimen name="dimens_18dp">14dp</dimen>
+    <dimen name="dimens_20dp">16dp</dimen>
+    <dimen name="dimens_22dp">16dp</dimen>
+    <dimen name="dimens_30dp">22dp</dimen>
+    <dimen name="dimens_40dp">35dp</dimen>
+    <dimen name="dimens_50dp">40dp</dimen>
+    <dimen name="dimens_60dp">50dp</dimen>
+    <dimen name="dimens_80dp">65dp</dimen>
+    <dimen name="dimens_100dp">80dp</dimen>
+    <dimen name="dimens_120dp">90dp</dimen>
+    <dimen name="dimens_180dp">150dp</dimen>
+    <dimen name="dimens_200dp">160dp</dimen>
+    <dimen name="dimens_360dp">320dp</dimen>
+
+
+    <dimen name="change_pwd_padding">2dp</dimen>
+
+    <dimen name="margin_minus20dp">-10dp</dimen>
+
+    <!-- Collection Report -->
+    <dimen name="icon_drop_list">12dp</dimen>
+    <dimen name="print_spinner_height">50dp</dimen>
+    <!-- Collection Report -->
+
+    <dimen name="comp_margin">2dp</dimen>
+    <!--Stock and order-->
+    <dimen name="widht_large">48dp</dimen>
+    <dimen name="widht_medium">45dp</dimen>
+
+    <!--custom keyboard dialog-->
+    <dimen name="custom_keyboard_width">350dp</dimen>
+
+
+    <!-- Generic Text size *********************** Don't change the values -->
+
+    <!-- username,password etc -->
+
+    <!-- new retailer, comments etc -->
+
+    <!-- order, stock and other list entry -->
+
+    <!-- new retailer, survey, non-productive reason collection,Dashaboard, deviation -->
+    <dimen name="spinner_normal">12sp</dimen>
+    <!-- Order entry, stock entry, sales return entry, price check, asset entry -->
+
+    <!-- Generic text size-->
+
+    <dimen name="text_sz_extra_small">8sp</dimen>
+    <dimen name="text_sz_small">10sp</dimen>
+    <dimen name="text_sz_medium">12sp</dimen>
+
+
+    <!-- user name in home menu, retailer name in profile and activity menu etc -->
+    <dimen name="highlight_small">20sp</dimen>
+    <!-- stores in trade coverage etc -->
+    <dimen name="highlight_normal">22sp</dimen>
+    <!-- Beat name in trade coverage etc -->
+    <dimen name="highlight_large">24sp</dimen>
+
+    <!--Title text in List-->
+    <dimen name="list_primary">12sp</dimen>
+    <dimen name="list_secondary">10sp</dimen>
+
+    <dimen name="actionbar_title_text_size">20sp</dimen>
+
+
+    <!-- ALL test size -->
+
+    <dimen name="font_nano_small">10sp</dimen>
+    <dimen name="font_micro_small">12sp</dimen>
+    <dimen name="font_small">14sp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="font_large">18sp</dimen>
+
+
+    <dimen name="menu_name_text_size">15sp</dimen>
+    <dimen name="drop_down_text_font_size">12sp</dimen>
+
+    <!--Dashboard-->
+    <dimen name="kpi_spinner_title_size">12sp</dimen>
+    <dimen name="value_text_size">12sp</dimen>
+    <dimen name="factor_title_size">14sp</dimen>
+    <dimen name="total_title_size">18sp</dimen>
+    <dimen name="incentive_value_size">16sp</dimen>
+    <dimen name="percent_value_size">12sp</dimen>
+
+
+    <dimen name="special_filter_item_text_size">4sp</dimen>
+    <dimen name="search_edt_text_size">10sp</dimen>
+
+    <!-- remove this with micro_small -->
+    <dimen name="list_item_primary_text_size">12sp</dimen>
+
+    <!-- Login - clear it later -->
+    <dimen name="version_text_size">10sp</dimen>
+    <dimen name="forgot_text_size">12sp</dimen>
+    <dimen name="login_edittext_text_size">14sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">10sp</dimen>
+    <dimen name="list_header_secondary_text_size">8sp</dimen>
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">10sp</dimen>
+    <dimen name="btn_round_corner_text_size">12sp</dimen>
+
+    <!-- Footer text size -->
+    <dimen name="greyed_text_size">10sp</dimen>
+    <dimen name="footer_lbl_text_size">14sp</dimen>
+
+    <!-- Five level filter text size -->
+    <dimen name="filter_level_text_size">10sp</dimen>
+    <dimen name="filter_list_secondary_text_size">12sp</dimen>
+
+
+    <!-- Activity screen title text -->
+    <dimen name="activity_name_text_size">16sp</dimen>
+    <dimen name="sub_activity_name_text_size">12sp</dimen>
+    <dimen name="activation_edittext_text_size">14sp</dimen>
+
+    <dimen name="survey_answer_left">15dp</dimen>
+    <dimen name="gallery_card_margin">10dp</dimen>
+</resources>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <HorizontalScrollView
+            android:id="@+id/scroll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/eighteen_characters_width"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/measure" >
+                    </TextView>
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/eighteen_characters_width"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/ap3m" >
+                    </TextView>
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/eighteen_characters_width"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/monthly_objective" >
+                    </TextView>
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/eighteen_characters_width"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/actual" >
+                    </TextView>
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_double"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/index" >
+                    </TextView>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/header"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:drawSelectorOnTop="false"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" >
+                </ListView>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</LinearLayout>

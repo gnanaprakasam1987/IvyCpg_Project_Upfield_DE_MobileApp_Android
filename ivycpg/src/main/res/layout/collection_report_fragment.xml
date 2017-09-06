@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardviewlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_margin"
+        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="5dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/ll_footer">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ExpandableListView
+                android:id="@+id/collection_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="1dp"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:childDivider="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                android:groupIndicator="@null"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:listSelector="@drawable/list_selector">
+            </ExpandableListView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <LinearLayout
+        android:id="@+id/ll_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black_bg1"
+        android:weightSum="3"
+        android:paddingTop="@dimen/margin_20px"
+        android:paddingBottom="@dimen/margin_20px"
+        android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.7"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_collected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text="Total Collected"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/tot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text="Total Cash"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/totcash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cheque"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text="Total Cheque"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/tocheque"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:textSize="@dimen/login_edittext_text_size"
+                android:text=""
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_dd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:tag="dd"
+                android:text="Total DD"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/total_dd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_creditNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text="Total Credit Note"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/totCn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_rtgs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:tag="dd"
+                android:text="Total RTGS"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/total_rtgs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mob_pymt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:tag="dd"
+                android:text="Total Mobile Payment"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textColor="@color/GREEN" />
+
+            <TextView
+                style="?textFieldStyle"
+                android:id="@+id/total_mob_payment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textSize="@dimen/login_edittext_text_size"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/activity_list_icon_size"
+            android:layout_height="@dimen/activity_list_icon_size"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:src="@drawable/activity_icon_next"
+            android:layout_weight=".3"/>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,13 @@
+<ripple    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="?android:colorControlHighlight"
+    tools:targetApi="lollipop">
+    <!-- Pressed -->
+    <item android:state_pressed="true" android:drawable="@color/colorPrimaryAlpha" />
+    <!-- Selected -->
+    <item android:state_selected="true" android:drawable="@color/colorPrimaryAlpha" />
+    <!-- Focus -->
+    <item android:state_focused="true" android:drawable="@color/colorPrimaryAlpha" />
+    <!-- Default -->
+    <item android:drawable="@color/screen_bg_color"/>
+</ripple>

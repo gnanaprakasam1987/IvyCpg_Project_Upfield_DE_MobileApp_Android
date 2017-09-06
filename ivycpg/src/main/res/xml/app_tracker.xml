@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- End current session if app sleeps for a period of time -->
+    <integer name="ga_sessionTimeout">300</integer>
+
+    <!-- Enable automatic Activity measurement -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <!--  The property id associated with this analytics tracker -->
+    <string name="ga_trackingId">UA-81841235-1</string>
+
+    <string name="ga_sampleFrequency">100.0</string>
+
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <screenName name="com.ivy.sd.png.view.LoginScreen">Login Screen</screenName>
+    <screenName name="com.ivy.sd.png.view.HomeScreenActivity">Home Screen</screenName>
+
+    <screenName name="com.ivy.sd.png.view.NewOutlet">New Retailer Creation</screenName>
+    <screenName name="com.ivy.sd.png.view.PlanningActivity">Trade Coverage</screenName>
+    <screenName name="com.ivy.sd.png.view.Synchronization">Sync Screen</screenName>
+    <screenName name="com.ivy.sd.png.view.reports.ReportActivity">Report</screenName>
+    <screenName name="com.ivy.sd.png.view.van.LoadManagementScreen">LoadManagement</screenName>
+
+    <screenName name="com.ivy.sd.png.view.SKUWiseTargetActivity">SKU Wise Target</screenName>
+    <screenName name="com.ivy.sd.png.view.van.StockProposalScreen">Stock Proposal</screenName>
+    <screenName name="com.ivy.sd.png.view.SellerDashBoardActivity">KPI Seller DashBoard</screenName>
+    <screenName name="com.ivy.sd.png.view.DashBoardActivity">DashBoard</screenName>
+    <screenName name="com.ivy.sd.png.view.KellogsDashBoardActivity">Kellogs DashBoard</screenName>
+    <screenName name="com.ivy.sd.png.view.van.VanStockAdjustActivity">Van Stock Adjustment
+    </screenName>
+    <screenName name="com.ivy.sd.png.view.OrderSplitMasterScreen">Order Split</screenName>
+    <screenName name="com.ivy.sd.png.view.JoinCallActivity">Join Call</screenName>
+    <screenName name="com.ivy.sd.png.view.DigitalContentDisplay">Digital Content</screenName>
+    <screenName name="com.ivy.sd.png.view.RoadActivity">RoadActivity Screen</screenName>
+    <screenName name="com.ivy.sd.png.view.OrderFullfillmentRetailerSelection">Order Fulfilment -
+        RetailerSelection
+    </screenName>
+    <screenName name="com.ivy.sd.png.view.OrderFullfillment">Order Fulfilment</screenName>
+    <screenName name="com.ivy.sd.png.view.MVPActivity">MVP Screen</screenName>
+    <screenName name="com.ivy.sd.png.view.LeaveApproval">Leave Approval</screenName>
+    <screenName name="com.ivy.sd.png.view.ExpenseActivity">Expense Screen</screenName>
+
+    <screenName name="com.ivy.sd.png.view.NonFieldActivity">Non Field Activity</screenName>
+    <screenName name="com.ivy.sd.png.view.AttendanceActivity">Attendance</screenName>
+    <screenName name="com.ivy.sd.png.view.NonFieldActivityTwo">In and Out</screenName>
+    <screenName name="com.ivy.sd.png.view.WebViewPlanActivity">WebView Plan</screenName>
+    <screenName name="com.ivy.sd.png.view.TLAttendanceActivity">ReAllocation</screenName>
+
+    <screenName name="com.ivy.sd.png.view.StockAndOrder">StockAndOrder</screenName>
+    <screenName name="com.ivy.sd.png.view.OrderNewOutlet">OrderNewOutlet</screenName>
+    <screenName name="com.ivy.sd.png.view.OpportunityNewOutlet">Opportunity</screenName>
+    <screenName name="com.ivy.sd.png.view.Task">Task</screenName>
+    <screenName name="com.ivy.sd.png.view.PhotoCaptureActivity">Photo Capture</screenName>
+    <screenName name="com.ivy.sd.png.view.CollectionScreen">Collection</screenName>
+    <screenName name="com.ivy.sd.png.view.SalesReturnWithActionBar">Sales Return</screenName>
+    <screenName name="com.ivy.sd.png.view.PlanogramActivity">Planogram</screenName>
+    <screenName name="com.ivy.sd.png.view.CallAnalysisActivity">Call Analysis</screenName>
+    <screenName name="com.ivy.sd.png.view.CloseCallActivity">Close Call</screenName>
+    <screenName name="com.ivy.sd.png.view.CallAnalysisQDVP3">Call Analysis - QDVP3</screenName>
+    <screenName name="com.ivy.sd.png.view.DeliveryManagement">Delivery Management</screenName>
+
+    <screenName name="com.ivy.sd.png.view.van.OdaMeterScreen">OdaMeter Screen</screenName>
+    <screenName name="com.ivy.sd.png.view.van.StockProposalScreen">Stock Proposal</screenName>
+    <screenName name="com.ivy.sd.png.view.van.ManualVanLoadActivity">Manual VanLoad</screenName>
+    <screenName name="com.ivy.sd.png.view.van.StockViewActivity">Stock View</screenName>
+    <screenName name="com.ivy.sd.png.view.van.CurrentStockBatchViewActivity">Current Stock - Batch
+        Wise
+    </screenName>
+    <screenName name="com.ivy.sd.png.view.van.VanUnloadActivity">Van Unload</screenName>
+
+    <screenName name="com.ivy.cpg.primarysale.view.PrimarySaleActivity">PrimarySale_Distributor
+        Selection
+    </screenName>
+    <screenName name="com.ivy.cpg.primarysale.view.PrimarySaleHomeScreenActivity">PrimarySale_Menu
+        Screen
+    </screenName>
+    <screenName name="com.ivy.cpg.primarysale.view.InvoiceStatusActivity">PrimarySales_Invoice
+        Status
+    </screenName>
+    <screenName name="com.ivy.cpg.primarysale.view.PrimarySaleStockAndOrderFragmentActivity">
+        PrimarySales_Stock and Order
+    </screenName>
+    <screenName name="com.ivy.cpg.primarysale.view.PrimarySaleStockCheckFragmentActivity">
+        PrimarySales_Stock Check
+    </screenName>
+
+    <screenName name="com.ivy.countersales.CSRetailerProfile">Counter Sales - Retailer Profile
+    </screenName>
+    <screenName name="com.ivy.countersales.CSStockCheckActivity">CounterSale_Stock Check
+    </screenName>
+    <screenName name="com.ivy.sd.png.view.CounterPlanogramActivity">CounterSale_Planogram
+    </screenName>
+    <screenName name="com.ivy.countersales.CustomerVisitActivity">CounterSale_Customer Visit
+    </screenName>
+
+    <screenName name="com.ivy.countersales.CSConsultingActivity">CS_CustomerVisit_Consultation
+    </screenName>
+    <screenName name="com.ivy.countersales.CSFreeSample">CS_CustomerVisit_Free Sample</screenName>
+    <screenName name="com.ivy.countersales.CSapply">CS_CustomerVisit_Test</screenName>
+    <screenName name="com.ivy.countersales.CSsale">CS_CustomerVisit_Sales</screenName>
+    <screenName name="com.ivy.countersales.CSapply">CS_CustomerVisit_Test</screenName>
+
+</resources>

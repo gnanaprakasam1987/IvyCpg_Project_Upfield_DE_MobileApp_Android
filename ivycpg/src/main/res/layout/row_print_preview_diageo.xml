@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/productnamelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/productcode"
+            android:layout_width="@dimen/ppd_code"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:text="@string/no"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/product_name_tv"
+            android:layout_width="@dimen/ppd_brand"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+    
+
+        <TextView
+            android:id="@+id/caseqty"
+            android:layout_width="@dimen/ppd_case"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/pieceqty"
+            android:layout_width="@dimen/ppd_bot"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/unitprice"
+            android:layout_width="@dimen/ppd_unit_price"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="@dimen/ppd_amount"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/hiffen"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+    </LinearLayout>
+
+</LinearLayout>

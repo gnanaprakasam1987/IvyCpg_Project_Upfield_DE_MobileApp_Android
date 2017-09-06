@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+  <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="95"
+        android:title="@string/fivefilter"
+        ivydist:showAsAction="always"/>
+   <item
+        android:id="@+id/menu_bottle_return"
+        android:icon="@drawable/ic_action_bottle_return"
+        android:orderInCategory="96"
+        android:title="Bottle Return"
+        android:visible="true"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_product_filter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="97"
+        android:title="@string/prd_filter"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_next"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="98"
+        android:title="@string/save"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+   
+   
+
+</menu>

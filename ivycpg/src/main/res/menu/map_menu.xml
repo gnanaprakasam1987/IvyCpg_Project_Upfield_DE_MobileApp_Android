@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+   <item
+       android:id="@+id/nearRet"
+       android:icon="@drawable/near_ret"
+       ivydist:showAsAction="always"
+       android:orderInCategory="3"
+       android:title="Near By Retailer">
+   </item>
+   <item
+      android:id="@+id/show_me"
+      android:icon="@drawable/ic_show_me_map"
+      ivydist:showAsAction="always"
+      android:orderInCategory="4"
+      android:title="Show Me">
+   </item> 
+   <item
+      android:id="@+id/show_places"
+      android:icon="@drawable/ic_show_all_map"
+      ivydist:showAsAction="always"
+      android:orderInCategory="5"
+      android:title="Show Places">
+   </item>
+	<item
+      android:id="@+id/clear_route"
+      android:icon="@drawable/ic_clear_map"
+      ivydist:showAsAction="always"
+      android:orderInCategory="6"
+      android:title="Clear Route">
+   </item>
+</menu>

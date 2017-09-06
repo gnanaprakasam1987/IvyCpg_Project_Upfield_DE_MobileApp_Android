@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/reason_spinner_height"
+    android:drawableRight="@android:drawable/arrow_down_float"
+    android:gravity="left|center_vertical"
+    android:maxLines="1"
+    android:textSize="@dimen/greyed_text_size"
+    android:text="dasjgdjasgdjkasg"
+    android:textColor="@color/WHITE"
+    android:background="@drawable/edittext_bottom_border"/>

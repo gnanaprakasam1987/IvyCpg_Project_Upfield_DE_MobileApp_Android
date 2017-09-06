@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="@dimen/card_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_prodname_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/product_name"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/productName"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="cjashcjk" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_reason"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/reasonTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="reason"
+                android:text="@string/reason"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/tv_reason"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mfd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mfgDateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="mfg_date"
+                android:text="@string/mfg_date"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/mfgDate"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_expd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/expDateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="exp_date"
+                android:text="@string/exp_date"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/expDate"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_invoiceno"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/invoicenoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invoice_no"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/invoiceno"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_lotno"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lotnumberTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="lotnumber"
+                android:text="@string/lot_number"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/lotnumber"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_oldmrp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/oldMrpTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="old_mrp"
+                android:text="@string/old_mrp"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/oldMrp"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_srpEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/srpeditTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="srp"
+                android:text="@string/srp"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/srpedit"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_pc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/pcsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_piece"
+                android:text="@string/item_piece"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/productqtyPieces"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/caseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_case"
+                android:text="@string/item_case"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/productqtyCases"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_outer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/outercaseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_piece"
+                android:text="@string/item_outer"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/outerproductqtyCases"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_srpc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/srPcsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_sr_piece"
+                android:text="@string/rep_pcs"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/srQtyPcs"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_srcase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/srCaseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_sr_case"
+                android:text="@string/rep_case"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/srQtyCases"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_sroo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/target_top_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/srOutercaseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_sr_outer"
+                android:text="@string/rep_outer"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/srQtyouter"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:text="" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

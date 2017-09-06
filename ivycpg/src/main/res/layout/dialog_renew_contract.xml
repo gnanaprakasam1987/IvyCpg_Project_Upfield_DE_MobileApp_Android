@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/windowBackground"
+    tools:context="com.ivy.sd.png.view.LeaveApproval">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"
+        android:background="@color/blue_btn_normal_center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/text_renew_contract"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small"
+            android:text="@string/text_start_date" />
+
+        <EditText
+            android:id="@+id/et_startdate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small"
+            android:focusable="false"
+            android:inputType="none"
+            android:layout_weight="0.50"
+            android:drawableRight="@drawable/icon_monthly_plan"
+            android:hint="@string/text_select_date" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small"
+            android:gravity="center"
+            android:text="@string/text_end_date" />
+
+        <EditText
+            android:id="@+id/et_enddate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:textColor="@android:color/black"
+            android:drawableRight="@drawable/icon_monthly_plan"
+            android:textSize="@dimen/font_small"
+            android:focusable="false"
+            android:inputType="none"
+            android:hint="@string/text_select_date" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:background="@color/blue_btn_normal_center"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_medium" />
+        <TextView
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:background="@color/blue_btn_normal_center"
+            android:gravity="center"
+            android:text="@string/ok"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_medium" />
+
+    </LinearLayout>
+
+</LinearLayout>

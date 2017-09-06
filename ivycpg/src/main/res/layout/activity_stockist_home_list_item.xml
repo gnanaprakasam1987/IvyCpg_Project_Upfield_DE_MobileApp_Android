@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_screen_padding"
+    android:paddingTop="@dimen/activity_screen_padding">
+
+    <RelativeLayout
+        style="@style/ActivityListClickEffect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_screen_padding">
+
+        <LinearLayout
+            android:id="@+id/icon_ll"
+            android:layout_width="@dimen/activity_list_height"
+            android:layout_height="@dimen/activity_list_height"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/activity_margin3"
+            android:background="@drawable/activity_icon_bg_normal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/list_item_icon_iv"
+                android:layout_width="@dimen/activity_list_icon_size"
+                android:layout_height="@dimen/activity_list_icon_size"
+                android:src="@drawable/icon_call" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_arrow"
+            android:layout_width="@dimen/activity_list_icon_size"
+            android:layout_height="@dimen/activity_list_icon_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/activity_icon_next" />
+
+        <TextView
+            android:id="@+id/activityName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/activity_margin3"
+            android:layout_marginRight="@dimen/activity_margin3"
+            android:layout_toLeftOf="@id/img_arrow"
+            android:layout_toRightOf="@id/icon_ll"
+            android:textColor="#000000"
+            android:textSize="@dimen/activity_name_text_size" />
+
+    </RelativeLayout>
+
+</LinearLayout>

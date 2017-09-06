@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="95"
+        android:title="@string/fivefilter"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_remarks"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="97"
+        android:title="@string/order_remarks"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_product_filter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="99"
+        android:title="@string/prd_filter"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_photo"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="100"
+        android:title="@string/prd_filter"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_next"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="102"
+        android:title="@string/save"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/ic_new_task"
+        android:orderInCategory="95"
+        android:title="@string/addpromo"
+        ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_loc_filter"
+        android:icon="@drawable/ic_action_location_place"
+        android:title="L.F"
+        android:orderInCategory="101"
+        ivydist:showAsAction="always"/>
+
+</menu>

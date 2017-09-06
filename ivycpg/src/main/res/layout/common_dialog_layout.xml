@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_60dp"
+    android:background="@drawable/round_dialog_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_dialog_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:minHeight="@dimen/competitor_heder_width"
+            android:padding="@dimen/profile_header_txt_layout_marginleft"
+            android:text="Would you like to add this store \n in today's plan?"
+            android:textColor="?attr/primarycolor"
+            android:textSize="@dimen/font_medium"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/msg_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/profile_header_txt_layout_marginleft"
+            android:paddingRight="@dimen/profile_header_txt_layout_marginleft"
+            android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
+            android:text="Reason for visit"
+            android:textColor="?attr/primarycolor"
+            android:textSize="@dimen/font_small" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/profile_history_20dp"
+            android:layout_marginLeft="@dimen/profile_history_25dp"
+            android:layout_marginRight="@dimen/profile_history_25dp">
+
+            <ImageView
+                android:id="@+id/dialog_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/downloadsuccess"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/reason_btns"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/dialog_img"
+                android:layout_marginTop="@dimen/profile_history_10dp"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/profile_header_txt_layout_marginleft">
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    style="?attr/roundedCustomButtonNormalTransparent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginRight="@dimen/profile_history_20dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:text="@string/cancel"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_micro_small"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_done"
+                    style="?attr/roundedCustomButtonNormal"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_20dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:text="@string/ok"
+                    android:textSize="@dimen/font_micro_small" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_move_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:gravity="center"
+            android:textSize="@dimen/forgot_text_size"
+            android:text="Next Activity"
+            android:layout_marginBottom="@dimen/profile_history_10dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</FrameLayout>

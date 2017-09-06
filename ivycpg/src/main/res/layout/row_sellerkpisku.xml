@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/prdcode"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/prodcode_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/sr_list_view_margin_left"
+        android:singleLine="true"
+        android:text="@string/prod_code"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/orderPRODNAME"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/list_product_name_width"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/product_name" />
+
+    <TextView
+        android:id="@+id/tgt"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/swt_target_width"
+        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+    <TextView
+        android:id="@+id/ach"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/swt_achieved_width"
+        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+    
+    <TextView
+        android:id="@+id/ind"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/sih_width_stock_view"
+        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/zero" />
+
+</LinearLayout>

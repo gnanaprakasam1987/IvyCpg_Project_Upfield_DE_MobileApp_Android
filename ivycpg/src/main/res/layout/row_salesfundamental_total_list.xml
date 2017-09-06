@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/ic_camera_right_margin"
+    android:layout_marginRight="@dimen/ic_camera_right_margin"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center|left"
+        android:text="@string/total"
+        android:textColor="@color/task_title"
+        android:textSize="@dimen/font_small" />
+
+    <EditText
+        android:id="@+id/et"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="center|left"
+        android:maxLength="4"
+        android:text="0"
+        android:textSize="@dimen/font_small" />
+
+</LinearLayout>

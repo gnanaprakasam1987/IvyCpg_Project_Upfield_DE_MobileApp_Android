@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_login_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="#fff3f3f3"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_login_box"
+            android:background="@color/WHITE"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:minHeight="@dimen/competitor_heder_width"
+                android:padding="@dimen/profile_header_txt_layout_marginleft"
+                android:text="Enter your password"
+                android:textColor="#175fab"
+                android:textSize="@dimen/font_medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_between_edt">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                style="@style/TextViewListItemPrimary"
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/edit_username"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/list_item_height"
+                android:layout_margin="3dp"
+                android:hint="@string/username"
+                android:padding="4dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/edit_password"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/list_item_height"
+                android:layout_margin="3dp"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_30dp">
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    style="?attr/roundedCustomButtonNormalTransparent"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="@string/cancel"
+                    android:textColor="@color/Black" />
+
+                <Button
+                    android:id="@+id/btn_done"
+                    style="?attr/roundedCustomButtonNormal"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="@string/login" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

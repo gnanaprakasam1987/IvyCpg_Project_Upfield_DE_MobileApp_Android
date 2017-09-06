@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/profile_margin_26dp"
+                android:layout_marginRight="@dimen/profile_margin_26dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/profile_str_name"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/profile_31dp"
+                    android:text="@string/app_name"
+                    android:padding="2dp"
+                    android:textSize="@dimen/font_small"
+                    android:visibility="invisible" />
+                <TextView
+                    android:id="@+id/profile_retailer_code"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="@dimen/font_small"
+                    android:text="@string/app_name"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/profile_add_onetwo"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/app_name"
+                    android:padding="2dp"
+                    android:textSize="@dimen/font_micro_small"
+                    android:visibility="invisible" />
+                <TextView
+                    android:id="@+id/profile_add_three"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/profile_minus5dp"
+                    android:textSize="@dimen/font_micro_small"
+                    android:text="@string/app_name"
+                    android:padding="2dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/profile_csp"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus2"
+                    android:textSize="@dimen/font_micro_small"
+                    android:text="@string/app_name"
+                    android:padding="2dp"
+                    android:visibility="gone" />
+                <RelativeLayout
+                    android:id="@+id/contact_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/profile_22dp"
+                    android:layout_marginTop="@dimen/profile_spinner_top_margin"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profile_retailer_cno"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@+id/call_btnimg"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignTop="@+id/call_btnimg"
+                        android:layout_toLeftOf="@+id/call_btnimg"
+                        android:layout_toStartOf="@+id/call_btnimg"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="0sp"
+                        android:text="2 Street"
+                        android:textSize="@dimen/font_small"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/call_btnimg"
+                        android:layout_width="@dimen/profile_22dp"
+                        android:layout_height="@dimen/profile_22dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/profile_header_img_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
+                        android:layout_marginRight="@dimen/prfoile_28dp"
+                        android:layout_marginEnd="@dimen/prfoile_28dp"
+                        android:clickable="true"
+                        android:src="@drawable/ic_phone_call"
+                        android:tint="?attr/primarycolor" />
+
+                </RelativeLayout>
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/profile_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="true"
+                android:clipChildren="false"
+                android:scrollbars="none"
+                android:layout_marginBottom="2dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:ignore="UnusedAttribute" />
+            <LinearLayout
+                android:id="@+id/ll_Deactivate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="@dimen/dimen_5dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_20dp"
+                        android:layout_marginStart="@dimen/dimen_20dp"
+                        android:text="@string/status"
+                        android:textColor="@color/FullBlack"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        style="?attr/customListItemPrimary"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_20dp"
+                        android:layout_marginStart="@dimen/dimen_20dp"
+                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:text="Some captions will be nice to have"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/RED"
+                        android:visibility="gone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ToggleButton
+                        android:id="@+id/btn_Deactivate"
+                        android:layout_width="110dp"
+                        android:layout_height="@dimen/dimen_40dp"
+                        android:checked="false"
+                        android:layout_margin="@dimen/dimen_10dp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/button_rounded_corner_orange"
+                        android:textOff="DeActivate"
+                        android:textOn="Activate" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

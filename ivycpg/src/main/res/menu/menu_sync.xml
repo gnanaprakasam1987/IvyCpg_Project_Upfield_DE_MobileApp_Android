@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:IvyDist="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_gps_available"
+        IvyDist:showAsAction="ifRoom"
+        android:icon="@drawable/greenball"
+        android:title="Online"
+        android:orderInCategory="1011"/>
+    <item
+        android:id="@+id/menu_export_txt"
+        IvyDist:showAsAction="collapseActionView"
+        android:icon="@drawable/ic_action_icon_reports"
+        android:title="@string/export"
+        android:orderInCategory="1012"/>
+
+</menu>

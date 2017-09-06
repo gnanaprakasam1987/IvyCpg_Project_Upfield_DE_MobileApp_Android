@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/footer"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_margin"
+                android:orientation="vertical">
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:drawSelectorOnTop="false"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+                <ExpandableListView
+                    android:id="@+id/elv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:groupIndicator="@null" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/footer_height"
+            android:background="@color/footer_bg"
+            android:orientation="horizontal"
+            android:padding="@dimen/footer_padding">
+
+            <LinearLayout
+                android:id="@+id/layoutDelivery"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_round_corner_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_deliveryDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delivery_date_label"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <Button
+                    android:id="@+id/deliveryDate"
+                    style="@style/datePickerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTint="@color/BLUE"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/dummy_txt"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/footer_lbl_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/layoutDelivery"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lpcLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="2dp"
+                    android:maxLines="1"
+                    android:text="@string/lines"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lcp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:layout_margin="2dp"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/zero"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/footer_lbl_text_size" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_values"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_lines"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/totalValuelbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="2dp"
+                    android:maxLines="1"
+                    android:tag="stk_ord_value"
+                    android:text="@string/order_volume"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/totalValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:layout_margin="2dp"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/zero"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/footer_lbl_text_size" />
+
+                    <ImageView
+                        android:id="@+id/icAmountSpilitup"
+                        android:layout_width="@dimen/info_icon"
+                        android:layout_height="@dimen/info_icon"
+                        android:padding="@dimen/list_item_padding"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_info_new"
+                        android:tint="@color/BLUE" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_totqty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_values"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_totalqty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="2dp"
+                    android:maxLines="1"
+                    android:text="@string/total_qty"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_totalqty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:layout_margin="2dp"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/zero"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/footer_lbl_text_size" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/orderSummarySave"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toLeftOf="@+id/saveAndGoInvoice"
+                    android:tag="ordersave"
+                    android:text="@string/text_order"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/saveAndGoInvoice"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
+                    android:padding="@dimen/padding_rb"
+                    android:tag="invoicesave"
+                    android:text="@string/text_invoice"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

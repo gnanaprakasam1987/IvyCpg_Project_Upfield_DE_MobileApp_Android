@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/segmenttv"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/segment" />
+                    <TextView
+                        android:id="@+id/keybattlestv"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:visibility="gone"
+                        android:singleLine="true"
+                        android:text="@string/key_battles" />
+                    <TextView
+                        android:id="@+id/volumesharetv"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/volume_cases" />
+
+                    <TextView
+                        android:id="@+id/monthlysharetv"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/market_share" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/factortv"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true" />
+                    <TextView
+                        android:id="@+id/keybattlestv1"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:visibility="gone"
+                        android:singleLine="true" />
+                    <LinearLayout
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tgt1"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m3" />
+
+                        <TextView
+                            android:id="@+id/tgt2"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m2" />
+
+                        <TextView
+                            android:id="@+id/tgt3"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/ach1"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m3" />
+
+                        <TextView
+                            android:id="@+id/ach2"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m2" />
+
+                        <TextView
+                            android:id="@+id/ach3"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m1" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/planninglv"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:cacheColorHint="#000000"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:drawSelectorOnTop="true"
+                    android:fitsSystemWindows="true"
+                    android:listSelector="@drawable/list_selector"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/segmenttv1"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/segment" />
+                    <TextView
+                        android:id="@+id/keybattlestv2"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/key_battles" />
+                    <TextView
+                        android:id="@+id/volumesharetv1"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/volume_cases" />
+
+                    <TextView
+                        android:id="@+id/monthlysharetv1"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                        android:text="@string/market_share" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/factortv1"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true" />
+                    <TextView
+                        android:id="@+id/keybattlestv3"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:singleLine="true"
+                         />
+                    <LinearLayout
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tg1"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m3" />
+
+                        <TextView
+                            android:id="@+id/tg2"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m2" />
+
+                        <TextView
+                            android:id="@+id/tg3"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="@dimen/list_item_width_dashboard_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/ac1"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m3" />
+
+                        <TextView
+                            android:id="@+id/ac2"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m2" />
+
+                        <TextView
+                            android:id="@+id/ac3"
+                            style="?attr/customListTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:singleLine="true"
+                            android:text="@string/m1" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/planninglv1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+</LinearLayout>

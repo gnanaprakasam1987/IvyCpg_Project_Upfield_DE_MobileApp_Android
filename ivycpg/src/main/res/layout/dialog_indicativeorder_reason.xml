@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_noise">
+    <LinearLayout
+        android:id="@+id/LL_titleBar"
+        style="?textTitleStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/titlebar"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:padding="8dp"
+            android:text="@string/reason_req_for_indicative_order"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center"
+            android:background="@drawable/ok_tick"
+            android:gravity="right"
+            android:text="" />
+    </LinearLayout>
+<HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/LL_titleBar"
+    android:layout_marginTop="@dimen/dimen_10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/productnametitle"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+                android:layout_height="match_parent"
+                android:text="@string/product_name" />
+            <TextView
+                android:id="@+id/io_case_Title"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+                android:layout_height="wrap_content"
+                android:tag="io_case"
+                android:text="@string/io" />
+            <TextView
+                android:id="@+id/co_case_Title"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+                android:layout_height="wrap_content"
+                android:tag="co_case"
+                android:text="@string/co" />
+            <TextView
+                android:id="@+id/caseTitle"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+                android:layout_height="wrap_content"
+                android:tag="item_case"
+                android:text="@string/item_case" />
+
+            <TextView
+                android:id="@+id/outercaseTitle"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+                android:layout_height="wrap_content"
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
+
+            <TextView
+                android:id="@+id/pcsTitle"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+                android:layout_height="wrap_content"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <TextView
+                android:id="@+id/reasonTitle"
+                style="?attr/customListTitle"
+                android:layout_width="@dimen/meter_value_width_large"
+                android:layout_height="wrap_content"
+                android:tag="reasontitle"
+                android:text="@string/reason" />
+
+        </LinearLayout>
+        <ListView
+            android:id="@+id/lv_products"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cacheColorHint="@null"
+            android:divider="@android:color/white"
+            android:dividerHeight="1dp"
+            android:fitsSystemWindows="true"/>
+    </LinearLayout>
+</HorizontalScrollView>
+</RelativeLayout>

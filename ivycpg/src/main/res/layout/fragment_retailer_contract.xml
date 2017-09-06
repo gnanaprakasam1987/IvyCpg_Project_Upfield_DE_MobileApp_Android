@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_alignParentTop="true"
+        android:gravity="center">
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/footer"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/list_title_height">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/sr_list_view_width_large"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="@string/contract_name"/>
+
+                    <TextView
+                        android:id="@+id/contractType"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/avail_barcode"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:tag="contract_type"
+                        android:text="@string/contracttype"/>
+
+                    <TextView
+                        android:id="@+id/mfgDateTitle"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/sr_list_view_width"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:tag="str_date"
+                        android:text="@string/startdate"/>
+
+                    <TextView
+                        android:id="@+id/expDateTitle"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/sr_list_view_width"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:tag="end_date"
+                        android:text="@string/enddate"/>
+
+                    <TextView
+                        android:id="@+id/audit"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/audit_width"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:text="@string/renew" />
+
+                    <TextView
+                        android:id="@+id/contractStatus"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/sr_list_view_width_large"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:tag="status"
+                        android:text="@string/status"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</LinearLayout>

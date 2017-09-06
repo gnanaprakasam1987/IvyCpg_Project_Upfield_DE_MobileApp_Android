@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/root"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/footer"
+            android:layout_margin="@dimen/list_margin"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@id/footer"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/list_header_height"
+                        android:background="@color/list_title_bg_color"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/list_padding_left_n_right"
+                        android:paddingRight="@dimen/list_padding_left_n_right">
+                        <!--android:weightSum="6"-->
+                        <TextView
+                            android:id="@+id/tvdesc"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2.0"
+                            android:gravity="left|center_vertical"
+                            android:tag="promotion_name"
+                            android:text="@string/promotion_name" />
+                        <!--android:layout_weight="1.8"-->
+                        <TextView
+                            android:id="@+id/tvexecuted"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:tag="promotion_isexecuted"
+                            android:text="@string/isexecuted" />
+
+                        <TextView
+                            android:id="@+id/tvannouncer"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.7"
+                            android:tag="promotion_isexecuted"
+                            android:text="Has Announcer" />
+
+                        <TextView
+                            android:id="@+id/tvpromoqty"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:tag="promotion_qty"
+                            android:text="@string/qty" />
+
+                        <TextView
+                            android:id="@+id/tvreason"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:text="@string/reason" />
+
+                        <TextView
+                            android:id="@+id/tv_executing_rating"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:tag="promotion_ratinglevel"
+                            android:text="Executing Rating" />
+                        <!--android:layout_weight="1"-->
+                        <TextView
+                            android:id="@+id/tvphoto"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/photo" />
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/lvwplist"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:cacheColorHint="@null"
+                        android:divider="@android:color/white"
+                        android:dividerHeight="1dp"
+                        android:fitsSystemWindows="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/keypad"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_margin1"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/list_padding_left_n_right"
+                    android:layout_marginRight="@dimen/list_padding_left_n_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/activity_divider_height"
+                    android:background="@color/divider_view_color" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    style="?attr/roundedCustomButtonNormal"
+                    android:layout_marginBottom="@dimen/activity_margin1"
+                    android:layout_marginTop="@dimen/activity_margin1"
+                    android:text="@string/save"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/right_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@drawable/background_noise" />
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="101"
+        android:showAsAction="never"
+        android:title="Menu Settings"/>
+
+    <!-- 
+    <item
+        android:id="@+id/menu_zip_log"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="102"
+        android:showAsAction="never"
+        android:title="Capture Log"/> -->
+    
+    
+
+</menu>

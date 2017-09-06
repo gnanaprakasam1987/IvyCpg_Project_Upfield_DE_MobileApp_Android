@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:orientation="horizontal"
+    android:weightSum="4"
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="left"
+        android:layout_weight="3"
+        android:paddingLeft="@dimen/list_padding_left_n_right">
+
+        <TextView
+            android:id="@+id/sku"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/product_code"
+            style="?attr/customListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            android:layout_below="@+id/sku"/>
+
+        <TextView
+            android:id="@+id/barcode"
+            style="?attr/customListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            android:layout_below="@+id/product_code"/>
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/btn_audit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:background="@android:color/transparent"/>
+
+    <LinearLayout
+        android:id="@+id/rl_calendar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="0.9">
+
+         <ImageButton
+             android:id="@+id/calendar"
+             android:src="@drawable/ic_date_picker"
+             android:layout_width="wrap_content"
+             android:layout_height="@dimen/list_items_date_picker_height"
+             android:visibility="gone"
+             android:background="?attr/selectableItemBackground" />
+
+    </LinearLayout>
+    
+     <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <EditText
+            android:id="@+id/piecevalue"
+            style="@style/EditText"
+            android:layout_width="@dimen/availability_value"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLength="4"
+            android:padding="3dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <EditText
+            android:id="@+id/outervalue"
+            style="@style/EditText"
+            android:layout_width="@dimen/availability_value"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLength="4"
+            android:padding="3dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <EditText
+            android:id="@+id/casevalue"
+            style="@style/EditText"
+            android:layout_width="@dimen/availability_value"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLength="4"
+            android:padding="3dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</LinearLayout>

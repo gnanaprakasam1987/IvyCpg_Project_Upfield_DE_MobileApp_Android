@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_footer"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
+        android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
+        android:orientation="vertical">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/ll_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+
+    <!-- </ScrollView>-->
+    <RelativeLayout
+        android:id="@+id/ll_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
+        android:minHeight="@dimen/call_analysis_footer_min_height"
+        android:paddingLeft="@dimen/search_edt_margin_left_n_right"
+        android:paddingRight="@dimen/search_edt_margin_left_n_right">
+
+        <LinearLayout
+            android:id="@+id/ll_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/call_duration"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/text_sz_extra_small" />
+
+            <TextView
+                android:id="@+id/edt_time_taken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0.0.0"
+                android:textColor="@color/call_duration_value_text_color"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/button1"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="onClose"
+            android:text="@string/close_call"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+</RelativeLayout>

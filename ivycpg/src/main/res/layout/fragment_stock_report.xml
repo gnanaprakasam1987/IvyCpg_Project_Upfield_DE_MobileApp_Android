@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/footer"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/filterscreenlayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/titlebar"
+                style="?textTitleStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:text="@string/stock_report"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/thirdrow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="2dp"
+
+                    android:text="@string/brand" >
+                </TextView>
+
+                <Spinner
+                    android:id="@+id/brandSpinner"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusable="true" >
+                </Spinner>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_span="3"
+                android:gravity="left"
+                android:text=""
+                style="?textFieldStyle"
+                android:textSize="@dimen/font_small">
+            </TextView>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/prodcode_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/prod_code" />
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_name" />
+                    <TextView
+                        android:id="@+id/sihCaseTitle"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_medium"
+                        android:layout_height="wrap_content"
+
+                        android:tag="sih_case"
+                        android:text="@string/sih_case" />
+
+                    <TextView
+                        android:id="@+id/sihOuterTitle"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_medium"
+                        android:layout_height="wrap_content"
+
+                        android:tag="sih_outer"
+                        android:text="@string/sih_outer" />
+
+                    <TextView
+                        android:id="@+id/sihTitle"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/list_item_width_medium"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:tag="sih_piece"
+                        android:text="@string/sih" />
+                    </LinearLayout>
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" >
+                </ListView>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

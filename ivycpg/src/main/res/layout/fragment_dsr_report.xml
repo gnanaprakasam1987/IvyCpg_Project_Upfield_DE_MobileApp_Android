@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/measure" >
+                </TextView>
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/mtd_gap_day" >
+                </TextView>
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/obj" >
+                </TextView>
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/actual" >
+                </TextView>
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/index" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/sales"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/sales_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/sales_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/sales_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/sales_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/calls"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/calls_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/calls_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/calls_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/calls_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/pc"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/pc_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/pc_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/pc_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/pc_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/gs"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/gs_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/gs_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/gs_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/gs_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/focus_dist"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/dist_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/dist_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/dist_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/dist_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/focus_merch"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/merch_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/merch_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/merch_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/merch_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/golden_points"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/godenpoint_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/goldenpoint_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/goldenpoint_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/goldenpoint_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/total_lines"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/totlines_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/totlines_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/totlines_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/totlines_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_height_reports"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/act_stores"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/act_stores_mtdgap"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/act_stores_obj"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/act_stores_act"
+                    android:layout_width="@dimen/eighteen_characters_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/act_stores_index"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="2dp"
+                    android:text="0"
+                    android:textSize="@dimen/font_small">
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

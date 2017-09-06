@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_header_height"
+    android:background="@color/list_title_bg_color"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/productname"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center"
+        android:gravity="left|center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:padding="3dp"
+        android:text="@string/product_name" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/hvp3mtitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:padding="3dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="so"
+        android:visibility="gone"
+        android:text="@string/hvp3m" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/itemcasetitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:padding="3dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="item_case"
+        android:text="@string/item_case" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/outeritemcasetitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:padding="3dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+         android:tag="item_outer"
+        android:text="@string/item_outer" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/itempiecetitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:padding="3dp"
+        android:tag="item_piece"
+        android:text="@string/item_piece" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/sihCaseTitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="sih_case"
+        android:text="@string/sih_case" />
+
+    <TextView
+        android:id="@+id/sihOuterTitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="sih_outer"
+        android:text="@string/sih_outer" />
+
+    <TextView
+        android:id="@+id/sihTitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="sih_piece"
+        android:text="@string/sih" />
+
+    <TextView
+        android:id="@+id/distinvTitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:tag="dist_inv"
+        android:text="@string/dist_inv" />
+
+    <TextView
+        android:id="@+id/unitpricetitle"
+        style="?attr/customListTitle"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:text="@string/price" />
+
+</LinearLayout>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <include
+            android:id="@+id/reportheader"
+            layout="@layout/report_header_value"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget73"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/resetbox_header_height"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/screen_title_height"
+                android:background="@color/black_bg1"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/list_product_name_width_tiny"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/outna"
+                        style="?textFieldStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="@dimen/store_margin_top"
+                        android:tag="retailername"
+                        android:text="@string/store_name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/list_item_primary_text_size" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/outid"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:tag="value_or_volume"
+                    android:text="@string/pre_post"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/list_item_primary_text_size" />
+
+                <TextView
+                    android:id="@+id/lpc"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/plano_list_left_margin"
+                    android:tag="lines"
+                    android:text="@string/lines"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/list_item_primary_text_size" />
+
+                <TextView
+                    android:id="@+id/dist"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width_double"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/value"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/list_item_primary_text_size" />
+
+                <TextView
+                    android:id="@+id/orderidtitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_product_name_width_small"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/order_number"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/weighttitle"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:tag="weighttitle"
+                    android:text="@string/weight"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/list_item_primary_text_size" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lvwplist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/plano_list_left_margin"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="0dp"
+                android:drawSelectorOnTop="false"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

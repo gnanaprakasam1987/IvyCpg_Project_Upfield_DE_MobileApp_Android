@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_product_filter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="100"
+        android:title="P.F"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_spl_filter"
+        android:icon="@drawable/ic_action_star"
+        android:orderInCategory="99"
+        android:title="S.F"
+        ivydist:showAsAction="always" />
+
+    <!--
+         <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/icon_new_retailer"
+        android:orderInCategory="100"
+        android:title="Search"
+        ivydist:showAsAction="always"/>
+    -->
+
+    <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="101"
+        android:title="@string/fivefilter"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_remarks"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="98"
+        android:title="@string/order_remarks"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_next"
+        android:icon="@drawable/ic_action_navigation_next_item"
+        android:orderInCategory="102"
+        android:title="@string/next"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_crown"
+        android:icon="@drawable/ic_action_crown"
+        android:orderInCategory="95"
+        android:title="@string/crown"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_barcode"
+        android:icon="@drawable/ic_vector_barcode_scan"
+        android:orderInCategory="96"
+        android:title="@string/barcode"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_loc_filter"
+        android:icon="@drawable/ic_action_location_place"
+        android:title="L.F"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_survey"
+        android:icon="@drawable/icon_survey"
+        android:orderInCategory="103"
+        android:title="Survey"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_reason"
+        android:icon="@drawable/icon_review_plan"
+        android:orderInCategory="104"
+        android:title="@string/Noorderreason"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_calculator"
+        android:icon="@drawable/ic_action_calculator"
+        android:orderInCategory="105"
+        android:title="Calculator"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+</menu>

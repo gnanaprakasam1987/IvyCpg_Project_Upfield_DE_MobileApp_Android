@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/list_item_height_double_line"
+    android:paddingLeft="@dimen/list_margin"
+    android:paddingRight="@dimen/list_margin"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/stock_and_order_listview_productbarcode"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="left|center"
+        android:maxLines="1"
+        android:padding="3dp"
+        android:text="@string/barcode"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/orderPRODNAME"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:text="@string/product_name" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_liableqty"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:selectAllOnFocus="true"
+        android:text="@string/zero"
+        android:visibility="visible" />
+
+
+    <EditText
+        android:id="@+id/et_returnqty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/zero"/>
+
+</LinearLayout>

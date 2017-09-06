@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="40dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/target_top_margin"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/tv_trackinglist"
+            style="?attr/customListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:maxLines="1"
+            android:padding="@dimen/target_top_margin"
+            android:text="@string/brand" />
+
+
+        <Button
+            android:id="@+id/btn_fromdate"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/comp_margin"
+            android:clickable="true"
+            android:inputType="none"
+            android:maxLength="10"
+            android:text="11-05-2017" />
+
+        <Button
+            android:id="@+id/btn_todate"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/comp_margin"
+            android:clickable="true"
+            android:inputType="none"
+            android:maxLength="10"
+            android:text="11-05-2017" />
+
+        <LinearLayout
+            android:id="@+id/ll_photoView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_photo"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:src="@drawable/ic_photo_camera" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <CheckBox
+                android:id="@+id/chk_comp_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/target_top_margin"
+        android:layout_marginRight="@dimen/target_top_margin"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/ll_hg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_weight="1.5">
+
+            <EditText
+                android:id="@+id/edt_competitor_feedback"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/list_margin"
+                android:layout_marginTop="@dimen/list_margin"
+                android:cursorVisible="true"
+                android:gravity="left|center"
+                android:hint="@string/feedback"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="50"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LL_qty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_qty"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin"
+                android:text="@string/qty"
+                android:textSize="@dimen/font_nano_small" />
+
+            <EditText
+                android:id="@+id/et_qty"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/list_margin"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:gravity="left"
+                android:imeOptions="actionDone"
+                android:text="@string/zero" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

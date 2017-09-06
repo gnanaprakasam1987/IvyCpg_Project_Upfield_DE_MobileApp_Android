@@ -1,0 +1,11 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <!-- Pressed -->
+    <item android:state_pressed="true" android:drawable="@color/colorGreenripple_pressed"/>
+    <!-- Selected -->
+    <item android:state_selected="true" android:drawable="@color/colorGreenripple_selected" />
+    <!-- Focus -->
+    <item android:state_focused="true" android:drawable="@color/colorGreenripple_focused" />
+    <!-- Default -->
+    <item android:drawable="@color/colorPrimaryDarkGreen"/>
+</ripple>

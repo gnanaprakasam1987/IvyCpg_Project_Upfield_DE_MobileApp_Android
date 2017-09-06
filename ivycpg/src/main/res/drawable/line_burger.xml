@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <gradient
+        android:angle="0"
+        android:centerColor="@color/burgermenu_line_color"
+        android:endColor="@color/burgermenu_line_color"
+        android:gradientRadius="600"
+
+        android:startColor="@color/burgermenu_line_color" />
+
+   </shape>

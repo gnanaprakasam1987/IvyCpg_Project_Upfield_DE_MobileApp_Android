@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:orientation="vertical"
+    >
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
+        />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_16dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/customerSupport"
+        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dimen_10dp">
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="@dimen/ivy_logo_width"
+            android:layout_height="@dimen/ivy_logo_height"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ivy_mobility_logo" />
+
+
+
+        <TextView
+            android:id="@+id/copyrightWaringTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_logo"
+            android:text="@string/copyright_warning"
+            android:textColor="#000000"
+            android:textSize="@dimen/text_sz_small"
+            android:layout_marginTop="@dimen/dimen_20dp"></TextView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/appVersionTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/Black"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/version_text_size"
+                />
+
+            <TextView
+                android:id="@+id/GroupTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/copy_right"
+                android:textColor="#000000"
+                android:textSize="@dimen/version_text_size"></TextView>
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+    <TextView
+        android:id="@+id/customerSupport"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_20dp"
+        android:textColor="#000000"
+        android:text="Help Line"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/version_text_size"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

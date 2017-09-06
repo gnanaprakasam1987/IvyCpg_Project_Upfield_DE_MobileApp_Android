@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_noise"
+    android:padding="3dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="?textTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:popupTheme="@style/Theme.AppCompat.Light" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/productName2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="4dp"
+                        android:singleLine="true"
+                        android:text="@string/inv_amt"
+                        android:textColor="@color/highlighter"
+                        android:textSize="@dimen/font_small">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/tv_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="4dp"
+                        android:singleLine="true"
+                        android:text="@string/zero"
+                        android:textColor="@color/highlighter"
+                        android:textSize="@dimen/font_small">
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/minimumamount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="4dp"
+                        android:singleLine="true"
+                        android:text="@string/minimum_amount"
+                        android:textColor="@color/highlighter"
+                        android:textSize="@dimen/font_small">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/tv_minimum_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="4dp"
+                        android:singleLine="true"
+                        android:text="@string/zero"
+                        android:textColor="@color/highlighter"
+                        android:textSize="@dimen/font_small">
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_item"
+            android:orientation="vertical"
+            android:paddingTop="5dp" >
+
+            <TextView
+                style="?attr/customListTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:text="@string/mode" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget61"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:paddingRight="10dp" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp" >
+
+                    <RadioGroup
+                        android:id="@+id/chequeorcash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:textColor="@color/RED" >
+
+                        <RadioButton
+                            android:id="@+id/cashRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:tag="@string/ca"
+                            android:text="@string/cash"
+                            android:textColor="?attr/primarycolor"
+                            android:visibility="visible" >
+                        </RadioButton>
+
+                        <RadioButton
+                            android:id="@+id/chequeRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:gravity="center"
+                            android:tag="@string/cq"
+                            android:text="@string/cheque"
+                            android:textColor="?attr/primarycolor"
+                            android:visibility="visible" >
+                        </RadioButton>
+                        <RadioButton
+                            android:id="@+id/creditNoteRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:gravity="center"
+                            android:tag="@string/credit_note"
+                            android:text="@string/credit_note"
+                            android:textColor="?attr/primarycolor"
+                            android:visibility="visible" >
+                        </RadioButton>
+                    </RadioGroup>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/g"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/payTotal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lines="2"
+                android:padding="8dp"
+                android:text="@string/amt_paid"
+                android:textColor="@color/RED"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/collectionAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/enter_amount"
+                android:inputType="number"
+                android:maxLength="15" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/bankName"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/bank_name"
+                android:inputType="number"
+                android:prompt="@string/sel_bank"
+                android:text="@string/sel_bank" />
+
+            <Spinner
+                android:id="@+id/bankArea"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/branch_area"
+                android:inputType="number"
+                android:prompt="@string/sel_branch" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ccdate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/collectionchequeNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/cheque_num"
+                android:inputType="number"
+                android:maxLength="8" >
+            </EditText>
+
+            <Button
+                android:id="@+id/collectionDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textColor="@android:color/black" >
+            </Button>
+            <LinearLayout
+                android:id="@+id/linear_capturecheque"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/capturecheque"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_photo"></ImageView>
+            </LinearLayout>
+        </LinearLayout>
+        <ListView
+            android:id="@+id/lv_creditnote"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone"></ListView>
+
+
+        <LinearLayout
+            android:id="@+id/foot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="10dp" >
+
+            <Button
+                android:id="@+id/btnsubmit"
+
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/submit" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="10dp" >
+
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/keypad" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

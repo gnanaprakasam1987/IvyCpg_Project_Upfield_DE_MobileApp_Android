@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_keyboard"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:id="@+id/keypad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/keypad_bg_color"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/calcone"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="1"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calctwo"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="2"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcthree"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="3"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcfour"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="4"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcfive"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="5"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcsix"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="6"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcseven"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="7"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calceight"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="8"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcnine"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="9"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calczero"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="0"></Button>
+
+        <View
+            android:layout_width="@dimen/dimen_1dp"
+            android:layout_height="@dimen/dimen_12dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/keypad_betwn_color" />
+
+        <Button
+            android:id="@+id/calcdot"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="."
+            android:visibility="gone"></Button>
+
+        <Button
+            android:id="@+id/calcdel"
+            style="@style/ButtonKeyPad"
+            android:layout_weight="1"
+            android:onClick="numberPressed"
+            android:text="&lt;"></Button>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

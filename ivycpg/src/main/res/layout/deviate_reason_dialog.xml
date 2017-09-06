@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/font_inactive">
+    <ImageView
+        android:id="@+id/img_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/margin_5px"/>
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/reason_height"
+        android:layout_below="@+id/img_close"
+        android:textColor="@color/dialog_title"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:textStyle="bold"
+        android:text="asldkfakjaskdf dasdf"/>
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_1dp"
+        android:layout_below="@+id/tv_title"
+
+        android:background="@color/GRAY"
+        android:layout_margin="@dimen/margin_10px"/>
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_nano_small"
+        android:text="Reason for visit"
+        android:textColor="@color/btn_round_green"
+        android:layout_below="@+id/line"
+        android:layout_marginLeft="@dimen/margin_week_layout"
+        android:layout_marginTop="@dimen/margin_week_layout"/>
+
+    <com.ivy.sd.png.view.ToggleButtonGroupTableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radGroup1"
+        android:layout_below="@+id/title2">
+        <TableRow>
+            <RadioButton android:id="@+id/rad1" android:text="Button1"
+                android:layout_width="105px" android:layout_height="wrap_content"
+                android:textSize="13px" />
+            <RadioButton android:id="@+id/rad2" android:text="Button2"
+                android:layout_width="105px" android:textSize="13px"
+                android:layout_height="wrap_content" />
+            <RadioButton android:id="@+id/rad3" android:text="Button3"
+                android:layout_width="105px" android:textSize="13px"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+    </com.ivy.sd.png.view.ToggleButtonGroupTableLayout>
+
+
+
+</RelativeLayout>

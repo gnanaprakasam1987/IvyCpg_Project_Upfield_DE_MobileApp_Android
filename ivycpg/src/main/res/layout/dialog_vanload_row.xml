@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:orientation="vertical">
+
+        <com.ivy.sd.png.commons.MaterialSpinner
+            android:id="@+id/batchno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overlapAnchor="false"
+            app:ms_arrowColor="?attr/primarycolor"
+            app:ms_baseColor="@color/GRAY" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="@dimen/list_item_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/productqtyPieces"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/list_item_width"
+                android:layout_gravity="left"
+                android:layout_marginTop="@dimen/dimens_2dp"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:hint="@string/avail_pcs"
+                android:inputType="number"
+                android:selectAllOnFocus="false"
+                android:text="@string/zero" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="@dimen/list_item_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/productqtyCases"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/list_item_width"
+                android:layout_gravity="left"
+                android:layout_marginTop="@dimen/dimens_2dp"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:hint="@string/avail_cases"
+                android:inputType="number"
+                android:selectAllOnFocus="false"
+                android:text="@string/zero" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="@dimen/list_item_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/outerproductqtyCases"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/list_item_width"
+                android:layout_gravity="left"
+                android:layout_marginTop="@dimen/dimens_2dp"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:hint="@string/avail_outer"
+                android:inputType="number"
+                android:selectAllOnFocus="false"
+                android:text="@string/zero" />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+</LinearLayout>

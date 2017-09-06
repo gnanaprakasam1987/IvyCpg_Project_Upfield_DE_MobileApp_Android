@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:minHeight="@dimen/forgot_text_width"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/profile_history_20dp"
+            android:layout_marginTop="@dimen/profile_history_20dp"
+            android:padding="@dimen/activity_screen_padding">
+
+            <LinearLayout
+                android:id="@+id/icon_ll"
+                android:layout_width="@dimen/activity_list_height"
+                android:layout_height="@dimen/activity_list_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/activity_margin3"
+                android:background="@drawable/activity_icon_bg_normal"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/list_item_icon_ib"
+                    android:layout_width="@dimen/activity_list_icon_size"
+                    android:layout_height="@dimen/activity_list_icon_size"
+                    android:src="@drawable/icon_call" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_arrow"
+                android:layout_width="@dimen/profile_history_20dp"
+                android:layout_height="@dimen/activity_list_icon_size"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_list_item_left_margin"
+                android:src="@drawable/activity_icon_next"
+                android:tint="@color/new_grey" />
+
+            <TextView
+                android:id="@+id/list_item_menu_tv_loadmgt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+                android:layout_marginRight="@dimen/activity_margin3"
+                android:layout_toLeftOf="@id/img_arrow"
+                android:layout_toRightOf="@id/icon_ll"
+                android:textColor="#000000"
+                android:textSize="@dimen/activity_name_text_size" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

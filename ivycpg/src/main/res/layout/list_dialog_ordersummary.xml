@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="@dimen/order_stock_list_product_name_width"
+        android:layout_height="50dp"
+        android:orientation="vertical">
+    <TextView
+
+        android:id="@+id/tv_product_name"
+        android:layout_width="@dimen/order_stock_list_product_name_width"
+        android:layout_height="30dp"
+        android:textStyle="normal"/>
+        <TextView
+
+            android:id="@+id/tv_batch_code"
+            android:layout_width="@dimen/meter_value_width_large"
+            android:layout_height="@dimen/dimen_20dp"
+            android:gravity="center"
+            android:textStyle="normal"
+            />
+      </LinearLayout>
+    <TextView
+
+        android:id="@+id/tv_total_qty"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"/>
+
+    <TextView
+
+        android:id="@+id/tv_totalvalue"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"/>
+    <TextView
+
+        android:id="@+id/tv_priceoff_value"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_disc1"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_disc2"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_disc3"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_disc4"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_disc5"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_cash_discount"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:text="0"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_tax_value"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:visibility="gone"/>
+    <TextView
+
+        android:id="@+id/tv_line_value"
+        android:layout_width="@dimen/meter_value_width_large"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textStyle="normal"/>
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sanmpleprint>
+    <property total_length="48" special=".,"/>
+
+    <logo name="dist_logo" />
+
+    <line> <view name="print_type" length="10" align="right"/> </line>
+
+    <line> <view name="date" length="10" align="right" padding="right" /> </line>
+    <line> <view name="time" length="10" align="right" padding="right" /> </line>
+    <line> <view name="invoice_number" length="20" align="center" bold="yes"/> </line>
+
+    <line> <empty /> </line>
+
+    <line>
+        <view name="ret_name"  length="20" align="left" padding="left" />
+        <view name="dist_name" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_address1"  length="20" align="left" padding="left" />
+        <view name="dist_address1" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_address2"  length="20" align="left" padding="left" />
+        <view name="dist_address2" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_address3"  length="20" align="left" padding="left" />
+        <view name="dist_address3" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_number"  length="20" align="left" padding="left" />
+        <view name="dist_number" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_tin"  length="20" align="left" padding="left" />
+        <view name="dist_tin" length="20" align="right" padding="left" />
+    </line>
+    <line>
+        <view name="ret_cst"  length="20" align="left" padding="left" />
+        <view name="dist_cst" length="20" align="right" padding="left" />
+    </line>
+
+    <line> <empty /> </line>
+
+    <line>
+        <view name="label" length="9" text="UnitPrice" padding="left" space="14"/>
+        <view name="label" length="3" text="Qty" padding="left" space="6" />
+    </line>
+
+    <line group ="product_details" batch="yes" scheme_free_product="yes">
+        <view name="prod_code" length="50" text="Prod.Code" />
+        <view name="prod_name" length="10" text="Prod.Name" />
+        <view name="prod_price_case" length="7" text="ca.price" space="2" />
+        <view name="prod_price_piece" length="7" text="p.price" space="2"/>
+        <view name="prod_price_outer" length="6" text="outer" space="1"/>
+        <view name="prod_qty_case" length="7" text="ca.qty" space="2" />
+        <view name="prod_qty_piece" length="6" text="p.qty" space="2"/>
+        <view name="prod_qty_outer" length="6" text="outer" space="1"/>
+        <view name="prod_line_value" length="7" text="Value" space="2"/>
+        <view name="prod_line_value_excl_tax" length="7" text="Val(excl.tax)" space="2"/>
+        <view name="prod_line_value_incl_tax" length="7" text="Val(incl.tax)" space="2" align="left" padding="right"  />
+        <view name="prod_qty_rep_piece" length="6" text="p.qty" space="2"/>
+        <view name="prod_qty_sum_piece" length="6" text="p.qty" space="2"/>
+
+    </line>
+
+    <line> <view name="total" length="45" align="right" padding="right" text="Total"/> </line>
+
+    <line>  <empty />  </line>
+
+    <line> <view name="discount_product_price_off" length="45" align="right" padding="right" text="Price Off"/> </line>
+    <line> <view name="discount_product_apply" length="45" align="left" padding="left" /> </line>
+    <line> <view name="discount_product_entry" length="45" align="right" padding="right" text="Cash Dis"/> </line>
+    <line> <view name="tax_product" length="45" align="left" padding="left"/> </line>
+
+    <line> <empty /> </line>
+
+    <line> <view name="discount_bill_entry" length="45" align="left" padding="left" text="Bill Disc:"/> </line>
+    <line> <view name="tax_bill" length="45" align="left" padding="left"/> </line>
+
+    <line> <empty /> </line>
+
+    <line group="empty_return">
+        <view name="empty_prod_name"       length="25" text="EmptyName" />
+        <view name="empty_prod_qty"        length="3"  text="Qty"   space="2" />
+        <view name="empty_prod_price"      length="4"  text="Price" space="2" />
+        <view name="empty_prod_line_value" length="6"  text="Value" space="2" align = "left" padding="right"/>
+    </line>
+
+    <line> <view name="empty_total" length="45" align="right" padding="right" text="Total Empties"/> </line>
+
+    <line> <empty /> </line>
+
+    <line> <empty /> </line>
+
+    <line> <view name="net_amount" length="45" align="left" padding="left" text="Net Payable:"/> </line>
+
+    <line> <empty /> </line>
+
+    <line>  <view name="amount_word" length="45" align="left" padding="left" text="In Words:"/> </line>
+
+    <line> <empty /> </line>
+    <line> <empty /> </line>
+
+    <line>
+        <view name="seller_name" length="25" align="left" padding="left"/>
+        <view name="label" length="10" text="Cust.Sign" align="right" padding="right"/>
+    </line>
+
+</sanmpleprint>

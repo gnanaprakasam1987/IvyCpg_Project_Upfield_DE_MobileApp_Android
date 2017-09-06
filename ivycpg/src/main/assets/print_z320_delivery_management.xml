@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sampleprint>
+    <property total_length="48" special=".,"/>
+
+   <!-- <line>
+        <view name="label" length="9" text="UnitPrice" padding="left" space="14"/>
+        <view name="label" length="3" text="Qty" padding="left" space="6" />
+    </line>-->
+
+    <line>
+        <view name="ret_name"  length="20" align="left" padding="left" />
+        <view name="dist_name" length="20" align="right" padding="left" />
+    </line>
+
+    <line>
+        <view name="ret_address1"  length="20" align="left" padding="left" />
+
+    </line>
+    <line>
+        <view name="ret_address2"  length="20" align="left" padding="left" />
+
+    </line>
+    <line>
+        <view name="ret_address3"  length="20" align="left" padding="left" />
+
+    </line>
+
+    <line group ="product_details" batch="no" scheme_free_product="no">
+        <!--<view name="prod_code" length="50" text="Prod.Code" />-->
+        <view name="prod_name" length="15" text="Prod.Name" />
+        <!--<view name="prod_price_case" length="7" text="ca.price" space="2" />
+        <view name="prod_price_piece" length="7" text="p.price" space="2"/>
+        <view name="prod_price_outer" length="6" text="outer" space="1"/>-->
+        <view name="prod_qty_case" length="7" text="ca.qty" space="2" />
+        <view name="prod_qty_piece" length="6" text="p.qty" space="2"/>
+        <view name="prod_qty_outer" length="6" text="outer" space="1"/>
+        <!--<view name="prod_line_value" length="7" text="Value" space="2"/>
+        <view name="prod_line_value_excl_tax" length="7" text="Val(excl.tax)" space="2"/>
+        <view name="prod_line_value_incl_tax" length="7" text="Val(incl.tax)" space="2" align="left" padding="right"  />-->
+    </line>
+
+    <line> <empty /> </line>
+
+     <line>
+         <view name="seller_name" length="25" align="left" padding="left"/>
+         <view name="label" length="10" text="Cust.Sign" align="right" padding="right"/>
+     </line>
+
+    <line> <empty /> </line>
+    <view name="label" length="9" text="" padding="left" space="14"/>
+
+</sampleprint>

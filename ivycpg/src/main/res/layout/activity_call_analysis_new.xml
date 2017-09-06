@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_footer"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
+        android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_store_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_store_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/store_status"
+                android:textColor="@color/store_status_text_color"
+                android:textSize="@dimen/font_small" />
+
+
+            <ImageView
+                android:id="@+id/goldstore_iv"
+                android:layout_width="@dimen/store_status_star_width"
+                android:layout_height="@dimen/store_status_star_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/golden_store"
+                android:src="@drawable/icon_star" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_store_status"
+            android:layout_marginTop="@dimen/dimen_6dp"
+            android:background="@color/WHITE">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sale_header_height"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/sale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="@dimen/list_padding_left_n_right"
+                        android:paddingRight="@dimen/list_padding_left_n_right"
+                        android:text="@string/sale"
+                        android:textColor="@color/store_status_text_color"
+                        android:textSize="@dimen/font_small" />
+
+                    <View
+                        android:id="@+id/view_dotted_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_2dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/list_item_inter_margin"
+                        android:layout_marginTop="@dimen/list_item_inter_margin"
+                        android:background="@drawable/line_dotted" />
+                </RelativeLayout>
+
+                <ListView
+                    android:id="@+id/callAnalysisList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@null"
+                    android:fitsSystemWindows="true"></ListView>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+
+    <!-- </ScrollView>-->
+    <RelativeLayout
+        android:id="@+id/ll_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
+        android:minHeight="@dimen/call_analysis_footer_min_height"
+        android:paddingLeft="@dimen/search_edt_margin_left_n_right"
+        android:paddingRight="@dimen/search_edt_margin_left_n_right">
+
+        <LinearLayout
+            android:id="@+id/ll_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/call_duration"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/text_sz_extra_small" />
+
+            <TextView
+                android:id="@+id/edt_time_taken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0.0.0"
+                android:textColor="@color/call_duration_value_text_color"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_toLeftOf="@+id/button1"
+            android:layout_toRightOf="@+id/ll_duration"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinnerNoorderreason"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/reason_spinner_height"
+                    android:layout_weight="1"
+                    android:background="@color/footer_bg"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
+
+                    />
+
+                <Button
+                    android:id="@+id/btn_camera"
+                    android:layout_width="@dimen/no_reason_camera_width"
+                    android:layout_height="@dimen/reason_spinner_height"
+                    android:layout_margin="@dimen/dimen_4dp"
+                    android:background="@drawable/ic_camera"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edtNoorderreason"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_weight="1"
+                android:cursorVisible="false"
+                android:gravity="center_vertical"
+                android:textColor="@color/call_duration_value_text_color"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:visibility="gone" />
+
+
+            <Spinner
+                android:id="@+id/spinnerNooCollectionReason"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/reason_spinner_height"
+                android:layout_weight="1"
+                android:background="@color/footer_bg"
+                android:gravity="center"
+                android:overlapAnchor="false"/>
+
+            <Spinner
+                android:id="@+id/spinner_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/reason_spinner_height"
+                android:layout_weight="1"
+                android:background="@color/footer_bg"
+                android:gravity="center"
+                android:overlapAnchor="false"      />
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button1"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="onClose"
+            android:text="@string/close_call"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="prefscreen"
+
+    >
+
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="Language Settings"
+        android:layout="@layout/settings_header_layout">
+        <!--<com.ivy.sd.png.view.CustomListPreference-->
+        <com.ivy.sd.png.view.ThemedListPreference
+            android:entries="@array/languageList"
+            android:entryValues="@array/languageListValues"
+            android:key="languagePref"
+            android:summary="Choose your language"
+            android:title="Language"
+            android:layout="@layout/settings_card_layout"
+
+            />
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="Printer Settings"
+        android:layout="@layout/settings_header_layout"
+
+        >
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="pmac"
+            android:title="MAC"
+
+            android:layout="@layout/settings_card_layout" >
+        </com.ivy.sd.png.view.CustomPreference>
+        <com.ivy.sd.png.view.ThemedListPreference
+            android:entries="@array/printerList"
+            android:entryValues="@array/printerListValues"
+            android:key="PrinterPref"
+            android:summary="Choose your printer"
+            android:title="Printer Types"
+
+            android:layout="@layout/settings_card_layout"
+            />
+        <!--android:layout="@layout/settings_printer_list_card_lay"-->
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="Export"
+        android:key="export"
+        android:layout="@layout/settings_header_layout"
+        >
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="export_file"
+            android:title="Log Export"
+
+            android:layout="@layout/settings_card_layout">
+            <!--android:summary="Export the logs"-->
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="Switch"
+        android:key="clear"
+        android:layout="@layout/settings_header_layout">
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="clear_data"
+            android:title="@string/switch_user"
+
+            android:layout="@layout/settings_card_layout">
+            <!--android:summary="App Data will be cleared"-->
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="@string/title_chage_password"
+        android:key="psw"
+        android:layout="@layout/settings_header_layout">
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="change_password"
+            android:title="@string/title_chage_password"
+
+            android:layout="@layout/settings_card_layout">
+            <!--android:summary="App Data will be cleared"-->
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory android:title="@string/device_status"
+        android:key="ds"
+        android:layout="@layout/settings_header_layout">
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="device_status"
+            android:title="@string/device_status"
+
+            android:layout="@layout/settings_card_layout">
+            <!--android:summary="App Data will be cleared"-->
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/list_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_title_height"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/retnameTitle"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.40"
+            android:text="@string/retailer_name"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/missedTitle"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:text="@string/text_missed"
+            android:tag="missed"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/plannedTitle"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:tag="planned"
+            android:text="@string/text_planned"
+            android:textSize="@dimen/font_micro_small" />
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/missedlistView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_title"
+        android:layout_marginTop="2dp"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"/>
+
+</RelativeLayout>

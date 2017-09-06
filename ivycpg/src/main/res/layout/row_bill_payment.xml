@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/WHITE">
+
+    <LinearLayout
+        android:id="@+id/childLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_10dp">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/collection_total_height"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dimens_16dp"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:text="Ret1"
+            android:textColor="@color/kpi_value_text_color"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/tv_paidamtlabel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/collection_total_height"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dimens_16dp"
+            android:gravity="center|left"
+            android:text="Rs"
+            android:textColor="@color/colorPrimary"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/text_sz_small" />
+
+
+        <LinearLayout
+            android:id="@+id/icon_ll"
+            android:layout_width="@dimen/activity_list_height"
+            android:layout_height="@dimen/activity_list_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimens_16dp"
+            android:layout_marginRight="@dimen/dimens_16dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_inandout"
+                android:layout_width="@dimen/sub_activity_list_icon_circle"
+                android:layout_height="@dimen/sub_activity_list_icon_circle"
+                android:src="@drawable/activity_icon_next" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

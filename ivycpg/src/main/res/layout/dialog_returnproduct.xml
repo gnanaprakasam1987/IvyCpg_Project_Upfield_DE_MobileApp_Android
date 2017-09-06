@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/screen_bg_color">
+
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/screen_bg_color"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_divider_height"
+            android:background="@color/divider_view_color" />
+
+        <Button
+            android:id="@+id/save_btn"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_margin1"
+            android:layout_marginTop="@dimen/activity_margin1"
+            android:text="@string/done" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/footer"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/material_tool_bar" />
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/list_margin"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/list_header_height"
+                        android:layout_alignParentTop="true"
+                        android:background="@color/list_title_bg_color"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/list_margin"
+                        android:paddingRight="@dimen/list_margin">
+
+                        <TextView
+                            android:id="@+id/productBarcodetitle"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|left"
+                            android:text="@string/barcode"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@id/tvProductNameTitle"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:gravity="center|left"
+                            android:text="@string/product_name" />
+
+                        <TextView
+                            android:id="@+id/caseTitle"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:tag="item_case"
+                            android:text="@string/liableqty" />
+
+                        <TextView
+                            android:id="@+id/outercaseTitle"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/returnqty" />
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/lvwplist"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginRight="1dp"
+                        android:cacheColorHint="@null"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="0dp"
+                        android:fitsSystemWindows="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/keypad"
+                    layout="@layout/keypad"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true" />
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>

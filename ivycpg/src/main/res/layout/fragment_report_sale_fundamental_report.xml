@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/root"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <!--<HorizontalScrollView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_above="@+id/ll_explist"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:scrollbars="none">-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/list_title_bg_color"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dimen_5dp"
+                android:paddingRight="@dimen/dimen_5dp"
+                android:weightSum="2">
+
+                <!--<TextView-->
+                <!--style="?attr/customListTitle"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="0.5"-->
+                <!--android:text="Choose Store : " />-->
+
+                <Spinner
+                    android:id="@+id/spinnerBeat"
+                    android:layout_width="@dimen/dimens_180dp"
+                    android:layout_height="@dimen/reason_spinner_height"
+                    android:background="@color/footer_bg"
+                    android:gravity="center"
+                    android:overlapAnchor="false" />
+
+                <Spinner
+                    android:id="@+id/spinnerChoice"
+                    android:layout_width="@dimen/dimens_180dp"
+                    android:layout_height="@dimen/reason_spinner_height"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/footer_bg"
+                    android:gravity="center"
+                    android:overlapAnchor="false" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/list_title_bg_color"
+                android:minHeight="@dimen/dimen_40dp"
+                android:orientation="horizontal"
+                android:weightSum="2" android:visibility="gone">
+
+                <TextView
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/skuwise_right_margin"
+                    android:layout_weight="1.4"
+                    android:gravity="left|center"
+                    android:padding="3dp"
+                    android:text="@string/product_name"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <TextView
+                    android:id="@+id/loading_stock_cs_title"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:text="@string/gap"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <TextView
+                    android:id="@+id/loading_stock_ou_title"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:text="@string/pm"
+                    android:textSize="@dimen/font_micro_small" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+
+        </LinearLayout>
+        <!--</HorizontalScrollView>-->
+
+        <LinearLayout
+            android:id="@+id/ll_explist"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/dimens_80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="@dimen/dimens_2dp"
+            android:background="@color/footer_bg"
+            android:gravity="center|right"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/print"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimens_50dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2dp"
+                android:gravity="center"
+                android:text="@string/print"
+                android:visibility="visible" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

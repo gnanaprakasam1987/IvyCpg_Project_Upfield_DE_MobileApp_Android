@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.ivy.sd.png.view.PlanningActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"
+        android:background="?attr/primarycolor">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/headerTV"
+            android:text="@string/title_missed"
+            android:textColor="@color/WHITE"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/closeBTN"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_6dp"
+            android:drawableTint="@color/white"
+            android:background="@drawable/ic_action_circle_close" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/list_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_title_height"
+        android:orientation="horizontal"
+        android:background="@color/FullBlack"
+        android:weightSum="1">
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/titleDate"
+            android:layout_weight="0.50"
+            android:text="@string/text_mdate"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/titleReason"
+            android:layout_weight="0.50"
+            android:text="@string/reason"
+            android:textSize="@dimen/font_micro_small" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_missed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@null"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0.5dp"
+        android:scrollbars="none" />
+
+</LinearLayout>
