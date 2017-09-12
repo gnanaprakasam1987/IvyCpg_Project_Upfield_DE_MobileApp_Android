@@ -2304,12 +2304,15 @@ SynchronizationHelper {
             http.create(MyHttpConnectionNew.POST, downloadUrl.toString(), null);
             http.setParamsJsonObject(jsonObj);
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        mSecurityKey = header.getValue();
-                        return mSecurityKey;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            mSecurityKey = entry.getValue().get(0);
+                            return mSecurityKey;
+                        }
                     }
                 }
             }
@@ -2349,12 +2352,15 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.setParamsJsonObject(jsonObj);
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        mSecurityKey = header.getValue();
-                        return;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            mSecurityKey = entry.getValue().get(0);
+                            return;
+                        }
                     }
                 }
             }
@@ -3811,16 +3817,19 @@ SynchronizationHelper {
                     .getUserMasterBO().getOrganizationId());
             Commons.print("Url " + downloadUrl.toString());
             MyHttpConnectionNew http = new MyHttpConnectionNew();
-
             http.create(MyHttpConnectionNew.POST, downloadUrl.toString(), null);
             http.setParamsJsonObject(jsonObj);
+            http.setIsFromWebActivity(true);
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        token = header.getValue();
-                        return token;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            token = entry.getValue().get(0);
+                            return token;
+                        }
                     }
                 }
             }
