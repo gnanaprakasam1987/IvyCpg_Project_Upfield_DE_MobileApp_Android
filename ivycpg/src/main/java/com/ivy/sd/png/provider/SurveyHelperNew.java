@@ -29,7 +29,8 @@ public class SurveyHelperNew {
     private ArrayList<SurveyBO> survey;
     private ArrayList<QuestionBO> questions;
     private ArrayList<QuestionBO> subQuestions;
-
+    private ArrayList<QuestionBO> mQuestionData;
+    private QuestionBO questionBODragDrop;
     private QuestionBO questionBO;
     private AnswerBO answerBO;
     private boolean fromHomeScreen;
@@ -2467,4 +2468,21 @@ public class SurveyHelperNew {
             Commons.printException("" + e);
         }
     }
+
+    public ArrayList<QuestionBO> getmQuestionData() {
+        return mQuestionData;
+    }
+
+    public void setmQuestionData(ArrayList<QuestionBO> mQuestionData) {
+        this.mQuestionData = mQuestionData;
+    }
+
+    public QuestionBO getQuestionBODragDrop() {
+        return questionBODragDrop;
+    }
+
+    public void setQuestionBODragDrop(QuestionBO questionBODragDrop) {
+        this.questionBODragDrop = questionBODragDrop;
+    }
+
 }
