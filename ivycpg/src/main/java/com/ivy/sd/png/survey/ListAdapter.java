@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,12 +25,13 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import java.util.List;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>
-        implements View.OnTouchListener {
+        {
 
     private List<String> list;
     private DragDropListener DragDropListener;
     private int flag = -1, minPhoto = -1, maxPhoto = -1;
     private Activity activity;
+    private boolean isLongPress=false,isSinglePress=false;
 
     ListAdapter(Activity activity, List<String> list, DragDropListener DragDropListener, int flag, int minPhoto, int maxPhoto) {
         this.activity = activity;
@@ -62,7 +64,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>
         //  Log.e("ListSize",list.size()+"");
         //  holder.text.setText(list.get(position));
         holder.frameLayout.setTag(position);
-        holder.frameLayout.setOnTouchListener(this);
+      //  holder.frameLayout.setOnTouchListener(this);
         holder.frameLayout.setOnDragListener(new DragDropHelper(activity, DragDropListener));
 
         holder.clearButton.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +74,94 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>
                 showAlertDialog(position);
             }
         });
+        holder.frameLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                RecyclerView imgRecyler = (RecyclerView) v.getRootView().findViewById(R.id.image_recyclerview);
+                RecyclerView thumbRecyler=(RecyclerView) v.getRootView().findViewById(R.id.thumnail_recyclerview);
+                RecyclerView source = (RecyclerView) v.getParent();
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                if (source != imgRecyler ) {
+                    int count = ((DragDropPictureActivity) activity).getArrayCount();
+//                    Log.e("Count", maxPhoto + "\t" + count);
+                    if (maxPhoto > count) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            v.startDragAndDrop(data, shadowBuilder, v, 0);
+                        } else {
+                            v.startDrag(data, shadowBuilder, v, 0);
+                        }
+                    } else {
+                        Toast.makeText(activity, "Max. Photo reached", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+        });
+//        holder.frameLayout.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                RecyclerView imgRecyler = (RecyclerView) v.getRootView().findViewById(R.id.image_recyclerview);
+//                RecyclerView thumbRecyler=(RecyclerView) v.getRootView().findViewById(R.id.thumnail_recyclerview);
+//                RecyclerView source = (RecyclerView) v.getParent();
+//
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        ClipData data = ClipData.newPlainText("", "");
+//                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+//                        if (source != imgRecyler ) {
+//                            int count = ((DragDropPictureActivity) activity).getArrayCount();
+////                    Log.e("Count", maxPhoto + "\t" + count);
+//                            if (maxPhoto > count) {
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                    v.startDragAndDrop(data, shadowBuilder, v, 0);
+//                                } else {
+//                                    v.startDrag(data, shadowBuilder, v, 0);
+//                                }
+//                            } else {
+//                                Toast.makeText(activity, "Max. Photo reached", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                        return true;
+//                }
+//                return  gestureDetector.onTouchEvent(event);
+//            }
+//            private GestureDetector gestureDetector =new GestureDetector(activity, new GestureDetector.OnGestureListener() {
+//                @Override
+//                public boolean onDown(MotionEvent e) {
+//                    return false;
+//                }
+//
+//                @Override
+//                public void onShowPress(MotionEvent e) {
+//
+//                }
+//
+//                @Override
+//                public boolean onSingleTapUp(MotionEvent e) {
+//                    return false;
+//                }
+//
+//                @Override
+//                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//                    return false;
+//                }
+//
+//                @Override
+//                public void onLongPress(MotionEvent e) {
+//
+//                    Toast.makeText(activity, "onLongPress", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//                    return false;
+//                }
+//            });
+//        });
+
     }
 
     private void showAlertDialog(final int pos) {
@@ -125,31 +215,33 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>
         return list.size();
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        RecyclerView imgRecyler = (RecyclerView) v.getRootView().findViewById(R.id.image_recyclerview);
-        RecyclerView source = (RecyclerView) v.getParent();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-                if (source != imgRecyler) {
-                    int count = ((DragDropPictureActivity) activity).getArrayCount();
-//                    Log.e("Count", maxPhoto + "\t" + count);
-                    if (maxPhoto > count) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            v.startDragAndDrop(data, shadowBuilder, v, 0);
-                        } else {
-                            v.startDrag(data, shadowBuilder, v, 0);
-                        }
-                    } else {
-                        Toast.makeText(activity, "Max. Photo reached", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//        RecyclerView imgRecyler = (RecyclerView) v.getRootView().findViewById(R.id.image_recyclerview);
+//        RecyclerView thumbRecyler=(RecyclerView) v.getRootView().findViewById(R.id.thumnail_recyclerview);
+//        RecyclerView source = (RecyclerView) v.getParent();
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                ClipData data = ClipData.newPlainText("", "");
+//                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+//                if (source != imgRecyler && isLongPress) {
+//                    int count = ((DragDropPictureActivity) activity).getArrayCount();
+////                    Log.e("Count", maxPhoto + "\t" + count);
+//                    if (maxPhoto > count) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                            v.startDragAndDrop(data, shadowBuilder, v, 0);
+//                        } else {
+//                            v.startDrag(data, shadowBuilder, v, 0);
+//                        }
+//                        isLongPress=false;
+//                    } else {
+//                        Toast.makeText(activity, "Max. Photo reached", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                return true;
+//        }
+//        return false;
+//    }
 
     List<String> getList() {
         return list;

@@ -16,20 +16,43 @@
             layout="@layout/material_tool_bar" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:padding="@dimen/dimen_5dp"
             android:orientation="vertical">
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="@dimen/dimen_18dp"-->
-                <!--android:padding="@dimen/dimen_5dp"-->
-                <!--android:textColor="@color/FullBlack"-->
-                <!--android:id="@+id/txt_question"-->
-                <!--android:text="Min.Photo"/>-->
-            <android.support.design.widget.CoordinatorLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:text="Question"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:padding="@dimen/dimen_5dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/WHITE"
+                android:text="@string/manual_stock_apply_header_validation"
+                android:textSize="@dimen/dimen_20dp"
+                android:textStyle="normal"
+                android:paddingLeft="@dimen/dimen_5dp"
+                android:paddingStart="@dimen/dimen_5dp"
+                android:paddingRight="@dimen/dimen_5dp"
+                android:paddingEnd="@dimen/dimen_5dp"
+                android:paddingBottom="@dimen/dimen_5dp"
+                android:gravity="center_vertical"
+                android:id="@+id/txt_question"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+        <FrameLayout android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/image_recyclerview"
                         android:layout_width="match_parent"
@@ -44,204 +67,54 @@
                         app:layout_behavior="@string/appbar_scrolling_view_behavior"
                         tools:ignore="UnusedAttribute"/>
 
-                <android.support.design.widget.FloatingActionButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_16dp"
-                    android:layout_gravity="end|bottom"
-                    android:background="?attr/colorAccent"
-                    app:backgroundTint="?attr/colorAccent"
-                    android:id="@+id/fab_dragdrop_cam"
-                    android:src="@drawable/ic_action_device_access_camera"/>
-            </android.support.design.widget.CoordinatorLayout>
+                    <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_16dp"
+                        android:layout_gravity="end|bottom"
+                        android:background="?attr/colorAccent"
+                        app:backgroundTint="?attr/colorAccent"
+                        android:id="@+id/fab_dragdrop_cam"
+                        android:src="@drawable/ic_action_device_access_camera"/>
+                </android.support.design.widget.CoordinatorLayout>
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                android:layout_margin="3dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_5dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/dimen_40dp"
-                        android:padding="@dimen/dimen_2dp"
-                        android:id="@+id/txt_minPhoto"
-                        android:textColor="?attr/colorPrimary"
-                        android:text="0"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/dimen_16dp"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Min.Photo"/>
-                </LinearLayout>
-                <View
-                    android:layout_width="@dimen/dimen_1dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/dimen_10dp"
-                    android:background="@color/GRAY_TEXT"/>
-                <RelativeLayout
-                    android:layout_width="@dimen/dimen_0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:padding="@dimen/dimen_5dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/dimen_20dp"
-                        android:padding="@dimen/dimen_2dp"
-                        android:id="@+id/txt_question"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textColor="?attr/colorPrimary"
-                        android:maxLines="2"
-                        android:text="@string/manual_stock_apply_header_validation"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:text="Other Pictures"
+                        android:textColor="@color/Black"
                         android:textSize="@dimen/dimen_16dp"
-                        android:gravity="center"
-                        android:layout_below="@+id/txt_question"
-                        android:padding="@dimen/dimen_4dp"
-                        android:layout_alignParentBottom="true"
-                        android:text="Question"/>
-                </RelativeLayout>
-                <View
-                    android:layout_width="@dimen/dimen_1dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/dimen_10dp"
-                    android:background="@color/GRAY_TEXT"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_5dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/dimen_40dp"
-                        android:padding="@dimen/dimen_2dp"
-                        android:id="@+id/txt_maxPhoto"
-                        android:textColor="?attr/colorPrimary"
-                        android:text="0"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/dimen_16dp"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Max.Photo"/>
+                        android:id="@+id/txt_thumbnailTitle"
+                        android:textStyle="bold"/>
                 </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/thumnail_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:padding="@dimen/dimen_5dp"
+                    android:nestedScrollingEnabled="false"
+                    android:background="@color/white_box_start"
+                    android:scrollbars="horizontal"
+                    android:layout_gravity="center"
+                    android:visibility="visible"
+                    android:orientation="horizontal"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    tools:ignore="UnusedAttribute"/>
+                <include
+                    layout="@layout/meter_and_navigation"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:visibility="visible"-->
-                <!--android:orientation="horizontal">-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical">-->
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="@dimen/dimen_40dp"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:id="@+id/txt_minPhoto"-->
-                        <!--android:textColor="?attr/colorPrimary"-->
-                        <!--android:text="0"/>-->
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="@dimen/dimen_16dp"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:text="Min.Photo"/>-->
-                <!--</LinearLayout>-->
-                <!--<View-->
-                    <!--android:layout_width="@dimen/dimen_2dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="@color/GRAY_TEXT"/>-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical">-->
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="@dimen/dimen_20dp"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:id="@+id/txt_question"-->
-                        <!--android:textColor="?attr/colorPrimary"-->
-                        <!--android:text="0"/>-->
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:textSize="@dimen/dimen_16dp"-->
-                        <!--android:gravity="center"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:text="Question"/>-->
-                <!--</LinearLayout>-->
-                <!--<View-->
-                    <!--android:layout_width="@dimen/dimen_2dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="@color/GRAY_TEXT"/>-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical">-->
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="@dimen/dimen_40dp"-->
-                        <!--android:id="@+id/txt_maxPhoto"-->
-                        <!--android:textColor="?attr/colorPrimary"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:text="0"/>-->
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="@dimen/dimen_16dp"-->
-                        <!--android:padding="@dimen/dimen_2dp"-->
-                        <!--android:text="Max.Photo"/>-->
-                <!--</LinearLayout>-->
-            <!--</LinearLayout>-->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/thumnail_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:padding="@dimen/dimen_5dp"
-                android:nestedScrollingEnabled="false"
-                android:background="@color/white_box_start"
-                android:scrollbars="horizontal"
-                android:layout_gravity="center"
-                android:visibility="visible"
-                android:orientation="horizontal"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:ignore="UnusedAttribute"/>
-            <include
-                layout="@layout/meter_and_navigation"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            <View android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/toolbar_dropshadow"/>
+
+        </FrameLayout>
+
 
     </LinearLayout>
 

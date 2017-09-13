@@ -1,8 +1,11 @@
 package com.ivy.sd.png.survey;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,6 +33,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SurveyHelperNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenFragment;
@@ -83,11 +88,12 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         selectedSurveyId= getIntent().getIntExtra("SurveyId",-1);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(screenTitle);
+            getSupportActionBar().setTitle(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setElevation(0);
         }
+        setScreenTitle("Survey Gallery");
 
         path = "/" + "Survey" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
@@ -131,7 +137,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         TVMaxTitle.setText(getString(R.string.minPhoto));
         TVMinTitle.setText(getString(R.string.maxPhoto));
         BTSave.setText(getString(R.string.save));
-
+        BTSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         TVQuestion.setText(questionDesc);
         fabCam = (FloatingActionButton) findViewById(R.id.fab_dragdrop_cam);
         fabCam.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +154,12 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                                     maxPhoto),
                             0);
                 }
+            }
+        });
+        BTSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveFunction();
             }
         });
     }
@@ -232,7 +244,16 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         thumbnailRecyclerView = (RecyclerView) findViewById(R.id.thumnail_recyclerview);
         if (thumbnailRecyclerView != null)
             thumbnailRecyclerView.setHasFixedSize(true);
-        thumbnailRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        if (isTabletDevice(DragDropPictureActivity.this))
+        {
+            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this,5));
+        }
+        else
+        {
+            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        }
+
         thumbnailRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
@@ -241,9 +262,31 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
     }
 
+    private static boolean isTabletDevice(Context activityContext) {
+        if(activityContext!=null) {
+            boolean device_large = ((activityContext.getResources()
+                    .getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE || (activityContext
+                    .getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
+            if (device_large) {
+                DisplayMetrics metrics = new DisplayMetrics();
+                Activity activity = (Activity) activityContext;
+                activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+                if (metrics.densityDpi == DisplayMetrics.DENSITY_DEFAULT
+                        || metrics.densityDpi == DisplayMetrics.DENSITY_HIGH
+                        || metrics.densityDpi == DisplayMetrics.DENSITY_MEDIUM
+                        || metrics.densityDpi == DisplayMetrics.DENSITY_TV
+                        || metrics.densityDpi == DisplayMetrics.DENSITY_XHIGH) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.removeItem(R.id.menu_dragdrop_cam);
+        menu.removeItem(R.id.menu_dragdrop_save);
         return super.onPrepareOptionsMenu(menu);
     }
 

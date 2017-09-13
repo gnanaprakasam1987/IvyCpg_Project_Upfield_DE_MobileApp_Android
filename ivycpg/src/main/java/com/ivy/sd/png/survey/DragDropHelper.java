@@ -70,7 +70,7 @@ class DragDropHelper implements View.OnDragListener {
                                 adapterSource.updateList(listSource);
                                 adapterSource.notifyDataSetChanged();
                             }
-                            else if(target==source)
+                            else if(target==source )
                             {
                                 listSource.remove(positionSource);
                                 adapterSource.updateList(listSource);
