@@ -30,25 +30,19 @@ class DragDropHelper implements View.OnDragListener {
                 View viewSource = (View) event.getLocalState();
                 int viewId = v.getId();
                 final int flItem = R.id.frame_layout_item;
-//                final int tvEmptyListTop = R.id.tvEmptyListTop;
-//                final int tvEmptyListBottom = R.id.tvEmptyListBottom;
                 final int rvTop = R.id.image_recyclerview;
                 final int rvBottom = R.id.thumnail_recyclerview;
 
                 switch (viewId) {
                     case flItem:
-//                    case tvEmptyListTop:
-//                    case tvEmptyListBottom:
                     case rvTop:
                     case rvBottom:
 
                         RecyclerView target = null;
                         switch (viewId) {
-//                            case tvEmptyListTop:
                             case rvTop:
                                 target = (RecyclerView) v.getRootView().findViewById(rvTop);
                                 break;
-//                            case tvEmptyListBottom:
                             case rvBottom:
                                 target = (RecyclerView) v.getRootView().findViewById(rvBottom);
                                 break;
@@ -90,15 +84,9 @@ class DragDropHelper implements View.OnDragListener {
                             if (sourceId == rvBottom && adapterSource.getItemCount() < 1) {
                                 listener.setEmptyListBottom(true);
                             }
-//                            if (viewId == tvEmptyListBottom) {
-//                                listener.setEmptyListBottom(false);
-//                            }
                             if (sourceId == rvTop && adapterSource.getItemCount() < 1) {
                                 listener.setEmptyListTop(true);
                             }
-//                            if (viewId == tvEmptyListTop) {
-//                                listener.setEmptyListTop(false);
-//                            }
                         }
                         break;
                 }

@@ -832,9 +832,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
                         surveyHelperNew.setQuestionBODragDrop(holder.questionBO);
                         surveyPhcapture = holder.questionBO;
-                      //  Toast.makeText(bmodel, "Welcome "+holder.questionBO.getBrandID()+" "+holder.questionBO.getQuestionID(), Toast.LENGTH_SHORT).show();
+
                         Intent intent=new Intent(getActivity(),DragDropPictureActivity.class);
-                        intent.putExtra("screentitle",bmodel.mSelectedActivityName);
                         intent.putExtra("BrandId",holder.questionBO.getBrandID());
                         intent.putExtra("QuestiionId",holder.questionBO.getQuestionID());
                         intent.putExtra("QuestionDesc",holder.questionBO.getQuestionDescription());

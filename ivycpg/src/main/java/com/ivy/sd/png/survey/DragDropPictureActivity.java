@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -46,10 +45,10 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
     protected BusinessModel bmodel;
     protected Toolbar toolbar;
-    protected String screenTitle, questionDesc;
+    protected String questionDesc;
     protected RecyclerView imageRecyclerView, thumbnailRecyclerView;
     protected TextView TVQuestion;
-    protected int brandId, questionId, minPhoto, maxPhoto, initThumbnailSize, initImgSrcSize,selectedSurveyId;
+    protected int brandId, questionId, minPhoto, maxPhoto, initThumbnailSize, initImgSrcSize, selectedSurveyId;
     protected QuestionBO questionBO, surveyPhcapture;
     protected SurveyHelperNew surveyHelperNew;
     protected ArrayList<QuestionBO> mQuestionData = new ArrayList<>();
@@ -58,10 +57,10 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
     private static final int CAMERA_REQUEST_CODE = 1;
     private String imageName = "", path = "", pathSrc = "";
     protected FloatingActionButton fabCam;
-    protected ListAdapter topListAdapter,bottomListAdapter;
+    protected ListAdapter topListAdapter, bottomListAdapter;
     //Bottom Layout
     protected LinearLayout layout1, layout2, layout3, layout4;
-    protected TextView TVMin,TVMinTitle,TVMaxTitle,TVMax;
+    protected TextView TVMin, TVMinTitle, TVMaxTitle, TVMax;
     protected Button BTSave;
 
     @Override
@@ -81,11 +80,10 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        screenTitle = getIntent().getStringExtra("screenTitle");
         questionDesc = getIntent().getStringExtra("QuestionDesc");
         questionId = getIntent().getIntExtra("QuestiionId", -1);
         brandId = getIntent().getIntExtra("BrandId", -1);
-        selectedSurveyId= getIntent().getIntExtra("SurveyId",-1);
+        selectedSurveyId = getIntent().getIntExtra("SurveyId", -1);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(null);
@@ -120,14 +118,14 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         TVQuestion = (TextView) findViewById(R.id.txt_question);
         TVMin = (TextView) findViewById(R.id.totalValue);
         TVMax = (TextView) findViewById(R.id.lcp);
-        TVMaxTitle=(TextView)findViewById(R.id.totalText);
-        TVMinTitle=(TextView)findViewById(R.id.lpc_title);
+        TVMaxTitle = (TextView) findViewById(R.id.totalText);
+        TVMinTitle = (TextView) findViewById(R.id.lpc_title);
 
-        layout1 =(LinearLayout)findViewById(R.id.ll_value);
-        layout2 =(LinearLayout)findViewById(R.id.ll_lpc);
-        layout3 =(LinearLayout)findViewById(R.id.ll_totqty);
-        layout4 =(LinearLayout)findViewById(R.id.ll_dist);
-        BTSave=(Button)findViewById(R.id.btn_next);
+        layout1 = (LinearLayout) findViewById(R.id.ll_value);
+        layout2 = (LinearLayout) findViewById(R.id.ll_lpc);
+        layout3 = (LinearLayout) findViewById(R.id.ll_totqty);
+        layout4 = (LinearLayout) findViewById(R.id.ll_dist);
+        BTSave = (Button) findViewById(R.id.btn_next);
         layout1.setVisibility(View.VISIBLE);
         layout2.setVisibility(View.VISIBLE);
         layout3.setVisibility(View.GONE);
@@ -164,66 +162,65 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         });
     }
 
+    /*  ProcessView --> Process the Image data and check the questionID, brandId and SurveyID, based on this, store the
+     maintain this data in separate arrayList "imageSrc" and rest of the image data are
+     maintained in other arrayList "thumbnailSrc"   */
     protected void processView() {
         surveyHelperNew = SurveyHelperNew.getInstance(DragDropPictureActivity.this);
         imageSrc = new ArrayList<>();
         thumbnailSrc = new ArrayList<>();
         ArrayList<QuestionBO> items = new ArrayList<>();
-//        Log.e("Path", localPath);
         for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            {
-                items = surBO.getQuestions();
-                for (int i = 0; i < items.size(); i++) {
-                    if (items.get(i).getImageNames() != null) {
-                        if (items.get(i).getQuestionID() == questionId && items.get(i).getBrandID() == brandId && items.get(i).getSurveyid() ==selectedSurveyId ) {
-                       //     questionBO=items.get(i);
-                            for (int j = 0; j < items.get(i).getImageNames().size(); j++) {
-//                                int index=items.get(i).getImageNames().get(j).indexOf("SVY_");
-//                                String imageName=items.get(i).getImageNames().get(j).substring(index);
-                                //    Log.e("DragPath " + items.get(i).getQuestionID(), items.get(i).getImageNames().get(j));
-                                imageSrc.add(items.get(i).getImageNames().get(j));
-                            }
-                        } else {
-                            for (int j = 0; j < items.get(i).getImageNames().size(); j++) {
-                                //  Log.e("DragPath " + items.get(i).getQuestionID(), items.get(i).getImageNames().get(j));
-                                thumbnailSrc.add(items.get(i).getImageNames().get(j));
-                            }
+            items = surBO.getQuestions();
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).getImageNames() != null) {
+                    if (items.get(i).getQuestionID() == questionId && items.get(i).getBrandID() == brandId && items.get(i).getSurveyid() == selectedSurveyId) {
+                        for (int j = 0; j < items.get(i).getImageNames().size(); j++) {
+                            imageSrc.add(items.get(i).getImageNames().get(j));
+                        }
+                    } else {
+                        for (int j = 0; j < items.get(i).getImageNames().size(); j++) {
+                            thumbnailSrc.add(items.get(i).getImageNames().get(j));
                         }
                     }
                 }
             }
 
         }
-
-        imageSrc=removeDuplicates(imageSrc);
-        thumbnailSrc=removeDuplicates(thumbnailSrc);
-
+        // Remove any duplicate entries present in the same arrayList if any
+        imageSrc = removeDuplicates(imageSrc);
+        thumbnailSrc = removeDuplicates(thumbnailSrc);
+        //Images which present in the "imageSrc" should be removed in "thumbnailSrc" in order to avoid the duplication
         if (thumbnailSrc.size() != 0)
             thumbnailSrc.removeAll(imageSrc);
-
+        //Getting the current Object using Getter & Setter
         questionBO = surveyHelperNew.getQuestionBODragDrop();
         minPhoto = questionBO.getMinPhoto();
         maxPhoto = questionBO.getMaxPhoto();
         TVMin.setText(minPhoto + "");
         TVMax.setText(maxPhoto + "");
 
-        topListAdapter = new ListAdapter(DragDropPictureActivity.this, imageSrc, this, 1, minPhoto, maxPhoto);
+        /* ListAdapter (Activity, List of Data, Type, Max. photo count)
+          TYPE --> Based on this value, the UI will be changed in the Adapter,
+          Set the DragListener to the recyclerView to enable the Drag&Drop Functionality.
+        topListAdapter = new ListAdapter(DragDropPictureActivity.this, imageSrc, this, 1, maxPhoto); */
         imageRecyclerView.setAdapter(topListAdapter);
         imageRecyclerView.setOnDragListener(topListAdapter.getDragInstance());
 
-        bottomListAdapter = new ListAdapter(DragDropPictureActivity.this, thumbnailSrc, this, 2, minPhoto, maxPhoto);
+        bottomListAdapter = new ListAdapter(DragDropPictureActivity.this, thumbnailSrc, this, 2, maxPhoto);
         thumbnailRecyclerView.setAdapter(bottomListAdapter);
         thumbnailRecyclerView.setOnDragListener(bottomListAdapter.getDragInstance());
     }
 
-    private ArrayList<String> removeDuplicates(ArrayList<String> values)
-    {
+    private ArrayList<String> removeDuplicates(ArrayList<String> values) {
         HashSet<String> hashSet = new HashSet<String>();
         hashSet.addAll(values);
         values.clear();
         values.addAll(hashSet);
         return values;
     }
+
+    // Returns the current data count and its PUBLIC because, it is accessed from Adapter as well,
     public int getArrayCount() {
         return imageSrc.size();
     }
@@ -244,16 +241,13 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         thumbnailRecyclerView = (RecyclerView) findViewById(R.id.thumnail_recyclerview);
         if (thumbnailRecyclerView != null)
             thumbnailRecyclerView.setHasFixedSize(true);
-
-        if (isTabletDevice(DragDropPictureActivity.this))
-        {
-            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this,5));
+        // Check the current device is Tablet or Mobile.
+        //If tablet, column count is 5 and If Mobile, column count is 3
+        if (isTabletDevice(DragDropPictureActivity.this)) {
+            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+        } else {
+            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         }
-        else
-        {
-            thumbnailRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        }
-
         thumbnailRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
@@ -262,8 +256,9 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
     }
 
+    // Static method to determine the device.
     private static boolean isTabletDevice(Context activityContext) {
-        if(activityContext!=null) {
+        if (activityContext != null) {
             boolean device_large = ((activityContext.getResources()
                     .getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE || (activityContext
                     .getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
@@ -283,6 +278,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         }
         return false;
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.removeItem(R.id.menu_dragdrop_cam);
@@ -295,6 +291,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            // Checking whether any transaction is made, if yes, get a confirmation from the user to close the activity.
             if (initImgSrcSize == imageSrc.size() && initThumbnailSize == thumbnailSrc.size())
                 finish();
             else {
@@ -334,17 +331,9 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         return super.onOptionsItemSelected(item);
     }
 
+    // Method to save the transactions
+    //Append the path with the imageName to an ArrayList and send it back with the intent RESULT_OK
     private void saveFunction() {
-        //            Toast.makeText(DragDropPictureActivity.this, thumbnailSrc.size() + "\t" + imageSrc.size(), Toast.LENGTH_SHORT).show();
-//            if(thumbnailSrc.size()!=0 || imageSrc.size()!=0) {
-        for (int i = 0; i < thumbnailSrc.size(); i++) {
-            Log.e("thumbnailSave", thumbnailSrc.get(i));
-        }
-        for (int i = 0; i < imageSrc.size(); i++) {
-            Log.e("imageSrcSave", imageSrc.get(i));
-        }
-
-      //  questionBO.getImageNames().clear();
         ArrayList<String> saveData = new ArrayList<>();
         for (int i = 0; i < imageSrc.size(); i++) {
             int index = imageSrc.get(i).indexOf("SVY_");
@@ -356,42 +345,9 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         setResult(RESULT_OK, intent);
         finish();
         Toast.makeText(this, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-//        questionBO.getImageNames().addAll(saveData);
-//        SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(DragDropPictureActivity.this);
-//        surveyHelperNew.setQuestionBODragDrop(questionBO);
-
-//        ArrayList<String> mImagePathData = new ArrayList<>();
-//        if (questionBO.getImageNames() != null) {
-//            mImagePathData = questionBO.getImageNames();
-//            for (int i = 0; i < imageSrc.size(); i++) {
-//                if (mImagePathData.size() == 0) {
-//                    mImagePathData.add(imageSrc.get(i));
-//                    int index = imageSrc.get(i).indexOf("SVY_");
-//                    String imageName = imageSrc.get(i).substring(index);
-//                    questionBO.getImageNames().add(path + imageName);
-//                } else {
-//                    if (!mImagePathData.contains(imageSrc.get(i))) {
-//                        mImagePathData.add(imageSrc.get(i));
-//                        int index = imageSrc.get(i).indexOf("SVY_");
-//                        String imageName = imageSrc.get(i).substring(index);
-//                        questionBO.getImageNames().add(path + imageName);
-//                    }
-//                }
-//            }
-//            //  questionBO.setImagePathData(mImagePathData);
-//        }
-        //  questionBO.getImageNames().add(path + imageName);
-//            }
-       // finish();
-
-//            ArrayList<String> mData=new ArrayList<>();
-//            mData=questionBO.getImagePathData();
-//            for(int i=0;i<mData.size();i++)
-//            {
-//                Log.e("mImagePathData",mData.get(i));
-//            }
     }
 
+    //Method to remove the data from the Object.
     public boolean removeFromDataList(String removePath) {
         ArrayList<String> mImagePathData = new ArrayList<>();
         if (questionBO.getImageNames() != null) {
@@ -405,6 +361,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         return false;
     }
 
+    //Clear the present recyclerView and its adapter in order to increase the performance.
     protected void onDestroy() {
         super.onDestroy();
         if (imageRecyclerView != null) {
@@ -462,56 +419,44 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                 || !questBO.getSelectedAnswerIDs().isEmpty()) {
             if (bmodel.isExternalStorageAvailable()) {
                 if (questBO.getQuestionID() != 0) {
-//                    if (questBO.getIsPhotoReq() == 1 && questBO.getImageNames().size() >= questBO.getMaxPhoto()) {
-//
-//                        bmodel.showAlert(
-//                                String.format(
-//                                        getResources()
-//                                                .getString(
-//                                                        R.string.You_have_already_taken_max_images),
-//                                        questBO.getMaxPhoto()),
-//                                0);
-//                    } else {
-                        surveyPhcapture = questBO;
-                        imageName = "SVY_"
-                                + bmodel.retailerMasterBO
-                                .getRetailerID() + "_"
-                                + questBO.getSurveyid() + "_"
-                                + questBO.getQuestionID() + "_"
-                                + SDUtil.now(SDUtil.DATE_TIME_ID)
-                                + ".jpg";
+                    surveyPhcapture = questBO;
+                    imageName = "SVY_"
+                            + bmodel.retailerMasterBO
+                            .getRetailerID() + "_"
+                            + questBO.getSurveyid() + "_"
+                            + questBO.getQuestionID() + "_"
+                            + SDUtil.now(SDUtil.DATE_TIME_ID)
+                            + ".jpg";
 
-                        try {
-                            if (i == 0) {
-                                questBO.setTempImagePath((questBO.getImage1Path() != null && questBO.getImage1Path().length() > 0 && isFileExist(questBO.getImage1Path())) ? questBO.getImage1Path() : (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) ? questBO.getTempImagePath() : "");
-                            } else {
-                                questBO.setTempImagePath((questBO.getImage2Path() != null && questBO.getImage2Path().length() > 0 && isFileExist(questBO.getImage2Path())) ? questBO.getImage2Path() : (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) ? questBO.getTempImagePath() : "");
-                            }
-                            Thread.sleep(10);
-                            Intent intent = new Intent(
-                                    DragDropPictureActivity.this,
-                                    CameraActivity.class);
-                            String path = HomeScreenFragment.folder
-                                    .getPath() + "/" + imageName;
-                            if (i == 0) {
-                                questBO.setImage1Path(path);
-                                questBO.setImage1Captured(true);
-                            } else {
-                                questBO.setImage2Path(path);
-                                questBO.setImage2Captured(true);
-                            }
-
-                            pathSrc = path;
-                            Log.e("TakenPath", path);
-                            intent.putExtra("quality", 40);
-                            intent.putExtra("path", path);
-                            startActivityForResult(intent,
-                                    CAMERA_REQUEST_CODE);
-                        } catch (Exception e) {
-                            Commons.printException("" + e);
+                    try {
+                        if (i == 0) {
+                            questBO.setTempImagePath((questBO.getImage1Path() != null && questBO.getImage1Path().length() > 0 && isFileExist(questBO.getImage1Path())) ? questBO.getImage1Path() : (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) ? questBO.getTempImagePath() : "");
+                        } else {
+                            questBO.setTempImagePath((questBO.getImage2Path() != null && questBO.getImage2Path().length() > 0 && isFileExist(questBO.getImage2Path())) ? questBO.getImage2Path() : (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) ? questBO.getTempImagePath() : "");
+                        }
+                        Thread.sleep(10);
+                        Intent intent = new Intent(
+                                DragDropPictureActivity.this,
+                                CameraActivity.class);
+                        String path = HomeScreenFragment.folder
+                                .getPath() + "/" + imageName;
+                        if (i == 0) {
+                            questBO.setImage1Path(path);
+                            questBO.setImage1Captured(true);
+                        } else {
+                            questBO.setImage2Path(path);
+                            questBO.setImage2Captured(true);
                         }
 
-                  //  }
+                        pathSrc = path;
+                        Log.e("TakenPath", path);
+                        intent.putExtra("quality", 40);
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent,
+                                CAMERA_REQUEST_CODE);
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
 
                 } else {
                     Toast.makeText(
@@ -566,11 +511,12 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 //                    mImagePathData.add(pathSrc);
 //                    surveyPhcapture.setImagePathData(mImagePathData);
 //                }
-               // surveyPhcapture.getImageNames().add(path + imageName);
-                imageSrc.add(path+imageName);
+                // surveyPhcapture.getImageNames().add(path + imageName);
+                imageSrc.add(path + imageName);
                 topListAdapter.notifyDataSetChanged();
-               // processView();
+                // processView();
                 Toast.makeText(DragDropPictureActivity.this, getString(R.string.continuousImageCapturedToast), Toast.LENGTH_SHORT).show();
+                //Checking whether the max. required photo is taken, if not, navigate again to to photoFunction()
                 if (imageSrc.size() < maxPhoto) {
                     photoFunction(surveyPhcapture, 0);
                 }
