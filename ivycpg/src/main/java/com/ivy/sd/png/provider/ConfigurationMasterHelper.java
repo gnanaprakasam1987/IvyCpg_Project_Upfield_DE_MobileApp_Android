@@ -775,6 +775,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SMS_IN_SURVEY;
     public String smsmenutype;
     public boolean SHOW_PHOTOCAPTURE_IN_SURVEY;
+    public boolean SHOW_DRAGDROP_IN_SURVEY;
+    public boolean ENABLE_MULTIPLE_PHOTO;
     public boolean SHOW_PROFILE_LOC1;
     public boolean SHOW_PROFILE_LOC2;
     public boolean SHOW_PROFILE_LOC3;
@@ -801,6 +803,7 @@ public class ConfigurationMasterHelper {
     public int CAMERA_PICTURE_HEIGHT = 480;
     public int CAMERA_PICTURE_QUALITY = 40;
     public String photocapturemenutype;
+    public String multiplePhotoCapture;
     public boolean IS_SIH_VALIDATION_MASTER;
     public boolean IS_WSIH_MASTER;
     public boolean IS_SCHEME_ON_MASTER;
@@ -4146,6 +4149,8 @@ public class ConfigurationMasterHelper {
         try {
             this.SHOW_SMS_IN_SURVEY = false;
             this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
+            this.SHOW_DRAGDROP_IN_SURVEY=false;
+            this.ENABLE_MULTIPLE_PHOTO=false;
             DBUtil db;
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -4160,12 +4165,27 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
-            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
+            c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
                     + bmodel.QT(menucode));
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
                     this.photocapturemenutype = c.getString(0);
+                    // Enabling the dragDrop button based on the RField value
+                    if(c.getString(1)!=null && c.getString(1).equalsIgnoreCase("1"))
+                    {
+                        this.SHOW_DRAGDROP_IN_SURVEY=true;
+                    }
+                }
+                c.close();
+            }
+            // Survey12 to enable multiple photo capture
+            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.ENABLE_MULTIPLE_PHOTO = true;
+                    this.multiplePhotoCapture=c.getString(0);
                 }
                 c.close();
             }

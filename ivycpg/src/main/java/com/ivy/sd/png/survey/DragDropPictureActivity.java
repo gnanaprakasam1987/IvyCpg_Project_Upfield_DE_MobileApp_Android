@@ -62,6 +62,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
     protected LinearLayout layout1, layout2, layout3, layout4;
     protected TextView TVMin, TVMinTitle, TVMaxTitle, TVMax;
     protected Button BTSave;
+    protected Boolean isMultiPhotoCaptureEnabled=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,9 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         path = "/" + "Survey" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
+
+        if(bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+            isMultiPhotoCaptureEnabled=true;
 
         initViews();
         initTopRecyclerView();
@@ -515,10 +519,12 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                 imageSrc.add(path + imageName);
                 topListAdapter.notifyDataSetChanged();
                 // processView();
-                Toast.makeText(DragDropPictureActivity.this, getString(R.string.continuousImageCapturedToast), Toast.LENGTH_SHORT).show();
-                //Checking whether the max. required photo is taken, if not, navigate again to to photoFunction()
-                if (imageSrc.size() < maxPhoto) {
-                    photoFunction(surveyPhcapture, 0);
+                if(isMultiPhotoCaptureEnabled) {
+                    Toast.makeText(DragDropPictureActivity.this, getString(R.string.continuousImageCapturedToast), Toast.LENGTH_SHORT).show();
+                    //Checking whether the max. required photo is taken, if not, navigate again to to photoFunction()
+                    if (imageSrc.size() < maxPhoto) {
+                        photoFunction(surveyPhcapture, 0);
+                    }
                 }
             }
         }

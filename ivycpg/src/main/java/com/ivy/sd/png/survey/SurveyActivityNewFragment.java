@@ -147,6 +147,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int mSelectedIdIndex = -1,isFromDragDrop=-1;
     private String childUserName = "";
     private boolean isFromChild;
+    protected Boolean isMultiPhotoCaptureEnabled=false;
 
     @Override
     public void onAttach(Context context) {
@@ -327,7 +328,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-
+        if(bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+            isMultiPhotoCaptureEnabled=true;
         //condition to check CNT01
         if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
             //if CNT01 is enabled
@@ -893,7 +895,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             if (holder.questionBO.getIsPhotoReq() == 0) {
                 holder.isPhotoAvailable = false;
                 holder.photoLayout.setVisibility(View.INVISIBLE);
-                //Drag and Drop Functionality Diabled
+                //Drag and Drop Functionality Disabled
                 holder.camIndicatorLty.setVisibility(View.GONE);
                 holder.dragBtn.setVisibility(View.GONE);
                 holder.dragDropLayout.setVisibility(View.GONE);
@@ -914,6 +916,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     /*holder.camIndicatorLty.setVisibility(View.VISIBLE);
                     holder.photoBtn.setVisibility(View.VISIBLE);*/
                 }
+            }
+
+            if(!bmodel.configurationMasterHelper.SHOW_DRAGDROP_IN_SURVEY)
+            {
+                //Drag and Drop Functionality Disabled
+                holder.camIndicatorLty.setVisibility(View.GONE);
+                holder.dragBtn.setVisibility(View.GONE);
+                holder.dragDropLayout.setVisibility(View.GONE);
             }
 
             if (holder.questionBO.getIsPhotoReq() != 0 && holder.questionBO.getMinPhoto() >= 1) {
@@ -1018,10 +1028,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 //                }
 
                 surveyPhcapture.getImageNames().add(path + imageName);
-                Toast.makeText(getActivity(), "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
-                isClicked = true;
-                if (surveyPhcapture.getImageNames().size() < surveyPhcapture.getMaxPhoto()) {
-                    photoFunction(surveyPhcapture, 0);
+                if(isMultiPhotoCaptureEnabled) {
+                    Toast.makeText(getActivity(), "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
+                    isClicked = true;
+                    if (surveyPhcapture.getImageNames().size() < surveyPhcapture.getMaxPhoto()) {
+                        photoFunction(surveyPhcapture, 0);
+                    }
                 }
             }
         }
