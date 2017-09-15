@@ -206,8 +206,8 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
         /* ListAdapter (Activity, List of Data, Type, Max. photo count)
           TYPE --> Based on this value, the UI will be changed in the Adapter,
-          Set the DragListener to the recyclerView to enable the Drag&Drop Functionality.
-        topListAdapter = new ListAdapter(DragDropPictureActivity.this, imageSrc, this, 1, maxPhoto); */
+          Set the DragListener to the recyclerView to enable the Drag&Drop Functionality. */
+        topListAdapter = new ListAdapter(DragDropPictureActivity.this, imageSrc, this, 1, maxPhoto);
         imageRecyclerView.setAdapter(topListAdapter);
         imageRecyclerView.setOnDragListener(topListAdapter.getDragInstance());
 
@@ -285,8 +285,12 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.removeItem(R.id.menu_dragdrop_cam);
-        menu.removeItem(R.id.menu_dragdrop_save);
+        try {
+            menu.removeItem(R.id.menu_dragdrop_cam);
+            menu.removeItem(R.id.menu_dragdrop_save);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -353,9 +357,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
     //Method to remove the data from the Object.
     public boolean removeFromDataList(String removePath) {
-        ArrayList<String> mImagePathData = new ArrayList<>();
         if (questionBO.getImageNames() != null) {
-            mImagePathData = questionBO.getImageNames();
             if (questionBO.getImageNames().contains(removePath)) {
                 questionBO.getImageNames().remove(questionBO.getImageNames().indexOf(removePath));
                 return true;
@@ -378,7 +380,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
             thumbnailRecyclerView.setAdapter(null);
             thumbnailRecyclerView = null;
         }
-        // unbindDrawables(findViewById(R.id.root));
+        unbindDrawables(findViewById(R.id.root));
         System.gc();
     }
 
