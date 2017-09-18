@@ -39,7 +39,7 @@
 
 
     <color name="competitor_brand">#999999</color>
-
+    <color name="TransparentBlack">#68616161</color>
 
     <!--     Button border effects colors -->
     <!-- BLUE THEME -->

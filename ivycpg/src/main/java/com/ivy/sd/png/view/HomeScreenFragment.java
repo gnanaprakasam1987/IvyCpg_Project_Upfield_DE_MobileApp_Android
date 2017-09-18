@@ -1047,10 +1047,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
                             bmodel.productHelper
-                                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY_SW");
+                                    .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);
                         else
                             bmodel.productHelper
-                                    .downloadProductFilter("MENU_SURVEY_SW");
+                                    .downloadProductFilter(MENU_SURVEY_SW);
                     }
 
                     if (bmodel.mSurveyHelperNew.getSurvey() != null
