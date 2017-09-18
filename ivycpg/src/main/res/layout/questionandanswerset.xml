@@ -215,7 +215,7 @@
                                 <View
                                     android:layout_width="@dimen/dimen_1dp"
                                     android:layout_height="20dp"
-                                    android:background="@color/new_grey"></View>
+                                    android:background="@color/new_grey"/>
 
                             </LinearLayout>
 
@@ -234,6 +234,24 @@
                                     android:padding="@dimen/dimen_0dp"
                                     android:scaleType="center"
                                     android:src="@drawable/camera_new" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/icon_height"
+                                android:layout_weight="6"
+                                android:visibility="gone"
+                                android:id="@+id/dragDropLayout"
+                                android:gravity="center|start">
+
+                                <ImageView
+                                    android:id="@+id/dragDropIcon"
+                                    android:layout_width="@dimen/icon"
+                                    android:layout_height="@dimen/icon"
+                                    android:background="@null"
+                                    android:visibility="gone"
+                                    android:padding="@dimen/dimen_0dp"
+                                    android:scaleType="center"
+                                    android:src="@drawable/ic_add_to_photos_blue_24dp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>

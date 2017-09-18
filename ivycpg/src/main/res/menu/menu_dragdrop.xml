@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_dragdrop_cam"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="6"
+        android:title="photo"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_dragdrop_save"
+        android:title="@string/save"
+        ivydist:showAsAction="always"/>
+</menu>
