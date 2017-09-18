@@ -181,7 +181,7 @@ public class ResetPasswordDialog extends Dialog {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("VersionCode",
                         bmodel.getApplicationVersionNumber());
-                jsonObject.put("LoginId", bmodel.userNameTemp);
+                jsonObject.put("LoginId", bmodel.userNameTemp.trim());
                 jsonObject.put("MobileDateTime",
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",

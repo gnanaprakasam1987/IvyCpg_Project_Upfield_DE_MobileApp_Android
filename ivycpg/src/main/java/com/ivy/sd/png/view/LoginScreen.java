@@ -190,6 +190,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             @Override
             public void onClick(View v) {
                 if (!editTextUserName.getText().toString().equals("")) {
+                    bmodel.userNameTemp=editTextUserName.getText().toString();
                     new ForgetPassword().execute();
                 } else {
                     editTextUserName.setError(getResources().getString(R.string.enter_username));

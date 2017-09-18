@@ -13,14 +13,12 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -277,12 +275,12 @@ public class ActivationHelper {
 
     public boolean check200Status(String myUri) {
         try {
-            HttpGet httpRequest = new HttpGet(myUri);
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse response = httpclient.execute(httpRequest);
+            URL urlobj = new URL(myUri);
+            HttpURLConnection urlConnection = (HttpURLConnection) urlobj.openConnection();
+            int responseCode = urlConnection.getResponseCode();
             Commons.print("Sync Url Success response code>>>>>>>>>>"
-                    + response.getStatusLine().getStatusCode());
-            if (response.getStatusLine().getStatusCode() == 200)
+                    + responseCode);
+            if (responseCode == HttpURLConnection.HTTP_OK)
                 return true;
             else
                 return false;
