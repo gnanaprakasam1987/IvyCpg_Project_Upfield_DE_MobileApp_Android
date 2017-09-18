@@ -339,6 +339,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_TYPE_DIALOG = "ORDB39";
     private static final String CODE_SHOW_LAST_3MONTHS_SALES = "PRO22";
     private static final String CODE_MSL_NOT_SOLD = "PRO24";
+    private static final String CODE_NORMAL_DASHBOARD = "DASH13";
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
@@ -367,7 +368,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD,SHOW_NOR_DASHBOARD;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -1777,6 +1778,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_ORDER_FOCUS_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) : false;
         this.SHOW_LAST_3MONTHS_BILLS = hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) : false;
         this.SHOW_MSL_NOT_SOLD = hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) != null ? hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) : false;
+        this.SHOW_NOR_DASHBOARD = hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) : false;
         this.SHOW_COLLECTION_PRINT = hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) : false;
         this.SHOW_NETAMOUNT_IN_REPORT = hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) : false;
         this.SHOW_COLLECTION_SEQ_NO = hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) : false;

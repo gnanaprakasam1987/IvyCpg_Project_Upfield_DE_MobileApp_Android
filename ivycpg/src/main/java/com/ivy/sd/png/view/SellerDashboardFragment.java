@@ -401,7 +401,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 @Override
                 public void onClick(View v) {
                     try {
-                        bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
+                        if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD)
+                            bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
+                            //for loaeral
+                        else
+                            bmodel.dashBoardHelper.downloadLorealSkuDetails(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
 
                         if (bmodel.dashBoardHelper.getSellerKpiSku().size() > 0) {
                             Intent i = new Intent(getActivity(),
