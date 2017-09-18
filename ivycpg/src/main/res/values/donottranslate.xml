@@ -119,5 +119,9 @@
     <string name="apply_or_test_feedback">Apply/Test Feedback</string>
     <string name="date_label">Date</string>
     <string name="customer_feedback">Customer FeedBack</string>
+    <string name="minPhoto">Min.Photo</string>
+    <string name="maxPhoto">Max.Photo</string>
+    <string name="saveTransaction">Do you wish to save the transaction</string>
+    <string name="continuousImageCapturedToast">Photo Captured and Saved Successfully</string>
 
 </resources>
