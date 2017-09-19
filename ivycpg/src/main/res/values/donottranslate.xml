@@ -123,5 +123,6 @@
     <string name="maxPhoto">Max.Photo</string>
     <string name="saveTransaction">Do you wish to save the transaction</string>
     <string name="continuousImageCapturedToast">Photo Captured and Saved Successfully</string>
+    <string name="drafted_sales_not_processed">Drafts exists without processing</string>
 
 </resources>

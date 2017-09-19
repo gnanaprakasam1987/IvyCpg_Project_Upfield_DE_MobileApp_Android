@@ -71,6 +71,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
     private RadioGroup ageRadioGroup;
 
     EditText edt_email;
+    ArrayList<StandardListBO> ageGroupList;
 
     @Override
     public void onAttach(Context context) {
@@ -203,7 +204,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
 
         try {
-            ArrayList<StandardListBO> ageGroupList = bmodel.reasonHelper.downloadCSAgeGroup();
+            ageGroupList = bmodel.reasonHelper.downloadCSAgeGroup();
 
             for (int j = 0; j < ageGroupList.size(); j++) {
                 AppCompatRadioButton radioButton = new AppCompatRadioButton(getActivity());
@@ -321,6 +322,32 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                         mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bmodel);
                         mHistoryDialog.show();
                         mHistoryDialog.setCancelable(false);
+                        mHistoryDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface) {
+                                if (bmodel.mCounterSalesHelper.getmHeaderLst() != null && !bmodel.mCounterSalesHelper.getmHeaderLst().isEmpty()) {
+                                    HashMap<String, String> lstHeader = bmodel.mCounterSalesHelper.getmHeaderLst();
+                                    edt_name.setText(lstHeader.get("name"));
+                                    edt_address.setText(lstHeader.get("address"));
+                                    edt_email.setText(lstHeader.get("email"));
+                                    String gender = lstHeader.get("gender");
+                                    if (gender.equals("M")) {
+                                        chkFemale.setChecked(false);
+                                        chkMale.setChecked(true);
+                                    } else {
+                                        chkMale.setChecked(false);
+                                        chkFemale.setChecked(true);
+                                    }
+                                    for (int j = 0; j < ageGroupList.size(); j++) {
+                                        if (ageGroupList.get(j).getListName().equalsIgnoreCase(lstHeader.get("age"))) {
+                                            ageRadioGroup.check(Integer.parseInt(ageGroupList.get(j).getListID()));
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        });
                     } else {
                         Toast.makeText(getActivity(), "Data not available", Toast.LENGTH_LONG).show();
                     }
@@ -342,6 +369,8 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         inflater.inflate(R.menu.menu_counter_sales, menu);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
+        if (bmodel.getCounterSaleBO() != null)
+            menu.findItem(R.id.menu_delete).setVisible(bmodel.getCounterSaleBO().isSaleDrafted());
     }
 
     @Override
@@ -413,6 +442,14 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                 Toast.makeText(getActivity(), R.string.no_data_tosave, Toast.LENGTH_LONG).show();
             }
             return true;
+        }else if (item.getItemId() == R.id.menu_delete) {
+
+            bmodel.mCounterSalesHelper.deletedSalesDetails(uid);
+            bmodel.getCounterSaleBO().setSaleDrafted(false);
+            bmodel.getCounterSaleBO().setmSalesproduct(null);
+            onResume();
+
+            return true;
         }
 
 
@@ -455,6 +492,12 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         } else if (R.id.btn_history == view.getId()) {
 
             if (!edt_contact.getText().toString().equals("")) {
+                edt_name.setText("");
+                edt_address.setText("");
+                edt_email.setText("");
+                ageRadioGroup.clearCheck();
+                chkMale.setChecked(false);
+                chkFemale.setChecked(true);
                 if (bmodel.isOnline())
                     new DownloadCustomerHistory().execute();
                 else

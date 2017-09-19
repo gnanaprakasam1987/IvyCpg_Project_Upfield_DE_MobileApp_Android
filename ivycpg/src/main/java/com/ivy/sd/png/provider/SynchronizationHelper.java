@@ -4587,4 +4587,36 @@ SynchronizationHelper {
         }
         return check;
     }
+    public boolean isSaleDrafted() {
+        DBUtil db = null;
+        boolean check = true;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            int counts = 0;
+
+            Cursor c = db
+                    .selectSQL("select COUNT(pid) from CS_CustomerSaleDetails where upload='I'");
+            if (c != null) {
+                if (c.moveToFirst())
+                    counts = c.getInt(0);
+            }
+            Commons.print("Count of isSaleDrafter not completed : ," + counts + "");
+            c.close();
+            db.close();
+
+            if (counts > 0) {
+                check = false;
+            } else {
+                check = true;
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return check;
+    }
+
 }
