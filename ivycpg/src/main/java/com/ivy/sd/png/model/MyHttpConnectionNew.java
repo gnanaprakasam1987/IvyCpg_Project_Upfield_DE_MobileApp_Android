@@ -1,5 +1,7 @@
 package com.ivy.sd.png.model;
 
+import android.net.Uri;
+
 import com.ivy.sd.png.util.Commons;
 import org.json.JSONObject;
 
@@ -125,32 +127,34 @@ public class MyHttpConnectionNew {
                             con = (HttpURLConnection) serverUrl.openConnection();
                             con.setDoInput(true);
                             con.setRequestMethod("POST");
+                            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                             con.setDoOutput(true);
                             if (headervalue != null) {
                                 con.setRequestProperty(headerKey, headervalue);
                             }
-                            StringBuilder resultbuilder = new StringBuilder();
+                            //didn't remove comment for future reference if needed
+//                            StringBuilder resultbuilder = new StringBuilder();
+//                            for (Map.Entry<String, String> entry : params.entrySet()) {
+//                                resultbuilder.append((resultbuilder.length() > 0 ? "&" : "") + entry.getKey() + ":" + entry.getValue());//appends: key=value (for first param) OR &key=value(second and more)
+//                            }
+//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+//                            writer.write(resultbuilder.toString());
+//                            writer.close();
+
+                            // For POST only - START
+                            Uri.Builder builder = new Uri.Builder();
                             for (Map.Entry<String, String> entry : params.entrySet()) {
-                                resultbuilder.append((resultbuilder.length() > 0 ? "&" : "") + entry.getKey() + "=" + entry.getValue());//appends: key=value (for first param) OR &key=value(second and more)
+                                builder.appendQueryParameter(entry.getKey(), entry.getValue());
                             }
+                            String query = builder.build().getEncodedQuery();
                             os = con.getOutputStream();
-                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                            writer.write(resultbuilder.toString());
-                            writer.close();
+
+                            os.write(query.getBytes());
                             os.flush();
                             os.close();
-                        } else {
-                            URL serverUrl = new URL(url);
-                            con = (HttpURLConnection) serverUrl.openConnection();
-                            con.setDoInput(true);
-                            con.setRequestMethod("POST");
-                            con.setDoOutput(true);
-                            if (headervalue != null) {
-                                con.setRequestProperty(headerKey, headervalue);
-                            }
-                            os = con.getOutputStream();
-                            os.flush();
-                            os.close();
+
+//                            con.connect();
+
                         }
                         this.processEntity(con.getInputStream());
                         this.setResponseHeader(con.getHeaderFields());

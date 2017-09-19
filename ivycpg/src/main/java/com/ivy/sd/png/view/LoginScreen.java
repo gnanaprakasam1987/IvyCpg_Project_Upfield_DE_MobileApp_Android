@@ -1323,6 +1323,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 jsonObj.put("DeviceId",
                         bmodel.activationHelper.getIMEINumber());
                 jsonObj.put("RegistrationId", bmodel.regid);
+                jsonObj.put("DeviceUniqueId",bmodel.activationHelper.getDeviceId());
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
                 jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
