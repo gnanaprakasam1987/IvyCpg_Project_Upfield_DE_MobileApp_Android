@@ -192,7 +192,7 @@ public class ResetPasswordDialog extends Dialog {
                 jsonObject.put("NewPassword", Npassword);
                 Commons.printInformation("Reset password upload " + jsonObject.toString());
                 String appendUrl = "/V1/ForgotPassword/Validate";
-                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject.toString(), null, appendUrl);
+                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl,false);
                 for (String s : responseVector) {
                     JSONObject jsonObjectResponse = new JSONObject(s);
 

@@ -23,7 +23,8 @@ public class DataMembers {
     // Sync
    // public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
     public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
-    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+//    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+    public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
 
     public static String fileName = "sd_png_asean_android.apk";

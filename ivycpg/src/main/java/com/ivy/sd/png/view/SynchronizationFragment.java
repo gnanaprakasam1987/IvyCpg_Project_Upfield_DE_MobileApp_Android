@@ -1593,6 +1593,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 if(!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                     new UrlDownloadData().execute();
                 else {
+                    isClicked=false;
                     Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
                     if(alertDialog !=null)
                         alertDialog.dismiss();
