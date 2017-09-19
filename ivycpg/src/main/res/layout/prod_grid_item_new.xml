@@ -22,35 +22,34 @@
 
             <ImageView
                 android:id="@+id/prod_img"
-                android:layout_width="250dp"
-                android:layout_height="@dimen/digital_content_image_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
+                android:contentDescription="@null"
                 tools:src="@drawable/no_image_available" />
-
         </RelativeLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/pdt_details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/digital_bottom_margin"
-            android:minHeight="40dp"
-            android:paddingRight="@dimen/list_margin"
-            android:paddingBottom="@dimen/list_margin"
-            android:orientation="horizontal">
+            android:layout_gravity="bottom"
+            android:background="#64000000"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/type_loc_txt"
                 style="?attr/customListItemPrimary"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
                 android:maxLines="2"
-                android:minLines="2"
-                android:paddingLeft="5dp"
-                android:textColor="?attr/primarycolor"
-                android:textStyle="normal"
+                android:minLines="1"
+                android:paddingBottom="2dp"
+                android:paddingTop="3dp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:textColor="@color/WHITE"
+                android:textStyle="bold"
                 tools:text="est weter" />
 
             <TextView
@@ -58,15 +57,15 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/type_loc_txt"
-                android:layout_centerVertical="true"
-                android:paddingRight="5dp"
                 android:text="hihi"
-                android:textColor="@color/GRAY_TEXT"
+                android:gravity="center_vertical"
+                android:paddingBottom="3dp"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:textStyle="normal"
+                android:textColor="@color/WHITE"
                 tools:text="ser fser es" />
-        </RelativeLayout>
-
+        </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
