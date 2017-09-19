@@ -71,12 +71,13 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
         webView = (WebView) findViewById(R.id.webview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setScreenTitle(getIntent().getStringExtra("screentitle"));
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            setScreenTitle(getIntent().getStringExtra("screentitle"));
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+        }
         bmodel.reportHelper.downloadWebViewAuthUrl();
         if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
             new DownloadToken().execute();

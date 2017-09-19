@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import com.ivy.lib.rest.MyKsoapConnection;
@@ -83,7 +84,12 @@ public class ActivationHelper {
         else
             return deviceId;
     }
+    public String getDeviceId(){
+        String android_id = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
+        return android_id;
+    }
     int downloadReponse = 2;
 
     /**

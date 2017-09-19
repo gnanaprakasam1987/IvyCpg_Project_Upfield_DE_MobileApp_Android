@@ -2287,14 +2287,7 @@ public class ReportHelper {
             }
 
             if (!"".equals(webViewAuthUrl)) {
-                Cursor c1 = db
-                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = 'WEBVIEW_PLAN'");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        webViewAuthUrl += c1.getString(0);
-                    }
-                    c1.close();
-                }
+                webViewAuthUrl+="/UserAuthentication/GetDeviceToken";
             }
             db.closeDB();
 
