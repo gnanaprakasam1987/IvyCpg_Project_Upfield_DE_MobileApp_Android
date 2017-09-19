@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -336,7 +337,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         menu.findItem(R.id.menu_save).setVisible(false);
         if (hide_new_menu == false)
             menu.findItem(R.id.menu_new_task).setVisible(false);
-
+        menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -364,6 +365,24 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
             Intent i = new Intent(Task.this, TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
             startActivity(i);
+            return true;
+        } else if (i1 == R.id.menu_reason) {
+            bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK");
+            ReasonPhotoDialog dialog = new ReasonPhotoDialog();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK")) {
+                        bmodel.saveModuleCompletion("MENU_TASK");
+                        finish();
+                    }
+                }
+            });
+            Bundle args = new Bundle();
+            args.putString("modulename", "MENU_TASK");
+            dialog.setCancelable(false);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "ReasonDialogFragment");
             return true;
         }
         return false;

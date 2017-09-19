@@ -1,6 +1,10 @@
 package com.ivy.countersales;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +25,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ApplyBo;
@@ -268,6 +274,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
+        menu.findItem(R.id.menu_barcode).setVisible(true);
 //        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
 //            menu.findItem(R.id.menu_fivefilter).setVisible(true);
 //        else
@@ -289,6 +296,19 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         } else if (item.getItemId() == R.id.menu_product_filter) {
             productFilterClickedFragment();
             supportInvalidateOptionsMenu();
+            return true;
+        }else if (item.getItemId() == R.id.menu_barcode) {
+            checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                new IntentIntegrator(this).setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(this,
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -729,6 +749,29 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         TextView tvtimeTaken;
         TextView tvresult;
         TextView tvfeedback;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                String barcode = result.getContents().toString();
+                if (barcode != null && !"".equals(barcode)) {
+                    for (ProductMasterBO productMasterBO : bmodel.productHelper.getProductMaster()) {
+                        if (productMasterBO.getBarCode().equals(barcode)) {
+                            int index = bmodel.mCounterSalesHelper.getItemIndex(Integer.parseInt(productMasterBO.getProductID()), lstProducts);
+                            if (index != -1)
+                                productsAutoCompleteTV.setText(lstProducts.get(index).toString());
+                        }
+                    }
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 

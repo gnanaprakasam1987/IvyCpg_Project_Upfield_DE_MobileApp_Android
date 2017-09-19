@@ -77,6 +77,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
 
@@ -1538,7 +1539,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_scheme).setVisible(false);
             } else
                 menu.findItem(R.id.menu_scheme).setVisible(true);
-
+            menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
             if (drawerOpen)
                 menu.clear();
         } catch (Exception e) {
@@ -1614,6 +1615,24 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 + " " + getResources().getString(R.string.permission_camera)
                         , Toast.LENGTH_LONG).show();
             }
+            return true;
+        }else if (i == R.id.menu_reason) {
+            bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), "MENU_STOCK");
+            ReasonPhotoDialog dialog = new ReasonPhotoDialog();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), "MENU_STOCK")) {
+                        bmodel.saveModuleCompletion("MENU_STOCK");
+                        getActivity().finish();
+                    }
+                }
+            });
+            Bundle args = new Bundle();
+            args.putString("modulename", "MENU_STOCK");
+            dialog.setCancelable(false);
+            dialog.setArguments(args);
+            dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
             return true;
         }
         return super.onOptionsItemSelected(item);
