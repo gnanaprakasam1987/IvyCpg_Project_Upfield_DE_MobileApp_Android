@@ -920,52 +920,58 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
             if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
                 if (bmodel.synchronizationHelper.isAttendanceCompleted()) {
-                    if (bmodel.isOnline()) {
-                        if (!bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.isOrderExistToCreateInvoiceAll()) {
+                    if (bmodel.synchronizationHelper.isSaleDrafted()) {
+                        if (bmodel.isOnline()) {
+                            if (!bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.isOrderExistToCreateInvoiceAll()) {
 
-                            if (dayCloseCheckBox.isChecked()) {
-                                if (!isClicked) {
-                                    showAlertOkCancel(
-                                            getResources()
-                                                    .getString(
-                                                            R.string.do_u_want_to_close_the_day),
-                                            0);
+                                if (dayCloseCheckBox.isChecked()) {
+                                    if (!isClicked) {
+                                        showAlertOkCancel(
+                                                getResources()
+                                                        .getString(
+                                                                R.string.do_u_want_to_close_the_day),
+                                                0);
+                                    }
+
+                                } else {
+                                    if (!isClicked) {
+                                        isClicked = true;
+                                        if (bmodel.synchronizationHelper.checkDataForSync() || bmodel.synchronizationHelper.checkSIHTable()
+                                                || bmodel.synchronizationHelper.checkStockTable()) {
+
+                                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
+                                                showDialogForOrderProcessing();
+                                            else if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
+                                                new LoadRetailerIsVisited().execute();
+                                            } else {
+                                                IsImagechecked();
+                                            }
+
+                                        } else if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && bmodel.synchronizationHelper.countImageFiles() > 0) {
+                                            startSync(UPLOAD_WITH_IMAGES);
+                                        } else {
+                                            isClicked = false;
+                                            bmodel.showAlert(getResources().getString(R.string.no_unsubmitted_orders), 0);
+                                        }
+                                    }
                                 }
 
                             } else {
-                                if (!isClicked) {
-                                    isClicked = true;
-                                    if (bmodel.synchronizationHelper.checkDataForSync() || bmodel.synchronizationHelper.checkSIHTable()
-                                            || bmodel.synchronizationHelper.checkStockTable()) {
-
-                                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                                            showDialogForOrderProcessing();
-                                        else if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
-                                            new LoadRetailerIsVisited().execute();
-                                        } else {
-                                            IsImagechecked();
-                                        }
-
-                                    } else if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && bmodel.synchronizationHelper.countImageFiles() > 0) {
-                                        startSync(UPLOAD_WITH_IMAGES);
-                                    } else {
-                                        isClicked = false;
-                                        bmodel.showAlert(getResources().getString(R.string.no_unsubmitted_orders), 0);
-                                    }
-                                }
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.order_exist_without_invoice),
+                                        0);
                             }
 
                         } else {
                             bmodel.showAlert(
-                                    getResources().getString(
-                                            R.string.order_exist_without_invoice),
-                                    0);
+                                    getResources()
+                                            .getString(R.string.no_network_connection), 0);
                         }
-
                     } else {
                         bmodel.showAlert(
                                 getResources()
-                                        .getString(R.string.no_network_connection), 0);
+                                        .getString(R.string.drafted_sales_not_processed), 0);
                     }
                 } else {
                     bmodel.showAlert(
@@ -1562,7 +1568,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             try {
                 if (bmodel.isOnline()) {
                     bmodel.synchronizationHelper.updateAuthenticateToken();
-                    if(!bmodel.synchronizationHelper.getSecurityKey().equals(""))
+                    if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                         return bmodel.synchronizationHelper.checkForAutoUpdate();
                     else
                         return Boolean.FALSE;
@@ -1590,12 +1596,12 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             if (!result) {
-                if(!bmodel.synchronizationHelper.getSecurityKey().equals(""))
+                if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                     new UrlDownloadData().execute();
                 else {
                     isClicked=false;
                     Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
-                    if(alertDialog !=null)
+                    if (alertDialog != null)
                         alertDialog.dismiss();
                 }
             } else {

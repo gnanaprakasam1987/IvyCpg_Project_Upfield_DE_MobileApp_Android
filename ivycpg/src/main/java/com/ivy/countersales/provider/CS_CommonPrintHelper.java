@@ -96,7 +96,7 @@ public class CS_CommonPrintHelper {
     private static String TAG_PRODUCT_QTY_TOTAL_IN_PIECE = "prod_qty_total_piece";
     private static String TAG_PRODUCT_SCHEME_DISCOUNT = "prod_scheme_discount";
 
-    private static String TAG_PRODUCT_FREE_QTY_PIECE= "free_qty";
+    private static String TAG_PRODUCT_FREE_QTY_PIECE = "free_qty";
 
     private static String TAG_PRODUCT_LINE_VALUE = "prod_line_value";
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
@@ -151,7 +151,7 @@ public class CS_CommonPrintHelper {
     private double total_net_payable = 0;
     public int width_image = 100;
     public int height_image = 100;
-    private double mSchemeValueByAmountType=0;
+    private double mSchemeValueByAmountType = 0;
 
     private CS_CommonPrintHelper(Context context) {
         this.context = context;
@@ -609,8 +609,7 @@ public class CS_CommonPrintHelper {
                 mProductValue = mProductOuterQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_QTY_PIECE)) {
                 mProductValue = mFreeProductPieceQtyTotal + "";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
                 mProductValue = mProductQtyInPieceTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                 mProductValue = formatValueInPrint(mProductLineValueTotal, attr.getmAttributePrecision());
@@ -697,6 +696,7 @@ public class CS_CommonPrintHelper {
                     mProductValue = prod.getProductCode();
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                     mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
+                    mProductValue = prod.getBarCode()+"-"+mProductValue;
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_CASE)) {
                     mProductValue = formatValueInPrint(prod.getMRP(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
@@ -712,11 +712,10 @@ public class CS_CommonPrintHelper {
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_OUTER)) {
                     mProductValue = prod.getOrderedOuterQty() + "";
                     mProductOuterQtyTotal = mProductOuterQtyTotal + prod.getOrderedOuterQty();
-                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_QTY_PIECE)) {
-                    mProductValue = prod.getCsFreePiece()+ "";
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_QTY_PIECE)) {
+                    mProductValue = prod.getCsFreePiece() + "";
                     mFreeProductPieceQtyTotal = mFreeProductPieceQtyTotal + prod.getCsFreePiece();
-                }
-                else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
                     mProductValue = (prod.getOrderedPcsQty()
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
@@ -863,8 +862,7 @@ public class CS_CommonPrintHelper {
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_OUTER)) {
                                 mProductValue = batchProductBO.getOrderedOuterQty() + "";
                                 mProductOuterQtyTotal = mProductOuterQtyTotal + batchProductBO.getOrderedOuterQty();
-                            }
-                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
                                 mProductValue = (batchProductBO.getOrderedPcsQty()
                                         + (batchProductBO.getOrderedCaseQty() * prod.getCaseSize())
                                         + (batchProductBO.getOrderedOuterQty() * prod.getOutersize())) + "";
@@ -1006,11 +1004,10 @@ public class CS_CommonPrintHelper {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
                                 }
 
-                            }
-                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
-                                mProductValue = formatValueInPrint((schemeProductBO.getLineValue()-schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint((schemeProductBO.getLineValue() - schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             }
@@ -1053,7 +1050,7 @@ public class CS_CommonPrintHelper {
     }
 
 
-    private void calculateSchemeAmountDiscountValue( ) {
+    private void calculateSchemeAmountDiscountValue() {
 
         ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
                 .getAppliedSchemeList();
@@ -1063,14 +1060,14 @@ public class CS_CommonPrintHelper {
 
                     if (schemeBO.isAmountTypeSelected()) {
 
-                        mSchemeValueByAmountType=mSchemeValueByAmountType+schemeBO.getSelectedAmount();
+                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeBO.getSelectedAmount();
                     }
 
 
                 }
             }
 
-            total_line_value_incl_tax=total_line_value_incl_tax-mSchemeValueByAmountType;
+            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 
@@ -1091,8 +1088,8 @@ public class CS_CommonPrintHelper {
                     if (schemeBO.isAmountTypeSelected()) {
                         schemeName = schemeBO.getProductName();
                         schemeValue = schemeBO.getSelectedAmount();
-                        mSchemeValueByAmountType=mSchemeValueByAmountType+schemeValue;
-                    } else if (schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeValue;
+                    } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         schemeName = schemeBO.getProductName();
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
                             ProductMasterBO productBO = bmodel.productHelper
@@ -1110,12 +1107,16 @@ public class CS_CommonPrintHelper {
 
                         schemeValue = mBuyProdDiscountedValue;
                     }
-                    if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                    if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         for (CS_CommonPrintHelper.AttributeListBO attr : mAttrList) {
                             mProductValue = "";
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                                 mProductValue = schemeName;
-                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
+                                mProductValue = formatValueInPrint(schemeValue, attr.getmAttributePrecision());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
+                                mProductValue = formatValueInPrint(schemeValue, attr.getmAttributePrecision());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeValue, attr.getmAttributePrecision());
                             }
 
@@ -1156,7 +1157,7 @@ public class CS_CommonPrintHelper {
                 }
             }
 
-            total_line_value_incl_tax=total_line_value_incl_tax-mSchemeValueByAmountType;
+            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 
@@ -1393,7 +1394,7 @@ public class CS_CommonPrintHelper {
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax=Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
 
                     double taxValue;
                     double taxTotal = 0;
@@ -1414,7 +1415,7 @@ public class CS_CommonPrintHelper {
                     }
 
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax=Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
 
                     double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + taxTotal / 100);
 
@@ -1715,7 +1716,7 @@ public class CS_CommonPrintHelper {
         total_net_payable = 0;
         totalPriceOffValue = 0;
         isLogoEnabled = false;
-        mSchemeValueByAmountType=0;
+        mSchemeValueByAmountType = 0;
     }
 
     private String formatValueInPrint(double value, int precision) {
@@ -1733,7 +1734,7 @@ public class CS_CommonPrintHelper {
                 bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP);
     }
 
-    private String formatSalesValueInPrint(double value, int precision){
+    private String formatSalesValueInPrint(double value, int precision) {
 
         String formattedValue = "0";
         try {
@@ -1746,10 +1747,10 @@ public class CS_CommonPrintHelper {
 
                     tempVal = value + "";
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
-                    fractionalStr=(fractionalStr.length()>2?fractionalStr.substring(0,2):fractionalStr);
+                    fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
-                    int integerValue=(int)value;
-                    int fractionValue=Integer.parseInt(fractionalStr);
+                    int integerValue = (int) value;
+                    int fractionValue = Integer.parseInt(fractionalStr);
 
                     formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
 
@@ -1774,8 +1775,7 @@ public class CS_CommonPrintHelper {
                         bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP);
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 

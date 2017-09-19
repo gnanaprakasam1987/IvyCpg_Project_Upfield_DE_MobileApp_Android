@@ -1383,4 +1383,34 @@ public class CounterSalesHelper {
         db.closeDB();
     }
 
+    private HashMap<String, String> mHeaderLst;
+
+    public HashMap<String, String> getmHeaderLst() {
+        if (mHeaderLst != null && !mHeaderLst.isEmpty())
+            return mHeaderLst;
+        return new HashMap<String, String>();
+    }
+
+    public void setmHeaderLst(HashMap<String, String> mHeaderLst) {
+        this.mHeaderLst = mHeaderLst;
+    }
+
+
+    public void deletedSalesDetails(String uid) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL("CS_CustomerSaleDetails", "uid='" + uid + "'", false);
+            db.deleteSQL("CS_SchemeDetail", "uid='" + uid + "'", false);
+            db.deleteSQL("CS_SchemeFreeProductDetail", "uid='" + uid + "'", false);
+
+
+        } catch (Exception ex) {
+            db.closeDB();
+        }
+    }
+
 }

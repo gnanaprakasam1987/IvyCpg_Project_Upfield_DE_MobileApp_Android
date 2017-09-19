@@ -326,6 +326,13 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                     if (schemeBO.isAmountTypeSelected()) {
                         totalValue = totalValue
                                 - schemeBO.getSelectedAmount();
+                        ProductMasterBO productMasterBO = new ProductMasterBO();
+                        productMasterBO.setProductID(schemeBO.getSchemeId());
+                        productMasterBO.setProductName(schemeBO.getProductName());
+                        productMasterBO.setDiscount_order_value(schemeBO.getSelectedAmount());
+                        productMasterBO.setSchemeDiscount(true);
+                        lstProducts.add(new ProductMasterBO(productMasterBO));
+
                     }
 
                     List<SchemeProductBO> schemeproductList = schemeBO
@@ -419,6 +426,14 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                                                 totalValue = totalValue
                                                         - totalpriceDiscount;
 
+                                                ProductMasterBO productMasterBO = new ProductMasterBO();
+                                                productMasterBO.setProductID(schemeBO.getSchemeId());
+                                                productMasterBO.setProductName(schemeBO.getProductName());
+                                                productMasterBO.setDiscount_order_value(totalpriceDiscount);
+                                                productMasterBO.setSchemeDiscount(true);
+                                                lstProducts.add(new ProductMasterBO(productMasterBO));
+
+
                                             } else if (schemeBO
                                                     .isDiscountPrecentSelected()) {
 
@@ -468,6 +483,14 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                                                     schemeProductBo.setDiscountValue(totalPercentageDiscount);
                                                     totalValue = totalValue
                                                             - totalPercentageDiscount;
+
+                                                    ProductMasterBO productMasterBO = new ProductMasterBO();
+                                                    productMasterBO.setProductID(schemeBO.getSchemeId());
+                                                    productMasterBO.setProductName(schemeBO.getProductName());
+                                                    productMasterBO.setDiscount_order_value(totalPercentageDiscount);
+                                                    productMasterBO.setSchemeDiscount(true);
+                                                    lstProducts.add(new ProductMasterBO(productMasterBO));
+
                                                 }
 
 
@@ -812,12 +835,21 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
             }
 
             holder.counterSaleBO = counterBo;
-            holder.psname.setText(holder.counterSaleBO.getProductName());
-            holder.txt_qty.setText(holder.counterSaleBO.getCsPiece() + "");
-            holder.txt_free.setText(holder.counterSaleBO.getCsFreePiece() + "");
 
-            holder.txt_mrp.setText(SDUtil.format(holder.counterSaleBO.getMRP(), 2, 0) + "");
-            holder.txt_value.setText(bmodel.formatValue((holder.counterSaleBO.getMRP() * (holder.counterSaleBO.getCsPiece() + (holder.counterSaleBO.getCsCase() * holder.counterSaleBO.getCaseSize()) + (holder.counterSaleBO.getCsOuter() * holder.counterSaleBO.getOutersize())))) + "");
+            if (holder.counterSaleBO.isSchemeDiscount()) {
+                holder.psname.setText(holder.counterSaleBO.getProductName());
+                holder.txt_value.setText(bmodel.formatValue(holder.counterSaleBO.getDiscount_order_value()));
+                holder.txt_qty.setText("-");
+                holder.txt_free.setText("-");
+                holder.txt_mrp.setText("-");
+            } else {
+                holder.psname.setText(holder.counterSaleBO.getProductName());
+                holder.txt_qty.setText(holder.counterSaleBO.getCsPiece() + "");
+                holder.txt_free.setText(holder.counterSaleBO.getCsFreePiece() + "");
+
+                holder.txt_mrp.setText(SDUtil.format(holder.counterSaleBO.getMRP(), 2, 0) + "");
+                holder.txt_value.setText(bmodel.formatValue((holder.counterSaleBO.getMRP() * (holder.counterSaleBO.getCsPiece() + (holder.counterSaleBO.getCsCase() * holder.counterSaleBO.getCaseSize()) + (holder.counterSaleBO.getCsOuter() * holder.counterSaleBO.getOutersize())))) + "");
+            }
 
             return row;
         }

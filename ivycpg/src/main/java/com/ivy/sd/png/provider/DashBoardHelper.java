@@ -2945,9 +2945,9 @@ public class DashBoardHelper {
                     }
                     c.close();
                 }
-                //if (interval.equals("DAY")) {
-                //      calculateDayAcheivement();
-                //  }
+                if (interval.equals("DAY")) {
+                    calculateLorealDayAcheivement(levelList.size());
+                }
             }
             db.closeDB();
         } catch (Exception e) {
@@ -2974,5 +2974,91 @@ public class DashBoardHelper {
         }
         parentId = tempParentId;
         return parentId;
+    }
+
+    public void calculateLorealDayAcheivement(int size) {
+        int maxLevel = 0, minLevel = 0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder();
+        sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
+        sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in (select distinct(pid) from CS_CustomerSaleDetails)");
+
+        Cursor c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    maxLevel = c.getInt(1);
+                }
+            }
+            c.close();
+        }
+
+
+        String sql = "select distinct (levelid),sequence from Productlevel where parentid=0";
+        c = db.selectSQL(sql);
+        if (c != null) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    minLevel = c.getInt(1);
+                }
+            }
+            c.close();
+        }
+
+
+        int loopEnd = maxLevel - minLevel + 1;
+
+        for (int j = 0; j < size; j++) {
+            int temploopEnd = loopEnd - j;
+            sb = new StringBuilder();
+            sb.append(" SELECT PM");
+            sb.append(temploopEnd);
+            sb.append(".PId, SUM (value) FROM CS_CustomerSaleDetails OD");
+            sb.append(" INNER JOIN ProductMaster PM1 ON PM1.PId = OD.PId");
+
+            for (int i = 2; i <= temploopEnd; i++) {
+                sb.append(" INNER JOIN ProductMaster PM");
+                sb.append(i);
+                sb.append(" ON PM");
+                sb.append(i);
+                sb.append(".PId = PM");
+                sb.append((i - 1));
+                sb.append(".ParentId");
+
+            }
+            sb.append(" GROUP BY PM");
+            sb.append(temploopEnd);
+            sb.append(".PId");
+
+            c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    for (SKUWiseTargetBO sBO : sellerKpiSku) {
+                        if (c.getInt(0) == sBO.getPid()) {
+                            sBO.setAchieved(c.getInt(1));
+                            sBO.setCalculatedPercentage(Float.parseFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
+                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP)));
+                            if (sBO.getCalculatedPercentage() >= 100) {
+                                sBO.setConvTargetPercentage(0);
+                                sBO.setConvAcheivedPercentage(100);
+                            } else {
+                                sBO.setConvTargetPercentage(100 - sBO
+                                        .getCalculatedPercentage());
+                                sBO.setConvAcheivedPercentage(sBO
+                                        .getCalculatedPercentage());
+                            }
+                        }
+
+                    }
+
+
+                }
+                c.close();
+            }
+
+        }
     }
 }

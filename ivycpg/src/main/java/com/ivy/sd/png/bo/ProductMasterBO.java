@@ -492,6 +492,7 @@ public class ProductMasterBO {
         this.soreasonId = productBO.getSoreasonId();
         this.csFreePiece = productBO.getCsFreePiece();
         this.csTotal = productBO.getCsTotal();
+        this.isSchemeDiscount = productBO.isSchemeDiscount();
     }
 
     // ******* Location ********
@@ -1712,4 +1713,14 @@ public class ProductMasterBO {
     }
 
     boolean isChildProduct;
+
+    boolean isSchemeDiscount;
+
+    public boolean isSchemeDiscount() {
+        return isSchemeDiscount;
+    }
+
+    public void setSchemeDiscount(boolean schemeDiscount) {
+        isSchemeDiscount = schemeDiscount;
+    }
 }

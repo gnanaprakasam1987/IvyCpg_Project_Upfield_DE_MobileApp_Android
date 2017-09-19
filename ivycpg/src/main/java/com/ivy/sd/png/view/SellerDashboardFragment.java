@@ -153,13 +153,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
 
         setHasOptionsMenu(true);
-
+        init();
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void init() {
         vpPager = (ViewPager) view.findViewById(R.id.viewpager);
         collapsing = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing);
         indicator = (CircleIndicator) view.findViewById(R.id.indicator);
@@ -185,121 +183,107 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
         LinearLayout spinner_layout1 = (LinearLayout) view.findViewById(R.id.spinner_layout1);
         LinearLayout spinner_layout2 = (LinearLayout) view.findViewById(R.id.spinner_layout2);
-        userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
-        //moved setUpActionBar from onCreateView to onStart has below condition returns null in onCreateView
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-            setUpActionBar();
 
+        if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
+            if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
+                spinner_layout1.setVisibility(View.GONE);
+                spinner_layout2.setVisibility(View.VISIBLE);
+                ll_distributor = (LinearLayout) view.findViewById(R.id.ll_distributor);
+                distrSpinner1 = (MultiSpinner) view.findViewById(R.id.distributorSpinner1);
+                ll_distributor.setVisibility(View.VISIBLE);
 
-        if (!isFromHomeScreenTwo) {
+                ll_users = (LinearLayout) view.findViewById(R.id.ll_users);
+                userSpinner1 = (MultiSpinner) view.findViewById(R.id.userSpinner1);
+                ll_users.setVisibility(View.VISIBLE);
 
+                final List<KeyPairBoolData> distArray = new ArrayList<>();
+                ArrayList<DistributorMasterBO> distributors = bmodel.distributorMasterHelper.getDistributors();
+                distArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
+                int count = 0;
 
-            if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
-                if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
-                    spinner_layout1.setVisibility(View.GONE);
-                    spinner_layout2.setVisibility(View.VISIBLE);
-                    ll_distributor = (LinearLayout) view.findViewById(R.id.ll_distributor);
-                    distrSpinner1 = (MultiSpinner) view.findViewById(R.id.distributorSpinner1);
-                    ll_distributor.setVisibility(View.VISIBLE);
-
-                    ll_users = (LinearLayout) view.findViewById(R.id.ll_users);
-                    userSpinner1 = (MultiSpinner) view.findViewById(R.id.userSpinner1);
-                    ll_users.setVisibility(View.VISIBLE);
-
-                    final List<KeyPairBoolData> distArray = new ArrayList<>();
-                    ArrayList<DistributorMasterBO> distributors = bmodel.distributorMasterHelper.getDistributors();
-                    distArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
-                    int count = 0;
-
-                    for (int j = 0; j < distributors.size(); j++) {
-                        KeyPairBoolData h = new KeyPairBoolData();
-                        h.setId(Integer.parseInt(distributors.get(j).getDId()));
-                        h.setName(distributors.get(j).getDName());
-                        h.setSelected(true);
-                        distArray.add(h);
-                        count++;
-                        mSelectedDistributorId += bmodel.QT(distributors.get(j).getDId() + "");
-                        if (count != distributors.size())
-                            mSelectedDistributorId += ",";
-                    }
-
-                    distrSpinner1.setItems(distArray, -1, new SpinnerListener() {
-                        @Override
-                        public void onItemsSelected(List<KeyPairBoolData> items) {
-                            Commons.print("Multi" + items.size());
-                            int count = 0;
-                            mSelectedDistributorId = "";
-                            if (items.size() > 0) {
-                                for (int i = 0; i < items.size(); i++) {
-                                    count++;
-                                    mSelectedDistributorId += bmodel.QT(items.get(i).getId() + "");
-                                    if (count != items.size())
-                                        mSelectedDistributorId += ",";
-                                }
-                            } else
-                                mSelectedDistributorId = "0";
-                            loadUserSpinner(mSelectedDistributorId);
-                        }
-                    });
-                    loadUserSpinner("0");
-                    if (!show_trend_chart) {
-                        vpPager.setVisibility(View.GONE);
-                        collapsing.setVisibility(View.GONE);
-                    }
-                } else {
-                    spinner_layout1.setVisibility(View.VISIBLE);
-                    spinner_layout2.setVisibility(View.GONE);
-                    Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
-                    distrSpinner.setVisibility(View.VISIBLE);
-
-                    userSpinner.setVisibility(View.VISIBLE);
-
-                    distrSpinner.setOnItemSelectedListener(this);
-                    userSpinner.setOnItemSelectedListener(this);
-
-                    //To load all distributor
-                    distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-                    distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
-                    if (bmodel.distributorMasterHelper.getDistributors() != null &&
-                            bmodel.distributorMasterHelper.getDistributors().size() != 0) {
-                        for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
-                            distributorMasterBOArrayAdapter.add(bo);
-                        }
-                        distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-                        distrSpinner.setAdapter(distributorMasterBOArrayAdapter);
-                    }
-
-                    //User Spinner only with select to have distributor to get selected first
-                    userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-                    userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
-                    userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-                    userSpinner.setAdapter(userMasterBOArrayAdapter);
-
-                    mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                for (int j = 0; j < distributors.size(); j++) {
+                    KeyPairBoolData h = new KeyPairBoolData();
+                    h.setId(Integer.parseInt(distributors.get(j).getDId()));
+                    h.setName(distributors.get(j).getDName());
+                    h.setSelected(true);
+                    distArray.add(h);
+                    count++;
+                    mSelectedDistributorId += bmodel.QT(distributors.get(j).getDId() + "");
+                    if (count != distributors.size())
+                        mSelectedDistributorId += ",";
                 }
-            } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
+
+                distrSpinner1.setItems(distArray, -1, new SpinnerListener() {
+                    @Override
+                    public void onItemsSelected(List<KeyPairBoolData> items) {
+                        Commons.print("Multi" + items.size());
+                        int count = 0;
+                        mSelectedDistributorId = "";
+                        if (items.size() > 0) {
+                            for (int i = 0; i < items.size(); i++) {
+                                count++;
+                                mSelectedDistributorId += bmodel.QT(items.get(i).getId() + "");
+                                if (count != items.size())
+                                    mSelectedDistributorId += ",";
+                            }
+                        } else
+                            mSelectedDistributorId = "0";
+                        loadUserSpinner(mSelectedDistributorId);
+                    }
+                });
+                loadUserSpinner("0");
+                if (!show_trend_chart) {
+                    vpPager.setVisibility(View.GONE);
+                    collapsing.setVisibility(View.GONE);
+                }
+            } else {
                 spinner_layout1.setVisibility(View.VISIBLE);
                 spinner_layout2.setVisibility(View.GONE);
+                Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
+                distrSpinner.setVisibility(View.VISIBLE);
+
+                userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
                 userSpinner.setVisibility(View.VISIBLE);
+
+                distrSpinner.setOnItemSelectedListener(this);
                 userSpinner.setOnItemSelectedListener(this);
-                userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-                userMasterBOArrayAdapter.add(bmodel.userMasterHelper.getUserMasterBO());
-                for (UserMasterBO bo : bmodel.userMasterHelper.downloadUserList()) {
-                    userMasterBOArrayAdapter.add(bo);
+
+                //To load all distributor
+                distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+                distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
+                if (bmodel.distributorMasterHelper.getDistributors() != null &&
+                        bmodel.distributorMasterHelper.getDistributors().size() != 0) {
+                    for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
+                        distributorMasterBOArrayAdapter.add(bo);
+                    }
+                    distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+                    distrSpinner.setAdapter(distributorMasterBOArrayAdapter);
                 }
+
+                //User Spinner only with select to have distributor to get selected first
+                userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+                userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
                 userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                 userSpinner.setAdapter(userMasterBOArrayAdapter);
+
                 mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
                 bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
-            } else {
-                //if all configurations are disabled then retailer kpi dashboard data is re used for seller kpi dashboard. hence list object is cleared
-                bmodel.dashBoardHelper.getDashChartDataList().clear();
             }
-        } else {
+        } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
             spinner_layout1.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.distributorSpinner).setVisibility(View.GONE);
-            userSpinner.setVisibility(View.GONE);
+            spinner_layout2.setVisibility(View.GONE);
+            userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
+            userSpinner.setVisibility(View.VISIBLE);
+            userSpinner.setOnItemSelectedListener(this);
+            userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+            userMasterBOArrayAdapter.add(bmodel.userMasterHelper.getUserMasterBO());
+            for (UserMasterBO bo : bmodel.userMasterHelper.downloadUserList()) {
+                userMasterBOArrayAdapter.add(bo);
+            }
+            userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            userSpinner.setAdapter(userMasterBOArrayAdapter);
+            mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+            bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
         }
 
         mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -308,10 +292,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());
+
+        gridListDataLoad(beatPosition);
         updateAll();
+    }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardListViewAdapter.ViewHolder> {

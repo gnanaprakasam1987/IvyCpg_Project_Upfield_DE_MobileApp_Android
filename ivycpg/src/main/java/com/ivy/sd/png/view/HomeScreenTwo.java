@@ -1404,6 +1404,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
                 }
 
+                bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
 
                 if (bmodel.hasAlreadyStockChecked(bmodel.getRetailerMasterBO()
                         .getRetailerID())) {
@@ -2048,6 +2049,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 if (!isClick) {
                     isClick = true;
                     // finish();
+                    bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
@@ -2637,6 +2639,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.planogramMasterHelper
                         .loadPlanoGramInEditMode(bmodel.retailerMasterBO
                                 .getRetailerID());
+                bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_PLANOGRAM);
+
                 if (bmodel.planogramMasterHelper.getPlanogramMaster() != null && bmodel.planogramMasterHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3037,11 +3041,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     isCreated = false;
                 }
             } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
+                if (bmodel.configurationMasterHelper.IS_JUMP)
+                    onCreateDialog(5);
+                else
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.please_complete_previous_activity),
+                            Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
