@@ -97,6 +97,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
@@ -167,6 +168,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.util.TimerCount;
+import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
@@ -340,6 +342,7 @@ public class BusinessModel extends Application {
     public NewOutletAttributeHelper newOutletAttributeHelper;
     public CS_StockApplyHelper CS_StockApplyHelper;
     public ModuleTimeStampHelper moduleTimeStampHelper;
+    public AcknowledgementHelper acknowledgeHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     //
@@ -520,6 +523,7 @@ public class BusinessModel extends Application {
 
         CS_StockApplyHelper = CS_StockApplyHelper.getInstance(this);
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
+        acknowledgeHelper = AcknowledgementHelper.getInstance(this);
     }
 
 
@@ -583,6 +587,9 @@ public class BusinessModel extends Application {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals("OrderSplitMasterScreen")) {
             myIntent = new Intent(ctxx, OrderSplitMasterScreen.class);
+            ctxx.startActivityForResult(myIntent, 0);
+        } else if (act.equals("AcknowledgementActivity")) {
+            myIntent = new Intent(ctxx, AcknowledgementActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         }
     }

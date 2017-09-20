@@ -150,6 +150,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
+    private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
 
     private String roadTitle;
     private boolean isClicked;
@@ -254,6 +255,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
+        menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
@@ -1414,6 +1416,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_GROOM_CS)) {
             switchFragment(MENU_GROOM_CS, "Grooming Picture");
+        } else if (menuItem.getConfigCode().equals(MENU_JOINT_ACK)) {
+            Intent i = new Intent(getActivity(), AcknowledgementActivity.class);
+            i.putExtra("screentitle", menuItem.getMenuName());
+            startActivity(i);
+            getActivity().finish();
         }
 
           /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
@@ -1511,6 +1518,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_COUNTER);
         GroomingFragment groomingFragment = (GroomingFragment) fm
                 .findFragmentByTag(MENU_GROOM_CS);
+        AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
+                .findFragmentByTag(MENU_JOINT_ACK);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()) {
@@ -1600,6 +1609,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (groomingFragment != null && (fragmentName.equals(MENU_GROOM_CS)
                 && groomingFragment.isVisible())) {
             return;
+        } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
+                && acknowledgementFragment.isVisible()) {
+            return;
         }
 
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
@@ -1662,6 +1674,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(csProfileActivity);
         if (groomingFragment != null)
             ft.remove(groomingFragment);
+        if (acknowledgementFragment != null)
+            ft.remove(acknowledgementFragment);
 
         Bundle bndl;
         Fragment fragment;
