@@ -88,7 +88,7 @@
 
     <string name="export_and_share">Export and Share</string>
     <string name="export_and_email">Export and Email</string>
-
+    <string name="share">Share</string>
 
     <!--For Non Visit Fragment-->
     <string name="select_beat">Select Beat</string>
