@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dash_margin"
         android:gravity="center"
-        android:text="Total Achieved"
+        android:text="@string/incentivetext"
         android:textColor="@color/WHITE"
         android:textSize="@dimen/percent_value_size"
         android:textStyle="bold" />
