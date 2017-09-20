@@ -753,6 +753,12 @@
         <activity android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.sd.png.view.AcknowledgementActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

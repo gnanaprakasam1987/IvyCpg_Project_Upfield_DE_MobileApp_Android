@@ -125,4 +125,8 @@
     <string name="continuousImageCapturedToast">Photo Captured and Saved Successfully</string>
     <string name="drafted_sales_not_processed">Drafts exists without processing</string>
 
+    <string name="user">User</string>
+    <string name="total_calls">Total Calls</string>
+    <string name="call_details">Call Details</string>
+    <string name="date_txt">Date</string>
 </resources>
