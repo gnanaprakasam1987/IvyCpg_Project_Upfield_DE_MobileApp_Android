@@ -912,7 +912,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             getDashChartDataList().clear();
-            mParamAchieved = 0;
+            //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,ifnull(SKD.Achievement,0),"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
@@ -962,11 +962,11 @@ public class DashBoardHelper {
                     int value = Integer.parseInt(c.getString(11));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
-                    if (!c.getString(10).equals("INV")) {
-                        getDashChartDataList().add(sbo);
-                    } else {
-                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
-                    }
+//                    if (!c.getString(10).equals("INV")) {
+                    getDashChartDataList().add(sbo);
+//                    } else {
+//                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
+//                    }
                 }
                 c.close();
             }
@@ -986,7 +986,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             getDashChartDataList().clear();
-            mParamAchieved = 0;
+            //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,SKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
@@ -1031,11 +1031,11 @@ public class DashBoardHelper {
                     int value = Integer.parseInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
-                    if (!c.getString(9).equals("INV")) {
-                        getDashChartDataList().add(sbo);
-                    } else {
-                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
-                    }
+//                    if (!c.getString(9).equals("INV")) {
+                    getDashChartDataList().add(sbo);
+//                    } else {
+//                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
+//                    }
                 }
                 c.close();
             }

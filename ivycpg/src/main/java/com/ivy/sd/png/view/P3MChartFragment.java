@@ -29,7 +29,7 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class FragmentTab1 extends Fragment implements OnChartValueSelectedListener, OnChartGestureListener {
+public class P3MChartFragment extends Fragment implements OnChartValueSelectedListener, OnChartGestureListener {
 
     private BusinessModel bmodel;
     private LineChart mChart;

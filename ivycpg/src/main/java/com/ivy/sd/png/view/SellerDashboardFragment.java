@@ -49,7 +49,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.DashBoardBO;
-import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.KeyPairBoolData;
@@ -63,11 +62,10 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import me.relex.circleindicator.CircleIndicator;
 
-import static com.ivy.sd.png.asean.view.R.id.outlet;
+import static com.ivy.sd.png.asean.view.R.id.tv;
 
 public class SellerDashboardFragment extends IvyBaseFragment implements AdapterView.OnItemSelectedListener {
 
@@ -108,7 +106,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private static final String CODE13 = "INV";
 
     private int NUM_ITEMS = 1;
-    private int flex1 = 0, chartpositionSMP = 0;
+    private double incentive = 0.0;
+    private int chartpositionSMP = 0;
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     /**************************/
     private ArrayAdapter<UserMasterBO> userMasterBOArrayAdapter;
@@ -157,7 +156,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         return view;
     }
 
-    private void init() {
+    private void init(){
         vpPager = (ViewPager) view.findViewById(R.id.viewpager);
         collapsing = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing);
         indicator = (CircleIndicator) view.findViewById(R.id.indicator);
@@ -168,6 +167,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (bmodel.dashBoardHelper.getShowDayAndP3MSpinner() != 0) {
             setpUpSpinner();
             bmodel.downloadDailyReport();
+        }
+
+        if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
+            show_trend_chart = true;
         }
 
         if (!show_trend_chart) {
@@ -337,6 +340,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             holder.acheived.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.balance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.index.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            if(holder.mChart.getVisibility()!=View.VISIBLE){
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)holder.index.getLayoutParams();
+                params.setMargins(0, 0, 10, 0); //substitute parameters for left, top, right, bottom
+                holder.index.setLayoutParams(params);
+            }
             holder.incentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
             holder.score.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
             holder.incentiveTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
@@ -354,16 +362,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             holder.factorName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (selectedInterval.equals(P3M)) {
-                        if (mDashboardList != null && mDashboardList.size() > 0) {
-                            flex1 = holder.dashboardDataObj.getFlex1();
-                            bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
-                        }
-                        bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
-                        adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
-                        new setAdapterTask().execute();
-                        vpPager.setCurrentItem(chartpositionSMP);
+//                    if (selectedInterval.equals(P3M)) {
+                    if (mDashboardList != null && mDashboardList.size() > 0) {
+                        bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
                     }
+                    bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
+                    adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
+                    new setAdapterTask().execute();
+                    vpPager.setCurrentItem(chartpositionSMP);
+//                    }
 
                 }
             });
@@ -424,7 +431,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 holder.target.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiTarget()));
                 holder.balance.setText(bmodel.dashBoardHelper.getWhole(bmodel.formatValue(SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                holder.index.setText(strCalcPercentage);
+                float temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (temp_ach > 0) {
+                    int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
+                            (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
+                    holder.index.setText(SDUtil.roundIt(bonus,1) +"%");
+                }else {
+                    holder.index.setText(strCalcPercentage);
+                }
                 holder.kpiFlex1.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiFlex()));
                 holder.incentive.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiIncentive()));
                 holder.score.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiScore()));
@@ -438,7 +452,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     Commons.printException(e + "");
                 }
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                holder.index.setText(strCalcPercentage);
+                float temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (temp_ach > 0) {
+                    int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
+                            (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
+                    holder.index.setText(SDUtil.roundIt(bonus,1) +"%");
+                }else {
+                    holder.index.setText(strCalcPercentage);
+                }
                 holder.balance.setText(bmodel.formatValue((SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
                 holder.kpiFlex1.setText(dashboardData.getKpiFlex());
                 holder.incentive.setText(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
@@ -1238,7 +1259,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 dashBoardList.setAdapter(dashBoardListViewAdapter);
                 if (show_trend_chart) {
                     if (mDashboardList != null && mDashboardList.size() > 0) {
-                        flex1 = mDashboardList.get(0).getFlex1();
                         bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
                     }
                     bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
@@ -1285,8 +1305,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
+            calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                flex1 = mDashboardList.get(0).getFlex1();
                 bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
             bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
@@ -1300,14 +1320,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
+            calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                flex1 = mDashboardList.get(0).getFlex1();
                 bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
             bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
             adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
             new setAdapterTask().execute();
         }
+    }
+
+    private void calculateIncentive(){
+        incentive = 0;
+        for (DashBoardBO dash : mDashboardList) {
+            incentive = incentive + Double.parseDouble(dash.getKpiIncentive());
+        }
+        bmodel.dashBoardHelper.mParamAchieved = incentive;
     }
 
     private int getRetailerDetail(String flag) {
@@ -1594,12 +1622,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         NUM_ITEMS = 1;
         //bmodel.dashBoardHelper.setDashboardBO(null);
         fragmentList = new ArrayList<>();
-        bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-        fragmentList.add(new FragmentTab1());
+
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
+            if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
+                NUM_ITEMS++;
+                bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+                fragmentList.add(new P3MChartFragment());
+            }
             if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
                 NUM_ITEMS++;
-                fragmentList.add(new FragmentTab2());
+                fragmentList.add(new SMPChartFragment());
                 chartpositionSMP = NUM_ITEMS;
             }
             if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
@@ -1607,13 +1639,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 Fragment fragment = new TotalAchivedFragment();
                 Bundle args = new Bundle();
                 if (mDashboardList != null && mDashboardList.size() > 0) {
-                    args.putInt("flex1", flex1);
+                    args.putInt("flex1", (int) incentive);
                 } else {
                     args.putInt("flex1", 0);
                 }
                 fragment.setArguments(args);
                 fragmentList.add(fragment);
             }
+        } else if (show_trend_chart) {
+            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+            fragmentList.add(new P3MChartFragment());
         }
     }
 

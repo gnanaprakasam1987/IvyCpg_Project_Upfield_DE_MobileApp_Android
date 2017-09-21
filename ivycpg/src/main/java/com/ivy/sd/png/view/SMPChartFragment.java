@@ -17,7 +17,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -25,7 +24,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
-public class FragmentTab2 extends Fragment {
+public class SMPChartFragment extends Fragment {
 
     private BusinessModel bmodel;
     private PieChart mChart;
@@ -57,7 +56,7 @@ public class FragmentTab2 extends Fragment {
             mChart.setTransparentCircleColor(isSemiCircleChartRequired ? Color.TRANSPARENT : Color.WHITE);
             mChart.setTransparentCircleAlpha(110);
 
-            mChart.setDrawCenterText(false);
+            mChart.setDrawCenterText(true);
 
             // enable rotation of the chart by touch
             mChart.setRotationEnabled(false);
@@ -65,17 +64,16 @@ public class FragmentTab2 extends Fragment {
 
             mChart.animateXY(1400, 1400, Easing.EasingOption.EaseInOutQuad, Easing.EasingOption.EaseInOutQuad);
 
-
             Legend l = mChart.getLegend();
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l.setOrientation(Legend.LegendOrientation.VERTICAL);
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
             l.setDrawInside(false);
-            l.setTextColor(Color.WHITE);
-            l.setXEntrySpace(5f);
+            l.setXEntrySpace(7f);
             l.setYEntrySpace(0f);
+            l.setTextColor(Color.WHITE);
             l.setYOffset(0f);
-            l.setXOffset(25f);
-            l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
 
             if (isSemiCircleChartRequired) {
                 setOffset(mChart);
@@ -85,7 +83,8 @@ public class FragmentTab2 extends Fragment {
                 mChart.setMaxAngle(180f); // HALF CHART
                 mChart.setRotationAngle(180f);
                 // entry label styling
-                mChart.setEntryLabelColor(Color.TRANSPARENT);
+                mChart.setEntryLabelColor(Color.WHITE);
+                mChart.setEntryLabelTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 mChart.setEntryLabelTextSize(0f);
             }
             setData();
@@ -101,21 +100,40 @@ public class FragmentTab2 extends Fragment {
     }
 
     private void setData() {
+        if (mDashboardList.getKpiTarget() != null && !mDashboardList.getKpiTarget().equals("0")) {
+            ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+            float temp_ach = Float.parseFloat(mDashboardList.getKpiAcheived()) - Float.parseFloat(mDashboardList.getKpiTarget());
+            if (temp_ach > 0) {
+                int round = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
+                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
+                if (round % 100 == 0) {
+                    round = round + 1;
+                }
+                int rounded = ((round + 99) / 100) * 100;
+                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiAcheived()), "100%"));
 
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+                int bonus = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
+                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
+                entries.add(new PieEntry(temp_ach, bonus + "%"));
 
-        entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiAcheived())));
-        entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiTarget())));
+                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiTarget()), (rounded) + "%"));
+            } else {
+                int bonus = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
+                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
+                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiAcheived()), bonus + "%"));
+                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiTarget()), "100%"));
+            }
 
-        PieDataSet dataSet = new PieDataSet(entries, "");
 
-        dataSet.setSliceSpace(isSemiCircleChartRequired ? 0f : 3f);
-        dataSet.setSelectionShift(5f);
+            PieDataSet dataSet = new PieDataSet(entries, "");
 
-        // add a lot of colors
+            dataSet.setSliceSpace(isSemiCircleChartRequired ? 0f : 3f);
+            dataSet.setSelectionShift(5f);
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+            // add a lot of colors
 
+            ArrayList<Integer> colors = new ArrayList<Integer>();
+/*
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
 
@@ -129,19 +147,28 @@ public class FragmentTab2 extends Fragment {
             colors.add(c);
 
         for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
+            colors.add(c);*/
+            colors.add(Color.rgb(119, 147, 60));
+            colors.add(Color.rgb(255, 192, 0));
+            colors.add(Color.rgb(192, 80, 78));
 
-        colors.add(ColorTemplate.getHoloBlue());
+            dataSet.setColors(colors);
+            dataSet.setDrawValues(false);
 
-        dataSet.setColors(colors);
-        dataSet.setDrawValues(false);
+            dataSet.setValueLinePart1OffsetPercentage(80.f);
+            dataSet.setValueLinePart1Length(0.2f);
+            dataSet.setValueLinePart2Length(0.4f);
+            //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+            dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTextSize(0f);
-        mChart.setData(data);
+            PieData data = new PieData(dataSet);
+            data.setValueFormatter(new PercentFormatter());
+            data.setValueTextSize(12f);
+            data.setValueTextColor(Color.BLACK);
+            data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            mChart.setData(data);
+            mChart.invalidate();
+        }
     }
 
     public void setOffset(PieChart mChart) {
