@@ -3048,7 +3048,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             this,
                             getResources().getString(
                                     R.string.please_complete_previous_activity),
-                            Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
@@ -3122,15 +3122,20 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         } else if (menu.getConfigCode().equals(MENU_RTR_KPI) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "");
+                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
 
                 if (bmodel.dashBoardHelper.getDashChartDataList().size() > 0) {
                     Intent i = new Intent(this,
                             SellerDashBoardActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    i.putExtra("screentitle", menu.getMenuName());
-                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
-                    i.putExtra("isFromHomeScreenTwo", true);
+                    Bundle bnd = new Bundle();
+                    bnd.putString("screentitle", menu.getMenuName());
+                    bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
+                    bnd.putBoolean("isFromHomeScreenTwo", true);
+                    i.putExtras(bnd);
+//                    i.putExtra("screentitle", menu.getMenuName());
+//                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
+//                    i.putExtra("isFromHomeScreenTwo", true);
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
