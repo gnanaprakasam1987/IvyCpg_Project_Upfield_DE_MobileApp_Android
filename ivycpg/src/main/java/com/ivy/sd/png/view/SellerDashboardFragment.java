@@ -131,7 +131,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     int avgSellingPrice;
     int avgBillValue;
     boolean isFromHomeScreenTwo = false;
-    boolean isSemiCircleChartRequired = false;
+    //boolean isSemiCircleChartRequired = false;
+    Bundle bundle;
 
     @Nullable
     @Override
@@ -144,19 +145,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         fm = getActivity().getSupportFragmentManager();
-        if (getActivity().getIntent().getExtras() != null) {
-            if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
-                isFromHomeScreenTwo = true;
-            }
+//        if (getActivity().getIntent().getExtras() != null) {
+//            if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
+//                isFromHomeScreenTwo = true;
+//            }
+//        }
+        bundle = this.getArguments();
+        if (bundle != null) {
+            isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
         }
-
 
         setHasOptionsMenu(true);
         init();
         return view;
     }
 
-    private void init(){
+    private void init() {
         vpPager = (ViewPager) view.findViewById(R.id.viewpager);
         collapsing = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing);
         indicator = (CircleIndicator) view.findViewById(R.id.indicator);
@@ -186,116 +190,132 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
         LinearLayout spinner_layout1 = (LinearLayout) view.findViewById(R.id.spinner_layout1);
         LinearLayout spinner_layout2 = (LinearLayout) view.findViewById(R.id.spinner_layout2);
+        userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
 
-        if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
-            if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
-                spinner_layout1.setVisibility(View.GONE);
-                spinner_layout2.setVisibility(View.VISIBLE);
-                ll_distributor = (LinearLayout) view.findViewById(R.id.ll_distributor);
-                distrSpinner1 = (MultiSpinner) view.findViewById(R.id.distributorSpinner1);
-                ll_distributor.setVisibility(View.VISIBLE);
+        if (!isFromHomeScreenTwo) {
+            if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
+                if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
+                    spinner_layout1.setVisibility(View.GONE);
+                    spinner_layout2.setVisibility(View.VISIBLE);
+                    ll_distributor = (LinearLayout) view.findViewById(R.id.ll_distributor);
+                    distrSpinner1 = (MultiSpinner) view.findViewById(R.id.distributorSpinner1);
+                    ll_distributor.setVisibility(View.VISIBLE);
 
-                ll_users = (LinearLayout) view.findViewById(R.id.ll_users);
-                userSpinner1 = (MultiSpinner) view.findViewById(R.id.userSpinner1);
-                ll_users.setVisibility(View.VISIBLE);
+                    ll_users = (LinearLayout) view.findViewById(R.id.ll_users);
+                    userSpinner1 = (MultiSpinner) view.findViewById(R.id.userSpinner1);
+                    ll_users.setVisibility(View.VISIBLE);
 
-                final List<KeyPairBoolData> distArray = new ArrayList<>();
-                ArrayList<DistributorMasterBO> distributors = bmodel.distributorMasterHelper.getDistributors();
-                distArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
-                int count = 0;
+                    final List<KeyPairBoolData> distArray = new ArrayList<>();
+                    ArrayList<DistributorMasterBO> distributors = bmodel.distributorMasterHelper.getDistributors();
+                    distArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
+                    int count = 0;
 
-                for (int j = 0; j < distributors.size(); j++) {
-                    KeyPairBoolData h = new KeyPairBoolData();
-                    h.setId(Integer.parseInt(distributors.get(j).getDId()));
-                    h.setName(distributors.get(j).getDName());
-                    h.setSelected(true);
-                    distArray.add(h);
-                    count++;
-                    mSelectedDistributorId += bmodel.QT(distributors.get(j).getDId() + "");
-                    if (count != distributors.size())
-                        mSelectedDistributorId += ",";
-                }
-
-                distrSpinner1.setItems(distArray, -1, new SpinnerListener() {
-                    @Override
-                    public void onItemsSelected(List<KeyPairBoolData> items) {
-                        Commons.print("Multi" + items.size());
-                        int count = 0;
-                        mSelectedDistributorId = "";
-                        if (items.size() > 0) {
-                            for (int i = 0; i < items.size(); i++) {
-                                count++;
-                                mSelectedDistributorId += bmodel.QT(items.get(i).getId() + "");
-                                if (count != items.size())
-                                    mSelectedDistributorId += ",";
-                            }
-                        } else
-                            mSelectedDistributorId = "0";
-                        loadUserSpinner(mSelectedDistributorId);
+                    for (int j = 0; j < distributors.size(); j++) {
+                        KeyPairBoolData h = new KeyPairBoolData();
+                        h.setId(Integer.parseInt(distributors.get(j).getDId()));
+                        h.setName(distributors.get(j).getDName());
+                        h.setSelected(true);
+                        distArray.add(h);
+                        count++;
+                        mSelectedDistributorId += bmodel.QT(distributors.get(j).getDId() + "");
+                        if (count != distributors.size())
+                            mSelectedDistributorId += ",";
                     }
-                });
-                loadUserSpinner("0");
-                if (!show_trend_chart) {
-                    vpPager.setVisibility(View.GONE);
-                    collapsing.setVisibility(View.GONE);
+
+                    distrSpinner1.setItems(distArray, -1, new SpinnerListener() {
+                        @Override
+                        public void onItemsSelected(List<KeyPairBoolData> items) {
+                            Commons.print("Multi" + items.size());
+                            int count = 0;
+                            mSelectedDistributorId = "";
+                            if (items.size() > 0) {
+                                for (int i = 0; i < items.size(); i++) {
+                                    count++;
+                                    mSelectedDistributorId += bmodel.QT(items.get(i).getId() + "");
+                                    if (count != items.size())
+                                        mSelectedDistributorId += ",";
+                                }
+                            } else
+                                mSelectedDistributorId = "0";
+                            loadUserSpinner(mSelectedDistributorId);
+                        }
+                    });
+                    loadUserSpinner("0");
+                    if (!show_trend_chart) {
+                        vpPager.setVisibility(View.GONE);
+                        collapsing.setVisibility(View.GONE);
+                    }
+                } else {
+                    spinner_layout1.setVisibility(View.VISIBLE);
+                    spinner_layout2.setVisibility(View.GONE);
+                    Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
+                    distrSpinner.setVisibility(View.VISIBLE);
+
+                    userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
+                    userSpinner.setVisibility(View.VISIBLE);
+
+                    distrSpinner.setOnItemSelectedListener(this);
+                    userSpinner.setOnItemSelectedListener(this);
+
+                    //To load all distributor
+                    distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+                    distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
+                    if (bmodel.distributorMasterHelper.getDistributors() != null &&
+                            bmodel.distributorMasterHelper.getDistributors().size() != 0) {
+                        for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
+                            distributorMasterBOArrayAdapter.add(bo);
+                        }
+                        distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+                        distrSpinner.setAdapter(distributorMasterBOArrayAdapter);
+                    }
+
+                    //User Spinner only with select to have distributor to get selected first
+                    userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+                    userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
+                    userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+                    userSpinner.setAdapter(userMasterBOArrayAdapter);
+
+                    if (!isFromHomeScreenTwo) {
+                        mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                    }
                 }
-            } else {
+            } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
                 spinner_layout1.setVisibility(View.VISIBLE);
                 spinner_layout2.setVisibility(View.GONE);
-                Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
-                distrSpinner.setVisibility(View.VISIBLE);
 
-                userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
                 userSpinner.setVisibility(View.VISIBLE);
-
-                distrSpinner.setOnItemSelectedListener(this);
                 userSpinner.setOnItemSelectedListener(this);
-
-                //To load all distributor
-                distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-                distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
-                if (bmodel.distributorMasterHelper.getDistributors() != null &&
-                        bmodel.distributorMasterHelper.getDistributors().size() != 0) {
-                    for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
-                        distributorMasterBOArrayAdapter.add(bo);
-                    }
-                    distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-                    distrSpinner.setAdapter(distributorMasterBOArrayAdapter);
-                }
-
-                //User Spinner only with select to have distributor to get selected first
                 userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-                userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
+                userMasterBOArrayAdapter.add(bmodel.userMasterHelper.getUserMasterBO());
+                for (UserMasterBO bo : bmodel.userMasterHelper.downloadUserList()) {
+                    userMasterBOArrayAdapter.add(bo);
+                }
                 userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                 userSpinner.setAdapter(userMasterBOArrayAdapter);
-
-                mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                if (!isFromHomeScreenTwo) {
+                    mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                }
             }
-        } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
+        } else {
             spinner_layout1.setVisibility(View.VISIBLE);
-            spinner_layout2.setVisibility(View.GONE);
-            userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
-            userSpinner.setVisibility(View.VISIBLE);
-            userSpinner.setOnItemSelectedListener(this);
-            userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
-            userMasterBOArrayAdapter.add(bmodel.userMasterHelper.getUserMasterBO());
-            for (UserMasterBO bo : bmodel.userMasterHelper.downloadUserList()) {
-                userMasterBOArrayAdapter.add(bo);
-            }
-            userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-            userSpinner.setAdapter(userMasterBOArrayAdapter);
-            mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-            bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+            view.findViewById(R.id.distributorSpinner).setVisibility(View.GONE);
+            userSpinner.setVisibility(View.GONE);
         }
 
-        mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+        if (!isFromHomeScreenTwo) {
+            mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+            bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+        } else {
+            vpPager.setVisibility(View.GONE);
+            collapsing.setVisibility(View.GONE);
+        }
 
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());
         gridListDataLoad(beatPosition);
         updateAll();
     }
@@ -340,8 +360,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             holder.acheived.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.balance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.index.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            if(holder.mChart.getVisibility()!=View.VISIBLE){
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)holder.index.getLayoutParams();
+            if (holder.mChart.getVisibility() != View.VISIBLE) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.index.getLayoutParams();
                 params.setMargins(0, 0, 10, 0); //substitute parameters for left, top, right, bottom
                 holder.index.setLayoutParams(params);
             }
@@ -363,13 +383,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 @Override
                 public void onClick(View view) {
 //                    if (selectedInterval.equals(P3M)) {
-                    if (mDashboardList != null && mDashboardList.size() > 0) {
-                        bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
+                    if(show_trend_chart) {
+                        if (mDashboardList != null && mDashboardList.size() > 0) {
+                            bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
+                        }
+
+                        bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
+                        adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
+                        new setAdapterTask().execute();
+                        vpPager.setCurrentItem(chartpositionSMP);
                     }
-                    bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
-                    adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
-                    new setAdapterTask().execute();
-                    vpPager.setCurrentItem(chartpositionSMP);
 //                    }
 
                 }
@@ -435,8 +458,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 if (temp_ach > 0) {
                     int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
                             (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
-                    holder.index.setText(SDUtil.roundIt(bonus,1) +"%");
-                }else {
+                    holder.index.setText(SDUtil.roundIt(bonus, 1) + "%");
+                } else {
                     holder.index.setText(strCalcPercentage);
                 }
                 holder.kpiFlex1.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiFlex()));
@@ -456,8 +479,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 if (temp_ach > 0) {
                     int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
                             (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
-                    holder.index.setText(SDUtil.roundIt(bonus,1) +"%");
-                }else {
+                    holder.index.setText(SDUtil.roundIt(bonus, 1) + "%");
+                } else {
                     holder.index.setText(strCalcPercentage);
                 }
                 holder.balance.setText(bmodel.formatValue((SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
@@ -465,7 +488,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 holder.incentive.setText(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
                 String strKpiScore = dashboardData.getKpiScore() + "";
                 holder.score.setText(strKpiScore);
-                isSemiCircleChartRequired = true;
+                //isSemiCircleChartRequired = true;
             }
 
             if (!bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
@@ -475,9 +498,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 holder.mChart.setDragDecelerationFrictionCoef(0.95f);
 
-                holder.mChart.setDrawHoleEnabled(isSemiCircleChartRequired ? true : false);
+                holder.mChart.setDrawHoleEnabled(true);
 
-                holder.mChart.setTransparentCircleColor(isSemiCircleChartRequired ? Color.TRANSPARENT : Color.WHITE);
+                holder.mChart.setTransparentCircleColor(Color.TRANSPARENT);
                 holder.mChart.setTransparentCircleAlpha(110);
 
                 holder.mChart.setDrawCenterText(false);
@@ -496,7 +519,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 l.setDrawInside(false);
                 l.setEnabled(false);
 
-                if (isSemiCircleChartRequired) {
+                //if (isSemiCircleChartRequired) {
                     setOffset(holder.mChart);
                     holder.mChart.setHoleColor(Color.TRANSPARENT);
                     holder.mChart.setHoleRadius(50f);
@@ -506,7 +529,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     // entry label styling
                     holder.mChart.setEntryLabelColor(Color.TRANSPARENT);
                     holder.mChart.setEntryLabelTextSize(0f);
-                }
+                //}
 
                 ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
@@ -515,7 +538,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 PieDataSet dataSet = new PieDataSet(entries, "");
 
-                dataSet.setSliceSpace(isSemiCircleChartRequired ? 0f : 3f);
+                dataSet.setSliceSpace(0f);
                 dataSet.setSelectionShift(5f);
 
                 // add a lot of colors
@@ -871,10 +894,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             int menuid = parent.getId();
             if (menuid == R.id.dashSpinner) {
                 selectedInterval = dashSpinner.getSelectedItem().toString();
-                if (selectedInterval.equals(P3M))
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
-                else
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                if (!isFromHomeScreenTwo) {
+                    if (selectedInterval.equals(P3M))
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                    else
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                } else {
+                    bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", selectedInterval);
+                }
                 gridListDataLoad(beatPosition);
                 updateAll();
                 monthSpinner.setVisibility(View.GONE);
@@ -1248,10 +1275,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             } else if (menuid == R.id.userSpinner) {
                 mSelectedUserId = userMasterBOArrayAdapter.getItem(position).getUserid();
-                if (selectedInterval.equals(P3M))
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
-                else
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                if (!isFromHomeScreenTwo) {
+                    if (selectedInterval.equals(P3M))
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                    else
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                }
 
                 gridListDataLoad(beatPosition);
                 mDashboardList = bmodel.dashBoardHelper.getDashListViewList();
@@ -1305,7 +1334,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
-            calculateIncentive();
+            //calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
                 bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
@@ -1330,7 +1359,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         }
     }
 
-    private void calculateIncentive(){
+    private void calculateIncentive() {
         incentive = 0;
         for (DashBoardBO dash : mDashboardList) {
             incentive = incentive + Double.parseDouble(dash.getKpiIncentive());
@@ -1639,17 +1668,18 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 Fragment fragment = new TotalAchivedFragment();
                 Bundle args = new Bundle();
                 if (mDashboardList != null && mDashboardList.size() > 0) {
-                    args.putInt("flex1", (int) incentive);
+                    args.putInt("flex1", mDashboardList.get(0).getFlex1());
                 } else {
                     args.putInt("flex1", 0);
                 }
                 fragment.setArguments(args);
                 fragmentList.add(fragment);
             }
-        } else if (show_trend_chart) {
-            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-            fragmentList.add(new P3MChartFragment());
         }
+//        else if (show_trend_chart) {
+//            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+//            fragmentList.add(new P3MChartFragment());
+//        }
     }
 
     private class setAdapterTask extends AsyncTask<Void, Void, Void> {

@@ -75,7 +75,7 @@ public class SMPChartFragment extends Fragment {
             l.setYOffset(0f);
 
 
-            if (isSemiCircleChartRequired) {
+            //if (isSemiCircleChartRequired) {
                 setOffset(mChart);
                 mChart.setHoleColor(Color.TRANSPARENT);
                 mChart.setHoleRadius(50f);
@@ -86,7 +86,7 @@ public class SMPChartFragment extends Fragment {
                 mChart.setEntryLabelColor(Color.WHITE);
                 mChart.setEntryLabelTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 mChart.setEntryLabelTextSize(0f);
-            }
+            //}
             setData();
         }
         bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());

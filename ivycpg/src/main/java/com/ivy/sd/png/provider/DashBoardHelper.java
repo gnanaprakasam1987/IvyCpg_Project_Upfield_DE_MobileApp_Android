@@ -388,7 +388,7 @@ public class DashBoardHelper {
         return wholeNumber;
     }
 
-    public void loadRetailerDashBoard(String retailerID) {
+    public void loadRetailerDashBoard(String retailerID , String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -405,7 +405,7 @@ public class DashBoardHelper {
                     + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
                     + " LEFT join RetailerKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
-                    + " where retailerid =" + retailerID + " and interval= 'MONTH' "
+                    + " where retailerid =" + retailerID + " and interval= '"+ interval +"' "
                     + " AND "
                     + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " between RK.fromdate and RK.todate group by SLM.Listid order by DisplaySeq asc";

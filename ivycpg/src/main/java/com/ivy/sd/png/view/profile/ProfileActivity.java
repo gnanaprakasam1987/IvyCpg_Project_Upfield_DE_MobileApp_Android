@@ -87,7 +87,7 @@ import com.ivy.sd.png.view.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.RetailerKpiFragment;
+import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.UserDialogue;
@@ -1029,8 +1029,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
             planningOutletFragment.setArguments(null);
 
-            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
-            retailerKpiFragment.setArguments(null);
+//            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
+//            retailerKpiFragment.setArguments(null);
+            bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+            bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");
+            SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
+            Bundle bnd = new Bundle();
+            bnd.putString("screentitle", "");
+            bnd.putBoolean("isFromHomeScreenTwo", true);
+            bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
+            retailerKpiFragment.setArguments(bnd);
 
             MSLUnsoldFragment mslUnsoldFragment = new MSLUnsoldFragment();
             mslUnsoldFragment.setArguments(null);
