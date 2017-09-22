@@ -9,7 +9,7 @@ public class StandardListBO {
     private String listName;
     private boolean checked;
     private ArrayList<PromotionBO> promotionTrackingList;
-    private ArrayList<AssetTrackingBO> assetTrackingList;
+    private ArrayList<AssetTrackingBO> assetTrackingList,allassetTrackingList;
     private String status;
 
     private String userChildName;
@@ -37,6 +37,13 @@ public class StandardListBO {
 
     public void setAssetTrackingList(ArrayList<AssetTrackingBO> assetTrackingList) {
         this.assetTrackingList = assetTrackingList;
+    }
+
+    public ArrayList<AssetTrackingBO> getAllAssetTrackingList() {
+        return allassetTrackingList;
+    }
+    public void setAllAssetTrackingList(ArrayList<AssetTrackingBO> allassetTrackingList) {
+        this.allassetTrackingList = allassetTrackingList;
     }
 
     public String getListID() {
