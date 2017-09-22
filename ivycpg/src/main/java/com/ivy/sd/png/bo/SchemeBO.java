@@ -79,6 +79,7 @@ public class SchemeBO {
 
 	private int isCombination = 0;
 	private int isFreeCombination = 0;
+	private int isAutoApply = 0;
 	private String freeType;
 	public boolean isSihAvailableForFreeProducts() {
 		return sihAvailableForFreeProducts;
@@ -599,4 +600,11 @@ public class SchemeBO {
 
 	private String getType = "";
 
+	public int getIsAutoApply() {
+		return isAutoApply;
+	}
+
+	public void setIsAutoApply(int isAutoApply) {
+		this.isAutoApply = isAutoApply;
+	}
 }

@@ -451,7 +451,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 mSlabWiseProductNameWidth = mTotalScreenWidth - mSlabWiseSchemeNameWidth - 40;
 
 
-                SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeIdList.get(0));
+                SchemeBO schemeBO = null;
+
+                if (schemeIdList != null)
+                    schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeIdList.get(0));
+
                 if (schemeBO != null) {
                     LinearLayout.LayoutParams layoutParamsSchemeTitile = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                     //layoutParamsSchemeTitile.weight=0.1f;
@@ -973,7 +977,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             if (productBO != null) {
                                 if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
                                     if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " +  CASES);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + CASES);
                                     } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
                                         tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + OUTER);
                                     } else {
@@ -1509,15 +1513,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
         ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeparentId);
-        boolean isPercentageDiscAvailable=false;
-        boolean isAmountDiscAvailable=false;
-        boolean isPriceDiscAvailable=false;
-        for(String schemeId:schemeList){
-            final SchemeBO schemeBO=bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeId);
-            if(schemeBO!=null){
-                final List<SchemeProductBO> freeProductList=schemeBO.getFreeProducts();
-                if(freeProductList!=null&&freeProductList.size()>0) {
-                    final SchemeProductBO schemeProductBO=freeProductList.get(0);
+        boolean isPercentageDiscAvailable = false;
+        boolean isAmountDiscAvailable = false;
+        boolean isPriceDiscAvailable = false;
+        for (String schemeId : schemeList) {
+            final SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeId);
+            if (schemeBO != null) {
+                final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
+                if (freeProductList != null && freeProductList.size() > 0) {
+                    final SchemeProductBO schemeProductBO = freeProductList.get(0);
                     if (schemeProductBO.getMaxAmount() > 0) {
                         isAmountDiscAvailable = true;
                     }
@@ -1544,8 +1548,6 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         tv.setLayoutParams(layoutParams);
 
 
-
-
         for (int i = size - 1; i >= 0; i--) {
             SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeList.get(i));
             if (schemeBO != null) {
@@ -1563,7 +1565,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     SchemeProductBO freeproductBO = freeProductList.get(0);
 
                     if (isAmountDiscAvailable) {
-                        if (childView1==null) {
+                        if (childView1 == null) {
                             childView1 = new LinearLayout(ctxt);
                             childView1.setOrientation(LinearLayout.HORIZONTAL);
                             childView1.setLayoutParams(layoutParams);
@@ -1596,10 +1598,9 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         }
 
 
-
                     }
                     if (isPercentageDiscAvailable) {
-                        if (childView2==null) {
+                        if (childView2 == null) {
                             childView2 = new LinearLayout(ctxt);
                             childView2.setOrientation(LinearLayout.HORIZONTAL);
                             childView2.setLayoutParams(layoutParams);
@@ -1630,7 +1631,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                     }
                     if (isPriceDiscAvailable) {
-                        if (childView3==null) {
+                        if (childView3 == null) {
                             childView3 = new LinearLayout(ctxt);
                             childView3.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -1652,7 +1653,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             } else {
                                 priceTV.setText(freeproductBO.getPriceActual() + " - " + freeproductBO.getPriceMaximum());
                             }
-                        }else{
+                        } else {
                             priceTV.setText("-");
                         }
                         priceTV.setLayoutParams(layoutParams);
