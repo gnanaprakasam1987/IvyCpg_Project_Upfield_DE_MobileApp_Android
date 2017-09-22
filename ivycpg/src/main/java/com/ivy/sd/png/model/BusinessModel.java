@@ -2685,7 +2685,7 @@ public class BusinessModel extends Application {
      * <p>
      * Saving Invoice will also update the SIH in ProductMaster.
      */
-    void saveNewInvoice() {
+    public void saveNewInvoice() {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
         salesReturnHelper.getSalesReturnGoods();
@@ -6577,6 +6577,7 @@ public class BusinessModel extends Application {
                 if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     sb.append(" and is_vansales=" + isVansales);
                 }
+                sb.append(" and orderid not in(select orderid from OrderDeliveryDetails)");
 
                 Cursor orderDetailCursor = db.selectSQL(sb.toString());
                 if (orderDetailCursor.getCount() > 0) {
@@ -10753,6 +10754,33 @@ public class BusinessModel extends Application {
 
             ArrayList<ProductMasterBO> batchList;
 
+            double ordervalue = 0.0;
+            if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
+                    && isCredtNoteCreated != 1) {
+                if (salesReturnHelper.isValueReturned()) {
+                    ordervalue = orderHeaderBO.getOrderValue()
+                            - salesReturnHelper.getSaleableValue();
+                } else {
+                    ordervalue = orderHeaderBO.getOrderValue();
+                }
+            } else {
+                ordervalue = orderHeaderBO.getOrderValue();
+            }
+
+             /*
+         * update tax in invoice master Changed by Felix on 30-04-2015 For
+		 * getting tax detail from order value
+		 */
+            if (configurationMasterHelper.TAX_SHOW_INVOICE) {
+                productHelper.downloadTaxDetails();
+                ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
+                        configurationMasterHelper.VALUE_PRECISION_COUNT,
+                        0, configurationMasterHelper.IS_DOT_FOR_GROUP));
+                final double totalTaxValue = productHelper.applyBillWiseTax(ordervalue);
+                if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                    ordervalue = ordervalue + totalTaxValue;
+
+            }
 
             this.invoiceNumber = invid;
             String printFilePath = "";
@@ -10767,7 +10795,7 @@ public class BusinessModel extends Application {
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
             sb.append(QT(retailerMasterBO.getRetailerID()) + ",");
 
-            sb.append(formatValueBasedOnConfig(orderHeaderBO.getOrderValue()) + ",");
+            sb.append(formatValueBasedOnConfig(ordervalue) + ",");
 
             sb.append(0 + ",");
             sb.append(QT(this.getOrderid()) + ",");
@@ -10776,21 +10804,21 @@ public class BusinessModel extends Application {
             sb.append(QT("N") + ",");
             sb.append(getRetailerMasterBO().getBeatID() + ",");
             sb.append(orderHeaderBO.getDiscount() + ",");
-            sb.append(formatValueBasedOnConfig(orderHeaderBO.getOrderValue()) + ",");
+            sb.append(formatValueBasedOnConfig(ordervalue) + ",");
             double discountedAmount = 0;
             if (configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 if (discountPercentage > 0) {
 
-                    double remaingAmount = (orderHeaderBO.getOrderValue() * discountPercentage) / 100;
+                    double remaingAmount = (ordervalue * discountPercentage) / 100;
 
-                    discountedAmount = orderHeaderBO.getOrderValue()
+                    discountedAmount = ordervalue
                             - remaingAmount;
                     sb.append(formatValueBasedOnConfig(discountedAmount) + ",");
                 } else {
-                    sb.append(formatValueBasedOnConfig(orderHeaderBO.getOrderValue()) + ",");
+                    sb.append(formatValueBasedOnConfig(ordervalue) + ",");
                 }
             } else {
-                sb.append(formatValueBasedOnConfig(orderHeaderBO.getOrderValue()) + ",");
+                sb.append(formatValueBasedOnConfig(ordervalue) + ",");
             }
 
             sb.append(QT(mSelectedRetailerLatitude + "") + ",");
