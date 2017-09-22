@@ -74,6 +74,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1173,17 +1175,21 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
         public String getJSONFromUrl(String url) {
             try {
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(url);
-                HttpResponse httpResponse = httpClient.execute(httpPost);
-                HttpEntity httpEntity = httpResponse.getEntity();
-                is = httpEntity.getContent();
+                URL urlobj = new URL(url);
+                HttpURLConnection urlConnection = (HttpURLConnection) urlobj.openConnection();
+                int responseCode = urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    is = urlConnection.getInputStream();
+                }
+
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
             try {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(is, "iso-8859-1"), 8);
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(
+//                        is));
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {

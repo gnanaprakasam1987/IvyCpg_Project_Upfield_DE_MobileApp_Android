@@ -1,17 +1,13 @@
 package com.ivy.sd.png.survey;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Shader;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +23,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -97,8 +94,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private int tabPos;
     private int tabCount;
-    private String imageName = "";
+    private String imageName = "",pathSrc="";;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int DRAG_AND_DROP=2;
     private boolean isClicked = true;
     private QuestionBO surveyPhcapture = new QuestionBO();
     private SurveyBO surveyBO = new SurveyBO();
@@ -146,10 +144,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private boolean hide_selectuser_icon = false;
     private ArrayList<StandardListBO> childList;
     private ArrayAdapter<String> mChildUserNameAdapter;
-    private int mSelectedIdIndex = -1;
+    private int mSelectedIdIndex = -1,isFromDragDrop=-1;
     private String childUserName = "";
     private boolean isFromChild;
-
+    protected Boolean isMultiPhotoCaptureEnabled=false;
 
     @Override
     public void onAttach(Context context) {
@@ -330,7 +328,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-
+        if(bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+            isMultiPhotoCaptureEnabled=true;
         //condition to check CNT01
         if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
             //if CNT01 is enabled
@@ -350,8 +349,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private void loadListData() {
 
-        bmodel.mSurveyHelperNew
-                .loadSurveyAnswers(0);
+        if(isFromDragDrop==-1) {
+            bmodel.mSurveyHelperNew
+                    .loadSurveyAnswers(0);
+        }
+      //  isFromDragDrop=-1;
 
         bmodel.mSurveyHelperNew.mSelectedFilter = -1;
 
@@ -802,6 +804,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.camBtn = (ImageView) row.findViewById(R.id.imgBtn);
                 holder.tv_counter = (TextView) row.findViewById(R.id.textOne);
                 holder.photoBtn = (ImageView) row.findViewById(R.id.photos);
+                holder.dragBtn=(ImageView)row.findViewById(R.id.dragDropIcon);
+                holder.dragDropLayout=(LinearLayout)row.findViewById(R.id.dragDropLayout);
                 holder.camIndicatorLty = (LinearLayout) row.findViewById(R.id.indicator_view);
                 holder.minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
@@ -809,7 +813,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
 
                 holder.camBtn.setOnClickListener(new OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
                         imgView = holder.camBtn;
@@ -818,11 +821,26 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 });
 
                 holder.photoBtn.setOnClickListener(new OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
                         imgView = holder.photoBtn;
                         photoFunction(holder.questionBO, 1);
+                    }
+                });
+
+                holder.dragBtn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
+                        surveyHelperNew.setQuestionBODragDrop(holder.questionBO);
+                        surveyPhcapture = holder.questionBO;
+
+                        Intent intent=new Intent(getActivity(),DragDropPictureActivity.class);
+                        intent.putExtra("BrandId",holder.questionBO.getBrandID());
+                        intent.putExtra("QuestiionId",holder.questionBO.getQuestionID());
+                        intent.putExtra("QuestionDesc",holder.questionBO.getQuestionDescription());
+                        intent.putExtra("SurveyId",bmodel.mSurveyHelperNew.mSelectedSurvey);
+                        startActivityForResult(intent,DRAG_AND_DROP);
                     }
                 });
 
@@ -846,56 +864,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.groupNameLayout.setVisibility(View.VISIBLE);
                 holder.groupName.setText(holder.questionBO.getGroupName());
             }
-            /*if (holder.questionBO.isImage1Captured() && !holder.questionBO.getImage1Path().equals("") &&
-                    isFileExist(holder.questionBO.getImage1Path())) {
-
-                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity())
-                        .load(holder.questionBO.getImage1Path())
-                        .asBitmap()
-                        .centerCrop()
-                        .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                        .transform(bmodel.circleTransform)
-                        .into(new BitmapImageViewTarget(holder.camBtn));
-            } else if (holder.questionBO.getTempImagePath() != null && holder.questionBO.getTempImagePath().length() > 0 &&
-                    isFileExist(holder.questionBO.getTempImagePath())) {
-
-                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity())
-                        .load(holder.questionBO.getTempImagePath())
-                        .asBitmap()
-                        .centerCrop()
-                        .transform(bmodel.circleTransform)
-                        .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                        .into(new BitmapImageViewTarget(holder.camBtn));
-            } else {
-                holder.camBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo_camera));
-            }
-
-            if (holder.questionBO.isImage2Captured() && !holder.questionBO.getImage2Path().equals("")) {
-                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity())
-                        .load(holder.questionBO.getImage2Path())
-                        .asBitmap()
-                        .centerCrop()
-                        .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                        .transform(bmodel.circleTransform)
-                        .into(new BitmapImageViewTarget(holder.photoBtn));
-            } else if (holder.questionBO.getTempImagePath() != null && holder.questionBO.getTempImagePath().length() > 0 &&
-                    isFileExist(holder.questionBO.getTempImagePath())) {
-
-                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity())
-                        .load(holder.questionBO.getTempImagePath())
-                        .asBitmap()
-                        .centerCrop()
-                        .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                        .transform(bmodel.circleTransform)
-                        .into(new BitmapImageViewTarget(holder.photoBtn));
-            } else {
-                holder.photoBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo_camera));
-            }*/
-
             int qNo = position + 1;
             String strQuestionNo = qNo + ". ";
             holder.questionNO.setText(strQuestionNo);
@@ -927,9 +895,17 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             if (holder.questionBO.getIsPhotoReq() == 0) {
                 holder.isPhotoAvailable = false;
                 holder.photoLayout.setVisibility(View.INVISIBLE);
+                //Drag and Drop Functionality Disabled
+                holder.camIndicatorLty.setVisibility(View.GONE);
+                holder.dragBtn.setVisibility(View.GONE);
+                holder.dragDropLayout.setVisibility(View.GONE);
             } else {
                 holder.isPhotoAvailable = true;
                 holder.photoLayout.setVisibility(View.VISIBLE);
+                //Drag and Drop Functionality Enabled
+                holder.camIndicatorLty.setVisibility(View.VISIBLE);
+                holder.dragBtn.setVisibility(View.VISIBLE);
+                holder.dragDropLayout.setVisibility(View.VISIBLE);
                 if (holder.questionBO.getMinPhoto() == 1 && holder.questionBO.getMaxPhoto() == 1) {
                     holder.camBtn.setVisibility(View.VISIBLE);
                     holder.camIndicatorLty.setVisibility(View.GONE);
@@ -940,6 +916,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     /*holder.camIndicatorLty.setVisibility(View.VISIBLE);
                     holder.photoBtn.setVisibility(View.VISIBLE);*/
                 }
+            }
+
+            if(!bmodel.configurationMasterHelper.SHOW_DRAGDROP_IN_SURVEY)
+            {
+                //Drag and Drop Functionality Disabled
+                holder.camIndicatorLty.setVisibility(View.GONE);
+                holder.dragBtn.setVisibility(View.GONE);
+                holder.dragDropLayout.setVisibility(View.GONE);
             }
 
             if (holder.questionBO.getIsPhotoReq() != 0 && holder.questionBO.getMinPhoto() >= 1) {
@@ -1010,14 +994,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     class QuestionHolder {
         QuestionBO questionBO;
         LinearLayout answerLayout;
-        LinearLayout groupNameLayout, camIndicatorLty;
+        LinearLayout groupNameLayout, camIndicatorLty,dragDropLayout;
         LinearLayout subQuestLayout;
         RelativeLayout right_container;
         TextView questionNO;
         TextView questionTV;
         TextView tv_counter;
         TextView imp;
-        ImageView camBtn, photoBtn;
+        ImageView camBtn, photoBtn,dragBtn;
         LinearLayout photoLayout;
         TextView groupName;
         TextView minPhoto;
@@ -1030,8 +1014,47 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
+//                ArrayList<String> mImagePathData=new ArrayList<>();
+//                if(surveyPhcapture.getImagePathData()==null)
+//                {
+//                    mImagePathData.add(pathSrc);
+//                    surveyPhcapture.setImagePathData(mImagePathData);
+//                }
+//                else
+//                {
+//                    mImagePathData=surveyPhcapture.getImagePathData();
+//                    mImagePathData.add(pathSrc);
+//                    surveyPhcapture.setImagePathData(mImagePathData);
+//                }
+
                 surveyPhcapture.getImageNames().add(path + imageName);
+                if(isMultiPhotoCaptureEnabled) {
+                    Toast.makeText(getActivity(), "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
+                    isClicked = true;
+                    if (surveyPhcapture.getImageNames().size() < surveyPhcapture.getMaxPhoto()) {
+                        photoFunction(surveyPhcapture, 0);
+                    }
+                }
             }
+        }
+        else if(requestCode == DRAG_AND_DROP)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                ArrayList<String> mSavedData=data.getStringArrayListExtra("savedData");
+                if(mSavedData!=null && mSavedData.size()!=0)
+                {
+                    surveyPhcapture.getImageNames().clear();
+                    surveyPhcapture.getImageNames().addAll(mSavedData);
+                }
+                else if(mSavedData!=null && mSavedData.size()==0)
+                {
+                    surveyPhcapture.getImageNames().clear();
+                }
+                isFromDragDrop=1;
+            }
+//            SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
+//            questBO=surveyHelperNew.getQuestionBODragDrop();
         }
         isClicked = true;
 
@@ -1045,7 +1068,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             mRadioGroup.setOrientation(RadioGroup.VERTICAL);
             mRadioGroup.setPadding(0, 0, 55, 0);
 
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             params1.bottomMargin = 0;
 
             final ArrayList<AnswerBO> answers = mCurrentQuestionBO.getAnswersList();
@@ -1717,53 +1740,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     camBtn.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                 }
 
-
-               /* if (questBO.isImage1Captured() && !questBO.getImage1Path().equals("") && isFileExist(questBO.getImage1Path())) {
-                    Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.camera_new);
-                    Glide.with(getActivity())
-                            .load(questBO.getImage1Path())
-                            .asBitmap()
-                            .centerCrop()
-                            .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                            .transform(bmodel.circleTransform)
-                            .into(new BitmapImageViewTarget(camBtn));
-                } else if (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) {
-
-                    Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.camera_new);
-                    Glide.with(getActivity())
-                            .load(questBO.getTempImagePath())
-                            .asBitmap()
-                            .centerCrop()
-                            .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                            .transform(bmodel.circleTransform)
-                            .into(new BitmapImageViewTarget(camBtn));
-                } else {
-                    camBtn.setImageDrawable(getResources().getDrawable(R.drawable.camera_new));
-                }
-
-                if (questBO.isImage2Captured() && !questBO.getImage2Path().equals("") && isFileExist(questBO.getImage2Path())) {
-                    Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.camera_new);
-                    Glide.with(getActivity())
-                            .load(questBO.getImage2Path())
-                            .asBitmap()
-                            .centerCrop()
-                            .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                            .transform(bmodel.circleTransform)
-                            .into(new BitmapImageViewTarget(photoBtn));
-                } else if (questBO.getTempImagePath() != null && questBO.getTempImagePath().length() > 0 && isFileExist(questBO.getTempImagePath())) {
-
-                    Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.camera_new);
-                    Glide.with(getActivity())
-                            .load(questBO.getTempImagePath())
-                            .asBitmap()
-                            .centerCrop()
-                            .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-                            .transform(bmodel.circleTransform)
-                            .into(new BitmapImageViewTarget(photoBtn));
-                } else {
-                    photoBtn.setImageDrawable(getResources().getDrawable(R.drawable.camera_new));
-                }
-*/
                 if (remove) {
                     questBO.getSelectedAnswerIDs().clear();
                     questBO.getSelectedAnswer().clear();
@@ -1843,6 +1819,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     questBO.setImage2Path(path);
                                     questBO.setImage2Captured(true);
                                 }
+                                pathSrc=path;
+                                Log.e("TakenPath",path);
                                 intent.putExtra("quality", 40);
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
@@ -2338,6 +2316,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 bmodel.saveModuleCompletion(mMenuCode);
                 return Boolean.TRUE;
             } catch (Exception e) {
+                e.printStackTrace();
                 Commons.printException("" + e);
                 return Boolean.FALSE;
             }
@@ -2361,6 +2340,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             // result is the value returned from doInBackground
            /* String temp = SDUtil.now(SDUtil.DATE_TIME_ID);
             bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));*/
+           Log.e("Result", String.valueOf(result));
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
             alertDialog.dismiss();
             bmodel.mSurveyHelperNew.remarkDone = "N";
@@ -2548,7 +2528,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
         }
-
+        SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
+        surveyHelperNew.setmQuestionData(mQuestions);
 
         questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeRight() {

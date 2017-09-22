@@ -339,6 +339,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_TYPE_DIALOG = "ORDB39";
     private static final String CODE_SHOW_LAST_3MONTHS_SALES = "PRO22";
     private static final String CODE_MSL_NOT_SOLD = "PRO24";
+    private static final String CODE_NORMAL_DASHBOARD = "DASH13";
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
@@ -367,7 +368,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD,SHOW_NOR_DASHBOARD;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -775,6 +776,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SMS_IN_SURVEY;
     public String smsmenutype;
     public boolean SHOW_PHOTOCAPTURE_IN_SURVEY;
+    public boolean SHOW_DRAGDROP_IN_SURVEY;
+    public boolean ENABLE_MULTIPLE_PHOTO;
     public boolean SHOW_PROFILE_LOC1;
     public boolean SHOW_PROFILE_LOC2;
     public boolean SHOW_PROFILE_LOC3;
@@ -801,6 +804,7 @@ public class ConfigurationMasterHelper {
     public int CAMERA_PICTURE_HEIGHT = 480;
     public int CAMERA_PICTURE_QUALITY = 40;
     public String photocapturemenutype;
+    public String multiplePhotoCapture;
     public boolean IS_SIH_VALIDATION_MASTER;
     public boolean IS_WSIH_MASTER;
     public boolean IS_SCHEME_ON_MASTER;
@@ -1774,6 +1778,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_ORDER_FOCUS_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) : false;
         this.SHOW_LAST_3MONTHS_BILLS = hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) : false;
         this.SHOW_MSL_NOT_SOLD = hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) != null ? hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) : false;
+        this.SHOW_NOR_DASHBOARD = hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) : false;
         this.SHOW_COLLECTION_PRINT = hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) : false;
         this.SHOW_NETAMOUNT_IN_REPORT = hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) : false;
         this.SHOW_COLLECTION_SEQ_NO = hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) : false;
@@ -4146,6 +4151,8 @@ public class ConfigurationMasterHelper {
         try {
             this.SHOW_SMS_IN_SURVEY = false;
             this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
+            this.SHOW_DRAGDROP_IN_SURVEY=false;
+            this.ENABLE_MULTIPLE_PHOTO=false;
             DBUtil db;
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -4160,12 +4167,27 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
-            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
+            c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
                     + bmodel.QT(menucode));
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
                     this.photocapturemenutype = c.getString(0);
+                    // Enabling the dragDrop button based on the RField value
+                    if(c.getString(1)!=null && c.getString(1).equalsIgnoreCase("1"))
+                    {
+                        this.SHOW_DRAGDROP_IN_SURVEY=true;
+                    }
+                }
+                c.close();
+            }
+            // Survey12 to enable multiple photo capture
+            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.ENABLE_MULTIPLE_PHOTO = true;
+                    this.multiplePhotoCapture=c.getString(0);
                 }
                 c.close();
             }

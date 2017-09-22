@@ -1,33 +1,22 @@
 package com.ivy.sd.png.model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import com.ivy.sd.png.util.Commons;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -35,20 +24,16 @@ import java.util.Vector;
  */
 public class MyHttpConnectionNew {
 
-    public static final int GET = 0;
     public static final int POST = 1;
-    public static final int PUT = 2;
-    public static final int DELETE = 3;
-    public static final int BITMAP = 4;
     private String url;
     private int method;
     private String data;
     private Vector<String> result;
-    private List<NameValuePair> params = new ArrayList();
-    private Bitmap bitmap;
-    private HttpClient httpClient;
+    HashMap<String, String> params = new HashMap<>();
     private String headerKey;
     private String headervalue;
+    private boolean isFromWebActivity = false;
+    Map<String, List<String>> headerFields;
 
     public JSONObject getParamsJsonObject() {
         return paramsJsonObject;
@@ -60,18 +45,6 @@ public class MyHttpConnectionNew {
 
     private JSONObject paramsJsonObject;
 
-
-
-    public Header[] getResponseHeader() {
-        return responseHeader;
-    }
-
-    public void setResponseHeader(Header[] responseHeader) {
-        this.responseHeader = responseHeader;
-    }
-
-    private Header[] responseHeader;
-
     public MyHttpConnectionNew() {
     }
 
@@ -81,25 +54,17 @@ public class MyHttpConnectionNew {
         this.data = data;
     }
 
-    public Bitmap getBitmap() {
-        return this.bitmap;
-    }
-
     public void addHeader(String var,String val){
         this.headerKey=var;
         this.headervalue=val;
 
     }
     public void addParam(String var, String val) {
-        this.params.add(new BasicNameValuePair(var, val));
+        params.put(var, val);
     }
 
     public void addParam(String var, int val) {
-        this.params.add(new BasicNameValuePair(var, String.valueOf(val)));
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+        params.put(var, String.valueOf(val));
     }
 
     public Vector<String> getResult() {
@@ -133,68 +98,76 @@ public class MyHttpConnectionNew {
 
 
     public void connectMe() {
-        this.httpClient = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(this.httpClient.getParams(), 90000);
-        HttpConnectionParams.setSoTimeout(this.httpClient.getParams(), 90000);
-
+        URL uri = null;
+        HttpURLConnection con = null;
+        OutputStream os = null;
         try {
-            HttpResponse e = null;
             switch(this.method) {
-                case 0:
-                    HttpGet httpGet = new HttpGet(this.url);
-                    if (headervalue != null) {
-                        httpGet.addHeader(headerKey, headervalue);
-                    }
-
-                    e = this.httpClient.execute(httpGet);
-                    break;
                 case 1:
                     try {
-                        HttpPost httpPut1 = new HttpPost(this.url);
                         if (paramsJsonObject != null) {
+                            uri = new URL(url.trim());
+                            con = (HttpURLConnection) uri.openConnection();
+                            con.setRequestMethod("POST");
+                            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                            if (getIsFromWebActivity())//body of response would be blank for web url call, hence default gzip compression throws eof exception on blank response. to avoid compression accept encoding is given blank since there is no body,only header is being used
+                                con.setRequestProperty("Accept-Encoding", "");
+                            // For POST only - START
+                            con.setDoOutput(true);
+                            if (headervalue != null) {
+                                con.setRequestProperty(headerKey, headervalue);
+                            }
+                            os = con.getOutputStream();
+                            os.write(paramsJsonObject.toString().getBytes("UTF-8"));
+                            os.flush();
+                            os.close();
+                            // For POST only - END
+                        } else if (params != null && params.size() > 0) {
+                            URL serverUrl = new URL(url);
+                            con = (HttpURLConnection) serverUrl.openConnection();
+                            con.setDoInput(true);
+                            con.setRequestMethod("POST");
+                            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                            con.setDoOutput(true);
+                            if (headervalue != null) {
+                                con.setRequestProperty(headerKey, headervalue);
+                            }
+                            //didn't remove comment for future reference if needed
+//                            StringBuilder resultbuilder = new StringBuilder();
+//                            for (Map.Entry<String, String> entry : params.entrySet()) {
+//                                resultbuilder.append((resultbuilder.length() > 0 ? "&" : "") + entry.getKey() + ":" + entry.getValue());//appends: key=value (for first param) OR &key=value(second and more)
+//                            }
+//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+//                            writer.write(resultbuilder.toString());
+//                            writer.close();
 
-                            StringEntity entity = new StringEntity(paramsJsonObject.toString(), HTTP.UTF_8);
-                            entity.setContentType("application/json");
-                            httpPut1.setEntity(entity);
-                        } else {
-                          /*  httpPut1.setHeader(HTTP.CONTENT_TYPE,
-                                    "application/x-www-form-urlencoded;charset=UTF-8");*/
+                            // For POST only - START
+                            Uri.Builder builder = new Uri.Builder();
+                            for (Map.Entry<String, String> entry : params.entrySet()) {
+                                builder.appendQueryParameter(entry.getKey(), entry.getValue());
+                            }
+                            String query = builder.build().getEncodedQuery();
+                            os = con.getOutputStream();
 
-                            UrlEncodedFormEntity p_entity = new UrlEncodedFormEntity(this.params, HTTP.UTF_8);
+                            os.write(query.getBytes());
+                            os.flush();
+                            os.close();
 
-                            httpPut1.setEntity(p_entity);
+//                            con.connect();
+
                         }
-                        if(headervalue!=null) {
-                            httpPut1.addHeader(headerKey, headervalue);
-                        }
+                        this.processEntity(con.getInputStream());
+                        this.setResponseHeader(con.getHeaderFields());
 
-                        e = this.httpClient.execute(httpPut1);
-
-
-                    } catch (Exception var4) {
-                        Commons.printException(""+var4);
-                        this.setResult((Vector)null);
+                    } catch (Exception ex) {
+                        Commons.printException("MyHttpConnectionNew" + ",Error while posting data:: " + ex);
+                        this.setResult((Vector) null);
+                        os.flush();
+                        os.close();
                     }
                     break;
-                case 2:
-                    HttpPut httpPut = new HttpPut(this.url);
-                    httpPut.setEntity(new StringEntity(this.data));
-                    httpPut.addHeader(headerKey, headervalue);
-                    e = this.httpClient.execute(httpPut);
-
+                default:
                     break;
-                case 3:
-                    e = this.httpClient.execute(new HttpDelete(this.url));
-
-                    break;
-                case 4:
-                    e = this.httpClient.execute(new HttpGet(this.url));
-                    this.processBitmapEntity(e.getEntity());
-            }
-
-            if(this.method < 4) {
-                this.processEntity(e.getEntity());
-                this.setResponseHeader(e.getAllHeaders());
             }
         } catch (Exception var5) {
             Commons.printException(this.getClass().getName()+ ",Exception occured while connecting to server");
@@ -202,22 +175,31 @@ public class MyHttpConnectionNew {
         }
 
     }
+    private void setResponseHeader(Map<String, List<String>> headerFields) {
+        this.headerFields = headerFields;
+    }
 
-    private void processEntity(HttpEntity entity) throws IllegalStateException, IOException {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(entity.getContent()));
+    public Map<String, List<String>> getResponseHeaderField() {
+        return headerFields;
+    }
+
+    public void setIsFromWebActivity(boolean bool) {
+        isFromWebActivity = bool;
+    }
+
+    public boolean getIsFromWebActivity() {
+        return isFromWebActivity;
+    }
+
+    private void processEntity(InputStream in) throws IllegalStateException, IOException {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(in));
         String line = "";
         this.result = new Vector();
 
-        while((line = rd.readLine()) != null) {
+        while ((line = rd.readLine()) != null) {
             this.result.addElement(line);
         }
 
-    }
-
-    private void processBitmapEntity(HttpEntity entity) throws IOException {
-        BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
-        Bitmap bm = BitmapFactory.decodeStream(bufHttpEntity.getContent());
-        this.setBitmap(bm);
     }
 
 }

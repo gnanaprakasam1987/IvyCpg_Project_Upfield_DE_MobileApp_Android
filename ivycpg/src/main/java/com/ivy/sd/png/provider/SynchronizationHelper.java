@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -188,7 +189,6 @@ SynchronizationHelper {
     public static final String REQUEST_INFO = "REQUEST_INFO";
     private static final String VALIDATE_DEVICE_ID = "ValidateDeviceId";
     private static final String UPDATE_DEVICE_ID = "UpdateDeviceId";
-    private String mHeaderInfo;
     public boolean isInternalActivation;
 
     private static SynchronizationHelper instance = null;
@@ -2247,21 +2247,26 @@ SynchronizationHelper {
 
     }
 
-    public Vector<String> getUploadResponseForgotPassword(String headerinfo, String data,
-                                                          String appendurl) {
+    public static final String USER_IDENTITY = "UserIdentity";
+
+    public Vector<String> getUploadResponseForgotPassword(JSONObject jsonObject,
+                                                          String appendurl, boolean isChangePassword) {
         // Update Security key
         // updateAuthenticateToken();
-        updateAuthenticateTokenWithoutPassword();
+        if (isChangePassword)
+            updateAuthenticateToken();
+        else
+            updateAuthenticateTokenWithoutPassword();
+
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
         try {
+
             MyHttpConnectionNew http = new MyHttpConnectionNew();
             http.create(MyHttpConnectionNew.POST, url.toString(), null);
             http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam("userinfo", headerinfo);
-            if (data != null) {
-                http.addParam("data", data);
-            }
+            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
+
             http.connectMe();
             Vector<String> result = http.getResult();
             if (result == null) {
@@ -2281,7 +2286,7 @@ SynchronizationHelper {
         try {
             StringBuffer downloadUrl = new StringBuffer();
             downloadUrl.append(DataMembers.SERVER_URL
-                    + "/UserMaster/AuthorizeUser");
+                    + "/UserMaster/SecureAuthorizeUser");
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
             //jsonObj.put("Password", getPlainPwd());
@@ -2299,17 +2304,20 @@ SynchronizationHelper {
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             //downloadUrl.append(URLEncoder.encode(jsonObj.toString()));
-            Commons.print("Update Authentication Token " + jsonObj.toString());
+            Commons.print("Update Authentication Token - Forgot password" + jsonObj.toString());
             MyHttpConnectionNew http = new MyHttpConnectionNew();
             http.create(MyHttpConnectionNew.POST, downloadUrl.toString(), null);
-            http.setParamsJsonObject(jsonObj);
+            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        mSecurityKey = header.getValue();
-                        return mSecurityKey;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            mSecurityKey = entry.getValue().get(0);
+                            return mSecurityKey;
+                        }
                     }
                 }
             }
@@ -2329,7 +2337,7 @@ SynchronizationHelper {
     public void updateAuthenticateToken() {
 
         try {
-            //prepareHeaderInfo(false);
+            mSecurityKey = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
@@ -2343,18 +2351,24 @@ SynchronizationHelper {
             jsonObj.put("DeviceId",
                     bmodel.activationHelper.getIMEINumber());
             jsonObj.put("RegistrationId", bmodel.regid);
+            jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
             Commons.print("Update Authentication Token " + jsonObj.toString());
+            // adding additional two parameters
+            addDeviceValidationParameters(false, jsonObj);
             MyHttpConnectionNew http = new MyHttpConnectionNew();
             http.create(MyHttpConnectionNew.POST, downloadUrl, null);
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
-            http.setParamsJsonObject(jsonObj);
+            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        mSecurityKey = header.getValue();
-                        return;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            mSecurityKey = entry.getValue().get(0);
+                            return;
+                        }
                     }
                 }
             }
@@ -2368,26 +2382,33 @@ SynchronizationHelper {
         if (!bmodel.isOnline()) {
             return "E06";
         }
-
+        mSecurityKey = "";
         String url = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
         try {
 
-            //prepareHeaderInfo(isDeviceChanged);
+            addDeviceValidationParameters(isDeviceChanged, jsonObject);
 
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             //con.setRequestProperty(REQUEST_INFO, getHeaderInfo());
             // For POST only - START
             con.setDoOutput(true);
+            con.connect();
+
+            // For POST only - START
+            Uri.Builder builder = new Uri.Builder()
+                    .appendQueryParameter(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
+            String query = builder.build().getEncodedQuery();
+
             OutputStream os = con.getOutputStream();
-            os.write(jsonObject.toString().getBytes("UTF-8"));
+            os.write(query.getBytes());
             os.flush();
             os.close();
             // For POST only - END
 
-            Commons.print("Update Authentication Token " + jsonObject.toString());
+            Commons.print("User Authentication Token " + jsonObject.toString());
             int responseCode = con.getResponseCode();
             Commons.print("POST Response Code :: " + responseCode);
 
@@ -2412,12 +2433,12 @@ SynchronizationHelper {
         } catch (IOException e) {
             Commons.print("Reading file error");
             return context.getResources().getString(R.string.connection_exception);
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
         return "E01";
     }
-
-    private void prepareHeaderInfo(boolean isDeviceChanged) {
-        mHeaderInfo = null;
+    public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
 
@@ -2432,17 +2453,11 @@ SynchronizationHelper {
                 mDeviceIdChange = 0;
             }
 
-            JSONObject headerJsonObj = new JSONObject();
-            headerJsonObj.put(SynchronizationHelper.VALIDATE_DEVICE_ID, mDeviceIdValidate);
-            headerJsonObj.put(SynchronizationHelper.UPDATE_DEVICE_ID, mDeviceIdChange);
-            mHeaderInfo = RSAEncrypt(headerJsonObj.toString());
+            jsonObject.put(SynchronizationHelper.VALIDATE_DEVICE_ID, mDeviceIdValidate);
+            jsonObject.put(SynchronizationHelper.UPDATE_DEVICE_ID, mDeviceIdChange);
         } catch (JSONException jsonExpection) {
             Commons.print(jsonExpection.getMessage());
         }
-    }
-
-    private String getHeaderInfo() {
-        return mHeaderInfo;
     }
 
     public String RSAEncrypt(String inputString) {
@@ -3811,16 +3826,19 @@ SynchronizationHelper {
                     .getUserMasterBO().getOrganizationId());
             Commons.print("Url " + downloadUrl.toString());
             MyHttpConnectionNew http = new MyHttpConnectionNew();
-
             http.create(MyHttpConnectionNew.POST, downloadUrl.toString(), null);
-            http.setParamsJsonObject(jsonObj);
+            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));
+            http.setIsFromWebActivity(true);
             http.connectMe();
-            Header[] headers = http.getResponseHeader();
-            if (headers != null) {
-                for (Header header : headers) {
-                    if (header.getName().equals(SECURITY_HEADER)) {
-                        token = header.getValue();
-                        return token;
+            Map<String, List<String>> headerFields = http.getResponseHeaderField();
+            if (headerFields != null) {
+                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (entry.getKey() != null && entry.getKey().equals(SECURITY_HEADER)) {
+                        if (entry.getValue() != null && entry.getValue().size() > 0) {
+                            token = entry.getValue().get(0);
+                            return token;
+                        }
                     }
                 }
             }
@@ -4578,4 +4596,36 @@ SynchronizationHelper {
         }
         return check;
     }
+    public boolean isSaleDrafted() {
+        DBUtil db = null;
+        boolean check = true;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            int counts = 0;
+
+            Cursor c = db
+                    .selectSQL("select COUNT(pid) from CS_CustomerSaleDetails where upload='I'");
+            if (c != null) {
+                if (c.moveToFirst())
+                    counts = c.getInt(0);
+            }
+            Commons.print("Count of isSaleDrafter not completed : ," + counts + "");
+            c.close();
+            db.close();
+
+            if (counts > 0) {
+                check = false;
+            } else {
+                check = true;
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return check;
+    }
+
 }

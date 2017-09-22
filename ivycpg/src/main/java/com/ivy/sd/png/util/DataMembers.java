@@ -23,7 +23,8 @@ public class DataMembers {
     // Sync
    // public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
     public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
-    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+//    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+    public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
 
     public static String fileName = "sd_png_asean_android.apk";
@@ -583,6 +584,10 @@ public class DataMembers {
     public static final String tbl_ModuleActivityDetails = "ModuleActivityDetails";
     public static final String tbl_ModuleActivityDetails_cols = "Tid,DistributorId,UserId,Date,ModuleCode,Activity,Latitude,longitude,GpsAccuracy";
 
+    public static final String tbl_jointcallacknowledgement = "JointCallAcknowledgement";
+    public static final String tbl_jointcallacknowledgement_cols = "Userid,Username,Beat,Retailer,Date,Value,Refid,Ack_Date,Upload";
+    public static final String tbl_jointcallacknowledgement_upload_cols = "Refid,Ack_Date";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -748,6 +753,7 @@ public class DataMembers {
         uploadColumn.put(tbl_Grooming_Detail, tbl_Grooming_Detail_cols);
         uploadColumn.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumn.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
+        uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frame_layout_item"
+    android:layout_width="wrap_content"
+    android:padding="@dimen/dimen_2dp"
+    android:gravity="center"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:layout_width="@dimen/dimens_200dp"
+            android:layout_height="@dimen/dimens_200dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/white">
+            <!--<TextView-->
+                <!--android:id="@+id/text"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="70sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:layout_gravity="center"-->
+                <!--tools:text="A" />-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/no_photo"
+                    android:id="@+id/img_dragdrop"
+                    android:scaleType="fitXY"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/TransparentBlack"
+                    android:layout_alignParentBottom="true">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="DELETE"
+                        android:textColor="@color/WHITE"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:id="@+id/txt_dragdropClear"
+                        android:padding="@dimen/dimen_6dp"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+
+</FrameLayout>

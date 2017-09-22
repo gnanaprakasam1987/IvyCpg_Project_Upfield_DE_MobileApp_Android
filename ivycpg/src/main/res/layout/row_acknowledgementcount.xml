@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <LinearLayout
+        android:id="@+id/lnr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/target_top_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtUser"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:paddingLeft="@dimen/whats_on_item_padding"
+                android:text="Value"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/factor_title_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/incentive_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center|right"
+                android:paddingRight="@dimen/recycler_margin"
+                android:tag="incentive_day"
+                android:text="Total Calls"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/greyed_text_size"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/txtUserCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="center|left"
+                android:paddingLeft="@dimen/recycler_margin"
+                android:text="50"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/incentive_value_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/icon_ll"
+                android:layout_width="@dimen/activity_list_height"
+                android:layout_height="@dimen/activity_list_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimens_16dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btn_inandout"
+                    android:layout_width="@dimen/sub_activity_list_icon_circle"
+                    android:layout_height="@dimen/sub_activity_list_icon_circle"
+                    android:src="@drawable/activity_icon_next" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

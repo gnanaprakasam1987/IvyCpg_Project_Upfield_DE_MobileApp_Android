@@ -88,7 +88,7 @@
 
     <string name="export_and_share">Export and Share</string>
     <string name="export_and_email">Export and Email</string>
-
+    <string name="share">Share</string>
 
     <!--For Non Visit Fragment-->
     <string name="select_beat">Select Beat</string>
@@ -119,5 +119,17 @@
     <string name="apply_or_test_feedback">Apply/Test Feedback</string>
     <string name="date_label">Date</string>
     <string name="customer_feedback">Customer FeedBack</string>
+    <string name="minPhoto">Min.Photo</string>
+    <string name="maxPhoto">Max.Photo</string>
+    <string name="saveTransaction">Do you wish to save the transaction</string>
+    <string name="continuousImageCapturedToast">Photo Captured and Saved Successfully</string>
+    <string name="drafted_sales_not_processed">Drafts exists without processing</string>
 
+    <string name="user">User</string>
+    <string name="total_calls">Total Calls</string>
+    <string name="call_details">Call Details</string>
+    <string name="date_txt">Date</string>
+
+    <string name="incentivetext">Total Incentive</string>
+    <string name="hasannouncer">Has Announcer</string>
 </resources>

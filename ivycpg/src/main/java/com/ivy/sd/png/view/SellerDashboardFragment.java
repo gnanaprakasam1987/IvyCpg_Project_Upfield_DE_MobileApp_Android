@@ -49,7 +49,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.DashBoardBO;
-import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.KeyPairBoolData;
@@ -63,11 +62,10 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import me.relex.circleindicator.CircleIndicator;
 
-import static com.ivy.sd.png.asean.view.R.id.outlet;
+import static com.ivy.sd.png.asean.view.R.id.tv;
 
 public class SellerDashboardFragment extends IvyBaseFragment implements AdapterView.OnItemSelectedListener {
 
@@ -108,7 +106,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private static final String CODE13 = "INV";
 
     private int NUM_ITEMS = 1;
-    private int flex1 = 0, chartpositionSMP = 0;
+    private double incentive = 0.0;
+    private int chartpositionSMP = 0;
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     /**************************/
     private ArrayAdapter<UserMasterBO> userMasterBOArrayAdapter;
@@ -132,7 +131,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     int avgSellingPrice;
     int avgBillValue;
     boolean isFromHomeScreenTwo = false;
-    boolean isSemiCircleChartRequired = false;
+    //boolean isSemiCircleChartRequired = false;
+    Bundle bundle;
 
     @Nullable
     @Override
@@ -145,21 +145,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         fm = getActivity().getSupportFragmentManager();
-        if (getActivity().getIntent().getExtras() != null) {
-            if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
-                isFromHomeScreenTwo = true;
-            }
+//        if (getActivity().getIntent().getExtras() != null) {
+//            if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
+//                isFromHomeScreenTwo = true;
+//            }
+//        }
+        bundle = this.getArguments();
+        if (bundle != null) {
+            isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
         }
 
-
         setHasOptionsMenu(true);
-
+        init();
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void init() {
         vpPager = (ViewPager) view.findViewById(R.id.viewpager);
         collapsing = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing);
         indicator = (CircleIndicator) view.findViewById(R.id.indicator);
@@ -170,6 +171,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (bmodel.dashBoardHelper.getShowDayAndP3MSpinner() != 0) {
             setpUpSpinner();
             bmodel.downloadDailyReport();
+        }
+
+        if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
+            show_trend_chart = true;
         }
 
         if (!show_trend_chart) {
@@ -186,14 +191,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         LinearLayout spinner_layout1 = (LinearLayout) view.findViewById(R.id.spinner_layout1);
         LinearLayout spinner_layout2 = (LinearLayout) view.findViewById(R.id.spinner_layout2);
         userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
-        //moved setUpActionBar from onCreateView to onStart has below condition returns null in onCreateView
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-            setUpActionBar();
-
 
         if (!isFromHomeScreenTwo) {
-
-
             if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
                 if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
                     spinner_layout1.setVisibility(View.GONE);
@@ -252,6 +251,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
                     distrSpinner.setVisibility(View.VISIBLE);
 
+                    userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
                     userSpinner.setVisibility(View.VISIBLE);
 
                     distrSpinner.setOnItemSelectedListener(this);
@@ -275,12 +275,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                     userSpinner.setAdapter(userMasterBOArrayAdapter);
 
-                    mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                    if (!isFromHomeScreenTwo) {
+                        mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                    }
                 }
             } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
                 spinner_layout1.setVisibility(View.VISIBLE);
                 spinner_layout2.setVisibility(View.GONE);
+
                 userSpinner.setVisibility(View.VISIBLE);
                 userSpinner.setOnItemSelectedListener(this);
                 userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
@@ -290,11 +293,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 }
                 userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                 userSpinner.setAdapter(userMasterBOArrayAdapter);
-                mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
-            } else {
-                //if all configurations are disabled then retailer kpi dashboard data is re used for seller kpi dashboard. hence list object is cleared
-                bmodel.dashBoardHelper.getDashChartDataList().clear();
+                if (!isFromHomeScreenTwo) {
+                    mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                }
             }
         } else {
             spinner_layout1.setVisibility(View.VISIBLE);
@@ -302,16 +304,25 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             userSpinner.setVisibility(View.GONE);
         }
 
-        mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+        if (!isFromHomeScreenTwo) {
+            mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+            bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+        } else {
+            vpPager.setVisibility(View.GONE);
+            collapsing.setVisibility(View.GONE);
+        }
 
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
         bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());
+        gridListDataLoad(beatPosition);
         updateAll();
+    }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardListViewAdapter.ViewHolder> {
@@ -349,6 +360,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             holder.acheived.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.balance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.index.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            if (holder.mChart.getVisibility() != View.VISIBLE) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.index.getLayoutParams();
+                params.setMargins(0, 0, 10, 0); //substitute parameters for left, top, right, bottom
+                holder.index.setLayoutParams(params);
+            }
             holder.incentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
             holder.score.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
             holder.incentiveTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
@@ -366,16 +382,18 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             holder.factorName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (selectedInterval.equals(P3M)) {
+//                    if (selectedInterval.equals(P3M)) {
+                    if(show_trend_chart) {
                         if (mDashboardList != null && mDashboardList.size() > 0) {
-                            flex1 = holder.dashboardDataObj.getFlex1();
                             bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
                         }
+
                         bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
                         adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
                         new setAdapterTask().execute();
                         vpPager.setCurrentItem(chartpositionSMP);
                     }
+//                    }
 
                 }
             });
@@ -401,7 +419,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 @Override
                 public void onClick(View v) {
                     try {
-                        bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
+                        if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD)
+                            bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
+                            //for loaeral
+                        else
+                            bmodel.dashBoardHelper.downloadLorealSkuDetails(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
 
                         if (bmodel.dashBoardHelper.getSellerKpiSku().size() > 0) {
                             Intent i = new Intent(getActivity(),
@@ -432,7 +454,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 holder.target.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiTarget()));
                 holder.balance.setText(bmodel.dashBoardHelper.getWhole(bmodel.formatValue(SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                holder.index.setText(strCalcPercentage);
+                float temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (temp_ach > 0) {
+                    int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
+                            (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
+                    holder.index.setText(SDUtil.roundIt(bonus, 1) + "%");
+                } else {
+                    holder.index.setText(strCalcPercentage);
+                }
                 holder.kpiFlex1.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiFlex()));
                 holder.incentive.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiIncentive()));
                 holder.score.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiScore()));
@@ -446,13 +475,20 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     Commons.printException(e + "");
                 }
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                holder.index.setText(strCalcPercentage);
+                float temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (temp_ach > 0) {
+                    int bonus = Math.round(Float.parseFloat(dashboardData.getKpiAcheived()) /
+                            (Float.parseFloat(dashboardData.getKpiTarget())) * 100);
+                    holder.index.setText(SDUtil.roundIt(bonus, 1) + "%");
+                } else {
+                    holder.index.setText(strCalcPercentage);
+                }
                 holder.balance.setText(bmodel.formatValue((SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
                 holder.kpiFlex1.setText(dashboardData.getKpiFlex());
                 holder.incentive.setText(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
                 String strKpiScore = dashboardData.getKpiScore() + "";
                 holder.score.setText(strKpiScore);
-                isSemiCircleChartRequired = true;
+                //isSemiCircleChartRequired = true;
             }
 
             if (!bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
@@ -462,9 +498,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 holder.mChart.setDragDecelerationFrictionCoef(0.95f);
 
-                holder.mChart.setDrawHoleEnabled(isSemiCircleChartRequired ? true : false);
+                holder.mChart.setDrawHoleEnabled(true);
 
-                holder.mChart.setTransparentCircleColor(isSemiCircleChartRequired ? Color.TRANSPARENT : Color.WHITE);
+                holder.mChart.setTransparentCircleColor(Color.TRANSPARENT);
                 holder.mChart.setTransparentCircleAlpha(110);
 
                 holder.mChart.setDrawCenterText(false);
@@ -483,7 +519,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 l.setDrawInside(false);
                 l.setEnabled(false);
 
-                if (isSemiCircleChartRequired) {
+                //if (isSemiCircleChartRequired) {
                     setOffset(holder.mChart);
                     holder.mChart.setHoleColor(Color.TRANSPARENT);
                     holder.mChart.setHoleRadius(50f);
@@ -493,7 +529,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     // entry label styling
                     holder.mChart.setEntryLabelColor(Color.TRANSPARENT);
                     holder.mChart.setEntryLabelTextSize(0f);
-                }
+                //}
 
                 ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
@@ -502,7 +538,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 PieDataSet dataSet = new PieDataSet(entries, "");
 
-                dataSet.setSliceSpace(isSemiCircleChartRequired ? 0f : 3f);
+                dataSet.setSliceSpace(0f);
                 dataSet.setSelectionShift(5f);
 
                 // add a lot of colors
@@ -858,10 +894,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             int menuid = parent.getId();
             if (menuid == R.id.dashSpinner) {
                 selectedInterval = dashSpinner.getSelectedItem().toString();
-                if (selectedInterval.equals(P3M))
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
-                else
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                if (!isFromHomeScreenTwo) {
+                    if (selectedInterval.equals(P3M))
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                    else
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                } else {
+                    bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", selectedInterval);
+                }
                 gridListDataLoad(beatPosition);
                 updateAll();
                 monthSpinner.setVisibility(View.GONE);
@@ -1235,10 +1275,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             } else if (menuid == R.id.userSpinner) {
                 mSelectedUserId = userMasterBOArrayAdapter.getItem(position).getUserid();
-                if (selectedInterval.equals(P3M))
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
-                else
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                if (!isFromHomeScreenTwo) {
+                    if (selectedInterval.equals(P3M))
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                    else
+                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                }
 
                 gridListDataLoad(beatPosition);
                 mDashboardList = bmodel.dashBoardHelper.getDashListViewList();
@@ -1246,7 +1288,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 dashBoardList.setAdapter(dashBoardListViewAdapter);
                 if (show_trend_chart) {
                     if (mDashboardList != null && mDashboardList.size() > 0) {
-                        flex1 = mDashboardList.get(0).getFlex1();
                         bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
                     }
                     bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
@@ -1293,8 +1334,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
+            //calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                flex1 = mDashboardList.get(0).getFlex1();
                 bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
             bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
@@ -1308,14 +1349,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
+            calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                flex1 = mDashboardList.get(0).getFlex1();
                 bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
             bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
             adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
             new setAdapterTask().execute();
         }
+    }
+
+    private void calculateIncentive() {
+        incentive = 0;
+        for (DashBoardBO dash : mDashboardList) {
+            incentive = incentive + Double.parseDouble(dash.getKpiIncentive());
+        }
+        bmodel.dashBoardHelper.mParamAchieved = incentive;
     }
 
     private int getRetailerDetail(String flag) {
@@ -1602,12 +1651,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         NUM_ITEMS = 1;
         //bmodel.dashBoardHelper.setDashboardBO(null);
         fragmentList = new ArrayList<>();
-        bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-        fragmentList.add(new FragmentTab1());
+
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
+            if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
+                NUM_ITEMS++;
+                bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+                fragmentList.add(new P3MChartFragment());
+            }
             if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
                 NUM_ITEMS++;
-                fragmentList.add(new FragmentTab2());
+                fragmentList.add(new SMPChartFragment());
                 chartpositionSMP = NUM_ITEMS;
             }
             if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
@@ -1615,7 +1668,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 Fragment fragment = new TotalAchivedFragment();
                 Bundle args = new Bundle();
                 if (mDashboardList != null && mDashboardList.size() > 0) {
-                    args.putInt("flex1", flex1);
+                    args.putInt("flex1", mDashboardList.get(0).getFlex1());
                 } else {
                     args.putInt("flex1", 0);
                 }
@@ -1623,6 +1676,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 fragmentList.add(fragment);
             }
         }
+//        else if (show_trend_chart) {
+//            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+//            fragmentList.add(new P3MChartFragment());
+//        }
     }
 
     private class setAdapterTask extends AsyncTask<Void, Void, Void> {

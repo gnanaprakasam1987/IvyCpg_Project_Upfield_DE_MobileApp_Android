@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
@@ -387,7 +388,7 @@ public class DashBoardHelper {
         return wholeNumber;
     }
 
-    public void loadRetailerDashBoard(String retailerID) {
+    public void loadRetailerDashBoard(String retailerID , String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -404,7 +405,7 @@ public class DashBoardHelper {
                     + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
                     + " LEFT join RetailerKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
-                    + " where retailerid =" + retailerID + " and interval= 'MONTH' "
+                    + " where retailerid =" + retailerID + " and interval= '"+ interval +"' "
                     + " AND "
                     + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " between RK.fromdate and RK.todate group by SLM.Listid order by DisplaySeq asc";
@@ -911,7 +912,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             getDashChartDataList().clear();
-            mParamAchieved = 0;
+            //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,ifnull(SKD.Achievement,0),"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
@@ -961,11 +962,11 @@ public class DashBoardHelper {
                     int value = Integer.parseInt(c.getString(11));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
-                    if (!c.getString(10).equals("INV")) {
-                        getDashChartDataList().add(sbo);
-                    } else {
-                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
-                    }
+//                    if (!c.getString(10).equals("INV")) {
+                    getDashChartDataList().add(sbo);
+//                    } else {
+//                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
+//                    }
                 }
                 c.close();
             }
@@ -985,7 +986,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             getDashChartDataList().clear();
-            mParamAchieved = 0;
+            //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,SKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
@@ -1030,11 +1031,11 @@ public class DashBoardHelper {
                     int value = Integer.parseInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
-                    if (!c.getString(9).equals("INV")) {
-                        getDashChartDataList().add(sbo);
-                    } else {
-                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
-                    }
+//                    if (!c.getString(9).equals("INV")) {
+                    getDashChartDataList().add(sbo);
+//                    } else {
+//                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
+//                    }
                 }
                 c.close();
             }
@@ -2839,5 +2840,225 @@ public class DashBoardHelper {
 
     public void setDashboardBO(DashBoardBO dashboardBO) {
         this.dashboardBO = dashboardBO;
+    }
+
+    public void downloadLorealSkuDetails(int kpiID, int kpiTypeLovID, String interval) {
+
+
+        SKUWiseTargetBO temp;
+        ArrayList<LevelBO> levelList = new ArrayList<>();
+        try {
+
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select distinct (Sksd.levelid),pl.sequence from SellerKPISKUDetail sksd" +
+                    " inner join Productlevel pl on pl.levelid =sksd.levelid where kpiid=" + kpiID;
+
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        mSellerKpiMaxLevel = c.getInt(0);
+                        mSellerKpiMaxSeqLevel = c.getInt(1);
+                    }
+                }
+                c.close();
+            }
+
+
+            sql = "select distinct (levelid),sequence from Productlevel where parentid=0";
+            c = db.selectSQL(sql);
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        mSellerKpiMinLevel = c.getInt(0);
+                        mSellerKpiMinSeqLevel = c.getInt(1);
+                    }
+                }
+                c.close();
+            }
+
+            sql = "select distinct (Sksd.levelid),pl.sequence from SellerKPISKUDetail sksd" +
+                    " inner join Productlevel pl on pl.levelid =sksd.levelid where kpiid=" + kpiID;
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        LevelBO levelBO = new LevelBO();
+                        levelBO.setProductID(c.getInt(0));
+                        levelBO.setSequence(c.getInt(1));
+                        levelList.add(levelBO);
+                    }
+                }
+                c.close();
+            }
+            sellerKpiSku = new Vector<>();
+            for (int i = 0; i < levelList.size(); i++) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("SELECT P.PID, P.pname, P.psname, P.pcode, P.parentId,p.plid ,IFNULL(SKSD .kpiid,0), IFNULL(SKSD .Target,0)");
+                sb.append(", IFNULL(SKSD .Achievement,0), ROUND(CASE WHEN (100-((SKSD .Achievement*100)/((SKSD ");
+                sb.append(".Target)*1.0))) < 0 THEN 100 ELSE ((SKSD .Achievement*100)/((SKSD .Target)*1.0)) END ,2) AS acheived,SKSD.LevelId  from ProductMaster p");
+                sb.append(" INNER JOIN SellerKPISKUDetail SKSD ON SKSD .pid = p.pid and SKSD.kpiid=");
+                sb.append(kpiID);
+                sb.append(" and SKSD.KPIParamLovId=");
+                sb.append(kpiTypeLovID);
+                sb.append(" and SKSD.LevelId=");
+                sb.append(levelList.get(i).getProductID());
+
+                c = db.selectSQL(sb.toString());
+
+                if (c != null) {
+
+                    while (c.moveToNext()) {
+                        temp = new SKUWiseTargetBO();
+                        temp.setPid(c.getInt(0));
+                        temp.setProductName(c.getString(1));
+                        temp.setProductShortName(c.getString(2));
+                        temp.setProductCode(c.getString(3));
+
+                        if (i == 0)
+                            temp.setParentID(c.getInt(4));
+                        else
+                            temp.setParentID(getParentId(levelList.get(i).getProductID(), levelList.get(i - 1).getProductID(), c.getInt(4)));
+
+                        temp.setLevelID(c.getInt(5));
+                        temp.setKpiID(c.getInt(6));
+                        temp.setTarget(c.getInt(7));
+                        temp.setAchieved(c.getInt(8));
+                        temp.setCalculatedPercentage(c.getFloat(9));
+                        temp.setSequence(i + 1);
+                        if (temp.getCalculatedPercentage() >= 100) {
+                            temp.setConvTargetPercentage(0);
+                            temp.setConvAcheivedPercentage(100);
+                        } else {
+                            temp.setConvTargetPercentage(100 - temp
+                                    .getCalculatedPercentage());
+                            temp.setConvAcheivedPercentage(temp
+                                    .getCalculatedPercentage());
+                        }
+
+                        sellerKpiSku.add(temp);
+                    }
+                    c.close();
+                }
+                if (interval.equals("DAY")) {
+                    calculateLorealDayAcheivement(levelList.size());
+                }
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private int getParentId(int contentLevel, int parentLevel, int parentID) {
+        int parentId = 0;
+        int tempParentId = parentID;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        int loopEnd = contentLevel - parentLevel;
+        for (int i = 2; i <= loopEnd; i++) {
+            String query = "SELECT DISTINCT PM1.ParentId FROM ProductMaster PM1 WHERE PM1.PID = " + tempParentId;
+            Cursor c = db.selectSQL(query);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    tempParentId = c.getInt(0);
+                }
+            }
+        }
+        parentId = tempParentId;
+        return parentId;
+    }
+
+    public void calculateLorealDayAcheivement(int size) {
+        int maxLevel = 0, minLevel = 0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder();
+        sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
+        sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in (select distinct(pid) from CS_CustomerSaleDetails)");
+
+        Cursor c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    maxLevel = c.getInt(1);
+                }
+            }
+            c.close();
+        }
+
+
+        String sql = "select distinct (levelid),sequence from Productlevel where parentid=0";
+        c = db.selectSQL(sql);
+        if (c != null) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    minLevel = c.getInt(1);
+                }
+            }
+            c.close();
+        }
+
+
+        int loopEnd = maxLevel - minLevel + 1;
+
+        for (int j = 0; j < size; j++) {
+            int temploopEnd = loopEnd - j;
+            sb = new StringBuilder();
+            sb.append(" SELECT PM");
+            sb.append(temploopEnd);
+            sb.append(".PId, SUM (value) FROM CS_CustomerSaleDetails OD");
+            sb.append(" INNER JOIN ProductMaster PM1 ON PM1.PId = OD.PId");
+
+            for (int i = 2; i <= temploopEnd; i++) {
+                sb.append(" INNER JOIN ProductMaster PM");
+                sb.append(i);
+                sb.append(" ON PM");
+                sb.append(i);
+                sb.append(".PId = PM");
+                sb.append((i - 1));
+                sb.append(".ParentId");
+
+            }
+            sb.append(" GROUP BY PM");
+            sb.append(temploopEnd);
+            sb.append(".PId");
+
+            c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    for (SKUWiseTargetBO sBO : sellerKpiSku) {
+                        if (c.getInt(0) == sBO.getPid()) {
+                            sBO.setAchieved(c.getInt(1));
+                            sBO.setCalculatedPercentage(Float.parseFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
+                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP)));
+                            if (sBO.getCalculatedPercentage() >= 100) {
+                                sBO.setConvTargetPercentage(0);
+                                sBO.setConvAcheivedPercentage(100);
+                            } else {
+                                sBO.setConvTargetPercentage(100 - sBO
+                                        .getCalculatedPercentage());
+                                sBO.setConvAcheivedPercentage(sBO
+                                        .getCalculatedPercentage());
+                            }
+                        }
+
+                    }
+
+
+                }
+                c.close();
+            }
+
+        }
     }
 }

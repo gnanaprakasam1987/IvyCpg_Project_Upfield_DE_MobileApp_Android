@@ -2275,7 +2275,7 @@ public class ReportHelper {
     public void downloadWebViewPlanAuthUrl() {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-
+            webViewAuthUrl = "";
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_PLAN'");
@@ -2287,14 +2287,7 @@ public class ReportHelper {
             }
 
             if (!"".equals(webViewAuthUrl)) {
-                Cursor c1 = db
-                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = 'WEBVIEW_PLAN'");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        webViewAuthUrl += c1.getString(0);
-                    }
-                    c1.close();
-                }
+                webViewAuthUrl+="/UserAuthentication/GetDeviceToken";
             }
             db.closeDB();
 
@@ -2318,6 +2311,7 @@ public class ReportHelper {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
+            webViewPlanUrl = "";
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_PLAN'");
             if (c != null) {
@@ -2776,7 +2770,7 @@ public class ReportHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
 
             db.openDataBase();
-
+            webViewAuthUrl = "";
             Cursor c1 = db
                     .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = 'WEB_VIEW'");
             if (c1 != null) {
@@ -2797,7 +2791,7 @@ public class ReportHelper {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-
+            webViewPlanUrl = "";
             Cursor c1 = db
                     .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_PLAN' AND ListType = 'WEB_VIEW'");
             if (c1 != null) {

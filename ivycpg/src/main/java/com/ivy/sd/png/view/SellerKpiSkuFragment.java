@@ -59,6 +59,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
     private Button previous;
     private TextView textview[] = null;
     private int curSeq = 0;
+    private int mSelectedProductId = 0;
     ViewPager vpPager;
     CircleIndicator indicator;
     MyPagerAdapter adapterViewPager;
@@ -136,8 +137,14 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         for (int i = 0; i < siz; ++i) {
 
             SKUWiseTargetBO ret = mylist.get(i);
-            if (ret.getSequence() == bid) {
-                temp.add(ret);
+            if (bid != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && !bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
+                if (ret.getSequence() == bid && ret.getPid() == mSelectedProductId) {
+                    temp.add(ret);
+                }
+            } else {
+                if (ret.getSequence() == bid) {
+                    temp.add(ret);
+                }
             }
         }
 
@@ -235,6 +242,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             SKUWiseTargetBO product = items.get(position);
 
             holder.productbo = product;
+            mSelectedProductId = holder.productbo.getParentID();
 
             //typefaces
             holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));

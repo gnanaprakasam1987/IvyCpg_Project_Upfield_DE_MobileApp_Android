@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/chkall"
+        android:icon="@drawable/chkall_unchecked"
+        android:orderInCategory="100"
+        android:title="CheckAll"
+        android:checkable="true"
+        android:checked="false"
+        ivydist:showAsAction="always" />
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="101"
+        android:title="Next"
+        ivydist:showAsAction="always" />
+</menu>
