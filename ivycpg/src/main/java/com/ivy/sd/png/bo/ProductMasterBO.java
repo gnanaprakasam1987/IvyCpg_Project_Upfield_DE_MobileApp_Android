@@ -1723,4 +1723,14 @@ public class ProductMasterBO {
     public void setSchemeDiscount(boolean schemeDiscount) {
         isSchemeDiscount = schemeDiscount;
     }
+
+    boolean isAvailableinWareHouse;
+
+    public boolean isAvailableinWareHouse() {
+        return isAvailableinWareHouse;
+    }
+
+    public void setAvailableinWareHouse(boolean availableinWareHouse) {
+        isAvailableinWareHouse = availableinWareHouse;
+    }
 }
