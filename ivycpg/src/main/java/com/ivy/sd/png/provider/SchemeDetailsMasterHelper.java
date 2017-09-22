@@ -322,7 +322,7 @@ public class SchemeDetailsMasterHelper {
         sb.append("SELECT distinct SM.SchemeID, SM.Description, SM.Type, SM.ShortName, BD.ProductID, ");
         sb.append("PM.Psname, PM.PName, BD.BuyQty,SM.parentid,SM.count,PM.pCode,SM.buyType,BD.GroupName,BD.GroupType,");
         sb.append("SM.IsCombination,BD.uomid,UM.ListName,SAC.SchemeApplyCount,BD.ToBuyQty,SM.IsBatch,BD.Batchid,PT.ListCode,SM.IsOnInvoice,");
-        sb.append(" Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType");
+        sb.append(" Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType, SM.IsAutoApply");
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID ");
         sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
         sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ") ");
@@ -368,6 +368,7 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setGroupName(c.getString(12));
                     schemeBO.setGroupType(c.getString(13));
                     schemeBO.setIsCombination(c.getInt(14));
+                    schemeBO.setIsAutoApply(c.getInt(c.getColumnIndex("IsAutoApply")));
 
                     if (c.getString(21) != null)
                         schemeBO.setProcessType(c.getString(21));
@@ -1785,8 +1786,8 @@ public class SchemeDetailsMasterHelper {
         if (tempCount > 0) {
             return tempCount;
         } else {
-			/*
-			 * Now we are apply range wise scheme.so maximum buy qty only using
+            /*
+             * Now we are apply range wise scheme.so maximum buy qty only using
 			 * for computation to how many times scheme achived. but minimum buy
 			 * qty used to apply scheme or not.
 			 */
@@ -1908,7 +1909,7 @@ public class SchemeDetailsMasterHelper {
                             }
                         }
                     }
-					/* scheme accumulation ends */
+                    /* scheme accumulation ends */
 
                     if (quantity > 0) {
                         double balanceValue = 0;
@@ -2643,6 +2644,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public boolean isFromCounterSale;
+
     /**
      * @param orderID - mapping to orderID
      * @author rajesh.k
@@ -4472,17 +4474,17 @@ public class SchemeDetailsMasterHelper {
         ArrayList<String> groupNameList = null;
         ArrayList<String> previousGroupNameList = null;
         ArrayList<String> schemeIdList = mSchemeIDListByParentID.get(parentId);
-        for (String schemeid : schemeIdList) {
+        if (schemeIdList != null) {
+            for (String schemeid : schemeIdList) {
 
-            groupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
-            if (previousGroupNameList != null) {
-                if (!previousGroupNameList.equals(groupNameList)) {
-                    return false;
+                groupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
+                if (previousGroupNameList != null) {
+                    if (!previousGroupNameList.equals(groupNameList)) {
+                        return false;
+                    }
                 }
+                previousGroupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
             }
-            previousGroupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
-
-
         }
 
         return true;

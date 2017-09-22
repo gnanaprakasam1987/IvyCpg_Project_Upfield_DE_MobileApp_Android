@@ -238,7 +238,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             CS_sale_summary.class);
                     i.putExtra("refid", getIntent().getStringExtra("refid"));
                     i.putExtra("isFromSale", true);
-                    i.putExtra("finalValue", getIntent().getDoubleExtra("finalValue",0));
+                    i.putExtra("finalValue", getIntent().getDoubleExtra("finalValue", 0));
                     startActivity(i);
                 } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
                     Intent init = new Intent(SchemeApply.this,
@@ -1044,6 +1044,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.quantityCB.setEnabled(true);
                 }
 
+                if (holder.schemeBO.getIsAutoApply() == 1) {
+                    holder.quantityCB.setChecked(true);
+                    holder.quantityCB.setEnabled(false);
+                }
 
                 holder.showFreeBTN.setEnabled(true);
 
@@ -1079,6 +1083,12 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 } else {
                     holder.priceCB.setEnabled(true);
                 }
+
+                if (holder.schemeBO.getIsAutoApply() == 1) {
+                    holder.priceCB.setChecked(true);
+                    holder.priceCB.setEnabled(false);
+                }
+
                 holder.priceET.setEnabled(true);
                 holder.priceET.setClickable(true);
 
@@ -1115,6 +1125,12 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 } else {
                     holder.amountCB.setEnabled(true);
                 }
+
+                if (holder.schemeBO.getIsAutoApply() == 1) {
+                    holder.amountCB.setChecked(true);
+                    holder.amountCB.setEnabled(false);
+                }
+
                 holder.amountET.setEnabled(true);
                 holder.amountET.setClickable(true);
 
@@ -1150,6 +1166,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.percentCB.setEnabled(false);
                 } else {
                     holder.percentCB.setEnabled(true);
+                }
+
+                if (holder.schemeBO.getIsAutoApply() == 1) {
+                    holder.percentCB.setChecked(true);
+                    holder.percentCB.setEnabled(false);
                 }
                 holder.percentET.setEnabled(true);
                 holder.percentET.setClickable(true);
