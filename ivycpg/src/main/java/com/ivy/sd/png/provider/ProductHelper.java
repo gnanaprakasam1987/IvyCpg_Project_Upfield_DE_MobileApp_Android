@@ -2598,7 +2598,13 @@ public class ProductHelper {
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
             }
+
+            //clear delivered qty
+            product.setDeliveredCaseQty(0);
+            product.setDeliveredOuterQty(0);
+            product.setDeliveredPcsQty(0);
         }
+
 
     }
 

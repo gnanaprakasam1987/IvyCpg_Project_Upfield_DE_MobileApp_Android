@@ -119,6 +119,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     public static final String MENU_COMPETITOR = "MENU_COMPETITOR";
     public static final String MENU_PROMO = "MENU_PROMO";
     public static final String MENU_SOS_PROJ = "MENU_SOS_PROJ";
+    public static final String MENU_DELIVERY_ORDER = "MENU_DELIVERY_ORDER";
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";
@@ -1298,6 +1299,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                 || bmodel.getRetailerMasterBO()
                                 .getIsOrderMerch().equals("Y") || bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode()
+                        .equals(MENU_DELIVERY_ORDER)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                        //
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
@@ -3173,6 +3185,49 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         SDUtil.now(SDUtil.DATE_GLOBAL),
                         SDUtil.now(SDUtil.TIME), menu.getConfigCode());
                 startActivity(i);
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
+
+        }else if (menu.getConfigCode().equals(MENU_DELIVERY_ORDER) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+
+                if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                        .getRetailerID())) {
+
+                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                            .getRetailerID(), null);
+                    enableSchemeModule();
+
+                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                    Intent i = new Intent(this,
+                            DeliveryOrderActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("screentitle", menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                }
+                else{
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.no_orders_available),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
+
+
             } else {
                 Toast.makeText(
                         this,

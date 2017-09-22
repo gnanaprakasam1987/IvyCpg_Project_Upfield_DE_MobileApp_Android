@@ -3023,6 +3023,7 @@ public class SchemeDetailsMasterHelper {
 
             sb.append(" and sid=" + bmodel.getRetailerMasterBO().getDistributorId());
 
+            sb.append(" and orderid not in(select orderid from OrderDeliveryDetails)");// to prevent delivered orders
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
