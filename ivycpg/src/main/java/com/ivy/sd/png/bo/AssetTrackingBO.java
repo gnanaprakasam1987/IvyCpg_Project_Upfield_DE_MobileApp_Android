@@ -15,14 +15,14 @@ public class AssetTrackingBO {
     private String mposm;
     private String mbrand;
     private String mnewinstaldate;
-    private String msno;
+    private String msno,mreasonId,mremarks;
     private String mposmname;
     private String mflag;
     private String msbdid;
     private String groupLevelName;
     private String mNFCTagId;
     private int groupLevelId;
-    private int availQty;
+    private int availQty,scanComplete=0;
     private String imageName = "";
     private String AssetName;
     private String SerialNo = "0";
@@ -39,6 +39,7 @@ public class AssetTrackingBO {
         this.AssetName = assetTrackingBO.getAssetName();
         this.audit = assetTrackingBO.getAudit();
         this.availQty = assetTrackingBO.getAvailQty();
+        this.scanComplete=assetTrackingBO.getscanComplete();
         this.competitorQty = assetTrackingBO.getCompetitorQty();
         this.conditionID = assetTrackingBO.getConditionID();
         this.imageName = assetTrackingBO.getImageName();
@@ -164,7 +165,20 @@ public class AssetTrackingBO {
     public void setMsno(String msno) {
         this.msno = msno;
     }
+    public String getMreasonId() {
+        return mreasonId;
+    }
 
+    public void setMreasonId(String mreasonId) {
+        this.mreasonId = mreasonId;
+    }
+    public String getMremarks() {
+        return mremarks;
+    }
+
+    public void setMremarks(String mremarks) {
+        this.mremarks = mremarks;
+    }
     public String getMinstalldate() {
         return minstalldate;
     }
@@ -244,7 +258,13 @@ public class AssetTrackingBO {
     public void setAvailQty(int availQty) {
         this.availQty = availQty;
     }
+    public int getscanComplete() {
+        return scanComplete;
+    }
 
+    public void setscanComplete(int scanComplete) {
+        this.scanComplete = scanComplete;
+    }
     public String getImageName() {
         return imageName;
     }

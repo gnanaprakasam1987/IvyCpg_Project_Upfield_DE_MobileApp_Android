@@ -30,6 +30,10 @@ public class AssetTrackingHelper {
      * This ArrayList contains downloaded assettracking records
      */
     private ArrayList<AssetTrackingBO> mAssetTrackingList = new ArrayList<>();
+    /**
+     * This ArrayList contains downloaded All assettracking records
+     */
+    private ArrayList<AssetTrackingBO> mAllAssetTrackingList = new ArrayList<>();
 
     /**
      * Key - AssetID, return AssetTrackingBO
@@ -389,6 +393,7 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
         mAssetTrackingList = new ArrayList<>();
+        mAllAssetTrackingList=new ArrayList<>();
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
@@ -405,7 +410,7 @@ public class AssetTrackingHelper {
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(bmodel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
-
+            String allMasterSb=sb.toString();
             if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
@@ -431,10 +436,13 @@ public class AssetTrackingHelper {
                 sb.append(" OR channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + ")");
             }
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                 sb.append("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+                allMasterSb=allMasterSb+ ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+            }
 
             Cursor c = db.selectSQL(sb.toString());
+            Cursor c1 = db.selectSQL(allMasterSb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     assetTrackingBO = new AssetTrackingBO();
@@ -462,19 +470,76 @@ public class AssetTrackingHelper {
 
                 }
 
-                if (mAssetTrackingList != null) {
-                    for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-
-                        ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
-                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            clonedList.add(new AssetTrackingBO(assetBO));
-                        }
-                        standardListBO.setAssetTrackingList(clonedList);
+//                if (mAssetTrackingList != null) {
+//                    for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+//
+//                        ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
+//                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
+//                            clonedList.add(new AssetTrackingBO(assetBO));
+//                        }
+//                        standardListBO.setAssetTrackingList(clonedList);
+//                    }
+//
+//
+//                }
+            }
+            if (mAssetTrackingList != null) {
+                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                    ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        clonedList.add(new AssetTrackingBO(assetBO));
                     }
+                    standardListBO.setAssetTrackingList(clonedList);
+                }
 
-
+            }else{
+                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                    standardListBO.getAssetTrackingList().clear();
                 }
             }
+            if (c1.getCount() > 0) {
+                while (c1.moveToNext()) {
+                    assetTrackingBO = new AssetTrackingBO();
+                    assetTrackingBO.setAssetID(c1.getInt(0));
+                    assetTrackingBO.setAssetName(c1.getString(1));
+                    if (c1.getString(2) != null && !"null".equals(c1.getString(2))) {
+                        assetTrackingBO.setSerialNo(c1.getString(2));
+                    } else {
+                        assetTrackingBO.setSerialNo(Integer.toString(0));
+                    }
+
+                    assetTrackingBO.setTarget(c1.getInt(3));
+                    assetTrackingBO.setProductid(c1.getInt(4));
+                    if (c1.getString(5) != null && !"null".equals(c1.getString(5))) {
+                        assetTrackingBO.setGroupLevelName(c1.getString(5));
+                        assetTrackingBO.setGroupLevelId(c1.getInt(6));
+                    } else {
+                        assetTrackingBO.setGroupLevelName("");
+                        assetTrackingBO.setGroupLevelId(0);
+                    }
+
+                    assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NfcTagId")));
+
+                    mAllAssetTrackingList.add(assetTrackingBO);
+
+                }
+
+            }
+            if (mAllAssetTrackingList != null) {
+                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                    ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAllAssetTrackingList.size());
+                    for (AssetTrackingBO assetBO : mAllAssetTrackingList) {
+                        clonedList.add(new AssetTrackingBO(assetBO));
+                    }
+                    standardListBO.setAllAssetTrackingList(clonedList);
+                }
+
+            }else{
+                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                    standardListBO.getAssetTrackingList().clear();
+                }
+            }
+
             c.close();
             db.closeDB();
         } catch (Exception e) {
@@ -1020,7 +1085,7 @@ public class AssetTrackingHelper {
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
             AssetTrackingBO assets = getMassetTrackingBO();
-            String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId";
+            String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId,reasonid,remarks";
 
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
@@ -1028,7 +1093,8 @@ public class AssetTrackingHelper {
                     + QT(DateUtil.convertToServerDateFormat(
                     assets.getMnewinstaldate(),
                     ConfigurationMasterHelper.outDateFormat))
-                    + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId;
+                    + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId +","+
+                     QT(assets.getMreasonId())+","+ QT(assets.getMremarks());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
