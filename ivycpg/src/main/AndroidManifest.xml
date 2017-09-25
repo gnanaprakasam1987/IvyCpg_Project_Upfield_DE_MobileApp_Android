@@ -769,6 +769,9 @@
         <activity android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/>
 
     </application>
 

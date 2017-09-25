@@ -138,6 +138,8 @@ SynchronizationHelper {
     public boolean isLastVisitTranDownloadDone;
     public boolean isSihDownloadDone;
 
+    public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
+
     public enum FROM_SCREEN {
         LOGIN(0),
         SYNC(1),
@@ -165,7 +167,8 @@ SynchronizationHelper {
         DISTRIBUTOR_DOWNLOAD(1),
         LAST_VISIT_TRAN_DOWNLOAD(2),
         SIH_DOWNLOAD(3),
-        DIGITAL_CONTENT_AVALILABLE(4), DEFAULT(5);
+        DIGITAL_CONTENT_AVALILABLE(4), DEFAULT(5),
+        NON_DISTRIBUTOR_DOWNLOAD(6);
         private int value;
 
         NEXT_METHOD(int value) {
@@ -1944,7 +1947,7 @@ SynchronizationHelper {
             if (!isCommonTableDownload)
                 sb.append(" and typecode='SYNMAS' and IsOnDemand=1");
             else
-                sb.append(" and (typecode='SYNMAS' OR typecode ='SYNCCONST') ");
+                sb.append(" and ((typecode='SYNMAS' and IsOnDemand=0) OR typecode ='SYNCCONST') ");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1972,6 +1975,32 @@ SynchronizationHelper {
             db.openDataBase();
             String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'" +
                     " and IsOnDemand=1";
+
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mDownloadUrlList.add(c.getString(0));
+                    mMandatoryByUrl.put(DataMembers.SERVER_URL + c.getString(0), c.getInt(1));
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void downloadTransactionUrl() {
+        mDownloadUrlList = new ArrayList<>();
+        mMandatoryByUrl = new HashMap<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'" ;
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -4462,6 +4491,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
+        }else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+            return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
             if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() <= 0) {

@@ -19,6 +19,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.pdf.PdfDocument;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -3243,7 +3244,7 @@ public class BusinessModel extends Application {
                         + retailerMasterBO.getIsVansales());
             }
 
-            sb.append(" and OH.orderid not in(select orderid from OrderDeliveryDetails)");
+            sb.append(" and OH.orderid not in(select orderid from OrderDeliveryDetail)");
 
 
             Cursor orderHeaderCursor = db.selectSQL(sb.toString());
@@ -3479,7 +3480,7 @@ public class BusinessModel extends Application {
 
             sb.append(" and sid=" + retailerMasterBO.getDistributorId());
 
-            sb.append(" and OD.orderid not in(select orderid from OrderDeliveryDetails)");
+            sb.append(" and OD.orderid not in(select orderid from OrderDeliveryDetail)");
 
             // Order Header
             /*
@@ -6577,7 +6578,7 @@ public class BusinessModel extends Application {
                 if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     sb.append(" and is_vansales=" + isVansales);
                 }
-                sb.append(" and orderid not in(select orderid from OrderDeliveryDetails)");
+                sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");
 
                 Cursor orderDetailCursor = db.selectSQL(sb.toString());
                 if (orderDetailCursor.getCount() > 0) {
@@ -10963,7 +10964,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String columns="orderid,productid,uomid,qty";
+            String columns="orderid,productid,qty,uomid,uomcount,price,taxprice,linevalue,upload";
 
             int siz = productHelper.getProductMaster().size();
             ProductMasterBO product;
@@ -10978,21 +10979,25 @@ public class BusinessModel extends Application {
                             || product.getDeliveredPcsQty() > 0
                             || product.getDeliveredOuterQty() > 0) {
 
-                        values=QT(getOrderid())+","+product.getProductID();
-
                         if(product.getDeliveredCaseQty()>0){
-                            values+=","+product.getDeliveredCaseQty()+","+product.getCaseUomId();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredCaseQty()+","+product.getCaseUomId()+","+product.getCaseSize()
+                                    +","+product.getCsrp()+","+product.getCsrp()+","+(product.getCsrp()*product.getDeliveredCaseQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
                         if(product.getDeliveredPcsQty()>0){
-                            values+=","+product.getDeliveredPcsQty()+","+product.getPcUomid();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredPcsQty()+","+product.getPcUomid()+",1"
+                                    + ","+product.getSrp()+","+product.getSrp()+","+(product.getSrp()*product.getDeliveredPcsQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
                         if(product.getDeliveredOuterQty()>0){
-                            values+=","+product.getDeliveredOuterQty()+","+product.getOuUomid();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredOuterQty()+","+product.getOuUomid()+","+product.getOutersize()
+                                    +","+product.getOsrp()+","+product.getOsrp()+","+(product.getOsrp()*product.getDeliveredOuterQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
 
@@ -11035,21 +11040,25 @@ public class BusinessModel extends Application {
                             || product.getOrderedPcsQty() > 0
                             || product.getOrderedOuterQty() > 0) {
 
-                        values=getOrderid()+","+product.getProductID();
-
                         if(product.getOrderedCaseQty()>0){
-                            values+=","+product.getOrderedCaseQty()+","+product.getCaseUomId();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedCaseQty()+","+product.getCaseUomId()+","+product.getCaseSize()
+                                    +","+product.getCsrp()+","+product.getCsrp()+","+(product.getCsrp()*product.getOrderedCaseQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
                         if(product.getOrderedPcsQty()>0){
-                            values+=","+product.getOrderedPcsQty()+","+product.getPcUomid();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedPcsQty()+","+product.getPcUomid()+",1"
+                                    + ","+product.getSrp()+","+product.getSrp()+","+(product.getSrp()*product.getOrderedPcsQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
                         if(product.getOrderedOuterQty()>0){
-                            values+=","+product.getOrderedOuterQty()+","+product.getOuUomid();
-                            db.insertSQL("OrderDeliveryDetails",
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedOuterQty()+","+product.getOuUomid()+","+product.getOutersize()
+                                    +","+product.getOsrp()+","+product.getOsrp()+","+(product.getOsrp()*product.getOrderedOuterQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
                                     columns, values);
                         }
 
@@ -11069,15 +11078,34 @@ public class BusinessModel extends Application {
 
                         for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
 
-                            values = getOrderid() + "," + schemeProductBO.getProductId();
+                            ProductMasterBO productMasterBO=productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
-                            values += "," + schemeProductBO.getQuantitySelected() + "," + schemeProductBO.getUomID();
-                            db.insertSQL("OrderDeliveryDetails",
-                                    columns, values);
+
+                            if(schemeProductBO.getUomID()==productMasterBO.getPcUomid()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getPcUomid()+",1"
+                                        + ","+productMasterBO.getSrp()+","+productMasterBO.getSrp()+","+(productMasterBO.getSrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+                            if(schemeProductBO.getUomID()==productMasterBO.getCaseUomId()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getCaseUomId()+","+productMasterBO.getCaseSize()
+                                        + ","+productMasterBO.getCsrp()+","+productMasterBO.getCsrp()+","+(productMasterBO.getCsrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+                            if(schemeProductBO.getUomID()==productMasterBO.getOuUomid()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getOuUomid()+","+productMasterBO.getOutersize()
+                                        + ","+productMasterBO.getOsrp()+","+productMasterBO.getOsrp()+","+(productMasterBO.getOsrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+
 
 
                             //Update the SIH
-                            ProductMasterBO productMasterBO=productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
                             int totalqty=0;
                             if(schemeProductBO.getUomID()==productMasterBO.getPcUomid()){

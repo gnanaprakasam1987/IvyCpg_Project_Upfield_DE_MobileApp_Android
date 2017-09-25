@@ -1163,6 +1163,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     isClicked = false;
                 }
 
+            case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    new InitiateDistributorDownload().execute();
+                }
+                else{
+
+                }
         }
     }
 
@@ -2174,7 +2181,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPreExecute() {
             super.onPreExecute();
             try {
-                bmodel.distributorMasterHelper.downloadDistributorsList();
+               // bmodel.distributorMasterHelper.downloadDistributorsList();
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
@@ -2210,10 +2217,22 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+                downloadOnDemandMasterUrl(true);
             }
         }
+    }
+
+    private void downloadOnDemandMasterUrl(boolean isDistributorWise){
+
+        if(isDistributorWise) {
+            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+        }
+        else{
+            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        }
+
     }
 
     /**
@@ -2360,8 +2379,16 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
      */
     private void callNextSyncMethod(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            new InitiateDistributorDownload().execute();
-        } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
+            if(alertDialog!=null) {
+                alertDialog.dismiss();
+            }
+            //new InitiateDistributorDownload().execute();
+            bmodel.distributorMasterHelper.downloadDistributorsList();
+            Intent intent=new Intent(getActivity(),DistributorSelectionActivity.class);
+            startActivityForResult(intent,SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
+            downloadOnDemandMasterUrl(false);
+        }else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
             new SihDownloadTask().execute();
         } else {
             new LoadData().execute();
@@ -2433,4 +2460,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 //
 //        }
 //    }
+
+
 }
