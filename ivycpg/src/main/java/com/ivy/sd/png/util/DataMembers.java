@@ -228,7 +228,7 @@ public class DataMembers {
     public static final String tbl_retailerMaster = "RetailerMaster";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
-    private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId";
+    private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks";
 
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";

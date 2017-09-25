@@ -1751,4 +1751,14 @@ public class ProductMasterBO {
     public void setDeliveredOuterQty(int deliveredOuterQty) {
         this.deliveredOuterQty = deliveredOuterQty;
     }
+
+    boolean isAvailableinWareHouse;
+
+    public boolean isAvailableinWareHouse() {
+        return isAvailableinWareHouse;
+    }
+
+    public void setAvailableinWareHouse(boolean availableinWareHouse) {
+        isAvailableinWareHouse = availableinWareHouse;
+    }
 }
