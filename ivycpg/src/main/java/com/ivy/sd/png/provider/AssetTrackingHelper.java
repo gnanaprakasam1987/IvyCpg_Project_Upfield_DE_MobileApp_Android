@@ -412,23 +412,29 @@ public class AssetTrackingHelper {
                 sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 4) {
                 // Location mapping
-                sb.append(" and Locid=");
-                sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
+                sb.append(" and Locid in (");
+                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(")");
 
 
             } else if (level == 5) {
                 // Channel Mapping
-                sb.append(" and (Channelid=");
-                sb.append(bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid()));
-                sb.append(" OR channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + ")");
+                sb.append(" and (Channelid =");
+                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(" OR Channelid in (");
+                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append("))");
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
-                sb.append(" and Locid=");
+                sb.append(" and Locid in(");
                 sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
-                sb.append(" and (Channelid=");
-                sb.append(bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid()));
-                sb.append(" OR channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + ")");
+                sb.append(")");
+                sb.append(" and (Channelid =");
+                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(" OR Channelid in (");
+                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append("))");
             }
 
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -835,22 +841,29 @@ public class AssetTrackingHelper {
                 sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 4) {
                 // Location mapping
-                sb.append(" and Locid=");
-                sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
+                sb.append(" and Locid in(");
+                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(")");
 
 
             } else if (level == 5) {
                 // Channel Mapping
-                sb.append(" and Channelid=");
-                sb.append(bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(" and (Channelid =");
+                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(" OR Channelid in (");
+                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append("))");
 
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
-                sb.append(" and Locid=");
-                sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
-                sb.append(" and Channelid=");
-                sb.append(bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(" and Locid in(");
+                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(" and (Channelid =");
+                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(" OR Channelid in (");
+                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append("))");
             }
 
 
