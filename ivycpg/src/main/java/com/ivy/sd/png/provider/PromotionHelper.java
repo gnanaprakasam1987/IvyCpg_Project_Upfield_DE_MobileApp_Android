@@ -423,10 +423,10 @@ public class PromotionHelper {
                 query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
 
             else if (locid > 0 && chid > 0) {
-                query = " where PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ")";
+                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
                 query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
             } else if (locid > 0)
-                query = " where PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ")";
+                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
             else if (chid > 0)
                 query = " where  (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
 

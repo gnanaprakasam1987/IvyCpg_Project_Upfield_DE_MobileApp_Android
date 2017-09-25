@@ -29,6 +29,7 @@ import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.multidex.MultiDex;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -4521,6 +4522,8 @@ public class BusinessModel extends Application {
 //                        frm.finish();
                         //  BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
                     }
+                    HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                    currentFragment.refreshList(false);
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
                     Intent intent = new Intent();

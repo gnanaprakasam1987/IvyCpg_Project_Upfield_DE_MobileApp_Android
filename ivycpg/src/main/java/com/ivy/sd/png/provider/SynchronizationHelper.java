@@ -52,7 +52,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -4502,7 +4501,8 @@ SynchronizationHelper {
 
     private String getLastTransactedDate() {
         DBUtil db = null;
-        String date = "";
+        String date = Utils.getDate("yyyy/MM/dd") + " 23:59:00";
+        ;
         ArrayList<String> dateList = new ArrayList<String>();
         try {
 

@@ -2289,7 +2289,7 @@ public class ConfigurationMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
+            String sql = "select distinct hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_HOME)
@@ -4376,7 +4376,7 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public enum FontType {
+    public static enum FontType {
         LIGHT, REGULAR, MEDIUM, BOLD, THIN
     }
 
