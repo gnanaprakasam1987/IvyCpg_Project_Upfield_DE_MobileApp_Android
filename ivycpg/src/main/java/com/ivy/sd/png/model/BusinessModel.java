@@ -19,6 +19,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.pdf.PdfDocument;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -2685,7 +2686,7 @@ public class BusinessModel extends Application {
      * <p>
      * Saving Invoice will also update the SIH in ProductMaster.
      */
-    void saveNewInvoice() {
+    public void saveNewInvoice() {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
         salesReturnHelper.getSalesReturnGoods();
@@ -3243,6 +3244,9 @@ public class BusinessModel extends Application {
                         + retailerMasterBO.getIsVansales());
             }
 
+            sb.append(" and OH.orderid not in(select orderid from OrderDeliveryDetail)");
+
+
             Cursor orderHeaderCursor = db.selectSQL(sb.toString());
 
             if (orderHeaderCursor.getCount() > 0) {
@@ -3476,6 +3480,7 @@ public class BusinessModel extends Application {
 
             sb.append(" and sid=" + retailerMasterBO.getDistributorId());
 
+            sb.append(" and OD.orderid not in(select orderid from OrderDeliveryDetail)");
 
             // Order Header
             /*
@@ -3491,6 +3496,9 @@ public class BusinessModel extends Application {
             if (orderHeaderCursor != null) {
                 if (orderHeaderCursor.moveToNext()) {
                     orderID = orderHeaderCursor.getString(0);
+
+                    setOrderid(orderID);//used for delivery order
+
                     getOrderHeaderBO().setPO(orderHeaderCursor.getString(1));
                     getOrderHeaderBO()
                             .setRemark(orderHeaderCursor.getString(2));
@@ -6570,6 +6578,7 @@ public class BusinessModel extends Application {
                 if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     sb.append(" and is_vansales=" + isVansales);
                 }
+                sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");
 
                 Cursor orderDetailCursor = db.selectSQL(sb.toString());
                 if (orderDetailCursor.getCount() > 0) {
@@ -10724,6 +10733,425 @@ public class BusinessModel extends Application {
             return false;
         else
             return true;
+    }
+
+    public void saveDeliveryOrderInvoice(){
+        try {
+
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+
+            String invid = userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated();
+            double discountPercentage = collectionHelper.getSlabwiseDiscountpercentage();
+
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+            salesReturnHelper.getSalesReturnGoods();
+
+            ArrayList<ProductMasterBO> batchList;
+
+            double ordervalue = 0.0;
+            if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
+                    && isCredtNoteCreated != 1) {
+                if (salesReturnHelper.isValueReturned()) {
+                    ordervalue = orderHeaderBO.getOrderValue()
+                            - salesReturnHelper.getSaleableValue();
+                } else {
+                    ordervalue = orderHeaderBO.getOrderValue();
+                }
+            } else {
+                ordervalue = orderHeaderBO.getOrderValue();
+            }
+
+             /*
+         * update tax in invoice master Changed by Felix on 30-04-2015 For
+		 * getting tax detail from order value
+		 */
+            if (configurationMasterHelper.TAX_SHOW_INVOICE) {
+                productHelper.downloadTaxDetails();
+                ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
+                        configurationMasterHelper.VALUE_PRECISION_COUNT,
+                        0, configurationMasterHelper.IS_DOT_FOR_GROUP));
+                final double totalTaxValue = productHelper.applyBillWiseTax(ordervalue);
+                if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                    ordervalue = ordervalue + totalTaxValue;
+
+            }
+
+            this.invoiceNumber = invid;
+            String printFilePath = "";
+           /* if (configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + SDUtil.now(SDUtil.DATE_GLOBAL).replace("/", "") + "/"
+                        + userMasterHelper.getUserMasterBO().getUserid() + "/" +
+                        StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";*/
+
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath";
+            StringBuffer sb = new StringBuffer();
+            sb.append(QT(invid) + ",");
+            sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+            sb.append(QT(retailerMasterBO.getRetailerID()) + ",");
+
+            sb.append(formatValueBasedOnConfig(ordervalue) + ",");
+
+            sb.append(0 + ",");
+            sb.append(QT(this.getOrderid()) + ",");
+            sb.append(QT("")
+                    + ",");
+            sb.append(QT("N") + ",");
+            sb.append(getRetailerMasterBO().getBeatID() + ",");
+            sb.append(orderHeaderBO.getDiscount() + ",");
+            sb.append(formatValueBasedOnConfig(ordervalue) + ",");
+            double discountedAmount = 0;
+            if (configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
+                if (discountPercentage > 0) {
+
+                    double remaingAmount = (ordervalue * discountPercentage) / 100;
+
+                    discountedAmount = ordervalue
+                            - remaingAmount;
+                    sb.append(formatValueBasedOnConfig(discountedAmount) + ",");
+                } else {
+                    sb.append(formatValueBasedOnConfig(ordervalue) + ",");
+                }
+            } else {
+                sb.append(formatValueBasedOnConfig(ordervalue) + ",");
+            }
+
+            sb.append(QT(mSelectedRetailerLatitude + "") + ",");
+            sb.append(QT(mSelectedRetailerLongitude + "") + ",");
+
+            if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
+                    && isCredtNoteCreated != 1) {
+                Commons.print("if" + salesReturnHelper.getSaleableValue());
+                if (salesReturnHelper.isValueReturned())
+                    sb.append(salesReturnHelper.getSaleableValue() + ",");
+                else
+                    sb.append(0 + ",");
+            } else {
+                Commons.print("else");
+                sb.append(+orderHeaderBO.getRemainigValue() + ",");
+
+            }
+            sb.append(this.configurationMasterHelper.discountType + ",");
+            if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
+                    && isCredtNoteCreated != 1
+                    && salesReturnHelper.isValueReturned())
+                sb.append(1);
+            else
+                sb.append(0);
+            sb.append("," + orderHeaderBO.getLinesPerCall() + "," + 0);
+            sb.append("," + orderHeaderBO.getTotalWeight());
+            sb.append("," + QT(retailerMasterBO.getOrderTypeId()));
+
+
+            /********** Added Sih , stype in InvoiceMaster ********/
+            SupplierMasterBO supplierBO;
+            if (retailerMasterBO.getSupplierBO() != null) {
+                supplierBO = retailerMasterBO.getSupplierBO();
+            } else {
+                supplierBO = new SupplierMasterBO();
+
+            }
+            sb.append("," + getRetailerMasterBO().getDistributorId());
+            sb.append("," + supplierBO.getSupplierType());
+            sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
+            sb.append("," + getRetailerMasterBO().getCreditDays());
+            sb.append("," + QT(printFilePath));
+
+            db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
+                    sb.toString());
+
+
+            //////
+
+            ProductMasterBO product;
+
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount";
+            int siz = productHelper.getProductMaster().size();
+            for (int i = 0; i < siz; ++i) {
+                product = productHelper.getProductMaster()
+                        .elementAt(i);
+
+                if ((product.getOrderedPcsQty() > 0
+                        || product.getOrderedCaseQty() > 0 || product
+                        .getOrderedOuterQty() > 0)) {
+
+                    String values = "";
+                    int totalqty = (product.getOrderedPcsQty())
+                            + (product.getCaseSize() * product
+                            .getOrderedCaseQty())
+                            + (product.getOrderedOuterQty() * product
+                            .getOutersize());
+                    /**
+                     * If scheme config is On and scheme mapped for this
+                     * product, then we have to store free products as well
+                     **/
+
+                    if (product.getBatchwiseProductCount() == 0 || !configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+
+                        values = getInvoiceDetailsRecords(product, null, invid,
+                                db, false).toString();
+                        db.insertSQL(DataMembers.tbl_InvoiceDetails, columns,
+                                values);
+
+                    } else {
+
+                        batchList = batchAllocationHelper
+                                .getBatchlistByProductID().get(
+                                        product.getProductID());
+
+                        if (batchList != null) {
+                            int count = 0;
+                            for (ProductMasterBO batchwiseProductBO : batchList) {
+                                if (batchwiseProductBO.getOrderedPcsQty() > 0
+                                        || batchwiseProductBO
+                                        .getOrderedCaseQty() > 0
+                                        || batchwiseProductBO
+                                        .getOrderedOuterQty() > 0) {
+                                    values = getInvoiceDetailsRecords(product,
+                                            batchwiseProductBO, invid, db, true)
+                                            .toString();
+
+                                    db.insertSQL(
+                                            DataMembers.tbl_InvoiceDetails,
+                                            columns, values);
+                                }
+                                count = count + 1;
+                            }
+                        }
+
+                    }
+
+
+                    int s = product.getSIH() > totalqty ? product.getSIH()
+                            - totalqty : 0;
+                    productHelper.getProductMaster().get(i).setSIH(s);
+
+                    // Update the SIH, this is mandatory if we have
+                    // stock
+                    // report
+                    // and stock based validation
+                    db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
+                            + totalqty
+                            + " then ifnull(sih,0)-"
+                            + totalqty
+                            + " else 0 end) where pid="
+                            + product.getProductID());
+
+                }
+            }
+
+            db.closeDB();
+
+
+        }
+        catch (Exception ex){
+
+        }
+    }
+
+    public void insertDeliveryOrderRecord(boolean isPartial){
+
+        try {
+
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String columns="orderid,productid,qty,uomid,uomcount,price,taxprice,linevalue,upload";
+
+            int siz = productHelper.getProductMaster().size();
+            ProductMasterBO product;
+            String values;
+
+            for (int i = 0; i < siz; ++i) {
+                product = productHelper.getProductMaster()
+                        .elementAt(i);
+                if(isPartial) {
+
+                    if (product.getDeliveredCaseQty() > 0
+                            || product.getDeliveredPcsQty() > 0
+                            || product.getDeliveredOuterQty() > 0) {
+
+                        if(product.getDeliveredCaseQty()>0){
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredCaseQty()+","+product.getCaseUomId()+","+product.getCaseSize()
+                                    +","+product.getCsrp()+","+product.getCsrp()+","+(product.getCsrp()*product.getDeliveredCaseQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if(product.getDeliveredPcsQty()>0){
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredPcsQty()+","+product.getPcUomid()+",1"
+                                    + ","+product.getSrp()+","+product.getSrp()+","+(product.getSrp()*product.getDeliveredPcsQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if(product.getDeliveredOuterQty()>0){
+                            values=QT(getOrderid())+","+product.getProductID();
+                            values+=","+product.getDeliveredOuterQty()+","+product.getOuUomid()+","+product.getOutersize()
+                                    +","+product.getOsrp()+","+product.getOsrp()+","+(product.getOsrp()*product.getDeliveredOuterQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+
+
+                        //update SIH
+                        int totalqty = (product.getDeliveredPcsQty())
+                                + (product.getCaseSize() * product
+                                .getDeliveredCaseQty())
+                                + (product.getDeliveredOuterQty() * product
+                                .getOutersize());
+
+                        int s = product.getSIH() > totalqty ? product.getSIH()
+                                - totalqty : 0;
+
+                        db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
+                                + totalqty
+                                + " then ifnull(sih,0)-"
+                                + totalqty
+                                + " else 0 end) where pid="
+                                + product.getProductID());
+
+                        //
+                        db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                                + totalqty
+                                + " then ifnull(qty,0)-"
+                                + totalqty
+                                + " else 0 end) where pid="
+                                + product.getProductID());
+
+
+                        //updating object
+                        product.setSIH(s);
+
+
+                    }
+                }
+                else{
+
+                    if (product.getOrderedCaseQty() > 0
+                            || product.getOrderedPcsQty() > 0
+                            || product.getOrderedOuterQty() > 0) {
+
+                        if(product.getOrderedCaseQty()>0){
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedCaseQty()+","+product.getCaseUomId()+","+product.getCaseSize()
+                                    +","+product.getCsrp()+","+product.getCsrp()+","+(product.getCsrp()*product.getOrderedCaseQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if(product.getOrderedPcsQty()>0){
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedPcsQty()+","+product.getPcUomid()+",1"
+                                    + ","+product.getSrp()+","+product.getSrp()+","+(product.getSrp()*product.getOrderedPcsQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if(product.getOrderedOuterQty()>0){
+                            values=getOrderid()+","+product.getProductID();
+                            values+=","+product.getOrderedOuterQty()+","+product.getOuUomid()+","+product.getOutersize()
+                                    +","+product.getOsrp()+","+product.getOsrp()+","+(product.getOsrp()*product.getOrderedOuterQty())+","+QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+
+                        //SIH will be update while saving invoice..
+
+                    }
+
+                }
+            }
+
+
+            if(!isPartial) {
+                // inserting free products
+                for (SchemeBO schemeBO : schemeDetailsMasterHelper.getAppliedSchemeList()) {
+
+                    if (schemeBO.isQuantityTypeSelected()) {
+
+                        for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
+
+                            ProductMasterBO productMasterBO=productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+
+                            if(schemeProductBO.getUomID()==productMasterBO.getPcUomid()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getPcUomid()+",1"
+                                        + ","+productMasterBO.getSrp()+","+productMasterBO.getSrp()+","+(productMasterBO.getSrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+                            if(schemeProductBO.getUomID()==productMasterBO.getCaseUomId()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getCaseUomId()+","+productMasterBO.getCaseSize()
+                                        + ","+productMasterBO.getCsrp()+","+productMasterBO.getCsrp()+","+(productMasterBO.getCsrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+                            if(schemeProductBO.getUomID()==productMasterBO.getOuUomid()){
+                                values = getOrderid() + "," + schemeProductBO.getProductId();
+                                values+=","+schemeProductBO.getQuantitySelected()+","+productMasterBO.getOuUomid()+","+productMasterBO.getOutersize()
+                                        + ","+productMasterBO.getOsrp()+","+productMasterBO.getOsrp()+","+(productMasterBO.getOsrp()*schemeProductBO.getQuantitySelected())+","+QT("N");
+                                db.insertSQL("OrderDeliveryDetail",
+                                        columns, values);
+                            }
+
+
+
+                            //Update the SIH
+
+                            int totalqty=0;
+                            if(schemeProductBO.getUomID()==productMasterBO.getPcUomid()){
+                                totalqty=schemeProductBO.getQuantitySelected();
+                            }
+                            else if(schemeProductBO.getUomID()==productMasterBO.getCaseUomId()){
+                                totalqty=(schemeProductBO.getQuantitySelected()*productMasterBO.getCaseSize());
+                            }
+                            else if(schemeProductBO.getUomID()==productMasterBO.getOuUomid()){
+                                totalqty=(schemeProductBO.getQuantitySelected()*productMasterBO.getOutersize());
+                            }
+
+                            int s = productMasterBO.getSIH() > totalqty ? productMasterBO.getSIH()
+                                    - totalqty : 0;
+
+                            db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
+                                    + totalqty
+                                    + " then ifnull(sih,0)-"
+                                    + totalqty
+                                    + " else 0 end) where pid="
+                                    + productMasterBO.getProductID());
+
+                            //
+                            db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                                    + totalqty
+                                    + " then ifnull(qty,0)-"
+                                    + totalqty
+                                    + " else 0 end) where pid="
+                                    + productMasterBO.getProductID());
+
+
+                            //updating object
+                            productMasterBO.setSIH(s);
+
+                        }
+                    }
+                }
+            }
+
+
+            db.closeDB();
+        }
+        catch (Exception ex){
+
+            Commons.printException(ex);
+        }
     }
 }
 

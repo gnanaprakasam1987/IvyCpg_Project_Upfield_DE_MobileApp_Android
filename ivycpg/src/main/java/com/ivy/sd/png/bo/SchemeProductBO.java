@@ -442,4 +442,33 @@ public class SchemeProductBO {
 	}
 
 	private int quantityUsedForScheme;
+
+	public int getDeliverQtyPcs() {
+		return deliverQtyPcs;
+	}
+
+	public void setDeliverQtyPcs(int deliverQtyPcs) {
+		this.deliverQtyPcs = deliverQtyPcs;
+	}
+
+	private int deliverQtyPcs;
+
+	public int getDeliverQtyCase() {
+		return deliverQtyCase;
+	}
+
+	public void setDeliverQtyCase(int deliverQtyCase) {
+		this.deliverQtyCase = deliverQtyCase;
+	}
+
+	public int getDeliverQtyOuter() {
+		return deliverQtyOuter;
+	}
+
+	public void setDeliverQtyOuter(int deliverQtyOuter) {
+		this.deliverQtyOuter = deliverQtyOuter;
+	}
+
+	private int deliverQtyCase;
+	private int deliverQtyOuter;
 }
