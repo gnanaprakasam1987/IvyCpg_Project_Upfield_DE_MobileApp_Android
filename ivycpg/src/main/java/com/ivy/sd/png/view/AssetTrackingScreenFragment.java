@@ -749,6 +749,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.assetBO.getAssetID() + "_"
+                                    + holder.assetBO.getSerialNo() + "_"
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
@@ -756,6 +757,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + mSelectedStandardListBO.getListID() + "_" + holder.assetBO.getAssetID() + "_"
+                                    + holder.assetBO.getSerialNo() + "_"
                                     +Commons.now(Commons.DATE);
                             Commons.print(TAG + ",FName Starts :" + fnameStarts);
                             bmodel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
@@ -769,7 +771,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 //                                showFileDeleteAlert(holder.assetBO.getAssetID()
 //                                        + "", fnameStarts);
                                 showFileDeleteAlertWithImage(holder.assetBO.getAssetID()
-                                        + "", fnameStarts,holder.assetBO.getImageName());
+                                        + "", fnameStarts, holder.assetBO.getImgName());
                             } else {
                                 captureCustom();
                                 holder.photoBTN.requestFocus();
@@ -1211,8 +1213,8 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     public void deleteUnusedImages() {
 
         for (AssetTrackingBO temp : myList) {
-            if (temp.getAvailQty() == 0 && !"".equals(temp.getImageName())) {
-                String fileName = temp.getImageName();
+            if (temp.getAvailQty() == 0 && !"".equals(temp.getImgName())) {
+                String fileName = temp.getImgName();
                 Commons.print("Image Delete," + "Coming In");
                 deleteFiles(fileName);
             }
@@ -1312,9 +1314,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
         if (view != null && bmodel.configurationMasterHelper.IS_TEAMLEAD)
             getView().findViewById(R.id.keypad).setVisibility(View.GONE);
-        /*if (view != null && !bmodel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
+        if (view != null && !bmodel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
             view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
-        }*/
+        }
         if (!bmodel.assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
             view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
         } else {
