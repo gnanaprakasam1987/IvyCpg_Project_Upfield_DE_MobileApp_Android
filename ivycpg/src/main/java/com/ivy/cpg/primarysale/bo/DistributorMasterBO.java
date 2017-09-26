@@ -97,4 +97,14 @@ public class DistributorMasterBO {
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
+
+	public boolean isChecked() {
+		return isChecked;
+	}
+
+	public void setChecked(boolean checked) {
+		isChecked = checked;
+	}
+
+	private  boolean isChecked;
 }

@@ -228,7 +228,7 @@ public class DataMembers {
     public static final String tbl_retailerMaster = "RetailerMaster";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
-    private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId";
+    private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks";
 
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
@@ -588,6 +588,9 @@ public class DataMembers {
     public static final String tbl_jointcallacknowledgement_cols = "Userid,Username,Beat,Retailer,Date,Value,Refid,Ack_Date,Upload";
     public static final String tbl_jointcallacknowledgement_upload_cols = "Refid,Ack_Date";
 
+    private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
+    private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -754,6 +757,7 @@ public class DataMembers {
         uploadColumn.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumn.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
         uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
+        uploadColumn.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -944,6 +948,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_PaymentDiscount_Detail, tbl_PaymentDiscountDetail_Cols);
         uploadColumnWithOutRetailer.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

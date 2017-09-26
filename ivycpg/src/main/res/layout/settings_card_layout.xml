@@ -32,7 +32,8 @@
                 android:ellipsize="marquee"
                 android:fadingEdge="horizontal"
                 android:singleLine="true"
-                android:textColor="@color/WHITE" />
+                android:textColor="@color/WHITE"
+                android:textSize="@dimen/font_medium" />
 
             <TextView
                 android:id="@android:id/summary"

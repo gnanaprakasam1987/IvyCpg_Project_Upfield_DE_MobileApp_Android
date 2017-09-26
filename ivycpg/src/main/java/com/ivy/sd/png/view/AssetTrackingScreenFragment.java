@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +24,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,12 +41,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -94,6 +100,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private static final int CAMERA_REQUEST_CODE = 1;
     private final String moduleName = "AT_";
     AddAssetDialogFragment dialog;
+    ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
     private static final String BRAND = "Brand";
     private String brandbutton;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
@@ -113,6 +120,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * This ArrayList contains downloaded assettracking records
      */
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
+    /**
+     * This ArrayList contains downloaded assettracking records
+     */
+    private ArrayList<AssetTrackingBO> mAllAssetTrackingList;
     /**
      * This ArrayList contains downloaded assetreason records
      */
@@ -164,7 +175,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 R.id.drawer_layout);
         FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -402,6 +413,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if (mCapturedNFCTag != null) {
                 mCapturedNFCTag = "";
             }
+            Log.e("Barcode", "Menu");
             updateList(-1, mSelectedStandardListBO);
             return true;
         } else if (i == R.id.menu_remarks) {
@@ -491,8 +503,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * Method that to refresh item in listview
      */
     private void updateList(int bid, StandardListBO standardListBO) {
+        int k = 0;
         myList = new ArrayList<>();
         mAssetTrackingList = standardListBO.getAssetTrackingList();
+        mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
         if (mAssetTrackingList != null) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if ("ALL".equals(strBarCodeSearch)) {
@@ -505,13 +519,37 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         myList.add(assetBO);
                     }
                 } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
+                    Log.e("Barcode", "Scanned Added");
+                    assetBO.setscanComplete(1);
                     myList.add(assetBO);
+                } else {
+                    if (mAllAssetTrackingList != null) {
+                        mAllAssetTrackingList.remove(assetBO);
+                    }
+                }
+            }
+            if (mAllAssetTrackingList != null) {
+                for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
+                    if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
+                        // Toast.makeText(bmodel, "Showing Dialog", Toast.LENGTH_SHORT).show();
+                        // showDialog();
+                        scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
+                        Bundle args = new Bundle();
+                        args.putString("serialNo", strBarCodeSearch);
+                        args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
+                        args.putString("brand",mAllAssetTrackingList.get(i).getMbrand());
+                        args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
+                        scannedUnmappedDialogFragment.setArguments(args);
+                        scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
+                        k = 1;
+                        break;
+                    }
                 }
             }
         }
         int size = myList.size();
         refreshList();
-        if (size == 0) {
+        if (size == 0 && k == 0) {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
 
@@ -521,6 +559,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     public void updateListByNFCTag(String mNFCtag) {
         mCapturedNFCTag = mNFCtag;
         strBarCodeSearch = "ALL";
+        Log.e("Barcode", "updateListByNFCTag");
         updateList(-1, mSelectedStandardListBO);
     }
 
@@ -765,7 +804,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             bmodel.assetTrackingHelper.mSelectedImageName = imageName;
                             bmodel.assetTrackingHelper.mSelectedSerial = holder.assetBO.getSerialNo();
                             boolean nFilesThere = bmodel.checkForNFilesInFolder(photoPath, 1,
-                                            fnameStarts);
+                                    fnameStarts);
 
                             if (nFilesThere) {
 //                                showFileDeleteAlert(holder.assetBO.getAssetID()
@@ -798,12 +837,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.reason1Spin.setEnabled(false);
                             if ((holder.assetBO.getImageName() != null)
                                     && (!"".equals(holder.assetBO.getImageName()))
-                                    && (!"null".equals(holder.assetBO.getImageName())))
-                            {
+                                    && (!"null".equals(holder.assetBO.getImageName()))) {
                                 holder.photoBTN.setEnabled(true);
-                                setPictureToImageView( holder.assetBO.getImageName(),holder.photoBTN);
-                            }
-                            else {
+                                setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
+                            } else {
                                 holder.photoBTN.setEnabled(true);
                                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                             }
@@ -817,7 +854,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.assetBO.setAvailQty(0);
                             holder.reason1Spin.setEnabled(true);
                             holder.photoBTN.setEnabled(false);
-                            holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_photo_camera_grey_24dp,null));
+                            holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                             holder.mconditionSpin.setEnabled(false);
                             holder.mconditionSpin.setSelection(0);
                             holder.minstalldate.setEnabled(false);
@@ -889,8 +926,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
             if (holder.assetBO.getAvailQty() > 0) {
                 holder.reason1Spin.setEnabled(false);
-                holder.photoBTN.setEnabled(true);
-                holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_photo_camera_blue_24dp,null));
+                // holder.photoBTN.setEnabled(true);
+                if ((holder.assetBO.getImageName() != null)
+                        && (!"".equals(holder.assetBO.getImageName()))
+                        && (!"null".equals(holder.assetBO.getImageName()))) {
+                    holder.photoBTN.setEnabled(true);
+                    setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
+                } else {
+                    holder.photoBTN.setEnabled(true);
+                    holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+                }
+                //  holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                 holder.reason1Spin.setSelection(0);
                 holder.mconditionSpin.setEnabled(true);
                 holder.mconditionSpin.setSelection(bmodel.assetTrackingHelper
@@ -904,7 +950,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             } else {
                 holder.reason1Spin.setEnabled(true);
                 holder.photoBTN.setEnabled(false);
-                holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_photo_camera_grey_24dp,null));
+                holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.mconditionSpin.setEnabled(false);
                 holder.mconditionSpin.setSelection(0);
                 holder.minstalldate.setEnabled(false);
@@ -971,18 +1017,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 });*/
             } else {
-                if(!holder.photoBTN.isEnabled())
+                if (!holder.photoBTN.isEnabled())
                     holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera_grey_24dp));
                 else
-                    holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera_blue_24dp));            }
-
-
-            /*TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }*/
+                    holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera_blue_24dp));
+            }
 
             if (holder.assetBO.getAvailQty() == 1) {
                 holder.availQtyRB.setChecked(true);
@@ -990,22 +1029,32 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.availQtyRB.setChecked(false);
             }
 
+            if (holder.assetBO.getscanComplete() == 1) {
+                holder.availQtyRB.setChecked(true);
+                holder.availQtyRB.setEnabled(false);
+            } else {
+                holder.availQtyRB.setChecked(false);
+                holder.availQtyRB.setEnabled(true);
+            }
+
+
             return row;
         }
     }
-    private void setPictureToImageView(String imageName, ImageView imageView)
-    {
+
+    private void setPictureToImageView(String imageName, ImageView imageView) {
         Glide.with(getActivity()).load(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                         + "/" + DataMembers.photoFolderName + "/" + imageName)
                 .centerCrop()
                 .placeholder(R.drawable.ic_photo_camera_blue_24dp)
                 .error(R.drawable.no_image_available)
-                .override(35,20)
+                .override(35, 20)
 //                        .transform(new CircleTransform(getContext()))
                 .transform(bmodel.circleTransform)
-                .into(imageView) ;
+                .into(imageView);
     }
+
     class ViewHolder {
         AssetTrackingBO assetBO;
         TextView assetNameTV;
@@ -1061,12 +1110,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      */
     private void showFileDeleteAlertWithImage(final String bbid,
                                               final String imageNameStarts,
-                                              final String imageSrc)
-    {
-        final CommonDialog commonDialog=new CommonDialog(getActivity().getApplicationContext(), //Context
+                                              final String imageSrc) {
+        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
                 getActivity(), //Context
                 "", //Title
-                getResources().getString(R.string.word_already) + " " + 1 +" " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
                 true, //ToDisplayImage
                 getResources().getString(R.string.yes), //Positive Button
                 getResources().getString(R.string.no), //Negative Button
@@ -1085,7 +1133,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                 .deleteImageName(imageNameStarts);
                         bmodel.synchronizationHelper.deleteFiles(photoPath,
                                 imageNameStarts);
-                        dialog.dismiss();
+                        //   dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -1102,6 +1150,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         commonDialog.show();
         commonDialog.setCancelable(false);
     }
+
     private void showFileDeleteAlert(final String bbid,
                                      final String imageNameStarts) {
 
@@ -1115,7 +1164,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
         builderDialog.setPositiveButton(getResources().
                         getString(R.string.yes),
-                new android.content.DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -1139,7 +1188,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 });
 
         builderDialog.setNegativeButton(getResources().getString(R.string.no),
-                new android.content.DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
@@ -1182,7 +1231,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if (resultCode == 1) {
                 // Photo saved successfully
                 Commons.print("AssetTracking," +
-                        "Camers Activity : Sucessfully Captured.");
+                        "Camera Activity : Successfully Captured.");
                 if (bmodel.assetTrackingHelper.mSelectedAssetID != 0) {
                     onsaveImageName(
                             bmodel.assetTrackingHelper.mSelectedAssetID,
@@ -1190,7 +1239,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             bmodel.assetTrackingHelper.mSelectedImageName);
                 }
             } else {
-                Commons.print("AssetTracking," + "Camers Activity : Canceled");
+                Commons.print("AssetTracking," + "Camera Activity : Canceled");
             }
         } else {
 
@@ -1201,6 +1250,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
                     } else {
                         strBarCodeSearch = result.getContents();
+                        Log.e("Barcode", strBarCodeSearch);
                         //updateList(-1, mSelectedStandardListBO);
                     }
                 }
@@ -1210,6 +1260,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
 
     }
+
     public void deleteUnusedImages() {
 
         for (AssetTrackingBO temp : myList) {
@@ -1540,6 +1591,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mCapturedNFCTag = "";
         //strBarCodeSearch = "ALL";
         mSelectedLastFilterSelection = id;
+        Log.e("Barcode", "updatebrandText");
         updateList(id, mSelectedStandardListBO);
     }
 
@@ -1686,7 +1738,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

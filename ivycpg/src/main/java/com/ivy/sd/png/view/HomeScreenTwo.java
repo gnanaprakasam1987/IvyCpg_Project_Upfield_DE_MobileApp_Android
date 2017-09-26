@@ -119,6 +119,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     public static final String MENU_COMPETITOR = "MENU_COMPETITOR";
     public static final String MENU_PROMO = "MENU_PROMO";
     public static final String MENU_SOS_PROJ = "MENU_SOS_PROJ";
+    public static final String MENU_DELIVERY_ORDER = "MENU_DELIVERY_ORDER";
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";
@@ -1303,6 +1304,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             menuDB.get(i).setDone(true);
                     }
                 }
+                else if (menuDB.get(i).getConfigCode()
+                        .equals(MENU_DELIVERY_ORDER)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                        //
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }
 
 
             }
@@ -1333,7 +1345,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     /**
      * This method will have all the activity links. Based on the Menu code
      * activity will be called. Following Menu are configured
-     * <p>
+     * <p/>
      * STOCK <br>
      * ORDER <br>
      * STOCK_ORDER <br>
@@ -1714,177 +1726,59 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                     }
 
-                    if (bmodel.isEdit()) {
-                        bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
-                                .getRetailerID(), null);
-                        bmodel.productHelper.loadSerialNo();
-                        enableSchemeModule();
-                    } else {
-                        bmodel.setOrderHeaderBO(null);
-                    }
-
-                    if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                        bmodel.collectionHelper.downloadDiscountSlab();
-                    }
-
-                    //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
-                    bmodel.productHelper.loadRetailerWiseProductWisePurchased();
-                    bmodel.productHelper
-                            .loadRetailerWiseProductWiseP4StockAndOrderQty();
-                    bmodel.configurationMasterHelper
-                            .downloadProductDetailsList();
-                    bmodel.collectionHelper.downloadBankDetails();
-                    bmodel.collectionHelper.downloadBranchDetails();
-                    if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                        /** Load Initiative **/
-                        bmodel.productHelper.loadInitiativeProducts();
-                        bmodel.initiativeHelper.downloadInitiativeHeader(bmodel
-                                .getRetailerMasterBO().getSubchannelid());
-                        /** Load Order History **/
-                        bmodel.initiativeHelper.loadLocalOrdersQty(bmodel
-                                .getRetailerMasterBO().getRetailerID());
-                    }
-
-                    /** Load SO Norm **/
-                    if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
-                        bmodel.productHelper
-                                .loadRetailerWiseInventoryOrderQty();
-                    }
-
-                    if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
-                        bmodel.productHelper.updateProductColorAndSequance();
-
-                    /** Settign color **/
-                    bmodel.configurationMasterHelper.downloadFilterList();
-                    bmodel.productHelper.updateProductColor();
-                    if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-                        bmodel.productHelper.downloadBillwiseDiscount();
-                        bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
-                    }
-                    // apply bill wise payterm discount
-                    bmodel.productHelper.downloadBillwisePaytermDiscount();
-
-
-                    bmodel.productHelper.downloadInStoreLocations();
-
-                    if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
-                        bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
-
-                    //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
-                    bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
-                    // }
-
-                    if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-                        bmodel.collectionHelper.loadCreditNote();
-
-                    bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
-
-                    if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
-                        bmodel.downloadGuidedSelling();
-                    }
-
-
-                    if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-                        bmodel.downloadCurrencyConfig();
-                    }
-
-                    // Reset the Configuration if Directly goes from
-                    // HomeScreenTwo
-                    bmodel.mSelectedModule = -1;
-
-                    OrderSummary.mActivityCode = menu.getConfigCode();
-                    bmodel.mSelectedActivityName = menu.getMenuName();
-
-                    if (bmodel.isEdit()) {
-                        Intent intent = new Intent(HomeScreenTwo.this,
-                                OrderSummary.class);
-                        if (menu.getConfigCode().equals(MENU_CATALOG_ORDER)) {
-//                            bmodel.productHelper
-//                                    .downloadFiveFilterLevels("MENU_STK_ORD");
-                            intent.putExtra("ScreenCode", MENU_CATALOG_ORDER);
+                    bmodel.selectedOrderId = "";
+                    if (bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
+                        if (bmodel.isEdit()) {
+                            bmodel.selectedOrderId = "";//cleared to avoid reuse of id
+                            final String menuConfigCode = menu.getConfigCode();
+                            final String menuName = menu.getMenuName();
+                            OrderTransactionListDialog obj = new OrderTransactionListDialog(getApplicationContext(), HomeScreenTwo.this, new OrderTransactionListDialog.newOrderOnClickListener() {
+                                @Override
+                                public void onNewOrderButtonClick() {
+                                    //the methods that were called during normal stock and order loading in non edit mode are called here
+                                    //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
+                                    bmodel.setOrderHeaderBO(null);
+                                    loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
+                                    loadstockorderscreen(menuConfigCode);
+                                }
+                            }, new OrderTransactionListDialog.oldOrderOnClickListener() {
+                                @Override
+                                public void onOldOrderButtonClick(String id) {
+                                    bmodel.selectedOrderId = id;
+                                    //the methods that were called during normal stock and order loading in edit mode are called here
+                                    //selectedOrderId is passed to loadOrderedProducts method  to load ordered products for that id
+                                    //loadSerialNo,enableSchemeModule included as these were called in edit mode
+                                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                                            .getRetailerID(), id);
+                                    bmodel.productHelper.loadSerialNo();
+                                    enableSchemeModule();
+                                    loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
+                                    loadOrderSummaryScreen(menuConfigCode);
+                                }
+                            });
+                            obj.show();
                         } else {
-                            intent.putExtra("ScreenCode", "MENU_STK_ORD");
+                            //the methods that were called during normal stock and order loading in non edit mode are called here
+                            //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
+                            bmodel.setOrderHeaderBO(null);
+                            loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
+                            loadstockorderscreen(menu.getConfigCode());
                         }
-                        //intent.putExtra("ScreenCode", "MENU_STK_ORD");
-                        startActivity(intent);
-                        finish();
-
                     } else {
-                        bmodel.productHelper.downloadIndicativeOrderList();
-                        indicativeOrderAdapter = new ArrayAdapter<Integer>(this,
-                                android.R.layout.select_dialog_singlechoice);
-
-                        for (Integer temp : bmodel.productHelper
-                                .getIndicativeList())
-                            indicativeOrderAdapter.add(temp);
-                        if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
-                            if (bmodel.getRetailerMasterBO()
-                                    .getCredit_balance() == -1
-                                    || bmodel.getRetailerMasterBO()
-                                    .getCredit_balance() > 0) {
-
-                                if (bmodel.productHelper.getIndicativeList() != null) {
-                                    if (bmodel.productHelper.getIndicativeList().size() > 1) {
-                                        showIndicativeOrderFilterAlert(menu.getConfigCode());
-                                        return;
-                                    }
-                                    if (bmodel.productHelper.getIndicativeList().size() > 0) {
-                                        if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
-                                                && !bmodel.isEdit()) {
-                                            bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
-                                            bmodel.productHelper.updateIndicateOrder();
-                                        }
-                                    }
-                                }
-                                bmodel.outletTimeStampHelper
-                                        .saveTimeStampModuleWise(
-                                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                                SDUtil.now(SDUtil.TIME),
-                                                menu.getConfigCode());
-
-                                Intent intent = new Intent(HomeScreenTwo.this,
-                                        StockAndOrder.class);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                finish();
-                            } else {
-                                showDialog(1);
-                                isCreated = false;
-                            }
+                        if (bmodel.isEdit()) {//doubt
+                            bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                                    .getRetailerID(), null);
+                            bmodel.productHelper.loadSerialNo();
+                            enableSchemeModule();
                         } else {
-                            bmodel.outletTimeStampHelper
-                                    .saveTimeStampModuleWise(
-                                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                                            SDUtil.now(SDUtil.TIME),
-                                            menu.getConfigCode());
+                            bmodel.setOrderHeaderBO(null);
+                        }
+                        loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
+                        if (bmodel.isEdit()) {
+                            loadOrderSummaryScreen(menu.getConfigCode());
 
-                            if (bmodel.productHelper.getIndicativeList() != null) {
-                                if (bmodel.productHelper.getIndicativeList().size() > 1) {
-                                    showIndicativeOrderFilterAlert(menu.getConfigCode());
-                                    return;
-                                }
-                                if (bmodel.productHelper.getIndicativeList().size() > 0) {
-                                    if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
-                                            && !bmodel.isEdit()) {
-                                        bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
-                                        bmodel.productHelper.updateIndicateOrder();
-                                    }
-                                }
-                            }
-//                            Intent intent = new Intent(HomeScreenTwo.this,
-//                                    StockAndOrder.class);
-                            Intent intent;
-                            if (menu.getConfigCode().equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
-//                                bmodel.productHelper
-//                                        .downloadFiveFilterLevels("MENU_STK_ORD");
-                                intent = new Intent(HomeScreenTwo.this,
-                                        CatalogOrder.class);
-                            } else {
-                                intent = new Intent(HomeScreenTwo.this,
-                                        StockAndOrder.class);
-                            }
-                            startActivity(intent);
-                            finish();
+                        } else {
+                            loadstockorderscreen(menu.getConfigCode());
                         }
                     }
                 } else {
@@ -3048,7 +2942,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             this,
                             getResources().getString(
                                     R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
@@ -3182,10 +3076,223 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 isCreated = false;
             }
 
+        }else if (menu.getConfigCode().equals(MENU_DELIVERY_ORDER) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+
+                if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                        .getRetailerID())) {
+
+                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                            .getRetailerID(), null);
+                    enableSchemeModule();
+
+                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                    Intent i = new Intent(this,
+                            DeliveryOrderActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("screentitle", menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                }
+                else{
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.no_orders_available),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
+
+
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
+
         } else {
             isCreated = false;
         }
 
+    }
+
+    private void loadOrderSummaryScreen(String menuConfigCode) {
+        Intent intent = new Intent(HomeScreenTwo.this,
+                OrderSummary.class);
+        if (menuConfigCode.equals(MENU_CATALOG_ORDER)) {
+//                            bmodel.productHelper
+//                                    .downloadFiveFilterLevels("MENU_STK_ORD");
+            intent.putExtra("ScreenCode", MENU_CATALOG_ORDER);
+        } else {
+            intent.putExtra("ScreenCode", "MENU_STK_ORD");
+        }
+        //intent.putExtra("ScreenCode", "MENU_STK_ORD");
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadRequiredMethodsForStockAndOrder(String configCode, String menuName) {
+        if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
+            bmodel.collectionHelper.downloadDiscountSlab();
+        }
+
+        //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
+        bmodel.productHelper.loadRetailerWiseProductWisePurchased();
+        bmodel.productHelper
+                .loadRetailerWiseProductWiseP4StockAndOrderQty();
+        bmodel.configurationMasterHelper
+                .downloadProductDetailsList();
+        bmodel.collectionHelper.downloadBankDetails();
+        bmodel.collectionHelper.downloadBranchDetails();
+        if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+            /** Load Initiative **/
+            bmodel.productHelper.loadInitiativeProducts();
+            bmodel.initiativeHelper.downloadInitiativeHeader(bmodel
+                    .getRetailerMasterBO().getSubchannelid());
+            /** Load Order History **/
+            bmodel.initiativeHelper.loadLocalOrdersQty(bmodel
+                    .getRetailerMasterBO().getRetailerID());
+        }
+
+        /** Load SO Norm **/
+        if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
+            bmodel.productHelper
+                    .loadRetailerWiseInventoryOrderQty();
+        }
+
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
+            bmodel.productHelper.updateProductColorAndSequance();
+
+        /** Settign color **/
+        bmodel.configurationMasterHelper.downloadFilterList();
+        bmodel.productHelper.updateProductColor();
+        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+            bmodel.productHelper.downloadBillwiseDiscount();
+            bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
+        }
+        // apply bill wise payterm discount
+        bmodel.productHelper.downloadBillwisePaytermDiscount();
+
+
+        bmodel.productHelper.downloadInStoreLocations();
+
+        if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
+            bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
+
+        //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+        bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
+        // }
+
+        if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
+            bmodel.collectionHelper.loadCreditNote();
+
+        bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
+
+        if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
+            bmodel.downloadGuidedSelling();
+        }
+
+
+        if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
+            bmodel.downloadCurrencyConfig();
+        }
+
+        // Reset the Configuration if Directly goes from
+        // HomeScreenTwo
+        bmodel.mSelectedModule = -1;
+
+        OrderSummary.mActivityCode = configCode;
+        bmodel.mSelectedActivityName = menuName;
+    }
+
+    public void loadstockorderscreen(String menu) {
+        {
+            bmodel.productHelper.downloadIndicativeOrderList();
+            indicativeOrderAdapter = new ArrayAdapter<Integer>(this,
+                    android.R.layout.select_dialog_singlechoice);
+
+            for (Integer temp : bmodel.productHelper
+                    .getIndicativeList())
+                indicativeOrderAdapter.add(temp);
+            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+                if (bmodel.getRetailerMasterBO()
+                        .getCredit_balance() == -1
+                        || bmodel.getRetailerMasterBO()
+                        .getCredit_balance() > 0) {
+
+                    if (bmodel.productHelper.getIndicativeList() != null) {
+                        if (bmodel.productHelper.getIndicativeList().size() > 1) {
+                            showIndicativeOrderFilterAlert(menu);
+                            return;
+                        }
+                        if (bmodel.productHelper.getIndicativeList().size() > 0) {
+                            if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
+                                    && !bmodel.isEdit()) {
+                                bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
+                                bmodel.productHelper.updateIndicateOrder();
+                            }
+                        }
+                    }
+                    bmodel.outletTimeStampHelper
+                            .saveTimeStampModuleWise(
+                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    SDUtil.now(SDUtil.TIME),
+                                    menu);
+
+                    Intent intent = new Intent(HomeScreenTwo.this,
+                            StockAndOrder.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                    finish();
+                } else {
+                    showDialog(1);
+                    isCreated = false;
+                }
+            } else {
+                bmodel.outletTimeStampHelper
+                        .saveTimeStampModuleWise(
+                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                SDUtil.now(SDUtil.TIME),
+                                menu);
+
+                if (bmodel.productHelper.getIndicativeList() != null) {
+                    if (bmodel.productHelper.getIndicativeList().size() > 1) {
+                        showIndicativeOrderFilterAlert(menu);
+                        return;
+                    }
+                    if (bmodel.productHelper.getIndicativeList().size() > 0) {
+                        if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
+                                && !bmodel.isEdit()) {
+                            bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
+                            bmodel.productHelper.updateIndicateOrder();
+                        }
+                    }
+                }
+//                            Intent intent = new Intent(HomeScreenTwo.this,
+//                                    StockAndOrder.class);
+                Intent intent;
+                if (menu.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
+//                                bmodel.productHelper
+//                                        .downloadFiveFilterLevels("MENU_STK_ORD");
+                    intent = new Intent(HomeScreenTwo.this,
+                            CatalogOrder.class);
+                } else {
+                    intent = new Intent(HomeScreenTwo.this,
+                            StockAndOrder.class);
+                }
+                startActivity(intent);
+                finish();
+            }
+        }
     }
 
     public boolean canAllowCallAnalysis() {

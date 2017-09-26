@@ -196,7 +196,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         CardView cardView1 = (CardView) view.findViewById(R.id.card_view1);
         tv_storeVisit = (TextView) view.findViewById(R.id.tv_store_visit);
         tv_storeVisit.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         crossLine.setRotation(-5);
         if (getArguments() != null)
@@ -427,7 +427,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_areaLoc = (TextView) view.findViewById(R.id.daytv);
         tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
                 .getUserMasterBO().getDownloadDate()));
 
@@ -451,7 +451,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_target = (TextView) view.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
             tv_target.setText("" + getStoreVisited());
         } else {
@@ -491,7 +491,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_target1 = (TextView) view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         tv_target1.setText(getTotalAchieved());
 
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
@@ -1446,7 +1446,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                 }
             } else {
-                holder.imgGoldDeadStore.setVisibility(View.INVISIBLE);
+                holder.imgGoldDeadStore.setVisibility(View.GONE);
             }
 
             if ("1".equals(mRetailerProp.get("RTPRTY03"))
