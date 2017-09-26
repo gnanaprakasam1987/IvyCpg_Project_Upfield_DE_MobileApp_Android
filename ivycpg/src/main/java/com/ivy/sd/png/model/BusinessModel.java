@@ -431,6 +431,8 @@ public class BusinessModel extends Application {
     public ProductMasterBO selectedPdt;
     private ArrayList<NewOutletAttributeBO> attributeList;
     public String latlongImageFileName;
+    public String selectedOrderId = "";
+    ArrayList<String> orderIdList = new ArrayList<>();
 
     public BusinessModel() {
 
@@ -3215,6 +3217,7 @@ public class BusinessModel extends Application {
      * @return true|false
      */
     public boolean hasAlreadyOrdered(String retailerId) {
+        boolean isEdit = false;
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -3248,20 +3251,30 @@ public class BusinessModel extends Application {
 
 
             Cursor orderHeaderCursor = db.selectSQL(sb.toString());
-
-            if (orderHeaderCursor.getCount() > 0) {
-                orderHeaderCursor.close();
-                db.closeDB();
-                return true;
-            } else {
-                orderHeaderCursor.close();
-                db.closeDB();
-                return false;
+            if (configurationMasterHelper.IS_MULTI_STOCKORDER && getOrderIDList().size() > 0) {//existing list content must be cleared
+                getOrderIDList().clear();
             }
+            if (orderHeaderCursor.getCount() > 0) {
+                isEdit =  true;
+                if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//order id is saved to display in pop up
+                    while (orderHeaderCursor.moveToNext()) {
+                        getOrderIDList().add(orderHeaderCursor.getString(0));
+                    }
+                }
+            } else {
+                isEdit =  false;
+            }
+            orderHeaderCursor.close();
+            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
-            return false;
+            isEdit =  false;
         }
+        return isEdit;
+    }
+
+    public ArrayList<String> getOrderIDList() {
+        return orderIdList;
     }
 
     public List<TempSchemeBO> loadOrderDetail(String retailerId, int callType,
@@ -4033,6 +4046,9 @@ public class BusinessModel extends Application {
             sb.append("select orderId from orderHeader where RetailerId="
                     + QT(retailerId));
             sb.append(" and upload='N' and invoiceStatus=0");
+            if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is deleted
+                sb.append(" and OrderID=" + QT(selectedOrderId));
+            }
             if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 sb.append(" and is_vansales="
                         + retailerMasterBO.getIsVansales()); // loaded data for
@@ -6574,6 +6590,9 @@ public class BusinessModel extends Application {
                 sb.append("select OrderID from OrderHeader where RetailerID=");
                 sb.append(getRetailerMasterBO().getRetailerID());
                 sb.append(" and upload='N'and invoicestatus = 0");
+                if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
+                    sb.append(" and OrderID=" + QT(selectedOrderId));
+                }
                 // Add new for check vansales or presales at runtime
                 if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     sb.append(" and is_vansales=" + isVansales);
@@ -6597,6 +6616,9 @@ public class BusinessModel extends Application {
                         sb.append(getRetailerMasterBO().getRetailerID());
                         sb.append(" and upload='N' and " + temp
                                 + " and invoicestatus = 0");
+                        if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
+                            sb.append(" and OrderID=" + QT(selectedOrderId));
+                        }
                         // Add new for check vansales or presales at runtime
                         if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                             sb.append(" and is_vansales=" + isVansales);

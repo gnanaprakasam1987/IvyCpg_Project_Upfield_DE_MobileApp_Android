@@ -427,6 +427,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PROFILE_IMAGE = "PROFILE60";
     public boolean IS_PROFILE_IMAGE;
+
+    public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
+    public boolean IS_MULTI_STOCKORDER;
     /**
      * RoadActivity config *
      */
@@ -1825,6 +1828,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
             this.IS_MUST_SELL_REASON = false;
