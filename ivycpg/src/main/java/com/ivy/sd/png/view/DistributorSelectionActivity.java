@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -43,12 +42,11 @@ public class DistributorSelectionActivity extends IvyBaseActivityNoActionBar imp
         mContext = this;
 
 
-
         setContentView(R.layout.activity_distributor_selection);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        bntDownload=(Button)findViewById(R.id.btn_download);
+        bntDownload = (Button) findViewById(R.id.btn_download);
         bntDownload.setOnClickListener(this);
 
         TextView toolBarTitle;
@@ -73,7 +71,7 @@ public class DistributorSelectionActivity extends IvyBaseActivityNoActionBar imp
 
 
         clearAllDistributorStatus();
-       DistributorAdapter adapter=new DistributorAdapter(bmodel.distributorMasterHelper.getDistributors());
+        DistributorAdapter adapter = new DistributorAdapter(bmodel.distributorMasterHelper.getDistributors());
         lvwplist.setAdapter(adapter);
 
         findViewById(R.id.btn_download).setOnClickListener(
@@ -147,13 +145,12 @@ public class DistributorSelectionActivity extends IvyBaseActivityNoActionBar imp
         CheckBox ChkBox;
     }
 
-    private void updatDistributorStatus(String distributorId){
-        for(DistributorMasterBO bo:bmodel.distributorMasterHelper.getDistributors()){
-            if(distributorId.equals(bo.getDId())){
+    private void updatDistributorStatus(String distributorId) {
+        for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
+            if (distributorId.equals(bo.getDId())) {
                 bo.setChecked(true);
 
-            }
-            else{
+            } else {
                 bo.setChecked(false);
             }
         }
@@ -162,15 +159,16 @@ public class DistributorSelectionActivity extends IvyBaseActivityNoActionBar imp
 
     }
 
-    private void clearAllDistributorStatus(){
-        for(DistributorMasterBO bo:bmodel.distributorMasterHelper.getDistributors()){
+    private void clearAllDistributorStatus() {
+        for (DistributorMasterBO bo : bmodel.distributorMasterHelper.getDistributors()) {
             bo.setChecked(false);
         }
     }
+
     @Override
     public void onClick(View view) {
-        if(view.getId()==bntDownload.getId()){
-         setResult(RESULT_OK);
+        if (view.getId() == bntDownload.getId()) {
+            setResult(RESULT_OK);
             finish();
         }
 

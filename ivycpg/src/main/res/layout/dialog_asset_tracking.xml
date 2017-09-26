@@ -21,11 +21,13 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dimen_5dp"
         android:weightSum="2">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +37,8 @@
                 android:textStyle="bold"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_20dp"/>
+                android:textSize="@dimen/dimen_20dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +47,8 @@
                 android:id="@+id/input_serialNo"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_18dp"/>
+                android:textSize="@dimen/dimen_18dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,20 +57,23 @@
                 android:textStyle="normal"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:textSize="@dimen/dimen_16dp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/reason"
                 android:textStyle="normal"
                 android:layout_margin="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_18dp"/>
+                android:textSize="@dimen/dimen_18dp" />
+
             <Spinner
                 android:id="@+id/spinnerCustomDialog"
                 android:layout_width="fill_parent"

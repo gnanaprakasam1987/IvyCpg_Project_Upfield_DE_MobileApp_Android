@@ -187,6 +187,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ImageView profileImageView;
     private static final int CAMERA_REQUEST_CODE = 1;
     private String imageFileName;
+    private ListView listView;
+
 
     @Nullable
     @Override
@@ -260,6 +262,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
         TextView designation = (TextView) view.findViewById(R.id.tv_designation);
         profileImageView = (ImageView) view.findViewById(R.id.im_user);
+
+        listView = (ListView) view.findViewById(R.id.listView1);
+
         if (bmodel.userMasterHelper.hasProfileImagePath(bmodel.userMasterHelper.getUserMasterBO()))
             setImageFromCamera();
         else
@@ -389,7 +394,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } catch (Exception e) {
             Commons.printException(e);
         }
-        showDefaultScreen();
+        //showDefaultScreen();
+        refreshList(true);
 
         return view;
 
@@ -2223,6 +2229,25 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 gotoNextActivity(con);
                 break;
             }
+        }
+    }
+
+    public void refreshList(boolean showDefaultScreen) {
+        leftmenuDB = new Vector<>();
+        // Load the HHTMenuTable
+        bmodel.configurationMasterHelper.downloadMainMenu();
+        for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
+
+            leftmenuDB.add(con);
+
+            if (con.getConfigCode().equals(MENU_PRESENCE)) {
+                isMenuAttendCS = true;
+            }
+        }
+        listView.setCacheColorHint(0);
+        listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
+        if (showDefaultScreen) {
+            showDefaultScreen();
         }
     }
 

@@ -1303,8 +1303,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                }
-                else if (menuDB.get(i).getConfigCode()
+                } else if (menuDB.get(i).getConfigCode()
                         .equals(MENU_DELIVERY_ORDER)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
@@ -3079,7 +3078,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 isCreated = false;
             }
 
-        }else if (menu.getConfigCode().equals(MENU_DELIVERY_ORDER) && hasLink == 1) {
+        } else if (menu.getConfigCode().equals(MENU_DELIVERY_ORDER) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
@@ -3102,8 +3101,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     i.putExtra("screentitle", menu.getMenuName());
                     startActivity(i);
                     finish();
-                }
-                else{
+                } else {
                     Toast.makeText(
                             this,
                             getResources().getString(

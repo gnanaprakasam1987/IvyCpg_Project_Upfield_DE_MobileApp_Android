@@ -3847,7 +3847,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public String getLocationIdsForScheme() {
-        String sql, sql1 = "", str = "" + bmodel.getRetailerMasterBO().getLocationId();
+        String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

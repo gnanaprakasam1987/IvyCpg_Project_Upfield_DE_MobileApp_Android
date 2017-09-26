@@ -33,14 +33,14 @@ import java.util.Vector;
  * Created by rajkumar.s on 9/20/2017.
  */
 
-public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements View.OnClickListener{
+public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
     BusinessModel bmodel;
     Vector<ProductMasterBO> mylist;
     ListView listView;
     Button btnSave;
     Toolbar toolbar;
-    boolean isPartialOrder=false;
+    boolean isPartialOrder = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +53,16 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         Bundle extras = getIntent().getExtras();
-        if(extras!=null){
-            isPartialOrder=extras.getBoolean("isPartial");
+        if (extras != null) {
+            isPartialOrder = extras.getBoolean("isPartial");
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            if(isPartialOrder)
-             setScreenTitle("Partial Invoice");
+            if (isPartialOrder)
+                setScreenTitle("Partial Invoice");
             else
                 setScreenTitle("Invoice");
 
@@ -73,8 +73,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        listView=(ListView)findViewById(R.id.lvwplist);
-        btnSave=(Button)findViewById(R.id.btn_next) ;
+        listView = (ListView) findViewById(R.id.lvwplist);
+        btnSave = (Button) findViewById(R.id.btn_next);
         btnSave.setOnClickListener(this);
 
         loadProducts();
@@ -83,13 +83,14 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==btnSave.getId()){
-         new Save().execute();
+        if (view.getId() == btnSave.getId()) {
+            new Save().execute();
         }
 
     }
 
     AlertDialog alertDialog;
+
     private class Save extends AsyncTask<String, Void, String> {
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(DeliveryOrderSummary.this);
@@ -108,13 +109,12 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
                 if (!isPartialOrder) {
-                   // bmodel.saveDeliveryOrderInvoice();
+                    // bmodel.saveDeliveryOrderInvoice();
                     bmodel.saveNewInvoice();
                 }
 
                 bmodel.productHelper.clearOrderTable();
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 Commons.printException(ex);
             }
 
@@ -127,7 +127,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             alertDialog.dismiss();
 
 
-            Toast.makeText(DeliveryOrderSummary.this,getResources().getString(R.string.saved_successfully),Toast.LENGTH_LONG).show();
+            Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
             startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
             finish();
 
@@ -150,19 +150,18 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadProducts(){
-        try{
-            mylist=new Vector<>();
-            for(ProductMasterBO productMasterBO:bmodel.productHelper.getProductMaster()){
-                if(productMasterBO.getDeliveredOuterQty()>0||productMasterBO.getDeliveredCaseQty()>0||productMasterBO.getDeliveredPcsQty()>0){
+    private void loadProducts() {
+        try {
+            mylist = new Vector<>();
+            for (ProductMasterBO productMasterBO : bmodel.productHelper.getProductMaster()) {
+                if (productMasterBO.getDeliveredOuterQty() > 0 || productMasterBO.getDeliveredCaseQty() > 0 || productMasterBO.getDeliveredPcsQty() > 0) {
                     mylist.add(productMasterBO);
                 }
             }
 
             MyAdapter mSchedule = new MyAdapter(mylist);
             listView.setAdapter(mSchedule);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -203,11 +202,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 holder = new ViewHolder();
 
 
-
                 holder.psname = (TextView) row
                         .findViewById(R.id.PRODUCTNAME);
 
-                holder.tv_pcs= (TextView) row
+                holder.tv_pcs = (TextView) row
                         .findViewById(R.id.P_QUANTITY);
                 holder.tv_case = (TextView) row
                         .findViewById(R.id.C_QUANTITY);
@@ -283,10 +281,9 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
             holder.psname.setText(holder.productObj.getProductShortName());
 
-            holder.tv_outer.setText(holder.productObj.getDeliveredOuterQty()+"");
-            holder.tv_case.setText(holder.productObj.getDeliveredCaseQty()+"");
-            holder.tv_pcs.setText(holder.productObj.getDeliveredPcsQty()+"");
-
+            holder.tv_outer.setText(holder.productObj.getDeliveredOuterQty() + "");
+            holder.tv_case.setText(holder.productObj.getDeliveredCaseQty() + "");
+            holder.tv_pcs.setText(holder.productObj.getDeliveredPcsQty() + "");
 
 
             return row;
@@ -297,7 +294,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         private ProductMasterBO productObj;
         private TextView psname;
 
-        private TextView tv_pcs,tv_case,tv_outer;
+        private TextView tv_pcs, tv_case, tv_outer;
 
 
     }

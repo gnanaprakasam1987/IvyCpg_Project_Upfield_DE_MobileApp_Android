@@ -5,14 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +20,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -691,7 +685,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
 
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName())
+                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -1161,6 +1155,8 @@ public class SOSFragment extends IvyBaseFragment implements
      */
     private void getTotalValue(final int categoryId) {
         mSelectedET = null;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -1191,6 +1187,9 @@ public class SOSFragment extends IvyBaseFragment implements
         }
 
         ListView listView = (ListView) dialog.findViewById(R.id.lv);
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = displayMetrics.heightPixels / 3;
+        listView.setLayoutParams(params);
         listView.setAdapter(new TotalDialogAdapter());
         dialog.findViewById(R.id.calczero)
                 .setOnClickListener(new MyClickListener());

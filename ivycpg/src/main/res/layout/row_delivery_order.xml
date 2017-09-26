@@ -137,6 +137,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/llSih"
                 android:layout_width="@dimen/dimen_0dp"
@@ -164,6 +165,7 @@
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/font_micro_small" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="match_parent"
@@ -172,6 +174,7 @@
                 android:weightSum="3"
                 android:layout_weight="4"
                 android:layout_gravity="end">
+
                 <LinearLayout
                     android:id="@+id/ll_ordered_case"
                     android:layout_width="wrap_content"
@@ -200,41 +203,41 @@
                         android:textSize="@dimen/font_micro_small" />
                 </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/ll_ordered_outer"
+                <LinearLayout
+                    android:id="@+id/ll_ordered_outer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="right|top"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_ordered_outer_Title"
+                        style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="totaltitle"
+                        android:text="@string/item_outer" />
+
+
+                    <TextView
+                        android:id="@+id/tv_ordered_outer"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="right|top"
-                        android:orientation="vertical"
-                        android:layout_weight="1">
+                        android:gravity="center|right"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/font_micro_small" />
+                </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/tv_ordered_outer_Title"
-                            style="?attr/customListItemSecondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:tag="totaltitle"
-                            android:text="@string/item_outer" />
-
-
-                        <TextView
-                            android:id="@+id/tv_ordered_outer"
-                            style="?attr/customListItemSecondary"
-                            android:layout_width="@dimen/meter_text_width"
-                            android:layout_height="match_parent"
-                            android:gravity="center|right"
-                            android:text="@string/zero"
-                            android:textColor="@color/black_bg1"
-                            android:textSize="@dimen/font_micro_small" />
-                    </LinearLayout>
                 <LinearLayout
                     android:id="@+id/ll_ordered_pcs"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="right|top"
                     android:orientation="vertical"
-                    android:layout_weight="1"
-                    >
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/tv_ordered_pcs_Title"
@@ -256,7 +259,7 @@
                         android:textSize="@dimen/font_micro_small" />
                 </LinearLayout>
 
-                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

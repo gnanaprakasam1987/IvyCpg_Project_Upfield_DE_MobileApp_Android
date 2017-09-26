@@ -52,7 +52,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -2000,7 +1999,7 @@ SynchronizationHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'" ;
+            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'";
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -4491,7 +4490,7 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        }else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
@@ -4533,7 +4532,8 @@ SynchronizationHelper {
 
     private String getLastTransactedDate() {
         DBUtil db = null;
-        String date = "";
+        String date = Utils.getDate("yyyy/MM/dd") + " 23:59:00";
+        ;
         ArrayList<String> dateList = new ArrayList<String>();
         try {
 

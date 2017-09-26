@@ -48,7 +48,7 @@ import java.util.Vector;
  * Created by rajkumar.s on 9/18/2017.
  */
 
-public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnClickListener,TextView.OnEditorActionListener {
+public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     View view;
     DrawerLayout mDrawerLayout;
@@ -79,7 +79,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
 
-        listView=(ListView) view.findViewById(
+        listView = (ListView) view.findViewById(
                 R.id.listview);
         inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -95,7 +95,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
         mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
 
-        btnNext= (Button) view.findViewById(R.id.btn_next);
+        btnNext = (Button) view.findViewById(R.id.btn_next);
         btnNext.setOnClickListener(this);
 
         productName = (TextView) view.findViewById(R.id.productName);
@@ -121,29 +121,28 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
             loadProducts();
 
-                mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
-                    public void afterTextChanged(Editable s) {
-                        if (s.length() >= 3) {
-                            loadSearchedList();
-                        }
+            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+                public void afterTextChanged(Editable s) {
+                    if (s.length() >= 3) {
+                        loadSearchedList();
                     }
+                }
 
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start,
-                                                  int count, int after) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
 
-                    }
+                }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start,
-                                              int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
 
-                    }
-                });
+                }
+            });
 
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -170,22 +169,22 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
     }
 
-    private void loadProducts(){
-        try{
-            mylist=new Vector<>();
-            for(ProductMasterBO productMasterBO:bmodel.productHelper.getProductMaster()){
-                if(productMasterBO.getOrderedOuterQty()>0||productMasterBO.getOrderedCaseQty()>0||productMasterBO.getOrderedPcsQty()>0){
+    private void loadProducts() {
+        try {
+            mylist = new Vector<>();
+            for (ProductMasterBO productMasterBO : bmodel.productHelper.getProductMaster()) {
+                if (productMasterBO.getOrderedOuterQty() > 0 || productMasterBO.getOrderedCaseQty() > 0 || productMasterBO.getOrderedPcsQty() > 0) {
                     mylist.add(productMasterBO);
                 }
             }
 
             MyAdapter mSchedule = new MyAdapter(mylist);
             listView.setAdapter(mSchedule);
-        }
-        catch (Exception ex){
-          Commons.printException(ex);
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
     }
+
     private void loadSearchedList() {
         try {
 
@@ -252,8 +251,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
                         .show();
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -295,7 +293,6 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 holder = new ViewHolder();
 
 
-
                 holder.psname = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_productname);
 
@@ -317,7 +314,6 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         .findViewById(R.id.tv_sih);
 
 
-
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 //setting typefaces
@@ -326,7 +322,6 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-
 
 
                 holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
@@ -342,8 +337,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                     ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_case)).setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     try {
                         ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                         ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -368,8 +362,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_pcs)).setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     try {
                         ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                         ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -393,8 +386,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_outer)).setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     try {
                         ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                         ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -453,18 +445,38 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                     .getOutersize())
                                     + holder.productObj.getDeliveredPcsQty();
 
-                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty()* holder.productObj
+                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty() * holder.productObj
                                     .getOutersize())
                                     + (holder.productObj.getOrderedPcsQty())
-                                    +(holder.productObj.getOrderedCaseQty()*holder.productObj.getCaseSize());
+                                    + (holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize());
 
                             if (totalQty <= totalOrderedQty) {
 
-                            if (totalQty <= holder.productObj.getSIH()) {
+                                if (totalQty <= holder.productObj.getSIH()) {
 
-                                holder.productObj.setDeliveredCaseQty(SDUtil
-                                        .convertToInt(qty));
+                                    holder.productObj.setDeliveredCaseQty(SDUtil
+                                            .convertToInt(qty));
 
+                                } else {
+
+                                    if (!"0".equals(qty)) {
+
+                                        Toast.makeText(
+                                                getActivity(),
+                                                getResources().getString(
+                                                        R.string.stock_not_available),
+                                                Toast.LENGTH_SHORT).show();
+
+                                        //Delete the last entered number and reset the qty
+                                        qty = qty.length() > 1 ? qty.substring(0,
+                                                qty.length() - 1) : "0";
+
+                                        holder.caseQty.setText(qty);
+
+                                        holder.productObj.setDeliveredCaseQty(SDUtil
+                                                .convertToInt(qty));
+                                    }
+                                }
                             } else {
 
                                 if (!"0".equals(qty)) {
@@ -472,7 +484,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                     Toast.makeText(
                                             getActivity(),
                                             getResources().getString(
-                                                    R.string.stock_not_available),
+                                                    R.string.exceeds_orderd_qty),
                                             Toast.LENGTH_SHORT).show();
 
                                     //Delete the last entered number and reset the qty
@@ -481,34 +493,12 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                                     holder.caseQty.setText(qty);
 
-                                    holder.productObj.setDeliveredCaseQty(SDUtil
+                                    holder.productObj.setDeliveredOuterQty(SDUtil
                                             .convertToInt(qty));
                                 }
+
                             }
-                        }
-                        else{
-
-                            if (!"0".equals(qty)) {
-
-                                Toast.makeText(
-                                        getActivity(),
-                                        getResources().getString(
-                                                R.string.exceeds_orderd_qty),
-                                        Toast.LENGTH_SHORT).show();
-
-                                //Delete the last entered number and reset the qty
-                                qty = qty.length() > 1 ? qty.substring(0,
-                                        qty.length() - 1) : "0";
-
-                                holder.caseQty.setText(qty);
-
-                                holder.productObj.setDeliveredOuterQty(SDUtil
-                                        .convertToInt(qty));
-                            }
-
-                        }
-                        }
-                        else{
+                        } else {
                             holder.caseQty.setText("0");
                             holder.productObj.setDeliveredCaseQty(0);
 
@@ -600,12 +590,12 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                             float totalQty = SDUtil.convertToInt(qty)
                                     + (holder.productObj.getDeliveredOuterQty() * holder.productObj
                                     .getOutersize())
-                                    +(holder.productObj.getDeliveredCaseQty()*holder.productObj.getCaseSize());
+                                    + (holder.productObj.getDeliveredCaseQty() * holder.productObj.getCaseSize());
 
-                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty()* holder.productObj
+                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty() * holder.productObj
                                     .getOutersize())
                                     + (holder.productObj.getOrderedPcsQty())
-                                    +(holder.productObj.getOrderedCaseQty()*holder.productObj.getCaseSize());
+                                    + (holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize());
 
                             if (totalQty <= totalOrderedQty) {
 
@@ -634,8 +624,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                                 .convertToInt(qty));
                                     }
                                 }
-                            }
-                            else{
+                            } else {
 
                                 if (!"0".equals(qty)) {
 
@@ -657,8 +646,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                             }
 
-                        }
-                        else{
+                        } else {
                             holder.pcsQty.setText("0");
                             holder.productObj.setDeliveredPcsQty(0);
 
@@ -748,15 +736,15 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         String qty = s.toString();
                         if (!"".equals(qty)) {
 
-                            float totalQty = (SDUtil.convertToInt(qty)* holder.productObj
+                            float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                     .getOutersize())
                                     + (holder.productObj.getDeliveredPcsQty())
-                                    +(holder.productObj.getDeliveredCaseQty()*holder.productObj.getCaseSize());
+                                    + (holder.productObj.getDeliveredCaseQty() * holder.productObj.getCaseSize());
 
-                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty()* holder.productObj
+                            float totalOrderedQty = (holder.productObj.getOrderedOuterQty() * holder.productObj
                                     .getOutersize())
                                     + (holder.productObj.getOrderedPcsQty())
-                                    +(holder.productObj.getOrderedCaseQty()*holder.productObj.getCaseSize());
+                                    + (holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize());
 
                             if (totalQty <= totalOrderedQty) {
 
@@ -785,8 +773,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                                 .convertToInt(qty));
                                     }
                                 }
-                            }
-                            else{
+                            } else {
 
                                 if (!"0".equals(qty)) {
 
@@ -807,14 +794,11 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                 }
 
                             }
-                        }
-                        else{
+                        } else {
                             holder.outerQty.setText("0");
                             holder.productObj.setDeliveredOuterQty(0);
 
                         }
-
-
 
 
                     }
@@ -910,7 +894,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 holder.pcsQty.setText(strPcsQty);
             }
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                String strOuterQty = holder.productObj.getDeliveredOuterQty()+ "";
+                String strOuterQty = holder.productObj.getDeliveredOuterQty() + "";
                 holder.outerQty.setText(strOuterQty);
             }
 
@@ -918,10 +902,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
             holder.sih.setText(holder.productObj.getSIH() + "");
 
 
-            holder.tv_outer_ordered.setText(holder.productObj.getOrderedOuterQty()+"");
-            holder.tv_case_ordered.setText(holder.productObj.getOrderedCaseQty()+"");
-            holder.tv_pcs_ordered.setText(holder.productObj.getOrderedPcsQty()+"");
-
+            holder.tv_outer_ordered.setText(holder.productObj.getOrderedOuterQty() + "");
+            holder.tv_case_ordered.setText(holder.productObj.getOrderedCaseQty() + "");
+            holder.tv_pcs_ordered.setText(holder.productObj.getOrderedPcsQty() + "");
 
 
             return row;
@@ -930,9 +913,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
     class ViewHolder {
         private ProductMasterBO productObj;
-        private TextView psname,sih;
+        private TextView psname, sih;
 
-        private TextView tv_pcs_ordered,tv_case_ordered,tv_outer_ordered;
+        private TextView tv_pcs_ordered, tv_case_ordered, tv_outer_ordered;
 
         private EditText pcsQty;
         private EditText caseQty;
@@ -951,7 +934,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
     }
 
     public void numberPressed(View vw) {
-      //  int val;
+        //  int val;
         if (QUANTITY == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.please_select_item), 0);
@@ -964,14 +947,14 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 s = s / 10;
                 String strS = s + "";
                 QUANTITY.setText(strS);
-               // val = s;
+                // val = s;
 
 
             } else {
                 Button ed = (Button) getActivity().findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
-               // val = SDUtil.convertToInt(append);
+                // val = SDUtil.convertToInt(append);
             }
 
 
@@ -1037,100 +1020,92 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
             } catch (Exception e) {
                 Commons.printException(e);
             }
-           loadProducts();
+            loadProducts();
 
-        }
-        else if(vw==btnNext){
-           if(isDelivering()){
-             if(isPartialDelivery()){
-                 //to summary
-                 Intent intent=new Intent(getActivity(),DeliveryOrderSummary.class);
-                 intent.putExtra("isPartial",true);
-                 startActivity(intent);
-                 getActivity().finish();
+        } else if (vw == btnNext) {
+            if (isDelivering()) {
+                if (isPartialDelivery()) {
+                    //to summary
+                    Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
+                    intent.putExtra("isPartial", true);
+                    startActivity(intent);
+                    getActivity().finish();
 
-             }
-             else{
-                 //to
-                 if(bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()!=null &&bmodel.schemeDetailsMasterHelper.getAppliedSchemeList().size()>0){
-                     //scheme available
+                } else {
+                    //to
+                    if (bmodel.schemeDetailsMasterHelper.getAppliedSchemeList() != null && bmodel.schemeDetailsMasterHelper.getAppliedSchemeList().size() > 0) {
+                        //scheme available
 
-                     boolean isStockAvailableForScheme=true;
-                     for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+                        boolean isStockAvailableForScheme = true;
+                        for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
 
-                         if (schemeBO.isQuantityTypeSelected()) {
-                             for(SchemeProductBO schemeProductBO:schemeBO.getFreeProducts()){
+                            if (schemeBO.isQuantityTypeSelected()) {
+                                for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
 
-                                 ProductMasterBO productMasterBO=bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
-                                 int totalQtyNeeded=(productMasterBO.getOrderedOuterQty()* productMasterBO.getOutersize())
-                                         + (productMasterBO.getOrderedPcsQty())
-                                         +(productMasterBO.getOrderedCaseQty()*productMasterBO.getCaseSize());
+                                    ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                                    int totalQtyNeeded = (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize())
+                                            + (productMasterBO.getOrderedPcsQty())
+                                            + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize());
 
-                                 if(schemeProductBO.getUomID()==productMasterBO.getPcUomid()){
-                                     totalQtyNeeded+=schemeProductBO.getQuantitySelected();
-                                 }
-                                 else if(schemeProductBO.getUomID()==productMasterBO.getCaseUomId()){
-                                     totalQtyNeeded+=(schemeProductBO.getQuantitySelected()*productMasterBO.getCaseSize());
-                                 }
-                                 else if(schemeProductBO.getUomID()==productMasterBO.getOuUomid()){
-                                     totalQtyNeeded+=(schemeProductBO.getQuantitySelected()*productMasterBO.getOutersize());
-                                 }
+                                    if (schemeProductBO.getUomID() == productMasterBO.getPcUomid()) {
+                                        totalQtyNeeded += schemeProductBO.getQuantitySelected();
+                                    } else if (schemeProductBO.getUomID() == productMasterBO.getCaseUomId()) {
+                                        totalQtyNeeded += (schemeProductBO.getQuantitySelected() * productMasterBO.getCaseSize());
+                                    } else if (schemeProductBO.getUomID() == productMasterBO.getOuUomid()) {
+                                        totalQtyNeeded += (schemeProductBO.getQuantitySelected() * productMasterBO.getOutersize());
+                                    }
 
-                                 if(totalQtyNeeded>productMasterBO.getSIH()){
-                                     isStockAvailableForScheme=false;
-                                     break;
-                                 }
-                             }
-                         }
+                                    if (totalQtyNeeded > productMasterBO.getSIH()) {
+                                        isStockAvailableForScheme = false;
+                                        break;
+                                    }
+                                }
+                            }
 
-                     }
+                        }
 
-                     if(isStockAvailableForScheme){
-                         Intent intent=new Intent(getActivity(),DeliveryOrderScheme.class);
-                         startActivity(intent);
-                         getActivity().finish();
-                     }
-                     else{
-                         //No stock available for scheme free products..
+                        if (isStockAvailableForScheme) {
+                            Intent intent = new Intent(getActivity(), DeliveryOrderScheme.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else {
+                            //No stock available for scheme free products..
 
-                         new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                                 getResources().getString(R.string.stock_not_availble_for_free_product),
-                                 getResources().getString(R.string.do_want_to_continue_with_partial_invoice),
-                                 false, getActivity().getResources().getString(R.string.ok),
-                                 getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
-                             @Override
-                             public void onPositiveButtonClick() {
+                            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                                    getResources().getString(R.string.stock_not_availble_for_free_product),
+                                    getResources().getString(R.string.do_want_to_continue_with_partial_invoice),
+                                    false, getActivity().getResources().getString(R.string.ok),
+                                    getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                                @Override
+                                public void onPositiveButtonClick() {
 
-                                 Intent intent=new Intent(getActivity(),DeliveryOrderSummary.class);
-                                 intent.putExtra("isPartial",true);
-                                 startActivity(intent);
-                                 getActivity().finish();
+                                    Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
+                                    intent.putExtra("isPartial", true);
+                                    startActivity(intent);
+                                    getActivity().finish();
 
-                             }
-                         }, new CommonDialog.negativeOnClickListener() {
-                             @Override
-                             public void onNegativeButtonClick() {
-                             }
-                         }).show();
+                                }
+                            }, new CommonDialog.negativeOnClickListener() {
+                                @Override
+                                public void onNegativeButtonClick() {
+                                }
+                            }).show();
 
 
+                        }
 
-                     }
+                    } else {
+                        //No scheme
+                        Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
+                        intent.putExtra("isPartial", false);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
 
-                 }
-                 else{
-                     //No scheme
-                     Intent intent=new Intent(getActivity(),DeliveryOrderSummary.class);
-                     intent.putExtra("isPartial",false);
-                     startActivity(intent);
-                     getActivity().finish();
-                 }
-
-             }
-           }
-           else {
-               Toast.makeText(getActivity(),getResources().getString(R.string.no_data_exists),Toast.LENGTH_LONG).show();
-           }
+                }
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.no_data_exists), Toast.LENGTH_LONG).show();
+            }
         }
 
     }
@@ -1144,7 +1119,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
         return false;
     }
 
-    private boolean isPartialDelivery(){
+    private boolean isPartialDelivery() {
         try {
             for (ProductMasterBO bo : mylist) {
                 if (bo.getOrderedOuterQty() > 0 || bo.getOrderedCaseQty() > 0 || bo.getOrderedPcsQty() > 0) {
@@ -1163,14 +1138,13 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return false;
     }
 
-    private boolean isDelivering(){
+    private boolean isDelivering() {
         try {
             for (ProductMasterBO bo : mylist) {
                 if (bo.getOrderedOuterQty() > 0 || bo.getOrderedCaseQty() > 0 || bo.getOrderedPcsQty() > 0) {
@@ -1180,8 +1154,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return false;

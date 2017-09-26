@@ -538,7 +538,7 @@ public class SalesFundamentalHelper {
             String headerValues;
             String detailValues;
             String headerColumns = "Uid,RetailerId,Date,Remark,refid";
-            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,Isdone,MappingId,LocId";
+            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,Isdone,MappingId,LocId,imgName";
 
             String mParentDetailColumns = "Uid, PId, BlockCount, ShelfCount,"
                     + " ShelfLength, ExtraShelf,total,RetailerId,LocId";
@@ -613,7 +613,8 @@ public class SalesFundamentalHelper {
                                     + "," + sosBo.getParentID()
                                     + "," + sosBo.getLocations().get(i).getAudit()
                                     + "," + sosBo.getMappingId()
-                                    + "," + sosBo.getLocations().get(i).getLocationId();
+                                    + "," + sosBo.getLocations().get(i).getLocationId()
+                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getImgName());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues.toString());
@@ -1028,7 +1029,9 @@ public class SalesFundamentalHelper {
                                     + "," + sodBo.getLocations().get(i).getPercentage() + ","
                                     + sodBo.getLocations().get(i).getGap() + "," + sodBo.getLocations().get(i).getReasonId()
                                     + "," + bmodel.QT(sodBo.getLocations().get(i).getImageName()) + ","
-                                    + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId() + "," + sodBo.getLocations().get(i).getLocationId();
+                                    + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId()
+                                    + "," + sodBo.getLocations().get(i).getLocationId()
+                                    + "," + bmodel.QT(sodBo.getLocations().get(i).getImgName());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues.toString());
@@ -1465,7 +1468,8 @@ public class SalesFundamentalHelper {
                                 + soskuBO.getParentID() + ","
                                 + 0 + ","
                                 + soskuBO.getMappingId() + ","
-                                + 0;
+                                + 0 + ","
+                                + bmodel.QT(soskuBO.getImgName());
 
                         db.insertSQL(modName + "_Tracking_Detail",
                                 detailColumns, detailValues.toString());
@@ -1592,7 +1596,7 @@ public class SalesFundamentalHelper {
                 if (moduleName.equals("SOS") || moduleName.equals("SOD")) {
                     sb.append(", IFNULL(B.BlockCount,'0'), IFNULL(B.ShelfCount,'0'),IFNULL(B.ShelfLength,'0'), IFNULL(B.ExtraShelf,'0'),SF.Parentid,SF.locid");
                 }
-                sb.append(" From " + moduleName + "_Tracking_Detail SF");
+                sb.append(" , SF.imgName as tempImageName From " + moduleName + "_Tracking_Detail SF");
                 {
                     sb.append(" LEFT JOIN " + moduleName
                             + "_Tracking_Parent_Detail B ON");
@@ -1628,6 +1632,7 @@ public class SalesFundamentalHelper {
                                             msos.getLocations().get(i).setGap(detailCursor.getString(6));
                                             msos.getLocations().get(i).setReasonId(detailCursor.getInt(7));
                                             msos.getLocations().get(i).setImageName(detailCursor.getString(8));
+                                            msos.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                             msos.getLocations().get(i).setAudit(detailCursor.getInt(10));
 
                                         }
@@ -1683,7 +1688,7 @@ public class SalesFundamentalHelper {
                                             msod.getLocations().get(i).setGap(detailCursor.getString(6));
                                             msod.getLocations().get(i).setReasonId(detailCursor.getInt(7));
                                             msod.getLocations().get(i).setImageName(detailCursor.getString(8));
-
+                                            msod.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                         }
                                     }
                                 }
@@ -1731,6 +1736,7 @@ public class SalesFundamentalHelper {
                                     soskuBO.setReasonId(detailCursor.getInt(7));
                                     soskuBO.setImageName(detailCursor
                                             .getString(8));
+                                    soskuBO.setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                     break;
                                 }
                             }
@@ -1813,31 +1819,39 @@ public class SalesFundamentalHelper {
      */
 
     public void onsaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
+        String imagePath = bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                .replace("/", "") + "/"
+                + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
         try {
             if (moduleName.equals(HomeScreenTwo.MENU_SOS)) {
+                imagePath = "SOS/" + imagePath;
                 for (int i = 0; i < getmSOSList().size(); ++i) {
                     SOSBO sos = (SOSBO) getmSOSList().get(i);
                     if (sos.getProductID() == mBrandID) {
-                        getmSOSList().get(i).getLocations().get(locationIndex).setImageName(imgName);
+                        getmSOSList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
+                        getmSOSList().get(i).getLocations().get(locationIndex).setImgName(imgName);
                         break;
 
                     }
                 }
             } else if (moduleName.equals(HomeScreenTwo.MENU_SOD)) {
+                imagePath = "SOD/" + imagePath;
                 for (int i = 0; i < getmSODList().size(); ++i) {
                     SODBO sod = getmSODList().get(i);
                     if (sod.getProductID() == mBrandID) {
-                        getmSODList().get(i).getLocations().get(locationIndex).setImageName(imgName);
+                        getmSODList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
+                        getmSODList().get(i).getLocations().get(locationIndex).setImgName(imgName);
                         break;
 
                     }
                 }
             } else if (moduleName.equals(HomeScreenTwo.MENU_SOSKU)) {
+                imagePath = "SOSKU/" + imagePath;
                 for (int i = 0; i < getmSOSKUList().size(); ++i) {
                     SOSKUBO sosku = (SOSKUBO) getmSOSKUList().get(i);
                     if (sosku.getProductID() == mBrandID) {
-                        sosku.setImageName(imgName);
-                        getmSOSKUList().get(i).setImageName(imgName);
+                        getmSOSKUList().get(i).setImageName(imagePath);
+                        getmSOSKUList().get(i).setImgName(imgName);
                         break;
                     }
                 }

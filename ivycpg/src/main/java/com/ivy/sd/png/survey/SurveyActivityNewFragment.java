@@ -2531,7 +2531,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
         surveyHelperNew.setmQuestionData(mQuestions);
 
-        questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
+        /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeRight() {
                 if ((tabPos - 1) >= 0 && tabLayout != null)
                     tabLayout.getTabAt(tabPos - 1).select();
@@ -2541,7 +2541,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if ((tabPos + 1) <= tabCount && tabLayout != null)
                     tabLayout.getTabAt(tabPos + 1).select();
             }
-        });
+        });*/
 
 
         listAdapter = new QuestionAdapter();

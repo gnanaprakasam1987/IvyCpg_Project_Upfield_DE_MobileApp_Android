@@ -54,7 +54,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-                setScreenTitle("Scheme Products");
+            setScreenTitle("Scheme Products");
 
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,9 +63,9 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        chk_isScheme=(CheckBox)findViewById(R.id.chk_isScheme);
-        listView=(ListView)findViewById(R.id.lvwplist);
-        btnSave=(Button)findViewById(R.id.btn_next) ;
+        chk_isScheme = (CheckBox) findViewById(R.id.chk_isScheme);
+        listView = (ListView) findViewById(R.id.lvwplist);
+        btnSave = (Button) findViewById(R.id.btn_next);
         btnSave.setOnClickListener(this);
 
         loadProducts();
@@ -73,7 +73,8 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
     }
 
     private ArrayList<SchemeProductBO> mFreeProductList;
-    private void loadProducts(){
+
+    private void loadProducts() {
         try {
             mFreeProductList = new ArrayList<>();
             for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
@@ -100,9 +101,8 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
 
             MyAdapter adapter = new MyAdapter(mFreeProductList);
             listView.setAdapter(adapter);
-        }
-        catch (Exception ex){
-        Commons.printException(ex);
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
 
     }
@@ -157,7 +157,6 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                 holder = new ViewHolder();
 
 
-
                 holder.psname = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_productname);
 
@@ -168,8 +167,6 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                         .findViewById(R.id.tv_case);
                 holder.tv_outer_ordered = (TextView) row
                         .findViewById(R.id.tv_outer);
-
-
 
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
@@ -242,13 +239,13 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
             holder.psname.setText(holder.productObj.getProductName());
 
             if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                holder.tv_case_ordered.setText(holder.productObj.getDeliverQtyCase()+"");
+                holder.tv_case_ordered.setText(holder.productObj.getDeliverQtyCase() + "");
             }
             if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                holder.tv_pcs_ordered.setText(holder.productObj.getDeliverQtyPcs()+"");
+                holder.tv_pcs_ordered.setText(holder.productObj.getDeliverQtyPcs() + "");
             }
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                holder.tv_outer_ordered.setText(holder.productObj.getDeliverQtyOuter()+"");
+                holder.tv_outer_ordered.setText(holder.productObj.getDeliverQtyOuter() + "");
             }
 
             return row;
@@ -258,7 +255,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
     class ViewHolder {
         private SchemeProductBO productObj;
 
-        private TextView tv_pcs_ordered,tv_case_ordered,tv_outer_ordered,psname;
+        private TextView tv_pcs_ordered, tv_case_ordered, tv_outer_ordered, psname;
 
 
     }
@@ -269,15 +266,14 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
 
         if (vw == btnSave) {
 
-            if(chk_isScheme.isChecked()){
-                Intent intent=new Intent(DeliveryOrderScheme.this,DeliveryOrderSummary.class);
-                intent.putExtra("isPartial",false);
+            if (chk_isScheme.isChecked()) {
+                Intent intent = new Intent(DeliveryOrderScheme.this, DeliveryOrderSummary.class);
+                intent.putExtra("isPartial", false);
                 startActivity(intent);
                 finish();
-            }
-            else{
-                Intent intent=new Intent(DeliveryOrderScheme.this,DeliveryOrderSummary.class);
-                intent.putExtra("isPartial",true);
+            } else {
+                Intent intent = new Intent(DeliveryOrderScheme.this, DeliveryOrderSummary.class);
+                intent.putExtra("isPartial", true);
                 startActivity(intent);
                 finish();
             }

@@ -15,14 +15,14 @@ public class AssetTrackingBO {
     private String mposm;
     private String mbrand;
     private String mnewinstaldate;
-    private String msno,mreasonId,mremarks;
+    private String msno, mreasonId, mremarks;
     private String mposmname;
     private String mflag;
     private String msbdid;
     private String groupLevelName;
     private String mNFCTagId;
     private int groupLevelId;
-    private int availQty,scanComplete=0;
+    private int availQty, scanComplete = 0;
     private String imageName = "";
     private String AssetName;
     private String SerialNo = "0";
@@ -39,10 +39,11 @@ public class AssetTrackingBO {
         this.AssetName = assetTrackingBO.getAssetName();
         this.audit = assetTrackingBO.getAudit();
         this.availQty = assetTrackingBO.getAvailQty();
-        this.scanComplete=assetTrackingBO.getscanComplete();
+        this.scanComplete = assetTrackingBO.getscanComplete();
         this.competitorQty = assetTrackingBO.getCompetitorQty();
         this.conditionID = assetTrackingBO.getConditionID();
         this.imageName = assetTrackingBO.getImageName();
+        this.imgName = assetTrackingBO.getImgName();
         this.mbrand = assetTrackingBO.getMbrand();
         this.minstalldate = assetTrackingBO.getMinstalldate();
         this.mnewinstaldate = assetTrackingBO.getMnewinstaldate();
@@ -165,6 +166,7 @@ public class AssetTrackingBO {
     public void setMsno(String msno) {
         this.msno = msno;
     }
+
     public String getMreasonId() {
         return mreasonId;
     }
@@ -172,6 +174,7 @@ public class AssetTrackingBO {
     public void setMreasonId(String mreasonId) {
         this.mreasonId = mreasonId;
     }
+
     public String getMremarks() {
         return mremarks;
     }
@@ -258,6 +261,7 @@ public class AssetTrackingBO {
     public void setAvailQty(int availQty) {
         this.availQty = availQty;
     }
+
     public int getscanComplete() {
         return scanComplete;
     }
@@ -340,4 +344,14 @@ public class AssetTrackingBO {
     public void setLocationID(int locationID) {
         this.locationID = locationID;
     }
+
+    public String getImgName() {
+        return imgName;
+    }
+
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
+    }
+
+    private String imgName = "";
 }

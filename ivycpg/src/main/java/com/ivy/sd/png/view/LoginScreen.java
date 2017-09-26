@@ -1519,13 +1519,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         }
     }
 
-    private void downloadOnDemandMasterUrl(boolean isDistributorWise){
+    private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
 
-        if(isDistributorWise) {
+        if (isDistributorWise) {
             bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
             bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
-        }
-        else{
+        } else {
             bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
             bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
         }
@@ -1544,7 +1543,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             super.onPreExecute();
             try {
 
-                if(alertDialog!=null) {
+                if (alertDialog != null) {
                     builder = new AlertDialog.Builder(LoginScreen.this);
 
                     bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.loading));
@@ -1552,12 +1551,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     alertDialog.show();
                 }
 
-               // bmodel.distributorMasterHelper.downloadDistributorsList();
+                // bmodel.distributorMasterHelper.downloadDistributorsList();
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
                 for (DistributorMasterBO distributorBO : distributorList) {
-                    if(distributorBO.isChecked()) {
+                    if (distributorBO.isChecked()) {
                         jsonArray.put(distributorBO.getDId());
                     }
                 }
@@ -1700,7 +1699,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
                 //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                 bmodel.synchronizationHelper.downloadTransactionUrl();
+                bmodel.synchronizationHelper.downloadTransactionUrl();
                 if (bmodel.synchronizationHelper.getUrlList() != null && bmodel.synchronizationHelper.getUrlList().size() > 0) {
                     bmodel.synchronizationHelper.downloadLastVisitTranAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, 1);
                 } else {
@@ -1858,16 +1857,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
      */
     private void callNextTask(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            if(alertDialog!=null) {
+            if (alertDialog != null) {
                 alertDialog.dismiss();
             }
-           // new InitiateDistributorDownload().execute();
+            // new InitiateDistributorDownload().execute();
             bmodel.distributorMasterHelper.downloadDistributorsList();
-            Intent intent=new Intent(LoginScreen.this,DistributorSelectionActivity.class);
-           startActivityForResult(intent,SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
+            startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
 
-        }else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
-               downloadOnDemandMasterUrl(false);
+        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
+            downloadOnDemandMasterUrl(false);
         } else if (response == SynchronizationHelper.NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD) {
             new InitiateRetailerDownload().execute();
         } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
@@ -1926,9 +1925,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         switch (requestCode) {
             case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                   new InitiateDistributorDownload().execute();
-                }
-                else{
+                    new InitiateDistributorDownload().execute();
+                } else {
 
                 }
         }

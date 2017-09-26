@@ -20,17 +20,16 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:layout_margin="@dimen/list_margin"
         android:layout_below="@+id/toolbar"
-        android:layout_above="@+id/rl_footer"/>
+        android:layout_above="@+id/rl_footer" />
 
     <RelativeLayout
         android:id="@+id/rl_footer"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/footer_height"
-    android:background="@color/footer_bg"
-    android:orientation="horizontal"
-    android:padding="@dimen/footer_padding"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/footer_height"
+        android:background="@color/footer_bg"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding"
         android:layout_alignParentBottom="true">
-
 
 
         <Button
@@ -44,8 +43,8 @@
             android:text="@string/text_invoice"
             android:textAllCaps="false"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
