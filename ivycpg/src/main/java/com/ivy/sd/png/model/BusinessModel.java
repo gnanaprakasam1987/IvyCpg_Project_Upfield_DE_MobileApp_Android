@@ -10728,6 +10728,16 @@ public class BusinessModel extends Application {
         else
             return true;
     }
+
+    /* Checks if all values are null */
+    public boolean isMapEmpty(HashMap<Integer, Integer> aMap) {
+        for (Integer v : aMap.values()) {
+            if (v != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 

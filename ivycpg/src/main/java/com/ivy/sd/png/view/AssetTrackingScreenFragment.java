@@ -8,9 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,7 +48,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
@@ -765,6 +761,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             bmodel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
                             bmodel.assetTrackingHelper.mSelectedImageName = imageName;
+                            bmodel.assetTrackingHelper.mSelectedSerial = holder.assetBO.getSerialNo();
                             boolean nFilesThere = bmodel.checkForNFilesInFolder(photoPath, 1,
                                             fnameStarts);
 
@@ -824,6 +821,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.minstalldate.setEnabled(false);
                             holder.mservicedate.setEnabled(false);
                           //  holder.assetBO.setImageName("");
+                            // holder.assetBO.setImgName("");
                             holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -910,6 +908,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.minstalldate.setEnabled(false);
                 holder.mservicedate.setEnabled(false);
                 holder.assetBO.setImageName("");
+                holder.assetBO.setImgName("");
                 holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -958,21 +957,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if ((holder.assetBO.getImageName() != null)
                     && (!"".equals(holder.assetBO.getImageName()))
                     && (!"null".equals(holder.assetBO.getImageName()))) {
-                setPictureToImageView( holder.assetBO.getImageName(),holder.photoBTN);
-//                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera_blue_24dp);
-//                Glide.with(getActivity()).load(
-//                        getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                                + "/" + DataMembers.photoFolderName + "/" + holder.assetBO.getImageName())
-//                        .asBitmap()
-//                        .centerCrop()
-//                        .placeholder(new BitmapDrawable(getResources(), defaultIcon))
-//                        .error(R.drawable.no_image_available)
-//                        .into(new BitmapImageViewTarget(holder.photoBTN) {
-//                    @Override
-//                    protected void setResource(Bitmap resource) {
-//                        holder.photoBTN.setImageDrawable(new BitmapDrawable(getResources(), bmodel.getCircularBitmapFrom(resource)));
-//                    }
-//                });
+                setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
+                /*Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
+                Glide.with(getActivity()).load(
+                        getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                + "/" + DataMembers.photoFolderName + "/" + holder.assetBO.getImgName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.photoBTN) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        holder.photoBTN.setImageDrawable(new BitmapDrawable(getResources(), bmodel.getCircularBitmapFrom(resource)));
+                        Commons.print("Photo draw " + holder.photoBTN.getVisibility() + ", " + holder.photoBTN.getDrawable() + ", " + bmodel.getCircularBitmapFrom(resource));
+                    }
+                });*/
             } else {
                 if(!holder.photoBTN.isEnabled())
                     holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera_grey_24dp));
@@ -1124,6 +1119,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
                             if (bbid.equals(Integer.toString(assetBO.getAssetID()))) {
                                 assetBO.setImageName("");
+                                assetBO.setImgName("");
                             }
                         }
                         bmodel.assetTrackingHelper
@@ -1158,11 +1154,18 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * @param imgName
      */
 
-    private void onsaveImageName(int assetID, String imgName) {
+    private void onsaveImageName(int assetID, String serialNo, String imgName) {
+
+        String imagePath = "Asset/"
+                + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                .replace("/", "") + "/"
+                + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
 
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-            if (assetID == assetBO.getAssetID()) {
-                assetBO.setImageName(imgName);
+            if (assetID == assetBO.getAssetID() &&
+                    serialNo.equals(assetBO.getSerialNo())) {
+                assetBO.setImageName(imagePath);
+                assetBO.setImgName(imgName);
                 break;
             }
         }
@@ -1181,6 +1184,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 if (bmodel.assetTrackingHelper.mSelectedAssetID != 0) {
                     onsaveImageName(
                             bmodel.assetTrackingHelper.mSelectedAssetID,
+                            bmodel.assetTrackingHelper.mSelectedSerial,
                             bmodel.assetTrackingHelper.mSelectedImageName);
                 }
             } else {
@@ -1308,7 +1312,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
         if (view != null && bmodel.configurationMasterHelper.IS_TEAMLEAD)
             getView().findViewById(R.id.keypad).setVisibility(View.GONE);
-
+        /*if (view != null && !bmodel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
+            view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
+        }*/
         if (!bmodel.assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
             view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
         } else {
@@ -1621,6 +1627,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
+            if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+                myList.addAll(mAssetTrackingList);
+            } else {
             for (LevelBO levelBO : parentidList) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (levelBO.getProductID() == assetBO.getProductid()) {
@@ -1638,6 +1647,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            }
             }
         } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {

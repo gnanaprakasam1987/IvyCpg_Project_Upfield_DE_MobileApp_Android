@@ -438,4 +438,13 @@ public class LocationBO {
 
 	ArrayList<CS_StockReasonBO> lstStockReasons;
 
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+
+	private String imgName = "";
 }

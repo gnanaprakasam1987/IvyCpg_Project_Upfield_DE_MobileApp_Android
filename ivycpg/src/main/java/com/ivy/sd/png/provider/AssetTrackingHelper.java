@@ -59,6 +59,7 @@ public class AssetTrackingHelper {
      * This String used to store captured image's image Name
      */
     public String mSelectedImageName = "";
+    public String mSelectedSerial = "";
 
     //Column Configuration - AT01
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -523,7 +524,9 @@ public class AssetTrackingHelper {
             } else {
                 bmodel.setAssetRemark("");
             }
-            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted  from assetDetail where uid=" +
+            /*String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted  from assetDetail where uid=" +
+                    QT(uid);*/
+            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName  from assetDetail where uid=" +
                     QT(uid);
 
 
@@ -557,7 +560,7 @@ public class AssetTrackingHelper {
                                     ConfigurationMasterHelper.outDateFormat),
                             DateUtil.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
-                                    ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locid, isExecuted);
+                                    ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locid, isExecuted, detailCursor.getString(detailCursor.getColumnIndex("imgName")));
                 }
             }
             detailCursor.close();
@@ -1199,7 +1202,7 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(typeListId);
 
 
-            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted";
+            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
             int totalTarget = 0;
             int totalActualQty = 0;
             for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
@@ -1309,6 +1312,13 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(assetBo.getGroupLevelId());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getExecutorQty());
+                                assetDetailValues.append(",");
+                                if (assetBo.getImgName() != null
+                                        && !assetBo.getImgName().equals("")) {
+                                    assetDetailValues.append(QT(assetBo.getImgName()));
+                                } else {
+                                    assetDetailValues.append(QT(""));
+                                }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns,
                                         assetDetailValues.toString());
@@ -1399,6 +1409,13 @@ public class AssetTrackingHelper {
                             assetDetailValues.append(assetBo.getGroupLevelId());
                             assetDetailValues.append(",");
                             assetDetailValues.append(assetBo.getExecutorQty());
+                            assetDetailValues.append(",");
+                            if (assetBo.getImgName() != null
+                                    && !assetBo.getImgName().equals("")) {
+                                assetDetailValues.append(QT(assetBo.getImgName()));
+                            } else {
+                                assetDetailValues.append(QT(""));
+                            }
                             db.insertSQL(DataMembers.tbl_AssetDetail,
                                     AssetDetailColumns, assetDetailValues.toString());
                         }
@@ -1432,11 +1449,12 @@ public class AssetTrackingHelper {
      * @param reasonid
      * @param --remarksid
      * @param serialNo
+     * @param imgName
      */
 
     private void setAssetDetails(int assetID, int qty, String imageName,
                                  String reasonid, String serialNo,
-                                 String conditionid, String minstalldate, String mservicedate, int audit, int pid, int compQty, int locid, int isExec) {
+                                 String conditionid, String minstalldate, String mservicedate, int audit, int pid, int compQty, int locid, int isExec, String imgName) {
 
         AssetTrackingBO assetBO = null;
         mAssetTrackingList = null;
@@ -1474,6 +1492,7 @@ public class AssetTrackingHelper {
                 assetBO.setCompetitorQty(compQty);
 
                 assetBO.setExecutorQty(isExec);
+                assetBO.setImgName(imgName);
 
             }
         }

@@ -42,6 +42,7 @@ public class AssetTrackingBO {
         this.competitorQty = assetTrackingBO.getCompetitorQty();
         this.conditionID = assetTrackingBO.getConditionID();
         this.imageName = assetTrackingBO.getImageName();
+        this.imgName = assetTrackingBO.getImgName();
         this.mbrand = assetTrackingBO.getMbrand();
         this.minstalldate = assetTrackingBO.getMinstalldate();
         this.mnewinstaldate = assetTrackingBO.getMnewinstaldate();
@@ -320,4 +321,14 @@ public class AssetTrackingBO {
     public void setLocationID(int locationID) {
         this.locationID = locationID;
     }
+
+    public String getImgName() {
+        return imgName;
+    }
+
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
+    }
+
+    private String imgName = "";
 }

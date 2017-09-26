@@ -469,7 +469,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOSKU.getImageName()))
                     && (!"null".equals(holder.mSOSKU.getImageName()))) {
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOSKU.getImageName())
+                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOSKU.getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -865,6 +865,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                             SOSKUBO sosku = items.get(i);
                             if (sosku.getProductID() == Integer.parseInt(bbid)) {
                                 sosku.setImageName("");
+                                sosku.setImgName("");
                             }
                         }
                         bmodel.deleteFiles(HomeScreenFragment.photoPath,
