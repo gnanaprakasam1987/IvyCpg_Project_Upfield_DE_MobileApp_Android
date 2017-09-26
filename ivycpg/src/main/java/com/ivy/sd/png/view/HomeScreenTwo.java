@@ -1726,8 +1726,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                     }
 
+                    bmodel.productHelper.downloadIndicativeOrderList();//moved here to check size of indicative order
                     bmodel.selectedOrderId = "";
-                    if (bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
+                    if (bmodel.productHelper.getIndicativeList() != null
+                            && bmodel.productHelper.getIndicativeList().size() < 1
+                            && bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
                         if (bmodel.isEdit()) {
                             bmodel.selectedOrderId = "";//cleared to avoid reuse of id
                             final String menuConfigCode = menu.getConfigCode();
@@ -3216,7 +3219,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
     public void loadstockorderscreen(String menu) {
         {
-            bmodel.productHelper.downloadIndicativeOrderList();
             indicativeOrderAdapter = new ArrayAdapter<Integer>(this,
                     android.R.layout.select_dialog_singlechoice);
 
