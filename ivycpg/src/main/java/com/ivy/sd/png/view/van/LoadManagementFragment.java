@@ -616,10 +616,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 holder.listLayout = (LinearLayout) convertView
                         .findViewById(R.id.list_layout);
 
-                if (position % 2 == 0)
-                    convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-                else
-                    convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
                 convertView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -651,6 +647,11 @@ public class LoadManagementFragment extends IvyBaseFragment {
             else
                 holder.menuIcon.setImageResource(menuIcons
                         .get(MENU_STOCK_PROPOSAL));
+
+            if (position % 2 == 0)
+                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+            else
+                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.grey_odd));
 
             return convertView;
         }

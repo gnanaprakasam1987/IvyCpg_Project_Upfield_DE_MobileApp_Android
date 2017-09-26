@@ -18,14 +18,14 @@
 
             <TextView
                 android:id="@+id/week_title"
-                android:layout_width="@dimen/select_week_width"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/factor_title_size"
                 android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginTop="@dimen/margin_week_layout"
+                android:layout_marginTop="@dimen/dash_margin"
                 android:layout_toRightOf="@+id/brandSpinner"
                 android:text="@string/select_week"
                 android:textColor="?attr/selectWeekBackground"
-                android:textSize="@dimen/text_sz_medium" />
+                android:textSize="@dimen/font_small" />
 
             <HorizontalScrollView
                 android:id="@+id/horiScroll"
@@ -132,10 +132,10 @@
                 android:layout_height="@dimen/factor_title_size"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/margin_week_layout"
-                android:layout_marginTop="@dimen/margin_week_layout"
+                android:layout_marginTop="@dimen/dash_margin"
                 android:text="@string/select_day"
                 android:textColor="?attr/selectWeekBackground"
-                android:textSize="@dimen/text_sz_medium" />
+                android:textSize="@dimen/font_small" />
 
             <Spinner
                 android:id="@+id/brandSpinner"
@@ -282,9 +282,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/margin_week_layout"
                     android:layout_marginTop="@dimen/margin_week_layout"
+                    android:tag="all_beat"
                     android:text="@string/select_beat"
                     android:textColor="?attr/selectWeekBackground"
-                    android:tag="all_beat"
                     android:textSize="@dimen/text_sz_medium" />
 
                 <Spinner
@@ -335,6 +335,5 @@
         android:dividerHeight="@dimen/margin_10px"
         android:fitsSystemWindows="true"
         android:scrollbars="none" />
-
 
 </RelativeLayout>

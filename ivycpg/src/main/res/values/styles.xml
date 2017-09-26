@@ -110,11 +110,11 @@
         <item name="android:background">@color/colorPrimary</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearanceBlue</item>
         <item name="tabSelectedTextColor">@color/WHITE</item>
-        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
     <style name="AppTabTextAppearanceBlue" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/WHITE</item>
         <item name="android:gravity">center</item>
         <item name="textAllCaps">false</item>
@@ -230,12 +230,12 @@
         <item name="android:background">@color/colorPrimaryRed</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearanceRed</item>
         <item name="tabSelectedTextColor">@color/WHITE</item>
-        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textSize">@dimen/font_medium</item>
 
     </style>
 
     <style name="AppTabTextAppearanceRed" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/GRAY</item>
         <item name="textAllCaps">true</item>
     </style>
@@ -349,10 +349,11 @@
         <item name="tabBackground">@color/colorPrimaryOrange</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearanceOrange</item>
         <item name="tabSelectedTextColor">@color/WHITE</item>
+        <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
     <style name="AppTabTextAppearanceOrange" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/WHITE</item>
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
@@ -468,10 +469,11 @@
         <item name="tabBackground">@color/colorPrimaryCB</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearanceCarlsberg</item>
         <item name="tabSelectedTextColor">@color/WHITE</item>
+        <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
     <style name="AppTabTextAppearanceCarlsberg" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/WHITE</item>
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
@@ -586,10 +588,11 @@
         <item name="tabBackground">@color/colorPrimaryPink</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearancePink</item>
         <item name="tabSelectedTextColor">@color/WHITE</item>
+        <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
     <style name="AppTabTextAppearancePink" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/WHITE</item>
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
