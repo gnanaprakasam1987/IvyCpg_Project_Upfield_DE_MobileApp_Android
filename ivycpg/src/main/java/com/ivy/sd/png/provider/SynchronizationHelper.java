@@ -1999,7 +1999,7 @@ SynchronizationHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'" ;
+            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'";
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -4490,7 +4490,7 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        }else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

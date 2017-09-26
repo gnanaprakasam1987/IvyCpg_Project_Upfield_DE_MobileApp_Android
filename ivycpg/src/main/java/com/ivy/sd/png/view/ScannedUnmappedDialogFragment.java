@@ -1,12 +1,10 @@
 package com.ivy.sd.png.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +33,15 @@ import java.util.ArrayList;
  * Created by anish.k on 9/22/2017.
  */
 
-public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener{
+public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener {
 
     protected BusinessModel bmodel;
     protected TextInputLayout TLDesc;
     protected EditText ETDesc;
-    protected TextView TOutletCode,TEquiType,TSerialNo;
-    protected Button BTCancel,BTSave;
+    protected TextView TOutletCode, TEquiType, TSerialNo;
+    protected Button BTCancel, BTSave;
     protected Spinner spinnerCustom;
-    protected String serialNo, EquiType,reasonId,remarks,brand,retailerName;
+    protected String serialNo, EquiType, reasonId, remarks, brand, retailerName;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
 
     @Nullable
@@ -57,20 +53,20 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         View view = inflater.inflate(R.layout.dialog_asset_tracking, container);
         final Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
-        TLDesc=(TextInputLayout)view.findViewById(R.id.input_layout_dialog_description);
-        ETDesc=(EditText)view.findViewById(R.id.input_description);
-        TEquiType=(TextView)view.findViewById(R.id.input_equipment_type);
-        TOutletCode=(TextView)view.findViewById(R.id.input__outletcode);
-        TSerialNo=(TextView)view.findViewById(R.id.input_serialNo);
-        BTCancel=(Button)view.findViewById(R.id.btn_dialog_cancel);
-        BTSave=(Button)view.findViewById(R.id.btn_dialog_save);
+        TLDesc = (TextInputLayout) view.findViewById(R.id.input_layout_dialog_description);
+        ETDesc = (EditText) view.findViewById(R.id.input_description);
+        TEquiType = (TextView) view.findViewById(R.id.input_equipment_type);
+        TOutletCode = (TextView) view.findViewById(R.id.input__outletcode);
+        TSerialNo = (TextView) view.findViewById(R.id.input_serialNo);
+        BTCancel = (Button) view.findViewById(R.id.btn_dialog_cancel);
+        BTSave = (Button) view.findViewById(R.id.btn_dialog_save);
         BTCancel.setOnClickListener(this);
         BTSave.setOnClickListener(this);
 
-        serialNo=getArguments().getString("serialNo");
-        EquiType=getArguments().getString("assetName");
-        brand=getArguments().getString("brand");
-        retailerName=getArguments().getString("retailerName");
+        serialNo = getArguments().getString("serialNo");
+        EquiType = getArguments().getString("assetName");
+        brand = getArguments().getString("brand");
+        retailerName = getArguments().getString("retailerName");
 
         TSerialNo.setText(serialNo);
         TEquiType.setText(EquiType);
@@ -83,7 +79,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
     private void initCustomSpinner(View view) {
 
-        spinnerCustom= (Spinner) view.findViewById(R.id.spinnerCustomDialog);
+        spinnerCustom = (Spinner) view.findViewById(R.id.spinnerCustomDialog);
         ArrayList<String> languages = new ArrayList<String>();
         languages.add("--Select Reason--");
         try {
@@ -91,13 +87,11 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                     .getNonProductiveReasonMaster()) {
                 languages.add(temp.getReasonDesc());
             }
-        }
-        catch (NullPointerException e)
-        {
-            Log.e("Null","NullPointer Throwed");
+        } catch (NullPointerException e) {
+            Log.e("Null", "NullPointer Throwed");
             e.printStackTrace();
         }
-      //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
+        //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, languages);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -116,12 +110,13 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
             }
         });
     }
+
     private void setAddAssetDetails() {
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
-        remarks=ETDesc.getText().toString().trim();
+        remarks = ETDesc.getText().toString().trim();
         assetBo.setMposm(bmodel.assetTrackingHelper.getassetposmids(EquiType));
         assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
         assetBo.setMnewinstaldate(todayDate);
@@ -144,8 +139,8 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
     }
-    private boolean validateDesc()
-    {
+
+    private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
             TLDesc.setError("Invalid Entry");
             requestFocus(ETDesc);
@@ -156,6 +151,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
         return true;
     }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -164,26 +160,19 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.btn_dialog_cancel)
-        {
-         dismiss();
-        }
-        else if(v.getId()==R.id.btn_dialog_save)
-        {
-            if(validateDesc())
-            {
-                if(spinnerCustom.getSelectedItemPosition()!=0)
-                {
-                        setAddAssetDetails();
-                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                        bmodel.assetTrackingHelper
-                                .saveAssetAddandDeletedetails("MENU_ASSET");
-                        Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
-                                Toast.LENGTH_SHORT).show();
-                        dismiss();
-                }
-                else
-                {
+        if (v.getId() == R.id.btn_dialog_cancel) {
+            dismiss();
+        } else if (v.getId() == R.id.btn_dialog_save) {
+            if (validateDesc()) {
+                if (spinnerCustom.getSelectedItemPosition() != 0) {
+                    setAddAssetDetails();
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    bmodel.assetTrackingHelper
+                            .saveAssetAddandDeletedetails("MENU_ASSET");
+                    Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
+                            Toast.LENGTH_SHORT).show();
+                    dismiss();
+                } else {
                     Toast.makeText(bmodel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -760,18 +760,22 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
     </application>
 

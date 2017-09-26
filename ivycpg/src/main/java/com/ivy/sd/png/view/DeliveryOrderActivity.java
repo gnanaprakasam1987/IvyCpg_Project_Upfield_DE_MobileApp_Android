@@ -17,6 +17,7 @@ import com.ivy.sd.png.util.Commons;
 public class DeliveryOrderActivity extends IvyBaseActivityNoActionBar {
 
     Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

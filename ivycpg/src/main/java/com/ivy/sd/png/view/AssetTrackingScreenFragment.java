@@ -8,13 +8,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +23,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,14 +38,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -537,7 +532,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         Bundle args = new Bundle();
                         args.putString("serialNo", strBarCodeSearch);
                         args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
-                        args.putString("brand",mAllAssetTrackingList.get(i).getMbrand());
+                        args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
                         args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
                         scannedUnmappedDialogFragment.setArguments(args);
                         scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
@@ -839,7 +834,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                     && (!"".equals(holder.assetBO.getImageName()))
                                     && (!"null".equals(holder.assetBO.getImageName()))) {
                                 holder.photoBTN.setEnabled(true);
-                                setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
+                                setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                             } else {
                                 holder.photoBTN.setEnabled(true);
                                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
@@ -931,7 +926,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         && (!"".equals(holder.assetBO.getImageName()))
                         && (!"null".equals(holder.assetBO.getImageName()))) {
                     holder.photoBTN.setEnabled(true);
-                    setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
+                    setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                 } else {
                     holder.photoBTN.setEnabled(true);
                     holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));

@@ -106,5 +106,5 @@ public class DistributorMasterBO {
 		isChecked = checked;
 	}
 
-	private  boolean isChecked;
+	private boolean isChecked;
 }

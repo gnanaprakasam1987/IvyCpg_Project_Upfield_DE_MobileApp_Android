@@ -394,7 +394,7 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
         mAssetTrackingList = new ArrayList<>();
-        mAllAssetTrackingList=new ArrayList<>();
+        mAllAssetTrackingList = new ArrayList<>();
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
@@ -411,7 +411,7 @@ public class AssetTrackingHelper {
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(bmodel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
-            String allMasterSb=sb.toString();
+            String allMasterSb = sb.toString();
             if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
@@ -445,7 +445,7 @@ public class AssetTrackingHelper {
 
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                 sb.append("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
-                allMasterSb=allMasterSb+ ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+                allMasterSb = allMasterSb + ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
             Cursor c = db.selectSQL(sb.toString());
@@ -499,7 +499,7 @@ public class AssetTrackingHelper {
                     standardListBO.setAssetTrackingList(clonedList);
                 }
 
-            }else{
+            } else {
                 for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
@@ -541,7 +541,7 @@ public class AssetTrackingHelper {
                     standardListBO.setAllAssetTrackingList(clonedList);
                 }
 
-            }else{
+            } else {
                 for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
@@ -1109,8 +1109,8 @@ public class AssetTrackingHelper {
                     + QT(DateUtil.convertToServerDateFormat(
                     assets.getMnewinstaldate(),
                     ConfigurationMasterHelper.outDateFormat))
-                    + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId +","+
-                     QT(assets.getMreasonId())+","+ QT(assets.getMremarks());
+                    + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId + "," +
+                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);

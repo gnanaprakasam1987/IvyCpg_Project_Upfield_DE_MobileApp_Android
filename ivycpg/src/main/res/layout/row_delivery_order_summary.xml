@@ -46,8 +46,6 @@
             android:background="@drawable/line_dotted" />
 
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,7 +195,6 @@
                     android:layout_marginTop="@dimen/dimens_4dp"
                     android:background="@color/GRAY_TEXT" />
             </LinearLayout>
-
 
 
         </LinearLayout>
