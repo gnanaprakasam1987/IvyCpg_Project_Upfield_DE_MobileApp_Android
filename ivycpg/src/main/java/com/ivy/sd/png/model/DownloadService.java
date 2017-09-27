@@ -698,7 +698,10 @@ public class DownloadService extends IntentService {
                             errorLoginCode = jsonObject
                                     .getString(SynchronizationHelper.ERROR_CODE);
                             if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                                bmodel.synchronizationHelper.downloadRetailerByLocOrUser(jsonObject);
+                                if (tablelist.get(i).equalsIgnoreCase("RetailerMaster"))
+                                    bmodel.synchronizationHelper.downloadRetailerByLocOrUser(jsonObject);
+                                if(tablelist.get(i).equalsIgnoreCase("RetailerBeatMapping"))
+                                    bmodel.synchronizationHelper.downloadRetailerBeats(jsonObject);
 
 //
                             }

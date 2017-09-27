@@ -5,9 +5,11 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class BeatMasterHelper {
@@ -16,9 +18,11 @@ public class BeatMasterHelper {
     private Context context;
     private Vector<BeatMasterBO> beatMaster;
     private BeatMasterBO todayBeatMasterBO;
+    private BusinessModel bmodel;
 
     protected BeatMasterHelper(Context context) {
         this.context = context;
+        this.bmodel = (BusinessModel) context;
 
     }
 
@@ -93,7 +97,7 @@ public class BeatMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT " + DataMembers.tbl_beatMaster_cols
-                    + " FROM " + DataMembers.tbl_beatMaster);
+                    + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " + bmodel.userMasterHelper.getUserMasterBO().getUserid());
             if (c != null) {
                 setBeatMaster(new Vector<BeatMasterBO>());
                 while (c.moveToNext()) {
@@ -107,8 +111,66 @@ public class BeatMasterHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" +e);
+            Commons.printException("" + e);
         }
+    }
+
+    /*User for Adhoc planning*/
+    public ArrayList<BeatMasterBO> downloadBeats(int userId) {
+        ArrayList<BeatMasterBO> beatList = new ArrayList<>();
+        try {
+            BeatMasterBO beat;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("SELECT " + DataMembers.tbl_beatMaster_cols
+                    + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " + userId);
+            if (c != null) {
+                beatList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    beat = new BeatMasterBO();
+                    beat.setBeatId(c.getInt(0));
+                    beat.setBeatDescription(c.getString(1));
+                    beat.setToday(c.getInt(2));
+                    beatList.add(beat);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return beatList;
+    }
+
+    public ArrayList<BeatMasterBO> downloadBeatsAdhocPlanned() {
+        ArrayList<BeatMasterBO> beatList = new ArrayList<>();
+        try {
+            BeatMasterBO beat;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select distinct RBM.BeatID, BM.BeatDescription,BM.today from RetailerBeatMapping RBM inner join BeatMaster BM on BM.beatID = RBM.BeatID");
+            if (c != null) {
+                beatList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    beat = new BeatMasterBO();
+                    beat.setBeatId(c.getInt(0));
+                    beat.setBeatDescription(c.getString(1));
+                    beat.setToday(c.getInt(2));
+                    beatList.add(beat);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return beatList;
     }
 
     public BeatMasterBO getTodayBeatMasterBO() {

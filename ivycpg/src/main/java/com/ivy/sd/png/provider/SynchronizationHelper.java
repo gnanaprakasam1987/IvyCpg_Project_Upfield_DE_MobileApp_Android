@@ -2959,6 +2959,41 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public void downloadRetailerBeats(JSONObject jsonObject) {
+        HashMap<Integer, Integer> retailerBeatMap = new HashMap<>();
+
+
+        try {
+            JSONArray fieldList = jsonObject.getJSONArray(SynchronizationHelper.JSON_FIELD_KEY);
+            JSONArray dataList = jsonObject.getJSONArray(SynchronizationHelper.JSON_DATA_KEY);
+            int retailerIdPos = -1;
+            int beatIdPos = -1;
+            for (int i = 0; i < fieldList.length(); i++) {
+                if (fieldList.getString(i).equalsIgnoreCase("RetailerId")) {
+                    retailerIdPos = i;
+
+                } else if (fieldList.getString(i).equalsIgnoreCase("BeatId")) {
+                    beatIdPos = i;
+                }
+            }
+
+            for (int i = 0; i < dataList.length(); i++) {
+                JSONArray recordList = (JSONArray) dataList.get(i);
+                retailerBeatMap.put((Integer) recordList.get(retailerIdPos), (Integer) recordList.get(beatIdPos));
+            }
+
+            if (retailerBeatMap != null && !retailerBeatMap.isEmpty()) {
+                for (int i = 0; i < mRetailerListByLocOrUserWise.size(); i++) {
+                    int  retailerId = Integer.parseInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
+                    mRetailerListByLocOrUserWise.get(i).setBeatID(retailerBeatMap.get(retailerId) != null ? retailerBeatMap.get(retailerId) : 0);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
 
 
     }
