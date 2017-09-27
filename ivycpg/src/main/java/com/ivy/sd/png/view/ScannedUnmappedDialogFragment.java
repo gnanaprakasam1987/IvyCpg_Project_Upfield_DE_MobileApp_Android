@@ -47,6 +47,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     protected Spinner spinnerCustom;
     protected String serialNo, EquiType,reasonId,remarks,brand,retailerName;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
+    protected Integer assetId=-1;
 
     @Nullable
     @Override
@@ -71,8 +72,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         EquiType=getArguments().getString("assetName");
         brand=getArguments().getString("brand");
         retailerName=getArguments().getString("retailerName");
+        assetId=getArguments().getInt("assetId");
 
-        TSerialNo.setText(serialNo);
+        TSerialNo.setText(getString(R.string.serial_no)+": "+serialNo);
         TEquiType.setText(EquiType);
         TOutletCode.setText(retailerName);
 
@@ -84,12 +86,12 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     private void initCustomSpinner(View view) {
 
         spinnerCustom= (Spinner) view.findViewById(R.id.spinnerCustomDialog);
-        ArrayList<String> languages = new ArrayList<String>();
-        languages.add("--Select Reason--");
+        ArrayList<String> reasonList = new ArrayList<String>();
+        reasonList.add("--Select Reason--");
         try {
             for (ReasonMaster temp : bmodel.reasonHelper
                     .getNonProductiveReasonMaster()) {
-                languages.add(temp.getReasonDesc());
+                reasonList.add(temp.getReasonDesc());
             }
         }
         catch (NullPointerException e)
@@ -99,7 +101,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         }
       //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, languages);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCustom.setAdapter(dataAdapter);
         spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -122,7 +124,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         remarks=ETDesc.getText().toString().trim();
-        assetBo.setMposm(bmodel.assetTrackingHelper.getassetposmids(EquiType));
+        assetBo.setMposm(String.valueOf(assetId));
         assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
         assetBo.setMnewinstaldate(todayDate);
         assetBo.setMsno(serialNo);

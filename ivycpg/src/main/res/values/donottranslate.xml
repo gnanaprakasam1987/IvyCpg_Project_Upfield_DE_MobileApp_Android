@@ -132,4 +132,6 @@
 
     <string name="incentivetext">Total Incentive</string>
     <string name="hasannouncer">Has Announcer</string>
+
+    <string name="moveAsset">Move Asset</string>
 </resources>
