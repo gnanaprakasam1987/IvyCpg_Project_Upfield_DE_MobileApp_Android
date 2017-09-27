@@ -892,6 +892,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_RTR_WISE_DOWNLOAD;
 
     public boolean IS_USER_WISE_RETAILER_DOWNLOAD = false;
+    public boolean IS_BEAT_WISE_RETAILER_DOWNLOAD = false;
     public static final String CODE_USER_WISE_RETAILER_DOWNLOAD = "SYNC05";
 
     public boolean IS_SYNC_WITH_IMAGES = false;
@@ -1776,6 +1777,10 @@ public class ConfigurationMasterHelper {
         this.SHOW_DIST_STOCK = hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) : false;
         this.IS_RTR_WISE_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) : false;
         this.IS_USER_WISE_RETAILER_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) : false;
+        if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) == 1)
+                IS_BEAT_WISE_RETAILER_DOWNLOAD = true;
+        }
         this.IS_SYNC_WITH_IMAGES = hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) : false;
         this.SHOW_STK_ORD_MRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) : false;
         this.IS_ENABLE_GCM_REGISTRATION = hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) : false;
