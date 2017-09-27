@@ -204,6 +204,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -214,6 +215,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -224,6 +226,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -749,16 +752,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AcknowledgementActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.sd.png.view.AssetMovementActivity"></activity>
     </application>
 
 </manifest>
