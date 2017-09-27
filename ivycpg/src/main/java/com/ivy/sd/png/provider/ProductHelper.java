@@ -1289,6 +1289,7 @@ public class ProductHelper {
                         + "A.tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A left join "
                         + "PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
@@ -1395,6 +1396,7 @@ public class ProductHelper {
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A1 ";
 
                 for (int i = 2; i <= loopEnd; i++)
@@ -1511,6 +1513,8 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
+
+                    product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -1802,6 +1806,7 @@ public class ProductHelper {
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A left join "
                         + "PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
@@ -1907,6 +1912,7 @@ public class ProductHelper {
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP, ")
                         + "A" + loopEnd + ".tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + " from ProductMaster A1 ";
 
@@ -2017,7 +2023,7 @@ public class ProductHelper {
                     product.setDescription(c.getString(c.getColumnIndex("tagDescription")));
 
                     product.setIsNearExpiryTaggedProduct(c.getInt(c.getColumnIndex("isNearExpiry")));
-
+                    product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
                 }
@@ -2598,7 +2604,13 @@ public class ProductHelper {
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
             }
+
+            //clear delivered qty
+            product.setDeliveredCaseQty(0);
+            product.setDeliveredOuterQty(0);
+            product.setDeliveredPcsQty(0);
         }
+
 
     }
 
@@ -4257,7 +4269,7 @@ public class ProductHelper {
             query = "SELECT PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
-                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
+                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
                     + sql3
                     + sql1
                     + " FROM ProductMaster PM"
@@ -4329,7 +4341,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4518,7 +4530,7 @@ public class ProductHelper {
             query = "SELECT  PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
-                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
+                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" //+ ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse "
                     + sql3
                     + sql1
                     + " FROM ProductMaster PM"
@@ -4584,7 +4596,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -8461,8 +8473,6 @@ public class ProductHelper {
                 loopEnd = mContentLevel - mFiltrtLevel + 1;
 
 
-
-
                 sql = "select A"
                         + loopEnd
                         + ".pid, A"
@@ -8534,15 +8544,15 @@ public class ProductHelper {
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
 
-                    sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
-                            + mChildLevel + " FROM ConfigActivityFilter"
-                            + " WHERE ActivityCode = "
-                            + bmodel.QT(moduleCode)
-                            + ")"
-                            // + " AND A" + loopEnd
-                            // + ".isSalable = 1 "
-                            + " group by A" + loopEnd + ".pid ORDER BY " + filter
-                            + " A" + loopEnd + ".rowid";
+                sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
+                        + mChildLevel + " FROM ConfigActivityFilter"
+                        + " WHERE ActivityCode = "
+                        + bmodel.QT(moduleCode)
+                        + ")"
+                        // + " AND A" + loopEnd
+                        // + ".isSalable = 1 "
+                        + " group by A" + loopEnd + ".pid ORDER BY " + filter
+                        + " A" + loopEnd + ".rowid";
 
 
             }

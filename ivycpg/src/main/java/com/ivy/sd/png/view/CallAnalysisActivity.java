@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -80,6 +82,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     TextView tv_store_status, tv_duration, tv_edt_time_taken, tv_sale;
     EditText edt_noOrderReason;
     Button btn_close;
+    private RelativeLayout rl_store_status;
+    private CardView content_card;
 
     View view_sale_header;
 
@@ -117,7 +121,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         if (bmodel.timer != null) {
             bmodel.timer.setHandler(handler);
         }
-
+        content_card = (CardView) findViewById(R.id.content_card);
         try {
 
             listview = (ListView) findViewById(R.id.callAnalysisList);
@@ -134,6 +138,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             });
 
             mGoldStoreIV = (ImageView) findViewById(R.id.goldstore_iv);
+            rl_store_status = (RelativeLayout) findViewById(R.id.rl_store_status);
             spinnerNoOrderReason = (Spinner) findViewById(R.id.spinnerNoorderreason);
             spinnerNooCollectionReason = (Spinner) findViewById(R.id.spinnerNooCollectionReason);
             spinnerFeedback = (Spinner) findViewById(R.id.spinner_feedback);
@@ -235,12 +240,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     ListArrayAdapter adapter = new ListArrayAdapter(this,
                             R.layout.call_analysis_list_item, lstLeft, lstRight);
                     listview.setAdapter(adapter);
+                } else {
+                    content_card.setVisibility(View.GONE);
                 }
 
             } else {
                 ListArrayAdapter adapter = new ListArrayAdapter(this,
                         R.layout.call_analysis_list_item, configlist, null);
                 listview.setAdapter(adapter);
+                if (configlist == null || configlist.size() == 0) {
+                    content_card.setVisibility(View.GONE);
+                }
             }
 
 
@@ -319,12 +329,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
         Commons.print("dist" + sbdFalg + " merch" + sbdMerchTarget + " init"
                 + initFalg + " sales" + valueFlag);
-        if (sbdFalg && sbdMerch && initFalg && valueFlag) {
-            mGoldStoreIV.setImageResource(R.drawable.icon_star_gold);
-            updateGoldenStore(1);
+        if (disttgt == 0 && merchtgt == 0 && inittarget == 0 && salestarget == 0) {
+            rl_store_status.setVisibility(View.GONE);
         } else {
-            mGoldStoreIV.setImageResource(R.drawable.icon_star);
-            updateGoldenStore(0);
+            if (sbdFalg && sbdMerch && initFalg && valueFlag) {
+                mGoldStoreIV.setImageResource(R.drawable.icon_star_gold);
+                updateGoldenStore(1);
+            } else {
+                mGoldStoreIV.setImageResource(R.drawable.icon_star);
+                updateGoldenStore(0);
+            }
+            rl_store_status.setVisibility(View.VISIBLE);
         }
 
     }

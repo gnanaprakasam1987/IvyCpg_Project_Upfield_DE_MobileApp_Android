@@ -21,8 +21,8 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-   // public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
-    public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
+    public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
+ // public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
 //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
@@ -588,6 +588,9 @@ public class DataMembers {
     public static final String tbl_jointcallacknowledgement_cols = "Userid,Username,Beat,Retailer,Date,Value,Refid,Ack_Date,Upload";
     public static final String tbl_jointcallacknowledgement_upload_cols = "Refid,Ack_Date";
 
+    private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
+    private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -754,6 +757,7 @@ public class DataMembers {
         uploadColumn.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumn.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
         uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
+        uploadColumn.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -944,6 +948,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_PaymentDiscount_Detail, tbl_PaymentDiscountDetail_Cols);
         uploadColumnWithOutRetailer.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

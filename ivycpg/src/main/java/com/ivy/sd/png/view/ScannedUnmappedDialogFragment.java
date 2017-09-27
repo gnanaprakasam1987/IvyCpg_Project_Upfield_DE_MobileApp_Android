@@ -37,7 +37,7 @@ import java.util.ArrayList;
  * Created by anish.k on 9/22/2017.
  */
 
-public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener{
+public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener {
 
     protected BusinessModel bmodel;
     protected TextInputLayout TLDesc;
@@ -93,10 +93,8 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                     .getNonProductiveReasonMaster()) {
                 reasonList.add(temp.getReasonDesc());
             }
-        }
-        catch (NullPointerException e)
-        {
-            Log.e("Null","NullPointer Throwed");
+        } catch (NullPointerException e) {
+            Log.e("Null", "NullPointer Throwed");
             e.printStackTrace();
         }
       //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
@@ -118,6 +116,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
             }
         });
     }
+
     private void setAddAssetDetails() {
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
@@ -166,26 +165,19 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.btn_dialog_cancel)
-        {
-         dismiss();
-        }
-        else if(v.getId()==R.id.btn_dialog_save)
-        {
-            if(validateDesc())
-            {
-                if(spinnerCustom.getSelectedItemPosition()!=0)
-                {
-                        setAddAssetDetails();
-                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                        bmodel.assetTrackingHelper
-                                .saveAssetAddandDeletedetails("MENU_ASSET");
-                        Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
-                                Toast.LENGTH_SHORT).show();
-                        dismiss();
-                }
-                else
-                {
+        if (v.getId() == R.id.btn_dialog_cancel) {
+            dismiss();
+        } else if (v.getId() == R.id.btn_dialog_save) {
+            if (validateDesc()) {
+                if (spinnerCustom.getSelectedItemPosition() != 0) {
+                    setAddAssetDetails();
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    bmodel.assetTrackingHelper
+                            .saveAssetAddandDeletedetails("MENU_ASSET");
+                    Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
+                            Toast.LENGTH_SHORT).show();
+                    dismiss();
+                } else {
                     Toast.makeText(bmodel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -125,4 +125,14 @@ public class SOSKUBO {
 		MappingId = mappingId;
 	}
 
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+
+	private String imgName = "";
+
 }

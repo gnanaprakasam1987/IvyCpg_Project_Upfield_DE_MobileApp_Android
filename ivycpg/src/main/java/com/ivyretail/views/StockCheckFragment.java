@@ -1608,7 +1608,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.CAMERA);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
+                //new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        StockCheckFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
             } else {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.permission_enable_msg)
@@ -2392,6 +2399,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
             } else {
                 strBarCodeSearch = result.getContents();
             }
+        } else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
         }
     }
 

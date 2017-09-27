@@ -204,7 +204,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -215,7 +214,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -226,7 +224,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -764,6 +761,25 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.sd.png.view.AssetMovementActivity"></activity>
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

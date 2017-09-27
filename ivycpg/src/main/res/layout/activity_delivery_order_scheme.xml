@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/list_margin"
+        android:padding="@dimen/dimen_5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/are_u_giving_free_products"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/chk_isScheme"
+            android:layout_alignParentLeft="true" />
+
+        <CheckBox
+            android:id="@+id/chk_isScheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:checked="true" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lvwplist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:drawSelectorOnTop="false"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:layout_margin="@dimen/list_margin"
+        android:layout_below="@+id/ll_header"
+        android:layout_above="@+id/rl_footer" />
+
+    <RelativeLayout
+        android:id="@+id/rl_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/footer_height"
+        android:background="@color/footer_bg"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding"
+        android:layout_alignParentBottom="true">
+
+
+        <Button
+            android:id="@+id/btn_next"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin"
+            android:padding="@dimen/padding_rb"
+            android:tag="invoicesave"
+            android:text="@string/next"
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

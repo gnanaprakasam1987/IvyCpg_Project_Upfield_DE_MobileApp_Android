@@ -52,7 +52,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +137,8 @@ SynchronizationHelper {
     public boolean isLastVisitTranDownloadDone;
     public boolean isSihDownloadDone;
 
+    public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
+
     public enum FROM_SCREEN {
         LOGIN(0),
         SYNC(1),
@@ -165,7 +166,8 @@ SynchronizationHelper {
         DISTRIBUTOR_DOWNLOAD(1),
         LAST_VISIT_TRAN_DOWNLOAD(2),
         SIH_DOWNLOAD(3),
-        DIGITAL_CONTENT_AVALILABLE(4), DEFAULT(5);
+        DIGITAL_CONTENT_AVALILABLE(4), DEFAULT(5),
+        NON_DISTRIBUTOR_DOWNLOAD(6);
         private int value;
 
         NEXT_METHOD(int value) {
@@ -1944,7 +1946,7 @@ SynchronizationHelper {
             if (!isCommonTableDownload)
                 sb.append(" and typecode='SYNMAS' and IsOnDemand=1");
             else
-                sb.append(" and (typecode='SYNMAS' OR typecode ='SYNCCONST') ");
+                sb.append(" and ((typecode='SYNMAS' and IsOnDemand=0) OR typecode ='SYNCCONST') ");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1972,6 +1974,32 @@ SynchronizationHelper {
             db.openDataBase();
             String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'" +
                     " and IsOnDemand=1";
+
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mDownloadUrlList.add(c.getString(0));
+                    mMandatoryByUrl.put(DataMembers.SERVER_URL + c.getString(0), c.getInt(1));
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void downloadTransactionUrl() {
+        mDownloadUrlList = new ArrayList<>();
+        mMandatoryByUrl = new HashMap<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sb = "select url,IsMandatory from UrlDownloadMaster where TypeCode='SYNAU'";
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -2927,6 +2955,41 @@ SynchronizationHelper {
 
             }
 
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void downloadRetailerBeats(JSONObject jsonObject) {
+        HashMap<Integer, Integer> retailerBeatMap = new HashMap<>();
+
+
+        try {
+            JSONArray fieldList = jsonObject.getJSONArray(SynchronizationHelper.JSON_FIELD_KEY);
+            JSONArray dataList = jsonObject.getJSONArray(SynchronizationHelper.JSON_DATA_KEY);
+            int retailerIdPos = -1;
+            int beatIdPos = -1;
+            for (int i = 0; i < fieldList.length(); i++) {
+                if (fieldList.getString(i).equalsIgnoreCase("RetailerId")) {
+                    retailerIdPos = i;
+
+                } else if (fieldList.getString(i).equalsIgnoreCase("BeatId")) {
+                    beatIdPos = i;
+                }
+            }
+
+            for (int i = 0; i < dataList.length(); i++) {
+                JSONArray recordList = (JSONArray) dataList.get(i);
+                retailerBeatMap.put((Integer) recordList.get(retailerIdPos), (Integer) recordList.get(beatIdPos));
+            }
+
+            if (retailerBeatMap != null && !retailerBeatMap.isEmpty()) {
+                for (int i = 0; i < mRetailerListByLocOrUserWise.size(); i++) {
+                    int  retailerId = Integer.parseInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
+                    mRetailerListByLocOrUserWise.get(i).setBeatID(retailerBeatMap.get(retailerId) != null ? retailerBeatMap.get(retailerId) : 0);
+                }
+            }
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -4462,6 +4525,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
+        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+            return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
             if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() <= 0) {
@@ -4502,7 +4567,8 @@ SynchronizationHelper {
 
     private String getLastTransactedDate() {
         DBUtil db = null;
-        String date = "";
+        String date = Utils.getDate("yyyy/MM/dd") + " 23:59:00";
+        ;
         ArrayList<String> dateList = new ArrayList<String>();
         try {
 

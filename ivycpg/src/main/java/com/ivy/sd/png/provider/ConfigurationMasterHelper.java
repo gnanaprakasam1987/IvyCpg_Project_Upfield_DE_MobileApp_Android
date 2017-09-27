@@ -427,6 +427,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PROFILE_IMAGE = "PROFILE60";
     public boolean IS_PROFILE_IMAGE;
+
+    public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
+    public boolean IS_MULTI_STOCKORDER;
     /**
      * RoadActivity config *
      */
@@ -889,6 +892,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_RTR_WISE_DOWNLOAD;
 
     public boolean IS_USER_WISE_RETAILER_DOWNLOAD = false;
+    public boolean IS_BEAT_WISE_RETAILER_DOWNLOAD = false;
     public static final String CODE_USER_WISE_RETAILER_DOWNLOAD = "SYNC05";
 
     public boolean IS_SYNC_WITH_IMAGES = false;
@@ -1150,6 +1154,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS = "FUN56";
     public boolean IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS;
+
+    private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
+    public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1770,6 +1777,10 @@ public class ConfigurationMasterHelper {
         this.SHOW_DIST_STOCK = hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) : false;
         this.IS_RTR_WISE_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) : false;
         this.IS_USER_WISE_RETAILER_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) : false;
+        if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) == 1)
+                IS_BEAT_WISE_RETAILER_DOWNLOAD = true;
+        }
         this.IS_SYNC_WITH_IMAGES = hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) : false;
         this.SHOW_STK_ORD_MRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) : false;
         this.IS_ENABLE_GCM_REGISTRATION = hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) : false;
@@ -1822,6 +1833,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
             this.IS_MUST_SELL_REASON = false;
@@ -2028,6 +2040,7 @@ public class ConfigurationMasterHelper {
         this.IS_PRODUCT_DISPLAY_FOR_PIRAMAL = hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) : false;
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
+        this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
 
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
@@ -2289,7 +2302,7 @@ public class ConfigurationMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
+            String sql = "select distinct hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_HOME)
@@ -4376,7 +4389,7 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public enum FontType {
+    public static enum FontType {
         LIGHT, REGULAR, MEDIUM, BOLD, THIN
     }
 

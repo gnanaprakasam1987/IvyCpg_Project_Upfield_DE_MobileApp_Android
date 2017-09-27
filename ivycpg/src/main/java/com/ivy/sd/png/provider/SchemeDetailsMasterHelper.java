@@ -3023,6 +3023,7 @@ public class SchemeDetailsMasterHelper {
 
             sb.append(" and sid=" + bmodel.getRetailerMasterBO().getDistributorId());
 
+            sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");// to prevent delivered orders
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -3846,7 +3847,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public String getLocationIdsForScheme() {
-        String sql, sql1 = "", str = "" + bmodel.getRetailerMasterBO().getLocationId();
+        String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
