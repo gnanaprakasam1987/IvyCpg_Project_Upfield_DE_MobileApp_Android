@@ -585,8 +585,8 @@ public class DataMembers {
     public static final String tbl_ModuleActivityDetails_cols = "Tid,DistributorId,UserId,Date,ModuleCode,Activity,Latitude,longitude,GpsAccuracy";
 
     public static final String tbl_jointcallacknowledgement = "JointCallAcknowledgement";
-    public static final String tbl_jointcallacknowledgement_cols = "Userid,Username,Beat,Retailer,Date,Value,Refid,Ack_Date,Upload";
-    public static final String tbl_jointcallacknowledgement_upload_cols = "Refid,Ack_Date";
+    public static final String tbl_jointcallacknowledgement_cols = "Userid,Username,Beat,Retailer,Date,Value,Refid,AckDate,Upload";
+    public static final String tbl_jointcallacknowledgement_upload_cols = "Refid,AckDate";
 
     private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
     private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
