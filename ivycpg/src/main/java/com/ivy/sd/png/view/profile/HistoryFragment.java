@@ -152,7 +152,8 @@ public class HistoryFragment extends IvyBaseFragment {
 //        historyLayout.setVisibility(View.VISIBLE);
 //        orderHistoryFooterValues.setVisibility(View.VISIBLE);
 
-
+        if (!(items.size() > 0))
+            ((LinearLayout) view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
         return view;
     }
 
@@ -213,7 +214,7 @@ public class HistoryFragment extends IvyBaseFragment {
 
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private final LinearLayout del_date_layout, invoice_date_layout, invoice_qty_layout, del_rep_code_layout;
-            private LinearLayout listBgLayout,invViewLayout;
+            private LinearLayout listBgLayout, invViewLayout;
             private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt;
             private TextView orderId, date, totLines, totVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
@@ -221,7 +222,7 @@ public class HistoryFragment extends IvyBaseFragment {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                invViewLayout=(LinearLayout)itemView.findViewById(R.id.inv_view_layout);
+                invViewLayout = (LinearLayout) itemView.findViewById(R.id.inv_view_layout);
                 listBgLayout = (LinearLayout) itemView.findViewById(R.id.list_background);
                 orderIdTxt = (TextView) itemView.findViewById(R.id.order_id_txt);
                 dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
@@ -272,6 +273,7 @@ public class HistoryFragment extends IvyBaseFragment {
                                 && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
                             Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
                             intent.putExtra("selected_list_id", getLayoutPosition());
+                            intent.putExtra("from", "OrderHistory");
                             startActivity(intent);
                         }
                     }

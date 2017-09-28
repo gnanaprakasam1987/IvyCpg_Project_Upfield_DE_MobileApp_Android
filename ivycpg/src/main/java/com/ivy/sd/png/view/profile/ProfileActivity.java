@@ -319,6 +319,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD)
             tabLayout.addTab(tabLayout.newTab().setText("MSL"));
+        if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY)
+            tabLayout.addTab(tabLayout.newTab().setText("Invoice History"));
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -456,7 +458,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
                 isMapview = true;
                 retailerLng = retailerObj.getLongitude();
-            }else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+            } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
                 isNonVisitReason = true;
             }
         }
@@ -1026,13 +1028,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
             ProfileFragment profileFragment = new ProfileFragment();
             HistoryFragment historyFragment = new HistoryFragment();
+            InvoiceHistoryFragment invoiceHistoryFragment = new InvoiceHistoryFragment();
             PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
             planningOutletFragment.setArguments(null);
 
 //            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
 //            retailerKpiFragment.setArguments(null);
             bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-            bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");
+            bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
             SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
             Bundle bnd = new Bundle();
             bnd.putString("screentitle", "");
@@ -1056,6 +1059,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return retailerKpiFragment;
             } else if (tabName.equals("MSL")) {
                 return mslUnsoldFragment;
+            } else if (tabName.equals("Invoice History")) {
+                return invoiceHistoryFragment;
             }
             return null;
         }
@@ -1249,14 +1254,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 showMocLocationAlert();
                 return;
             }
-        }
-        else{
-            if(LocationUtil.isMockLocation){
-               showMocLocationAlert();
+        } else {
+            if (LocationUtil.isMockLocation) {
+                showMocLocationAlert();
                 return;
             }
         }
-
 
 
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_VALID) {
@@ -1356,15 +1359,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
-    private void showMocLocationAlert(){
-        CommonDialog dialog = new CommonDialog(getApplicationContext(),this, "", getResources().getString(R.string.mock_location_enabled), false,
+    private void showMocLocationAlert() {
+        CommonDialog dialog = new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.mock_location_enabled), false,
                 getResources().getString(R.string.log_out), new CommonDialog.positiveOnClickListener() {
-            @Override public void onPositiveButtonClick() {
+            @Override
+            public void onPositiveButtonClick() {
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     ActivityCompat.finishAffinity(ProfileActivity.this);
-                }
-                else{
+                } else {
                     finishAffinity();
                 }
             }
@@ -1372,6 +1375,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         dialog.show();
         dialog.setCancelable(false);
     }
+
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
