@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
@@ -49,8 +50,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
     protected Integer assetId=-1;
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -76,10 +76,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
         TSerialNo.setText(getString(R.string.serial_no)+": "+serialNo);
         TEquiType.setText(EquiType);
-        TOutletCode.setText(retailerName);
+        TOutletCode.setText("Current Retailer: "+retailerName);
 
         initCustomSpinner(view);
-
         return view;
     }
 
@@ -94,8 +93,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 reasonList.add(temp.getReasonDesc());
             }
         } catch (NullPointerException e) {
-            Log.e("Null", "NullPointer Throwed");
-            e.printStackTrace();
+            Commons.printException("" + e);
         }
       //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
         // Creating adapter for spinner
@@ -136,8 +134,6 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     @Override
     public void onStart() {
         super.onStart();
-
-        //
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         Window window = getDialog().getWindow();
         lp.copyFrom(window.getAttributes());
@@ -154,7 +150,6 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         } else {
             TLDesc.setErrorEnabled(false);
         }
-
         return true;
     }
     private void requestFocus(View view) {

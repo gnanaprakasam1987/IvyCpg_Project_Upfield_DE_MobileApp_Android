@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.widget.LinearLayout;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.AssetHistoryBO;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.ivy.lib.Utils.QT;
+
 /**
  * Created by nivetha.s on 28-10-2015.
  */
@@ -33,7 +36,7 @@ public class ProfileHelper {
     private Vector<OrderHistoryBO> parent_orderHistoryLIst;
     private Vector<Vector<OrderHistoryBO>> child_orderHistoryList;
     public Vector<OrderHistoryBO> historyList;
-
+    private Vector<AssetHistoryBO> assetHistoryList;
     public static ProfileHelper getInstance(Context context) {
         if (instance == null) {
             instance = new ProfileHelper(context);
@@ -155,6 +158,10 @@ public class ProfileHelper {
         return historyList;
     }
 
+    public Vector<AssetHistoryBO> getAssetHistoryList()
+    {
+        return assetHistoryList;
+    }
     /**
      * Download OrderHistory and store in the vector.
      */
@@ -282,6 +289,29 @@ public class ProfileHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public void downloadAssetHistory(String retailerId)
+    {
+        AssetHistoryBO assetHistoryBO;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        assetHistoryList=new Vector<>();
+
+        Cursor c=db.selectSQL("select DISTINCT A.serialNo,A.Date,P.PosmShortDesc from AssetHistory A join PosmMaster P on A.AssetId=P.PosmId where A.RetailerId="+QT(retailerId)+";");
+        if (c != null) {
+            while (c.moveToNext()) {
+                assetHistoryBO = new AssetHistoryBO();
+                assetHistoryBO.setAssetSerialNo(c.getString(0));
+                assetHistoryBO.setAssetDate(c.getString(1));
+                assetHistoryBO.setAssetName(c.getString(2));
+                assetHistoryList.add(assetHistoryBO);
+
+            }
+            c.close();
+        }
+        db.closeDB();
     }
 
     private boolean isHistoryBOAvailable(OrderHistoryBO payBOTemp) {

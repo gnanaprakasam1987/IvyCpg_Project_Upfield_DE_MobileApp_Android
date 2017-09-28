@@ -98,8 +98,20 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
                         }
                     }
                 }
-                for(int i:toRemovePos)
-                    mAssetTrackingList.remove(i);
+                ArrayList<AssetTrackingBO> assetTrackingList=new ArrayList<>();
+                for(int i=0;i<mAssetTrackingList.size();i++)
+                {
+                    if(!toRemovePos.contains(i))
+                    {
+                        assetTrackingList.add(mAssetTrackingList.get(i));
+                    }
+                }
+                if(assetTrackingList!=null && assetTrackingList.size()>0)
+                {
+                    mAssetTrackingList=assetTrackingList;
+                }
+//                for(int i:toRemovePos)
+//                    mAssetTrackingList.removeAll(toRemovePos);
 
 //                for (int i = 0; i < mAssetTrackingList.size(); i++) {
 //                    if (mMovedList.contains(String.valueOf(mAssetTrackingList.get(i).getAssetID()))) {
