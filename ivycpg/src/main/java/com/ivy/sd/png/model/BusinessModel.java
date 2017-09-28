@@ -1410,7 +1410,7 @@ public class BusinessModel extends Application {
             downloadIndicativeOrderedRetailer();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, A.beatid, A.creditlimit, A.tinnumber, A.channelID,"
+                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.channelID,"
                             + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
                             + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
@@ -1465,7 +1465,7 @@ public class BusinessModel extends Application {
                             + " LEFT JOIN RetailerAchievement RACH ON RACH.RetailerID = A.RetailerID"
 
                             + " LEFT JOIN LocationMaster LM ON LM.LocId = A.locationid"
-
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID");
 
             // group by A.retailerid
