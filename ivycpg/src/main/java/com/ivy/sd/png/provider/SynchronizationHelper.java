@@ -4530,7 +4530,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!isDistributorDownloadDone&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+            isDistributorDownloadDone=true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

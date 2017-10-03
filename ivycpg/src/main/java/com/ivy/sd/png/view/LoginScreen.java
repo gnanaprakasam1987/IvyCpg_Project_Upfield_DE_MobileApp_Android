@@ -1531,12 +1531,18 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
 
-        if (isDistributorWise) {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
-        } else {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+
+        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
+            if (isDistributorWise) {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+            } else {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+            }
+        }
+        else{
+            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
         }
 
     }
