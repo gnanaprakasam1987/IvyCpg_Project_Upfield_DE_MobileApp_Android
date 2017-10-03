@@ -189,7 +189,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
                     args.putString("serialNo", holder.assetTrackingBO.getSerialNo());
                     args.putString("assetName", holder.assetTrackingBO.getAssetName());
                     args.putInt("assetId", holder.assetTrackingBO.getAssetID());
-                    args.putString("brand", holder.assetTrackingBO.getMbrand());
+                    args.putString("brand", holder.assetTrackingBO.getProductid()+"");
                     movementAssetDialog.setArguments(args);
                     movementAssetDialog.show(getSupportFragmentManager(), "Asset");
                 }

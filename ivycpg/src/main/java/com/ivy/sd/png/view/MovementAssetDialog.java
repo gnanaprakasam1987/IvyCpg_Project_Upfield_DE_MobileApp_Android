@@ -103,27 +103,17 @@ public class MovementAssetDialog extends DialogFragment {
 
     private void initSpinner() {
         //Generating Reason List
-        ArrayList<String> reasonList = new ArrayList<String>();
-        reasonList.add("--Select Reason--");
-        try {
-            for (ReasonMaster temp : bmodel.reasonHelper
-                    .getNonProductiveReasonMaster()) {
-                reasonList.add(temp.getReasonDesc());
-            }
-        }
-        catch (NullPointerException e)
-        {
-            Log.e("Null","NullPointer Throwed");
-            e.printStackTrace();
-        }
-        //mAssetReasonList = bmodel.assetTrackingHelper.getAssetReasonList();
-        ArrayAdapter<String> mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, reasonList);
+        mAssetReasonList=new ArrayList<>();
+        mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
+        mAssetReasonList.addAll(bmodel.reasonHelper.getNonProductiveReasonMaster());
+
+        ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mAssetReasonList);
         mAssetReasonSpinAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         SpReason.setAdapter(mAssetReasonSpinAdapter);
         SpReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                reasonId = parent.getItemAtPosition(position).toString();
+                reasonId =mAssetReasonList.get(position).getReasonID();
             }
 
             @Override
