@@ -31,15 +31,40 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public String visitday;
     public int accountid;
     int distributorId;
-    private String RetailerID = "0";
-    private String RetailerCode;
-    private String RetailerName;
+    private String RetailerID = "0", movRetailerId="0";
+    private String RetailerCode,movRetailerCode;
+    private String RetailerName,movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
     private String Cp2id = "0";
     private String Address1;
     private String address2;
     private String address3;
+
+    public String getMovRetailerId() {
+        return movRetailerId;
+    }
+
+    public void setMovRetailerId(String movRetailerId) {
+        this.movRetailerId = movRetailerId;
+    }
+
+    public String getMovRetailerCode() {
+        return movRetailerCode;
+    }
+
+    public void setMovRetailerCode(String movRetailerCode) {
+        this.movRetailerCode = movRetailerCode;
+    }
+
+    public String getMovRetailerName() {
+        return movRetailerName;
+    }
+
+    public void setMovRetailerName(String movRetailerName) {
+        this.movRetailerName = movRetailerName;
+    }
+
     private String city;
     private String state;
     private String pincode;

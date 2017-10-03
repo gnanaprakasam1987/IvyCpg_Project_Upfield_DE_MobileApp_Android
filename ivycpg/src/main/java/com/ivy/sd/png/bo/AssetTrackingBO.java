@@ -15,7 +15,7 @@ public class AssetTrackingBO {
     private String mposm;
     private String mbrand;
     private String mnewinstaldate;
-    private String msno, mreasonId, mremarks;
+    private String msno,mreasonId,mremarks,mToRetailerId;
     private String mposmname;
     private String mflag;
     private String msbdid;
@@ -182,6 +182,15 @@ public class AssetTrackingBO {
     public void setMremarks(String mremarks) {
         this.mremarks = mremarks;
     }
+
+    public String getmToRetailerId() {
+        return mToRetailerId;
+    }
+
+    public void setmToRetailerId(String mToRetailerId) {
+        this.mToRetailerId = mToRetailerId;
+    }
+
     public String getMinstalldate() {
         return minstalldate;
     }
@@ -261,7 +270,6 @@ public class AssetTrackingBO {
     public void setAvailQty(int availQty) {
         this.availQty = availQty;
     }
-
     public int getscanComplete() {
         return scanComplete;
     }

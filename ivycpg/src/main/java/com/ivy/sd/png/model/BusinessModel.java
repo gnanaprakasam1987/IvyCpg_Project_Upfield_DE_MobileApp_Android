@@ -1397,6 +1397,42 @@ public class BusinessModel extends Application {
         return str;
     }
 
+    public ArrayList<RetailerMasterBO> downloadRetailerMasterData()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<RetailerMasterBO> retailerMasterData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                RetailerMasterBO retailerMasterBO=new RetailerMasterBO();
+                retailerMasterBO.setMovRetailerName(c.getString(2));
+             //   retailerMasterBO.setMovRetailerCode(c.getString(1));
+                retailerMasterBO.setMovRetailerId(c.getString(0));
+
+                retailerMasterData.add(retailerMasterBO);
+            }
+        return retailerMasterData;
+    }
+    /**
+     * Method to check the movement Asset in sql table
+     */
+    public ArrayList<String> getAssetMovementDetails()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<String> retailerMovedData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT AssetId from "+DataMembers.tbl_AssetAddDelete +" where flag='M'");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                retailerMovedData.add(c.getString(0));
+            }
+        return retailerMovedData;
+    }
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();

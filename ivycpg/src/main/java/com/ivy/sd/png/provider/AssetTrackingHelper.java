@@ -1122,9 +1122,53 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
+    /**
+     * Method to save Asset Movement Details in sql table
+     */
+    public void saveAssetMovementDetails(String moduleName)
+    {
+        String type = "";
+        if (MENU_ASSET.equals(moduleName))
+            type = MERCH;
+        else if ("MENU_POSM".equals(moduleName))
+            type = MERCH_INIT;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
 
+            db.openDataBase();
+
+            int typeListId = 0;
+            String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
+            Cursor c1 = db.selectSQL(query1);
+            if (c1.getCount() > 0) {
+                while (c1.moveToNext()) {
+                    typeListId = c1.getInt(0);
+                }
+            }
+            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+            AssetTrackingBO assets = getMassetTrackingBO();
+            String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,creationdate,flag,TypeLovId,reasonid,remarks,toRetailerId";
+
+            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
+                    + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
+                    + QT(assets.getMbrand()) + ","
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))+ "," + QT("M") + "," + typeListId +","+
+                    QT(assets.getMreasonId())+","+ QT(assets.getMremarks())+","+ QT(assets.getmToRetailerId());
+
+            db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
+                    assetaddanddeleteValues);
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
     public void saveAddandDeletedetails(String posmid, String msno,
-                                        String msbdid, String mbrandid, String moduleName) {
+                                        String msbdid, String mbrandid, String reasonId,String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1150,12 +1194,12 @@ public class AssetTrackingHelper {
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String addassetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId";
+            String addassetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId,reasonid";
 
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmid) + "," + QT(msno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
-                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId;
+                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId+ "," + QT(reasonId) ;
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1213,7 +1257,37 @@ public class AssetTrackingHelper {
             return false;
         }
     }
+    /**
+     * Method to check the Asset already scanned and mapped to other retailer in sql table
+     */
+    public boolean isExistingAssetInRetailer(String serialNum) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
+            String sql = "select AssetId from "
+                    + DataMembers.tbl_AssetAddDelete + "  where serialNum="
+                    + QT(serialNum) + " and retailerid = "
+                    + QT(bmodel.getRetailerMasterBO().getRetailerID()) + "";
+
+            Cursor cursor = db.selectSQL(sql);
+
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                db.closeDB();
+                return true;
+            }
+            cursor.close();
+            db.closeDB();
+
+            return false;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return false;
+        }
+    }
     public void saveAsset(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
