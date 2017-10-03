@@ -4189,11 +4189,6 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
                     this.photocapturemenutype = c.getString(0);
-                    // Enabling the dragDrop button based on the RField value
-                    if(c.getString(1)!=null && c.getString(1).equalsIgnoreCase("1"))
-                    {
-                        this.SHOW_DRAGDROP_IN_SURVEY=true;
-                    }
                 }
                 c.close();
             }
