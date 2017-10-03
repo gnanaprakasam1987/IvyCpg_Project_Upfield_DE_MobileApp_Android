@@ -48,10 +48,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:tag="order_history_label"
                         android:text="@string/inv_no"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
+                    <!--android:tag="order_history_label"-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -268,11 +268,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:tag="RField3"
                         android:text="@string/overdue"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
-
+                    <!--android:tag="RField3"-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -321,11 +320,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:tag="RField1"
                         android:text="@string/due_date"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
-
+                    <!--android:tag="RField1"-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -374,11 +372,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:tag="RField2"
                         android:text="@string/os_amt"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
-
+                    <!--android:tag="RField2"-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -429,11 +426,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:tag="RField4"
                         android:text="@string/status"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
-
+                    <!--android:tag="RField4"-->
                 </LinearLayout>
 
                 <LinearLayout

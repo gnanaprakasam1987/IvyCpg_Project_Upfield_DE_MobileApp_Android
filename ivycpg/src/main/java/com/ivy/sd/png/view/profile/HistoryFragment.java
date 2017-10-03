@@ -258,9 +258,11 @@ public class HistoryFragment extends IvyBaseFragment {
                     invViewLayout.setVisibility(View.GONE);
                     itemView.setClickable(false);
                     itemView.setOnClickListener(null);
+                    ((LinearLayout) itemView.findViewById(R.id.tot_val_layout)).setVisibility(View.GONE);
                 } else {
                     totValTxt.setVisibility(View.VISIBLE);
                     totVal.setVisibility(View.VISIBLE);
+                    ((LinearLayout) itemView.findViewById(R.id.tot_val_layout)).setVisibility(View.VISIBLE);
                     if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL)
                         invViewLayout.setVisibility(View.VISIBLE);
                 }

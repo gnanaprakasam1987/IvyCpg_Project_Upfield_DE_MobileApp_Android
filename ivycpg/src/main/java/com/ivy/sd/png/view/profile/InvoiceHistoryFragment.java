@@ -145,10 +145,13 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             holder.del_date_val.setText(projectObj.getDueDate());
             holder.invoice_date_val.setText(bmodel.formatValue(projectObj.getOutStandingAmt()));
             holder.invoice_qty_val.setText(projectObj.getOverDueDays());
-            if (projectObj.getOutStandingAmt() > 0)
-                holder.del_rep_code_val.setText("Pending");
-            else
-                holder.del_rep_code_val.setText("Completed");
+            if (projectObj.getOutStandingAmt() > 0) {
+                holder.del_rep_code_val.setText(getResources().getString(R.string.open));
+                holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.RED));
+            } else {
+                holder.del_rep_code_val.setText(getResources().getString(R.string.close));
+                holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
+            }
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 Calendar c = Calendar.getInstance();
@@ -202,33 +205,23 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 invoice_qty_txt = (TextView) itemView.findViewById(R.id.invoice_qty_txt);
                 del_rep_code_txt = (TextView) itemView.findViewById(R.id.del_rep_code_txt);
 
-                if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
-                        && !bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
-                    totValTxt.setVisibility(View.GONE);
-                    totVal.setVisibility(View.GONE);
+                if(bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL){
+                    invViewLayout.setVisibility(View.VISIBLE);
+                    itemView.setClickable(true);
+                    itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                                Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
+                                intent.putExtra("selected_list_id", getLayoutPosition());
+                                intent.putExtra("from", "InvoiceHistory");
+                                startActivity(intent);
+                            }
+                    });
+                }else{
                     invViewLayout.setVisibility(View.GONE);
                     itemView.setClickable(false);
                     itemView.setOnClickListener(null);
-                } else {
-                    totValTxt.setVisibility(View.VISIBLE);
-                    totVal.setVisibility(View.VISIBLE);
-                    if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL)
-                        invViewLayout.setVisibility(View.VISIBLE);
                 }
-
-
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
-                                && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
-                            Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
-                            intent.putExtra("selected_list_id", getLayoutPosition());
-                            intent.putExtra("from", "InvoiceHistory");
-                            startActivity(intent);
-                        }
-                    }
-                });
 
                 //typeface for label text
                 orderIdTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
