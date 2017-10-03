@@ -348,7 +348,7 @@ public class SurveyHelperNew {
 
                 while (c.moveToNext()) {
                     if (tempSurveyId != c.getInt(0)) {
-
+                        mtempGName = "";
                         surveyIndex = surveyIndex + 1;
 
                         tempSurveyId = c.getInt(0);
@@ -1767,7 +1767,15 @@ public class SurveyHelperNew {
                             if (surveyId == questionBO.getSurveyid()
                                     && questionBO.getQuestionID() == c
                                     .getInt(0)) {
-                                questionBO.getImageNames().add(c.getString(1));
+                                if (questionBO.getImageNames() != null && questionBO.getImageNames().size() > 0) {
+                                    for (int i = 0; i < questionBO.getImageNames().size(); i++) {
+                                        if (!questionBO.getImageNames().get(i).equals(c.getString(1))) {
+                                            questionBO.getImageNames().add(c.getString(1));
+                                        }
+                                    }
+                                } else {
+                                    questionBO.getImageNames().add(c.getString(1));
+                                }
                                 break;
                             }
                         }
@@ -1980,7 +1988,15 @@ public class SurveyHelperNew {
                             if (surveyId == questionBO.getSurveyid()
                                     && questionBO.getQuestionID() == c
                                     .getInt(0)) {
-                                questionBO.getImageNames().add(c.getString(1));
+                                if (questionBO.getImageNames() != null && questionBO.getImageNames().size() > 0) {
+                                    for (int i = 0; i < questionBO.getImageNames().size(); i++) {
+                                        if (!questionBO.getImageNames().get(i).equals(c.getString(1))) {
+                                            questionBO.getImageNames().add(c.getString(1));
+                                        }
+                                    }
+                                } else {
+                                    questionBO.getImageNames().add(c.getString(1));
+                                }
                                 break;
                             }
                         }

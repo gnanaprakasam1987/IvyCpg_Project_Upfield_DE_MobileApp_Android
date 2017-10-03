@@ -70,7 +70,7 @@ public class AcknowledgementHelper {
             Cursor c = db
                     .selectSQL("SELECT " + DataMembers.tbl_jointcallacknowledgement_cols + " FROM " +
                             DataMembers.tbl_jointcallacknowledgement + " where Upload ='Y' " +
-                            "and UserID = '" + userID + "'");
+                            "and AckDate is null or AckDate = '' and UserID = '" + userID + "'");
             if (c != null) {
                 while (c.moveToNext()) {
                     JointCallAcknowledgementBO obj = new JointCallAcknowledgementBO();
@@ -102,7 +102,7 @@ public class AcknowledgementHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select UserID,Username,count(*) from JointCallAcknowledgement where Upload ='Y' group by UserID");
+                    .selectSQL("Select UserID,Username,count(*) from JointCallAcknowledgement where Upload ='Y' and AckDate is null or AckDate = '' group by UserID");
             if (c != null) {
                 while (c.moveToNext()) {
                     JointCallAcknowledgementCountBO obj = new JointCallAcknowledgementCountBO();

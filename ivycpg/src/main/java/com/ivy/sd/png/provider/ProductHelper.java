@@ -2604,7 +2604,13 @@ public class ProductHelper {
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
             }
+
+            //clear delivered qty
+            product.setDeliveredCaseQty(0);
+            product.setDeliveredOuterQty(0);
+            product.setDeliveredPcsQty(0);
         }
+
 
     }
 
@@ -4335,7 +4341,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */+ sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4590,7 +4596,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */+ sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"

@@ -73,6 +73,10 @@ public class ProductMasterBO {
     private int soreasonId = 0;
     private double csTotal = 0;
 
+    private int deliveredCaseQty;
+    private int deliveredPcsQty;
+    private int deliveredOuterQty;
+
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
     }
@@ -1722,6 +1726,30 @@ public class ProductMasterBO {
 
     public void setSchemeDiscount(boolean schemeDiscount) {
         isSchemeDiscount = schemeDiscount;
+    }
+
+    public int getDeliveredCaseQty() {
+        return deliveredCaseQty;
+    }
+
+    public void setDeliveredCaseQty(int deliveredCaseQty) {
+        this.deliveredCaseQty = deliveredCaseQty;
+    }
+
+    public int getDeliveredPcsQty() {
+        return deliveredPcsQty;
+    }
+
+    public void setDeliveredPcsQty(int deliveredPcsQty) {
+        this.deliveredPcsQty = deliveredPcsQty;
+    }
+
+    public int getDeliveredOuterQty() {
+        return deliveredOuterQty;
+    }
+
+    public void setDeliveredOuterQty(int deliveredOuterQty) {
+        this.deliveredOuterQty = deliveredOuterQty;
     }
 
     boolean isAvailableinWareHouse;

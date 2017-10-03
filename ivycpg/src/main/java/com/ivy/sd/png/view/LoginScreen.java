@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -84,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
         ApplicationConfigs {
@@ -355,6 +357,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             DataMembers.ACTIVATION_KEY = PreferenceManager
                     .getDefaultSharedPreferences(this).getString("activationKey", "");
         }
+
+         /* Display application Phase if the environment is other than live.*/
+        String phase = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("application", "");
+        if (phase.length() > 0)
+            if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
+                    .matcher(phase).find()) {
+                bmodel.synchronizationHelper.isInternalActivation = true;
+            }
     }
 
 
@@ -1518,6 +1529,17 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         }
     }
 
+    private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
+
+        if (isDistributorWise) {
+            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+        } else {
+            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        }
+
+    }
     /**
      * Distributor wise master will be downloaded if configuration enable.
      * This class is initiate distributor wise master download.we will send all
@@ -1530,12 +1552,23 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPreExecute() {
             super.onPreExecute();
             try {
-                bmodel.distributorMasterHelper.downloadDistributorsList();
+
+                if (alertDialog != null) {
+                    builder = new AlertDialog.Builder(LoginScreen.this);
+
+                    bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.loading));
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+                // bmodel.distributorMasterHelper.downloadDistributorsList();
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
                 for (DistributorMasterBO distributorBO : distributorList) {
-                    jsonArray.put(distributorBO.getDId());
+                    if (distributorBO.isChecked()) {
+                        jsonArray.put(distributorBO.getDId());
+                    }
                 }
                 json.put("DistributorIds", jsonArray);
             } catch (Exception jsonException) {
@@ -1566,8 +1599,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+                downloadOnDemandMasterUrl(true);
             }
         }
     }
@@ -1676,7 +1708,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+                //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+                bmodel.synchronizationHelper.downloadTransactionUrl();
                 if (bmodel.synchronizationHelper.getUrlList() != null && bmodel.synchronizationHelper.getUrlList().size() > 0) {
                     bmodel.synchronizationHelper.downloadLastVisitTranAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, 1);
                 } else {
@@ -1834,7 +1867,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
      */
     private void callNextTask(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            new InitiateDistributorDownload().execute();
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            // new InitiateDistributorDownload().execute();
+            bmodel.distributorMasterHelper.downloadDistributorsList();
+            Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
+            startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+
+        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
+            downloadOnDemandMasterUrl(false);
         } else if (response == SynchronizationHelper.NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD) {
             new InitiateRetailerDownload().execute();
         } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
@@ -1889,6 +1931,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         }
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    new InitiateDistributorDownload().execute();
+                } else {
+
+                }
+        }
+    }
 
 }
 

@@ -93,10 +93,10 @@
 
         <ImageView
             android:id="@+id/btn_photo"
-            android:layout_width="@dimen/dimen_20dp"
-            android:layout_height="@dimen/dimen_30dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/icon"
             android:layout_gravity="end|center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="0.7"
             android:gravity="center"
             android:src="@drawable/ic_photo_camera_blue_24dp" />
     </LinearLayout>

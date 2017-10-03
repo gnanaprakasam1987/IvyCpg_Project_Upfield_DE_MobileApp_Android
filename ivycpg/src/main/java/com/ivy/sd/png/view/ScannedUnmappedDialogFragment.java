@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
  * Created by anish.k on 9/22/2017.
  */
 
-public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener{
+public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener {
 
     protected BusinessModel bmodel;
     protected TextInputLayout TLDesc;
@@ -47,9 +48,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     protected Spinner spinnerCustom;
     protected String serialNo, EquiType,reasonId,remarks,brand,retailerName;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
+    protected Integer assetId=-1;
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -71,35 +72,32 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         EquiType=getArguments().getString("assetName");
         brand=getArguments().getString("brand");
         retailerName=getArguments().getString("retailerName");
+        assetId=getArguments().getInt("assetId");
 
-        TSerialNo.setText(serialNo);
+        TSerialNo.setText(getString(R.string.serial_no)+": "+serialNo);
         TEquiType.setText(EquiType);
-        TOutletCode.setText(retailerName);
+        TOutletCode.setText("Current Retailer: "+retailerName);
 
         initCustomSpinner(view);
-
         return view;
     }
 
     private void initCustomSpinner(View view) {
 
         spinnerCustom= (Spinner) view.findViewById(R.id.spinnerCustomDialog);
-        ArrayList<String> languages = new ArrayList<String>();
-        languages.add("--Select Reason--");
+        ArrayList<String> reasonList = new ArrayList<String>();
+        reasonList.add("--Select Reason--");
         try {
             for (ReasonMaster temp : bmodel.reasonHelper
                     .getNonProductiveReasonMaster()) {
-                languages.add(temp.getReasonDesc());
+                reasonList.add(temp.getReasonDesc());
             }
-        }
-        catch (NullPointerException e)
-        {
-            Log.e("Null","NullPointer Throwed");
-            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Commons.printException("" + e);
         }
       //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, languages);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCustom.setAdapter(dataAdapter);
         spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -116,13 +114,14 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
             }
         });
     }
+
     private void setAddAssetDetails() {
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         remarks=ETDesc.getText().toString().trim();
-        assetBo.setMposm(bmodel.assetTrackingHelper.getassetposmids(EquiType));
+        assetBo.setMposm(String.valueOf(assetId));
         assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
         assetBo.setMnewinstaldate(todayDate);
         assetBo.setMsno(serialNo);
@@ -135,8 +134,6 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     @Override
     public void onStart() {
         super.onStart();
-
-        //
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         Window window = getDialog().getWindow();
         lp.copyFrom(window.getAttributes());
@@ -153,7 +150,6 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         } else {
             TLDesc.setErrorEnabled(false);
         }
-
         return true;
     }
     private void requestFocus(View view) {
@@ -164,26 +160,19 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.btn_dialog_cancel)
-        {
-         dismiss();
-        }
-        else if(v.getId()==R.id.btn_dialog_save)
-        {
-            if(validateDesc())
-            {
-                if(spinnerCustom.getSelectedItemPosition()!=0)
-                {
-                        setAddAssetDetails();
-                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                        bmodel.assetTrackingHelper
-                                .saveAssetAddandDeletedetails("MENU_ASSET");
-                        Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
-                                Toast.LENGTH_SHORT).show();
-                        dismiss();
-                }
-                else
-                {
+        if (v.getId() == R.id.btn_dialog_cancel) {
+            dismiss();
+        } else if (v.getId() == R.id.btn_dialog_save) {
+            if (validateDesc()) {
+                if (spinnerCustom.getSelectedItemPosition() != 0) {
+                    setAddAssetDetails();
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    bmodel.assetTrackingHelper
+                            .saveAssetAddandDeletedetails("MENU_ASSET");
+                    Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
+                            Toast.LENGTH_SHORT).show();
+                    dismiss();
+                } else {
                     Toast.makeText(bmodel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
                 }
             }

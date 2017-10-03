@@ -7,5 +7,5 @@
     android:background="@color/blue_week_background"
     android:ellipsize="marquee"
     android:maxLines="1"
-    android:textSize="@dimen/spinner_normal"
-    android:textColor="@color/WHITE" />
+    android:textColor="@color/WHITE"
+    android:textSize="@dimen/font_small" />

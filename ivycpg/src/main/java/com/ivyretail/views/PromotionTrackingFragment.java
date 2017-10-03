@@ -7,12 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -1424,12 +1418,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             } else {
-                for (LevelBO levelBO : parentidList) {
-                    for (PromotionBO promoBO : items) {
-                        if (levelBO.getProductID() == promoBO.getProductId()) {
-                            promoList.add(promoBO);
-                        }
+                if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+                    promoList.addAll(items);
+                } else {
+                    for (LevelBO levelBO : parentidList) {
+                        for (PromotionBO promoBO : items) {
+                            if (levelBO.getProductID() == promoBO.getProductId()) {
+                                promoList.add(promoBO);
+                            }
 
+                        }
                     }
                 }
             }

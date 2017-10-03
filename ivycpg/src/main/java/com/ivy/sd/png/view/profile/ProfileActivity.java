@@ -180,7 +180,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private boolean isNonVisitReason = false;
 
     UserRetailerTransactionReceiver receiver;
-
+    private static final String ASSET_HISTORY="Asset History";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -319,6 +319,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD)
             tabLayout.addTab(tabLayout.newTab().setText("MSL"));
+
+        if (!bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY)
+             tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -1028,19 +1031,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             HistoryFragment historyFragment = new HistoryFragment();
             PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
             planningOutletFragment.setArguments(null);
-
+            SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
+            MSLUnsoldFragment mslUnsoldFragment = new MSLUnsoldFragment();
+            AssetHistoryFragment assetHistoryFragment=new AssetHistoryFragment();
 //            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
 //            retailerKpiFragment.setArguments(null);
             bmodel.dashBoardHelper.checkDayAndP3MSpinner();
             bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");
-            SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
             Bundle bnd = new Bundle();
             bnd.putString("screentitle", "");
             bnd.putBoolean("isFromHomeScreenTwo", true);
             bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
             retailerKpiFragment.setArguments(bnd);
 
-            MSLUnsoldFragment mslUnsoldFragment = new MSLUnsoldFragment();
             mslUnsoldFragment.setArguments(null);
 
             String tabName = tabLayout.getTabAt(position).getText().toString();
@@ -1056,6 +1059,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return retailerKpiFragment;
             } else if (tabName.equals("MSL")) {
                 return mslUnsoldFragment;
+            } else if( tabName.equalsIgnoreCase(ASSET_HISTORY)) {
+                return assetHistoryFragment;
             }
             return null;
         }

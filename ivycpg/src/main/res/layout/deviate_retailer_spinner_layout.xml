@@ -4,10 +4,10 @@
     style="?android:attr/spinnerItemStyle"
     android:layout_width="@dimen/day_spinner_width"
     android:layout_height="wrap_content"
-    android:gravity="left"
-    android:text="dsdsdsdsdssdsds"
     android:drawableRight="@android:drawable/arrow_down_float"
+    android:gravity="left"
     android:maxLines="1"
+    android:text="dsdsdsdsdssdsds"
     android:textAlignment="center"
     android:textColor="@color/WHITE"
-    android:textSize="@dimen/spinner_normal" />
+    android:textSize="@dimen/font_small" />
