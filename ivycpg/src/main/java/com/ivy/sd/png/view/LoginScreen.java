@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
         ApplicationConfigs {
@@ -356,6 +357,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             DataMembers.ACTIVATION_KEY = PreferenceManager
                     .getDefaultSharedPreferences(this).getString("activationKey", "");
         }
+
+         /* Display application Phase if the environment is other than live.*/
+        String phase = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("application", "");
+        if (phase.length() > 0)
+            if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
+                    .matcher(phase).find()) {
+                bmodel.synchronizationHelper.isInternalActivation = true;
+            }
     }
 
 
