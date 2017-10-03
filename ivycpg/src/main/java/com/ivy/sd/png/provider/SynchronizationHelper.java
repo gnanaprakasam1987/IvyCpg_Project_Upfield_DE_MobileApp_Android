@@ -2903,7 +2903,6 @@ SynchronizationHelper {
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
-
                         downloadurl = c.getString(0);
                     }
                 }
@@ -2914,9 +2913,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put(retailerName);
-            json.put("Key", jsonArray);
+            json.put("Key", retailerName);
 
 
             downloadurl = DataMembers.SERVER_URL + downloadurl;
