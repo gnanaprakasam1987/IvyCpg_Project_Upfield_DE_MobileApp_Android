@@ -749,34 +749,35 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AcknowledgementActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
-            android:screenOrientation="portrait"></activity>
-
-        <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+        <activity android:name="com.ivy.sd.png.view.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-
-    </application>
-
+            android:screenOrientation="portrait"/>
+            <activity
+                android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:screenOrientation="portrait" />
+            <activity
+                android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:screenOrientation="portrait" />
+            <activity
+                android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:screenOrientation="portrait" />
+            <activity
+                android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:screenOrientation="portrait" />
+        </application>
 </manifest>

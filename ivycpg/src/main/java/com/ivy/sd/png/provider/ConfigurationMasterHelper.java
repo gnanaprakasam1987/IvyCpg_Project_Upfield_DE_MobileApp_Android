@@ -139,6 +139,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_LIMIT_PROFILE = "PROFILE19";
     private static final String CODE_SHOW_NO_VISIT_REASON = "PROFILE21";
     private static final String CODE_SHOW_HISTORY = "PRO05";
+    private static final String CODE_SHOW_ASSET_HISTORY="PRO26";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
@@ -476,6 +477,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_LIMIT_PROFILE; //
     public boolean SHOW_NO_VISIT_REASON; //
     public boolean SHOW_HISTORY; // PRO05
+    public boolean SHOW_ASSET_HISTORY; //PRO26
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
@@ -1591,6 +1593,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CREDIT_BALANCE = hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) : false;
         this.SHOW_NO_VISIT_REASON = hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) : false;
         this.SHOW_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) : false;
+        this.SHOW_ASSET_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) : false;
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
         this.SHOW_LPC_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) : false;

@@ -391,6 +391,8 @@ public class PosmFragment extends IvyBaseFragment implements
             if (bmodel.productHelper.getInStoreLocation().size() < 2)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
+        //Move Asset is removed in Posm
+        menu.removeItem(R.id.menu_move);
         // hardcoded for demo
         if (screenCode.equals("MENU_POSM_CS"))
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
