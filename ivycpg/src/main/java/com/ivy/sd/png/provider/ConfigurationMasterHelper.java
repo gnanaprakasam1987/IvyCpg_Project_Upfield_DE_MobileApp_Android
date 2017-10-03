@@ -4207,6 +4207,15 @@ public class ConfigurationMasterHelper {
                 }
                 c.close();
             }
+
+            c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                        this.SHOW_DRAGDROP_IN_SURVEY=true;
+                }
+                c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
