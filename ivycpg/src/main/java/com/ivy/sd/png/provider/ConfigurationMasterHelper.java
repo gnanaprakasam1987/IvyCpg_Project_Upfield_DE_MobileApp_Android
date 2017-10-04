@@ -1162,6 +1162,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
     public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
 
+    private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
+    public boolean SHOW_INVOICE_HISTORY; // PRO06
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2063,7 +2066,7 @@ public class ConfigurationMasterHelper {
                 this.SHOW_SPL_FLIER_NOT_NEEDED = false;
         }
 
-
+        this.SHOW_INVOICE_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) : false;
     }
 
     private void getTaxModel(String hhtCode) {

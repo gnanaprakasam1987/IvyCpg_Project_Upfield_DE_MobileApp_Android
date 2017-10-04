@@ -1022,21 +1022,21 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                                 if (typeCode.equalsIgnoreCase("ACCESS")) {
                                     if (productBO.getIsSalable() == 0 && productBO.getIsReturnable() == 0) {
                                         myListTemp.add(productBO);
-                                    }else if (!isManualLoad) {
+                                    } else if (!isManualLoad) {
                                         myListTemp.add(productBO);
                                     }
 
                                 } else if (typeCode.equalsIgnoreCase("FREE")) {
                                     if (productBO.getIsSalable() == 1 && productBO.getMrp() == 0) {
                                         myListTemp.add(productBO);
-                                    }else if (!isManualLoad) {
+                                    } else if (!isManualLoad) {
                                         myListTemp.add(productBO);
                                     }
 
                                 } else if (typeCode.equalsIgnoreCase("NORMAL") || typeCode.equalsIgnoreCase("TESTER")) {
                                     if (productBO.getIsSalable() == 1 && productBO.getMrp() != 0) {
                                         myListTemp.add(productBO);
-                                    }else if (!isManualLoad) {
+                                    } else if (!isManualLoad) {
                                         myListTemp.add(productBO);
                                     }
                                 }
@@ -1056,21 +1056,21 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                             if (typeCode.equalsIgnoreCase("ACCESS")) {
                                 if (productBO.getIsSalable() == 0 && productBO.getIsReturnable() == 0) {
                                     myListTemp.add(productBO);
-                                }else if (!isManualLoad) {
+                                } else if (!isManualLoad) {
                                     myListTemp.add(productBO);
                                 }
 
                             } else if (typeCode.equalsIgnoreCase("FREE")) {
                                 if (productBO.getIsSalable() == 1 && productBO.getMrp() == 0) {
                                     myListTemp.add(productBO);
-                                }else if (!isManualLoad) {
+                                } else if (!isManualLoad) {
                                     myListTemp.add(productBO);
                                 }
 
                             } else if (typeCode.equalsIgnoreCase("NORMAL") || typeCode.equalsIgnoreCase("TESTER")) {
                                 if (productBO.getIsSalable() == 1 && productBO.getMrp() != 0) {
                                     myListTemp.add(productBO);
-                                }else if (!isManualLoad) {
+                                } else if (!isManualLoad) {
                                     myListTemp.add(productBO);
                                 }
                             }
@@ -1092,21 +1092,21 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                         if (typeCode.equalsIgnoreCase("ACCESS")) {
                             if (productBO.getIsSalable() == 0 && productBO.getIsReturnable() == 0) {
                                 myListTemp.add(productBO);
-                            }else if (!isManualLoad) {
+                            } else if (!isManualLoad) {
                                 myListTemp.add(productBO);
                             }
 
                         } else if (typeCode.equalsIgnoreCase("FREE")) {
                             if (productBO.getIsSalable() == 1 && productBO.getMrp() == 0) {
                                 myListTemp.add(productBO);
-                            }else if (!isManualLoad) {
+                            } else if (!isManualLoad) {
                                 myListTemp.add(productBO);
                             }
 
                         } else if (typeCode.equalsIgnoreCase("NORMAL") || typeCode.equalsIgnoreCase("TESTER")) {
                             if (productBO.getIsSalable() == 1 && productBO.getMrp() != 0) {
                                 myListTemp.add(productBO);
-                            }else if (!isManualLoad) {
+                            } else if (!isManualLoad) {
                                 myListTemp.add(productBO);
                             }
                         }

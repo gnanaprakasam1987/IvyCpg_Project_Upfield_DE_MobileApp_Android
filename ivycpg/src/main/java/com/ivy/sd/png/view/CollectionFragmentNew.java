@@ -267,11 +267,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
-        if (bmodel.configurationMasterHelper.SHOW_ADVANCE_PAYMENT) {
-            menu.findItem(R.id.menu_advance_payment).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_advance_payment).setVisible(false);
-        }
 
         if (bmodel.collectionHelper.isCollectionView()) {
             menu.findItem(R.id.menu_next).setVisible(false);
@@ -490,11 +485,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
             String strCount = "(" + count + ")";
             holder.tvAge.setText(strCount);
 
-            String strPayment = bmodel.formatValue(holder.invoiceHeaderBO.getBalance()) + "";
+            String strPayment = bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()) + "";
             holder.tvPayableAmt.setText(strPayment);
 
             holder.tvDiscAmt.setText(bmodel
-                    .formatValue(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+                    .formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
 
             holder.tvReceivedAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO
                     .getPaidAmount() + holder.invoiceHeaderBO.getAppliedDiscountAmount()));
@@ -619,8 +614,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
     }
 
     private void updateListView(ViewHolder holder) {
-        holder.tvPayableAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO.getBalance()));
-        holder.tvDiscAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+        holder.tvPayableAmt.setText(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()));
+        holder.tvDiscAmt.setText(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
     }
 
     private void updateHeaderValuesForPendingInvoice() {

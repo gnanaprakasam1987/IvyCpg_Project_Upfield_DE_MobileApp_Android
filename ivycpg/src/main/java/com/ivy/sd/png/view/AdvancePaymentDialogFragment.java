@@ -34,6 +34,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
+import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -83,6 +84,9 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
     private Connection zebraPrinterConnection;
+    private ArrayList<InvoiceHeaderBO> mInvioceList;
+    private double mTotalInvoiceAmt = 0;
+    private int rcheckedId = 0;
 
     @Override
     public void onAttach(Context context) {
@@ -115,6 +119,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         super.onStart();
         //getDialog().setTitle("Advance Payment");
         initializeobj();
+        loadInvoiceList();
         loadPaymentObj();
         allViewTypeListener();
         loadBankDetails();
@@ -176,6 +181,17 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mSelectedPaymentBO.setBankID(savedInstanceState.getString("bankid"));
             mSelectedPaymentBO.setBranchId(savedInstanceState.getString("branchid"));
             mSelectedPaymentBO.setImageName(savedInstanceState.getString("imagename"));
+        }
+    }
+
+    // check pending invoice is available or not available
+    private void loadInvoiceList() {
+        mInvioceList = bmodel.getInvoiceHeaderBO();
+
+        for (InvoiceHeaderBO invoiceHeaderBO : mInvioceList) {
+            if (invoiceHeaderBO.getBalance() > 0) {
+                mTotalInvoiceAmt = mTotalInvoiceAmt + invoiceHeaderBO.getBalance() + invoiceHeaderBO.getRemainingDiscountAmt();
+            }
         }
     }
 
@@ -338,10 +354,12 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                                                      int checkedId) {
                             if (checkedId == R.id.cashRadioButton) {
                                 mSelectedPaymentBO = mPaymentList.get(0);
+                                rcheckedId = 0;
                                 modegone();
                                 clearPaymentObject(StandardListMasterConstants.CHEQUE);
                             } else if (checkedId == R.id.chequeRadioButton) {
                                 mSelectedPaymentBO = mPaymentList.get(1);
+                                rcheckedId = 1;
                                 modevisibility();
                                 clearPaymentObject(StandardListMasterConstants.CASH);
                             }
@@ -459,13 +477,24 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 mSelectedPaymentBO.setChequeNumber(s.toString());
             }
         });
+
         mSubmitBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isValidate())
-                    return;
+                if (mTotalInvoiceAmt == 0) {//check pending invoice is available or not available
+                    if (!isValidate())
+                        return;
 
-                displayAlertDialog("Do you want to save Advance Payment?", true);
+                    displayAlertDialog("Do you want to save Advance Payment?", true);
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.advance_payment_cannot_be_reveived), Toast.LENGTH_SHORT).show();
+                    if (rcheckedId == 0)
+                        clearPaymentObject(StandardListMasterConstants.CASH);
+                    else if (rcheckedId == 1)
+                        clearPaymentObject(StandardListMasterConstants.CHEQUE);
+
+                }
+
 
             }
         });
@@ -509,7 +538,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate))//this for checking today date since before method not woking for today date
                 if (date.before(new Date())) {
                     Toast.makeText(getActivity(), getResources().getString(
-                                    R.string.prev_dated_cheque_notallow),
+                            R.string.prev_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -550,7 +579,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mChequeDateBTN.setText(mSelectedPaymentBO.getChequeDate());
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
-            String todayDate =  SDUtil.now(SDUtil.DATE_GLOBAL);
+            String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
             updateDate(new Date(todayDate));
         }
 
@@ -716,6 +745,13 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.save_advance_payment), Toast.LENGTH_SHORT).show();
+
+            // clearing the object's after saved
+            if (rcheckedId == 0)
+                clearPaymentObject(StandardListMasterConstants.CASH);
+            else if (rcheckedId == 1)
+                clearPaymentObject(StandardListMasterConstants.CHEQUE);
+
             FragmentManager fm = getFragmentManager();
             PrintCountDialogFragment dialogFragment = new PrintCountDialogFragment();
             Bundle bundle = new Bundle();
@@ -749,7 +785,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == bmodel.CAMERA_REQUEST_CODE && resultCode == 1) {
-           mSelectedPaymentBO.setImageName(mImageName);
+            mSelectedPaymentBO.setImageName(mImageName);
         }
     }
 
@@ -854,7 +890,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_advance_payment).setVisible(true);
+        menu.findItem(R.id.menu_advance_payment).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
 
         super.onPrepareOptionsMenu(menu);

@@ -1330,8 +1330,8 @@ public class ReportHelper {
         try {
             for (PaymentBO tempParentBO : parentPaymentList) {
                 if (tempParentBO.getBillNumber().equals(invoiceNo)) {
-                    balance = Double.parseDouble(bmodel.formatValue(tempParentBO.getInvoiceAmount()
-                            - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount));
+                    balance = Double.parseDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
+                            - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount),2,0));
                     tempParentBO.setBalance(balance);
                     break;
                 }

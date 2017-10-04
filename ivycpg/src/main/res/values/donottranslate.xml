@@ -140,4 +140,10 @@
     <string name="are_u_giving_free_products">Deliver free products</string>
     <string name="stock_not_availble_for_free_product">Stock not available for free products</string>
     <string name="do_want_to_continue_with_partial_invoice">Do you want to continue with the partial invoice ?</string>
+
+    <!--profile screen invoice history-->
+    <string name="overdue">Overdue</string>
+    <string name="invoiceamt">Invoice Amt</string>
+    <!--profile screen invoice history-->
+
 </resources>

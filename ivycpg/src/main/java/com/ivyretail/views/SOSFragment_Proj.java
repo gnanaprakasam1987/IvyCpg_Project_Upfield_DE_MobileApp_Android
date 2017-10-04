@@ -1,13 +1,16 @@
 package com.ivyretail.views;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,6 +39,9 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
     Button btnSave;
     TextView lbl_prod_name, lbl_avail;
     private boolean isFromChild;
+    private EditText QUANTITY;
+    private InputMethodManager inputManager;
+    private String append = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +61,8 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
         lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         lbl_avail = (TextView) view.findViewById(R.id.tv_availability);
         lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-
+        inputManager = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
         createView();
 
@@ -117,10 +124,27 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
                 tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 tv_prod_name.setText(bo.getProductName());
 
-                EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
+                final EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
                 edt_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 edt_availability.setTag(bo.getGroupId() + "" + bo.getProductID());
                 edt_availability.setText(bo.getAvailability() + "");
+
+                edt_availability.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+
+                        QUANTITY = edt_availability;
+                        edt_availability.onTouchEvent(event);
+                        edt_availability.selectAll();
+                        edt_availability.requestFocus();
+                        inputManager.hideSoftInputFromWindow(
+                                edt_availability
+                                        .getWindowToken(), 0);
+                        return true;
+                    }
+                });
 
 
                 ll_product_layout.addView(productView);
@@ -202,5 +226,38 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
 
     }
 
+    public void numberPressed(View vw) {
+        if (QUANTITY == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
+        } else {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+                String s = QUANTITY.getText().toString();
+                if (!(s.length() == 0)) {
+                    s = s.substring(0, s.length() - 1);
+                    if (s.length() == 0) {
+                        s = "";
+                    }
+                }
+                QUANTITY.setText(s);
+            } else {
+                if (getView() != null) {
+                    Button ed = (Button) getView().findViewById(vw.getId());
+                    append = ed.getText().toString();
+                }
+                eff();
+            }
+        }
+    }
+
+    private void eff() {
+        String s = QUANTITY.getText().toString();
+        if (!"0".equals(s) && !"0.0".equals(s)) {
+            String strQuantity = QUANTITY.getText() + append;
+            QUANTITY.setText(strQuantity);
+        } else
+            QUANTITY.setText(append);
+    }
 
 }

@@ -513,7 +513,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             if ((leaveTypeLovId != 0 && isLeave) ||
                     (!btnTempToDate.equals(getResources().getString(R.string.select))
                             && !btn_frmDate.getText().toString().equals(getResources().getString(R.string.select)))) {
-                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate)) {
+                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate,session)) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                     Date toDate;
                     Date frmDate;

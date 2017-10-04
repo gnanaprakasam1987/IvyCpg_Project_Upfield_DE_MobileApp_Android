@@ -234,6 +234,15 @@
 
                 </LinearLayout>
 
+                <!--<ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true" />-->
+
                 <ExpandableListView
                     android:id="@+id/elv"
                     android:layout_width="match_parent"
@@ -305,96 +314,40 @@
                     android:layout_marginTop="@dimen/dimen_2dp"
                     android:background="@drawable/line_dotted" />
 
+
+
                 <LinearLayout
                     android:id="@+id/ll_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/vw_dotted_line_two"
-                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:gravity="end"
                     android:orientation="horizontal"
-                    android:padding="@dimen/dimens_6dp">
-
+                    android:padding="@dimen/dimens_6dp"
+                    android:weightSum="1">
                     <LinearLayout
                         android:layout_width="@dimen/dimen_0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical">
-
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5">
                         <TextView
                             android:layout_width="@dimen/dimen_0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="@string/discount_type"
+                            android:text="@string/discount"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/font_micro_small"
                             android:textStyle="bold" />
 
-                        <Spinner
-                            android:id="@+id/spn_discount_type"
+                        <TextView
+                            android:id="@+id/txt_discounted_amt"
+                            style="?attr/customListItemPrimary"
                             android:layout_width="@dimen/dimen_0dp"
-                            android:layout_height="@dimen/cheque_no_height"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:overlapAnchor="false" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="@dimen/dimen_0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical">
-
-                        <LinearLayout
-                            android:layout_width="@dimen/dimen_0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/value"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="@dimen/font_micro_small"
-                                android:textStyle="bold" />
-
-                            <EditText
-                                android:id="@+id/edt_value"
-                                style="@style/EditTextDoubleLine"
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_weight="1"
-                                android:focusableInTouchMode="true"
-                                android:cursorVisible="true"
-                                android:inputType="number"
-                                android:text="@string/zero" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="@dimen/dimen_0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/amount"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="@dimen/font_micro_small"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/txt_discounted_amt"
-                                style="?attr/customListItemPrimary"
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="@string/zero" />
-                        </LinearLayout>
+                            android:gravity="center"
+                            android:text="@string/zero" />
                     </LinearLayout>
 
                 </LinearLayout>
