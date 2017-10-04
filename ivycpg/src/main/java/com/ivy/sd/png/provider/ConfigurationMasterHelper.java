@@ -367,6 +367,8 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_BIXOLON;
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
+    private static final String CODE_FIT_SCORE = "FITDASH";
+    public boolean IS_FITSCORE_NEEDED;
 
     public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD,SHOW_NOR_DASHBOARD;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
@@ -2036,6 +2038,7 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
+        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {

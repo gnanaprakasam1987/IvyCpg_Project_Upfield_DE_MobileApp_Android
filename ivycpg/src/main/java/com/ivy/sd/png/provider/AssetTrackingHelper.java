@@ -19,6 +19,8 @@ import com.ivy.sd.png.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import static com.baidu.platform.comapi.map.f.e;
+
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
     private final Context context;
@@ -1216,11 +1218,11 @@ public class AssetTrackingHelper {
 
     public void saveAsset(String moduleName) {
         String type = "";
-        if (MENU_ASSET.equals(moduleName))
+        if (MENU_ASSET.equals(moduleName)) {
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName))
+        } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
-
+        }
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -1252,6 +1254,9 @@ public class AssetTrackingHelper {
             }
 
 
+            int moduleWeightage = 0;
+            double productWeightage = 0, sum = 0;
+
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
@@ -1269,11 +1274,16 @@ public class AssetTrackingHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
+                AssetDetailColumns = AssetDetailColumns + ",Score";
+            }
             int totalTarget = 0;
             int totalActualQty = 0;
             for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 if (mAssetTrackingList != null) {
+                    productWeightage = (double) 100 / (double) mAssetTrackingList.size();
                     totalTarget = 0;
                     for (AssetTrackingBO assetBo : mAssetTrackingList) {
                         totalTarget = totalTarget + assetBo.getTarget();
@@ -1385,105 +1395,121 @@ public class AssetTrackingHelper {
                                 } else {
                                     assetDetailValues.append(QT(""));
                                 }
+
+                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + productWeightage);
+                                    sum = sum + productWeightage;
+                                }
+
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns,
                                         assetDetailValues.toString());
                             }
                         } else {
-                            totalActualQty = totalActualQty + assetBo.getAvailQty();
-                            assetDetailValues.append(id);
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getAssetID());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getAvailQty());
-                            assetDetailValues.append(",");
-                            if (assetBo.getImageName() != null
-                                    && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
-                                assetDetailValues.append(QT(assetBo.getImageName()));
-                            } else {
-                                assetDetailValues.append(QT(""));
-                            }
+//                            if (assetBo.getAvailQty() > 0
+//                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
+//                                    || assetBo.getCompetitorQty() > 0) {
+                                totalActualQty = totalActualQty + assetBo.getAvailQty();
+                                assetDetailValues.append(id);
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getAssetID());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getAvailQty());
+                                assetDetailValues.append(",");
+                                if (assetBo.getImageName() != null
+                                        && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
+                                    assetDetailValues.append(QT(assetBo.getImageName()));
+                                } else {
+                                    assetDetailValues.append(QT(""));
+                                }
 
 
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(0);
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(QT(assetBo.getSerialNo()));
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getRemarkID());
-                            assetDetailValues.append(",");
-                            if (MENU_ASSET.equals(moduleName)) {
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
-                                                .getMinstalldate() == null || assetBo
-                                                .getMinstalldate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getMinstalldate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
-                                                .getMservicedate() == null || assetBo
-                                                .getMservicedate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getMservicedate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
-                            } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
-                                                .getMinstalldate() == null || assetBo
-                                                .getMinstalldate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getMinstalldate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
+                                assetDetailValues.append(0);
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
-                                                .getMservicedate() == null || assetBo
-                                                .getMservicedate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getMservicedate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
-                            }
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getAudit());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getProductid());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getCompetitorQty());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(standardListBO.getListID());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getGroupLevelId());
-                            assetDetailValues.append(",");
-                            assetDetailValues.append(assetBo.getExecutorQty());
-                            assetDetailValues.append(",");
-                            if (assetBo.getImgName() != null
-                                    && !assetBo.getImgName().equals("")) {
-                                assetDetailValues.append(QT(assetBo.getImgName()));
-                            } else {
-                                assetDetailValues.append(QT(""));
-                            }
-                            db.insertSQL(DataMembers.tbl_AssetDetail,
-                                    AssetDetailColumns, assetDetailValues.toString());
+                                assetDetailValues.append(QT(assetBo.getSerialNo()));
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getRemarkID());
+                                assetDetailValues.append(",");
+                                if (MENU_ASSET.equals(moduleName)) {
+                                    assetDetailValues.append(DatabaseUtils
+                                            .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
+                                                    .getMinstalldate() == null || assetBo
+                                                    .getMinstalldate()
+                                                    .length() == 0) ? SDUtil
+                                                    .now(SDUtil.DATE_GLOBAL)
+                                                    : (DateUtil
+                                                    .convertToServerDateFormat(
+                                                            assetBo.getMinstalldate(),
+                                                            ConfigurationMasterHelper.outDateFormat)))
+                                                    : ""));
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(DatabaseUtils
+                                            .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
+                                                    .getMservicedate() == null || assetBo
+                                                    .getMservicedate()
+                                                    .length() == 0) ? SDUtil
+                                                    .now(SDUtil.DATE_GLOBAL)
+                                                    : (DateUtil
+                                                    .convertToServerDateFormat(
+                                                            assetBo.getMservicedate(),
+                                                            ConfigurationMasterHelper.outDateFormat)))
+                                                    : ""));
+                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                    assetDetailValues.append(DatabaseUtils
+                                            .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
+                                                    .getMinstalldate() == null || assetBo
+                                                    .getMinstalldate()
+                                                    .length() == 0) ? SDUtil
+                                                    .now(SDUtil.DATE_GLOBAL)
+                                                    : (DateUtil
+                                                    .convertToServerDateFormat(
+                                                            assetBo.getMinstalldate(),
+                                                            ConfigurationMasterHelper.outDateFormat)))
+                                                    : ""));
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(DatabaseUtils
+                                            .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
+                                                    .getMservicedate() == null || assetBo
+                                                    .getMservicedate()
+                                                    .length() == 0) ? SDUtil
+                                                    .now(SDUtil.DATE_GLOBAL)
+                                                    : (DateUtil
+                                                    .convertToServerDateFormat(
+                                                            assetBo.getMservicedate(),
+                                                            ConfigurationMasterHelper.outDateFormat)))
+                                                    : ""));
+                                }
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getAudit());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getProductid());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getCompetitorQty());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(standardListBO.getListID());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getGroupLevelId());
+                                assetDetailValues.append(",");
+                                assetDetailValues.append(assetBo.getExecutorQty());
+                                assetDetailValues.append(",");
+                                if (assetBo.getImgName() != null
+                                        && !assetBo.getImgName().equals("")) {
+                                    assetDetailValues.append(QT(assetBo.getImgName()));
+                                } else {
+                                    assetDetailValues.append(QT(""));
+                                }
+
+                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + productWeightage);
+                                    sum = sum + productWeightage;
+                                }
+
+                                db.insertSQL(DataMembers.tbl_AssetDetail,
+                                        AssetDetailColumns, assetDetailValues.toString());
+//                            }
                         }
 
                     }
@@ -1495,6 +1521,18 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(totalActualQty);
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(refId));
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                if (MENU_ASSET.equals(moduleName)) {
+                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
+                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
+                }
+                assetHeaderValues.append("," + moduleWeightage);
+                double achieved = ((sum / (double) 100) * moduleWeightage);
+                assetHeaderValues.append("," + achieved);
+            }
+
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
 

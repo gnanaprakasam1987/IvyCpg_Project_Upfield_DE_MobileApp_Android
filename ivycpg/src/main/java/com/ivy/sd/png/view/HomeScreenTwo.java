@@ -120,6 +120,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     public static final String MENU_PROMO = "MENU_PROMO";
     public static final String MENU_SOS_PROJ = "MENU_SOS_PROJ";
     public static final String MENU_DELIVERY_ORDER = "MENU_DELIVERY_ORDER";
+    public static final String MENU_FIT_DASH = "MENU_FIT_DASH";
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";
@@ -512,6 +513,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         menuIcons.put(MENU_KELLGS_DASH, R.drawable.icon_dash);
         menuIcons.put(MENU_RTR_KPI, R.drawable.icon_dash);
         menuIcons.put(MENU_DASH_ACT, R.drawable.icon_dash);
+        menuIcons.put(MENU_FIT_DASH, R.drawable.icon_dash);
     }
 
     @Override
@@ -1313,8 +1315,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
+                } else if (menuDB.get(i).getConfigCode()
+                        .equals(MENU_FIT_DASH)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
                 }
-
 
             }
         } catch (Exception e) {
@@ -3120,6 +3130,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 isCreated = false;
             }
 
+        } else if (menu.getConfigCode().equals(MENU_FIT_DASH) && hasLink == 1) {
+            Intent i = new Intent(this,
+                    FitScoreDashboardActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtra("screentitle", menu.getMenuName());
+            startActivity(i);
+            finish();
         } else {
             isCreated = false;
         }
