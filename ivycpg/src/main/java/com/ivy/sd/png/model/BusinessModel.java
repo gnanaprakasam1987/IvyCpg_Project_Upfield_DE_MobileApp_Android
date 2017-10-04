@@ -3106,7 +3106,8 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                    tempVal = formatValue(value) + "";
+                   /* tempVal = formatValue(value) + "";*/
+                    tempVal = SDUtil.format(value,configurationMasterHelper.VALUE_PRECISION_COUNT,0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 

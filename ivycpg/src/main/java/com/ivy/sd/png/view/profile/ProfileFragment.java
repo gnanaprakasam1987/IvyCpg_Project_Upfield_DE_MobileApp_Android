@@ -708,10 +708,10 @@ public class ProfileFragment extends Fragment {
             }
             case "PROFILE10": {
                 String text = "";
-                if (retailerObj.getContactnumber() != null
-                        && !retailerObj.getContactnumber().equals(
+                if (retailerObj.getContactnumber1() != null
+                        && !retailerObj.getContactnumber1().equals(
                         "null")) {
-                    text = retailerObj.getContactnumber();
+                    text = retailerObj.getContactnumber1();
                 }
 
                 outletBO = new NewOutletBO();

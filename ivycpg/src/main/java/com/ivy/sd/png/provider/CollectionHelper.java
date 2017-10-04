@@ -1663,5 +1663,17 @@ public class CollectionHelper {
         return flag;
     }
 
+    public void downloadCollectionMethods() {
+        if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
+            downloadDiscountSlab();
+        }
+
+        downloadBankDetails();
+        downloadBranchDetails();
+        updateInvoiceDiscountedAmount();
+
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+        loadPaymentMode();
+    }
 
 }

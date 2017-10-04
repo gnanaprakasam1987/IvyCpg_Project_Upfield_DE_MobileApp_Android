@@ -482,8 +482,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
         } else if (vw == mBtn_clear) {
-
-
+            viewFlipper.showPrevious();
             try {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -1353,6 +1352,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
 
         updateValue();
     }
+
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
@@ -1428,7 +1428,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 || (generaltxt.equals(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0));
     }
 
-    private void loadProductList() {
+    public void loadProductList() {
         try {
             Vector<ProductMasterBO> items = getProducts();
 
