@@ -842,6 +842,37 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * This method will return the standard list name for the given listID.
+     *
+     * @param listCode
+     * @return listName
+     */
+    public String getStandardListNameByCode(String listCode) {
+        String listName = "";
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListType="
+                            + QT(listCode));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    listName = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+        return listName;
+    }
+
+
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);

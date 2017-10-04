@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/ListHeader"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_header_height"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/list_margin"
         android:background="@color/list_title_bg_color"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/list_padding_left_n_right"
         android:paddingRight="@dimen/list_padding_left_n_right"
-        android:layout_margin="@dimen/list_margin"
-        android:weightSum="10"
-        android:layout_alignParentTop="true">
+        android:weightSum="10">
+
         <TextView
             android:id="@+id/tv_prod_lbl"
             style="?attr/customListTitle"
@@ -31,37 +33,52 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:text="@string/avail" />
-        </LinearLayout>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ListHeader"
-        android:layout_above="@+id/footer">
+        android:layout_below="@+id/ListHeader">
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+
     <LinearLayout
-        android:id="@+id/ll_content"
-        android:layout_width="match_parent"
+        android:id="@+id/ll_keypad"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/footer_height"
+            android:background="@color/footer_bg"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="@dimen/footer_padding">
+
+
+            <Button
+                android:id="@+id/btn_save"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_gravity="center"
+                android:text="@string/done"
+                android:textAllCaps="false" />
+        </LinearLayout>
     </LinearLayout>
-    </ScrollView>
-    <RelativeLayout
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/footer_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
-        android:orientation="horizontal"
-        android:padding="@dimen/footer_padding">
-
-
-        <Button
-            android:id="@+id/btn_save"
-            style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="@string/done"
-            android:textAllCaps="false"/>
-    </RelativeLayout>
 </RelativeLayout>

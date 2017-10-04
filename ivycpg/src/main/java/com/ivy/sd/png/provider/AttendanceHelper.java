@@ -118,6 +118,8 @@ public class AttendanceHelper {
 
     public boolean checkLeaveAttendance() {
         try {
+            String sessionType = "";
+            StringBuilder query = new StringBuilder();
             String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -135,9 +137,29 @@ public class AttendanceHelper {
                 }
                 c.close();
             } else {
-                Cursor c = db
-                        .selectSQL("SELECT * FROM StandardListMaster where Listcode = 'LEAVE'  and listid in (select Atd_ID from AttendanceDetail where " +
-                                bmodel.QT(currentDate) + " BETWEEN FromDate AND ToDate AND Status = 'S')");
+                Cursor c1 = db.selectSQL("select Session from AttendanceDetail AD inner join StandardListMaster SLM on " +
+                        "SLM.ListId=AD.Session where " +
+                        bmodel.QT(currentDate) + " BETWEEN AD.FromDate AND AD.ToDate");
+                if (c1 != null) {
+                    if (c1.getCount() == 1)
+                        while (c1.moveToNext()) {
+                            sessionType = bmodel.getStandardListCode(c1.getInt(0));
+
+                        }
+                    c1.close();
+                }
+
+
+                query.append("SELECT * FROM StandardListMaster where Listcode = 'LEAVE'  and listid in (select Atd_ID from AttendanceDetail where " +
+                        bmodel.QT(currentDate) + " BETWEEN FromDate AND ToDate AND Status = 'S')");
+
+                if (sessionType.equals("FN")) {
+                    query.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + "<=" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF")));
+                } else if (sessionType.equals("AN")) {
+                    query.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + ">" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF")));
+                }
+                Cursor c = db.selectSQL(query.toString());
+
                 if (c.getCount() > 0) {
                     c.close();
                     db.closeDB();
@@ -1104,8 +1126,9 @@ public class AttendanceHelper {
     }
 
     //cmd for to check leave already applied for given date
-    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate) {
+    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId) {
         boolean is_applied = false;
+        String sesCode = "";
 
         try {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -1120,14 +1143,66 @@ public class AttendanceHelper {
                     bmodel.QT(fromDate) + " BETWEEN FromDate AND ToDate " + " OR " +
                     bmodel.QT(toDate) + " BETWEEN FromDate AND ToDate) " +
                     "AND Status !=" + bmodel.QT("D"));
+            if (c != null)
+                if (c.getCount() == 1)
+                    sesCode = bmodel.getStandardListCode(sessionId);
 
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    is_applied = true;
+
+            Cursor c1 = null;
+            StringBuilder sb = new StringBuilder();
+            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            if (sesCode.equals("FN")) {
+
+                sb.append("SELECT Tid,Session from AttendanceDetail " +
+                        "where Atd_ID = " + atdId + " AND (" +
+                        bmodel.QT(fromDate) + " BETWEEN FromDate AND ToDate " + " OR " +
+                        bmodel.QT(toDate) + " BETWEEN FromDate AND ToDate) " +
+                        "AND Status !=" + bmodel.QT("D"));
+
+                if (currentDate.equals(fromDate) || currentDate.equals(toDate))
+                    sb.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + "<=" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF")));
+                else
+                    sb.append(" AND Session=" + sessionId);
+
+                c1 = db.selectSQL(sb.toString());
+
+                if (c1 != null) {
+                    if (c.getCount() > 0) {
+                        is_applied = true;
+                    }
+                    c.close();
+                    c1.close();
                 }
-                c.close();
-            }
+            } else if (sesCode.equals("AN")) {
 
+                sb.append("SELECT Tid,Session from AttendanceDetail " +
+                        "where Atd_ID = " + atdId + " AND (" +
+                        bmodel.QT(fromDate) + " BETWEEN FromDate AND ToDate " + " OR " +
+                        bmodel.QT(toDate) + " BETWEEN FromDate AND ToDate) " +
+                        "AND Status !=" + bmodel.QT("D"));
+
+                if (currentDate.equals(fromDate) || currentDate.equals(toDate))
+                    sb.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + ">" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF")));
+                else
+                    sb.append(" AND Session=" + sessionId);
+
+                c1 = db.selectSQL(sb.toString());
+
+                if (c1 != null) {
+                    if (c.getCount() > 0) {
+                        is_applied = true;
+                    }
+                    c.close();
+                    c1.close();
+                }
+            } else {
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        is_applied = true;
+                    }
+                    c.close();
+                }
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("applied leaves Exception", e);

@@ -37,7 +37,7 @@ import java.util.Vector;
  * Created by rajkumar.s on 3/28/2017.
  */
 
-public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener,TextView.OnEditorActionListener{
+public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     Button btnAdd;
     BusinessModel bmodel;
@@ -50,7 +50,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     private int mMonth;
     private int mDay;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
-    Button btnSave,btnCancel;
+    Button btnSave, btnCancel;
     private String append = "";
     EditText edittext;
     @Override
@@ -68,9 +68,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         addinstalldate = (Button) view.findViewById(R.id.date_button);
         mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-      // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
-     //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-       // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
+        // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
+        //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
 //        mSNO.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -85,8 +85,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 //                return true;
 //            }
 //        });
-        btnSave=(Button)view.findViewById(R.id.btn_save) ;
-        btnCancel=(Button)view.findViewById(R.id.btn_cancel) ;
+        btnSave = (Button) view.findViewById(R.id.btn_save);
+        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
@@ -235,7 +235,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         massetbrandsadapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         Vector vbrand = bmodel.assetTrackingHelper.getassetbrandNames();
-        if (vbrand == null || vbrand.size()<1) {
+        if (vbrand == null || vbrand.size() < 1) {
             mbrand.setAdapter(null);
             massetbrandsadapter.add(SELECT);
             mbrand.setAdapter(massetbrandsadapter);
@@ -272,48 +272,53 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     @Override
     public void onClick(View view) {
+        if (view.getId() == R.id.btn_save) {
+            try {
+                if (!masset.getSelectedItem().toString()
+                        .equals(SELECT)
+                        && ((mbrand.getSelectedItem() == null) ? mbrand.getSelectedItem() == null : !mbrand.getSelectedItem().toString()
+                        .equals(SELECT))
+                        && !mSNO.getText().toString().equals("")) {
+                    if (!bmodel.assetTrackingHelper
+                            .isExistingRetailersno(mSNO.getText()
+                                    .toString())) {
+                        setAddAssetDetails();
+                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                        bmodel.assetTrackingHelper
+                                .saveAssetAddandDeletedetails("MENU_ASSET");
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.saved_successfully),
+                                Toast.LENGTH_SHORT).show();
+                        dismiss();
 
-        if(view.getId()==R.id.btn_save) {
 
-            if (!masset.getSelectedItem().toString()
-                    .equals(SELECT)
-                    && !mbrand.getSelectedItem().toString()
-                    .equals(SELECT)
-                    && !mSNO.getText().toString().equals("")) {
-                if (!bmodel.assetTrackingHelper
-                        .isExistingRetailersno(mSNO.getText()
-                                .toString())) {
-                    setAddAssetDetails();
-                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                    bmodel.assetTrackingHelper
-                            .saveAssetAddandDeletedetails("MENU_ASSET");
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.saved_successfully),
-                            Toast.LENGTH_SHORT).show();
-                   dismiss();
-
-
+                    } else {
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.serial_number_already_exists),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(
                             getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.serial_number_already_exists),
+                            getResources().getString(
+                                    R.string.no_assets_exists),
                             Toast.LENGTH_SHORT).show();
                 }
-            } else {
+
+            } catch (Exception e) {
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(
                                 R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
-
-        }
-        else if(view.getId()==R.id.btn_cancel){
+        } else if (view.getId() == R.id.btn_cancel) {
             dismiss();
         }
     }
