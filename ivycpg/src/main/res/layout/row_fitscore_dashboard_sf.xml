@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    style="@style/TextViewListItem"
+    android:weightSum="2">
+
+    <TextView
+        android:id="@+id/txtHeader"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.6"
+        android:gravity="left"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="@dimen/font_micro_small" />
+
+    <TextView
+        android:id="@+id/txtTarget"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:visibility="gone"
+        android:textSize="@dimen/font_micro_small" />
+
+    <TextView
+        android:id="@+id/txtAchieved"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text=""
+        android:textSize="@dimen/font_micro_small" />
+
+    <TextView
+        android:id="@+id/txtWeightage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text=""
+        android:visibility="gone"
+        android:textSize="@dimen/font_micro_small" />
+
+    <TextView
+        android:id="@+id/txtScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:padding="5dp"
+        android:paddingRight="5dp"
+        android:text=""
+        android:visibility="gone"
+        android:textSize="@dimen/font_micro_small" />
+
+</LinearLayout>

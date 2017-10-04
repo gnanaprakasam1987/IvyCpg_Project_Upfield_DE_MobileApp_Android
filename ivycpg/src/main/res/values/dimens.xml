@@ -393,7 +393,7 @@
     <dimen name="target_top_margin">6dp</dimen>
     <dimen name="divder_margin">15dp</dimen>
     <dimen name="pie_chart_margin_right">6dp</dimen>
-    <dimen name="collasping_height">190dp</dimen>
+    <dimen name="collasping_height">170dp</dimen>
     <dimen name="view_pager_height">150dp</dimen>
     <dimen name="drop_draw_pading">24dp</dimen>
     <dimen name="skuwise_right_margin">3dp</dimen>
@@ -842,4 +842,20 @@
 
     <dimen name="survey_answer_left">15dp</dimen>
     <dimen name="gallery_card_margin">10dp</dimen>
+
+    <!-- For Fitscore Dashboard -->
+    <dimen name="header_card_margin_top">140dp</dimen>
+    <dimen name="all_score_card_height">20dp</dimen>
+    <dimen name="card_content_padding">2dp</dimen>
+    <dimen name="score_content_ts_large">24sp</dimen>
+    <dimen name="score_content_ts_tiny">12sp</dimen>\
+    <dimen name="category_recycler_height">40dp</dimen>
+    <dimen name="card_view_height">60dp</dimen>
+    <dimen name="store_card_image">20dp</dimen>
+    <dimen name="score_card_height">120dp</dimen>
+    <dimen name="qn_text_margin_left">5dp</dimen>
+    <dimen name="web_view_width">180dp</dimen>
+    <dimen name="image_size">50dp</dimen>
+    <dimen name="list_item_width_perfectdashboard_medium">225dp</dimen>
+    <dimen name="list_item_width_perfectdashboard_small">90dp</dimen>
 </resources>

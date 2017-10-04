@@ -213,12 +213,27 @@ public class PriceTrackingHelper {
                         "Tid=" + QT(headerCursor.getString(0)), false);
                 headerCursor.close();
             }
+
+            //Weightage Calculation
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                bmodel.fitscoreHelper.getWeightage(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_PRICE);
+            }
+
             // save header
+            int moduleWeightage = 0, productWeightage = 0, sum = 0;
+
             values = QT(tid) + ","
                     + bmodel.getRetailerMasterBO().getRetailerID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.getTimeZone()) + ","
                     + bmodel.retailerMasterBO.getDistributorId();
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                headerColumns = headerColumns + ",Weightage,Score";
+                moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PRICE);
+                values = values + "," + moduleWeightage + ",0";
+                detailColumns = detailColumns + ",Score";
+            }
 
             db.insertSQL(mPriceChangeHeader, headerColumns, values);
 
@@ -235,6 +250,7 @@ public class PriceTrackingHelper {
                         || !sku.getMrp_ou().equals("0")
                         ) {
                     boolean isInserted = false;
+
                     if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
                         values = QT(tid) + "," + sku.getProductID() + ","
                                 + sku.getPriceChanged() + ","
@@ -243,6 +259,12 @@ public class PriceTrackingHelper {
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
                                 + bmodel.getRetailerMasterBO().getRetailerID()
                                 + "," + sku.getCaseUomId() + "," + sku.getMrp_ca() + "," + sku.getPriceMOP();
+
+                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
+                            values = values + "," + productWeightage;
+                            sum = sum + productWeightage;
+                        }
 
                         db.insertSQL(mPriceChangeDetail, detailColumns, values);
                         isInserted = true;
@@ -256,6 +278,12 @@ public class PriceTrackingHelper {
                                 + bmodel.getRetailerMasterBO().getRetailerID()
                                 + "," + sku.getPcUomid() + "," + sku.getMrp_pc() + "," + sku.getPriceMOP();
 
+                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
+                            values = values + "," + productWeightage;
+                            sum = sum + productWeightage;
+                        }
+
                         db.insertSQL(mPriceChangeDetail, detailColumns, values);
                         isInserted = true;
                     }
@@ -267,6 +295,12 @@ public class PriceTrackingHelper {
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
                                 + bmodel.getRetailerMasterBO().getRetailerID()
                                 + "," + sku.getOuUomid() + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
+
+                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
+                            values = values + "," + productWeightage;
+                            sum = sum + productWeightage;
+                        }
 
                         db.insertSQL(mPriceChangeDetail, detailColumns, values);
                         isInserted = true;
@@ -281,10 +315,24 @@ public class PriceTrackingHelper {
                                 + bmodel.getRetailerMasterBO().getRetailerID()
                                 + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
 
+                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
+                            values = values + "," + productWeightage;
+                            sum = sum + productWeightage;
+                        }
+
                         db.insertSQL(mPriceChangeDetail, detailColumns, values);
                     }
                 }
             }
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                db.updateSQL("Update PriceCheckHeader set Score = " + achieved + " where TID = " + QT(tid) + " and" +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
