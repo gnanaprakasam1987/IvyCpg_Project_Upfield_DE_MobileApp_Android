@@ -20,7 +20,9 @@ public class OrderHistoryBO {
     private int isJointCall;
     private String delieveryStatus;
     private String noorderReason;
-
+    private String dueDate;
+    private String overDueDays;
+    private double outStandingAmt;
 
     public String getNoorderReason() {
         return noorderReason;
@@ -192,5 +194,27 @@ public class OrderHistoryBO {
 
     public void setRF4(String RF4) {
         this.RF4 = RF4;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+    public String getOverDueDays() {
+        return overDueDays;
+    }
+
+    public void setOverDueDays(String overDueDays) {
+        this.overDueDays = overDueDays;
+    }
+    public double getOutStandingAmt() {
+        return outStandingAmt;
+    }
+
+    public void setOutStandingAmt(double outStandingAmt) {
+        this.outStandingAmt = outStandingAmt;
     }
 }

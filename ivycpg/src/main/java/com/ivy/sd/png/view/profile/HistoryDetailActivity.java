@@ -27,11 +27,13 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     int selectedPosition = -1;
     TextView tvpiece, tvcase, tvouter;
+    String fromScreen="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectedPosition = getIntent().getIntExtra("selected_list_id", -1);
+        fromScreen = getIntent().getStringExtra("from");
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         setContentView(R.layout.history_detail_layout);
@@ -81,8 +83,14 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         Vector<OrderHistoryBO> orderList;
 
         public MyAdapter() {
-            orderList = bmodel.profilehelper.getChild_orderHistoryList()
-                    .get(selectedPosition);
+            if(fromScreen.equalsIgnoreCase("OrderHistory")){
+                orderList = bmodel.profilehelper.getChild_orderHistoryList()
+                        .get(selectedPosition);
+            }else if(fromScreen.equalsIgnoreCase("InvoiceHistory")){
+                orderList = bmodel.profilehelper.getChild_invoiceHistoryList()
+                        .get(selectedPosition);
+            }
+
         }
 
         @Override
