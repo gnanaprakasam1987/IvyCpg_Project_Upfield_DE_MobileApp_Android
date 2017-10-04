@@ -139,7 +139,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_LIMIT_PROFILE = "PROFILE19";
     private static final String CODE_SHOW_NO_VISIT_REASON = "PROFILE21";
     private static final String CODE_SHOW_HISTORY = "PRO05";
-    private static final String CODE_SHOW_ASSET_HISTORY="PRO26";
+    private static final String CODE_SHOW_ASSET_HISTORY="PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
@@ -477,7 +477,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_LIMIT_PROFILE; //
     public boolean SHOW_NO_VISIT_REASON; //
     public boolean SHOW_HISTORY; // PRO05
-    public boolean SHOW_ASSET_HISTORY; //PRO26
+    public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
