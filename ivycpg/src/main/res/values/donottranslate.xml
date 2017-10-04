@@ -146,4 +146,5 @@
     <string name="invoiceamt">Invoice Amt</string>
     <!--profile screen invoice history-->
 
+    <string name="exceed_limt">Exceeds the Limit</string>
 </resources>

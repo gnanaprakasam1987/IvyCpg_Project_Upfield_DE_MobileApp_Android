@@ -1054,13 +1054,18 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     }
 
     private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
+    private Vector<ConfigureBO> mInStoreMenu = new Vector<>();
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
+        boolean isStoreCheckMenu = false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
+
         for (ConfigureBO config : menuDB) {
+            if (config.getConfigCode().equals(ConfigurationMasterHelper.MENU_STORECHECK))
+                isStoreCheckMenu = true;
             if (config.getHasLink() == 1 && !config.isDone()
                     && !config.getConfigCode().equals(MENU_CALL_ANLYS)) {
 
@@ -1068,6 +1073,20 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         + getResources().getString(R.string.is_not_done) + "\n");
             }
 
+        }
+
+        if (isStoreCheckMenu) {
+            mInStoreMenu = bmodel.configurationMasterHelper
+                    .getStoreCheckMenu();
+            for (ConfigureBO config : mInStoreMenu) {
+                if (config.getHasLink() == 1 && !config.isDone()
+                        && !config.getConfigCode().equals("MENU_CLOSE")) {
+
+                    sb.append(config.getMenuName() + " "
+                            + getResources().getString(R.string.is_not_done) + "\n");
+                }
+
+            }
         }
 
         return sb.toString();

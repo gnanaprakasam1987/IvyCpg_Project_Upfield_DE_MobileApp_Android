@@ -232,6 +232,7 @@
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
                 android:onClick="onClick"
+                android:visibility="gone"
                 android:text="@string/non_visit" />
 
             <Button

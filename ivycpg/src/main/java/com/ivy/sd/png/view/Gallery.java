@@ -66,6 +66,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected ArrayList<String> imgPathDelete=new ArrayList<>();
     protected ArrayList<File> imgFileDelete=new ArrayList<>();
     private int width,height;
+    public static boolean isPhotoDelete = false;
     /**
      * Called when the activity is first created.
      */
@@ -406,6 +407,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                     bmodel.photocount--;
                                 }
                                 loadGrid();
+                                isPhotoDelete = true;
                             }
                         })
                 .setNegativeButton(
