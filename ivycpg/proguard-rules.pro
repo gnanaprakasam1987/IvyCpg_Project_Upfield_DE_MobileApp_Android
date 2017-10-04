@@ -67,9 +67,6 @@
 }
 
 
--keep public class * extends android.support.v4.app.Fragment
-
-
 -dontwarn **CompatHoneycomb.**
 -keep public class * extends android.support.v4.app.Fragment
 
@@ -92,3 +89,12 @@
 -keep class android.support.design.widget.** { *; }
 -keep interface android.support.design.widget.** { *; }
 -dontwarn android.support.design.**
+
+# Crashlytics rules
+
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+# Following line should be commented for crashlytics to work
+# -printmapping mapping.txt
+
