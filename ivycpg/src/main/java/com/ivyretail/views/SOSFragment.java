@@ -477,9 +477,9 @@ public class SOSFragment extends IvyBaseFragment implements
 
                 holder.etTotal.setFocusable(false);
                 // setting no of charcters from congifuration
-                InputFilter[] FilterArray = new InputFilter[1];
+               /* InputFilter[] FilterArray = new InputFilter[1];
                 FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
-                holder.etTotal.setFilters(FilterArray);
+                holder.etTotal.setFilters(FilterArray);*/
 
                 holder.etTotal.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1402,17 +1402,23 @@ public class SOSFragment extends IvyBaseFragment implements
         }
     }
 
+    private StringBuilder sb = new StringBuilder();
+
     private void eff(int val) {
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-
-                mSelectedET.setText(String.valueOf(val));
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText()
+                            + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
             } else {
-                String strVal = mSelectedET.getText()
-                        + String.valueOf(val);
-                mSelectedET.setText(strVal);
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -1460,7 +1466,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     s = s.substring(0, s.length() - 1);
                 } else
                     s = "0";
-
+                sb.append(s);
                 mSelectedET.setText(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();

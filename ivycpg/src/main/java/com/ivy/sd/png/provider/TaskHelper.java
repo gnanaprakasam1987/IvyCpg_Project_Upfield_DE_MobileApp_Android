@@ -413,8 +413,15 @@ public class TaskHelper {
         if (taskBO.isChecked()) {
             values = taskBO.getTaskId() + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'";
             db.insertSQL("TaskExecutionDetails", columns, values);
+            bmodel.saveModuleCompletion("MENU_TASK");
         } else {
             db.deleteSQL("TaskExecutionDetails", "TaskId=" + taskBO.getTaskId() + " and RetailerId = " + retailerid, false);
+
+            Cursor c = db.selectSQL("Select * from TaskExecutionDetails");
+            if (c.getCount() == 0) {
+                bmodel.deleteModuleCompletion("MENU_TASK");
+                c.close();
+            }
         }
 
         db.closeDB();

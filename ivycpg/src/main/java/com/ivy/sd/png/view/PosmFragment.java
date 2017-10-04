@@ -303,7 +303,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+        if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
         if (mLocationAdapter.getCount() > 0) {
@@ -313,7 +313,7 @@ public class PosmFragment extends IvyBaseFragment implements
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
         if (!isShowed) {
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+            if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 showLocation();
             loadedItem();
             isShowed = true;
@@ -388,7 +388,7 @@ public class PosmFragment extends IvyBaseFragment implements
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION || screenCode.equals("MENU_POSM_CS"))
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
-            if (bmodel.productHelper.getInStoreLocation().size() < 2)
+            if (bmodel.productHelper.getInStoreLocation().size() < 1)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
         //Move Asset is removed in Posm

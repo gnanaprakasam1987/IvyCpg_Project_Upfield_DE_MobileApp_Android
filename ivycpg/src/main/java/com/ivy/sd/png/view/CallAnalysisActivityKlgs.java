@@ -110,21 +110,21 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     private void createView() {
 
         try {
-            if (taskDataBO!= null) {
+            if (taskDataBO != null) {
                 LayoutInflater inflater = LayoutInflater.from(this);
 
                 View cardView = null;
 
 
                 for (TaskDataBO taskBo : taskDataBO) {
-                        cardView = inflater.inflate(R.layout.task_child_view, null);
-                        TextView tv_taskDesc = (TextView) cardView.findViewById(R.id.tv_task_desc);
-                        tv_taskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                        tv_taskDesc.setText(taskBo.getTaskDesc());
-                        TextView tv_taskOwner = (TextView) cardView.findViewById(R.id.tv_task_owner);
-                        tv_taskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        tv_taskOwner.setText(taskBo.getTaskOwner());
-                        ll_content.addView(cardView);
+                    cardView = inflater.inflate(R.layout.task_child_view, null);
+                    TextView tv_taskDesc = (TextView) cardView.findViewById(R.id.tv_task_desc);
+                    tv_taskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    tv_taskDesc.setText(taskBo.getTaskDesc());
+                    TextView tv_taskOwner = (TextView) cardView.findViewById(R.id.tv_task_owner);
+                    tv_taskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    tv_taskOwner.setText(taskBo.getTaskOwner());
+                    ll_content.addView(cardView);
                 }
             }
         } catch (Exception ex) {
@@ -174,15 +174,19 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     }
 
 
-
     private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
+    private Vector<ConfigureBO> mInStoreMenu = new Vector<>();
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
+        boolean isStoreCheckMenu = false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
+
         for (ConfigureBO config : menuDB) {
+            if (config.getConfigCode().equals(ConfigurationMasterHelper.MENU_STORECHECK))
+                isStoreCheckMenu = true;
             if (config.getHasLink() == 1 && !config.isDone()
                     && !config.getConfigCode().equals(MENU_CALL_ANLYS)) {
 
@@ -192,8 +196,21 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
 
         }
 
-        return sb.toString();
+        if (isStoreCheckMenu) {
+            mInStoreMenu = bmodel.configurationMasterHelper
+                    .getStoreCheckMenu();
+            for (ConfigureBO config : mInStoreMenu) {
+                if (config.getHasLink() == 1 && !config.isDone()
+                        && !config.getConfigCode().equals("MENU_CLOSE")) {
 
+                    sb.append(config.getMenuName() + " "
+                            + getResources().getString(R.string.is_not_done) + "\n");
+                }
+
+            }
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -203,17 +220,17 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
      */
     private boolean hasActivityDone() {
         try {
-                menuDB = bmodel.configurationMasterHelper.getActivityMenu();
+            menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
-                for (ConfigureBO config : menuDB) {
-                    if (!config.getConfigCode().equals(MENU_CALL_ANLYS)
-                            && !config.getConfigCode().equals(StandardListMasterConstants.MENU_COLLECTION_VIEW)
-                            && !config.getConfigCode().equals(StandardListMasterConstants.MENU_REV)) {
-                        if (config.getHasLink() == 1 && config.isDone()) {
-                            return true;
-                        }
+            for (ConfigureBO config : menuDB) {
+                if (!config.getConfigCode().equals(MENU_CALL_ANLYS)
+                        && !config.getConfigCode().equals(StandardListMasterConstants.MENU_COLLECTION_VIEW)
+                        && !config.getConfigCode().equals(StandardListMasterConstants.MENU_REV)) {
+                    if (config.getHasLink() == 1 && config.isDone()) {
+                        return true;
                     }
                 }
+            }
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -235,7 +252,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                            doCallAnalysisCloseAction("0", "");
+                                        doCallAnalysisCloseAction("0", "");
 
                                     }
 
@@ -299,7 +316,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                 .now(SDUtil.TIME));
 
         bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
-                .now(SDUtil.TIME),"");
+                .now(SDUtil.TIME), "");
         bmodel.saveModuleCompletion("MENU_CALL_ANALYS_KELGS");
         BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
                 DataMembers.actPlanning);
@@ -365,8 +382,6 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
      */
 
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
@@ -381,7 +396,6 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         }
         return false;
     }
-
 
 
 }

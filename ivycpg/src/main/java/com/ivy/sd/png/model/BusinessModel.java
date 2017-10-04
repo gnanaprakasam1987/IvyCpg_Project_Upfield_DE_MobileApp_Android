@@ -133,6 +133,7 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
+import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
@@ -346,6 +347,7 @@ public class BusinessModel extends Application {
     public AcknowledgementHelper acknowledgeHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
+    public PhotoCaptureHelper photoCaptureHelper;
     //
     public HashMap<String, PhotoCaptureProductBO> galleryDetails;
     /* ******* Invoice Number To Print ******* */
@@ -471,6 +473,7 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
+        photoCaptureHelper = photoCaptureHelper.getInstance(this);
 
         /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
@@ -7648,16 +7651,21 @@ public class BusinessModel extends Application {
             } else if (imageName.startsWith("USER_")) {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else {
-                mBucketName = mBucketDetails
-                        + "/"
-                        + userMasterHelper.getUserMasterBO
-                        ().getDistributorid()
-                        + "/"
-                        + userMasterHelper.getUserMasterBO().getUserid()
-                        + "/"
-                        + userMasterHelper.getUserMasterBO
-                        ().getDownloadDate()
-                        .replace("/", "");
+                if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
+                    mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
+                } else {
+
+                    mBucketName = mBucketDetails
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDistributorid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO().getUserid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDownloadDate()
+                            .replace("/", "");
+                }
             }
             final TransferObserver myUpload = tm.upload(mBucketName,
                     imageName, image);
@@ -8181,6 +8189,35 @@ public class BusinessModel extends Application {
         }
         return true;
     }
+
+
+
+    public boolean deleteModuleCompletion(String menuName) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
+                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+
+            if (c.getCount() > 0) {
+                db.deleteSQL("ModuleCompletionReport", "MENU_CODE="
+                        + QT(menuName), false);
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("deleting" + menuName + "exception", e);
+            return false;
+        }
+        return true;
+
+    }
+
+
 
     public void isModuleDone() {
         try {

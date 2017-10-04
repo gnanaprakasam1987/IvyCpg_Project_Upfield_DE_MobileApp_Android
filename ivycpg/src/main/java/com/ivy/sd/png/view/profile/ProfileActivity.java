@@ -1797,6 +1797,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
 
             Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
+            i.putExtra("isLocDialog",true);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             finish();
@@ -1855,9 +1856,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
-                /*BusinessModel.loadActivity(ProfileActivity.this,
-                        DataMembers.actPlanning);*/
-                finish();
+                if (visitclick) {
+                    startActivity(new Intent(ProfileActivity.this,
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
+                    finish();
+                } else {
+                    finish();
+                }
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }

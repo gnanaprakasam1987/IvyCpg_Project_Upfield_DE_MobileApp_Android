@@ -594,7 +594,11 @@ public class SODFragment extends IvyBaseFragment implements
             holder.tvBrandName.setText(holder.mSOD.getProductName());
             String strNorm = holder.mSOD.getNorm() + "";
             holder.tvNorm.setText(strNorm);
-            holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
+            if ("0.0".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
+                holder.etTotal.setText("0");
+            } else {
+                holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
+            }
             holder.tvActual.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual());
             holder.tvTarget.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget());
             holder.tvPercentage.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage());
@@ -792,7 +796,7 @@ public class SODFragment extends IvyBaseFragment implements
 
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER&&bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
+            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
             // If the nav drawer is open, hide action items related to the
@@ -1286,15 +1290,23 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    private StringBuilder sb = new StringBuilder();
+
     private void eff(int val) {
+
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-                mSelectedET.setText(String.valueOf(val));
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText() + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
             } else {
-                String strVal = mSelectedET.getText() + String.valueOf(val);
-                mSelectedET.setText(strVal);
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -1345,7 +1357,7 @@ public class SODFragment extends IvyBaseFragment implements
                     }
                     mSelectedET.setText(s);
                 }
-
+                sb.append(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();
                 if (!s1.contains(".")) {
