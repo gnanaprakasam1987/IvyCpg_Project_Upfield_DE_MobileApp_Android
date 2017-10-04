@@ -1833,7 +1833,7 @@ public class NewOutletHelper {
                     + "," + QT("N")
                     + "," + getNewoutlet().getCreditDays()
                     + "," + getNewoutlet().getIsSEZ()
-                    + "," + getNewoutlet().getGstNum();
+                    + "," + QT(getNewoutlet().getGstNum());
 
 
             db.insertSQL("RetailerMaster", column, value);

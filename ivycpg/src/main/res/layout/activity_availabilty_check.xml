@@ -49,6 +49,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:id="@+id/availability_lty"
                             android:layout_margin="@dimen/card_margin">
 
                             <TextView
@@ -481,6 +482,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/ll_price_parentLty"
                         android:layout_marginTop="@dimen/target_top_margin"
                         android:background="@color/list_even_item_bg"
                         android:orientation="vertical">
@@ -534,6 +536,9 @@
                                         android:gravity="left"
                                         android:text="@string/zero" />
                                 </LinearLayout>
+
+
+
 
                                 <LinearLayout
                                     android:id="@+id/ll_price_case"
@@ -591,7 +596,96 @@
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:id="@+id/ll_priceMrp_piece"
                                     android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/ll_price_piece"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_priceMrp_pcTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:tag="priceMrp_pcLabel"
+                                        android:text="@string/avail_pcs"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_priceMrp_pcValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_priceMrp_case"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/ll_price_case"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_priceMrp_csTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:tag="priceMrp_csLabel"
+                                        android:text="@string/avail_cases"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_priceMrp_csValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_priceMrp_outer"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/ll_price_outer"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_priceMrp_ouTitle"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:tag="priceMrp_ouLabel"
+                                        android:text="@string/avail_outer"
+                                        android:textSize="@dimen/card_margin" />
+
+                                    <EditText
+                                        android:id="@+id/et_priceMrp_ouValue"
+                                        style="@style/EditText_ListItem"
+                                        android:layout_width="@dimen/discount_editbox_width"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="left"
+                                        android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:id="@+id/ll_priceRadio_grpLty"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentRight="true"
                                     android:layout_centerVertical="true"
@@ -645,6 +739,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/ll_expriyCheck_parentLty"
                         android:layout_marginTop="@dimen/target_top_margin"
                         android:background="@color/list_odd_item_bg"
                         android:orientation="vertical">

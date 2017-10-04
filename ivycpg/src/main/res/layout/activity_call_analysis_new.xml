@@ -178,6 +178,7 @@
                 android:cursorVisible="false"
                 android:gravity="center_vertical"
                 android:textColor="@color/call_duration_value_text_color"
+                android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:textSize="@dimen/list_item_primary_text_size"
                 android:visibility="gone" />
 

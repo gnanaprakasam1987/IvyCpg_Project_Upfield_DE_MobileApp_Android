@@ -1431,42 +1431,40 @@ public class BusinessModel extends Application {
         return str;
     }
 
-    public ArrayList<RetailerMasterBO> downloadRetailerMasterData()
-    {
+    public ArrayList<RetailerMasterBO> downloadRetailerMasterData() {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
-        ArrayList<RetailerMasterBO> retailerMasterData=new ArrayList<>();
-        Cursor c=db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
+        ArrayList<RetailerMasterBO> retailerMasterData = new ArrayList<>();
+        Cursor c = db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
         if (c != null)
-            while(c.moveToNext())
-            {
-                RetailerMasterBO retailerMasterBO=new RetailerMasterBO();
+            while (c.moveToNext()) {
+                RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
                 retailerMasterBO.setMovRetailerName(c.getString(2));
-             //   retailerMasterBO.setMovRetailerCode(c.getString(1));
+                //   retailerMasterBO.setMovRetailerCode(c.getString(1));
                 retailerMasterBO.setMovRetailerId(c.getString(0));
 
                 retailerMasterData.add(retailerMasterBO);
             }
         return retailerMasterData;
     }
+
     /**
      * Method to check the movement Asset in sql table
      */
-    public ArrayList<String> getAssetMovementDetails()
-    {
+    public ArrayList<String> getAssetMovementDetails() {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
-        ArrayList<String> retailerMovedData=new ArrayList<>();
-        Cursor c=db.selectSQL("SELECT DISTINCT AssetId from "+DataMembers.tbl_AssetAddDelete +" where flag='M'");
+        ArrayList<String> retailerMovedData = new ArrayList<>();
+        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
         if (c != null)
-            while(c.moveToNext())
-            {
+            while (c.moveToNext()) {
                 retailerMovedData.add(c.getString(0));
             }
         return retailerMovedData;
     }
+
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();
@@ -3110,7 +3108,7 @@ public class BusinessModel extends Application {
                     String fractionalStr;
 
                    /* tempVal = formatValue(value) + "";*/
-                    tempVal = SDUtil.format(value,configurationMasterHelper.VALUE_PRECISION_COUNT,0);
+                    tempVal = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
@@ -3989,7 +3987,7 @@ public class BusinessModel extends Application {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
-        if (menuCode.equals("MENU_STOCK")) {
+        if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
@@ -4105,7 +4103,7 @@ public class BusinessModel extends Application {
      *
      * @param retailerId
      */
-    void deleteOrder(String retailerId) {
+    public void deleteOrder(String retailerId) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -6172,7 +6170,7 @@ public class BusinessModel extends Application {
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if(product.getIsFocusBrand()==1||product.getIsFocusBrand()==2) {
+                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
                     if (product.getLocations().get(j).getShelfPiece() == -1
                             && product.getLocations().get(j).getShelfCase() == -1
                             && product.getLocations().get(j).getShelfOuter() == -1
@@ -7088,7 +7086,7 @@ public class BusinessModel extends Application {
 
                 if (!configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeDetailsMasterHelper.insertScemeDetails(uid, db,"N");
+                    schemeDetailsMasterHelper.insertScemeDetails(uid, db, "N");
                 }
 
 
@@ -8189,7 +8187,6 @@ public class BusinessModel extends Application {
         }
         return true;
     }
-
 
 
     public boolean deleteModuleCompletion(String menuName) {

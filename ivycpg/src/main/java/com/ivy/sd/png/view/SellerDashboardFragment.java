@@ -65,8 +65,6 @@ import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
 
-import static com.ivy.sd.png.asean.view.R.id.tv;
-
 public class SellerDashboardFragment extends IvyBaseFragment implements AdapterView.OnItemSelectedListener {
 
     private BusinessModel bmodel;
@@ -154,6 +152,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
         }
+
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
+            setUpActionBar();
 
         setHasOptionsMenu(true);
         init();
@@ -383,7 +384,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 @Override
                 public void onClick(View view) {
 //                    if (selectedInterval.equals(P3M)) {
-                    if(show_trend_chart) {
+                    if (show_trend_chart) {
                         if (mDashboardList != null && mDashboardList.size() > 0) {
                             bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
                         }
@@ -520,15 +521,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 l.setEnabled(false);
 
                 //if (isSemiCircleChartRequired) {
-                    setOffset(holder.mChart);
-                    holder.mChart.setHoleColor(Color.TRANSPARENT);
-                    holder.mChart.setHoleRadius(50f);
-                    holder.mChart.setTransparentCircleRadius(28f);
-                    holder.mChart.setMaxAngle(180f); // HALF CHART
-                    holder.mChart.setRotationAngle(180f);
-                    // entry label styling
-                    holder.mChart.setEntryLabelColor(Color.TRANSPARENT);
-                    holder.mChart.setEntryLabelTextSize(0f);
+                setOffset(holder.mChart);
+                holder.mChart.setHoleColor(Color.TRANSPARENT);
+                holder.mChart.setHoleRadius(50f);
+                holder.mChart.setTransparentCircleRadius(28f);
+                holder.mChart.setMaxAngle(180f); // HALF CHART
+                holder.mChart.setRotationAngle(180f);
+                // entry label styling
+                holder.mChart.setEntryLabelColor(Color.TRANSPARENT);
+                holder.mChart.setEntryLabelTextSize(0f);
                 //}
 
                 ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
