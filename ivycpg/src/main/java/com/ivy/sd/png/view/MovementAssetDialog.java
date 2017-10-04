@@ -104,8 +104,9 @@ public class MovementAssetDialog extends DialogFragment {
     private void initSpinner() {
         //Generating Reason List
         mAssetReasonList=new ArrayList<>();
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Move");
         mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
-        mAssetReasonList.addAll(bmodel.reasonHelper.getNonProductiveReasonMaster());
+        mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
 
         ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mAssetReasonList);
         mAssetReasonSpinAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);

@@ -97,6 +97,9 @@ public class AssetTrackingHelper {
     private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
     public boolean ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK;
 
+    private static final String CODE_MOVE_ASSET = "AT09";
+    public boolean SHOW_MOVE_ASSET;
+
     /**
      * Reason Type - Std List Code
      */
@@ -204,6 +207,7 @@ public class AssetTrackingHelper {
             SHOW_ASSET_ALL = false;
             SHOW_REMARKS_ASSET = false;
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
+            SHOW_MOVE_ASSET = false;
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -255,7 +259,7 @@ public class AssetTrackingHelper {
                                 }
                             }
                         }
-                    } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE))
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE) && c.getString(1).equalsIgnoreCase("1"))
                         SHOW_ASSET_BARCODE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_ADD))
                         SHOW_ADD_NEW_ASSET = true;
@@ -267,6 +271,8 @@ public class AssetTrackingHelper {
                         SHOW_REMARKS_ASSET = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK))
                         ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_MOVE_ASSET))
+                        SHOW_MOVE_ASSET = true;
                 }
                 c.close();
             }

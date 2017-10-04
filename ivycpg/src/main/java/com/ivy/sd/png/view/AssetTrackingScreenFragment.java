@@ -378,6 +378,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }*/
+        if (!bmodel.assetTrackingHelper.SHOW_MOVE_ASSET) {
+            menu.findItem(R.id.menu_move).setVisible(false);
+        }
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
