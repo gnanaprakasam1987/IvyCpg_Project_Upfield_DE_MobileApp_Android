@@ -1,6 +1,7 @@
 package com.ivy.sd.png.bo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class NewOutletBO {
@@ -43,7 +44,7 @@ public class NewOutletBO {
     String Payment;
     String retailerId;
     String creditDays;
-
+    ArrayList<NewOutletBO> lst;
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -550,5 +551,13 @@ public class NewOutletBO {
         this.valueText = valueText;
     }
 
+    public HashMap<java.lang.String, AddressBO> getmAddressByTag() {
+        return mAddressByTag;
+    }
 
+    public void setmAddressByTag(HashMap<java.lang.String, AddressBO> mAddressByTag) {
+        this.mAddressByTag = mAddressByTag;
+    }
+
+    private HashMap<String,AddressBO> mAddressByTag;
 }

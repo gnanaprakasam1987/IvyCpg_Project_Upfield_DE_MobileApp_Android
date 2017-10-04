@@ -1400,6 +1400,42 @@ public class BusinessModel extends Application {
         return str;
     }
 
+    public ArrayList<RetailerMasterBO> downloadRetailerMasterData()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<RetailerMasterBO> retailerMasterData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                RetailerMasterBO retailerMasterBO=new RetailerMasterBO();
+                retailerMasterBO.setMovRetailerName(c.getString(2));
+             //   retailerMasterBO.setMovRetailerCode(c.getString(1));
+                retailerMasterBO.setMovRetailerId(c.getString(0));
+
+                retailerMasterData.add(retailerMasterBO);
+            }
+        return retailerMasterData;
+    }
+    /**
+     * Method to check the movement Asset in sql table
+     */
+    public ArrayList<String> getAssetMovementDetails()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<String> retailerMovedData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT AssetId from "+DataMembers.tbl_AssetAddDelete +" where flag='M'");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                retailerMovedData.add(c.getString(0));
+            }
+        return retailerMovedData;
+    }
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();
@@ -1413,7 +1449,7 @@ public class BusinessModel extends Application {
             downloadIndicativeOrderedRetailer();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, A.beatid, A.creditlimit, A.tinnumber, A.channelID,"
+                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.channelID,"
                             + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
                             + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
@@ -1468,7 +1504,7 @@ public class BusinessModel extends Application {
                             + " LEFT JOIN RetailerAchievement RACH ON RACH.RetailerID = A.RetailerID"
 
                             + " LEFT JOIN LocationMaster LM ON LM.LocId = A.locationid"
-
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID");
 
             // group by A.retailerid

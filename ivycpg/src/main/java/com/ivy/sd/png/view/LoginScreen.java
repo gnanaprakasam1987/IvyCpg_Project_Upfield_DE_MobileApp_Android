@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
         ApplicationConfigs {
@@ -356,6 +357,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             DataMembers.ACTIVATION_KEY = PreferenceManager
                     .getDefaultSharedPreferences(this).getString("activationKey", "");
         }
+
+         /* Display application Phase if the environment is other than live.*/
+        String phase = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("application", "");
+        if (phase.length() > 0)
+            if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
+                    .matcher(phase).find()) {
+                bmodel.synchronizationHelper.isInternalActivation = true;
+            }
     }
 
 
@@ -1521,12 +1531,18 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
 
-        if (isDistributorWise) {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
-        } else {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+
+        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
+            if (isDistributorWise) {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+            } else {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+            }
+        }
+        else{
+            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
         }
 
     }

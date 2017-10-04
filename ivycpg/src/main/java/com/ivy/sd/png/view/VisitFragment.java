@@ -322,9 +322,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             ArrayList<BeatMasterBO> beatBOArray = new ArrayList<>();
             beatBOArray.add(new BeatMasterBO(0, getResources().getString(
                     R.string.all), 0));
-            for (int i = 0; i < bmodel.beatMasterHealper.getBeatMaster().size(); i++) {
-                beatBOArray
-                        .add(bmodel.beatMasterHealper.getBeatMaster().get(i));
+
+            if (bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD && bmodel.configurationMasterHelper.IS_ADHOC) {
+                ArrayList<BeatMasterBO> adhocBeatList = bmodel.beatMasterHealper.downloadBeatsAdhocPlanned();
+                for (int i = 0; i < adhocBeatList.size(); i++) {
+                    beatBOArray
+                            .add(adhocBeatList.get(i));
+                }
+            } else {
+                for (int i = 0; i < bmodel.beatMasterHealper.getBeatMaster().size(); i++) {
+                    beatBOArray
+                            .add(bmodel.beatMasterHealper.getBeatMaster().get(i));
+                }
             }
             ArrayAdapter<BeatMasterBO> brandAdapter = new BeatAdapter(
                     getActivity(), R.layout.row_dropdown, R.id.lbl_name,
@@ -743,6 +752,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     continue;
                 } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
                     continue;
+                }else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
+                    continue;
                 }
                 if (filter != null) {
                     if ((bmodel.getRetailerMaster().get(i).getRetailerName()
@@ -804,6 +815,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_QDVP3) && !("1".equals(bmodel.getRetailerMaster().get(i).getRField4()))) {
                 continue;
             } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
+                continue;
+            }else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
                 continue;
             }
 

@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,11 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +26,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,12 +42,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -93,6 +99,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private String append = "";
     private static String outPutDateFormat;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int MOVEMENT_ASSET=2;
     private final String moduleName = "AT_";
     AddAssetDialogFragment dialog;
     ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
@@ -448,6 +455,20 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             }
             FiveFilterFragment();
             return true;
+        } else if(i==R.id.menu_move)
+        {
+            if(myList.size()>=0) {
+                Intent intent = new Intent(getActivity(), AssetMovementActivity.class);
+                intent.putExtra("index",mSelectedLocationIndex);
+                intent.putExtra("module", MENU_ASSET);
+                startActivityForResult(intent,MOVEMENT_ASSET);
+            }
+            else
+            {
+                Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
+                        Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -526,18 +547,25 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if (mAllAssetTrackingList != null) {
                 for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
                     if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
-                        // Toast.makeText(bmodel, "Showing Dialog", Toast.LENGTH_SHORT).show();
-                        // showDialog();
-                        scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
-                        Bundle args = new Bundle();
-                        args.putString("serialNo", strBarCodeSearch);
-                        args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
-                        args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
-                        args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
-                        scannedUnmappedDialogFragment.setArguments(args);
-                        scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
-                        k = 1;
-                        break;
+                        if (!bmodel.assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
+                            scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
+                            Bundle args = new Bundle();
+                            args.putString("serialNo", strBarCodeSearch);
+                            args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
+                            args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
+                            args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
+                            args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
+                            scannedUnmappedDialogFragment.setArguments(args);
+                            scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
+                            k = 1;
+                            break;
+                        }
+                        else
+                        {
+                            Toast.makeText(bmodel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
+                            k=1;
+                            break;
+                        }
                     }
                 }
             }
@@ -1236,7 +1264,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             } else {
                 Commons.print("AssetTracking," + "Camera Activity : Canceled");
             }
-        } else {
+        } else if(requestCode==MOVEMENT_ASSET)
+        {
+                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+        }
+        else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (requestCode == IntentIntegrator.REQUEST_CODE) {
