@@ -452,9 +452,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
         if (txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
-                if (bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked()
-                        && bmodel.synchronizationHelper
-                        .countImageFiles() > 0) {
+                if (bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
+                        && (bmodel.synchronizationHelper
+                        .countImageFiles() > 0) ? true : (dayCloseCheckBox.isChecked() ? true : false)) {
                     sync.setBackgroundResource(R.drawable.round_light);
                     GradientDrawable drawable = (GradientDrawable) sync.getBackground();
                     drawable.setColor(background_color);
@@ -1605,7 +1605,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                     new UrlDownloadData().execute();
                 else {
-                    isClicked=false;
+                    isClicked = false;
                     Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
                     if (alertDialog != null)
                         alertDialog.dismiss();

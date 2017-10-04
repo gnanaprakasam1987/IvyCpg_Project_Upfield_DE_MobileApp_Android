@@ -440,13 +440,20 @@ public class StockViewActivity extends ToolBarwithFilter implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
-                for (LoadManagementBO productBO : mylist) {
-                    if (levelBO.getProductID() == productBO.getParentid()) {
+            if (parentidList.size() > 0 && !filtertext.equalsIgnoreCase("")) {
+                for (LevelBO levelBO : parentidList) {
+                    for (LoadManagementBO productBO : mylist) {
+                        if (levelBO.getProductID() == productBO.getParentid()) {
 
-                        if (productBO.getSih() > 0)
-                            filterlist.add(productBO);
+                            if (productBO.getSih() > 0)
+                                filterlist.add(productBO);
+                        }
                     }
+                }
+            } else {
+                for (LoadManagementBO productBO : mylist) {
+                    if (productBO.getSih() > 0)
+                        filterlist.add(productBO);
                 }
             }
         }
@@ -481,6 +488,9 @@ public class StockViewActivity extends ToolBarwithFilter implements
             super.mSelectedIdByLevelId = mSelectedIdByLevelId;
     }
 
+    public void loadProductList() {
+        updategeneraltext(GENERAL);
+    }
 
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
         private Context context;

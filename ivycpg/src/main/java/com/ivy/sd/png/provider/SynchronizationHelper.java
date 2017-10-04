@@ -1399,10 +1399,15 @@ SynchronizationHelper {
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
 
-                if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD)
+                int  insert=VOLLEY_DOWNLOAD_INSERT;
+                if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD) {
                     json.put("IsRetailer", 1);
-                else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD)
+                }
+                else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
                     json.put("IsDistributor", 1);
+                    insert=DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
+
+                }
 
                 mURLList = new HashMap<>();
                 mTableList = new HashMap<>();
@@ -1410,7 +1415,7 @@ SynchronizationHelper {
                 for (String url : mDownloadUrlList) {
                     String downloadUrl = DataMembers.SERVER_URL + url;
                     callVolley(downloadUrl, fromLogin, size,
-                            VOLLEY_DOWNLOAD_INSERT, json);
+                            insert, json);
                 }
             } catch (JSONException e) {
                 Commons.printException("" + e);
@@ -4525,7 +4530,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!isDistributorDownloadDone&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+            isDistributorDownloadDone=true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

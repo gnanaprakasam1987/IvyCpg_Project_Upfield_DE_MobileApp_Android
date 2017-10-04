@@ -34,6 +34,12 @@
         android:orderInCategory="98"
         android:title="Remove posm"
         ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_move"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Move Asset"
+        ivydist:showAsAction="never" />
 
     <item
         android:id="@+id/menu_survey"

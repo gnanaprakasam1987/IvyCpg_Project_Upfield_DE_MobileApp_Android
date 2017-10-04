@@ -472,7 +472,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
                     }
                     startActivity(i);
-                }else{
+                } else {
                     Intent i = new Intent(
                             CS_CommonPrintPreviewActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", ConfigurationMasterHelper.MENU_COUNTER);

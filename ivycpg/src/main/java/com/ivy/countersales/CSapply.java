@@ -21,7 +21,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,25 +128,25 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
         {
             @Override
-            public void onFocusChange (View v,boolean hasFocus){
+            public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus && productsAutoCompleteTV.getText().toString().length() == 0
                         && productsAutoCompleteTV.getText().toString().isEmpty())
                     isEditable(false);
             }
         });
-        edt_result =(EditText)
+        edt_result = (EditText)
 
                 findViewById(R.id.edt_result);
 
-        edt_hour =(EditText)
+        edt_hour = (EditText)
 
                 findViewById(R.id.edt_hour);
 
-        edt_minute =(EditText)
+        edt_minute = (EditText)
 
                 findViewById(R.id.edt_minute);
 
-        lvwplist =(FullLengthListView)
+        lvwplist = (FullLengthListView)
 
                 findViewById(R.id.lvwplist);
 
@@ -155,7 +154,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         edt_hour.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         edt_minute.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
-        mDrawerLayout =(DrawerLayout)
+        mDrawerLayout = (DrawerLayout)
 
                 findViewById(
                         R.id.drawer_layout);
@@ -166,14 +165,14 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        mDrawerToggle =new
+        mDrawerToggle = new
 
                 ActionBarDrawerToggle(this, /* host Activity */
                         mDrawerLayout, /* DrawerLayout object */
                         R.string.ok, /* "open drawer" description for accessibility */
                         R.string.close /* "close drawer" description for accessibility */
                 ) {
-                    public void onDrawerClosed (View view){
+                    public void onDrawerClosed(View view) {
                         getSupportActionBar()
                                 .setTitle(bmodel.mSelectedActivityName);
                         supportInvalidateOptionsMenu();
@@ -196,25 +195,9 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         feedBackAutoCompleteTV.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                /*final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;*/
 
                 feedBackAutoCompleteTV.showDropDown();
 
-                /*feedBackAutoCompleteTV.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(getBaseContext(), R.drawable.close_popup), null);
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (feedBackAutoCompleteTV.getRight() - feedBackAutoCompleteTV.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        feedBackAutoCompleteTV.setText("");
-                        feedBackAutoCompleteTV.dismissDropDown();
-                        feedBackAutoCompleteTV.setCompoundDrawables(null, null, null, null);
-
-                        return true;
-                    }
-
-
-                }*/
                 return false;
             }
         });
@@ -263,14 +246,14 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
 
     @Override
-    public boolean onCreateOptionsMenu (Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_counter_sales, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onPrepareOptionsMenu (Menu menu){
+    public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
@@ -284,7 +267,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
@@ -297,7 +280,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
             productFilterClickedFragment();
             supportInvalidateOptionsMenu();
             return true;
-        }else if (item.getItemId() == R.id.menu_barcode) {
+        } else if (item.getItemId() == R.id.menu_barcode) {
             checkAndRequestPermissionAtRunTime(2);
             int permissionStatus = ContextCompat.checkSelfPermission(getApplicationContext(),
                     Manifest.permission.CAMERA);
@@ -448,7 +431,6 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         feedBackAutoCompleteTV.setAdapter(spnFeedAdapter);
         feedBackAutoCompleteTV.setThreshold(1);
         feedBackAutoCompleteTV.setSelection(0);
-
     }
 
     @Override
@@ -492,12 +474,12 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
         /*StandardListBO feedBo = (StandardListBO) spnFeedBack.getSelectedItem();
         String feedback = feedBo.getListName();*/
         boolean isModifed = false;
-        if (mSelectedProductid > 0 && !result.equals("") &&
-                !feedBack.equals(getResources().getString(R.string.select))) {
+        if (mSelectedProductid > 0 && (!edt_hour.getText().toString().isEmpty()
+                || !edt_minute.getText().toString().isEmpty())) {
 
             if (tempTestList.size() == 0) {
                 ApplyBo applyBo = new ApplyBo();
-                applyBo.setTestFeedback(feedBack);
+                applyBo.setTestFeedback(feedBack.equals(getResources().getString(R.string.select)) ? "" : feedBack);
                 applyBo.setTestedProductId(mSelectedProductid);
                 applyBo.setResult(result);
                 applyBo.setTesthour(testHour);
@@ -507,7 +489,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
                 for (int i = 0; i < tempTestList.size(); i++) {
                     ApplyBo aBo = tempTestList.get(i);
                     if (aBo.getTestedProductId() == mSelectedProductid) {
-                        aBo.setTestFeedback(feedBack);
+                        aBo.setTestFeedback(feedBack.equals(getResources().getString(R.string.select)) ? "" : feedBack);
                         aBo.setTestedProductId(mSelectedProductid);
                         aBo.setResult(result);
                         aBo.setTesthour(testHour);
@@ -520,7 +502,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
                 }
                 if (!isModifed) {
                     ApplyBo applyBo = new ApplyBo();
-                    applyBo.setTestFeedback(feedBack);
+                    applyBo.setTestFeedback(feedBack.equals(getResources().getString(R.string.select)) ? "" : feedBack);
                     applyBo.setTestedProductId(mSelectedProductid);
                     applyBo.setResult(result);
                     applyBo.setTesthour(testHour);
@@ -534,10 +516,9 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
                 mAdapter.notifyDataSetChanged();
                 clearValues();
             }
-        } else if (result.equals(""))
-            Toast.makeText(CSapply.this, "Enter Result", Toast.LENGTH_SHORT).show();
-        else if (feedBack.equals(""))
-            Toast.makeText(CSapply.this, "Enter Feedback", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(CSapply.this, "Enter Time Taken ", Toast.LENGTH_SHORT).show();
+
     }
 
     private void deleteValues() {
@@ -773,6 +754,5 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
 }

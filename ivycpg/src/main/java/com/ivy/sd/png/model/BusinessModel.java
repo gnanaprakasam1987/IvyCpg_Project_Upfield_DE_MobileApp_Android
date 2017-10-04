@@ -842,6 +842,37 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * This method will return the standard list name for the given listID.
+     *
+     * @param listCode
+     * @return listName
+     */
+    public String getStandardListNameByCode(String listCode) {
+        String listName = "";
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListType="
+                            + QT(listCode));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    listName = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+        return listName;
+    }
+
+
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -1397,6 +1428,42 @@ public class BusinessModel extends Application {
         return str;
     }
 
+    public ArrayList<RetailerMasterBO> downloadRetailerMasterData()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<RetailerMasterBO> retailerMasterData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                RetailerMasterBO retailerMasterBO=new RetailerMasterBO();
+                retailerMasterBO.setMovRetailerName(c.getString(2));
+             //   retailerMasterBO.setMovRetailerCode(c.getString(1));
+                retailerMasterBO.setMovRetailerId(c.getString(0));
+
+                retailerMasterData.add(retailerMasterBO);
+            }
+        return retailerMasterData;
+    }
+    /**
+     * Method to check the movement Asset in sql table
+     */
+    public ArrayList<String> getAssetMovementDetails()
+    {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<String> retailerMovedData=new ArrayList<>();
+        Cursor c=db.selectSQL("SELECT DISTINCT AssetId from "+DataMembers.tbl_AssetAddDelete +" where flag='M'");
+        if (c != null)
+            while(c.moveToNext())
+            {
+                retailerMovedData.add(c.getString(0));
+            }
+        return retailerMovedData;
+    }
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();
@@ -3039,7 +3106,8 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                    tempVal = formatValue(value) + "";
+                   /* tempVal = formatValue(value) + "";*/
+                    tempVal = SDUtil.format(value,configurationMasterHelper.VALUE_PRECISION_COUNT,0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
@@ -7017,7 +7085,7 @@ public class BusinessModel extends Application {
 
                 if (!configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeDetailsMasterHelper.insertScemeDetails(uid, db);
+                    schemeDetailsMasterHelper.insertScemeDetails(uid, db,"N");
                 }
 
 
