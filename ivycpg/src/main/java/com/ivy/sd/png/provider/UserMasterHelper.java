@@ -311,6 +311,25 @@ public class UserMasterHelper {
         }
     }
 
+    public void updateDistributorId(String distid, String distname){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+
+            String query = "update userMaster set distributorid=" + distid
+                    + ", branchid="+distid+", distributorName='"+distname+"' where userID=" + userMasterBO.getUserid();
+
+            db.executeQ(query);
+            db.close();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.close();
+        }
+    }
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
