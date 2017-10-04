@@ -842,6 +842,37 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * This method will return the standard list name for the given listID.
+     *
+     * @param listCode
+     * @return listName
+     */
+    public String getStandardListNameByCode(String listCode) {
+        String listName = "";
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListType="
+                            + QT(listCode));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    listName = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+        return listName;
+    }
+
+
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -3075,7 +3106,8 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                    tempVal = formatValue(value) + "";
+                   /* tempVal = formatValue(value) + "";*/
+                    tempVal = SDUtil.format(value,configurationMasterHelper.VALUE_PRECISION_COUNT,0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
@@ -7053,7 +7085,7 @@ public class BusinessModel extends Application {
 
                 if (!configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeDetailsMasterHelper.insertScemeDetails(uid, db);
+                    schemeDetailsMasterHelper.insertScemeDetails(uid, db,"N");
                 }
 
 

@@ -61,10 +61,11 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
     private TabLayout tabLayout;
     private String mSelectedTab;
 
-    HashMap<String,String> mLstHeader;
-    ArrayList<HashMap<String,String>> lstTestData;
+    HashMap<String, String> mLstHeader;
+    ArrayList<HashMap<String, String>> lstTestData;
+    private boolean isFromReport = false;
 
-    public CShistoryDialog(final Context ctx, HashMap<String, String> lstHeader, BusinessModel businessModel) {
+    public CShistoryDialog(final Context ctx, HashMap<String, String> lstHeader, BusinessModel businessModel,boolean isFrmReport) {
         super(ctx);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -87,7 +88,9 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         // lstHistory = lstItems;
-        mLstHeader=lstHeader;
+        mLstHeader = lstHeader;
+
+        isFromReport = isFrmReport;
 
         context = ctx;
         bmodel = businessModel;
@@ -131,8 +134,8 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
 
     private void prepareTabs() {
 
-        if(mLstHeader!=null){
-            lstTestData=bmodel.mCounterSalesHelper.downloadCustomerTestInformation(mLstHeader.get("uid"));
+        if (mLstHeader != null) {
+            lstTestData = bmodel.mCounterSalesHelper.downloadCustomerTestInformation(mLstHeader.get("uid"));
         }
 
         float scale = context.getResources().getDisplayMetrics().widthPixels;
@@ -169,7 +172,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
 
         }
 
-        if (mLstHeader != null&&lstTestData!=null&&lstTestData.size()>0) {
+        if (mLstHeader != null && lstTestData != null && lstTestData.size() > 0) {
 
             TabLayout.Tab tab = tabLayout.newTab();
             TextView txtVw = new TextView(context);
@@ -356,7 +359,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
 
         try {
 
-            if (mLstHeader!=null&&table.equals(mCustomerVisited)) {
+            if (mLstHeader != null && table.equals(mCustomerVisited)) {
 
 
                 View rowDetail = getLayoutInflater().inflate(R.layout.cs_history_visit_details,
@@ -403,13 +406,15 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
 
                 //sale
 
-                ArrayList<HashMap<String,String>> mSalesList=bmodel.mCounterSalesHelper.downloadCustomerSalesInformation(mLstHeader.get("uid"));
-                if(mSalesList!=null) {
-                    String lastRetailer="",lastCounter="";
-                    View rowSale=null;
-                    LinearLayout ll_prod_list=null;
-                    for(HashMap<String,String> data:mSalesList) {
-                        if(!data.get("retailername").equals(lastRetailer)||!data.get("countername").equals(lastCounter)) {
+
+                ArrayList<HashMap<String, String>> mSalesList
+                        = bmodel.mCounterSalesHelper.downloadCustomerSalesInformation(mLstHeader.get("uid"),isFromReport);
+                if (mSalesList != null) {
+                    String lastRetailer = "", lastCounter = "";
+                    View rowSale = null;
+                    LinearLayout ll_prod_list = null;
+                    for (HashMap<String, String> data : mSalesList) {
+                        if (!data.get("retailername").equals(lastRetailer) || !data.get("countername").equals(lastCounter)) {
                             rowSale = getLayoutInflater().inflate(R.layout.cs_history_sale,
                                     null, false);
 
@@ -426,7 +431,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                             TextView tv_retailer = (TextView) rowSale.findViewById(R.id.tv_retailer);
                             TextView tv_counter = (TextView) rowSale.findViewById(R.id.tv_counter);
                             TextView tv_location = (TextView) rowSale.findViewById(R.id.tv_location);
-                            ll_prod_list=(LinearLayout) rowSale.findViewById(R.id.ll_prod_list);
+                            ll_prod_list = (LinearLayout) rowSale.findViewById(R.id.ll_prod_list);
 
                             tv_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                             tv_retailer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -457,11 +462,10 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                         tv_value.setText(data.get("value"));
 
 
-
                         ll_prod_list.addView(rowSaleDetail);
 
-                        lastRetailer=data.get("retailername");
-                        lastCounter=data.get("countername");
+                        lastRetailer = data.get("retailername");
+                        lastCounter = data.get("countername");
 
                     }
 
@@ -469,10 +473,9 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                 }
 
 
-            }
-            else if(lstTestData!=null&&table.equals(mTrialDetail)){
+            } else if (lstTestData != null && table.equals(mTrialDetail)) {
 
-                for(HashMap<String,String> data:lstTestData) {
+                for (HashMap<String, String> data : lstTestData) {
 
                     View rowtest = getLayoutInflater().inflate(R.layout.cs_history_test,
                             null, false);
@@ -545,7 +548,8 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                 }
 
             }
-*/            mscrollview.addView(totalView);
+*/
+            mscrollview.addView(totalView);
         } catch (Exception ex) {
             Commons.print("" + ex);
         }

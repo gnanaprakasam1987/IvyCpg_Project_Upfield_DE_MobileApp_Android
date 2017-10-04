@@ -1540,7 +1540,7 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    sb.append(formatSalesValueInPrint((total - Double.parseDouble(bmodel.formatValue(discount)))) + "\r\n");
+                    sb.append(bmodel.formatValueBasedOnConfig((total - Double.parseDouble(bmodel.formatValue(discount)))) + "\r\n");
                     x = x + 70;
                     hght = x;
                 }

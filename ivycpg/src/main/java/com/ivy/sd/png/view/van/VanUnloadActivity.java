@@ -209,6 +209,11 @@ public class VanUnloadActivity extends ToolBarwithFilter {
 
     }
 
+
+    public void loadProductList(){
+       updategeneraltext(GENERAL);
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
