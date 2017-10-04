@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import static com.baidu.platform.comapi.map.f.i;
+
 /**
  * Created by rajkumar.s on 18-03-2016.
  */
@@ -155,6 +157,22 @@ public class CounterSalesHelper {
 
     private double discountedAmount = 0;
 
+    public void deleteCurrentDraft() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().isDraft()) {
+            db.deleteSQL("CS_CustomerVisitHeader", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_CustomerConcernDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_CustomerTrialDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_CustomerSaleDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_CustomerSampleGivenDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_SchemeDetail", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+            db.deleteSQL("CS_SchemeFreeProductDetail", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+        }
+        db.closeDB();
+    }
+
     public void saveCustomerVisitDetails(String flag, String refid, double mSchemeDiscountedAmountOnBill) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -174,6 +192,9 @@ public class CounterSalesHelper {
                 db.deleteSQL("CS_CustomerTrialDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
                 db.deleteSQL("CS_CustomerSaleDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
                 db.deleteSQL("CS_CustomerSampleGivenDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+                db.deleteSQL("CS_SchemeDetail", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+                db.deleteSQL("CS_SchemeFreeProductDetail", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
+
             }
 
             int sequance = 0;
@@ -212,21 +233,21 @@ public class CounterSalesHelper {
             for (int i = 0; i < bo.getmTestProducts().size(); i++) {
                 ApplyBo applyBo = bo.getmTestProducts().get(i);
                 ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(applyBo.getTestedProductId() + "");
-                if (!applyBo.getResult().equals("") || applyBo.getTestedProductId() != 0 && !applyBo.getTestFeedback().equals("")) {
+                if (!applyBo.getResult().equals("") || applyBo.getTestedProductId() != 0 && (applyBo.getTesthour() > 0 || applyBo.getTestTime() > 0)) {
                     columns = "uid,pid,timetaken,result,feedback,upload,ProductName";
                     values = "'" + uid + "'," + applyBo.getTestedProductId() + ",'" + (applyBo.getTesthour() + ":" + applyBo.getTestTime()) + "','" + applyBo.getResult() + "','" + applyBo.getTestFeedback() + "'," + bmodel.QT(flag) +
                             "," + bmodel.QT(productBO.getProductName());
                     db.insertSQL(DataMembers.tbl_CS_CustomerTrialDetails, columns, values);
                     isData = true;
 
-                    if (!flag.equals("I")) {
+                    /*if (!flag.equals("I")) {
                         //updating SIH for tester product
                         db.updateSQL("UPDATE CS_SIHDetails"
                                 + " SET sih =sih-1"
                                 + " , counterid = " + bmodel.getCounterId()
                                 + " WHERE pid = " + applyBo.getTestedProductId()
                                 + " AND stock_type =" + testerStockTypeId);
-                    }
+                    }*/
                 }
             }
 
@@ -265,9 +286,6 @@ public class CounterSalesHelper {
             double totalValue = 0;
             //customer sale details
             if (bo.getmSalesproduct() != null) {
-
-
-                //
                 totalValue = 0;
                 columns = "uid,pid,uomid,qty,price,value,upload,isSalable,productName,uomCode";
                 for (ProductMasterBO productMasterBO : bo.getmSalesproduct()) {
@@ -278,7 +296,7 @@ public class CounterSalesHelper {
 
                         if (productMasterBO.getCsPiece() > 0) {
                             values = "'" + uid + "'," + productMasterBO.getProductID() + "," + productMasterBO.getPcUomid() + "," + productMasterBO.getCsPiece() + "," + productMasterBO.getMRP() + "," + (productMasterBO.getCsPiece() * productMasterBO.getMRP()) + "," + bmodel.QT(flag) + ",1"
-                                    +","+bmodel.QT(productMasterBO.getProductName())+","+bmodel.QT("PIECE");
+                                    + "," + bmodel.QT(productMasterBO.getProductName()) + "," + bmodel.QT("PIECE");
                             db.insertSQL(DataMembers.tbl_CS_CustomerSaleDetails, columns, values);
                             isData = true;
 
@@ -287,7 +305,7 @@ public class CounterSalesHelper {
                         }
                         if (productMasterBO.getCsCase() > 0) {
                             values = "'" + uid + "'," + productMasterBO.getProductID() + "," + productMasterBO.getCaseUomId() + "," + productMasterBO.getCsCase() + "," + productMasterBO.getMRP() + "," + (productMasterBO.getMRP() * productMasterBO.getCsCase()) + "," + bmodel.QT(flag) + ",1"
-                                    +","+bmodel.QT(productMasterBO.getProductName())+","+bmodel.QT("CASE");
+                                    + "," + bmodel.QT(productMasterBO.getProductName()) + "," + bmodel.QT("CASE");
                             db.insertSQL(DataMembers.tbl_CS_CustomerSaleDetails, columns, values);
                             isData = true;
 
@@ -295,7 +313,7 @@ public class CounterSalesHelper {
                         }
                         if (productMasterBO.getCsOuter() > 0) {
                             values = "'" + uid + "'," + productMasterBO.getProductID() + "," + productMasterBO.getOuUomid() + "," + productMasterBO.getCsOuter() + "," + productMasterBO.getMRP() + "," + (productMasterBO.getMRP() * productMasterBO.getCsOuter()) + "," + bmodel.QT(flag) + ",1"
-                                    +","+bmodel.QT(productMasterBO.getProductName())+","+bmodel.QT("OUTER");
+                                    + "," + bmodel.QT(productMasterBO.getProductName()) + "," + bmodel.QT("OUTER");
                             db.insertSQL(DataMembers.tbl_CS_CustomerSaleDetails, columns, values);
                             isData = true;
 
@@ -306,6 +324,7 @@ public class CounterSalesHelper {
                             db.updateSQL("UPDATE CS_SIHDetails"
                                     + " SET sih =sih-" + (productMasterBO.getCsPiece() + (productMasterBO.getCaseSize() * productMasterBO.getCsCase()) + (productMasterBO.getOutersize() * productMasterBO.getCsOuter()))
                                     + " , counterid = " + bmodel.getCounterId()
+                                    + " , upload='N'"
                                     + " WHERE pid = " + productMasterBO.getProductID()
                                     + " AND stock_type!=" + testerStockTypeId + " AND stock_type!=" + freeStockTypeId);// If stock type not equal to free/test then it is a normal product or accessories
                         }
@@ -328,13 +347,15 @@ public class CounterSalesHelper {
 
 
                 }
+
+
             }
 
             if (isData || (!bo.getCustomerName().equals("") || bo.getAddress().equals("") || !bo.getContactNumber().equals("") || !bo.getFreqVisit().equals(""))) {
                 columns = "uid,retailerid,counter_id,date,name,address,contactno,freqvisit,upload,sequance,utcdate,refno,age_group,gender,email,billDiscPerc,discAmount,totalValue,Remarks,location,retailername,countername";
                 values = "'" + uid + "'," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getCounterId() + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",'" + bo.getCustomerName() + "'," + bmodel.QT(bo.getAddress()) + "," + bmodel.QT(bo.getContactNumber()) + ",'" + bo.getFreqVisit() + "'," + bmodel.QT(flag) + "," + (sequance + 1) + "," + DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + ",'" + refid + "'" +
                         "," + bo.getAgeGroup() + ",'" + bo.getGender() + "','" + bo.getEmail() + "'," + (isPercentageDiscount() ? getNumberOfPercent() : "0") + "," + getDiscountedAmount() + "," + totalValue + "," + bmodel.QT(bmodel.getNote())
-                        +",'"+bmodel.getRetailerMasterBO().getLocName()+"','"+bmodel.getRetailerMasterBO().getRetailerName()+"','"+bmodel.userMasterHelper.getUserMasterBO().getCounterName()+"'";
+                        + ",'" + bmodel.getRetailerMasterBO().getLocName() + "','" + bmodel.getRetailerMasterBO().getRetailerName() + "','" + bmodel.userMasterHelper.getUserMasterBO().getCounterName() + "'";
                 db.insertSQL(DataMembers.tbl_CS_CustomerVisitHeader, columns, values);
 
                 schemeAmount = schemeAmount + mSchemeDiscountedAmountOnBill;
@@ -343,16 +364,16 @@ public class CounterSalesHelper {
                         + " WHERE uid = " + "'" + uid + "'");
             }
 
-            bmodel.schemeDetailsMasterHelper.isFromCounterSale = true;
-            bmodel.schemeDetailsMasterHelper.insertScemeDetails(bmodel.QT(uid), db);
-            if (!flag.equals("I")) {
-            updateSchemeFreeProductSIH(freeStockTypeId, db);}
 
+            bmodel.schemeDetailsMasterHelper.isFromCounterSale = true;
+            bmodel.schemeDetailsMasterHelper.insertScemeDetails(bmodel.QT(uid), db, flag);
+            if (!flag.equals("I")) {
+                updateSchemeFreeProductSIH(freeStockTypeId, db);
+            }
 
             db.closeDB();
 
             bmodel.schemeDetailsMasterHelper.isFromCounterSale = false;
-
 
         } catch (Exception ex) {
             db.closeDB();
@@ -459,6 +480,148 @@ public class CounterSalesHelper {
     }
 
 
+    public int getmNumberOfTabs() {
+        return mNumberOfTabs;
+    }
+
+    private int mNumberOfTabs;
+
+    public HashMap<String, String> downloadCustomerHeaderInformation(String uid, boolean isFromReport) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        HashMap<String, String> lst = new HashMap<>();
+        mNumberOfTabs = 0;
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sqlHeader = "select DISTINCT CVH.uid,CVH.date,CVH.name,CVH.address,CVH.contactno," + (isFromReport ? "SLM.listName" : "CVH.age_group") +
+                    ",CVH.gender,CVH.email from CS_CustomerVisitHeader CVH " +
+                    "left join RetailerMaster RM on CVH.retailerid=RM.RetailerID " +
+                    (isFromReport ? "left join StandardListMaster SLM on CVH.age_group=SLM.ListId " : "") +
+                    (isFromReport ? "where CVH.upload='N' " : "where CVH.upload='S' ") +
+                    (isFromReport ? "and CVH.uid=" + bmodel.QT(uid) : "") +
+                    (isFromReport ? "" : " order by date(CVH.date) DESC Limit 1");
+
+            Cursor c = db.selectSQL(sqlHeader);
+            if (c.getCount() > 0) {
+                mNumberOfTabs += 1;
+                if (c.moveToNext()) {
+                    lst.put("uid", c.getString(0));
+                    lst.put("name", c.getString(2));
+                    lst.put("address", c.getString(3));
+                    lst.put("contactno", c.getString(4));
+                    lst.put("age", c.getString(5));
+                    lst.put("gender", c.getString(6));
+                    lst.put("email", c.getString(7));
+
+                }
+
+            }
+
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+
+        }
+        return lst;
+    }
+
+    public ArrayList<HashMap<String, String>> downloadCustomerSalesInformation(String uid,boolean isFromReport) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        HashMap<String, String> lst;
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sqlHeader = "select DISTINCT CVH.uid,CVH.date,CVH.retailerName,CVH.counterName,CVH.location,CSD.uomCode,CSD.qty," +
+                    "CSD.value,CSD.ProductName from CS_CustomerVisitHeader CVH " +
+                    "left join CS_CustomerSaleDetails CSD on CVH.uid=CSD.uid " +
+                    (isFromReport?"where CVH.uid=" + bmodel.QT(uid):"where CSD.upload='S'") +
+                    " order by CVH.retailerName,CVH.counterName";
+
+
+            Cursor c = db.selectSQL(sqlHeader);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    lst = new HashMap<>();
+                    lst.put("date", c.getString(1).contains("T") ? c.getString(1).split("T")[0] : c.getString(1));
+                    lst.put("retailername", c.getString(2));
+                    lst.put("countername", c.getString(3));
+                    lst.put("location", c.getString(4));
+                    lst.put("uomCode", c.getString(5));
+                    lst.put("qty", c.getString(6));
+                    lst.put("value", c.getString(7));
+                    lst.put("pname", c.getString(8));
+
+                    data.add(lst);
+
+                }
+
+            }
+
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+
+        }
+        return data;
+    }
+
+    public ArrayList<HashMap<String, String>> downloadCustomerTestInformation(String uid) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        HashMap<String, String> lst;
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String sqlHeader = "select DISTINCT CSD.productName,CSD.timetaken,CSD.result,CSD.feedback " +
+                    "from CS_CustomerTrialDetails CSD " +
+                    "where CSD.uid=" + bmodel.QT(uid);
+
+
+            Cursor c = db.selectSQL(sqlHeader);
+            if (c.getCount() > 0) {
+                mNumberOfTabs += 1;
+                while (c.moveToNext()) {
+                    lst = new HashMap<>();
+                    lst.put("productName", c.getString(0));
+                    lst.put("timetaken", c.getString(1));
+                    lst.put("result", c.getString(2));
+                    lst.put("feedback", c.getString(3));
+
+
+                    data.add(lst);
+
+                }
+
+            }
+
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+
+        }
+        return data;
+    }
+
+
+    public void deleteSearchRecords() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        db.deleteSQL("CS_CustomerVisitHeader", "upload='S'", false);
+        db.deleteSQL("CS_CustomerTrialDetails", "upload='S'", false);
+        db.deleteSQL("CS_CustomerSampleGivenDetails", "upload='S'", false);
+        db.deleteSQL("CS_CustomerSaleDetails", "upload='S'", false);
+        db.deleteSQL("CS_CustomerConcernDetails", "upload='S'", false);
+        db.closeDB();
+    }
+
     public String loadMethod(String uid) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -484,7 +647,7 @@ public class CounterSalesHelper {
             fieldList.add("Name");
             fieldList.add("Address");
             fieldList.add("ContactNo");
-           // fieldList.add("FreqVisit");
+            // fieldList.add("FreqVisit");
             fieldList.add("RefId");
             fieldList.add("age_group");
             fieldList.add("gender");
@@ -499,7 +662,7 @@ public class CounterSalesHelper {
                     innerDataList.add(cHeader.getString(cHeader.getColumnIndex("name")));
                     innerDataList.add(cHeader.getString(cHeader.getColumnIndex("address")));
                     innerDataList.add(cHeader.getString(cHeader.getColumnIndex("contactno")));
-                   // innerDataList.add(cHeader.getString(cHeader.getColumnIndex("freqvisit")));
+                    // innerDataList.add(cHeader.getString(cHeader.getColumnIndex("freqvisit")));
                     innerDataList.add(String.valueOf(cHeader.getInt(cHeader.getColumnIndex("refno"))));
                     innerDataList.add(cHeader.getString(cHeader.getColumnIndex("ListCode")));
                     innerDataList.add(cHeader.getString(cHeader.getColumnIndex("gender")));
@@ -766,7 +929,6 @@ public class CounterSalesHelper {
         return lst;
     }
 
-
     public ArrayList<ProductMasterBO> getDraftedSampleProducts(String uid) {
         ArrayList<ProductMasterBO> lst = new ArrayList<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -844,14 +1006,21 @@ public class CounterSalesHelper {
                     if (c.getInt(11) == c.getInt(1)) {
                         if (c.getInt(14) == 0)
                             productBo.setCsFreePiece(c.getInt(2));
-                        else if (c.getInt(14) != 0)
+                        else if (c.getInt(14) != 0) {
                             productBo.setCsPiece(c.getInt(2));
+                            productBo.setOrderedPcsQty(c.getInt(2));
+                            //qty needed in master list to save schemedetail table
+                            bmodel.productHelper.getProductMasterBOById(productBo.getProductID()).setOrderedPcsQty(c.getInt(2));
+                        }
                     } else if (c.getInt(12) == c.getInt(1)) {
                         productBo.setCsCase(c.getInt(2));
                     } else if (c.getInt(13) == c.getInt(1)) {
                         productBo.setCsOuter(c.getInt(2));
                     }
                     productBo.setCsTotal(c.getDouble(15));
+
+                    productBo.setIsscheme(bmodel.productHelper.getProductMasterBOById(productBo.getProductID()).getIsscheme());
+
                     lst.add(productBo);
 
                 }
@@ -862,7 +1031,6 @@ public class CounterSalesHelper {
         }
         return lst;
     }
-
 
     public ArrayList<AttributeBO> getLstConcern() {
         return lstConcern;
@@ -1229,160 +1397,6 @@ public class CounterSalesHelper {
         }
     }
 
-    public int getmNumberOfTabs() {
-        return mNumberOfTabs;
-    }
-
-    private int mNumberOfTabs;
-    public HashMap<String, String> downloadCustomerHeaderInformation(String uid, boolean isFromReport) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        HashMap<String, String> lst = new HashMap<>();
-        mNumberOfTabs = 0;
-        try {
-            db.createDataBase();
-            db.openDataBase();
-            String sqlHeader = "select DISTINCT CVH.uid,CVH.date,CVH.name,CVH.address,CVH.contactno,"+(isFromReport?"SLM.listName":"CVH.age_group") +
-                    ",CVH.gender,CVH.email from CS_CustomerVisitHeader CVH " +
-                    "left join RetailerMaster RM on CVH.retailerid=RM.RetailerID "+
-                    (isFromReport?"left join StandardListMaster SLM on CVH.age_group=SLM.ListId ":"") +
-                    (isFromReport ? "where CVH.upload='N' " : "where CVH.upload='S' ") +
-                    (isFromReport ? "and CVH.uid=" + bmodel.QT(uid) : "") +
-                    (isFromReport ? "" : " order by date(CVH.date) DESC Limit 1");
-
-            Cursor c = db.selectSQL(sqlHeader);
-            if (c.getCount() > 0) {
-                mNumberOfTabs += 1;
-                if (c.moveToNext()) {
-                    lst.put("uid", c.getString(0));
-                    lst.put("name", c.getString(2));
-                    lst.put("address", c.getString(3));
-                    lst.put("contactno", c.getString(4));
-                    lst.put("age", c.getString(5));
-                    lst.put("gender", c.getString(6));
-                    lst.put("email", c.getString(7));
-
-                }
-
-            }
-
-
-        } catch (Exception ex) {
-            Commons.printException(ex);
-
-        }
-        return lst;
-    }
-
-    public ArrayList<HashMap<String, String>> downloadCustomerSalesInformation(String uid) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        HashMap<String, String> lst ;
-        try {
-            db.createDataBase();
-            db.openDataBase();
-            String sqlHeader = "select DISTINCT CVH.uid,CVH.date,CVH.retailerName,CVH.counterName,CVH.location,CSD.uomCode,CSD.qty," +
-                    "CSD.value,CSD.ProductName from CS_CustomerVisitHeader CVH " +
-                    "left join CS_CustomerSaleDetails CSD on CVH.uid=CSD.uid " +
-                    "where CVH.uid=" + bmodel.QT(uid) +
-                    " order by CVH.retailerName,CVH.counterName";
-
-
-            Cursor c = db.selectSQL(sqlHeader);
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    lst = new HashMap<>();
-                    lst.put("date", c.getString(1));
-                    lst.put("retailername", c.getString(2));
-                    lst.put("countername", c.getString(3));
-                    lst.put("location", c.getString(4));
-                    lst.put("uomCode", c.getString(5));
-                    lst.put("qty", c.getString(6));
-                    lst.put("value", c.getString(7));
-                    lst.put("pname", c.getString(8));
-
-                    data.add(lst);
-
-                }
-
-            }
-
-
-        } catch (Exception ex) {
-            Commons.printException(ex);
-
-        }
-        return data;
-    }
-
-    public ArrayList<HashMap<String, String>> downloadCustomerTestInformation(String uid) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        HashMap<String, String> lst;
-        try {
-            db.createDataBase();
-            db.openDataBase();
-            String sqlHeader = "select DISTINCT CSD.productName,CSD.timetaken,CSD.result,CSD.feedback " +
-                    "from CS_CustomerTrialDetails CSD " +
-                    "where CSD.uid=" + bmodel.QT(uid);
-
-
-            Cursor c = db.selectSQL(sqlHeader);
-            if (c.getCount() > 0) {
-                mNumberOfTabs += 1;
-                while (c.moveToNext()) {
-                    lst= new HashMap<>();
-                    lst.put("productName", c.getString(0));
-                    lst.put("timetaken", c.getString(1));
-                    lst.put("result", c.getString(2));
-                    lst.put("feedback", c.getString(3));
-
-
-                    data.add(lst);
-
-                }
-
-            }
-
-
-        } catch (Exception ex) {
-            Commons.printException(ex);
-
-        }
-        return data;
-    }
-
-
-    public void deleteSearchRecords(){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        db.deleteSQL("CS_CustomerVisitHeader","upload='S'",false);
-        db.deleteSQL("CS_CustomerTrialDetails","upload='S'",false);
-        db.deleteSQL("CS_CustomerSampleGivenDetails","upload='S'",false);
-        db.deleteSQL("CS_CustomerSaleDetails","upload='S'",false);
-        db.deleteSQL("CS_CustomerConcernDetails","upload='S'",false);
-        db.closeDB();
-    }
-    public void deleteCurrentDraft(){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        if (bmodel.getCounterSaleBO()!=null&&bmodel.getCounterSaleBO().isDraft()) {
-            db.deleteSQL("CS_CustomerVisitHeader", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
-            db.deleteSQL("CS_CustomerConcernDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
-            db.deleteSQL("CS_CustomerTrialDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
-            db.deleteSQL("CS_CustomerSaleDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
-            db.deleteSQL("CS_CustomerSampleGivenDetails", "uid='" + bmodel.getCounterSaleBO().getLastUid() + "'", false);
-        }
-        db.closeDB();
-    }
-
     private HashMap<String, String> mHeaderLst;
 
     public HashMap<String, String> getmHeaderLst() {
@@ -1412,5 +1426,4 @@ public class CounterSalesHelper {
             db.closeDB();
         }
     }
-
 }

@@ -184,11 +184,6 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 hide_selectuser_icon = true;
                 mSelectedIdIndex = item;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
-                if (bmodel.configurationMasterHelper.IS_CNT01) {
-                    childUserName = childList.get(0).getChildUserName();
-                    setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle() + " (" +
-                            childUserName + ")");
-                }
                 loadListData();
             }
         } else {

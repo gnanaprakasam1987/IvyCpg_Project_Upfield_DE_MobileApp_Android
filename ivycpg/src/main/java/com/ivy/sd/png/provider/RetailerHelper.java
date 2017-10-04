@@ -393,7 +393,9 @@ public class RetailerHelper {
             db.openDataBase();
             String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RM.beatid from RetailerMissedVisit RMV" +
                     " inner join RetailerMaster RM on RM.RetailerId=RMV.RetailerId " +
-                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID";
+                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID" +
+                    " Group by RMV.MissedDate";
+            ;
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

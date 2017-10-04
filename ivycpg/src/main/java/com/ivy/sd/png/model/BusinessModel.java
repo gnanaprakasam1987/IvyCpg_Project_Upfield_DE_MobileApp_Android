@@ -7085,7 +7085,7 @@ public class BusinessModel extends Application {
 
                 if (!configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeDetailsMasterHelper.insertScemeDetails(uid, db);
+                    schemeDetailsMasterHelper.insertScemeDetails(uid, db,"N");
                 }
 
 

@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_40dp"
-        android:background="@color/blue_btn_normal_center">
+        android:background="?attr/primarycolor">
 
         <Button
             android:id="@+id/saveBTN"
@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:id="@+id/header_text"
             android:text="@string/reason_with_photo_title"
             android:textColor="@color/WHITE"
             android:textSize="@dimen/font_medium"
@@ -37,7 +38,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimen_6dp"
-            android:background="@drawable/ic_close" />
+            android:background="@drawable/ic_action_circle_close" />
     </RelativeLayout>
 
     <Spinner

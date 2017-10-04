@@ -131,7 +131,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
     private int mTotalScreenWidth;
 
-
     int productType = 1;
     Button btnNavPrev, btnNavNext;
     TextView tv_productType;
@@ -145,7 +144,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     private ArrayList<String> fiveFilter_productIDs;
     TextView pnametitle;
     boolean isData = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +196,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                 supportInvalidateOptionsMenu();
             }
         };
+
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         updategeneraltext(GENERAL);
@@ -344,12 +343,14 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         mTotalScreenWidth = dm.widthPixels;
 
+
         right_drawer_layout = (FrameLayout) findViewById(R.id.right_drawer);
 
         // int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) right_drawer_layout.getLayoutParams();
         params.width = mTotalScreenWidth;
         right_drawer_layout.setLayoutParams(params);
+
 
     }
 
@@ -466,7 +467,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             }
 
             //By clicking done button, it will considered as a new transaction. So draft will be deleted
-            if (bmodel.getCounterSaleBO()!=null&&bmodel.getCounterSaleBO().isDraft()) {
+            if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().isDraft()) {
                 bmodel.mCounterSalesHelper.deleteCurrentDraft();
                 bmodel.getCounterSaleBO().setDraft(false);
             }
@@ -479,15 +480,17 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                 return;
             }
 
+
             bmodel.schemeDetailsMasterHelper.isFromCounterSale = true;
             Intent intent = new Intent(CSsale.this,
                     SchemeApply.class);
-            intent.putExtra("ScreenCode","CSale");
-            intent.putExtra("ForScheme","CSale");
+            intent.putExtra("ScreenCode", "CSale");
+            intent.putExtra("ForScheme", "CSale");
             intent.putExtra("refid", getIntent().getStringExtra("refid"));
             intent.putExtra("finalValue", finalValue);
             startActivity(intent);
             finish();
+
 
             //
         }
@@ -559,8 +562,8 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             for (int i = 0; i < siz; ++i) {
                 ret = (ProductMasterBO) items.elementAt(i);
 
-                if(!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
-                        ||(bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES&&!ret.isChildProduct())) {
+                if (!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
+                        || (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES && !ret.isChildProduct())) {
 
 
                     if (mSelectedFilter.equals(getResources().getString(
@@ -570,10 +573,11 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                                 .contains(
                                         mEdt_searchproductName.getText().toString()
                                                 .toLowerCase())) {
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
+                            if (ret.getSIH() > 0)
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
 
                         }
 
@@ -585,10 +589,11 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                                 .contains(
                                         mEdt_searchproductName.getText().toString()
                                                 .toLowerCase())) {
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
+                            if (ret.getSIH() > 0)
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
                         }
                         Commons.print("siz GCASCode : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
                     } else if (mSelectedFilter.equals(getResources().getString(
@@ -599,10 +604,11 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                                 .contains(
                                         mEdt_searchproductName.getText().toString()
                                                 .toLowerCase())) {
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
+                            if (ret.getSIH() > 0)
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
                         }
                     }
                 }
@@ -669,9 +675,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
 
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_next).setVisible(false);
@@ -705,6 +708,17 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
         menu.findItem(R.id.menu_scheme_view).setVisible(true);
 
+        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            for (Integer id : mSelectedIdByLevelId.keySet()) {
+                if (mSelectedIdByLevelId.get(id) > 0) {
+                    menu.findItem(R.id.menu_fivefilter).setIcon(
+                            R.drawable.ic_action_filter_select);
+                    break;
+                }
+            }
+        }
+
+
         if (drawerOpen)
             menu.clear();
 
@@ -727,10 +741,10 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                if(bmodel.getCounterSaleBO()!=null){
+               /* if (bmodel.getCounterSaleBO() != null) {
                     //just clearing sale list while going back..
                     bmodel.getCounterSaleBO().setmSalesproduct(new ArrayList<ProductMasterBO>());
-                }
+                }*/
                 Intent intent = new Intent(this, CustomerVisitActivity.class);
                 startActivity(intent);
                 finish();
@@ -770,8 +784,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                         , Toast.LENGTH_LONG).show();
             }
             return true;
-        }
-        else if (i == R.id.menu_scheme_view) {
+        } else if (i == R.id.menu_scheme_view) {
 
             Intent intent = new Intent(CSsale.this,
                     CsAllSchemeDetailActivity.class);
@@ -819,7 +832,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             if (result.getContents() == null) {
                 Toast.makeText(this, getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
             } else {
-                // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 strBarCodeSearch = result.getContents();
                 if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
                     bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
@@ -951,16 +963,13 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             mylist.clear();
             // Add the products into list
             for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret =  items.elementAt(i);
-
+                ProductMasterBO ret = (ProductMasterBO) items.elementAt(i);
                 /**
                  * After scanning product,Barcode value stored in
                  * strBarCodeSearch Variable
                  */
-
-                if(!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
-                        ||(bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES&&!ret.isChildProduct())) {
-
+                if (!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
+                        || (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES && !ret.isChildProduct())) {
 
                     if (ret.getBarCode().equals(strBarCodeSearch)
                             || ret.getCasebarcode().equals(strBarCodeSearch)
@@ -970,15 +979,17 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
                         if (bid == -1) {
                             if (filtertext.equals("Brand")) {
-                                if (GENERAL.equalsIgnoreCase(generaltxt) || (!GENERAL.equalsIgnoreCase(generaltxt) && isSpecialFilterAppliedProduct(generaltxt, ret))) {
-                                    mylist.add(ret);
-                                }
+                                if (ret.getSIH() > 0)
+                                    if (GENERAL.equalsIgnoreCase(generaltxt) || (!GENERAL.equalsIgnoreCase(generaltxt) && isSpecialFilterAppliedProduct(generaltxt, ret))) {
+                                        mylist.add(ret);
+                                    }
                             }
                         } else if (bid == ret.getParentid()
                                 ) {
-                            if (GENERAL.equalsIgnoreCase(generaltxt) || (!GENERAL.equalsIgnoreCase(generaltxt) && isSpecialFilterAppliedProduct(generaltxt, ret))) {
-                                mylist.add(ret);
-                            }
+                            if (ret.getSIH() > 0)
+                                if (GENERAL.equalsIgnoreCase(generaltxt) || (!GENERAL.equalsIgnoreCase(generaltxt) && isSpecialFilterAppliedProduct(generaltxt, ret))) {
+                                    mylist.add(ret);
+                                }
                         }
 
 
@@ -1099,14 +1110,14 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
                 // Add the products into list
                 for (int i = 0; i < siz; ++i) {
-                    ProductMasterBO ret = items.elementAt(i);
-
+                    ProductMasterBO ret = (ProductMasterBO) items.elementAt(i);
                     /**
                      * After scanning product,Barcode value stored in
                      * strBarCodeSearch Variable
                      */
-                    if(!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
-                            ||(bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES&&!ret.isChildProduct())) {
+                    if (!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
+                            || (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES && !ret.isChildProduct())) {
+
 
                         if (ret.getBarCode().equals(strBarCodeSearch)
                                 || ret.getCasebarcode().equals(strBarCodeSearch)
@@ -1170,10 +1181,11 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
                 for (ProductMasterBO productMasterBO : mylist) {
                     productMasterBO.setCsPiece(0);
+                    productMasterBO.setOrderedPcsQty(0);
                     productMasterBO.setCsTotal(0);
                     productMasterBO.setCsFreePiece(0);
                     productMasterBO.setCsFreeTotal(0);
-                    productMasterBO.setOrderedPcsQty(0);
+
                     for (ProductMasterBO bo : bmodel.getCounterSaleBO().getmSalesproduct()) {
 
 
@@ -1203,15 +1215,14 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
                 }
                 for (ProductMasterBO bo : bmodel.getCounterSaleBO().getmSalesproduct()) {
-                    ProductMasterBO productMasterBO=bmodel.productHelper.getProductMasterBOById(bo.getProductID());
-                    if (productMasterBO!=null) {
-                            productMasterBO.setCsPiece(bo.getCsPiece());
-                            productMasterBO.setOrderedPcsQty(bo.getCsPiece());
-                            productMasterBO.setCsCase(bo.getCsCase());
-                            productMasterBO.setCsOuter(bo.getCsOuter());
-                            productMasterBO.setCsFreePiece(bo.getCsFreePiece());
-                            productMasterBO.setCsTotal(bo.getCsTotal());
-
+                    ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(bo.getProductID());
+                    if (productMasterBO != null) {
+                        productMasterBO.setCsPiece(bo.getCsPiece());
+                        productMasterBO.setOrderedPcsQty(bo.getCsPiece());
+                        productMasterBO.setCsCase(bo.getCsCase());
+                        productMasterBO.setCsOuter(bo.getCsOuter());
+                        productMasterBO.setCsFreePiece(bo.getCsFreePiece());
+                        productMasterBO.setCsTotal(bo.getCsTotal());
 
                     }
                 }
@@ -1323,9 +1334,10 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                         if (levelBO.getProductID() == productBO.getParentid()) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                             if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
-
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
+                                if (productBO.getSIH() > 0) {
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
                             }
                         }
 
@@ -1338,8 +1350,10 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                         if (pid == Integer.parseInt(productBO.getProductID())) {
                             if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                 continue;
-                            mylist.add(productBO);
-                            fiveFilter_productIDs.add(productBO.getProductID());
+                            if (productBO.getSIH() > 0) {
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
+                            }
                         }
 
                     }
@@ -1352,9 +1366,10 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
                     if (levelBO.getProductID() == productBO.getParentid()) {
                         //  filtertext = levelBO.getLevelName();
-
-                        mylist.add(productBO);
-                        fiveFilter_productIDs.add(productBO.getProductID());
+                        if (productBO.getSIH() > 0) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
+                        }
                     }
 
 
@@ -1663,6 +1678,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                                             holder.counterSaleBO.setOrderedPcsQty(pc_qty);
                                         }
                                         updateTotalLines();
+
                                     }
                                 }
 
@@ -1799,6 +1815,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     private void updateTotalLines() {
         int count = 0;
         double totalValues = 0;
+
         for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
 
             if (!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
@@ -1812,21 +1829,19 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             }
         }
         txt_total_lines.setText(count + "");
-
         txt_total_values.setText(bmodel.formatValue(totalValues));
-
-
     }
 
     private void getEnterdSalableProducts() {
         ArrayList<ProductMasterBO> lst = new ArrayList<>();
-        for (ProductMasterBO bo :  bmodel.productHelper.getProductMaster()) {
+        for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
 
-            if(!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
-                    ||(bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES&&bo.isChildProduct())) {
+            if (!bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES
+                    || (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES && bo.isChildProduct())) {
 
                 if (bo.getCsPiece() > 0 || bo.getCsFreePiece() > 0) {
                     lst.add(new ProductMasterBO(bo));
+
 
                     isData = true;
                 }
@@ -1850,7 +1865,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
     @Override
     public void onDismiss() {
-
         listView.invalidateViews();
         updateTotalLines();
     }
