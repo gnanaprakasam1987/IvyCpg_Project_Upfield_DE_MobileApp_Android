@@ -114,7 +114,7 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select A.HeaderID, B.ProductID,B.FromNorm,B.Score from WeightageHeader A  " +
+                    .selectSQL("Select A.HeaderID, B.ProductID,B.FromNorm,B.Weightage from WeightageHeader A  " +
                             "inner join WeightageProductDetail B on A.HeaderID  = B.HeaderID " +
                             "where A.CriteriaID = " + criteriaID + " and A.Module ='" + Module + "'"); //MENU_STK_ORD
             if (c != null) {
@@ -147,39 +147,45 @@ public class FitScoreHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c1 = db
-                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
-                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-                            + Module + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-            if (c1 != null) {
-                if (c1.moveToNext()) {
-                    if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
-                        if (c1.getInt(3) != 0)
-                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
-                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
-                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
-                    else if (c1.getString(0).equals("LOCATION")) {
-                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
-                    } else if (c1.getString(0).equals("USER"))
-                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
-                    else if (c1.getString(0).equals("STORE")) {
-                        mappingId = c1.getString(2);
-                    }
-
-                    moduletypeid = c1.getString(1);
-                }
-                c1.close();
-            }
+//            Cursor c1 = db
+//                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
+//                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
+//                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
+//                            + Module + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+//            if (c1 != null) {
+//                if (c1.moveToNext()) {
+//                    if (c1.getString(0).equals("CHANNEL")) {
+//                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+//                        if (c1.getInt(3) != 0)
+//                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+//                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
+//                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
+//                    else if (c1.getString(0).equals("LOCATION")) {
+//                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+//                    } else if (c1.getString(0).equals("USER"))
+//                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
+//                    else if (c1.getString(0).equals("STORE")) {
+//                        mappingId = c1.getString(2);
+//                    }
+//
+//                    moduletypeid = c1.getString(1);
+//                }
+//                c1.close();
+//            }
 
             StringBuilder productIds = new StringBuilder();
+//            Cursor c2 = db
+//                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.FromNorm,PGM.Score FROM ProductTaggingCriteriaMapping PCM " +
+//                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+//                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
+//                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
+//                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+
             Cursor c2 = db
-                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.FromNorm,PGM.Score FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
-                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
-                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.FromNorm,PGM.Weightage FROM ProductTaggingGroupMapping PGM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PGM.groupid " +
+                            "inner join StandardListMaster F on F.ListID = PM.TaggingTypelovID " +
+                            "WHERE F.ListCode = '" + Module + "'");
 
             if (c2 != null) {
                 while (c2.moveToNext()) {
@@ -310,15 +316,23 @@ public class FitScoreHelper {
                 Qry = "inner join PriceCheckDetail B on A.Pid = B.PID ";
                 PID = "PID";
             }
+//            Cursor c = db
+//                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
+//                            Qry +
+//                            "inner join ProductTaggingCriteriaMapping C on C.CriteriaID = B.retailerID " +
+//                            "inner join ProductTaggingMaster D ON D.groupid=C.groupid " +
+//                            "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
+//                            "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
+//                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
+//                            "WHERE C.CriteriaID = '" + retailerID + "' and G.Module = '" + Module + "'");
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
+                    .selectSQL("Select A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
                             Qry +
-                            "inner join ProductTaggingCriteriaMapping C on C.CriteriaID = B.retailerID " +
-                            "inner join ProductTaggingMaster D ON D.groupid=C.groupid " +
-                            "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
                             "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
-                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
-                            "WHERE C.CriteriaID = '" + retailerID + "' and G.Module = '" + Module + "'");
+                            "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
+                            "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
+                            "inner join HHTModuleWeightage G on G.Module = F.ListCode WHERE G.Module = '" + Module + "'");
+
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
