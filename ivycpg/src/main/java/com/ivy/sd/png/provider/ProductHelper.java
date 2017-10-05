@@ -1333,6 +1333,7 @@ public class ProductHelper {
                     loopEnd = mContentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
                 } else
                     loopEnd = mContentLevel - mFiltrtLevel + 1;
+
                 String batchWiseHighestPrice = " ";
                 if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT) {
                     batchWiseHighestPrice = " and F.batchid="
@@ -1388,11 +1389,11 @@ public class ProductHelper {
                         + ".TypeID,A" + loopEnd
                         + ".baseprice,A1.pname as brandname,A1.parentid"
                         + ((filter16) ? ",A" + loopEnd + ".pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ")
-                        + ",A" + loopEnd + ".weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A" + loopEnd + ".Hasserial ,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                        + ",A" + loopEnd + ".weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A" + loopEnd + ".Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                         + ((filter20) ? "A" + loopEnd + ".pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A" + loopEnd + ".tagDescription,"
+                        + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1403,6 +1404,13 @@ public class ProductHelper {
                     sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
                             + ".ParentId = A" + (i - 1) + ".PID";
 
+                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products(content level) mapped..
+                    String pdQuery=downloadProductDistribution(mContentLevel);
+                    if(pdQuery.length()>0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                    }
+                }
                 sql = sql + " left join " + "PriceMaster F on A" + loopEnd
                         + ".Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
@@ -1543,6 +1551,99 @@ public class ProductHelper {
 
     }
 
+    private static final String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
+    private static final String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
+    private String downloadProductDistribution(int mContentLevel){
+
+        DBUtil db = null;
+        String finalQuery = "";
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "";
+
+            String productIds = "";
+            int givenLevelId = 0;
+
+            if (!bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals("")) {
+
+                String beats = "";
+                //getting retailer beat..
+                if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
+
+
+                    sql = "select beatid from RetailerBeatMapping where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID();
+                    Cursor cursor = db.selectSQL(sql);
+                    if (cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            if (beats.length() > 0)
+                                beats += ",";
+
+                            beats += cursor.getString(0);
+                        }
+                        cursor.close();
+                    }
+                }
+
+                //getting products mapped
+                sql = "select productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
+                    sql += " and criteriaid IN(" + beats + ")";
+                }
+                Cursor c = db.selectSQL(sql);
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        if (productIds.length() > 0)
+                            productIds += ",";
+
+                        productIds += c.getString(0);
+                        givenLevelId = c.getInt(1);
+                    }
+                    c.close();
+                }
+
+
+                ///////////////////////////////
+
+                // If given level is not content level then skipping..
+                if (givenLevelId != 0 && givenLevelId != mContentLevel) {
+
+                    int givenSequence = 0;
+                    sql = "select sequence from ProductLevel where levelid=" + givenLevelId;
+                    Cursor cursor = db.selectSQL(sql);
+                    if (cursor.getCount() > 0) {
+                        if (cursor.moveToNext()) {
+                            givenSequence = cursor.getInt(0);
+                        }
+                        cursor.close();
+                    }
+
+
+                    int loopEnd = mContentLevel - givenSequence + 1;
+                    finalQuery = "select P" + loopEnd + ".pid as productid from productmaster P1";
+                    for (int i = 2; i <= loopEnd; i++)
+                        finalQuery = finalQuery + " INNER JOIN ProductMaster P" + i + " ON P" + i
+                                + ".ParentId = P" + (i - 1) + ".PID";
+
+                    finalQuery += " WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")";
+
+                } else {
+                    //content level so getting directly..
+                    finalQuery = " select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                }
+            }
+
+            db.closeDB();
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return "";
+        }
+
+        return finalQuery;
+
+    }
 
     public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
         return mAttributeByProductId;

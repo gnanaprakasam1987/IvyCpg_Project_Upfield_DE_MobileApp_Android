@@ -1169,6 +1169,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
 
+    private static final String CODE_SALES_DISTRIBUTION="SALES_DISTRIBUTION_TAGGING";
+    public boolean IS_PRODUCT_DISTRIBUTION;
+    public String PRD_DISTRIBUTION_TYPE="";
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2073,6 +2077,15 @@ public class ConfigurationMasterHelper {
         }
 
         this.SHOW_INVOICE_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION) != null) {
+            if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION)) {
+                IS_PRODUCT_DISTRIBUTION=true;
+                loadProductDistributionConfig();
+
+            }
+        }
+
     }
 
     private void getTaxModel(String hhtCode) {
@@ -2795,6 +2808,31 @@ public class ConfigurationMasterHelper {
                 }
                 c.close();
             }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void loadProductDistributionConfig() {
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode="+bmodel.QT(CODE_SALES_DISTRIBUTION)+" and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                  this.PRD_DISTRIBUTION_TYPE=c.getString(0);
+                }
+                c.close();
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
