@@ -37,7 +37,7 @@ import java.util.Vector;
  * Created by rajkumar.s on 3/28/2017.
  */
 
-public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
+public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener,TextView.OnEditorActionListener{
 
     Button btnAdd;
     BusinessModel bmodel;
@@ -69,9 +69,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         addinstalldate = (Button) view.findViewById(R.id.date_button);
         mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-        // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
-        //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
+      // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
+     //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+       // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
 //        mSNO.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -301,22 +301,30 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                     dismiss();
 
 
+                    } else {
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.serial_number_already_exists),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(
                             getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.serial_number_already_exists),
+                            getResources().getString(
+                                    R.string.no_assets_exists),
                             Toast.LENGTH_SHORT).show();
                 }
-            } else {
+
+            } catch (Exception e) {
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(
                                 R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
-
+        } else if (view.getId() == R.id.btn_cancel) {
         } else if (view.getId() == R.id.btn_cancel) {
             dismiss();
         }

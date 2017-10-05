@@ -2050,8 +2050,9 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor c = db.selectSQL("select pid,SM.listName,SM.flex1 from RetailerProductDisplay RP " +
-                    "left join standardListMaster SM ON RP.colorId=SM.listId");
+            Cursor c = db.selectSQL("select pid,SM.listName,SM.flex1,RField from RetailerProductDisplay RP " +
+                    "left join standardListMaster SM ON RP.colorId=SM.listId where RP.RetailerId=" +
+                    bmodel.retailerMasterBO.getRetailerID());
             if (c != null) {
                 while (c.moveToNext()) {
 

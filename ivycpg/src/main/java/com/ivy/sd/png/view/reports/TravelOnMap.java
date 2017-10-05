@@ -469,7 +469,7 @@ public class TravelOnMap extends Fragment {
                     .selectSQL("SELECT RM.RetailerID, RM.RetailerName, RA.latitude, RA.longitude FROM RetailerMasterInfo RMI "
                             + " INNER JOIN RetailerMaster RM ON RM.RetailerID = RMI.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = RM.RetailerID AND (RA.latitude > 0.0 AND RA.longitude > 0.0)"
-                            + " WHERE AND RMI.istoday = 1 ORDER BY RM.RetailerID");
+                            + " WHERE RMI.istoday = 1 ORDER BY RM.RetailerID");
 
             int i = 0;
             if (c != null) {

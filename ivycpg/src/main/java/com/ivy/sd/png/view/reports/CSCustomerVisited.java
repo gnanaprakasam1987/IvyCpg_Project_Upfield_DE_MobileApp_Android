@@ -2,6 +2,8 @@ package com.ivy.sd.png.view.reports;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -103,7 +107,7 @@ public class CSCustomerVisited extends IvyBaseFragment {
                         HashMap<String,String> mHeaderLst = bModel.mCounterSalesHelper.downloadCustomerHeaderInformation(bModel.mCounterSalesHelper.getCSCustomerVisitedUID().get(holder.position),true);
                         if (mHeaderLst != null && !mHeaderLst.isEmpty()) {
 
-                            CShistoryDialog mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bModel);
+                            CShistoryDialog mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bModel,true);
                             mHistoryDialog.show();
                             mHistoryDialog.setCancelable(false);
 

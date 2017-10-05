@@ -1024,12 +1024,21 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            if (parentidList.size() > 0 && !filtertext.isEmpty()) {
+                for (LevelBO levelBO : parentidList) {
+                    for (LoadManagementBO loadMgtBO : vanlist) {
+                        if (loadMgtBO.getIssalable() == 1) {
+                            if (levelBO.getProductID() == loadMgtBO.getParentid()) {
+                                filterlist.add(loadMgtBO);
+                            }
+                        }
+                    }
+                }
+            } else {
                 for (LoadManagementBO loadMgtBO : vanlist) {
                     if (loadMgtBO.getIssalable() == 1) {
-                        if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                            filterlist.add(loadMgtBO);
-                        }
+                        filterlist.add(loadMgtBO);
+
                     }
                 }
             }
