@@ -783,5 +783,9 @@
             android:name="com.ivy.sd.png.view.FitScoreDashboardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-        </application>
+
+            <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9b1eac89f0eeff5747964654e134359f51160fde" />
+    </application>
 </manifest>

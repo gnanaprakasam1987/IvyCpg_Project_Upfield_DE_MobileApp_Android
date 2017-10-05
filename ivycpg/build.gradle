@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 //apply plugin: 'com.android.library'
 
 def keystorePropertiesFile = rootProject.file("../keystore.properties")
@@ -55,6 +70,8 @@ android {
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
+            // Disable fabric build ID generation for debug builds
+            ext.enableCrashlytics = false
         }
         release {
             def googleapikey = System.getenv('googleapikey')
@@ -131,4 +148,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'me.relex:circleindicator:1.2.2@aar'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }
