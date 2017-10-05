@@ -3007,7 +3007,7 @@ SynchronizationHelper {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
-            today.setTime(formatter.parse(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
+            today.setTime(formatter.parse(Utils.getGMTDateTime("yyyy-MM-dd-HH:mm")));
 
             //subtract 30 min to current time
             today.add(Calendar.MINUTE, -30);
