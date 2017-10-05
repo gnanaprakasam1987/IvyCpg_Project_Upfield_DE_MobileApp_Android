@@ -167,11 +167,6 @@ public class GroomingFragment extends IvyBaseFragment implements View.OnClickLis
             } else if (childList.size() == 1) {
                 hide_selectuser_icon = true;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
-                if (bmodel.configurationMasterHelper.IS_CNT01) {
-                    childUserName = childList.get(0).getChildUserName();
-                    setScreenTitle(bmodel.getMenuName("MENU_GROOM_CS") + " (" +
-                            childUserName + ")");
-                }
                 loadListData();
             }
         } else {

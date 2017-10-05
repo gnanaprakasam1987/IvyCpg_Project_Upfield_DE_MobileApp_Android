@@ -87,32 +87,6 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/card_margin_top"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_cancel"
-                    style="?attr/roundedCustomButtonNormalTransparent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/cancel"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
-
-                <Button
-                    android:id="@+id/btn_done"
-                    style="?attr/roundedCustomButtonNormal"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/save"
-                    android:textAllCaps="false" />
-
-            </LinearLayout>
-
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -133,5 +107,33 @@
             android:background="@color/keypad_bg_color" />
 
     </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/card_margin_top"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/btn_done"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center_vertical"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

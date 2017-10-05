@@ -39,6 +39,7 @@ import com.ivy.sd.png.view.InOutReasonDialog.OnMyDialogResult;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.StringTokenizer;
 
 public class NonFieldFragmentTwo extends IvyBaseFragment {
 
@@ -219,15 +220,17 @@ public class NonFieldFragmentTwo extends IvyBaseFragment {
             String outTime = holder.nonFieldTwoBO.getOutTime() != null ? holder.nonFieldTwoBO.getOutTime() : " ";
             String date = "";
             String time = "";
+            StringTokenizer tokenizer;
 
 
             if (holder.nonFieldTwoBO.getOutTime() != null && !holder.nonFieldTwoBO.getOutTime().trim().equalsIgnoreCase("")) {
                 holder.btOutTime.setVisibility(View.GONE);
                 holder.tvOutTime.setVisibility(View.VISIBLE);
-                date = outTime.substring(0, outTime.indexOf(" "));
-                time = outTime.substring(outTime.indexOf(" " + 1));
+                tokenizer = new StringTokenizer(outTime);
+                date = tokenizer.nextToken();
+                time = tokenizer.nextToken();
                 holder.tvOutTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                        ConfigurationMasterHelper.outDateFormat)+"\n"+time);
+                        ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             } else {
                 holder.tvOutTime.setVisibility(View.GONE);
                 holder.btOutTime.setVisibility(View.VISIBLE);
@@ -238,17 +241,19 @@ public class NonFieldFragmentTwo extends IvyBaseFragment {
             if (holder.nonFieldTwoBO.getInTime() != null && !holder.nonFieldTwoBO.getInTime().trim().equalsIgnoreCase("")) {
                 holder.btInTime.setVisibility(View.GONE);
                 holder.tvInTime.setVisibility(View.VISIBLE);
-                date = inTime.substring(0, inTime.indexOf(" "));
-                time = inTime.substring(inTime.indexOf(" " + 1));
+                tokenizer = new StringTokenizer(inTime);
+                date = tokenizer.nextToken();
+                time = tokenizer.nextToken();
                 holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                        ConfigurationMasterHelper.outDateFormat)+"\n"+time);
+                        ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             } else {
                 holder.tvInTime.setVisibility(View.GONE);
                 holder.btInTime.setVisibility(View.VISIBLE);
-                date = inTime.substring(0, inTime.indexOf(" "));
-                time = inTime.substring(inTime.indexOf(" " + 1));
+                tokenizer = new StringTokenizer(inTime);
+                date = tokenizer.nextToken();
+                time = tokenizer.nextToken();
                 holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                        ConfigurationMasterHelper.outDateFormat)+"\n"+time);
+                        ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             }
 
 
@@ -396,11 +401,6 @@ public class NonFieldFragmentTwo extends IvyBaseFragment {
             } else if (childList.size() == 1) {
                 hide_selectuser_icon = true;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
-                if (bmodel.configurationMasterHelper.IS_CNT01) {
-                    childUserName = childList.get(0).getChildUserName();
-                    setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle() + " (" +
-                            childUserName + ")");
-                }
                 loadListData();
             }
         } else {

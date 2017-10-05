@@ -2,6 +2,7 @@ package com.ivy.countersales.provider;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 
 import com.ivy.countersales.bo.CS_StockApplyHeaderBO;
 import com.ivy.countersales.bo.CS_StockApplyProductBO;
@@ -459,7 +460,6 @@ public class CS_StockApplyHelper {
         }
     }
 
-
     public ArrayList<StandardListBO> loadFeedBakcs() {
         ArrayList<StandardListBO> lst = null;
         try {
@@ -482,7 +482,7 @@ public class CS_StockApplyHelper {
                 c.close();
             }
             db.closeDB();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Commons.printException(e);
         }
         return lst;

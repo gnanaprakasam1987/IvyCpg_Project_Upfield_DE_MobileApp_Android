@@ -1908,8 +1908,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                             holder.shelfCaseQty.addTextChangedListener(this);
-
-                            calculateSONew(holder.productObj, SOLogic, holder);
+                            if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
+                                calculateSONew(holder.productObj, SOLogic, holder);
                         } else {
                             holder.productObj
                                     .getLocations()
@@ -2014,8 +2014,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                             holder.shelfPcsQty.addTextChangedListener(this);
-
-                            calculateSONew(holder.productObj, SOLogic, holder);
+                            if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
+                                calculateSONew(holder.productObj, SOLogic, holder);
                         } else {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex)
@@ -2122,8 +2122,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                             holder.shelfouter.addTextChangedListener(this);
-
-                            calculateSONew(holder.productObj, SOLogic, holder);
+                            if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
+                                calculateSONew(holder.productObj, SOLogic, holder);
                         } else {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex)

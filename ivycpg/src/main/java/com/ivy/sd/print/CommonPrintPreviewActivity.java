@@ -32,9 +32,11 @@ import com.bixolon.android.library.BxlService;
 import com.bixolon.printer.BixolonPrinter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderSummary;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -79,6 +81,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private int mDataPrintCount = 0;
 
     private boolean isFromOrder;
+    private boolean isFromCollection;
     private boolean isUpdatePrintCount;
     private boolean isHomeBtnEnable;
     private boolean isPrintClicked;
@@ -108,6 +111,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         isFromOrder = getIntent().getExtras().getBoolean("IsFromOrder", false);
         isUpdatePrintCount = getIntent().getExtras().getBoolean("IsUpdatePrintCount", false);
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
+        isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -143,6 +147,17 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
                     }
                     startActivity(i);
+                } else if (isFromCollection) {
+                    bmodel.collectionHelper.downloadCollectionMethods();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+
+                    Intent intent = new Intent(CommonPrintPreviewActivity.this,
+                            CollectionScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("screentitle", "MENU_COLLECTION");
+                    startActivity(intent);
                 }
                 finish();
                 return true;
@@ -459,6 +474,17 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
                     }
                     startActivity(i);
+                } else if (isFromCollection) {
+                    bmodel.collectionHelper.downloadCollectionMethods();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+
+                    Intent intent = new Intent(CommonPrintPreviewActivity.this,
+                            CollectionScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("screentitle", "MENU_COLLECTION");
+                    startActivity(intent);
                 }
                 bmodel.userMasterHelper.downloadDistributionDetails();
                 finish();
@@ -921,5 +947,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     public interface ScrybeListener {
         void isScrybeResponse(AEMPrinter aemPrinter, AEMScrybeDevice aemScrybeDevice, boolean isConnected);
     }
+
+
 
 }

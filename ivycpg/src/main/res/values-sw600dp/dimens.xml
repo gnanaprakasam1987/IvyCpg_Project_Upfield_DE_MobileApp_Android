@@ -355,7 +355,7 @@
     <dimen name="spinner_layout_height">60dp</dimen>
     <dimen name="spinner_layout_bg_height">45dp</dimen>
     <dimen name="pie_chart_margin_right">12dp</dimen>
-    <dimen name="collasping_height">240dp</dimen>
+    <dimen name="collasping_height">220dp</dimen>
     <dimen name="view_pager_height">200dp</dimen>
     <dimen name="drop_draw_pading">36dp</dimen>
     <dimen name="divder_margin">22dp</dimen>
@@ -803,4 +803,18 @@
     <dimen name="activation_edittext_text_size">18sp</dimen>
     <dimen name="survey_answer_left">35dp</dimen>
     <dimen name="gallery_card_margin">2dp</dimen>
+
+    <!-- For Fitscore Dashboard -->
+    <dimen name="header_card_margin_top">250dp</dimen>
+    <dimen name="all_score_card_height">30dp</dimen>
+    <dimen name="card_content_padding">10dp</dimen>
+    <dimen name="score_content_ts_large">38sp</dimen>
+    <dimen name="score_content_ts_tiny">14sp</dimen>
+    <dimen name="category_recycler_height">50dp</dimen>
+    <dimen name="card_view_height">90dp</dimen>
+    <dimen name="store_card_image">40dp</dimen>
+    <dimen name="score_card_height">150dp</dimen>
+    <dimen name="qn_text_margin_left">10dp</dimen>
+    <dimen name="web_view_width">270dp</dimen>
+    <dimen name="image_size">90dp</dimen>
    </resources>

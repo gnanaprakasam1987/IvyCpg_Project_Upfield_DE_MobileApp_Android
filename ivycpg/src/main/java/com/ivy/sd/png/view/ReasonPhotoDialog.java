@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +27,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.io.File;
@@ -68,6 +70,7 @@ public class ReasonPhotoDialog extends DialogFragment {
         btnSave = (Button) v.findViewById(R.id.saveBTN);
         ms_reason = (Spinner) v.findViewById(R.id.sp_reason);
         ivReason = (ImageView) v.findViewById(R.id.reason_image_view);
+        ((TextView) v.findViewById(R.id.header_text)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
 
         return v;
