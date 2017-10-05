@@ -2,13 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/round_dialog_bg"
-    android:layout_margin="@dimen/dimen_60dp">
+    android:background="@android:color/transparent"
+    android:padding="@dimen/dimen_16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background_noise">
 
         <TextView
             android:layout_width="match_parent"
@@ -25,11 +26,12 @@
             style="?attr/customListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_5dp"
-            android:layout_marginRight="@dimen/dimen_5dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
             android:text="Equipment Type"
             android:textColor="@color/DependentBlack"
-            android:textSize="@dimen/dimen_20dp" />
+            android:textSize="@dimen/dimens_18dp"
+            android:layout_marginTop="@dimen/dimen_5dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,24 +39,14 @@
             android:layout_marginTop="@dimen/dimen_5dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="2"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
-
-                <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Equipment Type"-->
-                <!--android:id="@+id/input_equipment_type"-->
-                <!--android:textColor="@color/DependentBlack"-->
-                <!--android:textStyle="bold"-->
-                <!--android:layout_marginLeft="@dimen/dimen_5dp"-->
-                <!--android:layout_marginRight="@dimen/dimen_5dp"-->
-                <!--android:textSize="@dimen/dimen_20dp" />-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -71,10 +63,10 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_5dp"
-                    android:layout_marginRight="@dimen/dimen_5dp"
-                    android:text="Serial Number"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:text="@string/serial_no"
+                    android:textSize="@dimen/dimens_16dp" />
 
                 <TextView
                     android:id="@+id/input__outletcode"
@@ -107,8 +99,8 @@
                     android:id="@+id/spinnerCustomDialog"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginStart="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
@@ -116,7 +108,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lay_spin"
 
@@ -142,56 +134,12 @@
                 android:maxLines="3"
                 android:minLines="2"
                 android:padding="@dimen/spin_linlay_margin"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:textSize="@dimen/dimens_16dp"
+
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_10dp"/>
         </LinearLayout>
-        <!--<LinearLayout-->
-        <!--android:id="@+id/lay_feed"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/lay_spin"-->
-
-        <!--android:focusable="true"-->
-        <!--android:focusableInTouchMode="true"-->
-
-        <!--android:orientation="horizontal"-->
-        <!--android:padding="@dimen/padding">-->
-        <!--&lt;!&ndash;android:descendantFocusability="beforeDescendants"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:focusableInTouchMode="true"&ndash;&gt;-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/etFeedback"-->
-        <!--style="@style/EditText_ListItem"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="@dimen/feedbck_edit_ht"-->
-
-
-        <!--android:layout_marginBottom="@dimen/feedbck_edit_margintopbtm"-->
-        <!--android:layout_marginLeft="@dimen/feedbck_edit_marginleftright"-->
-        <!--android:layout_marginRight="@dimen/feedbck_edit_marginleftright"-->
-        <!--android:layout_marginTop="@dimen/feedbck_edit_margintopbtm"-->
-        <!--android:background="@drawable/feedback_edit_selector"-->
-
-        <!--android:cursorVisible="true"-->
-
-        <!--android:gravity="top|left"-->
-        <!--android:hint="@string/comments"-->
-        <!--android:imeOptions="actionDone"-->
-
-        <!--android:inputType="textMultiLine"-->
-        <!--android:maxLength="250"-->
-        <!--android:padding="@dimen/spin_linlay_margin"-->
-
-        <!--android:singleLine="false"-->
-        <!--android:textColor="@color/Black"-->
-        <!--android:textColorHighlight="@color/GRAY_TEXT"-->
-
-        <!--android:textColorHint="@color/list_item_secondary_text_color"-->
-
-        <!--android:textSize="@dimen/font_micro_small" />-->
-        <!--&lt;!&ndash;android:background="@drawable/dashed_edit_border"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:textCursorDrawable="@null"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
-        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"

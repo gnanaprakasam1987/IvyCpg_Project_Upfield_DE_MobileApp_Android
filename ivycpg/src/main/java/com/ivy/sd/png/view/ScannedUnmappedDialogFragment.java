@@ -5,9 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +37,6 @@ import java.util.ArrayList;
 public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener {
 
     protected BusinessModel bmodel;
-    //    protected TextInputLayout TLDesc;
     protected EditText ETDesc;
     protected TextView TOutletCode, TEquiType, TSerialNo;
     protected Button BTCancel, BTSave;
@@ -58,12 +52,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
         View view = inflater.inflate(R.layout.dialog_asset_tracking, container);
-//        ViewGroup.LayoutParams obj = new ViewGroup.LayoutParams((int) getActivity().getResources().getDimension(R.dimen.filter_slider_width), ViewGroup.LayoutParams.WRAP_CONTENT);
-//        view.setLayoutParams(obj);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         final Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
-//        TLDesc=(TextInputLayout)view.findViewById(R.id.input_layout_dialog_description);
         ETDesc = (EditText) view.findViewById(R.id.input_description);
         TEquiType = (TextView) view.findViewById(R.id.input_equipment_type);
         TOutletCode = (TextView) view.findViewById(R.id.input__outletcode);
@@ -79,7 +70,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         retailerName = getArguments().getString("retailerName");
         assetId = getArguments().getInt("assetId");
 
-        TEquiType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TEquiType.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         TSerialNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         ETDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         BTCancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -161,10 +152,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
 //            TLDesc.setError("Invalid Entry");
+            Toast.makeText(bmodel, "Add description", Toast.LENGTH_SHORT).show();
             requestFocus(ETDesc);
             return false;
-        } else {
-//            TLDesc.setErrorEnabled(false);
         }
         return true;
     }
