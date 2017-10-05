@@ -34,6 +34,7 @@ public class ReasonHelper {
     private NonproductivereasonBO reasonsWithPhoto;
     private ArrayList<ReasonMaster> reasonList = new ArrayList<>();
     private static ReasonHelper instance = null;
+    private ArrayList<ReasonMaster> assetReasonsBasedOnType;
 
     private ReasonHelper(Context context) {
         this.context = context;
@@ -234,6 +235,26 @@ public class ReasonHelper {
                 reason.setReasonID(c.getString(0));
                 reason.setReasonDesc(c.getString(1));
                 getNonProductiveReasonMaster().add(reason);
+            }
+            c.close();
+        }
+        db.closeDB();
+    }
+
+    public void loadAssetReasonsBasedOnType(String type) {
+        ReasonMaster reason;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(getReasonFromStdListMaster(type));
+        if (c != null) {
+            setAssetReasonsBasedOnType(new ArrayList<ReasonMaster>());
+            while (c.moveToNext()) {
+                reason = new ReasonMaster();
+                reason.setReasonID(c.getString(0));
+                reason.setReasonDesc(c.getString(1));
+                getAssetReasonsBasedOnType().add(reason);
             }
             c.close();
         }
@@ -652,4 +673,11 @@ public class ReasonHelper {
         }
     }
 
+    public void setAssetReasonsBasedOnType(ArrayList<ReasonMaster> assetReasonsBasedOnType) {
+        this.assetReasonsBasedOnType = assetReasonsBasedOnType;
+    }
+
+    public ArrayList<ReasonMaster> getAssetReasonsBasedOnType() {
+        return assetReasonsBasedOnType;
+    }
 }

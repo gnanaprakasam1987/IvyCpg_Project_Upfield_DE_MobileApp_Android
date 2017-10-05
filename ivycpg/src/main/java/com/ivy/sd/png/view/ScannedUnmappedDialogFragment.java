@@ -2,11 +2,9 @@ package com.ivy.sd.png.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,42 +37,48 @@ import java.util.ArrayList;
 public class ScannedUnmappedDialogFragment extends DialogFragment implements View.OnClickListener {
 
     protected BusinessModel bmodel;
-    protected TextInputLayout TLDesc;
     protected EditText ETDesc;
-    protected TextView TOutletCode,TEquiType,TSerialNo;
-    protected Button BTCancel,BTSave;
+    protected TextView TOutletCode, TEquiType, TSerialNo;
+    protected Button BTCancel, BTSave;
     protected Spinner spinnerCustom;
-    protected String serialNo, EquiType,reasonId,remarks,brand,retailerName;
+    protected String serialNo, EquiType, reasonId, remarks, brand, retailerName;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
-    protected Integer assetId=-1;
+    protected Integer assetId = -1;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
         View view = inflater.inflate(R.layout.dialog_asset_tracking, container);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         final Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
-        TLDesc=(TextInputLayout)view.findViewById(R.id.input_layout_dialog_description);
-        ETDesc=(EditText)view.findViewById(R.id.input_description);
-        TEquiType=(TextView)view.findViewById(R.id.input_equipment_type);
-        TOutletCode=(TextView)view.findViewById(R.id.input__outletcode);
-        TSerialNo=(TextView)view.findViewById(R.id.input_serialNo);
-        BTCancel=(Button)view.findViewById(R.id.btn_dialog_cancel);
-        BTSave=(Button)view.findViewById(R.id.btn_dialog_save);
+        ETDesc = (EditText) view.findViewById(R.id.input_description);
+        TEquiType = (TextView) view.findViewById(R.id.input_equipment_type);
+        TOutletCode = (TextView) view.findViewById(R.id.input__outletcode);
+        TSerialNo = (TextView) view.findViewById(R.id.input_serialNo);
+        BTCancel = (Button) view.findViewById(R.id.btn_dialog_cancel);
+        BTSave = (Button) view.findViewById(R.id.btn_dialog_save);
         BTCancel.setOnClickListener(this);
         BTSave.setOnClickListener(this);
 
-        serialNo=getArguments().getString("serialNo");
-        EquiType=getArguments().getString("assetName");
-        brand=getArguments().getString("brand");
-        retailerName=getArguments().getString("retailerName");
-        assetId=getArguments().getInt("assetId");
+        serialNo = getArguments().getString("serialNo");
+        EquiType = getArguments().getString("assetName");
+        brand = getArguments().getString("brand");
+        retailerName = getArguments().getString("retailerName");
+        assetId = getArguments().getInt("assetId");
 
-        TSerialNo.setText(getString(R.string.serial_no)+": "+serialNo);
+        TEquiType.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        TSerialNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ETDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        BTCancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        BTSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        TSerialNo.setText(getString(R.string.serial_no) + ": " + serialNo);
         TEquiType.setText(EquiType);
-        TOutletCode.setText("Current Retailer: "+retailerName);
+        TOutletCode.setText("Current Retailer: " + retailerName);
 
         initCustomSpinner(view);
         return view;
@@ -84,21 +86,26 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
     private void initCustomSpinner(View view) {
 
-        spinnerCustom= (Spinner) view.findViewById(R.id.spinnerCustomDialog);
+        spinnerCustom = (Spinner) view.findViewById(R.id.spinnerCustomDialog);
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Add");
         ArrayList<String> reasonList = new ArrayList<String>();
         reasonList.add("--Select Reason--");
         try {
             for (ReasonMaster temp : bmodel.reasonHelper
-                    .getNonProductiveReasonMaster()) {
+                    .getAssetReasonsBasedOnType()) {
                 reasonList.add(temp.getReasonDesc());
             }
         } catch (NullPointerException e) {
             Commons.printException("" + e);
         }
-      //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
+        //  languages.add(bmodel.reasonHelper.getNonProductiveReasonMaster())
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> dataAdapter;
+        if (reasonList != null && reasonList.size() > 0)
+            dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_bluetext_layout, reasonList);
+        else
+            dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_bluetext_layout);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         spinnerCustom.setAdapter(dataAdapter);
         spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -120,7 +127,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
-        remarks=ETDesc.getText().toString().trim();
+        remarks = ETDesc.getText().toString().trim();
         assetBo.setMposm(String.valueOf(assetId));
         assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
         assetBo.setMnewinstaldate(todayDate);
@@ -141,17 +148,17 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
     }
-    private boolean validateDesc()
-    {
+
+    private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
-            TLDesc.setError("Invalid Entry");
+//            TLDesc.setError("Invalid Entry");
+            Toast.makeText(bmodel, "Add description", Toast.LENGTH_SHORT).show();
             requestFocus(ETDesc);
             return false;
-        } else {
-            TLDesc.setErrorEnabled(false);
         }
         return true;
     }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
