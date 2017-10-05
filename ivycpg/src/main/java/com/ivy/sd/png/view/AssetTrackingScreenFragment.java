@@ -99,7 +99,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private String append = "";
     private static String outPutDateFormat;
     private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int MOVEMENT_ASSET=2;
+    private static final int MOVEMENT_ASSET = 2;
     private final String moduleName = "AT_";
     AddAssetDialogFragment dialog;
     ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
@@ -378,6 +378,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }*/
+        if (!bmodel.assetTrackingHelper.SHOW_MOVE_ASSET) {
+            menu.findItem(R.id.menu_move).setVisible(false);
+        }
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
@@ -455,16 +458,13 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             }
             FiveFilterFragment();
             return true;
-        } else if(i==R.id.menu_move)
-        {
-            if(myList.size()>=0) {
+        } else if (i == R.id.menu_move) {
+            if (myList.size() >= 0) {
                 Intent intent = new Intent(getActivity(), AssetMovementActivity.class);
-                intent.putExtra("index",mSelectedLocationIndex);
+                intent.putExtra("index", mSelectedLocationIndex);
                 intent.putExtra("module", MENU_ASSET);
-                startActivityForResult(intent,MOVEMENT_ASSET);
-            }
-            else
-            {
+                startActivityForResult(intent, MOVEMENT_ASSET);
+            } else {
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
@@ -544,27 +544,27 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (mAllAssetTrackingList != null) {
-                for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
-                    if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
-                        if (!bmodel.assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
-                            scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
-                            Bundle args = new Bundle();
-                            args.putString("serialNo", strBarCodeSearch);
-                            args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
-                            args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
-                            args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
-                            args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
-                            scannedUnmappedDialogFragment.setArguments(args);
-                            scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
-                            k = 1;
-                            break;
-                        }
-                        else
-                        {
-                            Toast.makeText(bmodel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
-                            k=1;
-                            break;
+            if (bmodel.assetTrackingHelper.SHOW_ASSET_BARCODE) {
+                if (mAllAssetTrackingList != null) {
+                    for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
+                        if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
+                            if (!bmodel.assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
+                                scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
+                                Bundle args = new Bundle();
+                                args.putString("serialNo", strBarCodeSearch);
+                                args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
+                                args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
+                                args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
+                                args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
+                                scannedUnmappedDialogFragment.setArguments(args);
+                                scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
+                                k = 1;
+                                break;
+                            } else {
+                                Toast.makeText(bmodel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
+                                k = 1;
+                                break;
+                            }
                         }
                     }
                 }
@@ -820,7 +820,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                     .getRetailerID() + "_"
                                     + mSelectedStandardListBO.getListID() + "_" + holder.assetBO.getAssetID() + "_"
                                     + holder.assetBO.getSerialNo() + "_"
-                                    +Commons.now(Commons.DATE);
+                                    + Commons.now(Commons.DATE);
                             Commons.print(TAG + ",FName Starts :" + fnameStarts);
                             bmodel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
@@ -882,7 +882,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.mconditionSpin.setSelection(0);
                             holder.minstalldate.setEnabled(false);
                             holder.mservicedate.setEnabled(false);
-                          //  holder.assetBO.setImageName("");
+                            //  holder.assetBO.setImageName("");
                             // holder.assetBO.setImgName("");
                             holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -1264,11 +1264,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             } else {
                 Commons.print("AssetTracking," + "Camera Activity : Canceled");
             }
-        } else if(requestCode==MOVEMENT_ASSET)
-        {
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
-        }
-        else {
+        } else if (requestCode == MOVEMENT_ASSET) {
+            bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+        } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (requestCode == IntentIntegrator.REQUEST_CODE) {
@@ -1711,24 +1709,24 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                 myList.addAll(mAssetTrackingList);
             } else {
-            for (LevelBO levelBO : parentidList) {
-                for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (levelBO.getProductID() == assetBO.getProductid()) {
-                        if ("ALL".equals(strBarCodeSearch)) {
-                            if ("".equals(mCapturedNFCTag)) {
-                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                for (LevelBO levelBO : parentidList) {
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        if (levelBO.getProductID() == assetBO.getProductid()) {
+                            if ("ALL".equals(strBarCodeSearch)) {
+                                if ("".equals(mCapturedNFCTag)) {
+                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                        myList.add(assetBO);
+                                    }
+                                } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                                    assetBO.setAvailQty(1);
                                     myList.add(assetBO);
                                 }
-                            } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
-                                assetBO.setAvailQty(1);
+                            } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
                                 myList.add(assetBO);
                             }
-                        } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
-                            myList.add(assetBO);
                         }
                     }
                 }
-            }
             }
         } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {

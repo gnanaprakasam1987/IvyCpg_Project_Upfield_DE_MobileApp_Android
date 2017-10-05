@@ -3,10 +3,10 @@ package com.ivy.sd.png.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +28,9 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by anish.k on 9/25/2017.
@@ -44,7 +42,6 @@ public class MovementAssetDialog extends DialogFragment {
     protected TextView TVOutletName, TVSerialNo, TVAssetName;
     protected Spinner SpToOutletName, SpReason;
     protected EditText ETDesc;
-    protected TextInputLayout TLDesc;
     private static final String SELECT = "-Select-";
     protected Button BTCancel, BTSave;
     protected ArrayList<ReasonMaster> mAssetReasonList;
@@ -58,6 +55,7 @@ public class MovementAssetDialog extends DialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
         View view = inflater.inflate(R.layout.move_asset_dialog, container);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
         return view;
@@ -71,7 +69,6 @@ public class MovementAssetDialog extends DialogFragment {
         SpToOutletName = (Spinner) view.findViewById(R.id.spinnerMovementOutletName);
         SpReason = (Spinner) view.findViewById(R.id.spinnerMovementReason);
         ETDesc = (EditText) view.findViewById(R.id.input_move_description);
-        TLDesc = (TextInputLayout) view.findViewById(R.id.input_layout_dialog_move_description);
         BTCancel = (Button) view.findViewById(R.id.btn_dialog_move_cancel);
         BTSave = (Button) view.findViewById(R.id.btn_dialog_move);
         BTCancel.setOnClickListener(new View.OnClickListener() {
@@ -84,9 +81,17 @@ public class MovementAssetDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 saveFunction();
-                dismiss();
             }
         });
+
+        TVAssetName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        TVSerialNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.input_current_outletcode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.to_outletcode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TVOutletName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        BTCancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        BTSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
 
         serialNo = getArguments().getString("serialNo");
         retailerName = getArguments().getString("retailerName");
@@ -94,7 +99,7 @@ public class MovementAssetDialog extends DialogFragment {
         brand=getArguments().getString("brand");
         assetId=getArguments().getInt("assetId");
         TVSerialNo.setText(getString(R.string.serial_no) + ": " + serialNo);
-        TVOutletName.setText("Current "+getString(R.string.retailer_name)+": "+retailerName);
+        TVOutletName.setText(retailerName);
         TVAssetName.setText(assetName);
         initSpinner();
 
@@ -104,8 +109,9 @@ public class MovementAssetDialog extends DialogFragment {
     private void initSpinner() {
         //Generating Reason List
         mAssetReasonList=new ArrayList<>();
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Move");
         mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
-        mAssetReasonList.addAll(bmodel.reasonHelper.getNonProductiveReasonMaster());
+        mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
 
         ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mAssetReasonList);
         mAssetReasonSpinAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -192,15 +198,14 @@ public class MovementAssetDialog extends DialogFragment {
     }
     private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
-            TLDesc.setError("Invalid Entry");
+//            TLDesc.setError("Invalid Entry");
+            Toast.makeText(bmodel, "Add description", Toast.LENGTH_SHORT).show();
             requestFocus(ETDesc);
             return false;
-        } else {
-            TLDesc.setErrorEnabled(false);
         }
-
         return true;
     }
+
 
     private void requestFocus(View view) {
         if (view.requestFocus()) {

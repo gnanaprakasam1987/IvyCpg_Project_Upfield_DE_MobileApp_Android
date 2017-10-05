@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_noise"
-    android:orientation="vertical"
+    android:background="@android:color/transparent"
     android:padding="@dimen/dimen_16dp">
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_10dp"
-        android:text="@string/moveAsset"
-        android:textAllCaps="true"
-        android:textColor="?attr/primarycolor"
-        android:textSize="@dimen/font_large" />
+        android:orientation="vertical"
+        android:background="@drawable/background_noise">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/dimen_10dp"
-        android:weightSum="2">
+        android:weightSum="2"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,103 +28,142 @@
                 android:text="@string/asset_name"
                 android:id="@+id/input_movement_assetName"
                 android:textColor="@color/DependentBlack"
-                android:textStyle="bold"
-                android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_18dp"/>
-            <TextView
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_10dp"
+                android:textSize="@dimen/dimens_18dp"/>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/serial_no"
-                android:textStyle="normal"
-                android:id="@+id/input_movement_serialNo"
-                android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_16dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/retailer_name"
-                android:id="@+id/input_current_outletcode"
-                android:textStyle="normal"
-                android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginRight="@dimen/dimen_5dp"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                >
+
+                    <TextView
+                        android:id="@+id/input_movement_serialNo"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:text="@string/serial_no"
+                        android:textSize="@dimen/dimens_16dp"
+
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerMovementReason"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:background="@android:color/transparent"
+
+                        android:layout_weight="1"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="2">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_5dp"
-            android:weightSum="2">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="To Retailer Name"
-                    android:textStyle="normal"
-                    android:layout_margin="@dimen/dimen_5dp"
-                    android:textSize="@dimen/dimen_16dp"/>
-                <Spinner
-                    android:id="@+id/spinnerMovementOutletName"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginStart="@dimen/dimen_2dp"
-                    android:background="@android:color/transparent"
-                    android:overlapAnchor="false"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/reason"
-                    android:textStyle="normal"
-                    android:layout_margin="@dimen/dimen_5dp"
-                    android:textSize="@dimen/dimen_16dp"/>
-                <Spinner
-                    android:id="@+id/spinnerMovementReason"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginStart="@dimen/dimen_2dp"
-                    android:background="@android:color/transparent"
-                    android:overlapAnchor="false"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/input_current_outletcode_title"
+            style="?attr/customListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:text="Current Retailer Name:"
+            android:textSize="@dimen/dimens_16dp"
 
+            />
+            <TextView
+                android:id="@+id/input_current_outletcode"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_10dp"
+                android:text="@string/retailer_name"
+                android:textSize="@dimen/dimens_16dp"
+
+                />
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/to_outletcode_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To Retailer Name"
+                android:textStyle="normal"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:textSize="@dimen/dimens_16dp"
+                android:paddingLeft="@dimen/dimen_10dp"/>
+        <Spinner
+            android:id="@+id/spinnerMovementOutletName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:background="@android:color/transparent"
+
+            android:layout_weight="1"/>
+</LinearLayout>
 
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_dialog_move_description"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dimen_5dp"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lay_spin"
+
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:focusable="true"
+
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding">
 
         <EditText
             android:id="@+id/input_move_description"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/feedbck_edit_ht"
+            android:background="@drawable/feedback_edit_selector"
+            android:gravity="top|left"
             android:hint="@string/description"
             android:imeOptions="actionDone"
-            android:minLines="2"
-            android:lines="2"
-            android:maxLines="3"
             android:inputType="text"
-            android:maxLength="250" />
-    </android.support.design.widget.TextInputLayout>
+            android:lines="2"
+            android:maxLength="200"
+
+            android:maxLines="3"
+            android:minLines="2"
+            android:padding="@dimen/spin_linlay_margin"
+            android:singleLine="false"
+            android:textSize="@dimen/dimens_16dp"
+
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -154,5 +189,5 @@
             android:textAllCaps="false" />
 
     </LinearLayout>
-
 </LinearLayout>
+</RelativeLayout>
