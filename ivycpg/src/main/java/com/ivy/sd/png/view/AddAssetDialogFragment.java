@@ -37,7 +37,7 @@ import java.util.Vector;
  * Created by rajkumar.s on 3/28/2017.
  */
 
-public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener,TextView.OnEditorActionListener{
+public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     Button btnAdd;
     BusinessModel bmodel;
@@ -69,9 +69,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         addinstalldate = (Button) view.findViewById(R.id.date_button);
         mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-      // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
-     //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-       // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
+        // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
+        //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
 //        mSNO.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -281,24 +281,25 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         if (view.getId() == R.id.btn_save) {
 
-            if (!masset.getSelectedItem().toString()
-                    .equals(SELECT)
+            try {
+                if (!masset.getSelectedItem().toString()
+                        .equals(SELECT)
 
-                    && !mSNO.getText().toString().equals("")) {
-                if (!bmodel.assetTrackingHelper
-                        .isExistingRetailersno(mSNO.getText()
-                                .toString())) {
-                    setAddAssetDetails();
-                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                    bmodel.assetTrackingHelper
-                            .saveAssetAddandDeletedetails("MENU_ASSET");
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.saved_successfully),
-                            Toast.LENGTH_SHORT).show();
-                    dismiss();
+                        && !mSNO.getText().toString().equals("")) {
+                    if (!bmodel.assetTrackingHelper
+                            .isExistingRetailersno(mSNO.getText()
+                                    .toString())) {
+                        setAddAssetDetails();
+                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                        bmodel.assetTrackingHelper
+                                .saveAssetAddandDeletedetails("MENU_ASSET");
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.saved_successfully),
+                                Toast.LENGTH_SHORT).show();
+                        dismiss();
 
 
                     } else {
@@ -324,7 +325,6 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
-        } else if (view.getId() == R.id.btn_cancel) {
         } else if (view.getId() == R.id.btn_cancel) {
             dismiss();
         }

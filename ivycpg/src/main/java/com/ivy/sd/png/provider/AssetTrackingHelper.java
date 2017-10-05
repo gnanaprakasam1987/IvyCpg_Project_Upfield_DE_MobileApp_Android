@@ -420,17 +420,23 @@ public class AssetTrackingHelper {
             sb.append(bmodel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
-            if (level == 2) {
+            if (level == 1) {
+                // account mapping
+                sb.append(" and AccountId =");
+                sb.append(bmodel.getRetailerMasterBO().getAccountid());
+            } else if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
                 sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            } else if (level == 3) {
+                // Class mapping
+                sb.append(" and Classid = ");
+                sb.append(bmodel.getRetailerMasterBO().getClassid());
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in (");
                 sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
-
-
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
@@ -452,7 +458,7 @@ public class AssetTrackingHelper {
             }
 
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+                sb.append(" and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
                 allMasterSb = allMasterSb + ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
@@ -1130,11 +1136,11 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
+
     /**
      * Method to save Asset Movement Details in sql table
      */
-    public void saveAssetMovementDetails(String moduleName)
-    {
+    public void saveAssetMovementDetails(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1162,8 +1168,8 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
                     + QT(assets.getMbrand()) + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))+ "," + QT("M") + "," + typeListId +","+
-                    QT(assets.getMreasonId())+","+ QT(assets.getMremarks())+","+ QT(assets.getmToRetailerId());
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
+                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks()) + "," + QT(assets.getmToRetailerId());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1175,8 +1181,9 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
+
     public void saveAddandDeletedetails(String posmid, String msno,
-                                        String msbdid, String mbrandid, String reasonId,String moduleName) {
+                                        String msbdid, String mbrandid, String reasonId, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1207,7 +1214,7 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmid) + "," + QT(msno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
-                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId+ "," + QT(reasonId) ;
+                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId + "," + QT(reasonId);
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1265,6 +1272,7 @@ public class AssetTrackingHelper {
             return false;
         }
     }
+
     /**
      * Method to check the Asset already scanned and mapped to other retailer in sql table
      */
@@ -1296,6 +1304,7 @@ public class AssetTrackingHelper {
             return false;
         }
     }
+
     public void saveAsset(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
@@ -1489,106 +1498,106 @@ public class AssetTrackingHelper {
 //                            if (assetBo.getAvailQty() > 0
 //                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
 //                                    || assetBo.getCompetitorQty() > 0) {
-                                totalActualQty = totalActualQty + assetBo.getAvailQty();
-                                assetDetailValues.append(id);
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getAssetID());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getAvailQty());
-                                assetDetailValues.append(",");
-                                if (assetBo.getImageName() != null
-                                        && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
-                                    assetDetailValues.append(QT(assetBo.getImageName()));
-                                } else {
-                                    assetDetailValues.append(QT(""));
-                                }
+                            totalActualQty = totalActualQty + assetBo.getAvailQty();
+                            assetDetailValues.append(id);
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getAssetID());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getAvailQty());
+                            assetDetailValues.append(",");
+                            if (assetBo.getImageName() != null
+                                    && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
+                                assetDetailValues.append(QT(assetBo.getImageName()));
+                            } else {
+                                assetDetailValues.append(QT(""));
+                            }
 
 
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(0);
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(QT(assetBo.getSerialNo()));
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getRemarkID());
+                            assetDetailValues.append(",");
+                            if (MENU_ASSET.equals(moduleName)) {
+                                assetDetailValues.append(DatabaseUtils
+                                        .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
+                                                .getMinstalldate() == null || assetBo
+                                                .getMinstalldate()
+                                                .length() == 0) ? SDUtil
+                                                .now(SDUtil.DATE_GLOBAL)
+                                                : (DateUtil
+                                                .convertToServerDateFormat(
+                                                        assetBo.getMinstalldate(),
+                                                        ConfigurationMasterHelper.outDateFormat)))
+                                                : ""));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(0);
+                                assetDetailValues.append(DatabaseUtils
+                                        .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
+                                                .getMservicedate() == null || assetBo
+                                                .getMservicedate()
+                                                .length() == 0) ? SDUtil
+                                                .now(SDUtil.DATE_GLOBAL)
+                                                : (DateUtil
+                                                .convertToServerDateFormat(
+                                                        assetBo.getMservicedate(),
+                                                        ConfigurationMasterHelper.outDateFormat)))
+                                                : ""));
+                            } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                assetDetailValues.append(DatabaseUtils
+                                        .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
+                                                .getMinstalldate() == null || assetBo
+                                                .getMinstalldate()
+                                                .length() == 0) ? SDUtil
+                                                .now(SDUtil.DATE_GLOBAL)
+                                                : (DateUtil
+                                                .convertToServerDateFormat(
+                                                        assetBo.getMinstalldate(),
+                                                        ConfigurationMasterHelper.outDateFormat)))
+                                                : ""));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(QT(assetBo.getSerialNo()));
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getRemarkID());
-                                assetDetailValues.append(",");
-                                if (MENU_ASSET.equals(moduleName)) {
-                                    assetDetailValues.append(DatabaseUtils
-                                            .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
-                                                    .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
-                                                            ConfigurationMasterHelper.outDateFormat)))
-                                                    : ""));
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(DatabaseUtils
-                                            .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
-                                                    .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
-                                                            ConfigurationMasterHelper.outDateFormat)))
-                                                    : ""));
-                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
-                                    assetDetailValues.append(DatabaseUtils
-                                            .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
-                                                    .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
-                                                            ConfigurationMasterHelper.outDateFormat)))
-                                                    : ""));
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(DatabaseUtils
-                                            .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
-                                                    .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
-                                                            ConfigurationMasterHelper.outDateFormat)))
-                                                    : ""));
-                                }
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getAudit());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getProductid());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getCompetitorQty());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(standardListBO.getListID());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getGroupLevelId());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getExecutorQty());
-                                assetDetailValues.append(",");
-                                if (assetBo.getImgName() != null
-                                        && !assetBo.getImgName().equals("")) {
-                                    assetDetailValues.append(QT(assetBo.getImgName()));
-                                } else {
-                                    assetDetailValues.append(QT(""));
-                                }
+                                assetDetailValues.append(DatabaseUtils
+                                        .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
+                                                .getMservicedate() == null || assetBo
+                                                .getMservicedate()
+                                                .length() == 0) ? SDUtil
+                                                .now(SDUtil.DATE_GLOBAL)
+                                                : (DateUtil
+                                                .convertToServerDateFormat(
+                                                        assetBo.getMservicedate(),
+                                                        ConfigurationMasterHelper.outDateFormat)))
+                                                : ""));
+                            }
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getAudit());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getProductid());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getCompetitorQty());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(standardListBO.getListID());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getGroupLevelId());
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(assetBo.getExecutorQty());
+                            assetDetailValues.append(",");
+                            if (assetBo.getImgName() != null
+                                    && !assetBo.getImgName().equals("")) {
+                                assetDetailValues.append(QT(assetBo.getImgName()));
+                            } else {
+                                assetDetailValues.append(QT(""));
+                            }
 
-                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + productWeightage);
-                                    sum = sum + productWeightage;
-                                }
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                assetDetailValues.append("," + productWeightage);
+                                sum = sum + productWeightage;
+                            }
 
-                                db.insertSQL(DataMembers.tbl_AssetDetail,
-                                        AssetDetailColumns, assetDetailValues.toString());
+                            db.insertSQL(DataMembers.tbl_AssetDetail,
+                                    AssetDetailColumns, assetDetailValues.toString());
 //                            }
                         }
 
