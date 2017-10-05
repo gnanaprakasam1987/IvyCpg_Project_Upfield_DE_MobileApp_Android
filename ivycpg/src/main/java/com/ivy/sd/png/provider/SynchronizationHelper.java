@@ -199,6 +199,7 @@ SynchronizationHelper {
     private static final String AUTOUPDATE_APPEND_URL = "/HHTVersionUpgrade/Masters?userinfo=";
     public static final String URLDOWNLOAD_MASTER_APPEND_URL = "/v2/UrldownloadMaster/Masters";
     public static final String UPDATE_FINISH_URL = "/IncrementalSync/Finish";
+    public static final String INCREMENTAL_SYNC_INITIATE_URL = "/IncrementalSync/Initiate";
 
 
     private static final String DATA_NOT_AVAILABLE_ERROR = "E19";
@@ -1351,28 +1352,6 @@ SynchronizationHelper {
         }
     }
 
-    public void downloadMasterListBySelectedDistrubutor(ArrayList<DistributorMasterBO> distributorList, FROM_SCREEN fromWhere) {
-        mJsonObjectResponseByTableName = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
-        sb.append(DataMembers.SERVER_URL);
-        sb.append("/IncrementalSync/Initiate");
-        try {
-            JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            JSONArray jsonArray = new JSONArray();
-            for (DistributorMasterBO distributorBO : distributorList) {
-                jsonArray.put(distributorBO.getDId());
-            }
-            json.put("DistributorIds", jsonArray);
-            callVolley(sb.toString(), fromWhere, 0, DATA_DOWNLOAD_BY_DISTRIBUTOR, json);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-
     public enum DownloadType {
         NORMAL_DOWNLOAD(0),
         RETAILER_WISE_DOWNLOAD(1),
@@ -1399,10 +1378,15 @@ SynchronizationHelper {
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
 
-                if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD)
+                int  insert=VOLLEY_DOWNLOAD_INSERT;
+                if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD) {
                     json.put("IsRetailer", 1);
-                else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD)
+                }
+                else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
                     json.put("IsDistributor", 1);
+                    insert=DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
+
+                }
 
                 mURLList = new HashMap<>();
                 mTableList = new HashMap<>();
@@ -1410,7 +1394,7 @@ SynchronizationHelper {
                 for (String url : mDownloadUrlList) {
                     String downloadUrl = DataMembers.SERVER_URL + url;
                     callVolley(downloadUrl, fromLogin, size,
-                            VOLLEY_DOWNLOAD_INSERT, json);
+                            insert, json);
                 }
             } catch (JSONException e) {
                 Commons.printException("" + e);
@@ -4525,7 +4509,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!isDistributorDownloadDone&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+            isDistributorDownloadDone=true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

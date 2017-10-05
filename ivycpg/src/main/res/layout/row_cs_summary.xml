@@ -8,15 +8,15 @@
     android:gravity="center_vertical">
 
 
-        <TextView
-            style="?attr/customListItemPrimary"
-            android:id="@+id/stock_and_order_listview_productname"
-            android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="wrap_content"
-            android:gravity="left|center"
-            android:text="@string/product_name"
-            android:layout_weight="4"
-            />
+    <TextView
+        style="?attr/customListItemPrimary"
+        android:id="@+id/stock_and_order_listview_productname"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="wrap_content"
+        android:gravity="left|center"
+        android:text="@string/product_name"
+        android:layout_weight="4"
+        />
 
 
     <TextView

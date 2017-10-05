@@ -43,6 +43,12 @@ public class SOSActivity_Proj extends IvyBaseActivityNoActionBar {
         }
     }
 
+    public void numberPressed(View vw) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        SOSFragment_Proj asf = (SOSFragment_Proj) fm
+                .findFragmentById(R.id.sos_fragment_proj);
+        asf.numberPressed(vw);
+    }
 
     protected void onDestroy() {
         super.onDestroy();

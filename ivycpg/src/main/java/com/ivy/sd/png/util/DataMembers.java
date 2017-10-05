@@ -22,7 +22,7 @@ public class DataMembers {
 
     // Sync
     public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
- // public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
+    // public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
 //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
@@ -60,6 +60,19 @@ public class DataMembers {
     public static final String actactivationscreen = "ScreenActivationActivity";
     public static final String actTargetPlan = "TargetPlan";
     public static final String actclosingstock = "ClosingStock";
+
+    //FitScore List
+    public static final String FIT_STOCK = "FIT_STOCK";
+    public static final String FIT_PRICE = "FIT_PRICE";
+    public static final String FIT_PROMO = "FIT_PROMO";
+    public static final String FIT_ASSET = "FIT_ASSET";
+    public static final String FIT_POSM = "FIT_POSM";
+
+    public static final String MODULE_STOCK = "Stock & Order";
+    public static final String MODULE_PRICE = "Price Check";
+    public static final String MODULE_ASSET = "Asset Tracking";
+    public static final String MODULE_POSM = "POSM Tracking";
+    public static final String MODULE_PROMO = "Promotion Tracking";
 
     // store application's image Folder name in sdcard
     public static final String photoFolderName = "IvyDist";

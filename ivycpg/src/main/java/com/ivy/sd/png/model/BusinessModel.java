@@ -117,6 +117,7 @@ import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
+import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.GroomingHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
@@ -133,6 +134,7 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
+import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
@@ -344,8 +346,10 @@ public class BusinessModel extends Application {
     public CS_StockApplyHelper CS_StockApplyHelper;
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
+    public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
+    public PhotoCaptureHelper photoCaptureHelper;
     //
     public HashMap<String, PhotoCaptureProductBO> galleryDetails;
     /* ******* Invoice Number To Print ******* */
@@ -471,6 +475,7 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
+        photoCaptureHelper = photoCaptureHelper.getInstance(this);
 
         /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
@@ -527,6 +532,7 @@ public class BusinessModel extends Application {
         CS_StockApplyHelper = CS_StockApplyHelper.getInstance(this);
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         acknowledgeHelper = AcknowledgementHelper.getInstance(this);
+        fitscoreHelper = FitScoreHelper.getInstance(this);
     }
 
 
@@ -840,6 +846,37 @@ public class BusinessModel extends Application {
         }
         return listName;
     }
+
+
+    /**
+     * This method will return the standard list name for the given listID.
+     *
+     * @param listCode
+     * @return listName
+     */
+    public String getStandardListNameByCode(String listCode) {
+        String listName = "";
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListType="
+                            + QT(listCode));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    listName = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+        return listName;
+    }
+
 
 
     @Override
@@ -3075,7 +3112,8 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                    tempVal = formatValue(value) + "";
+                   /* tempVal = formatValue(value) + "";*/
+                    tempVal = SDUtil.format(value,configurationMasterHelper.VALUE_PRECISION_COUNT,0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
@@ -6137,7 +6175,7 @@ public class BusinessModel extends Application {
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if(product.getIsFocusBrand()==1||product.getIsFocusBrand()==2) {
+                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
                     if (product.getLocations().get(j).getShelfPiece() == -1
                             && product.getLocations().get(j).getShelfCase() == -1
                             && product.getLocations().get(j).getShelfOuter() == -1
@@ -6172,14 +6210,28 @@ public class BusinessModel extends Application {
                 closingStockCursor.close();
             }
 
-            // ClosingStock Header entry
+            //Weightage Calculation
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                fitscoreHelper.getWeightage(getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
+            }
 
+            // ClosingStock Header entry
+            int moduleWeightage = 0, productWeightage = 0, sum = 0;
             String columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                columns = columns + ",Weightage,Score";
+            }
 
             String values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
                     + QT(getRetailerMasterBO().getRetailerCode()) + ","
                     + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                moduleWeightage = fitscoreHelper.getModuleWeightage(DataMembers.FIT_STOCK);
+                values = values + "," + moduleWeightage + ",0";
+            }
 
             db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
 
@@ -6189,6 +6241,10 @@ public class BusinessModel extends Application {
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
                     + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3";
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                columns = columns + ",Score";
+            }
 
             int siz = productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
@@ -6224,6 +6280,9 @@ public class BusinessModel extends Application {
 
                             }
 
+                            int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
+                            int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
+                            int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
                             values = (id) + ","
                                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                     + QT(product.getProductID()) + ","
@@ -6233,11 +6292,11 @@ public class BusinessModel extends Application {
                                     + product.getMSQty() + "," + count + ","
                                     + product.getOuUomid() + ","
                                     + product.getOutersize() + ","
-                                    + ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece())
+                                    + shelfPiece
                                     + ","
-                                    + ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase())
+                                    + shelfCase
                                     + ","
-                                    + ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter())
+                                    + shelfOuter
                                     + ","
                                     + product.getLocations().get(j).getWHPiece()
                                     + ","
@@ -6257,6 +6316,12 @@ public class BusinessModel extends Application {
                                     + "," + rField2
                                     + "," + rField3;
 
+                            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                int pieces = (shelfCase * 10) + shelfPiece;
+                                productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
 
                             db.insertSQL(DataMembers.tbl_closingstockdetail,
                                     columns, values);
@@ -6298,6 +6363,9 @@ public class BusinessModel extends Application {
 
                                 }
 
+                                int shelfCase = taggedProduct.getLocations().get(j).getShelfCase();
+                                int shelfPiece = taggedProduct.getLocations().get(j).getShelfPiece();
+                                int shelfOuter = taggedProduct.getLocations().get(j).getShelfOuter();
                                 values = (id) + ","
                                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                         + QT(taggedProduct.getProductID()) + ","
@@ -6307,11 +6375,11 @@ public class BusinessModel extends Application {
                                         + taggedProduct.getMSQty() + "," + count + ","
                                         + taggedProduct.getOuUomid() + ","
                                         + taggedProduct.getOutersize() + ","
-                                        + taggedProduct.getLocations().get(j).getShelfPiece()
+                                        + shelfPiece
                                         + ","
-                                        + taggedProduct.getLocations().get(j).getShelfCase()
+                                        + shelfCase
                                         + ","
-                                        + taggedProduct.getLocations().get(j).getShelfOuter()
+                                        + shelfOuter
                                         + ","
                                         + taggedProduct.getLocations().get(j).getWHPiece()
                                         + ","
@@ -6331,6 +6399,12 @@ public class BusinessModel extends Application {
                                         + "," + rField2
                                         + "," + rField3;
 
+                                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    int pieces = (shelfCase * 10) + shelfPiece;
+                                    productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
+                                    values = values + "," + productWeightage;
+                                    sum = sum + productWeightage;
+                                }
 
                                 db.insertSQL(DataMembers.tbl_closingstockdetail,
                                         columns, values);
@@ -6340,6 +6414,12 @@ public class BusinessModel extends Application {
                 }
             }
 
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -7053,7 +7133,7 @@ public class BusinessModel extends Application {
 
                 if (!configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeDetailsMasterHelper.insertScemeDetails(uid, db);
+                    schemeDetailsMasterHelper.insertScemeDetails(uid, db,"N");
                 }
 
 
@@ -7616,16 +7696,21 @@ public class BusinessModel extends Application {
             } else if (imageName.startsWith("USER_")) {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else {
-                mBucketName = mBucketDetails
-                        + "/"
-                        + userMasterHelper.getUserMasterBO
-                        ().getDistributorid()
-                        + "/"
-                        + userMasterHelper.getUserMasterBO().getUserid()
-                        + "/"
-                        + userMasterHelper.getUserMasterBO
-                        ().getDownloadDate()
-                        .replace("/", "");
+                if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
+                    mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
+                } else {
+
+                    mBucketName = mBucketDetails
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDistributorid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO().getUserid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDownloadDate()
+                            .replace("/", "");
+                }
             }
             final TransferObserver myUpload = tm.upload(mBucketName,
                     imageName, image);
@@ -8149,6 +8234,35 @@ public class BusinessModel extends Application {
         }
         return true;
     }
+
+
+
+    public boolean deleteModuleCompletion(String menuName) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
+                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+
+            if (c.getCount() > 0) {
+                db.deleteSQL("ModuleCompletionReport", "MENU_CODE="
+                        + QT(menuName), false);
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("deleting" + menuName + "exception", e);
+            return false;
+        }
+        return true;
+
+    }
+
+
 
     public void isModuleDone() {
         try {

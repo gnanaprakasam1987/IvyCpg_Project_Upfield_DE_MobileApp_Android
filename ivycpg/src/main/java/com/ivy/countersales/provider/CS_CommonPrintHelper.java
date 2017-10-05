@@ -662,7 +662,8 @@ public class CS_CommonPrintHelper {
             productBO = productList.elementAt(i);
             if (productBO.getOrderedCaseQty() > 0
                     || productBO.getOrderedPcsQty() > 0
-                    || productBO.getOrderedOuterQty() > 0) {
+                    || productBO.getOrderedOuterQty() > 0
+                    ) {
                 mOrderedProductList.add(productBO);
             } else {
                 // Adding replaced qty
@@ -696,7 +697,7 @@ public class CS_CommonPrintHelper {
                     mProductValue = prod.getProductCode();
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                     mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
-                    mProductValue = prod.getBarCode()+"-"+mProductValue;
+                    mProductValue = prod.getBarCode() + "-" + mProductValue;
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_CASE)) {
                     mProductValue = formatValueInPrint(prod.getMRP(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
@@ -974,7 +975,7 @@ public class CS_CommonPrintHelper {
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
                                 mProductValue = freeProduct.getProductCode();
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
-                                mProductValue = (freeProduct.getProductShortName() != null ? freeProduct.getProductShortName() : freeProduct.getProductName());
+                                mProductValue = (freeProduct.getProductShortName() != null ? freeProduct.getBarCode() + "-" + freeProduct.getProductShortName() : freeProduct.getBarCode() + "-" + freeProduct.getProductName());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
                                 if (freeProduct.getCaseUomId() == schemeProductBO.getUomID()
                                         && freeProduct.getCaseUomId() != 0) {
@@ -1048,7 +1049,6 @@ public class CS_CommonPrintHelper {
         }
 
     }
-
 
     private void calculateSchemeAmountDiscountValue() {
 
@@ -1330,7 +1330,7 @@ public class CS_CommonPrintHelper {
     /**
      * get bill level discount value
      */
-   /* private void getBillLevelDiscount() {
+    /*private void getBillLevelDiscount() {
 
         double discount = SDUtil.convertToDouble(bmodel.invoiceDisount);
         double discountValue = 0;

@@ -505,7 +505,7 @@ public class CompetitorTrackingHelper {
                     }
 
                 }
-                if (count >= DataMembers.PRINT_COUNT) {
+                if (count >= bmodel.configurationMasterHelper.photocount) {
                     return true;
                 }
 

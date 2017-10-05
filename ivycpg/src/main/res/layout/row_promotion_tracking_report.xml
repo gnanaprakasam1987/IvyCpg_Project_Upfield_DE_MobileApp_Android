@@ -201,7 +201,7 @@
                     </LinearLayout>
 
                     <View
-                        android:id="@+id/verticalSeparatorBalance"
+                        android:id="@+id/verticalSeparatorBalance1"
                         android:layout_width="0.3dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/target_top_margin"

@@ -115,6 +115,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DELIVERY_REPORT = "ORDB09";
 
     private static final String CODE_PHOTO_CAPTURE = "PHOTOCAP";
+    private static final String CODE_PHOTO_CAPTURE_IMG_PATH = "PHOTOCAP05";
     private static final String CODE_PHOTO_COMPETITOR = "PHOTOCOMP";
     private static final String CODE_TASK = "TSK";
     private static final String CODE_JUMP = "JUMPING";
@@ -139,7 +140,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_LIMIT_PROFILE = "PROFILE19";
     private static final String CODE_SHOW_NO_VISIT_REASON = "PROFILE21";
     private static final String CODE_SHOW_HISTORY = "PRO05";
-    private static final String CODE_SHOW_ASSET_HISTORY="PRO26";
+    private static final String CODE_SHOW_ASSET_HISTORY = "PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
@@ -368,8 +369,10 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_BIXOLON;
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
+    private static final String CODE_FIT_SCORE = "FITDASH";
+    public boolean IS_FITSCORE_NEEDED;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD,SHOW_NOR_DASHBOARD;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -446,6 +449,7 @@ public class ConfigurationMasterHelper {
     public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
     public boolean IS_SUGGESTED_ORDER; // used order screen to hid SO colom
+    public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
     public boolean IS_STOCK_IN_HAND; // used order screen to hide SIH colom
     public boolean IS_INVOICE; // decide seller is van seller or preseller
     public boolean IS_JUMP; // used to avoid jumping in activity menu
@@ -454,6 +458,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_BAIDU_MAP;
     public boolean IS_DELIVERY_REPORT;
     public boolean IS_PHOTO_CAPTURE; // Activity Menu
+    public boolean IS_PHOTO_CAPTURE_IMG_PATH_CHANGE;//to change image path for kelog's specific
     public boolean IS_PHOTO_COMPETITOR;
     public boolean IS_TASK; // Activity Menu
     public boolean IS_PASSWORD_ENCRIPTED; // Activity Menu
@@ -477,7 +482,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_LIMIT_PROFILE; //
     public boolean SHOW_NO_VISIT_REASON; //
     public boolean SHOW_HISTORY; // PRO05
-    public boolean SHOW_ASSET_HISTORY; //PRO26
+    public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
@@ -880,6 +885,7 @@ public class ConfigurationMasterHelper {
     private ArrayList<String> mRetailerProperty;
     private Vector<ConfigureBO> profileConfig;
     private Vector<PasswordPolicyBO> passwordConfig;
+    private Vector<ConfigureBO> storeCheckMenu;
 
     public boolean SHOW_SC;
     public boolean SHOW_SHO;
@@ -1159,6 +1165,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
     public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
+
+    private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
+    public boolean SHOW_INVOICE_HISTORY; // PRO06
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1568,9 +1577,11 @@ public class ConfigurationMasterHelper {
         this.IS_NEW_TASK = hashMapHHTModuleConfig.get(CODE_NEW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_NEW_TASK) : false;
         this.IS_RETAILER_DEVIATION = hashMapHHTModuleConfig.get(CODE_RETAILER_DEVIATION) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_DEVIATION) : false;
         this.IS_SUGGESTED_ORDER = hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER) : false;
+        this.IS_SUGGESTED_ORDER_LOGIC = hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER_LOGIC) != null ? hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER_LOGIC) : false;
         this.IS_DELIVERY_REPORT = hashMapHHTModuleConfig.get(CODE_DELIVERY_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_DELIVERY_REPORT) : false;
         this.IS_TASK = hashMapHHTModuleConfig.get(CODE_TASK) != null ? hashMapHHTModuleConfig.get(CODE_TASK) : false;
         this.IS_PHOTO_CAPTURE = hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE) : false;
+        this.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) : false;
         this.IS_PHOTO_COMPETITOR = hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) : false;
         this.IS_JUMP = hashMapHHTModuleConfig.get(CODE_JUMP) != null ? hashMapHHTModuleConfig.get(CODE_JUMP) : false;
         this.IS_PASSWORD_ENCRIPTED = hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) != null ? hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) : false;
@@ -2044,6 +2055,7 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
+        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
@@ -2060,7 +2072,7 @@ public class ConfigurationMasterHelper {
                 this.SHOW_SPL_FLIER_NOT_NEEDED = false;
         }
 
-
+        this.SHOW_INVOICE_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) : false;
     }
 
     private void getTaxModel(String hhtCode) {
@@ -2207,7 +2219,7 @@ public class ConfigurationMasterHelper {
     }
 
     public Vector<ConfigureBO> downloadStoreCheckMenu(String menuName) {
-        Vector<ConfigureBO> storeCheckMenu = new Vector<>();
+        storeCheckMenu = new Vector<>();
         try {
             sharedPrefs = PreferenceManager
                     .getDefaultSharedPreferences(context);
@@ -2283,6 +2295,10 @@ public class ConfigurationMasterHelper {
         return storeCheckMenu;
     }
 
+
+    public Vector<ConfigureBO> getStoreCheckMenu() {
+        return storeCheckMenu;
+    }
 
     public Vector<ConfigureBO> getActivityMenu() {
         return activitymenuconfig;
@@ -4167,8 +4183,8 @@ public class ConfigurationMasterHelper {
         try {
             this.SHOW_SMS_IN_SURVEY = false;
             this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
-            this.SHOW_DRAGDROP_IN_SURVEY=false;
-            this.ENABLE_MULTIPLE_PHOTO=false;
+            this.SHOW_DRAGDROP_IN_SURVEY = false;
+            this.ENABLE_MULTIPLE_PHOTO = false;
             DBUtil db;
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -4198,7 +4214,7 @@ public class ConfigurationMasterHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     this.ENABLE_MULTIPLE_PHOTO = true;
-                    this.multiplePhotoCapture=c.getString(0);
+                    this.multiplePhotoCapture = c.getString(0);
                 }
                 c.close();
             }
@@ -4207,7 +4223,7 @@ public class ConfigurationMasterHelper {
                     + bmodel.QT(menucode));
             if (c != null) {
                 while (c.moveToNext()) {
-                        this.SHOW_DRAGDROP_IN_SURVEY=true;
+                    this.SHOW_DRAGDROP_IN_SURVEY = true;
                 }
                 c.close();
             }

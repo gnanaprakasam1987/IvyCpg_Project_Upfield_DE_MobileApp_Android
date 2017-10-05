@@ -974,6 +974,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.percentET.setEnabled(false);
                     holder.percentET.setFocusable(false);
                     holder.percentRL.setVisibility(View.VISIBLE);
+                    holder.percentET.setText(holder.schemeBO
+                            .getMinimumPrecent() + "");
                     holder.percentRangeTV.setText(SDUtil.roundIt(
                             schemeProductBO.getMinPercentCalculated(), 2) + "");
                     if (QUANTITY == holder.percentET)
@@ -993,6 +995,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.amountET.setEnabled(false);
                     holder.amountET.setFocusable(false);
                     holder.amountRL.setVisibility(View.VISIBLE);
+                    holder.amountET.setText(holder.schemeBO
+                            .getMinimumAmount() + "");
                     holder.amountRangeTV.setText(SDUtil.roundIt(
                             schemeProductBO.getMinAmountCalculated(), 2)
                             + "");
@@ -1012,6 +1016,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.priceET.setClickable(false);
                     holder.priceET.setFocusable(false);
                     holder.rateRL.setVisibility(View.VISIBLE);
+                    holder.priceET.setText(holder.schemeBO
+                            .getActualPrice() + "");
                     holder.priceRangeTV.setText(SDUtil.roundIt(
                             schemeProductBO.getPriceActual(), 2)
                             + "");

@@ -482,16 +482,20 @@ public class CollectionReportFragment extends Fragment {
                 holder = (GroupViewHolder) row.getTag();
             }
 
-            if (isExpanded) {
-                Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
-                Bitmap imageBitmap = fromDrawableToBitmap(drawable);
-                holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, -90));
-                holder.line.setVisibility(View.VISIBLE);
-            } else {
-                Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
-                Bitmap imageBitmap = fromDrawableToBitmap(drawable);
-                holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
-                holder.line.setVisibility(View.GONE);
+            try {
+                if (isExpanded) {
+                    Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
+                    Bitmap imageBitmap = fromDrawableToBitmap(drawable);
+                    holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, -90));
+                    holder.line.setVisibility(View.VISIBLE);
+                } else {
+                    Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
+                    Bitmap imageBitmap = fromDrawableToBitmap(drawable);
+                    holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
+                    holder.line.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+
             }
             holder.paymentObj = paymentGroup;
             holder.retailerNameTv.setText(holder.paymentObj.getRetailerName());

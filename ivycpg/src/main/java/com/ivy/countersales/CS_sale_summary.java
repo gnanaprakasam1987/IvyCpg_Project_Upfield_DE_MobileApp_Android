@@ -5,23 +5,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +21,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -55,20 +46,12 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
     String refid;
     ArrayList<ProductMasterBO> lstProducts;
     ListView listview;
-    Spinner spn_discount_type;
-    EditText edt_value;
+    private ExpandableListView mExpListView;
     TextView txt_discountedAmount, tv_bill_amount;
     double totalValue = 0;
     boolean isFromSale = false;
-    private LinearLayout linearLayout;
-    private int selectedPos = 0;
-    private boolean isSelected;
     private double finalValue = 0;
-
     Button btnSave, btnDone;
-
-    ArrayAdapter<StandardListBO> discountTypeAdapter;
-    private ExpandableListView mExpListView;
     private double mBPERValue = 0;
     private double mSchemeDiscountedAmountOnBill = 0;
 
@@ -90,7 +73,6 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
         }
         setScreenTitle("Summary");
 
-
         if (getIntent().getExtras() != null) {
             refid = getIntent().getExtras().getString("refid");
         }
@@ -100,13 +82,10 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
         txt_date = (TextView) findViewById(R.id.val_cust_date);
         txt_counter = (TextView) findViewById(R.id.val_cust_counter);
         txt_store_name = (TextView) findViewById(R.id.val_cust_store);
-        txt_total = (TextView) findViewById(R.id.val_cust_total);
-        tv_bill_amount = (TextView) findViewById(R.id.txt_bill_amt);
 
+        txt_total = (TextView) findViewById(R.id.val_cust_total);
         txt_discountedAmount = (TextView) findViewById(R.id.txt_discounted_amt);
-        edt_value = (EditText) findViewById(R.id.edt_value);
-        spn_discount_type = (Spinner) findViewById(R.id.spn_discount_type);
-        linearLayout = (LinearLayout) findViewById(R.id.ll_snackbar);
+        tv_bill_amount = (TextView) findViewById(R.id.txt_bill_amt);
 
         btnDone = (Button) findViewById(R.id.btn_done);
         btnDone.setOnClickListener(this);
@@ -130,23 +109,6 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
             btnSave.setVisibility(View.VISIBLE);
         }
 
-        discountTypeAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_bluetext_layout);
-
-        StandardListBO standardListBO = new StandardListBO();
-        standardListBO.setListID("0");
-        standardListBO.setListName(getResources().getString(R.string.amount));
-        discountTypeAdapter.add(standardListBO);
-
-        StandardListBO standardListBOPercent = new StandardListBO();
-        standardListBOPercent.setListID("1");
-        standardListBOPercent.setListName(getResources().getString(R.string.percentage));
-        discountTypeAdapter.add(standardListBOPercent);
-
-        discountTypeAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        spn_discount_type.setAdapter(discountTypeAdapter);
-
         listview = (ListView) findViewById(R.id.lvwplist);
         mExpListView = (ExpandableListView) findViewById(R.id.elv);
 
@@ -161,7 +123,8 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
 
             lstProducts = new ArrayList<>();
 
-            if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().getmSalesproduct() != null) {
+            if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().getmSalesproduct() != null
+                    && bmodel.getCounterSaleBO().getmSalesproduct().size() > 0) {
                 for (ProductMasterBO bo : bmodel.getCounterSaleBO().getmSalesproduct()) {
                     if (bo.getCsPiece() > 0 || bo.getCsCase() > 0 || bo.getCsOuter() > 0
                             || bo.getCsFreePiece() > 0) {
@@ -174,11 +137,13 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                 findViewById(R.id.card_sales_details).setVisibility(View.GONE);
             }
 
+            txt_total.setText(bmodel.formatValue(totalValue));
+
             updateSchemeDetails();
+
             updateBillPercentageSchemeDiscount();
 
-            txt_total.setText(bmodel.formatValue(totalValue));
-            if (finalValue > 0)
+            if (finalValue > 0) {
                 if (finalValue != totalValue) {
                     if (bmodel.getCounterSaleBO() != null) {
                         if (bmodel.getCounterSaleBO().getDisPercentage() > 0) {
@@ -190,115 +155,23 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                         }
                     }
                 }
-
-
-            spn_discount_type.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-
-                    if (spn_discount_type.isEnabled()) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                if (discountTypeAdapter != null)
-                                    isSelected = true;
-                                break;
-
-                            case MotionEvent.ACTION_CANCEL:
-                                isSelected = false;
-                                break;
-                        }
-
-                    }
-                    return false;
-                }
-            });
-
-            spn_discount_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-
-                    if (!isSelected) {
-                        if (bmodel.getCounterSaleBO() != null) {
-                            if (bmodel.getCounterSaleBO().getDisPercentage() > 0) {
-                                selectedPos = 1;
-                                edt_value.setText(bmodel.getCounterSaleBO().getDisPercentage() + "");
-
-                            } else if (bmodel.getCounterSaleBO().getDisAmount() > 0) {
-                                selectedPos = 0;
-                                edt_value.setText(bmodel.getCounterSaleBO().getDisAmount() + "");
-                            } else {
-                                selectedPos = position;
-                                edt_value.setText("0");
-                            }
-                        }
-                    } else {
-                        selectedPos = position;
-                        edt_value.setText("0");
-                    }
-
-
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-
-
-            edt_value.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    String qty = editable.toString();
-                    if (!qty.equals("")) {
-                        if (selectedPos == 0 && SDUtil.convertToInt(qty) < totalValue) {
-                            txt_discountedAmount.setText(bmodel.formatValue(Double.parseDouble(qty)) + "");
-                            tv_bill_amount.setText(bmodel.formatValue((totalValue - Double.parseDouble(qty))) + "");
-
-                            bmodel.mCounterSalesHelper.setDiscountedAmount(Double.parseDouble(qty));
-                            bmodel.getCounterSaleBO().setDisAmount(Double.parseDouble(qty));
-                            //only one discount type should be allowed
-                            bmodel.mCounterSalesHelper.setNumberOfPercent(0);
-                            // for print
-                            bmodel.invoiceDisount = String.valueOf(Double.parseDouble(qty));
-                            spn_discount_type.setSelection(0);
-
-                        } else if (selectedPos == 1 && SDUtil.convertToInt(qty) <= 100) {
-                            updateBillValue(spn_discount_type.getSelectedItemPosition() == 1, Double.parseDouble(qty));
-                            spn_discount_type.setSelection(1);
-                        } else {
-                            if (spn_discount_type.getSelectedItemPosition() == 1 && Integer.parseInt(qty) > 0) {
-                                Toast.makeText(CS_sale_summary.this, getResources().getString(R.string.valid_discount_amt), Toast.LENGTH_SHORT).show();
-                                edt_value.setText("0");
-                            } else if (spn_discount_type.getSelectedItemPosition() == 0 && Integer.parseInt(qty) > 0) {
-                                Toast.makeText(CS_sale_summary.this, getResources().getString(R.string.valid_amt), Toast.LENGTH_SHORT).show();
-                                edt_value.setText("0");
-                            }
-                        }
-
-                    }
-                }
-            });
+            }
 
             mExpListView.setAdapter(new ProductExpandableAdapter());
+
             for (int i = 0; i < lstProducts.size(); i++) {
                 mExpListView.expandGroup(i);
             }
 
+            mExpListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    return true;
+                }
+            });
         } catch (Exception e) {
             Commons.print("Exception" + e);
         }
-
     }
 
     private ProductMasterBO checkProduct(String mProductId) {
@@ -307,12 +180,18 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                 return bo;
             }
         }
-        return new ProductMasterBO();
+        return null;
     }
 
     private void updateBillPercentageSchemeDiscount() {
         mSchemeDiscountedAmountOnBill = totalValue * mBPERValue / 100;
         totalValue = totalValue - mSchemeDiscountedAmountOnBill;
+
+        txt_discountedAmount.setText(bmodel.formatValue(mSchemeDiscountedAmountOnBill) + "");
+
+        tv_bill_amount.setText(bmodel.formatValue(totalValue) + "");
+
+        bmodel.invoiceDisount = String.valueOf(mSchemeDiscountedAmountOnBill);
     }
 
     private void updateSchemeDetails() {
@@ -326,13 +205,13 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                     if (schemeBO.isAmountTypeSelected()) {
                         totalValue = totalValue
                                 - schemeBO.getSelectedAmount();
+
                         ProductMasterBO productMasterBO = new ProductMasterBO();
                         productMasterBO.setProductID(schemeBO.getSchemeId());
                         productMasterBO.setProductName(schemeBO.getProductName());
                         productMasterBO.setDiscount_order_value(schemeBO.getSelectedAmount());
                         productMasterBO.setSchemeDiscount(true);
                         lstProducts.add(new ProductMasterBO(productMasterBO));
-
                     }
 
                     List<SchemeProductBO> schemeproductList = schemeBO
@@ -433,7 +312,6 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                                                 productMasterBO.setSchemeDiscount(true);
                                                 lstProducts.add(new ProductMasterBO(productMasterBO));
 
-
                                             } else if (schemeBO
                                                     .isDiscountPrecentSelected()) {
 
@@ -441,6 +319,14 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                                                     if (!mBPERAchievedSchemeList.contains(schemeBO.getSchemeId())) {
                                                         mBPERValue = mBPERValue + schemeBO.getSelectedPrecent();
                                                         mBPERAchievedSchemeList.add(schemeBO.getSchemeId());
+
+                                                        ProductMasterBO productMasterBO = new ProductMasterBO();
+                                                        productMasterBO.setProductID(schemeBO.getSchemeId());
+                                                        productMasterBO.setProductName(schemeBO.getProductName());
+                                                        productMasterBO.setDiscount_order_value(mBPERValue);
+                                                        productMasterBO.setTypeName("BPER");
+                                                        productMasterBO.setSchemeDiscount(true);
+                                                        lstProducts.add(new ProductMasterBO(productMasterBO));
                                                     }
                                                 } else {
                                                     double totalPercentageDiscount;
@@ -490,7 +376,6 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
                                                     productMasterBO.setDiscount_order_value(totalPercentageDiscount);
                                                     productMasterBO.setSchemeDiscount(true);
                                                     lstProducts.add(new ProductMasterBO(productMasterBO));
-
                                                 }
 
 
@@ -531,10 +416,13 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
         if (freeProductList != null) {
             for (SchemeProductBO freeProductBo : freeProductList) {
                 if (freeProductBo.getQuantitySelected() > 0) {
-                    ProductMasterBO product = checkProduct(freeProductBo
+                    ProductMasterBO product = bmodel.productHelper.getProductMasterBOById(freeProductBo
                             .getProductId());
                     if (product != null) {
                         productBO.getSchemeProducts().add(freeProductBo);
+
+                        //For counter sales- If child logic enabled, then scheme
+                        productBO.setIsscheme(1);
                     }
                 }
             }
@@ -551,33 +439,6 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
         } else if (view.getId() == R.id.btn_save) {
             saveCustomerDetails(mSchemeDiscountedAmountOnBill);
         }
-    }
-
-    private void updateBillValue(boolean isPercentage, double value) {
-        double billtotal = 0;
-        double discountAmount = 0;
-        if (totalValue > 0) {
-            if (isPercentage) {
-
-                discountAmount = totalValue * (value / 100);
-            }
-        }
-
-        txt_discountedAmount.setText(bmodel.formatValue(discountAmount) + "");
-
-        billtotal = totalValue - discountAmount;
-        tv_bill_amount.setText(bmodel.formatValue(billtotal) + "");
-
-        bmodel.mCounterSalesHelper.setPercentageDiscount(isPercentage);
-        if (isPercentage)
-            bmodel.mCounterSalesHelper.setNumberOfPercent(value);
-        bmodel.getCounterSaleBO().setDisPercentage(value);
-        //only one discount type should be allowed
-        bmodel.mCounterSalesHelper.setDiscountedAmount(0);
-
-        // for print
-        bmodel.invoiceDisount = String.valueOf(discountAmount);
-
     }
 
     private void saveCustomerDetails(final double mSchemeDiscountedAmountOnBill) {
@@ -627,10 +488,11 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
 
                 bmodel.invoiceNumber = bmodel.mCounterSalesHelper.getUid();
                 bmodel.userMasterHelper.getUserMasterBO().setDistributorName(bmodel.userMasterHelper.getUserMasterBO().getCounterName());
-                bmodel.invoiceDisount = mSchemeDiscountedAmountOnBill + "";
                 bmodel.mCS_commonPrintHelper.xmlRead("invoice", false, printList, null);
 
-                if (bmodel.getCounterSaleBO().getmSalesproduct() == null) {
+                if (bmodel.getCounterSaleBO().isDraft()
+                        ? bmodel.getCounterSaleBO().getmSalesproduct().size() <= 0
+                        : bmodel.getCounterSaleBO().getmSalesproduct() == null) {
                     Intent intent = new Intent(
                             CS_sale_summary.this,
                             HomeScreenActivity.class).putExtra("menuCode", ConfigurationMasterHelper.MENU_COUNTER);
@@ -672,16 +534,12 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         return super.onPrepareOptionsMenu(menu);
-
-
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
-
             if (isFromSale) {
                 Intent intent = new Intent(this, SchemeApply.class);
                 intent.putExtra("ScreenCode", "CSale");
@@ -835,13 +693,19 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
             }
 
             holder.counterSaleBO = counterBo;
-
             if (holder.counterSaleBO.isSchemeDiscount()) {
                 holder.psname.setText(holder.counterSaleBO.getProductName());
                 holder.txt_value.setText(bmodel.formatValue(holder.counterSaleBO.getDiscount_order_value()));
                 holder.txt_qty.setText("-");
                 holder.txt_free.setText("-");
                 holder.txt_mrp.setText("-");
+            } else if (holder.counterSaleBO.isSchemeDiscount() && holder.counterSaleBO.getTypeName() != null && holder.counterSaleBO.getTypeName().equals("BPER")) {
+                holder.psname.setText(holder.counterSaleBO.getProductName());
+                holder.txt_value.setText((holder.counterSaleBO.getDiscount_order_value() + "") + "%");
+                holder.txt_qty.setText("-");
+                holder.txt_free.setText("-");
+                holder.txt_mrp.setText("-");
+
             } else {
                 holder.psname.setText(holder.counterSaleBO.getProductName());
                 holder.txt_qty.setText(holder.counterSaleBO.getCsPiece() + "");
@@ -865,4 +729,5 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
         }
 
     }
+
 }

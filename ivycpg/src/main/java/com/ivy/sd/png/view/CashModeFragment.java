@@ -159,7 +159,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                 inputManager.hideSoftInputFromWindow(
                         mCollectAmtET
                                 .getWindowToken(), 0);
-                return false;
+                return true;
             }
         });
         mCollectAmtET.addTextChangedListener(new TextWatcher() {

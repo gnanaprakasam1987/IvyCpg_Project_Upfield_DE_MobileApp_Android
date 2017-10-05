@@ -241,6 +241,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                 if (!bmodel.getCounterSaleBO().getAgeGroup().equals("0"))
                     ageRadioGroup.check(Integer.parseInt(bmodel.getCounterSaleBO().getAgeGroup()));
 
+
             uid = bmodel.getCounterSaleBO().getUid();
         }
 
@@ -300,7 +301,8 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                 alertDialog.dismiss();
                 if (SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
                         .equals(errorCode)) {
-                      try {
+
+                    try {
 
                         HashMap<String, JSONObject> response = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName();
                         for (String key : response.keySet()) {
@@ -312,14 +314,13 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                             bmodel.synchronizationHelper
                                     .parseJSONAndInsert(response.get(key), false);
                         }
-                    }
-                    catch (Exception ex){
+                    } catch (Exception ex) {
 
                     }
 
                     HashMap<String, String> mHeaderLst = bmodel.mCounterSalesHelper.downloadCustomerHeaderInformation("", false);
                     if (mHeaderLst != null && !mHeaderLst.isEmpty()) {
-                        mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bmodel);
+                        mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bmodel,false);
                         mHistoryDialog.show();
                         mHistoryDialog.setCancelable(false);
                         mHistoryDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -402,52 +403,56 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
             return true;
         } else if (item.getItemId() == R.id.menu_next) {
             setValues();
+            if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().isDraft()) {
 
-            //in case, directly moving to summary without visiting sale screen
+                new loadSummaryScreen().execute();
+            } else {
+
+                if (bmodel.getCounterSaleBO() != null &&
+                        ((bmodel.getCounterSaleBO().getmTestProducts().size() > 0)
+                                || (!bmodel.getCounterSaleBO().getResolution().equals("") || bmodel.getCounterSaleBO().getAttributeId() != 0 || !bmodel.getCounterSaleBO().getConnsultingFeedback().equals(""))
+                                || (bmodel.getCounterSaleBO().getmSampleProducts() != null)
+                                || (bmodel.getCounterSaleBO().getmSalesproduct() != null))
+                        || (bmodel.mSurveyHelperNew.hasDataToSave())) {
+
+
+                    if (edt_email.getText().toString().length() > 0 && !isValidEmail(edt_email.getText().toString())) {
+
+                        Toast.makeText(getActivity(), getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if (edt_name.getText().toString().equals("")) {
+                        Toast.makeText(getActivity(), "Customer name is Mandatory to save", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    Intent i = new Intent(getActivity(),
+                            CS_sale_summary.class);
+                    i.putExtra("refid", refid);
+                    i.putExtra("isFromSale", false);
+                    startActivity(i);
+                    getActivity().finish();
+
+
+                } else {
+                    Toast.makeText(getActivity(), R.string.no_data_tosave, Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            /*//in case, directly moving to summary without visiting sale screen
             if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().isDraft()) {
                 if (bmodel.getCounterSaleBO().getmSalesproduct() == null
                         || (bmodel.getCounterSaleBO().getmSalesproduct() != null && bmodel.getCounterSaleBO().getmSalesproduct().size() == 0)) {
                     //only if size=0, because if draft is edited then no need to fetch data from Db
                     bmodel.getCounterSaleBO().setmSalesproduct(bmodel.mCounterSalesHelper.getDraftedSaleProducts(uid));
                 }
-            }
-            if (bmodel.getCounterSaleBO() != null &&
-                    ((bmodel.getCounterSaleBO().getmTestProducts().size() > 0)
-                            || (!bmodel.getCounterSaleBO().getResolution().equals("") || bmodel.getCounterSaleBO().getAttributeId() != 0 || !bmodel.getCounterSaleBO().getConnsultingFeedback().equals(""))
-                            || (bmodel.getCounterSaleBO().getmSampleProducts() != null)
-                            || (bmodel.getCounterSaleBO().getmSalesproduct() != null))
-                    || (bmodel.mSurveyHelperNew.hasDataToSave())) {
+            }*/
 
 
-                if (edt_email.getText().toString().length() > 0 && !isValidEmail(edt_email.getText().toString())) {
-
-                    Toast.makeText(getActivity(), getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-
-                if (edt_name.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), "Customer name is Mandatory to save", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-
-                Intent i = new Intent(getActivity(),
-                        CS_sale_summary.class);
-                i.putExtra("refid", refid);
-                i.putExtra("isFromSale", false);
-                startActivity(i);
-                getActivity().finish();
-
-
-            } else {
-                Toast.makeText(getActivity(), R.string.no_data_tosave, Toast.LENGTH_LONG).show();
-            }
             return true;
-        }else if (item.getItemId() == R.id.menu_delete) {
+        } else if (item.getItemId() == R.id.menu_delete) {
 
-            bmodel.mCounterSalesHelper.deletedSalesDetails(uid);
-            bmodel.getCounterSaleBO().setSaleDrafted(false);
-            bmodel.getCounterSaleBO().setmSalesproduct(null);
-            onResume();
+            mDialog();
 
             return true;
         }
@@ -492,20 +497,20 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         } else if (R.id.btn_history == view.getId()) {
 
             if (!edt_contact.getText().toString().equals("")) {
+                //if (bmodel.isOnline())
                 edt_name.setText("");
                 edt_address.setText("");
                 edt_email.setText("");
                 ageRadioGroup.clearCheck();
                 chkMale.setChecked(false);
                 chkFemale.setChecked(true);
-                if (bmodel.isOnline())
-                    new DownloadCustomerHistory().execute();
-                else
+                new DownloadCustomerHistory().execute();
+               /* else
                     Toast.makeText(
                             getActivity(),
                             getActivity().getResources().getString(
                                     R.string.no_network_connection),
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();*/
             } else
                 Toast.makeText(getActivity(), "Please enter contact number.", Toast.LENGTH_LONG).show();
         } else if (view.getId() == R.id.btn_feedback) {
@@ -519,6 +524,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
             if (bmodel.mSurveyHelperNew.getSurvey() != null
                     && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
                 bmodel.mSurveyHelperNew.setFromCSsurvey(true);
+
                 bmodel.mSelectedActivityName = "Feedback";
                 Intent intent = new Intent(getActivity(),
                         SurveyActivityNew.class);
@@ -572,7 +578,9 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            alertDialog.dismiss();
+            if (alertDialog != null)
+                alertDialog.dismiss();
+
             Intent in = new Intent(getActivity(), CSapply.class);
             startActivity(in);
 
@@ -631,7 +639,6 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             alertDialog.dismiss();
-
             Intent in = new Intent(getActivity(), CSsale.class);
             in.putExtra("refid", refid);
             startActivity(in);
@@ -738,5 +745,127 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
     public boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    class loadSummaryScreen extends AsyncTask<String, Void, Void> {
+        AlertDialog alertDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+                bmodel.productHelper
+                        .downloadFiveFilterLevels("MENU_SALE_CS");
+                bmodel.productHelper
+                        .downloadProductsWithFiveLevelFilter("MENU_SALE_CS");
+
+            } else {
+                bmodel.productHelper.downloadProductFilter("MENU_SALE_CS");
+                bmodel.productHelper.downloadProducts("MENU_SALE_CS");
+            }
+
+            if (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES) {
+                bmodel.productHelper.downloadChildSKUs();
+            }
+
+            bmodel.mCounterSalesHelper.downloadCSStock();
+
+            bmodel.schemeDetailsMasterHelper.downloadSchemeMethods();
+
+            bmodel.productHelper.updateCounterSalesProductColor();
+
+            //setting header detail in object, because user can able to see summary screen from sale screen..
+            setValues();
+
+            if (bmodel.getCounterSaleBO() != null && bmodel.getCounterSaleBO().isDraft()) {
+                bmodel.getCounterSaleBO().setmSalesproduct(bmodel.mCounterSalesHelper.getDraftedSaleProducts(uid));
+            }
+
+            bmodel.mSelectedActivityName = "Sales";
+
+            bmodel.schemeDetailsMasterHelper.loadOrderedBuyProductsForCounter(uid);
+            bmodel.schemeDetailsMasterHelper.loadOrderedFreeProductsForCounter(uid);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+
+            if (bmodel.getCounterSaleBO() != null &&
+                    ((bmodel.getCounterSaleBO().getmTestProducts().size() > 0)
+                            || (!bmodel.getCounterSaleBO().getResolution().equals("") || bmodel.getCounterSaleBO().getAttributeId() != 0 || !bmodel.getCounterSaleBO().getConnsultingFeedback().equals(""))
+                            || (bmodel.getCounterSaleBO().getmSampleProducts() != null)
+                            || (bmodel.getCounterSaleBO().getmSalesproduct() != null))
+                    || (bmodel.mSurveyHelperNew.hasDataToSave())) {
+
+
+                if (edt_email.getText().toString().length() > 0 && !isValidEmail(edt_email.getText().toString())) {
+
+                    Toast.makeText(getActivity(), getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (edt_name.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Customer name is Mandatory to save", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Intent i = new Intent(getActivity(),
+                        CS_sale_summary.class);
+                i.putExtra("refid", refid);
+                i.putExtra("isFromSale", false);
+                startActivity(i);
+                getActivity().finish();
+
+
+            } else {
+                Toast.makeText(getActivity(), R.string.no_data_tosave, Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+    }
+
+    public void mDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        alertDialogBuilder
+                .setIcon(null)
+                .setCancelable(false)
+                .setTitle(
+                        getResources().getString(
+                                R.string.do_you_want_delete_order))
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+
+                                bmodel.mCounterSalesHelper.deletedSalesDetails(uid);
+                                bmodel.getCounterSaleBO().setSaleDrafted(false);
+                                bmodel.getCounterSaleBO().setmSalesproduct(null);
+                                onResume();
+                                Toast.makeText(getActivity(), R.string.order_deleted_sucessfully + uid, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                            }
+                        });
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        bmodel.applyAlertDialogTheme(alertDialogBuilder);
     }
 }

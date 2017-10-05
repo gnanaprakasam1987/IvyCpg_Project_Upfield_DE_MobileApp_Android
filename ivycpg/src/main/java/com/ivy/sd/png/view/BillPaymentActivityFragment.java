@@ -149,12 +149,12 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         //mTotalPayableAmt = mTotalPayableAmt - paidAmt;
         mTotalDiscAmt = mTotalDiscAmt - givenDiscAmt;
         if (mTotalPayableAmt > 0) {
-            mPayableAmtTV.setText(bmodel.formatValue(mTotalPayableAmt));
+            mPayableAmtTV.setText(bmodel.formatValueBasedOnConfig(mTotalPayableAmt));
         } else {
             mPayableAmtTV.setText(bmodel.formatValue(0));
         }
         if (mTotalDiscAmt > 0) {
-            mDiscTV.setText(bmodel.formatValue(mTotalDiscAmt) + "");
+            mDiscTV.setText(bmodel.formatValueBasedOnConfig(mTotalDiscAmt) + "");
         } else {
             mDiscTV.setText(bmodel.formatValue(0));
         }
@@ -168,7 +168,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
         mBalanceAmt = mTotalPayableAmt - paidAmt;
         if (mBalanceAmt > 0) {
-            mBalaceAmtTV.setText(bmodel.formatValue(mBalanceAmt));
+            mBalaceAmtTV.setText(bmodel.formatValueBasedOnConfig(mBalanceAmt));
         } else {
             mBalaceAmtTV.setText(bmodel.formatValue(0));
         }
@@ -508,20 +508,13 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 Intent i = new Intent(getActivity(),
                         CommonPrintPreviewActivity.class);
                 i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("isFromCollection",true);
                 startActivity(i);
                 getActivity().finish();
             } else {
 
-                if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                    bmodel.collectionHelper.downloadDiscountSlab();
-                }
 
-                bmodel.collectionHelper.downloadBankDetails();
-                bmodel.collectionHelper.downloadBranchDetails();
-                bmodel.collectionHelper.updateInvoiceDiscountedAmount();
-
-                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
-                bmodel.collectionHelper.loadPaymentMode();
+                bmodel.collectionHelper.downloadCollectionMethods();
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -878,7 +871,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                         tempStr = "" + payBO.getReferenceNumber();
                     }
                     sb.append(doPrintFormatingLeft(tempStr, 9));
-                    sb.append(doPrintFormatingLeft(String.format("%10s", formatSalesValueInPrint(bmodel.formatValue(payBO.getAmount()))), 12));
+                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 12));
                     sb.append(LineFeed(1));
 
                     total += payBO.getAmount();
@@ -891,10 +884,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(LineFeed(1));
 
                 sb.append(doPrintFormatingLeft("Discount ", 12));
-                sb.append(doPrintFormatingLeft(formatSalesValueInPrint(bmodel.formatValue(totalDiscount)), 10));
+                sb.append(doPrintFormatingLeft(bmodel.formatValueBasedOnConfig(totalDiscount), 10));
                 sb.append(doPrintAddSpace(0, 7));
                 sb.append(doPrintFormatingLeft("Total ", 7));
-                sb.append(String.format("%14s", formatSalesValueInPrint(bmodel.formatValue(total))));
+                sb.append(String.format("%14s", bmodel.formatValueBasedOnConfig(total)));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 47; i++) {
@@ -919,44 +912,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
 
 
-    private String formatSalesValueInPrint(String value) {
 
-        String formattedValue = "0";
-        try {
-            if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-                if (bmodel.configurationMasterHelper.IS_APPLY_CURRENCY_CONFIG) {
-                    // getting currency config value for decimal value..
-
-                    String tempVal;
-                    String fractionalStr;
-
-                    tempVal = value;
-                    fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
-                    fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
-
-                    int integerValue = (int) Double.parseDouble(value);
-                    int fractionValue = Integer.parseInt(fractionalStr);
-
-                    formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
-
-
-                } else {
-                    formattedValue = SDUtil.format(Double.parseDouble(value), 0, 0);
-
-                }
-            } else {
-                // format normally
-
-                return bmodel.formatValue(Double.parseDouble(value));
-
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-
-        return formattedValue;
-
-
-    }
 
 }
