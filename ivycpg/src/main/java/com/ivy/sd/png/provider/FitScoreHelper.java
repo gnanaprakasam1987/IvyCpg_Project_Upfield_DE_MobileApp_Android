@@ -15,9 +15,6 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 
-import static com.amazonaws.metrics.AwsSdkMetrics.set;
-import static com.baidu.platform.comapi.map.f.e;
-
 /**
  * Created by anandasir.v on 9/27/2017.
  */
@@ -116,7 +113,7 @@ public class FitScoreHelper {
             Cursor c = db
                     .selectSQL("Select A.HeaderID, B.ProductID,B.FromNorm,B.Weightage from WeightageHeader A  " +
                             "inner join WeightageProductDetail B on A.HeaderID  = B.HeaderID " +
-                            "where A.CriteriaID = " + criteriaID + " and A.Module ='" + Module + "'"); //MENU_STK_ORD
+                            "where A.CriteriaID = " + criteriaID + " and A.Module ='" + Module + "' and CriteriaType = 'RETAILER'"); //MENU_STK_ORD
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new WeightageBO();
@@ -369,11 +366,17 @@ public class FitScoreHelper {
                 ListCode = "MERCH_INIT";
             }
             Cursor c = db
-                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
-                            "inner join AssetDetail B on A.Pid = B.ProductID " +
-                            "inner join AssetHeader C on C.Uid = B.UID " +
-                            "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
-                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
+                    .selectSQL("Select A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from PosmMaster A " +
+                    "inner join AssetDetail B on A.Posmid = B.AssetID " +
+                    "inner join AssetHeader C on C.Uid = B.UID " +
+                    "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
+                    "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
+//            Cursor c = db
+//                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
+//                            "inner join AssetDetail B on A.Pid = B.ProductID " +
+//                            "inner join AssetHeader C on C.Uid = B.UID " +
+//                            "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
+//                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
