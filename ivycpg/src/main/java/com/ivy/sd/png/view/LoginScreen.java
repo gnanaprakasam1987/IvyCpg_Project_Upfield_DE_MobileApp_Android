@@ -1541,6 +1541,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             }
         }
         else{
+            //on demand url not available
             SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
             callNextTask(next_method);
         }
@@ -1567,13 +1568,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     alertDialog.show();
                 }
 
-                // bmodel.distributorMasterHelper.downloadDistributorsList();
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
                 for (DistributorMasterBO distributorBO : distributorList) {
                     if (distributorBO.isChecked()) {
                         jsonArray.put(distributorBO.getDId());
+
+                        //update distributorid in usermaster
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(),distributorBO.getDName());
                     }
                 }
                 json.put("DistributorIds", jsonArray);
@@ -1584,7 +1587,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
         @Override
         protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 Iterator itr = jsonObject.keys();
@@ -1693,7 +1696,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
         @Override
         protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 Iterator itr = jsonObject.keys();
@@ -1873,13 +1876,19 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
      */
     private void callNextTask(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-            // new InitiateDistributorDownload().execute();
+
             bmodel.distributorMasterHelper.downloadDistributorsList();
-            Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
-            startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            if(bmodel.distributorMasterHelper.getDistributors().size()>0) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+                // new InitiateDistributorDownload().execute();
+                Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
+                startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            }else{
+                //No distributors, so downloading on demand url without distributor selection.
+                downloadOnDemandMasterUrl(false);
+            }
 
         } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
             downloadOnDemandMasterUrl(false);

@@ -181,6 +181,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     UserRetailerTransactionReceiver receiver;
     private static final String ASSET_HISTORY="Asset History";
+    private String invoice_history_title="",msl_title = "",retailer_kpi_title="",plan_outlet_title=""
+            ,survey_score_title="",order_history_title="",profile_title="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -302,26 +305,111 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      */
     private void addTabLayout() {
 
-        tabLayout.addTab(tabLayout.newTab().setText("Profile"));
-        if (bmodel.configurationMasterHelper.SHOW_HISTORY)
-            tabLayout.addTab(tabLayout.newTab().setText("History"));
-
+        try {
+            if ((bmodel.labelsMasterHelper.applyLabels("profile") != null) &&
+                    (bmodel.labelsMasterHelper.applyLabels("profile").length() > 0)) {
+                profile_title=bmodel.labelsMasterHelper.applyLabels("profile");
+                tabLayout.addTab(tabLayout.newTab()
+                        .setText(profile_title));
+            }else {
+                profile_title="Profile";
+                tabLayout.addTab(tabLayout.newTab().setText(profile_title));
+            }
+        } catch (Exception ex) {
+            Commons.printException("Error while setting label for Profile Tab",ex);
+        }
+        if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("order_history").length() > 0)) {
+                    order_history_title=bmodel.labelsMasterHelper.applyLabels("order_history");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(order_history_title));
+                }else {
+                    order_history_title="History";
+                    tabLayout.addTab(tabLayout.newTab().setText(order_history_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Order History Tab",ex);
+            }
+        }
         if (bmodel.configurationMasterHelper.SHOW__QDVP3_SCORE_CARD_TAB &&
                 (bmodel.retailerMasterBO.getRField4() != null)
-                ? (bmodel.retailerMasterBO.getRField4().equals("1")) : false)
-            tabLayout.addTab(tabLayout.newTab().setText("Survey Score Card"));
-
-        if (bmodel.configurationMasterHelper.SHOW_OUTLET_PLANNING_TAB)
-            tabLayout.addTab(tabLayout.newTab().setText("Planning Outlet"));
-
-        if (bmodel.configurationMasterHelper.SHOW_LAST_3MONTHS_BILLS)
-            tabLayout.addTab(tabLayout.newTab().setText("Retailer Kpi"));
-
-        if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD)
-            tabLayout.addTab(tabLayout.newTab().setText("MSL"));
-
-        if (!bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY)
-             tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
+                ? (bmodel.retailerMasterBO.getRField4().equals("1")) : false) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("survey_score") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("survey_score").length() > 0)) {
+                    survey_score_title=bmodel.labelsMasterHelper.applyLabels("survey_score");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(survey_score_title));
+                }else {
+                    survey_score_title="Survey Score Card";
+                    tabLayout.addTab(tabLayout.newTab().setText(survey_score_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Survey Score Tab",ex);
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_OUTLET_PLANNING_TAB) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("plan_outlet") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("plan_outlet").length() > 0)) {
+                    plan_outlet_title=bmodel.labelsMasterHelper.applyLabels("plan_outlet");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(plan_outlet_title));
+                }else {
+                    plan_outlet_title="Planning Outlet";
+                    tabLayout.addTab(tabLayout.newTab().setText(plan_outlet_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Outlet Tab",ex);
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_LAST_3MONTHS_BILLS) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("retailer_kpi") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("retailer_kpi").length() > 0)) {
+                    retailer_kpi_title=bmodel.labelsMasterHelper.applyLabels("retailer_kpi");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(retailer_kpi_title));
+                }else {
+                    retailer_kpi_title="Retailer Kpi";
+                    tabLayout.addTab(tabLayout.newTab().setText(retailer_kpi_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Kpi Tab",ex);
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("msl") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("msl").length() > 0)) {
+                    msl_title = bmodel.labelsMasterHelper.applyLabels("msl");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(msl_title));
+                } else {
+                    msl_title = "MSL";
+                    tabLayout.addTab(tabLayout.newTab().setText(msl_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Msl Tab",ex);
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("invoice_history") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("invoice_history").length() > 0)) {
+                    invoice_history_title = bmodel.labelsMasterHelper.applyLabels("invoice_history");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(invoice_history_title));
+                } else {
+                    invoice_history_title = "Invoice History";
+                    tabLayout.addTab(tabLayout.newTab().setText(invoice_history_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for InvoiceHist Tab",ex);
+            }
+        }
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -1029,6 +1117,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
             ProfileFragment profileFragment = new ProfileFragment();
             HistoryFragment historyFragment = new HistoryFragment();
+            InvoiceHistoryFragment invoiceHistoryFragment = new InvoiceHistoryFragment();
             PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
             planningOutletFragment.setArguments(null);
             SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
@@ -1047,20 +1136,20 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             mslUnsoldFragment.setArguments(null);
 
             String tabName = tabLayout.getTabAt(position).getText().toString();
-            if (tabName.equals("Profile")) {
+            if (tabName.equals(profile_title)) {
                 profileFragment.setArguments(bundleAdapter);
                 //profileFragment.onProfileFragemntListener(ProfileActivity.this);
                 return profileFragment;
-            } else if (tabName.equals("History")) {
+            } else if (tabName.equals(order_history_title)) {
                 return historyFragment;
-            } else if (tabName.equals("Planning Outlet")) {
+            } else if (tabName.equals(plan_outlet_title)) {
                 return planningOutletFragment;
-            } else if (tabName.equals("Retailer Kpi")) {
+            } else if (tabName.equals(retailer_kpi_title)) {
                 return retailerKpiFragment;
-            } else if (tabName.equals("MSL")) {
+            } else if (tabName.equals(msl_title)) {
                 return mslUnsoldFragment;
-            } else if( tabName.equalsIgnoreCase(ASSET_HISTORY)) {
-                return assetHistoryFragment;
+            } else if (tabName.equals(invoice_history_title)) {
+                return invoiceHistoryFragment;
             }
             return null;
         }

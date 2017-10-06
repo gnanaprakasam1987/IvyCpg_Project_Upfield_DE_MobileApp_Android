@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="ALL"
+                android:textColor="@color/toolbar_title" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/score_card_height">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/chart1"
+                android:layout_toStartOf="@+id/chart1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_20dp"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/color_rep_black"
+                            android:layout_width="@dimen/qn_text_margin_left"
+                            android:layout_height="@dimen/qn_text_margin_left"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:background="@color/Orange"
+                            android:padding="2dp">
+
+                        </View>
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/color_rep_black"
+                            android:layout_toRightOf="@+id/color_rep_black"
+                            android:text="Target"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:orientation="vertical"
+                        android:padding="1dp">
+
+                        <TextView
+                            android:id="@+id/target_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_micro_small"
+                            android:textStyle="normal"
+                            tools:text="70" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/target_tv"
+                            android:layout_alignBottom="@+id/target_tv"
+                            android:layout_toEndOf="@+id/target_tv"
+                            android:layout_toRightOf="@+id/target_tv"
+                            android:paddingRight="20dp"
+                            android:text=" pts"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small"
+                            android:textStyle="normal" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/color_rep_orange"
+                            android:layout_width="@dimen/qn_text_margin_left"
+                            android:layout_height="@dimen/qn_text_margin_left"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:background="@color/GREEN"
+                            android:padding="2dp">
+
+                        </View>
+
+                        <TextView
+                            android:id="@+id/textView13"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/color_rep_orange"
+                            android:layout_toRightOf="@+id/color_rep_orange"
+                            android:text="Score"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:orientation="vertical"
+                        android:padding="1dp">
+
+                        <TextView
+                            android:id="@+id/growth_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_micro_small"
+                            android:textStyle="normal"
+                            tools:text="70" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/growth_tv"
+                            android:layout_alignBottom="@+id/growth_tv"
+                            android:layout_toEndOf="@+id/growth_tv"
+                            android:layout_toRightOf="@+id/growth_tv"
+                            android:paddingRight="20dp"
+                            android:text=" pts"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnrPreviousScore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/color_rep_green"
+                            android:layout_width="@dimen/qn_text_margin_left"
+                            android:layout_height="@dimen/qn_text_margin_left"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:background="#283593"
+                            android:padding="2dp">
+
+                        </View>
+                        <!--android:background="@color/green_light"-->
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/color_rep_green"
+                            android:layout_toRightOf="@+id/color_rep_green"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Previous Score"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:orientation="vertical"
+                        android:padding="1dp">
+
+                        <TextView
+                            android:id="@+id/previous_score_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_micro_small"
+                            android:textStyle="normal"
+                            tools:text="70" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/previous_score_TV"
+                            android:layout_alignBottom="@+id/previous_score_TV"
+                            android:layout_toEndOf="@+id/previous_score_TV"
+                            android:layout_toRightOf="@+id/previous_score_TV"
+                            android:paddingRight="20dp"
+                            android:text=" pts"
+                            android:textColor="@color/WHITE"
+                            android:textSize="@dimen/font_nano_small"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chart1"
+                android:layout_width="@dimen/web_view_width"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:paddingRight="5dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/target_tv"
+        android:layout_alignBottom="@+id/target_tv"
+        android:layout_toEndOf="@+id/target_tv"
+        android:layout_toRightOf="@+id/target_tv"
+        android:layout_weight="1"
+        android:paddingRight="20dp"
+        android:text=" pts"
+        android:textColor="#80FFFFFF"
+        android:textSize="@dimen/font_nano_small"
+        android:textStyle="normal" />
+</LinearLayout>

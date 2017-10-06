@@ -19,6 +19,8 @@ import com.ivy.sd.png.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import static com.baidu.platform.comapi.map.f.e;
+
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
     private final Context context;
@@ -96,6 +98,9 @@ public class AssetTrackingHelper {
 
     private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
     public boolean ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK;
+
+    private static final String CODE_MOVE_ASSET = "AT09";
+    public boolean SHOW_MOVE_ASSET;
 
     /**
      * Reason Type - Std List Code
@@ -204,6 +209,7 @@ public class AssetTrackingHelper {
             SHOW_ASSET_ALL = false;
             SHOW_REMARKS_ASSET = false;
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
+            SHOW_MOVE_ASSET = false;
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -255,7 +261,7 @@ public class AssetTrackingHelper {
                                 }
                             }
                         }
-                    } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE))
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE) && c.getString(1).equalsIgnoreCase("1"))
                         SHOW_ASSET_BARCODE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_ADD))
                         SHOW_ADD_NEW_ASSET = true;
@@ -267,6 +273,8 @@ public class AssetTrackingHelper {
                         SHOW_REMARKS_ASSET = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK))
                         ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_MOVE_ASSET))
+                        SHOW_MOVE_ASSET = true;
                 }
                 c.close();
             }
@@ -1153,8 +1161,8 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
                     + QT(assets.getMbrand()) + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
-                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks()) + "," + QT(assets.getmToRetailerId());
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))+ "," + QT("M") + "," + typeListId +","+
+                    QT(assets.getMreasonId())+","+ QT(assets.getMremarks())+","+ QT(assets.getmToRetailerId());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1166,9 +1174,8 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
-
     public void saveAddandDeletedetails(String posmid, String msno,
-                                        String msbdid, String mbrandid, String reasonId, String moduleName) {
+                                        String msbdid, String mbrandid, String reasonId,String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1199,7 +1206,7 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmid) + "," + QT(msno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
-                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId + "," + QT(reasonId);
+                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId+ "," + QT(reasonId) ;
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1257,7 +1264,6 @@ public class AssetTrackingHelper {
             return false;
         }
     }
-
     /**
      * Method to check the Asset already scanned and mapped to other retailer in sql table
      */
@@ -1289,14 +1295,13 @@ public class AssetTrackingHelper {
             return false;
         }
     }
-
     public void saveAsset(String moduleName) {
         String type = "";
-        if (MENU_ASSET.equals(moduleName))
+        if (MENU_ASSET.equals(moduleName)) {
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName))
+        } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
-
+        }
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -1328,6 +1333,9 @@ public class AssetTrackingHelper {
             }
 
 
+            int moduleWeightage = 0;
+            double productWeightage = 0, sum = 0;
+
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
@@ -1345,11 +1353,16 @@ public class AssetTrackingHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
+                AssetDetailColumns = AssetDetailColumns + ",Score";
+            }
             int totalTarget = 0;
             int totalActualQty = 0;
             for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 if (mAssetTrackingList != null) {
+                    productWeightage = (double) 100 / (double) mAssetTrackingList.size();
                     totalTarget = 0;
                     for (AssetTrackingBO assetBo : mAssetTrackingList) {
                         totalTarget = totalTarget + assetBo.getTarget();
@@ -1461,6 +1474,12 @@ public class AssetTrackingHelper {
                                 } else {
                                     assetDetailValues.append(QT(""));
                                 }
+
+                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + productWeightage);
+                                    sum = sum + productWeightage;
+                                }
+
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns,
                                         assetDetailValues.toString());
@@ -1567,6 +1586,11 @@ public class AssetTrackingHelper {
                                 } else {
                                     assetDetailValues.append(QT(""));
                                 }
+
+                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + productWeightage);
+                                    sum = sum + productWeightage;
+                                }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
                             }
@@ -1581,6 +1605,18 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(totalActualQty);
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(refId));
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                if (MENU_ASSET.equals(moduleName)) {
+                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
+                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
+                }
+                assetHeaderValues.append("," + moduleWeightage);
+                double achieved = ((sum / (double) 100) * moduleWeightage);
+                assetHeaderValues.append("," + achieved);
+            }
+
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
 

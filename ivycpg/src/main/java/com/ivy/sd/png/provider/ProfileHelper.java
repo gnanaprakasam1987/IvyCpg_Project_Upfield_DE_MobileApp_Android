@@ -15,10 +15,14 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -37,6 +41,10 @@ public class ProfileHelper {
     private Vector<Vector<OrderHistoryBO>> child_orderHistoryList;
     public Vector<OrderHistoryBO> historyList;
     private Vector<AssetHistoryBO> assetHistoryList;
+    private Vector<OrderHistoryBO> parent_invoiceHistoryLIst;
+    private Vector<Vector<OrderHistoryBO>> child_invoiceHistoryList;
+    public Vector<OrderHistoryBO> invoiceHistoryList;
+
     public static ProfileHelper getInstance(Context context) {
         if (instance == null) {
             instance = new ProfileHelper(context);
@@ -48,6 +56,7 @@ public class ProfileHelper {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
         setParentOrderHistory(new Vector<OrderHistoryBO>());
+        setParentInvoiceHistory(new Vector<OrderHistoryBO>());
     }
 
     public float getP4AvgOrderValue() {
@@ -73,6 +82,40 @@ public class ProfileHelper {
         db.openDataBase();
         Cursor c = db
                 .selectSQL("SELECT avg(lpc) from P4OrderHistoryMaster where retailerid="
+                        + bmodel.getRetailerMasterBO().getRetailerID() + " AND reasonid=0");
+        if (c != null) {
+            if (c.moveToNext()) {
+                i = c.getInt(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return i;
+    }
+
+    public float getP4AvgInvoiceValue() {
+        float i = 0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("SELECT avg(invoicevalue) from P4InvoiceHistoryMaster where retailerid="
+                        + bmodel.getRetailerMasterBO().getRetailerID() + " AND reasonid=0");
+        if (c != null) {
+            if (c.moveToNext()) {
+                i = c.getFloat(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return i;
+    }
+
+    public int getP4AvgInvoiceLines() {
+        int i = 0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("SELECT avg(lpc) from P4InvoiceHistoryMaster where retailerid="
                         + bmodel.getRetailerMasterBO().getRetailerID() + " AND reasonid=0");
         if (c != null) {
             if (c.moveToNext()) {
@@ -158,10 +201,10 @@ public class ProfileHelper {
         return historyList;
     }
 
-    public Vector<AssetHistoryBO> getAssetHistoryList()
-    {
+    public Vector<AssetHistoryBO> getAssetHistoryList() {
         return assetHistoryList;
     }
+
     /**
      * Download OrderHistory and store in the vector.
      */
@@ -291,15 +334,14 @@ public class ProfileHelper {
         }
     }
 
-    public void downloadAssetHistory(String retailerId)
-    {
+    public void downloadAssetHistory(String retailerId) {
         AssetHistoryBO assetHistoryBO;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
-        assetHistoryList=new Vector<>();
+        assetHistoryList = new Vector<>();
 
-        Cursor c=db.selectSQL("select DISTINCT A.serialNo,A.Date,P.PosmShortDesc from AssetHistory A join PosmMaster P on A.AssetId=P.PosmId where A.RetailerId="+QT(retailerId)+";");
+        Cursor c = db.selectSQL("select DISTINCT A.serialNo,A.Date,P.PosmShortDesc from AssetHistory A join PosmMaster P on A.AssetId=P.PosmId where A.RetailerId=" + QT(retailerId) + ";");
         if (c != null) {
             while (c.moveToNext()) {
                 assetHistoryBO = new AssetHistoryBO();
@@ -332,6 +374,181 @@ public class ProfileHelper {
 
     public void setParentOrderHistory(Vector<OrderHistoryBO> orderHistory) {
         this.parent_orderHistoryLIst = orderHistory;
+    }
+
+    public Vector<Vector<OrderHistoryBO>> getChild_invoiceHistoryList() {
+        return child_invoiceHistoryList;
+    }
+
+    public void setChild_invoiceHistoryList(Vector<Vector<OrderHistoryBO>> child_invoiceHistoryList) {
+        this.child_invoiceHistoryList = child_invoiceHistoryList;
+    }
+
+    public Vector<OrderHistoryBO> getInvoiceHistoryList() {
+        return invoiceHistoryList;
+    }
+
+    /**
+     * Download InvoiceHistory and store in the vector.
+     */
+    public void downloadInvoiceHistory() {
+        try {
+            OrderHistoryBO invoiceHistory;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            invoiceHistoryList = new Vector<>();
+
+            Cursor c = db
+                    .selectSQL("SELECT PIH.Retailerid,RetailerCode,PIH.refid,PIH.invoicedate,PIH.invoicevalue,lpc,Flag,PIH.PaidAmount," +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4" +
+                            " FROM P4InvoiceHistoryMaster PIH left join P4InvoiceHistoryDetail PID ON PID.refid=PIH.refid" +
+                            " left join productMaster PM ON PM.pid=PID.productid" +
+                            " left join StandardListMaster rm on PIH.reasonid =  rm.ListId" +
+                            " left join InvoiceMaster IM ON  PIH.invoiceid =  IM.InvoiceNo where PIH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
+            if (c != null) {
+                this.parent_invoiceHistoryLIst = new Vector<>();
+                child_invoiceHistoryList = new Vector<>();
+                while (c.moveToNext()) {
+                    invoiceHistory = new OrderHistoryBO();
+
+                    String refId = c.getString(2);
+                    int pcsUomId = c.getInt(14);
+                    int caseUomid = c.getInt(15);
+                    int outerUomid = c.getInt(16);
+                    String orderId = c.getString(17);
+
+                    boolean isProductExist = false;
+                    if (invoiceHistoryList != null) {
+                        for (OrderHistoryBO bo : invoiceHistoryList) {
+                            if (bo.getOrderid().equals(orderId) && bo.getProductId() == c.getInt(10)) {
+
+                                if (c.getInt(12) == pcsUomId) {
+                                    bo.setPcsQty((bo.getPcsQty() + c.getInt(13)));
+                                } else if (c.getInt(12) == caseUomid) {
+                                    bo.setCaseQty((bo.getCaseQty() + c.getInt(13)));
+                                } else if (c.getInt(12) == outerUomid) {
+                                    bo.setOuterQty((bo.getOuterQty() + c.getInt(13)));
+                                }
+                                isProductExist = true;
+                            }
+                        }
+                    }
+
+                    if (!isProductExist) {
+                        invoiceHistory.setRetailerId(c.getString(0));
+                        invoiceHistory.setRetailerCode(c.getString(1));
+
+
+                        invoiceHistory.setRefId(refId);
+                        invoiceHistory.setOrderdate(c.getString(3));
+                        invoiceHistory.setOrderValue(c.getDouble(4));
+                        invoiceHistory.setLpc(c.getInt(5));
+                        invoiceHistory.setIsJointCall(c.getInt(6));
+                        invoiceHistory.setPaidAmount(c.getDouble(7));
+                        invoiceHistory.setDelieveryStatus(c.getString(8));
+                        invoiceHistory.setNoorderReason(c.getString(9));
+
+                        invoiceHistory.setProductId(c.getInt(10));
+                        invoiceHistory.setProductName(c.getString(11));
+                        invoiceHistory.setOrderid(c.getString(17));
+
+                        if (c.getInt(12) == pcsUomId) {
+                            invoiceHistory.setPcsQty(c.getInt(13));
+                        } else if (c.getInt(12) == caseUomid) {
+                            invoiceHistory.setCaseQty(c.getInt(13));
+                        } else if (c.getInt(12) == outerUomid) {
+                            invoiceHistory.setOuterQty(c.getInt(13));
+                        }
+                        invoiceHistory.setRF1(c.getString(18));
+                        invoiceHistory.setRF2(c.getString(19));
+                        invoiceHistory.setRF3(c.getString(20));
+                        invoiceHistory.setRF4(c.getString(21));
+
+                        if (bmodel.retailerMasterBO.getCreditDays() != 0) {
+
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = format.parse(String.valueOf(invoiceHistory.getOrderdate()));
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, bmodel.retailerMasterBO.getCreditDays());
+                            Date dueDate = format.parse(format.format(calendar.getTime()));
+
+                            invoiceHistory.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                    dueDate, bmodel.configurationMasterHelper.outDateFormat));
+
+                        }
+                        int due_count = 0;
+                        if (bmodel.retailerMasterBO.getCreditDays() != 0) {
+                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    invoiceHistory.getDueDate(), "yyyy/MM/dd");
+                        } else {
+                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    invoiceHistory.getOrderdate(), "yyyy/MM/dd");
+                        }
+                        if (due_count < 0)
+                            due_count = 0;
+                        invoiceHistory.setOverDueDays(String.valueOf(due_count));
+                        invoiceHistory.setOutStandingAmt(invoiceHistory.getOrderValue() - invoiceHistory.getPaidAmount());
+                        invoiceHistoryList.add(invoiceHistory);
+                    }
+
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            OrderHistoryBO HistBOTemp = null;
+            Vector<OrderHistoryBO> childItemList = null;
+            for (OrderHistoryBO historyBO : invoiceHistoryList) {
+                if (childItemList == null) {
+                    childItemList = new Vector<>();
+                    childItemList.add(historyBO);
+                    if (!isHistoryBOAvailable(historyBO)) {
+                        parent_invoiceHistoryLIst.add(historyBO);
+                    }
+                    HistBOTemp = historyBO;
+                } else {
+                    if (childItemList.get(0).getOrderid()
+                            .equals(historyBO.getOrderid())) {
+
+
+                        childItemList.add(historyBO);
+                        HistBOTemp = historyBO;
+                        if (!isHistoryBOAvailable(historyBO)) {
+                            parent_invoiceHistoryLIst.add(historyBO);
+                        }
+                    } else {
+                        child_invoiceHistoryList.add(childItemList);
+                        childItemList = new Vector<>();
+                        childItemList.add(historyBO);
+                        HistBOTemp = historyBO;
+                        if (!isHistoryBOAvailable(historyBO)) {
+                            parent_invoiceHistoryLIst.add(historyBO);
+                        }
+                    }
+                }
+            }
+            if (childItemList != null) {
+                if (!isHistoryBOAvailable(HistBOTemp)) {
+                    parent_invoiceHistoryLIst.add(HistBOTemp);
+                }
+                child_invoiceHistoryList.add(childItemList);
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public Vector<OrderHistoryBO> getParentInvoiceHistory() {
+        return parent_invoiceHistoryLIst;
+    }
+
+    public void setParentInvoiceHistory(Vector<OrderHistoryBO> invoiceHistory) {
+        this.parent_invoiceHistoryLIst = invoiceHistory;
     }
 
     public ArrayList<PlanningOutletBO> downloadPlanningOutletCategory() {
@@ -541,7 +758,7 @@ public class ProfileHelper {
         }
     }
 
-    public boolean hasProfileImagePath(RetailerMasterBO ret){
+    public boolean hasProfileImagePath(RetailerMasterBO ret) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

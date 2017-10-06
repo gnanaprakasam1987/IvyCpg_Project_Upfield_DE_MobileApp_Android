@@ -147,4 +147,7 @@
     <!--profile screen invoice history-->
 
     <string name="exceed_limt">Exceeds the Limit</string>
+
+    <string name="executed">Is Executed</string>
+
 </resources>

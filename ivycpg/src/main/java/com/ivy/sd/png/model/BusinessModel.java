@@ -117,6 +117,7 @@ import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
+import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.GroomingHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
@@ -345,6 +346,7 @@ public class BusinessModel extends Application {
     public CS_StockApplyHelper CS_StockApplyHelper;
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
+    public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     public PhotoCaptureHelper photoCaptureHelper;
@@ -530,6 +532,7 @@ public class BusinessModel extends Application {
         CS_StockApplyHelper = CS_StockApplyHelper.getInstance(this);
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         acknowledgeHelper = AcknowledgementHelper.getInstance(this);
+        fitscoreHelper = FitScoreHelper.getInstance(this);
     }
 
 
@@ -6205,14 +6208,28 @@ public class BusinessModel extends Application {
                 closingStockCursor.close();
             }
 
-            // ClosingStock Header entry
+            //Weightage Calculation
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                fitscoreHelper.getWeightage(getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
+            }
 
+            // ClosingStock Header entry
+            int moduleWeightage = 0, productWeightage = 0, sum = 0;
             String columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                columns = columns + ",Weightage,Score";
+            }
 
             String values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
                     + QT(getRetailerMasterBO().getRetailerCode()) + ","
                     + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                moduleWeightage = fitscoreHelper.getModuleWeightage(DataMembers.FIT_STOCK);
+                values = values + "," + moduleWeightage + ",0";
+            }
 
             db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
 
@@ -6222,6 +6239,10 @@ public class BusinessModel extends Application {
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
                     + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3";
+
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                columns = columns + ",Score";
+            }
 
             int siz = productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
@@ -6257,6 +6278,9 @@ public class BusinessModel extends Application {
 
                             }
 
+                            int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
+                            int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
+                            int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
                             values = (id) + ","
                                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                     + QT(product.getProductID()) + ","
@@ -6266,11 +6290,11 @@ public class BusinessModel extends Application {
                                     + product.getMSQty() + "," + count + ","
                                     + product.getOuUomid() + ","
                                     + product.getOutersize() + ","
-                                    + ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece())
+                                    + shelfPiece
                                     + ","
-                                    + ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase())
+                                    + shelfCase
                                     + ","
-                                    + ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter())
+                                    + shelfOuter
                                     + ","
                                     + product.getLocations().get(j).getWHPiece()
                                     + ","
@@ -6290,6 +6314,12 @@ public class BusinessModel extends Application {
                                     + "," + rField2
                                     + "," + rField3;
 
+                            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                int pieces = (shelfCase * 10) + shelfPiece;
+                                productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
 
                             db.insertSQL(DataMembers.tbl_closingstockdetail,
                                     columns, values);
@@ -6331,6 +6361,9 @@ public class BusinessModel extends Application {
 
                                 }
 
+                                int shelfCase = taggedProduct.getLocations().get(j).getShelfCase();
+                                int shelfPiece = taggedProduct.getLocations().get(j).getShelfPiece();
+                                int shelfOuter = taggedProduct.getLocations().get(j).getShelfOuter();
                                 values = (id) + ","
                                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                         + QT(taggedProduct.getProductID()) + ","
@@ -6340,11 +6373,11 @@ public class BusinessModel extends Application {
                                         + taggedProduct.getMSQty() + "," + count + ","
                                         + taggedProduct.getOuUomid() + ","
                                         + taggedProduct.getOutersize() + ","
-                                        + taggedProduct.getLocations().get(j).getShelfPiece()
+                                        + shelfPiece
                                         + ","
-                                        + taggedProduct.getLocations().get(j).getShelfCase()
+                                        + shelfCase
                                         + ","
-                                        + taggedProduct.getLocations().get(j).getShelfOuter()
+                                        + shelfOuter
                                         + ","
                                         + taggedProduct.getLocations().get(j).getWHPiece()
                                         + ","
@@ -6364,6 +6397,12 @@ public class BusinessModel extends Application {
                                         + "," + rField2
                                         + "," + rField3;
 
+                                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    int pieces = (shelfCase * 10) + shelfPiece;
+                                    productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
+                                    values = values + "," + productWeightage;
+                                    sum = sum + productWeightage;
+                                }
 
                                 db.insertSQL(DataMembers.tbl_closingstockdetail,
                                         columns, values);
@@ -6373,6 +6412,12 @@ public class BusinessModel extends Application {
                 }
             }
 
+            if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+            }
 
             db.closeDB();
         } catch (Exception e) {

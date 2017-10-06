@@ -199,6 +199,7 @@ SynchronizationHelper {
     private static final String AUTOUPDATE_APPEND_URL = "/HHTVersionUpgrade/Masters?userinfo=";
     public static final String URLDOWNLOAD_MASTER_APPEND_URL = "/v2/UrldownloadMaster/Masters";
     public static final String UPDATE_FINISH_URL = "/IncrementalSync/Finish";
+    public static final String INCREMENTAL_SYNC_INITIATE_URL = "/IncrementalSync/Initiate";
 
 
     private static final String DATA_NOT_AVAILABLE_ERROR = "E19";
@@ -1350,28 +1351,6 @@ SynchronizationHelper {
             Commons.printException("" + e);
         }
     }
-
-    public void downloadMasterListBySelectedDistrubutor(ArrayList<DistributorMasterBO> distributorList, FROM_SCREEN fromWhere) {
-        mJsonObjectResponseByTableName = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
-        sb.append(DataMembers.SERVER_URL);
-        sb.append("/IncrementalSync/Initiate");
-        try {
-            JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            JSONArray jsonArray = new JSONArray();
-            for (DistributorMasterBO distributorBO : distributorList) {
-                jsonArray.put(distributorBO.getDId());
-            }
-            json.put("DistributorIds", jsonArray);
-            callVolley(sb.toString(), fromWhere, 0, DATA_DOWNLOAD_BY_DISTRIBUTOR, json);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
 
     public enum DownloadType {
         NORMAL_DOWNLOAD(0),
@@ -3028,7 +3007,7 @@ SynchronizationHelper {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
-            today.setTime(formatter.parse(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
+            today.setTime(formatter.parse(Utils.getGMTDateTime("yyyy-MM-dd-HH:mm")));
 
             //subtract 30 min to current time
             today.add(Calendar.MINUTE, -30);
