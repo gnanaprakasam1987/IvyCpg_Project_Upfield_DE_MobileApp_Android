@@ -1486,9 +1486,9 @@ public class AssetTrackingHelper {
                                         assetDetailValues.toString());
                             }
                         } else {
-//                            if (assetBo.getAvailQty() > 0
-//                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
-//                                    || assetBo.getCompetitorQty() > 0) {
+                            if (assetBo.getAvailQty() > 0
+                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
+                                    || assetBo.getCompetitorQty() > 0) {
                                 totalActualQty = totalActualQty + assetBo.getAvailQty();
                                 assetDetailValues.append(id);
                                 assetDetailValues.append(",");
@@ -1589,7 +1589,7 @@ public class AssetTrackingHelper {
 
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
-//                            }
+                            }
                         }
 
                     }
