@@ -1141,7 +1141,7 @@ public class NewOutletHelper {
                     "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
-                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State" +
+                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RA.RField5,RA.RField6,RA.TinExpDate" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1192,7 +1192,9 @@ public class NewOutletHelper {
                         retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
                         retailer.setPincode(c.getString(c.getColumnIndex("pincode")));
                         retailer.setState(c.getString(c.getColumnIndex("State")));
-
+                        retailer.setRfield5(c.getString(c.getColumnIndex("RField5")));
+                        retailer.setRfield6(c.getString(c.getColumnIndex("RField6")));
+                        retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                         lst.add(retailer);
                         mNewRetailerById.put(retailer.getRetailerId(), retailer);
                     }
@@ -1811,7 +1813,7 @@ public class NewOutletHelper {
             column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
                     + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
                     "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
-                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber";
+                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate";
 
             value = QT(getId())
                     + "," + QT(outlet.getOutletName())
@@ -1833,7 +1835,10 @@ public class NewOutletHelper {
                     + "," + QT("N")
                     + "," + getNewoutlet().getCreditDays()
                     + "," + getNewoutlet().getIsSEZ()
-                    + "," + getNewoutlet().getGstNum();
+                    + "," + getNewoutlet().getGstNum()
+                    + "," + QT(getNewoutlet().getRfield5())
+                    + "," + QT(getNewoutlet().getRfield6())
+                    + "," + QT(getNewoutlet().getTinExpDate());
 
 
             db.insertSQL("RetailerMaster", column, value);

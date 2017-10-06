@@ -45,6 +45,9 @@ public class NewOutletBO {
     String retailerId;
     String creditDays;
     ArrayList<NewOutletBO> lst;
+    private String rfield5;
+    private String rfield6;
+    private String tinExpDate;
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -560,4 +563,28 @@ public class NewOutletBO {
     }
 
     private HashMap<String,AddressBO> mAddressByTag;
+
+    public String getRfield5() {
+        return rfield5;
+    }
+
+    public String getRfield6() {
+        return rfield6;
+    }
+
+    public void setRfield5(String rfield5) {
+        this.rfield5 = rfield5;
+    }
+
+    public void setRfield6(String rfield6) {
+        this.rfield6 = rfield6;
+    }
+
+    public void setTinExpDate(String tinDate) {
+        this.tinExpDate = tinDate;
+    }
+
+    public String getTinExpDate() {
+        return tinExpDate;
+    }
 }

@@ -3,6 +3,7 @@ package com.ivy.sd.png.view;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
@@ -52,6 +54,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -89,11 +92,14 @@ import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
@@ -218,6 +224,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private String screenTitle = null;
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
+    static TextView tinExpDateTextView;
 
     @Override
     public void onAttach(Context context) {
@@ -1097,7 +1104,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
+                } else if (configCode.equalsIgnoreCase("TINEXPDATE")) {
+                    totalView.addView(
+                            getTextView(i, mName, "Select Date", mandatory),
+                            commonsparams);
                 } else if (configCode.equalsIgnoreCase("RFIELD3")) {
+                    totalView.addView(getEditTextView(i, mName,
+                            InputType.TYPE_CLASS_TEXT, mandatory),
+                            commonsparams);
+                } else if (configCode.equalsIgnoreCase("RFIELD5")) {
+                    totalView.addView(getEditTextView(i, mName,
+                            InputType.TYPE_CLASS_TEXT, mandatory),
+                            commonsparams);
+                } else if (configCode.equalsIgnoreCase("RFIELD6")) {
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
@@ -1730,6 +1749,20 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
 
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("TINEXPDATE")
+                        && mandatory == 1) {
+                    Commons.print("tin exp date");
+                    if (tinExpDateTextView.getText().toString().isEmpty() || tinExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
+                        validate = false;
+                        tinExpDateTextView.requestFocus();
+                        scrollview2.smoothScrollTo(0, tinExpDateTextView.getTop());
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.select_str) + " " + menuName,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
                 } else if ((profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PINCODE")
                         && profileConfig.get(i).getMaxLengthNo() > 0)
@@ -1759,6 +1792,38 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("RFIELD3")
                         && mandatory == 1) {
                     Commons.print("rf");
+                    edittextinputLayout = (TextInputLayout) editText[i].getParent();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("RFIELD5")
+                        && mandatory == 1) {
+                    Commons.print("rf5");
+                    edittextinputLayout = (TextInputLayout) editText[i].getParent();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("RFIELD6")
+                        && mandatory == 1) {
+                    Commons.print("rf6");
                     edittextinputLayout = (TextInputLayout) editText[i].getParent();
                     if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
@@ -2445,10 +2510,16 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             return outlet.getCreditLimit();
         } else if (code.equals("TINNUM")) {
             return outlet.getTinno();
+        } else if (code.equals("TINEXPDATE")) {
+            return outlet.getTinExpDate();
         } else if (code.equals("PINCODE")) {
             return outlet.getPincode();
         } else if (code.equals("RFIELD3")) {
             return outlet.getRfield3();
+        } else if (code.equals("RFIELD5")) {
+            return outlet.getRfield5();
+        } else if (code.equals("RFIELD6")) {
+            return outlet.getRfield6();
         } else if (code.equals("CREDITPERIOD")) {
             return outlet.getCreditDays();
         } else if (code.equals("GST_NO")) {
@@ -2560,6 +2631,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout firstlayout = new LinearLayout(getActivity());
+        LinearLayout secondlayout = new LinearLayout(getActivity());
+        LinearLayout finallayout = new LinearLayout(getActivity());
+        finallayout.setOrientation(LinearLayout.HORIZONTAL);
 
         if (mandatory == 1) {
             TextView mn_textview = new TextView(getActivity());
@@ -2576,43 +2650,98 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         firstlayout.addView(textview[mNumber], params8);
+        if (textname.startsWith("0.0")) {//lat long text starts with 0.0
+            Commons.print("latlong" + textname);
+            latlongtextview.setId(mNumber);
+            latlongtextview.setText(textname);
+            latlongtextview.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            latlongtextview.setTextColor(Color.BLACK);
+            latlongtextview.setGravity(Gravity.START);
+            latlongtextview.setTypeface(latlongtextview.getTypeface(), Typeface.NORMAL);
 
-        Commons.print("latlong" + textname);
-        latlongtextview.setId(mNumber);
-        latlongtextview.setText(textname);
-        latlongtextview.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        latlongtextview.setTextColor(Color.BLACK);
-        latlongtextview.setGravity(Gravity.START);
-        latlongtextview.setTypeface(latlongtextview.getTypeface(), Typeface.NORMAL);
-        LinearLayout secondlayout = new LinearLayout(getActivity());
-        LinearLayout finallayout = new LinearLayout(getActivity());
-        finallayout.setOrientation(LinearLayout.HORIZONTAL);
+            secondlayout.addView(latlongtextview, weight0wrap);
 
-        secondlayout.addView(latlongtextview, weight0wrap);
+            if (screenMode == VIEW || screenMode == EDIT) {
+                String latlng = outlet.getNewOutletlattitude() + "," + outlet.getNewOutletLongitude();
+                latlongtextview.setText(latlng);
+                if (screenMode == VIEW)
+                    latlongtextview.setEnabled(false);
 
-        if (screenMode == VIEW || screenMode == EDIT) {
-            String latlng = outlet.getNewOutletlattitude() + "," + outlet.getNewOutletLongitude();
-            latlongtextview.setText(latlng);
-            if (screenMode == VIEW)
-                latlongtextview.setEnabled(false);
 
+            }
+
+            latlongtextview.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    onMapViewClicked();
+                }
+            });
+
+        } else {
+            tinExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
+            tinExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+            tinExpDateTextView.setTextColor(Color.BLACK);
+            tinExpDateTextView.setId(mNumber);
+            tinExpDateTextView.setText(textname);
+            tinExpDateTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tinExpDateTextView.setTextColor(Color.BLACK);//edittext_bottom_border
+            tinExpDateTextView.setGravity(Gravity.CENTER);
+            tinExpDateTextView.setTypeface(tinExpDateTextView.getTypeface(), Typeface.NORMAL);
+
+            secondlayout.addView(tinExpDateTextView, weight0wrap);
+
+            if (screenMode == VIEW || screenMode == EDIT) {
+                String tindate = outlet.getTinExpDate();
+                tinExpDateTextView.setText(tindate);
+                if (screenMode == VIEW)
+                    tinExpDateTextView.setEnabled(false);
+
+
+            }
+
+            tinExpDateTextView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    DialogFragment newFragment = new DatePickerFragment();
+                    newFragment.show(getActivity().getSupportFragmentManager(), "tinDatePicker");
+                }
+            });
 
         }
-
         finallayout.addView(firstlayout, params8);
         finallayout.addView(secondlayout, weight2);
         linearlayout.addView(finallayout, params11);
-
-        latlongtextview.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                onMapViewClicked();
-            }
-        });
-
         return linearlayout;
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public static class DatePickerFragment extends DialogFragment implements
+            DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+
+            Calendar selectedDate = new GregorianCalendar(year, month, day);
+            if (selectedDate.after(Calendar.getInstance())) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+            } else {
+                Toast.makeText(getActivity(),
+                        "Select future date",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private LinearLayout getNearByRetailerView(String MName, int mandatory) {
@@ -3788,7 +3917,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             return true;
-        }else if (i == R.id.menu_oppr) {
+        } else if (i == R.id.menu_oppr) {
             bmodel.configurationMasterHelper.downloadProductDetailsList();
 
             bmodel.productHelper.downloadTaggedProducts(MENU_NEW_RETAILER);
@@ -3834,6 +3963,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             int size = profileConfig.size();
             boolean isVisitPlanAvailable = false;
             boolean isStoreName = false;
+            boolean isTinExpDate = false;
             boolean isAddress1 = false;
             boolean isAddress2 = false;
             boolean isCity = false;
@@ -3849,6 +3979,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             boolean isFaxNo = false;
             boolean tinno = false;
             boolean rfield3 = false;
+            boolean rfield5 = false;
+            boolean rfield6 = false;
             boolean pinno = false;
             boolean isCreditDays = false;
 
@@ -4073,6 +4205,15 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     } else {
                         outlet.setTinno(bmodel.validateInput(editText[i].getText().toString()));
                     }
+                } else if (configCode.equalsIgnoreCase("TINEXPDATE")) {
+
+                    isTinExpDate = true;
+
+                    if (tinExpDateTextView.getText().toString().equalsIgnoreCase("Select Date") || TextUtils.isEmpty(bmodel.validateInput(tinExpDateTextView.getText().toString()))) {
+                        outlet.setTinExpDate("");
+                    } else {
+                        outlet.setTinExpDate(bmodel.validateInput(tinExpDateTextView.getText().toString()));
+                    }
                 } else if (configCode.equalsIgnoreCase("PINCODE")) {
 
                     pinno = true;
@@ -4090,6 +4231,24 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         outlet.setRfield3("0");
                     } else {
                         outlet.setRfield3(bmodel.validateInput(editText[i].getText().toString()));
+                    }
+                } else if (configCode.equalsIgnoreCase("RFIELD5")) {
+
+                    rfield5 = true;
+
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setRfield5("0");
+                    } else {
+                        outlet.setRfield5(bmodel.validateInput(editText[i].getText().toString()));
+                    }
+                } else if (configCode.equalsIgnoreCase("RFIELD6")) {
+
+                    rfield6 = true;
+
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setRfield6("0");
+                    } else {
+                        outlet.setRfield6(bmodel.validateInput(editText[i].getText().toString()));
                     }
                 } else if (configCode.equalsIgnoreCase("TAXTYPE")) {
                     outlet.setTaxTypeId(((StandardListBO) taxTypeSpinner.getSelectedItem()).getListID());
@@ -4192,8 +4351,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (!tinno) {
                 outlet.setTinno("0");
             }
+            if (!isTinExpDate) {
+                outlet.setTinExpDate("");
+            }
             if (!rfield3) {
                 outlet.setRfield3("0");
+            }
+            if (!rfield5) {
+                outlet.setRfield5("0");
+            }
+            if (!rfield6) {
+                outlet.setRfield6("0");
             }
             if (!pinno) {
                 outlet.setPincode("");
