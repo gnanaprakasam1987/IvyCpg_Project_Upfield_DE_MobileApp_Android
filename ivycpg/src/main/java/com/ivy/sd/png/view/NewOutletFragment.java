@@ -1808,7 +1808,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("RFIELD5")
                         && mandatory == 1) {
                     Commons.print("rf5");
-                    edittextinputLayout = (TextInputLayout) editText[i].getParent();
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
@@ -1824,7 +1824,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("RFIELD6")
                         && mandatory == 1) {
                     Commons.print("rf6");
-                    edittextinputLayout = (TextInputLayout) editText[i].getParent();
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
