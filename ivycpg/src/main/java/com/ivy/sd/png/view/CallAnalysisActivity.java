@@ -410,9 +410,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             percent = 100;
                         }
                         holder.tv_progress_text.setText(percent + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    } else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
+                    } /*else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
                         holder.tv_progress_text.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    }
+                    }*/
                 }
             } catch (Exception ex) {
                 Commons.printException(ex);

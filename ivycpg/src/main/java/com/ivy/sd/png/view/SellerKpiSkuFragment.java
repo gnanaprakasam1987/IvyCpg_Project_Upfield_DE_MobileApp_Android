@@ -351,6 +351,25 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
                         .findViewById(R.id.row_dot_green);
                 verticalSeparatorTarget = (View) row
                         .findViewById(R.id.verticalSeparatorTarget);
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.target_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.target_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(R.id.target_title)
+                                                .getTag()));
+
+
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.achived_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.achived_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(R.id.achived_title)
+                                                .getTag()));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 
                 mChart.setUsePercentValues(true);

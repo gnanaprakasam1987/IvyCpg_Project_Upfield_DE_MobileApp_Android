@@ -1133,8 +1133,7 @@ public class AssetTrackingHelper {
     /**
      * Method to save Asset Movement Details in sql table
      */
-    public void saveAssetMovementDetails(String moduleName)
-    {
+    public void saveAssetMovementDetails(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1486,9 +1485,9 @@ public class AssetTrackingHelper {
                                         assetDetailValues.toString());
                             }
                         } else {
-//                            if (assetBo.getAvailQty() > 0
-//                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
-//                                    || assetBo.getCompetitorQty() > 0) {
+                            if (assetBo.getAvailQty() > 0
+                                    || assetBo.getAudit() != 2 || assetBo.getExecutorQty() > 0
+                                    || assetBo.getCompetitorQty() > 0) {
                                 totalActualQty = totalActualQty + assetBo.getAvailQty();
                                 assetDetailValues.append(id);
                                 assetDetailValues.append(",");
@@ -1509,7 +1508,13 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(QT(assetBo.getSerialNo()));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getRemarkID());
+                                if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(QT(assetBo.getConditionID()));
+                                } else {
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(QT(""));
+                                }
                                 assetDetailValues.append(",");
                                 if (MENU_ASSET.equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
@@ -1586,10 +1591,9 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append("," + productWeightage);
                                     sum = sum + productWeightage;
                                 }
-
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
-//                            }
+                            }
                         }
 
                     }

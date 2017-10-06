@@ -110,6 +110,9 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
     }
+    public String getScreenTitle() {
+        return mScreenTitleTV.getText().toString();
+    }
 
     @Override
     public void onBackPressed() {
