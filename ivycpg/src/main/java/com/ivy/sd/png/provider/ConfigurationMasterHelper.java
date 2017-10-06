@@ -1003,6 +1003,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_PRICECHECK_PCS;
     public boolean SHOW_STOCK_PRICECHECK_CS;
     public boolean SHOW_STOCK_PRICECHECK_OU;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_PCS;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_CS;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_OU;
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN = "PRICE_RETAINLV";
 
@@ -2884,6 +2887,9 @@ public class ConfigurationMasterHelper {
             SHOW_STOCK_NEAREXPIRY_CB = false;
             SHOW_STOCK_NEAREXPIRY_OU = false;
             SHOW_STOCK_NEAREXPIRY_CS = false;
+            SHOW_STOCK_PRICECHECK_MRP_PCS = false;
+            SHOW_STOCK_PRICECHECK_MRP_CS = false;
+            SHOW_STOCK_PRICECHECK_MRP_OU = false;
 
             SHOW_INDEX_DASH = false;
             SHOW_TARGET_DASH = false;
@@ -3109,6 +3115,12 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_PRICECHECK_OU = true;
                         else if (temp.equals("CS"))
                             SHOW_STOCK_PRICECHECK_CS = true;
+                        else if (temp.equals("MPS"))
+                            SHOW_STOCK_PRICECHECK_MRP_PCS = true;
+                        else if (temp.equals("MOU"))
+                            SHOW_STOCK_PRICECHECK_MRP_OU = true;
+                        else if (temp.equals("MCS"))
+                            SHOW_STOCK_PRICECHECK_MRP_CS = true;
                     }
                 }
             }
@@ -4284,8 +4296,7 @@ public class ConfigurationMasterHelper {
                     int value = c.getInt(0);
                     if (value == 2) {
                         SHOW_DATE_ROUTE = true;
-                    }
-                    if (value == 3) {
+                    } else if (value == 3) {
                         SHOW_BEAT_ROUTE = true;
                     } else {
                         SHOW_WEEK_ROUTE = true;
