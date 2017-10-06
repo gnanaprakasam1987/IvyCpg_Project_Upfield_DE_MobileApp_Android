@@ -1290,8 +1290,17 @@ public class ProductHelper {
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
-                        + " from ProductMaster A left join "
-                        + "PriceMaster F on A.Pid = F.pid and F.scid = "
+                        + " from ProductMaster A";
+
+                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products mapped..
+                    String pdQuery=downloadProductDistribution(mContentLevel);
+                    if(pdQuery.length()>0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
+                    }
+                }
+
+                sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
                         + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
@@ -1908,8 +1917,17 @@ public class ProductHelper {
                         + "A.tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
-                        + " from ProductMaster A left join "
-                        + "PriceMaster F on A.Pid = F.pid and F.scid = "
+                        + " from ProductMaster A";
+
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products mapped..
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
+                    }
+                }
+
+                sql = sql +  " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
                         + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
@@ -2020,6 +2038,14 @@ public class ProductHelper {
                 for (int i = 2; i <= loopEnd; i++)
                     sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
                             + ".ParentId = A" + (i - 1) + ".PID";
+
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products(content level) mapped..
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                    }
+                }
 
                 sql = sql
                         + " left join "
