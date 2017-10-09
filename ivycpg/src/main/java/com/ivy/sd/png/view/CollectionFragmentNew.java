@@ -480,8 +480,18 @@ public class CollectionFragmentNew extends IvyBaseFragment
             holder.tvInvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
                     holder.invoiceHeaderBO.getInvoiceDate(),
                     ConfigurationMasterHelper.outDateFormat));
-            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
-                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+//            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
+//                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+            int count = 0;
+            if (bmodel.retailerMasterBO.getCreditDays() != 0) {
+                count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
+            } else {
+                count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
+            }
+            if (count < 0)
+                count = 0;
             String strCount = "(" + count + ")";
             holder.tvAge.setText(strCount);
 

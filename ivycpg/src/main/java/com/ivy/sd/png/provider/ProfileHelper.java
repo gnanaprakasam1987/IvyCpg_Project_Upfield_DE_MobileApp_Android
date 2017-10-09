@@ -201,10 +201,10 @@ public class ProfileHelper {
         return historyList;
     }
 
-    public Vector<AssetHistoryBO> getAssetHistoryList()
-    {
+    public Vector<AssetHistoryBO> getAssetHistoryList() {
         return assetHistoryList;
     }
+
     /**
      * Download OrderHistory and store in the vector.
      */
@@ -334,15 +334,14 @@ public class ProfileHelper {
         }
     }
 
-    public void downloadAssetHistory(String retailerId)
-    {
+    public void downloadAssetHistory(String retailerId) {
         AssetHistoryBO assetHistoryBO;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
-        assetHistoryList=new Vector<>();
+        assetHistoryList = new Vector<>();
 
-        Cursor c=db.selectSQL("select DISTINCT A.serialNo,A.Date,P.PosmShortDesc from AssetHistory A join PosmMaster P on A.AssetId=P.PosmId where A.RetailerId="+QT(retailerId)+";");
+        Cursor c = db.selectSQL("select DISTINCT A.serialNo,A.Date,P.PosmShortDesc from AssetHistory A join PosmMaster P on A.AssetId=P.PosmId where A.RetailerId=" + QT(retailerId) + ";");
         if (c != null) {
             while (c.moveToNext()) {
                 assetHistoryBO = new AssetHistoryBO();
@@ -480,8 +479,17 @@ public class ProfileHelper {
                                     dueDate, bmodel.configurationMasterHelper.outDateFormat));
 
                         }
-                        invoiceHistory.setOverDueDays(String.valueOf(DateUtil.getDateCount(invoiceHistory.getOrderdate(),
-                                SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd")));
+                        int due_count = 0;
+                        if (bmodel.retailerMasterBO.getCreditDays() != 0) {
+                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    invoiceHistory.getDueDate(), "yyyy/MM/dd");
+                        } else {
+                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    invoiceHistory.getOrderdate(), "yyyy/MM/dd");
+                        }
+                        if (due_count < 0)
+                            due_count = 0;
+                        invoiceHistory.setOverDueDays(String.valueOf(due_count));
                         invoiceHistory.setOutStandingAmt(invoiceHistory.getOrderValue() - invoiceHistory.getPaidAmount());
                         invoiceHistoryList.add(invoiceHistory);
                     }
@@ -750,7 +758,7 @@ public class ProfileHelper {
         }
     }
 
-    public boolean hasProfileImagePath(RetailerMasterBO ret){
+    public boolean hasProfileImagePath(RetailerMasterBO ret) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

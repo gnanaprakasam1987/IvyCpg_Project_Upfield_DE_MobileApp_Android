@@ -1166,8 +1166,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     new InitiateDistributorDownload().execute();
-                } else {
-
                 }
         }
     }
@@ -2180,12 +2178,23 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPreExecute() {
             super.onPreExecute();
             try {
-                // bmodel.distributorMasterHelper.downloadDistributorsList();
+                if (alertDialog != null) {
+                    builder = new AlertDialog.Builder(getActivity());
+                    bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
                 for (DistributorMasterBO distributorBO : distributorList) {
-                    jsonArray.put(distributorBO.getDId());
+                    if (distributorBO.isChecked()) {
+                        jsonArray.put(distributorBO.getDId());
+
+                        //update distributorid in usermaster
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getDName());
+                    }
                 }
                 json.put("DistributorIds", jsonArray);
             } catch (Exception jsonException) {
@@ -2195,7 +2204,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         @Override
         protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 Iterator itr = jsonObject.keys();
@@ -2223,12 +2232,19 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
     private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
 
+        bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+
+        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
         if (isDistributorWise) {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
             bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
         } else {
-            bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
             bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        }
+        }
+        else{
+            //on demand url not available
+            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
+            callNextSyncMethod(next_method);
         }
 
     }
@@ -2377,13 +2393,21 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
      */
     private void callNextSyncMethod(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-            //new InitiateDistributorDownload().execute();
+
             bmodel.distributorMasterHelper.downloadDistributorsList();
-            Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
-            startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            if(bmodel.distributorMasterHelper.getDistributors().size()>0) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+
+                Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
+                startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            }
+            else{
+                //No distributors, so downloading on demand url without distributor selection.
+                downloadOnDemandMasterUrl(false);
+            }
+
         } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
             downloadOnDemandMasterUrl(false);
         } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {

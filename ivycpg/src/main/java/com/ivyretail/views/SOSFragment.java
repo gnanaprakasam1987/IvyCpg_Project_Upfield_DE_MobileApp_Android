@@ -117,6 +117,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private int mSelectedLocationIndex;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private boolean isFromChild;
+    private ArrayList<String> totalImgList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -595,8 +596,8 @@ public class SOSFragment extends IvyBaseFragment implements
                                             bmodel.mImageCount, fnameStarts);
                             if (nFilesThere) {
 
-                               // showFileDeleteAlert(fnameStarts);
-                                showFileDeleteAlertWithImage(fnameStarts,holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
+                                // showFileDeleteAlert(fnameStarts);
+                                showFileDeleteAlertWithImage(fnameStarts, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
@@ -733,9 +734,17 @@ public class SOSFragment extends IvyBaseFragment implements
         if (requestCode == bmodel.CAMERA_REQUEST_CODE && resultCode == 1
                 && bmodel.salesFundamentalHelper.mSelectedBrandID != 0) {
             // Photo saved successfully
+            totalImgList.add(mImageName);
             bmodel.salesFundamentalHelper.onsaveImageName(
                     bmodel.salesFundamentalHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
+        }
+    }
+
+    private void deleteUnsavedImageFromFolder() {
+        for (String imgList : totalImgList) {
+            bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                    imgList.toString());
         }
     }
 
@@ -888,14 +897,18 @@ public class SOSFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                if (bmodel.salesFundamentalHelper.getLstSOSproj() != null || totalImgList.size() > 0)
+                    showeAlert();
+                else {
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                            .now(SDUtil.TIME));
+                    if (isFromChild)
+                        startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                                .putExtra("isStoreMenu", true));
+                    else
+                        startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                    getActivity().finish();
+                }
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
@@ -1034,6 +1047,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
+                totalImgList.clear();
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
@@ -1059,13 +1073,57 @@ public class SOSFragment extends IvyBaseFragment implements
             }
         }
     }
+
+
+    private void showeAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                getActivity());
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(
+                R.string.do_u_want_to_delete_tran));
+        if (totalImgList != null)
+            deleteUnsavedImageFromFolder();
+        builder.setPositiveButton(getResources().getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                                .now(SDUtil.TIME));
+                        /*bmodel.salesFundamentalHelper.setLstSOSproj(null);*/
+                        if (totalImgList != null)
+                            deleteUnsavedImageFromFolder();
+
+                        if (isFromChild)
+                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                                    .putExtra("isStoreMenu", true));
+                        else
+                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                        getActivity().finish();
+
+                        return;
+                    }
+                });
+
+        builder.setNegativeButton(getResources().getString(R.string.cancel),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        return;
+                    }
+                });
+
+        builder.setCancelable(false);
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
+
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
-                                              final String imageSrc)
-    {
-        final CommonDialog commonDialog=new CommonDialog(getActivity().getApplicationContext(), //Context
+                                              final String imageSrc) {
+        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
                 getActivity(), //Context
                 "", //Title
-                getResources().getString(R.string.word_already) + " " + bmodel.mImageCount +" " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                getResources().getString(R.string.word_already) + " " + bmodel.mImageCount + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
                 true, //ToDisplayImage
                 getResources().getString(R.string.yes), //Positive Button
                 getResources().getString(R.string.no), //Negative Button
@@ -1096,6 +1154,7 @@ public class SOSFragment extends IvyBaseFragment implements
         commonDialog.show();
         commonDialog.setCancelable(false);
     }
+
     private void showFileDeleteAlert(final String imageNameStarts) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

@@ -1951,8 +1951,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     new InitiateDistributorDownload().execute();
-                } else {
-
                 }
         }
     }
