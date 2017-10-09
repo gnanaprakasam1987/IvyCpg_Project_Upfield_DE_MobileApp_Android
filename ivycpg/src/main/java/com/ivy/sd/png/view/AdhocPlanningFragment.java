@@ -19,7 +19,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +34,12 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class AdhocPlanningFragment extends Fragment {
@@ -56,6 +62,8 @@ public class AdhocPlanningFragment extends Fragment {
     private ArrayList<RetailerMasterBO> mSecondRetailerList;
     private int mSelectecBeatId = 0;
     private boolean bool = false;
+    private EditText mRetailerEdt;
+    private ImageView mSearchIv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,8 +80,13 @@ public class AdhocPlanningFragment extends Fragment {
         Button mRefresh1Btn = (Button) view.findViewById(R.id.btn_refresh1);
         Button mRefresh2Btn = (Button) view.findViewById(R.id.btn_refresh2);
         Button mDownloadBtn = (Button) view.findViewById(R.id.btn_ok);
+        mDownloadBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         lv1 = (ListView) view.findViewById(R.id.lv_first);
         lv2 = (ListView) view.findViewById(R.id.lv_second);
+
+        //Retailer Search Widgets
+        mRetailerEdt = (EditText) view.findViewById(R.id.input_retailer);
+        mSearchIv = (ImageView) view.findViewById(R.id.ivSearch);
 
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +132,26 @@ public class AdhocPlanningFragment extends Fragment {
                 }
             }
         });
+
+        mSearchIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mRetailerEdt.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.newretailer_empty), Toast.LENGTH_SHORT).show();
+                } else {
+                    new DownloadRetailerByLocation().execute();
+                }
+
+            }
+        });
+
+        if (bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+            ((LinearLayout) view.findViewById(R.id.llSpinner)).setVisibility(View.GONE);
+            ((RelativeLayout) view.findViewById(R.id.llRetailers)).setVisibility(View.VISIBLE);
+        } else {
+            ((LinearLayout) view.findViewById(R.id.llSpinner)).setVisibility(View.VISIBLE);
+            ((RelativeLayout) view.findViewById(R.id.llRetailers)).setVisibility(View.GONE);
+        }
         registerReceiver();
         updateScreen();
 
@@ -137,46 +170,48 @@ public class AdhocPlanningFragment extends Fragment {
     private void updateScreen() {
         Vector<LocationBO> locationList;
         ArrayList<UserMasterBO> userList;
-        if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
-            locationList = bmodel.downloadLocationMaster();
-            LocationBO locationBO = new LocationBO();
-            locationBO.setLocId(0);
-            locationBO.setLocName("-Select");
-            locationList.add(0, locationBO);
-            ArrayAdapter<LocationBO> locationAdapter = new ArrayAdapter<LocationBO>(getActivity(),
-                    R.layout.spinner_bluetext_layout, locationList);
-            locationAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            userSpin.setAdapter(locationAdapter);
-        } else {
-            userList = bmodel.userMasterHelper.downloadAdHocUserList();
-            if (userList == null)
-                userList = new ArrayList<>();
+        if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+            if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
+                locationList = bmodel.downloadLocationMaster();
+                LocationBO locationBO = new LocationBO();
+                locationBO.setLocId(0);
+                locationBO.setLocName("-Select");
+                locationList.add(0, locationBO);
+                ArrayAdapter<LocationBO> locationAdapter = new ArrayAdapter<LocationBO>(getActivity(),
+                        R.layout.spinner_bluetext_layout, locationList);
+                locationAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                userSpin.setAdapter(locationAdapter);
+            } else {
+                userList = bmodel.userMasterHelper.downloadAdHocUserList();
+                if (userList == null)
+                    userList = new ArrayList<>();
 
-            UserMasterBO userMasterBO = new UserMasterBO();
-            userMasterBO.setUserid(0);
-            userMasterBO.setUserName("-Select");
-            userList.add(0, userMasterBO);
-            ArrayAdapter<UserMasterBO> userAdapter = new ArrayAdapter<>(
-                    getActivity(), R.layout.spinner_bluetext_layout, userList);
-            userAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            userSpin.setAdapter(userAdapter);
+                UserMasterBO userMasterBO = new UserMasterBO();
+                userMasterBO.setUserid(0);
+                userMasterBO.setUserName("-Select");
+                userList.add(0, userMasterBO);
+                ArrayAdapter<UserMasterBO> userAdapter = new ArrayAdapter<>(
+                        getActivity(), R.layout.spinner_bluetext_layout, userList);
+                userAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                userSpin.setAdapter(userAdapter);
+            }
+
+            if (bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD) {
+                ArrayList<BeatMasterBO> beatList = new ArrayList<>();
+                BeatMasterBO beatMasterBO = new BeatMasterBO();
+                beatMasterBO.setBeatId(0);
+                beatMasterBO.setBeatDescription(getResources().getString(R.string.select_beat));
+                beatList.add(0, beatMasterBO);
+                ArrayAdapter<BeatMasterBO> beatAdapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
+                        R.layout.spinner_bluetext_layout, beatList);
+                beatAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                beatSpin.setAdapter(beatAdapter);
+            } else
+                beatSpin.setVisibility(View.GONE);
         }
-
-        if (bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD) {
-            ArrayList<BeatMasterBO> beatList = new ArrayList<>();
-            BeatMasterBO beatMasterBO = new BeatMasterBO();
-            beatMasterBO.setBeatId(0);
-            beatMasterBO.setBeatDescription(getResources().getString(R.string.select_beat));
-            beatList.add(0, beatMasterBO);
-            ArrayAdapter<BeatMasterBO> beatAdapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
-                    R.layout.spinner_bluetext_layout, beatList);
-            beatAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            beatSpin.setAdapter(beatAdapter);
-        } else
-            beatSpin.setVisibility(View.GONE);
 
         userSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -259,14 +294,15 @@ public class AdhocPlanningFragment extends Fragment {
 
         int locOrUserId = 0;
 
-        if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
-            if (mSelectedLocBO != null) {
-                locOrUserId = mSelectedLocBO.getLocId();
-            }
-        } else {
-            if (mSelectedUserBO != null) {
-                locOrUserId = mSelectedUserBO.getUserid();
-
+        if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+            if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
+                if (mSelectedLocBO != null) {
+                    locOrUserId = mSelectedLocBO.getLocId();
+                }
+            } else {
+                if (mSelectedUserBO != null) {
+                    locOrUserId = mSelectedUserBO.getUserid();
+                }
             }
         }
 
@@ -493,14 +529,17 @@ public class AdhocPlanningFragment extends Fragment {
         if (mRetailerListByLocOrUserId == null)
             mRetailerListByLocOrUserId = new HashMap<>();
 
+        if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+            if (retailerList != null) {
+                if (mSelectedLocBO != null) {
+                    mRetailerListByLocOrUserId.put(mSelectedLocBO.getLocId(), retailerList);
 
-        if (retailerList != null) {
-            if (mSelectedLocBO != null) {
-                mRetailerListByLocOrUserId.put(mSelectedLocBO.getLocId(), retailerList);
-
-            } else if (mSelectedUserBO != null) {
-                mRetailerListByLocOrUserId.put(mSelectedUserBO.getUserid(), retailerList);
+                } else if (mSelectedUserBO != null) {
+                    mRetailerListByLocOrUserId.put(mSelectedUserBO.getUserid(), retailerList);
+                }
             }
+        } else {
+            mRetailerListByLocOrUserId.put(0, retailerList);
         }
 
 
@@ -635,11 +674,15 @@ public class AdhocPlanningFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
-                bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
+            if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+                if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
+                    bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
+                } else {
+                    if (mSelectedUserBO != null)
+                        bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedUserBO.getUserid(), false);
+                }
             } else {
-                if (mSelectedUserBO != null)
-                    bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedUserBO.getUserid(), false);
+                bmodel.synchronizationHelper.downloadRetailerByRetailerName(mRetailerEdt.getText().toString().trim());
             }
 
         }
@@ -691,5 +734,6 @@ public class AdhocPlanningFragment extends Fragment {
             updateReceiver(intent);
         }
     }
+
 
 }
