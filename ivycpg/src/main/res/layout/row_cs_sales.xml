@@ -14,14 +14,14 @@
         android:orientation="vertical"
         android:layout_gravity="center"
         >
-    <TextView
-        style="?attr/customListItemPrimary"
-        android:id="@+id/stock_and_order_listview_productname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center"
-        android:text="@string/product_name"
-        />
+        <TextView
+            style="?attr/customListItemPrimary"
+            android:id="@+id/stock_and_order_listview_productname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center"
+            android:text="@string/product_name"
+            />
         <TextView
             android:id="@+id/tv_barcode"
             style="?attr/customListItemSecondary"

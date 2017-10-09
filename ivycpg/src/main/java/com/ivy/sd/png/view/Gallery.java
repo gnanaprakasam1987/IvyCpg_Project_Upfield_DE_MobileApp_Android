@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LocationBO;
@@ -65,6 +66,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected ArrayList<String> imgPathDelete=new ArrayList<>();
     protected ArrayList<File> imgFileDelete=new ArrayList<>();
     private int width,height;
+    public static boolean isPhotoDelete = false;
     /**
      * Called when the activity is first created.
      */
@@ -405,6 +407,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                     bmodel.photocount--;
                                 }
                                 loadGrid();
+                                isPhotoDelete = true;
                             }
                         })
                 .setNegativeButton(
@@ -459,8 +462,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 holder.RLCheckBg=(RelativeLayout)convertView.findViewById(R.id.layout_share_select);
                 holder.CBSelect=(CheckBox)convertView.findViewById(R.id.check_share_select);
 
-                if ("photo_cap".equals(fromScreen))
-                    holder.loc_txt.setVisibility(View.GONE);
+                /*if ("photo_cap".equals(fromScreen))
+                    holder.loc_txt.setVisibility(View.GONE);*/
 
                 holder.type_loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 holder.loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));

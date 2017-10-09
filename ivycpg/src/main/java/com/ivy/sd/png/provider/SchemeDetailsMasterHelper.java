@@ -322,7 +322,7 @@ public class SchemeDetailsMasterHelper {
         sb.append("SELECT distinct SM.SchemeID, SM.Description, SM.Type, SM.ShortName, BD.ProductID, ");
         sb.append("PM.Psname, PM.PName, BD.BuyQty,SM.parentid,SM.count,PM.pCode,SM.buyType,BD.GroupName,BD.GroupType,");
         sb.append("SM.IsCombination,BD.uomid,UM.ListName,SAC.SchemeApplyCount,BD.ToBuyQty,SM.IsBatch,BD.Batchid,PT.ListCode,SM.IsOnInvoice,");
-        sb.append(" Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType");
+        sb.append(" Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType, SM.IsAutoApply");
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID ");
         sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
         sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ") ");
@@ -368,6 +368,7 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setGroupName(c.getString(12));
                     schemeBO.setGroupType(c.getString(13));
                     schemeBO.setIsCombination(c.getInt(14));
+                    schemeBO.setIsAutoApply(c.getInt(c.getColumnIndex("IsAutoApply")));
 
                     if (c.getString(21) != null)
                         schemeBO.setProcessType(c.getString(21));
@@ -1785,8 +1786,8 @@ public class SchemeDetailsMasterHelper {
         if (tempCount > 0) {
             return tempCount;
         } else {
-			/*
-			 * Now we are apply range wise scheme.so maximum buy qty only using
+            /*
+             * Now we are apply range wise scheme.so maximum buy qty only using
 			 * for computation to how many times scheme achived. but minimum buy
 			 * qty used to apply scheme or not.
 			 */
@@ -1908,7 +1909,7 @@ public class SchemeDetailsMasterHelper {
                             }
                         }
                     }
-					/* scheme accumulation ends */
+                    /* scheme accumulation ends */
 
                     if (quantity > 0) {
                         double balanceValue = 0;
@@ -2643,13 +2644,14 @@ public class SchemeDetailsMasterHelper {
     }
 
     public boolean isFromCounterSale;
+
     /**
      * @param orderID - mapping to orderID
      * @author rajesh.k
      * <p>
      * Method to save all applied scheme details in SQLite
      */
-    public void insertScemeDetails(String orderID, DBUtil db) {
+    public void insertScemeDetails(String orderID, DBUtil db,String flag) {
         if (mApplySchemeList != null) {
 
             for (SchemeBO schemeBO : mApplySchemeList) {
@@ -2658,11 +2660,11 @@ public class SchemeDetailsMasterHelper {
                         || schemeBO.isPriceTypeSeleted()
                         || schemeBO.isDiscountPrecentSelected()
                         || schemeBO.isQuantityTypeSelected()) {
-                    insertSchemeBuyProductDetails(schemeBO, db, orderID);
+                    insertSchemeBuyProductDetails(schemeBO, db, orderID,flag);
                 }
 
                 if (schemeBO.isQuantityTypeSelected()) {
-                    insertFreeProductDetails(schemeBO, db, orderID);
+                    insertFreeProductDetails(schemeBO, db, orderID,flag);
                 }
 
             }
@@ -2678,7 +2680,7 @@ public class SchemeDetailsMasterHelper {
      * table
      */
     private void insertSchemeBuyProductDetails(SchemeBO schemeBO, DBUtil db,
-                                               String orderID) {
+                                               String orderID,String flag) {
         String schemeDetailColumn = "OrderID,SchemeID,ProductID,SchemeType,Value,parentid,Retailerid,distributorid,upload,Amount";
 
         if (isFromCounterSale) {
@@ -2688,6 +2690,7 @@ public class SchemeDetailsMasterHelper {
         List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
 
         if (schemeBO.isAmountTypeSelected()) {
+            schemeIdCount.put(schemeBO.getSchemeId(), 0);
             if (buyProductList != null) {
                 for (SchemeProductBO schemeProductBO : buyProductList) {
                     ProductMasterBO productBO;
@@ -2756,7 +2759,10 @@ public class SchemeDetailsMasterHelper {
                         if (schemeBO.isQuantityTypeSelected()) {
                             sb.append(",'Y'");
                         } else {
-                            sb.append(",'N'");
+                            if (flag.equals("I"))
+                                sb.append(",'I'");
+                            else
+                                sb.append(",'N'");
                         }
 
                         // saving product wise discount value if scheme is amount type
@@ -2842,8 +2848,13 @@ public class SchemeDetailsMasterHelper {
      * schemefreeproductdetail table
      */
     private void insertFreeProductDetails(SchemeBO schemeBO, DBUtil db,
-                                          String orderID) {
+                                          String orderID,String flag) {
         String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount";
+
+        if (isFromCounterSale) {
+            freeDetailColumn = "uid,SlabId,ProductId,Qty,UomID,UomCount,BatchId,SchemeId,RetailerId,price,taxAmount,upload";
+        }
+
         List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
         if (freeProductList != null) {
             for (SchemeProductBO freeProductBO : freeProductList) {
@@ -2862,11 +2873,11 @@ public class SchemeDetailsMasterHelper {
                             } else {
                                 insertFreeproductWithoutbatch(schemeBO, db,
                                         orderID, freeProductBO,
-                                        freeDetailColumn);
+                                        freeDetailColumn,flag);
                             }
                         } else {
                             insertFreeproductWithoutbatch(schemeBO, db,
-                                    orderID, freeProductBO, freeDetailColumn);
+                                    orderID, freeProductBO, freeDetailColumn,flag);
 
                         }
                     }
@@ -2888,7 +2899,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void insertFreeproductWithoutbatch(SchemeBO schemeBO, DBUtil db,
                                                String orderID, SchemeProductBO freeProductBO,
-                                               String freeDetailColumn) {
+                                               String freeDetailColumn,String flag) {
 
         ProductMasterBO productBO = bmodel.getProductbyId(freeProductBO
                 .getProductId());
@@ -2932,6 +2943,10 @@ public class SchemeDetailsMasterHelper {
             } else {
                 sb.append(0 + "," + 0);
             }
+            if (isFromCounterSale && flag.equals("I"))
+                sb.append(",'I'");
+            else if (isFromCounterSale)
+                sb.append(",'N'");
 
             if (isFromCounterSale) {
                 db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
@@ -3021,6 +3036,7 @@ public class SchemeDetailsMasterHelper {
 
             sb.append(" and sid=" + bmodel.getRetailerMasterBO().getDistributorId());
 
+            sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");// to prevent delivered orders
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -3083,6 +3099,87 @@ public class SchemeDetailsMasterHelper {
         }
 
     }
+
+
+    public void loadOrderedBuyProductsForCounter(String id) {
+        DBUtil db = null;
+        db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        mApplySchemeList = new ArrayList<SchemeBO>();
+        StringBuffer sb = new StringBuffer();
+        sb.append("select distinct slabid,SchemeType,value,count(productid) from CS_SchemeDetail where ");
+        sb.append("uid=" + bmodel.QT(id));
+        sb.append("  group by schemeid");
+        Cursor c = db.selectSQL(sb.toString());
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String schemeID = c.getString(0);
+                String schemeType = c.getString(1);
+                double value = c.getDouble(2);
+                SchemeBO schemeBO = mSchemeById.get(schemeID);
+                if (schemeBO != null) {
+                    schemeBO.setOrderedProductCount(c.getInt(3));
+                    if (schemeType.equals(SCHEME_AMOUNT)) {
+                        schemeBO.setAmountTypeSelected(true);
+                        schemeBO.setSelectedAmount(value * schemeBO.getOrderedProductCount());
+                    } else if (schemeType.equals(SCHEME_FREE_PRODUCT)) {
+
+                        schemeBO.setQuantityTypeSelected(true);
+
+                    } else if (schemeType.equals(SCHEME_PERCENTAGE)) {
+                        schemeBO.setDiscountPrecentSelected(true);
+                        schemeBO.setSelectedPrecent(value);
+                    } else if (schemeType.equals(SCHEME_PRICE)) {
+                        schemeBO.setPriceTypeSeleted(true);
+                        schemeBO.setSelectedPrice(value);
+                    }
+
+                }
+                mApplySchemeList.add(schemeBO);
+
+            }
+        }
+
+    }
+
+    public void loadOrderedFreeProductsForCounter(String id) {
+        DBUtil db = null;
+        db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        // clear free product details
+        Cursor c1 = db
+                .selectSQL("select distinct slabid from CS_SchemeFreeProductDetail where uid ="
+                        + bmodel.QT(id));
+        if (c1.getCount() > 0) {
+            while (c1.moveToNext()) {
+                String schemeId = c1.getString(0);
+                SchemeBO schemeBo = getmSchemeById().get(schemeId);
+                if (schemeBo != null) {
+                    clearSchemeFreeProduct(schemeBo);
+                }
+            }
+        }
+
+        Cursor c = db
+                .selectSQL("select slabid,ProductID,Qty,UomID,batchid from CS_SchemeFreeProductDetail "
+                        + "where uid="
+                        + bmodel.QT(id)
+                        + " order by schemeid");
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String schemeID = c.getString(0);
+                String freeproductID = c.getString(1);
+                int freeProductQty = c.getInt(2);
+
+                setSchemeFreeProductDetails(schemeID, freeproductID,
+                        freeProductQty);
+            }
+        }
+        c.close();
+    }
+
 
     /**
      * @param id
@@ -3844,7 +3941,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public String getLocationIdsForScheme() {
-        String sql, sql1 = "", str = "" + bmodel.getRetailerMasterBO().getLocationId();
+        String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -4472,17 +4569,17 @@ public class SchemeDetailsMasterHelper {
         ArrayList<String> groupNameList = null;
         ArrayList<String> previousGroupNameList = null;
         ArrayList<String> schemeIdList = mSchemeIDListByParentID.get(parentId);
-        for (String schemeid : schemeIdList) {
+        if (schemeIdList != null) {
+            for (String schemeid : schemeIdList) {
 
-            groupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
-            if (previousGroupNameList != null) {
-                if (!previousGroupNameList.equals(groupNameList)) {
-                    return false;
+                groupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
+                if (previousGroupNameList != null) {
+                    if (!previousGroupNameList.equals(groupNameList)) {
+                        return false;
+                    }
                 }
+                previousGroupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
             }
-            previousGroupNameList = mFreeGroupTypeNameBySchemeId.get(schemeid);
-
-
         }
 
         return true;

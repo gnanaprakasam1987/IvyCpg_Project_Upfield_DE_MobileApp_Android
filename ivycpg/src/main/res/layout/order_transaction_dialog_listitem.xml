@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/filter_slider_width"
+    android:layout_height="@dimen/activity_list_height">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/orderid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/filter_list_secondary_text_size"
+            android:layout_toRightOf="@+id/edit_icon"
+            />
+        <ImageView
+            android:id="@+id/edit_icon"
+            android:layout_width="@dimen/profile_header_img_height"
+            android:layout_height="@dimen/profile_header_img_height"
+            android:src="@drawable/ic_edit"
+            android:layout_marginRight="@dimen/sub_activity_list_icon_circle"
+            android:layout_marginLeft="@dimen/sub_activity_list_icon_circle"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/profile_devider_color" />
+
+</RelativeLayout>

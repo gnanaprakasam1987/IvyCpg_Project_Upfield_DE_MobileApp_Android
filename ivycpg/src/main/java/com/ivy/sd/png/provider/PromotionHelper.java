@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.ivy.lib.Utils.QT;
+
 public class PromotionHelper {
 
     private List<SchemeBO> mSchemePromotion;
@@ -423,10 +425,10 @@ public class PromotionHelper {
                 query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
 
             else if (locid > 0 && chid > 0) {
-                query = " where PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ")";
+                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
                 query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
             } else if (locid > 0)
-                query = " where PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ")";
+                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
             else if (chid > 0)
                 query = " where  (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
 
@@ -505,6 +507,9 @@ public class PromotionHelper {
             }
             cursor.close();
 
+            int moduleWeightage = 0;
+            double productWeightage = 0, sum = 0;
+
             sbuffer.append(bmodel.QT(uid));
             sbuffer.append(",");
             sbuffer.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
@@ -515,11 +520,24 @@ public class PromotionHelper {
             sbuffer.append(",");
             sbuffer.append(bmodel.retailerMasterBO.getDistributorId());
 
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                headerColumns = headerColumns + ",Weightage,Score";
+                moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PROMO);
+                sbuffer.append(",");
+                sbuffer.append(moduleWeightage);
+                sbuffer.append(",0");
+            }
+
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                detailColumns = detailColumns + ",Score";
+            }
+
             for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
-
+                    productWeightage = (double) 100 / (double) promotionList.size();
                     for (PromotionBO promotion : promotionList) {
 
                         if (promotion.getIsExecuted() == 1 || !"0".equals(promotion.getReasonID()) || (promotion.getRatingId() != null && !"0".equals(promotion.getRatingId()))) {
@@ -537,11 +555,24 @@ public class PromotionHelper {
                                     "," + promotion.getPromoQty() +
                                     "," + bmodel.QT(promotion.getImageName()) +
                                     "," + promotion.getHasAnnouncer();
+
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                sbDetails = sbDetails + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
+
                             db.insertSQL("PromotionDetail", detailColumns,
                                     sbDetails);
                         }
                     }
                 }
+            }
+
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+                double achieved = ( (sum / (double)100) * moduleWeightage);
+                db.updateSQL("Update PromotionHeader set Score = " + achieved + " where UID = " + QT(uid) + " and" +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(bmodel.getRetailerMasterBO().getRetailerID()));
             }
 
             db.closeDB();

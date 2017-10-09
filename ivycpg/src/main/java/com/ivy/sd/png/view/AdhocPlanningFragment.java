@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -41,6 +42,7 @@ public class AdhocPlanningFragment extends Fragment {
     View view;
     private BusinessModel bmodel;
     private Spinner userSpin;
+    private Spinner beatSpin;
     private ListView lv1;
     private ListView lv2;
     private AlertDialog.Builder builder;
@@ -52,6 +54,7 @@ public class AdhocPlanningFragment extends Fragment {
     private ArrayList<RetailerMasterBO> mRetailerList;
     private ArrayList<RetailerMasterBO> mFirstRetailerList;
     private ArrayList<RetailerMasterBO> mSecondRetailerList;
+    private int mSelectecBeatId = 0;
     private boolean bool = false;
 
     @Override
@@ -63,6 +66,7 @@ public class AdhocPlanningFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         userSpin = (Spinner) view.findViewById(R.id.spn_users);
+        beatSpin = (Spinner) view.findViewById(R.id.spn_beat);
         Button mAddBtn = (Button) view.findViewById(R.id.btn_add);
         Button mDeleteBtn = (Button) view.findViewById(R.id.btn_delete);
         Button mRefresh1Btn = (Button) view.findViewById(R.id.btn_refresh1);
@@ -145,7 +149,7 @@ public class AdhocPlanningFragment extends Fragment {
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             userSpin.setAdapter(locationAdapter);
         } else {
-            userList = bmodel.userMasterHelper.downloadUserList();
+            userList = bmodel.userMasterHelper.downloadAdHocUserList();
             if (userList == null)
                 userList = new ArrayList<>();
 
@@ -160,6 +164,19 @@ public class AdhocPlanningFragment extends Fragment {
             userSpin.setAdapter(userAdapter);
         }
 
+        if (bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD) {
+            ArrayList<BeatMasterBO> beatList = new ArrayList<>();
+            BeatMasterBO beatMasterBO = new BeatMasterBO();
+            beatMasterBO.setBeatId(0);
+            beatMasterBO.setBeatDescription(getResources().getString(R.string.select_beat));
+            beatList.add(0, beatMasterBO);
+            ArrayAdapter<BeatMasterBO> beatAdapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
+                    R.layout.spinner_bluetext_layout, beatList);
+            beatAdapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            beatSpin.setAdapter(beatAdapter);
+        } else
+            beatSpin.setVisibility(View.GONE);
 
         userSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -172,15 +189,37 @@ public class AdhocPlanningFragment extends Fragment {
                     updateList();
                 } else {
                     boolean flag = false;
-                    if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD)
-                        mSelectedLocBO = (LocationBO) userSpin.getSelectedItem();
-                    else
-                        mSelectedUserBO = (UserMasterBO) userSpin.getSelectedItem();
+                    if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
 
-                    if (mRetailerListByLocOrUserId != null) {
-                        ArrayList<RetailerMasterBO> retailerList = mRetailerListByLocOrUserId.get(mSelectedUserBO.getUserid());
-                        if (retailerList != null && !retailerList.isEmpty()) {
-                            flag = true;
+                        mSelectedLocBO = (LocationBO) userSpin.getSelectedItem();
+                        if (mRetailerListByLocOrUserId != null) {
+                            ArrayList<RetailerMasterBO> retailerList = mRetailerListByLocOrUserId.get(mSelectedLocBO.getLocId());
+                            if (retailerList != null && !retailerList.isEmpty()) {
+                                flag = true;
+                            }
+                        }
+                    } else {
+                        mSelectedUserBO = (UserMasterBO) userSpin.getSelectedItem();
+                        if (mSelectedUserBO != null && bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD) {
+                            ArrayList<BeatMasterBO> beatList = new ArrayList<>();
+
+                            beatList = bmodel.beatMasterHealper.downloadBeats(mSelectedUserBO.getUserid());
+                            if (beatList == null)
+                                beatList = new ArrayList<>();
+
+                            BeatMasterBO beatMasterBO = new BeatMasterBO();
+                            beatMasterBO.setBeatId(0);
+                            beatMasterBO.setBeatDescription(getResources().getString(R.string.all));
+                            beatList.add(0, beatMasterBO);
+                            ArrayAdapter<BeatMasterBO> beatAdapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
+                                    android.R.layout.simple_spinner_item, beatList);
+                            beatSpin.setAdapter(beatAdapter);
+                        }
+                        if (mRetailerListByLocOrUserId != null) {
+                            ArrayList<RetailerMasterBO> retailerList = mRetailerListByLocOrUserId.get(mSelectedUserBO.getUserid());
+                            if (retailerList != null && !retailerList.isEmpty()) {
+                                flag = true;
+                            }
                         }
                     }
 
@@ -199,16 +238,36 @@ public class AdhocPlanningFragment extends Fragment {
                 // Do nothing
             }
         });
+
+        beatSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                BeatMasterBO beatMasterBO = (BeatMasterBO) beatSpin.getSelectedItem();
+                mSelectecBeatId = beatMasterBO.getBeatId();
+                updateList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
 
     private void updateList() {
 
         int locOrUserId = 0;
 
-        if (mSelectedUserBO != null) {
-            locOrUserId = mSelectedUserBO.getUserid();
-        } else if (mSelectedLocBO != null) {
-            locOrUserId = mSelectedLocBO.getLocId();
+        if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD) {
+            if (mSelectedLocBO != null) {
+                locOrUserId = mSelectedLocBO.getLocId();
+            }
+        } else {
+            if (mSelectedUserBO != null) {
+                locOrUserId = mSelectedUserBO.getUserid();
+
+            }
         }
 
 
@@ -220,10 +279,20 @@ public class AdhocPlanningFragment extends Fragment {
 
 
                 for (RetailerMasterBO retailerMasterBO : mRetailerList) {
-                    if (!retailerMasterBO.isAddedForDownload()) {
-                        mFirstRetailerList.add(retailerMasterBO);
+                    if (mSelectecBeatId != 0 && bmodel.configurationMasterHelper.IS_BEAT_WISE_RETAILER_DOWNLOAD) {
+                        if (retailerMasterBO.getBeatID() == mSelectecBeatId) {
+                            if (!retailerMasterBO.isAddedForDownload()) {
+                                mFirstRetailerList.add(retailerMasterBO);
+                            } else {
+                                mSecondRetailerList.add(retailerMasterBO);
+                            }
+                        }
                     } else {
-                        mSecondRetailerList.add(retailerMasterBO);
+                        if (!retailerMasterBO.isAddedForDownload()) {
+                            mFirstRetailerList.add(retailerMasterBO);
+                        } else {
+                            mSecondRetailerList.add(retailerMasterBO);
+                        }
                     }
                 }
                 if (mFirstRetailerList != null)
@@ -567,7 +636,7 @@ public class AdhocPlanningFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
-                bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), false);
+                bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
             } else {
                 if (mSelectedUserBO != null)
                     bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedUserBO.getUserid(), false);
@@ -596,6 +665,7 @@ public class AdhocPlanningFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            bool = false;
             ArrayList<RetailerMasterBO> retailerList = new ArrayList<>();
             retailerList.addAll(mSecondRetailerList);
 
@@ -605,7 +675,7 @@ public class AdhocPlanningFragment extends Fragment {
             }
 
             for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                if (bo.getIsPlanned().equals("Y") && !temp.contains(bo.getRetailerID())) {
+                if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y")) && !temp.contains(bo.getRetailerID())) {
                     retailerList.add(bo);
                 }
             }

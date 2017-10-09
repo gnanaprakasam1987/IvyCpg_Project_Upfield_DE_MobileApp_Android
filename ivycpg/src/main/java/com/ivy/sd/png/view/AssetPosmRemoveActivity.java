@@ -9,16 +9,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 
@@ -30,13 +33,15 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	private ArrayList<AssetTrackingBO> mylist;
 	private BusinessModel bmodel;
 	private String mModuleName="";
-	private  ListView lvwplist;
-	private  Toolbar toolbar;
+	private ListView lvwplist;
+	private Toolbar toolbar;
 	private String mposmiddialog;
 	private String msnodialog;
 	private String msbdid;
-	private String mbrandid;
-	Button btnDelete;
+	private String mbrandid,mReasonID;
+	protected Button btnDelete;
+	protected ArrayList<ReasonMaster> mAssetReasonList;
+	protected ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,13 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			public void onClick(View view) {
 
 				if(isAssetSelectedToDelete()){
-					mDialog();
+					if(isAssetSelectedWithReason()) {
+						mDialog();
+					}
+					else
+					{
+						Toast.makeText(AssetPosmRemoveActivity.this, getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
+					}
 				}
 				else{
 					Toast.makeText(AssetPosmRemoveActivity.this,getResources().getString(R.string.nothing_selected_to_remove),Toast.LENGTH_LONG).show();
@@ -86,7 +97,15 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		}
 		return false;
 	}
+	private boolean isAssetSelectedWithReason(){
 
+		for(AssetTrackingBO bo:mylist){
+			if(!bo.getReason1ID().equalsIgnoreCase("0")){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -94,9 +113,6 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			 finish();
 			return true;
 		}
-
-
-
 
 		return super.onOptionsItemSelected(item);
 
@@ -110,18 +126,29 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
 		items = bmodel.assetTrackingHelper.getAddremoveassets();
 		if (items == null) {
-
 			return;
 		}
 		int siz = items.size();
 		mylist = new ArrayList<>();
 		for (int i = 0; i < siz; ++i) {
 			AssetTrackingBO ret = items.elementAt(i);
-
 			mylist.add(ret);
-
 		}
 
+//		ReasonMaster reason1 = new ReasonMaster();
+//		reason1.setReasonID(Integer.toString(0));
+//		reason1.setReasonDesc("Select Reason");
+	//	mAssetReasonList.add(0, reason1);
+		mAssetReasonList=new ArrayList<>();
+		bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Remove");
+		mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
+		mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
+		mAssetReasonSpinAdapter = new ArrayAdapter<>(AssetPosmRemoveActivity.this,
+				R.layout.spinner_bluetext_layout, mAssetReasonList);
+		mAssetReasonSpinAdapter
+				.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+//		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
+//		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		MyAdapter mSchedule = new MyAdapter(mylist);
 		lvwplist.setAdapter(mSchedule);
 
@@ -147,8 +174,8 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			return items.size();
 		}
 
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
+
 			final ViewHolder holder;
 			AssetTrackingBO product = items.get(position);
 			View row = convertView;
@@ -163,15 +190,38 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 				holder.tvinstall = (TextView) row
 						.findViewById(R.id.tv_lt_install);
 				holder.chkRemove=(CheckBox) row.findViewById(R.id.chk);
+				holder.SPRemove=(Spinner)row.findViewById(R.id.sp_remove_reason);
+				holder.SPRemove.setEnabled(false);
 				holder.chkRemove.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton compoundButton, boolean isSelected) {
 						if(isSelected){
 							holder.productObj.setSelectedToRemove(true);
+							holder.SPRemove.setEnabled(true);
 						}
 						else{
 							holder.productObj.setSelectedToRemove(false);
+							holder.SPRemove.setEnabled(false);
 						}
+
+					}
+				});
+
+				holder.SPRemove.setAdapter(mAssetReasonSpinAdapter);
+				holder.SPRemove.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+						ReasonMaster reasonBO = (ReasonMaster) holder.SPRemove
+								.getSelectedItem();
+
+						holder.productObj.setReason1ID(reasonBO
+								.getReasonID());
+						holder.productObj.setReasonDesc(reasonBO
+								.getReasonDesc());
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
 
 					}
 				});
@@ -211,7 +261,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		TextView tvsno;
 		TextView tvinstall;
 		CheckBox chkRemove;
-
+		Spinner SPRemove;
 		int ref;
 
 	}
@@ -252,17 +302,19 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			if(lstTemp.get(i).isSelectedToRemove()) {
 
 				if ("N".equals(lstTemp.get(i).getMflag())) {
-					mposmiddialog = lstTemp.get(i)
-							.getMposm();
+					mposmiddialog = lstTemp.get(i).getMposm();
 					msnodialog = lstTemp.get(i).getMsno();
 					msbdid = lstTemp.get(i).getMsbdid();
 					mbrandid = lstTemp.get(i).getMbrand();
+					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
+						mReasonID = lstTemp.get(i).getReason1ID();
+						bmodel.assetTrackingHelper
+								.saveAddandDeletedetails(mposmiddialog,
+										msnodialog, msbdid, mbrandid, mReasonID, mModuleName);
 
-					bmodel.assetTrackingHelper
-							.saveAddandDeletedetails(mposmiddialog,
-									msnodialog, msbdid, mbrandid,mModuleName);
+						mylist.remove(i);
+					}
 
-					mylist.remove(i);
 
 				} else {
 					bmodel.assetTrackingHelper

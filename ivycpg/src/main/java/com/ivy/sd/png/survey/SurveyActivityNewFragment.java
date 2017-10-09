@@ -272,12 +272,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             } else if (childList.size() == 1) {
                 hide_selectuser_icon = true;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
-                if (bmodel.configurationMasterHelper.IS_CNT01
-                        && mMenuCode.equals("MENU_SURVEY_BA_CS")) {
-                    childUserName = childList.get(0).getChildUserName();
-                    setScreenTitle(bmodel.mSelectedActivityName + " (" +
-                            childUserName + ")");
-                }
                 loadListData();
             }
         } else {
@@ -1330,6 +1324,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                                View view, int position, long id) {
 
                         mCurrentQuestionBO.getSelectedAnswerIDs()
+                                .clear();
+                        mCurrentQuestionBO.getSelectedAnswer()
                                 .clear();
                         if (position != 0) {
                             mCurrentQuestionBO
@@ -2531,7 +2527,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
         surveyHelperNew.setmQuestionData(mQuestions);
 
-        questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
+        /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeRight() {
                 if ((tabPos - 1) >= 0 && tabLayout != null)
                     tabLayout.getTabAt(tabPos - 1).select();
@@ -2541,7 +2537,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if ((tabPos + 1) <= tabCount && tabLayout != null)
                     tabLayout.getTabAt(tabPos + 1).select();
             }
-        });
+        });*/
 
 
         listAdapter = new QuestionAdapter();

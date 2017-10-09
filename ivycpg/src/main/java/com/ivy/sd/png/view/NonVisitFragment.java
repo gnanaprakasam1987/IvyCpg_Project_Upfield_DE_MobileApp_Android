@@ -974,7 +974,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                 holder.visitFrequency = (TextView) convertView
                         .findViewById(R.id.visit_frequency);
                 holder.outletAddress = (TextView) convertView.findViewById(R.id.outlet_address_tv);
-                holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
 
                 if (!bmodel.configurationMasterHelper.HAS_PROFILE_BUTTON_IN_RETAILER_LIST)

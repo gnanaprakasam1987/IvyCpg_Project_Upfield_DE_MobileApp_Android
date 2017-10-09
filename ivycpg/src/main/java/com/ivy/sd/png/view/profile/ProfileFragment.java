@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view.profile;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -227,6 +228,7 @@ public class ProfileFragment extends Fragment {
         builder.setMessage(msg);
         builder.setCancelable(false);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @SuppressLint("NewApi")
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (isData) {
@@ -706,10 +708,10 @@ public class ProfileFragment extends Fragment {
             }
             case "PROFILE10": {
                 String text = "";
-                if (retailerObj.getContactnumber() != null
-                        && !retailerObj.getContactnumber().equals(
+                if (retailerObj.getContactnumber1() != null
+                        && !retailerObj.getContactnumber1().equals(
                         "null")) {
-                    text = retailerObj.getContactnumber();
+                    text = retailerObj.getContactnumber1();
                 }
 
                 outletBO = new NewOutletBO();

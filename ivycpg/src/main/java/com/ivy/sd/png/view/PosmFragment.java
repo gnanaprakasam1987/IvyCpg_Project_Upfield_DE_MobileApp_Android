@@ -8,14 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
@@ -56,8 +52,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
@@ -206,24 +200,33 @@ public class PosmFragment extends IvyBaseFragment implements
             }
         });
         btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
-        btnBarcode.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (bmodel.assetTrackingHelper.SHOW_POSM_BARCODE) {
+            btnBarcode.setVisibility(View.VISIBLE);
+            btnBarcode.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                ((PosmTrackingScreen) getActivity()).checkAndRequestPermissionAtRunTime(2);
-                int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.CAMERA);
-                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                    new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
-                } else {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.permission_enable_msg)
-                                    + " " + getResources().getString(R.string.permission_camera)
-                            , Toast.LENGTH_LONG).show();
+                    ((PosmTrackingScreen) getActivity()).checkAndRequestPermissionAtRunTime(2);
+                    int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.CAMERA);
+                    if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                            @Override
+                            protected void startActivityForResult(Intent intent, int code) {
+                                PosmFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                            }
+                        };
+                        integrator.setBeepEnabled(false).initiateScan();
+                    } else {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.permission_enable_msg)
+                                        + " " + getResources().getString(R.string.permission_camera)
+                                , Toast.LENGTH_LONG).show();
+                    }
+
                 }
-
-            }
-        });
+            });
+        }
 
         return view;
     }
@@ -300,7 +303,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+        if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
         if (mLocationAdapter.getCount() > 0) {
@@ -310,7 +313,7 @@ public class PosmFragment extends IvyBaseFragment implements
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
         if (!isShowed) {
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+            if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 showLocation();
             loadedItem();
             isShowed = true;
@@ -385,9 +388,11 @@ public class PosmFragment extends IvyBaseFragment implements
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION || screenCode.equals("MENU_POSM_CS"))
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
-            if (bmodel.productHelper.getInStoreLocation().size() < 2)
+            if (bmodel.productHelper.getInStoreLocation().size() < 1)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
+        //Move Asset is removed in Posm
+        menu.removeItem(R.id.menu_move);
         // hardcoded for demo
         if (screenCode.equals("MENU_POSM_CS"))
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
@@ -716,6 +721,7 @@ public class PosmFragment extends IvyBaseFragment implements
                                 holder.minstalldate.setEnabled(false);
                                 holder.mservicedate.setEnabled(false);
                                 //  holder.assetBO.setImageName("");
+                                //holder.assetBO.setImgName("");
                                 holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                                 holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                                 holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -991,6 +997,7 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.minstalldate.setEnabled(false);
                 holder.mservicedate.setEnabled(false);
                 holder.assetBO.setImageName("");
+                holder.assetBO.setImgName("");
                 holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -1058,7 +1065,7 @@ public class PosmFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.assetBO.getImageName()))
                     && (!"null".equals(holder.assetBO.getImageName()))) {
 //                Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera_blue_24dp);
-                setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
+                setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
 //                Glide.with(getActivity()).load(
 //                        getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 //                                + "/" + DataMembers.photoFolderName + "/" + holder.assetBO.getImageName())
@@ -1211,6 +1218,7 @@ public class PosmFragment extends IvyBaseFragment implements
                         for (AssetTrackingBO assetBO : items) {
                             if (bbid.equals(Integer.toString(assetBO.getAssetID()))) {
                                 assetBO.setImageName("");
+                                assetBO.setImgName("");
                             }
                         }
                         bmodel.assetTrackingHelper
@@ -1290,9 +1298,14 @@ public class PosmFragment extends IvyBaseFragment implements
 
     private void onsaveImageName(int assetID, String imgName) {
 
+        String imagePath = "Asset/"
+                + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                .replace("/", "") + "/"
+                + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
             if (assetID == assetBO.getAssetID()) {
-                assetBO.setImageName(imgName);
+                assetBO.setImageName(imagePath);
+                assetBO.setImgName(imgName);
                 break;
             }
         }
@@ -1316,17 +1329,17 @@ public class PosmFragment extends IvyBaseFragment implements
             } else {
                 Commons.print("AssetTracking," + "Camers Activity : Canceled");
             }
-        }
+        } else {
 
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                strBarCodeSearch = result.getContents();
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+                    strBarCodeSearch = result.getContents();
+                }
             }
         }
-
     }
 
     public void deleteUnusedImages() {
@@ -1804,7 +1817,7 @@ public class PosmFragment extends IvyBaseFragment implements
                 }
             }
         } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-            if (mSelectedIdByLevelId.size() == 0 || isMapEmpty(mSelectedIdByLevelId)) {
+            if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                 myList.addAll(mAssetTrackingList);
             } else {
                 for (LevelBO levelBO : parentidList) {
@@ -1900,13 +1913,4 @@ public class PosmFragment extends IvyBaseFragment implements
         }
     }
 
-    /* Checks if all values are null */
-    public boolean isMapEmpty(HashMap<Integer, Integer> aMap) {
-        for (Integer v : aMap.values()) {
-            if (v != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

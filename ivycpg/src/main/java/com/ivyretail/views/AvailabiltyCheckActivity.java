@@ -23,6 +23,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     private EditText mSelectedET;
     private EditText etShelfPiece, etShelfCase, etShelfOuter;
     private EditText etPricePiece, etPriceCase, etPriceOuter;
+    private EditText etMrpPricePiece, etMrpPriceCase, etMrpPriceOuter;
     private EditText etExpPiece, etExpCase, etExpOuter;
     private AppCompatCheckBox chkStockListed;
     private AppCompatCheckBox chkStkDistributed;
@@ -123,6 +126,11 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         etPriceCase = (EditText) findViewById(R.id.et_price_csValue);
         etPriceOuter = (EditText) findViewById(R.id.et_price_ouValue);
 
+        etMrpPricePiece = (EditText) findViewById(R.id.et_priceMrp_pcValue);
+        etMrpPriceCase = (EditText) findViewById(R.id.et_priceMrp_csValue);
+        etMrpPriceOuter = (EditText) findViewById(R.id.et_priceMrp_ouValue);
+
+
         etExpPiece = (EditText) findViewById(R.id.et_exp_pcValue);
         etExpCase = (EditText) findViewById(R.id.et_exp_csValue);
         etExpOuter = (EditText) findViewById(R.id.et_exp_ouValue);
@@ -140,6 +148,9 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         etPricePiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         etPriceCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         etPriceOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        etMrpPricePiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        etMrpPriceCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        etMrpPriceOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         etExpPiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         etExpCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         etExpOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -154,6 +165,9 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         ((TextView) findViewById(R.id.tv_price_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_price_csTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_price_ouTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_csTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_ouTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_change_price)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         ((TextView) findViewById(R.id.tvTitleExpiryCheck)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
         ((TextView) findViewById(R.id.tv_exp_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -166,6 +180,34 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_priceMrp_pcTitle).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_priceMrp_pcTitle))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_priceMrp_pcTitle).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_priceMrp_csTitle).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_priceMrp_csTitle))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_priceMrp_csTitle).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_priceMrp_ouTitle).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_priceMrp_ouTitle))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_priceMrp_ouTitle).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+
+
+
         loadReason(); // Initialize Adapter and Load Reason
 
     }
@@ -174,7 +216,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         if (screenTitle != null)
             setScreenTitle(screenTitle);
         if (Pid != null)
-            mProductMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            mProductMasterBO = bmodel.productHelper.getTaggedProductBOById(Pid);
 
         if (mProductMasterBO != null) {
 
@@ -195,6 +237,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((LinearLayout) findViewById(R.id.ll_reason)).setVisibility(View.GONE);
 
             //shelf
+            if (!bmodel.configurationMasterHelper.SHOW_STOCK_CB)
+                ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
                 ((LinearLayout) findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP)
@@ -203,6 +247,15 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((LinearLayout) findViewById(R.id.ll_avail_outer)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
                 ((LinearLayout) findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC &&
+                        !bmodel.configurationMasterHelper.SHOW_STOCK_SP &&
+                        !bmodel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                    ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setVisibility(View.GONE);
+                    ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
+                }
+
+
             }else
                 {
                     ((TextView) findViewById(R.id.tv_avg_qty_value)).setText(mProductMasterBO.getQty_klgs()+"");
@@ -210,6 +263,9 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     ((TextView) findViewById(R.id.tv_avg_rfield2_value)).setText(mProductMasterBO.getRfield2_klgs()+"");
                     ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs()+"");
                 }
+            if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
+                    && !bmodel.configurationMasterHelper.SHOW_STOCK_CB)
+                ((RelativeLayout) findViewById(R.id.availability_lty)).setVisibility(View.GONE);
 
 
             //price
@@ -220,12 +276,34 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     ((LinearLayout) findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_PCS)
                     ((LinearLayout) findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_CS)
+                    ((LinearLayout) findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_OU)
+                    ((LinearLayout) findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_PCS)
+                    ((LinearLayout) findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_CS &&
+                        !bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_OU &&
+                        !bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_PCS)
+                    ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
+
             } else {
+                ((LinearLayout) findViewById(R.id.ll_price_parentLty)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
+                ((LinearLayout) findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
+                ((LinearLayout) findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
+                ((LinearLayout) findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
+                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             }
-
+            if (!bmodel.configurationMasterHelper.IS_SHOW_PRICE_CHANGED) {
+                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
+            } else {
+                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.VISIBLE);
+            }
 
             //Expiry
             if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
@@ -237,6 +315,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     ((LinearLayout) findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
 
             } else {
+                ((LinearLayout) findViewById(R.id.ll_expriyCheck_parentLty)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
@@ -631,6 +710,149 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         }
                     });
 
+
+
+
+            /**  MRP price Check**/
+
+
+            etMrpPricePiece.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s,
+                                              int start, int count, int after) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String qty = s.toString();
+                    if (!"".equals(qty)) {
+                        int sp_qty = SDUtil
+                                .convertToInt(etMrpPricePiece
+                                        .getText().toString());
+                        mProductMasterBO.setMrp_pc(qty);
+                    }
+                }
+            });
+
+            etMrpPricePiece
+                    .setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            mSelectedET = etMrpPricePiece;
+                            mSelectedET.setTag(mProductMasterBO);
+                            int inType = etMrpPricePiece
+                                    .getInputType();
+                            etMrpPricePiece
+                                    .setInputType(InputType.TYPE_NULL);
+                            etMrpPricePiece.onTouchEvent(event);
+                            etMrpPricePiece.setInputType(inType);
+                            etMrpPricePiece.selectAll();
+                            etMrpPricePiece.requestFocus();
+                            inputManager.hideSoftInputFromWindow(
+                                    etMrpPricePiece
+                                            .getWindowToken(), 0);
+                            return true;
+                        }
+                    });
+
+            etMrpPriceCase.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s,
+                                              int start, int count, int after) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String qty = s.toString();
+                    if (!"".equals(qty)) {
+                        mProductMasterBO.setMrp_ca(qty);
+                    }
+
+                }
+            });
+
+            etMrpPriceCase
+                    .setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            mSelectedET = etMrpPriceCase;
+                            mSelectedET.setTag(mProductMasterBO);
+                            int inType = etMrpPriceCase
+                                    .getInputType();
+                            etMrpPriceCase
+                                    .setInputType(InputType.TYPE_NULL);
+                            etMrpPriceCase.onTouchEvent(event);
+                            etMrpPriceCase.setInputType(inType);
+                            etMrpPriceCase.selectAll();
+                            etMrpPriceCase.requestFocus();
+                            inputManager.hideSoftInputFromWindow(
+                                    etMrpPriceCase
+                                            .getWindowToken(), 0);
+                            return true;
+                        }
+                    });
+
+            etMrpPriceOuter.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s,
+                                              int start, int count, int after) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String qty = s.toString();
+                    if (!"".equals(qty)) {
+                        mProductMasterBO.setMrp_ou(qty);
+                    }
+
+                }
+            });
+
+            etMrpPriceOuter
+                    .setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            mSelectedET = etMrpPriceOuter;
+                            mSelectedET.setTag(mProductMasterBO);
+                            int inType = etMrpPriceOuter
+                                    .getInputType();
+                            etMrpPriceOuter
+                                    .setInputType(InputType.TYPE_NULL);
+                            etMrpPriceOuter.onTouchEvent(event);
+                            etMrpPriceOuter.setInputType(inType);
+                            etMrpPriceOuter.selectAll();
+                            etMrpPriceOuter.requestFocus();
+                            inputManager.hideSoftInputFromWindow(
+                                    etMrpPriceOuter
+                                            .getWindowToken(), 0);
+                            return true;
+                        }
+                    });
+
+
+            /** MRP Price Check **/
+
             etExpPiece.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -927,6 +1149,10 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             etPriceOuter.setText(mProductMasterBO.getPrice_oo());
             etPriceCase.setText(mProductMasterBO.getPrice_ca());
             etPricePiece.setText(mProductMasterBO.getPrice_pc());
+
+            etMrpPriceOuter.setText(mProductMasterBO.getMrp_ou());
+            etMrpPriceCase.setText(mProductMasterBO.getMrp_ca());
+            etMrpPricePiece.setText(mProductMasterBO.getMrp_pc());
 
 
             etExpCase.setText(mProductMasterBO.getLocations()

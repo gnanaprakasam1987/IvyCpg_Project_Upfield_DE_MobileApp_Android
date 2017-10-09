@@ -17,7 +17,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -56,7 +55,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -428,17 +426,17 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     @Override
                     public void onClick(View view) {
 
-                        if (bmodel.competitorTrackingHelper.getNoOfImages())
+                        /*if (bmodel.competitorTrackingHelper.getNoOfImages())
                             Toast.makeText(
                                     SubCompetitorTrackingActivity.this,
                                     getResources()
                                             .getString(
                                                     R.string.its_highly_recommend_you_to_upload_the_images_before_capturing_new_image),
                                     Toast.LENGTH_SHORT).show();
-                        else {
+                        else {*/
                             trackinglistId = holder.mCompTrackBO.getId();
                             takephoto(bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
-                        }
+                        //}
                     }
                 });
 

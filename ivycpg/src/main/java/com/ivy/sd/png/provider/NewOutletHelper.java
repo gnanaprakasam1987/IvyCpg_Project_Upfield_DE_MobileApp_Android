@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.AddressBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -301,6 +302,7 @@ public class NewOutletHelper {
                     + ",";
 
             String queryInsert = "";
+            String temRouteQuery="";
 
             profileEditConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
@@ -964,10 +966,33 @@ public class NewOutletHelper {
                     }
 
 
+                }else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
+
+                    if (!configBO.getMenuNumber().equals("0")) {
+
+                        if ((bmodel.getRetailerMasterBO().getBeatID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!(bmodel.getRetailerMasterBO().getBeatID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+
+                            isData = true;
+                        }
+                    }
+
+
                 }
 
                 if (!queryInsert.equals(""))
                     db.executeQ(queryInsert);
+
+                if(isData&&configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1){
+                    queryInsert = insertquery + bmodel.QT("PROFILE77") + "," + bmodel.getRetailerMasterBO().getBeatID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                    db.executeQ(queryInsert);
+                }
 
                 queryInsert = "";
 
@@ -1116,7 +1141,7 @@ public class NewOutletHelper {
                     "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
-                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State" +
+                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RA.RField5,RA.RField6,RA.TinExpDate" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1167,7 +1192,9 @@ public class NewOutletHelper {
                         retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
                         retailer.setPincode(c.getString(c.getColumnIndex("pincode")));
                         retailer.setState(c.getString(c.getColumnIndex("State")));
-
+                        retailer.setRfield5(c.getString(c.getColumnIndex("RField5")));
+                        retailer.setRfield6(c.getString(c.getColumnIndex("RField6")));
+                        retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                         lst.add(retailer);
                         mNewRetailerById.put(retailer.getRetailerId(), retailer);
                     }
@@ -1786,7 +1813,7 @@ public class NewOutletHelper {
             column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
                     + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
                     "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
-                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber";
+                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate";
 
             value = QT(getId())
                     + "," + QT(outlet.getOutletName())
@@ -1808,7 +1835,10 @@ public class NewOutletHelper {
                     + "," + QT("N")
                     + "," + getNewoutlet().getCreditDays()
                     + "," + getNewoutlet().getIsSEZ()
-                    + "," + getNewoutlet().getGstNum();
+                    + "," + getNewoutlet().getGstNum()
+                    + "," + QT(getNewoutlet().getRfield5())
+                    + "," + QT(getNewoutlet().getRfield6())
+                    + "," + QT(getNewoutlet().getTinExpDate());
 
 
             db.insertSQL("RetailerMaster", column, value);
@@ -1841,22 +1871,52 @@ public class NewOutletHelper {
             }
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID";
 
-            value = QT(getId())
-                    + "," + QT(outlet.getAddress())
-                    + "," + QT(outlet.getAddress2())
-                    + "," + QT(outlet.getAddress3())
-                    + "," + QT(outlet.getPhone())
-                    + "," + QT(outlet.getCity())
-                    + "," + QT(outlet.getNewOutletlattitude() + "")
-                    + "," + QT(outlet.getNewOutletLongitude() + "")
-                    + "," + QT(getNewoutlet().getEmail())
-                    + "," + QT(getNewoutlet().getFax())
-                    + "," + QT(getNewoutlet().getPincode())
-                    + "," + QT(getNewoutlet().getState())
-                    + "," + QT("N")
-                    + "," + 1;
+            if (outlet.getmAddressByTag() != null) {
+                for (String addressType : outlet.getmAddressByTag().keySet()) {
+                    AddressBO addressBO = outlet.getmAddressByTag().get(addressType);
+                    value = QT(getId())
+                            + "," + QT(addressBO.getAddress1())
+                            + "," + QT(addressBO.getAddress2())
+                            + "," + QT(addressBO.getAddress3())
+                            + "," + QT(addressBO.getPhone())
+                            + "," + QT(addressBO.getCity())
+                            + "," + QT(outlet.getNewOutletlattitude() + "")
+                            + "," + QT(outlet.getNewOutletLongitude() + "")
+                            + "," + QT(addressBO.getEmail())
+                            + "," + QT(addressBO.getFax())
+                            + "," + QT(addressBO.getPincode())
+                            + "," + QT(addressBO.getState())
+                            + "," + QT("N")
+                            + "," + 1
+                            + "," + addressType;
+
+
+                    db.insertSQL("RetailerAddress", column, value);
+                }
+            }
+            else{
+
+                value = QT(getId())
+                        + "," + QT(outlet.getAddress())
+                        + "," + QT(outlet.getAddress2())
+                        + "," + QT(outlet.getAddress3())
+                        + "," + QT(outlet.getPhone())
+                        + "," + QT(outlet.getCity())
+                        + "," + QT(outlet.getNewOutletlattitude() + "")
+                        + "," + QT(outlet.getNewOutletLongitude() + "")
+                        + "," + QT(getNewoutlet().getEmail())
+                        + "," + QT(getNewoutlet().getFax())
+                        + "," + QT(getNewoutlet().getPincode())
+                        + "," + QT(getNewoutlet().getState())
+                        + "," + QT("N")
+                        + "," + 1
+                        + "," + 0;
+
+                db.insertSQL("RetailerAddress", column, value);
+
+            }
 
             db.insertSQL("RetailerAddress", column, value);
 
@@ -2057,6 +2117,84 @@ public class NewOutletHelper {
         }
 
         return mRetailerIds;
+    }
+
+    public ArrayList<StandardListBO> getAddressTypes() {
+        ArrayList<StandardListBO> mLst = new ArrayList<>();
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("select listid,listname from StandardListMaster ");
+            sb.append("where listtype='ADDRESS_TYPE'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                StandardListBO bo;
+                while (c.moveToNext()) {
+                    bo=new StandardListBO();
+                    bo.setListID(c.getString(0));
+                    bo.setListName(c.getString(1));
+                    mLst.add(bo);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+            return new ArrayList<StandardListBO>();
+        }
+
+        return mLst;
+    }
+
+    public HashMap<String,AddressBO> downloadRetailerAddress() {
+        HashMap<String,AddressBO> lst=new HashMap<>();
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("select distinct Address1,Address2,Address3,ContactNumber,City,latitude,longitude,email,FaxNo,pincode,State,AddressTypeID from RetailerAddress");
+         /*   sb.append("LEFT JOIN StandardListMaster SM ON RA.AddressTypeID=SM.listid");
+            sb.append("where listtype='ADDRESS_TYPE'");*/
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                AddressBO bo;
+                while (c.moveToNext()) {
+                    bo=new AddressBO();
+                    bo.setAddress1(c.getString(0));
+                    bo.setAddress2(c.getString(1));
+                    bo.setAddress3(c.getString(2));
+                    bo.setPhone(c.getString(3));
+                    bo.setCity(c.getString(4));
+                    bo.setNewOutletlattitude(c.getDouble(5));
+                    bo.setNewOutletLongitude(c.getDouble(6));
+                    bo.setEmail(c.getString(7));
+                    bo.setFax(c.getString(8));
+                    bo.setPincode(c.getString(9));
+                    bo.setState(c.getString(10));
+                    bo.setAddressTypeId(c.getInt(11));
+
+                    lst.put(bo.getAddressTypeId()+"",bo);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+            return new HashMap<String,AddressBO>();
+        }
+
+        return lst;
     }
 
 }

@@ -1289,8 +1289,18 @@ public class ProductHelper {
                         + "A.tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
-                        + " from ProductMaster A left join "
-                        + "PriceMaster F on A.Pid = F.pid and F.scid = "
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + " from ProductMaster A";
+
+                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products mapped..
+                    String pdQuery=downloadProductDistribution(mContentLevel);
+                    if(pdQuery.length()>0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
+                    }
+                }
+
+                sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
                         + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
@@ -1332,6 +1342,7 @@ public class ProductHelper {
                     loopEnd = mContentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
                 } else
                     loopEnd = mContentLevel - mFiltrtLevel + 1;
+
                 String batchWiseHighestPrice = " ";
                 if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT) {
                     batchWiseHighestPrice = " and F.batchid="
@@ -1387,20 +1398,28 @@ public class ProductHelper {
                         + ".TypeID,A" + loopEnd
                         + ".baseprice,A1.pname as brandname,A1.parentid"
                         + ((filter16) ? ",A" + loopEnd + ".pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ")
-                        + ",A" + loopEnd + ".weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A" + loopEnd + ".Hasserial ,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                        + ",A" + loopEnd + ".weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A" + loopEnd + ".Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                         + ((filter20) ? "A" + loopEnd + ".pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A" + loopEnd + ".tagDescription,"
+                        + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A1 ";
 
                 for (int i = 2; i <= loopEnd; i++)
                     sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
                             + ".ParentId = A" + (i - 1) + ".PID";
 
+                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products(content level) mapped..
+                    String pdQuery=downloadProductDistribution(mContentLevel);
+                    if(pdQuery.length()>0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                    }
+                }
                 sql = sql + " left join " + "PriceMaster F on A" + loopEnd
                         + ".Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
@@ -1512,6 +1531,8 @@ public class ProductHelper {
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
 
+                    product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
+
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
 
@@ -1539,6 +1560,99 @@ public class ProductHelper {
 
     }
 
+    private static final String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
+    private static final String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
+    private String downloadProductDistribution(int mContentLevel){
+
+        DBUtil db = null;
+        String finalQuery = "";
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "";
+
+            String productIds = "";
+            int givenLevelId = 0;
+
+            if (!bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals("")) {
+
+                String beats = "";
+                //getting retailer beat..
+                if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
+
+
+                    sql = "select beatid from RetailerBeatMapping where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID();
+                    Cursor cursor = db.selectSQL(sql);
+                    if (cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            if (beats.length() > 0)
+                                beats += ",";
+
+                            beats += cursor.getString(0);
+                        }
+                        cursor.close();
+                    }
+                }
+
+                //getting products mapped
+                sql = "select productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
+                    sql += " and criteriaid IN(" + beats + ")";
+                }
+                Cursor c = db.selectSQL(sql);
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        if (productIds.length() > 0)
+                            productIds += ",";
+
+                        productIds += c.getString(0);
+                        givenLevelId = c.getInt(1);
+                    }
+                    c.close();
+                }
+
+
+                ///////////////////////////////
+
+                // If given level is not content level then skipping..
+                if (givenLevelId != 0 && givenLevelId != mContentLevel) {
+
+                    int givenSequence = 0;
+                    sql = "select sequence from ProductLevel where levelid=" + givenLevelId;
+                    Cursor cursor = db.selectSQL(sql);
+                    if (cursor.getCount() > 0) {
+                        if (cursor.moveToNext()) {
+                            givenSequence = cursor.getInt(0);
+                        }
+                        cursor.close();
+                    }
+
+
+                    int loopEnd = mContentLevel - givenSequence + 1;
+                    finalQuery = "select P" + loopEnd + ".pid as productid from productmaster P1";
+                    for (int i = 2; i <= loopEnd; i++)
+                        finalQuery = finalQuery + " INNER JOIN ProductMaster P" + i + " ON P" + i
+                                + ".ParentId = P" + (i - 1) + ".PID";
+
+                    finalQuery += " WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")";
+
+                } else {
+                    //content level so getting directly..
+                    finalQuery = " select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                }
+            }
+
+            db.closeDB();
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return "";
+        }
+
+        return finalQuery;
+
+    }
 
     public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
         return mAttributeByProductId;
@@ -1802,8 +1916,18 @@ public class ProductHelper {
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        + " from ProductMaster A left join "
-                        + "PriceMaster F on A.Pid = F.pid and F.scid = "
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + " from ProductMaster A";
+
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products mapped..
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
+                    }
+                }
+
+                sql = sql +  " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
                         + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
@@ -1907,12 +2031,21 @@ public class ProductHelper {
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP, ")
                         + "A" + loopEnd + ".tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + " from ProductMaster A1 ";
 
                 for (int i = 2; i <= loopEnd; i++)
                     sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
                             + ".ParentId = A" + (i - 1) + ".PID";
+
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                    //downloading product distribution and preparing query to get products(content level) mapped..
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                    }
+                }
 
                 sql = sql
                         + " left join "
@@ -2017,7 +2150,7 @@ public class ProductHelper {
                     product.setDescription(c.getString(c.getColumnIndex("tagDescription")));
 
                     product.setIsNearExpiryTaggedProduct(c.getInt(c.getColumnIndex("isNearExpiry")));
-
+                    product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
                 }
@@ -2045,8 +2178,9 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor c = db.selectSQL("select pid,SM.listName,SM.flex1 from RetailerProductDisplay RP " +
-                    "left join standardListMaster SM ON RP.colorId=SM.listId");
+            Cursor c = db.selectSQL("select pid,SM.listName,SM.flex1,RField from RetailerProductDisplay RP " +
+                    "left join standardListMaster SM ON RP.colorId=SM.listId where RP.RetailerId=" +
+                    bmodel.retailerMasterBO.getRetailerID());
             if (c != null) {
                 while (c.moveToNext()) {
 
@@ -2598,7 +2732,13 @@ public class ProductHelper {
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
             }
+
+            //clear delivered qty
+            product.setDeliveredCaseQty(0);
+            product.setDeliveredOuterQty(0);
+            product.setDeliveredPcsQty(0);
         }
+
 
     }
 
@@ -4257,7 +4397,7 @@ public class ProductHelper {
             query = "SELECT PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
-                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
+                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
                     + sql3
                     + sql1
                     + " FROM ProductMaster PM"
@@ -4329,7 +4469,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4518,7 +4658,7 @@ public class ProductHelper {
             query = "SELECT  PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
-                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
+                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" //+ ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse "
                     + sql3
                     + sql1
                     + " FROM ProductMaster PM"
@@ -4584,7 +4724,7 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -8461,8 +8601,6 @@ public class ProductHelper {
                 loopEnd = mContentLevel - mFiltrtLevel + 1;
 
 
-
-
                 sql = "select A"
                         + loopEnd
                         + ".pid, A"
@@ -8534,15 +8672,15 @@ public class ProductHelper {
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
 
-                    sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
-                            + mChildLevel + " FROM ConfigActivityFilter"
-                            + " WHERE ActivityCode = "
-                            + bmodel.QT(moduleCode)
-                            + ")"
-                            // + " AND A" + loopEnd
-                            // + ".isSalable = 1 "
-                            + " group by A" + loopEnd + ".pid ORDER BY " + filter
-                            + " A" + loopEnd + ".rowid";
+                sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
+                        + mChildLevel + " FROM ConfigActivityFilter"
+                        + " WHERE ActivityCode = "
+                        + bmodel.QT(moduleCode)
+                        + ")"
+                        // + " AND A" + loopEnd
+                        // + ".isSalable = 1 "
+                        + " group by A" + loopEnd + ".pid ORDER BY " + filter
+                        + " A" + loopEnd + ".rowid";
 
 
             }

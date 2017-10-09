@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/filter_slider_width"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/transaction_list"
+        android:layout_width="@dimen/filter_slider_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    <!--android:layout_above="@+id/new_order_tv"-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/profile_devider_color" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/new_order_tv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_list_height"
+        android:gravity="left|center_vertical"
+        android:text="NEW ORDER"
+        android:layout_toRightOf="@+id/new_order_icon"/>
+        <ImageView
+            android:id="@+id/new_order_icon"
+            android:layout_width="@dimen/profile_header_img_height"
+            android:layout_height="@dimen/profile_header_img_height"
+            android:rotation="45"
+            android:src="@drawable/ic_action_clear_sel"
+            android:layout_marginRight="@dimen/sub_activity_list_icon_circle"
+            android:layout_marginLeft="@dimen/sub_activity_list_icon_circle"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
+</LinearLayout>

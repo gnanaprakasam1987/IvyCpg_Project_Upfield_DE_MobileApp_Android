@@ -55,31 +55,31 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
     private final ArrayList<NonFieldBO> nonFieldnewList = new ArrayList<>();
     Toolbar toolbar;
     private RadioGroup rdgrp;
-    private BusinessModel bmodel;
+    private static BusinessModel bmodel;
     private TextView txt_fromDate;
     private TextView txt_toDate;
-    private TextView txt_total_value;
-    private Button btn_frmDate;
-    private Button btn_toDate;
+    private static TextView txt_total_value;
+    private static Button btn_frmDate;
+    private static Button btn_toDate;
     private Spinner spnReason;
     private LinearLayout remarklayout;
     private LinearLayout ll_session;
     private int parentReasonId;
     private int jointUserId;
-    private int session;
-    private int leaveTypeLovId = 0;
+    private static int session;
+    private static int leaveTypeLovId = 0;
     private Button btn_add;
     private Button btn_traveltime;
     private NonFieldBO nonfieldBO;
     private String reasonName = "";
     private String reasondesc = "";
     private AlertDialog alertDialog;
-    private boolean isSingleDay = true;
+    private static boolean isSingleDay = true;
     //for the puspose of hiding session to show only full day
     private boolean isAnnual = false;
     //if Leave selected to make end date selected after start date picked
-    private boolean isLeave = false;
-    private boolean isRuleAvailable = false;
+    private static boolean isLeave = false;
+    private static boolean isRuleAvailable = false;
     private EditText edt_descr;
     private RelativeLayout rl_dialog_content;
     private Spinner spn_users;
@@ -91,6 +91,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
     private LinearLayout ll_dummy;
     private int hour;
     private int minute;
+    private static String select;
 
 
     @Override
@@ -191,7 +192,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         txt_session.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
         txt_traveltime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
         txt_Descr.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-
+        select =  getResources().getString(R.string.select);
         ll_dummy = (LinearLayout) findViewById(R.id.ll_dummy);
 
         if (!NonFieldActivity.isSaved) {
@@ -513,7 +514,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             if ((leaveTypeLovId != 0 && isLeave) ||
                     (!btnTempToDate.equals(getResources().getString(R.string.select))
                             && !btn_frmDate.getText().toString().equals(getResources().getString(R.string.select)))) {
-                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate)) {
+                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate,session)) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                     Date toDate;
                     Date frmDate;
@@ -563,7 +564,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                         Commons.printException(e);
                     }
                 } else {
-                    Toast.makeText(this, getResources().getString(R.string.selected_date_already_applied), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, reasonName + " " +
+                            getResources().getString(R.string.selected_date_already_applied), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 if (leaveTypeLovId == 0 && isLeave)
@@ -652,7 +654,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
     }
 
     @SuppressLint("ValidFragment")
-    public class DatePickerFragment extends com.ivy.lib.DialogFragment implements
+    public static class DatePickerFragment extends com.ivy.lib.DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -794,10 +796,10 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             };
 
 
-    private void updateTotalDays(Calendar selectedDate) {
+    private static void updateTotalDays(Calendar selectedDate) {
         boolean isAvailable = true;
         double total = 0;
-        if (!btn_toDate.getText().toString().equals(getResources().getString(R.string.select))) {
+        if (!btn_toDate.getText().toString().equals(select)) {
             bmodel.mAttendanceHelper.computeLeaves(leaveTypeLovId,
                     DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
                     DateUtil.convertFromServerDateToRequestedFormat(btn_toDate.getText().toString(), outPutDateFormat), 1, session);

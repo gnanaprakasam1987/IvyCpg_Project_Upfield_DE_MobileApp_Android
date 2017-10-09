@@ -451,7 +451,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 mSlabWiseProductNameWidth = mTotalScreenWidth - mSlabWiseSchemeNameWidth - 40;
 
 
-                SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeIdList.get(0));
+                SchemeBO schemeBO = null;
+
+                if (schemeIdList != null)
+                    schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeIdList.get(0));
+
                 if (schemeBO != null) {
                     LinearLayout.LayoutParams layoutParamsSchemeTitile = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                     //layoutParamsSchemeTitile.weight=0.1f;
@@ -517,7 +521,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                 //slab.setTextSize(((mTotalScreenWidth*2)/100)-2);
                                 slab.setTextSize(mTextViewSize);
-                                slab.setText("SLAB " + (k + 1));
+                                if (bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeList.get(k)).getScheme() != null)
+                                    slab.setText(bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeList.get(k)).getScheme());
                                 slab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                 slab.setWidth(mSchemeDetailWidth);
                                 //buyTitleTV.setWidth(150);
@@ -854,11 +859,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             if (productBO != null) {
                                 if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
                                     if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + CASES);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + OUTER);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     } else {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + PIECE);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     }
                                 } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
                                     tv.setText(schemeProductBO.getBuyQty() + "-" + schemeProductBO.getTobuyQty() + " " + rupeesLabel);
@@ -973,11 +978,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             if (productBO != null) {
                                 if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
                                     if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " +  CASES);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + OUTER);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     } else {
-                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + PIECE);
+                                        tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
                                     }
                                 } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
                                     tv.setText(schemeProductBO.getBuyQty() + "-" + schemeProductBO.getTobuyQty() + " " + rupeesLabel);
@@ -1087,11 +1092,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + CASES);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + OUTER);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + PIECE);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         }
                                         tv.setWidth(mSchemeDetailWidth);
                                         tv.setSingleLine(true);
@@ -1205,13 +1210,13 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                     sb.append((int) buyProductBO.getBuyQty() + " - " + (int) buyProductBO.getTobuyQty());
                                 }
                                 if (buyProductBO.getUomID() == productBO.getCaseUomId()) {
-                                    sb.append(" " + CASES);
+                                    sb.append(" " + buyProductBO.getUomDescription());
 
                                 } else if (buyProductBO.getUomID() == productBO.getOuUomid()) {
-                                    sb.append(" " + OUTER);
+                                    sb.append(" " + buyProductBO.getUomDescription());
 
                                 } else {
-                                    sb.append(" " + PIECE);
+                                    sb.append(" " + buyProductBO.getUomDescription());
                                 }
                             } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
                                 if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
@@ -1341,11 +1346,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + CASES);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + OUTER);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + PIECE);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         }
                                         tv.setWidth(mSchemeDetailWidth);
 
@@ -1455,11 +1460,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + CASES);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else if (productBO.getOuUomid() == schemeProductBO.getUomID()) {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + OUTER);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         } else {
-                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + PIECE);
+                                            tv.setText(schemeProductBO.getQuantityMinimum() + "-" + schemeProductBO.getQuantityMaximum() + " " + schemeProductBO.getUomDescription());
                                         }
                                         tv.setWidth(mSchemeDetailWidth);
                                         tv.setSingleLine(true);
@@ -1509,15 +1514,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
         ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeparentId);
-        boolean isPercentageDiscAvailable=false;
-        boolean isAmountDiscAvailable=false;
-        boolean isPriceDiscAvailable=false;
-        for(String schemeId:schemeList){
-            final SchemeBO schemeBO=bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeId);
-            if(schemeBO!=null){
-                final List<SchemeProductBO> freeProductList=schemeBO.getFreeProducts();
-                if(freeProductList!=null&&freeProductList.size()>0) {
-                    final SchemeProductBO schemeProductBO=freeProductList.get(0);
+        boolean isPercentageDiscAvailable = false;
+        boolean isAmountDiscAvailable = false;
+        boolean isPriceDiscAvailable = false;
+        for (String schemeId : schemeList) {
+            final SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeId);
+            if (schemeBO != null) {
+                final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
+                if (freeProductList != null && freeProductList.size() > 0) {
+                    final SchemeProductBO schemeProductBO = freeProductList.get(0);
                     if (schemeProductBO.getMaxAmount() > 0) {
                         isAmountDiscAvailable = true;
                     }
@@ -1544,8 +1549,6 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         tv.setLayoutParams(layoutParams);
 
 
-
-
         for (int i = size - 1; i >= 0; i--) {
             SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getmSchemeById().get(schemeList.get(i));
             if (schemeBO != null) {
@@ -1563,7 +1566,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     SchemeProductBO freeproductBO = freeProductList.get(0);
 
                     if (isAmountDiscAvailable) {
-                        if (childView1==null) {
+                        if (childView1 == null) {
                             childView1 = new LinearLayout(ctxt);
                             childView1.setOrientation(LinearLayout.HORIZONTAL);
                             childView1.setLayoutParams(layoutParams);
@@ -1596,10 +1599,9 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         }
 
 
-
                     }
                     if (isPercentageDiscAvailable) {
-                        if (childView2==null) {
+                        if (childView2 == null) {
                             childView2 = new LinearLayout(ctxt);
                             childView2.setOrientation(LinearLayout.HORIZONTAL);
                             childView2.setLayoutParams(layoutParams);
@@ -1630,7 +1632,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                     }
                     if (isPriceDiscAvailable) {
-                        if (childView3==null) {
+                        if (childView3 == null) {
                             childView3 = new LinearLayout(ctxt);
                             childView3.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -1652,7 +1654,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             } else {
                                 priceTV.setText(freeproductBO.getPriceActual() + " - " + freeproductBO.getPriceMaximum());
                             }
-                        }else{
+                        } else {
                             priceTV.setText("-");
                         }
                         priceTV.setLayoutParams(layoutParams);
@@ -1803,11 +1805,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeQty = freeProductBO.getQuantityMinimum() + "-" + freeProductBO.getQuantityMaximum();
                     }
                     if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
-                        freeQty += CASES;
+                        freeQty += freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
-                        freeQty += OUTER;
+                        freeQty += freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
-                        freeQty += PIECE;
+                        freeQty += freeProductBO.getUomDescription();
                     }
                     TextView slabValueTV = getNameTv();
                     slabValueTV.setWidth(mSlabWiseSchemeNameWidth);
@@ -1875,11 +1877,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 fromQty = (int) freeProductBO.getBuyQty();
                 toQty = (int) freeProductBO.getTobuyQty();
                 if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
-                    uomDes = CASES;
+                    uomDes = freeProductBO.getUomDescription();
                 } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
-                    uomDes = OUTER;
+                    uomDes = freeProductBO.getUomDescription();
                 } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
-                    uomDes = PIECE;
+                    uomDes = freeProductBO.getUomDescription();
                 }
             }
 
@@ -1954,11 +1956,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeQty = freeProductBO.getQuantityMinimum() + "-" + freeProductBO.getQuantityMaximum();
                     }
                     if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
-                        freeQty += " " + CASES;
+                        freeQty += " " + freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
-                        freeQty += " " + OUTER;
+                        freeQty += " " + freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
-                        freeQty += " " + PIECE;
+                        freeQty += " " + freeProductBO.getUomDescription();
                     }
                     TextView slabValueTV = getNameTv();
                     slabValueTV.setText(freeQty);

@@ -452,9 +452,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
         if (txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
-                if (bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked()
-                        && bmodel.synchronizationHelper
-                        .countImageFiles() > 0) {
+                if (bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
+                        && (bmodel.synchronizationHelper
+                        .countImageFiles() > 0) ? true : (dayCloseCheckBox.isChecked() ? true : false)) {
                     sync.setBackgroundResource(R.drawable.round_light);
                     GradientDrawable drawable = (GradientDrawable) sync.getBackground();
                     drawable.setColor(background_color);
@@ -1163,6 +1163,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     isClicked = false;
                 }
 
+            case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    new InitiateDistributorDownload().execute();
+                }
         }
     }
 
@@ -1599,7 +1603,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                     new UrlDownloadData().execute();
                 else {
-                    isClicked=false;
+                    isClicked = false;
                     Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
                     if (alertDialog != null)
                         alertDialog.dismiss();
@@ -2174,12 +2178,23 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPreExecute() {
             super.onPreExecute();
             try {
-                bmodel.distributorMasterHelper.downloadDistributorsList();
+                if (alertDialog != null) {
+                    builder = new AlertDialog.Builder(getActivity());
+                    bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
                 ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
                 json = bmodel.synchronizationHelper.getCommonJsonObject();
                 JSONArray jsonArray = new JSONArray();
                 for (DistributorMasterBO distributorBO : distributorList) {
-                    jsonArray.put(distributorBO.getDId());
+                    if (distributorBO.isChecked()) {
+                        jsonArray.put(distributorBO.getDId());
+
+                        //update distributorid in usermaster
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getDName());
+                    }
                 }
                 json.put("DistributorIds", jsonArray);
             } catch (Exception jsonException) {
@@ -2189,7 +2204,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         @Override
         protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 Iterator itr = jsonObject.keys();
@@ -2210,10 +2225,28 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+                downloadOnDemandMasterUrl(true);
             }
         }
+    }
+
+    private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
+
+        bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+
+        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
+        if (isDistributorWise) {
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+        } else {
+            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+        }
+        }
+        else{
+            //on demand url not available
+            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
+            callNextSyncMethod(next_method);
+        }
+
     }
 
     /**
@@ -2360,7 +2393,23 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
      */
     private void callNextSyncMethod(SynchronizationHelper.NEXT_METHOD response) {
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-            new InitiateDistributorDownload().execute();
+
+            bmodel.distributorMasterHelper.downloadDistributorsList();
+            if(bmodel.distributorMasterHelper.getDistributors().size()>0) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+
+                Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
+                startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+            }
+            else{
+                //No distributors, so downloading on demand url without distributor selection.
+                downloadOnDemandMasterUrl(false);
+            }
+
+        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
+            downloadOnDemandMasterUrl(false);
         } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
             new SihDownloadTask().execute();
         } else {
@@ -2433,4 +2482,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 //
 //        }
 //    }
+
+
 }

@@ -484,7 +484,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void getNextDate() {
         try {
             Calendar origDay = Calendar.getInstance();
-            origDay.add(Calendar.DAY_OF_YEAR, 1);
+            origDay.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
             nextDate = DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),
                     ConfigurationMasterHelper.outDateFormat);
         } catch (Exception e) {
@@ -1880,7 +1880,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 final PackageManager pm = getPackageManager();
                 List<PackageInfo> packs = pm.getInstalledPackages(0);
                 for (PackageInfo pi : packs) {
-                    if ("calcul".contains(pi.packageName.toLowerCase())) {
+                    if ("calcul".contains(pi.packageName.toLowerCase().toString())) {
                         HashMap<String, Object> map = new HashMap<>();
                         map.put("appName", pi.applicationInfo.loadLabel(pm));
                         map.put("packageName", pi.packageName);

@@ -1043,7 +1043,7 @@
     <string name="printer_not_connected_check_macaddress">Printer not connected .Please check  Mac Address..</string>
     <string name="please_user_advancepayment">Please use Advance Payment </string>
     <string name="receipt_fragment">Receipt Fragment</string>
-    <string name="selected_date_already_applied">Leave applied for selected date</string>
+    <string name="selected_date_already_applied">applied for selected date</string>
     <string name="download_date_mismatch">Download date Mismatch</string>
     <string name="user_account_locked">Account locked. Please contact system admin.</string>
     <string name="scheme_discount">Scheme Discount</string>
@@ -1112,12 +1112,12 @@
     <string name="change_in_price">Change in price</string>
     <string name="store_status">Store Status</string>
     <string name="store_visited">Store Visited</string>
-    <string name="percent_of_tot_target_achieved">% of total target is achieved</string>
+    <string name="percent_of_tot_target_achieved"> achieved</string>
     <string name="sale">Sale</string>
     <string name="select_reason_for_no_collection">Select Reason for no collection</string>
     <string name="select_feedback">Select Feedback</string>
     <string name="add_store">Add Store</string>
-    <string name="already_activated">Already Activated</string>
+    <string name="already_activated">Already Activated Click Here</string>
     <string name="tab_text_return">Return</string>
     <string name="tab_text_replace">Replace</string>
     <string name="text_return_qty">Return Quantity</string>
@@ -1198,14 +1198,14 @@
     <string name="delivery_rep_code">Rep Code</string>
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="select_reason_for_no_order">Select Reason for no order</string>
-    <string name="executed">Is Executed</string>
+
 
 
 
     <string-array name="task_tab_header">
         <item>All</item>
         <item>Assigned</item>
-        <item>MyTask</item>
+        <item>My Task</item>
     </string-array>
     <string-array name="days_in_week">
         <item>Sun</item>

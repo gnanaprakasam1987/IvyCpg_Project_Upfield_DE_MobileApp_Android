@@ -115,6 +115,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DELIVERY_REPORT = "ORDB09";
 
     private static final String CODE_PHOTO_CAPTURE = "PHOTOCAP";
+    private static final String CODE_PHOTO_CAPTURE_IMG_PATH = "PHOTOCAP05";
     private static final String CODE_PHOTO_COMPETITOR = "PHOTOCOMP";
     private static final String CODE_TASK = "TSK";
     private static final String CODE_JUMP = "JUMPING";
@@ -139,6 +140,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_LIMIT_PROFILE = "PROFILE19";
     private static final String CODE_SHOW_NO_VISIT_REASON = "PROFILE21";
     private static final String CODE_SHOW_HISTORY = "PRO05";
+    private static final String CODE_SHOW_ASSET_HISTORY = "PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
@@ -367,8 +369,10 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_BIXOLON;
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
+    private static final String CODE_FIT_SCORE = "FITDASH";
+    public boolean IS_FITSCORE_NEEDED;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD,SHOW_NOR_DASHBOARD;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -427,6 +431,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PROFILE_IMAGE = "PROFILE60";
     public boolean IS_PROFILE_IMAGE;
+
+    public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
+    public boolean IS_MULTI_STOCKORDER;
     /**
      * RoadActivity config *
      */
@@ -442,6 +449,7 @@ public class ConfigurationMasterHelper {
     public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
     public boolean IS_SUGGESTED_ORDER; // used order screen to hid SO colom
+    public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
     public boolean IS_STOCK_IN_HAND; // used order screen to hide SIH colom
     public boolean IS_INVOICE; // decide seller is van seller or preseller
     public boolean IS_JUMP; // used to avoid jumping in activity menu
@@ -450,6 +458,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_BAIDU_MAP;
     public boolean IS_DELIVERY_REPORT;
     public boolean IS_PHOTO_CAPTURE; // Activity Menu
+    public boolean IS_PHOTO_CAPTURE_IMG_PATH_CHANGE;//to change image path for kelog's specific
     public boolean IS_PHOTO_COMPETITOR;
     public boolean IS_TASK; // Activity Menu
     public boolean IS_PASSWORD_ENCRIPTED; // Activity Menu
@@ -473,6 +482,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_LIMIT_PROFILE; //
     public boolean SHOW_NO_VISIT_REASON; //
     public boolean SHOW_HISTORY; // PRO05
+    public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
@@ -875,6 +885,7 @@ public class ConfigurationMasterHelper {
     private ArrayList<String> mRetailerProperty;
     private Vector<ConfigureBO> profileConfig;
     private Vector<PasswordPolicyBO> passwordConfig;
+    private Vector<ConfigureBO> storeCheckMenu;
 
     public boolean SHOW_SC;
     public boolean SHOW_SHO;
@@ -889,6 +900,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_RTR_WISE_DOWNLOAD;
 
     public boolean IS_USER_WISE_RETAILER_DOWNLOAD = false;
+    public boolean IS_BEAT_WISE_RETAILER_DOWNLOAD = false;
     public static final String CODE_USER_WISE_RETAILER_DOWNLOAD = "SYNC05";
 
     public boolean IS_SYNC_WITH_IMAGES = false;
@@ -991,6 +1003,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_PRICECHECK_PCS;
     public boolean SHOW_STOCK_PRICECHECK_CS;
     public boolean SHOW_STOCK_PRICECHECK_OU;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_PCS;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_CS;
+    public boolean SHOW_STOCK_PRICECHECK_MRP_OU;
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN = "PRICE_RETAINLV";
 
@@ -1150,6 +1165,16 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS = "FUN56";
     public boolean IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS;
+
+    private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
+    public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
+
+    private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
+    public boolean SHOW_INVOICE_HISTORY; // PRO06
+
+    private static final String CODE_SALES_DISTRIBUTION="SALES_DISTRIBUTION_TAGGING";
+    public boolean IS_PRODUCT_DISTRIBUTION;
+    public String PRD_DISTRIBUTION_TYPE="";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1559,9 +1584,11 @@ public class ConfigurationMasterHelper {
         this.IS_NEW_TASK = hashMapHHTModuleConfig.get(CODE_NEW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_NEW_TASK) : false;
         this.IS_RETAILER_DEVIATION = hashMapHHTModuleConfig.get(CODE_RETAILER_DEVIATION) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_DEVIATION) : false;
         this.IS_SUGGESTED_ORDER = hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER) : false;
+        this.IS_SUGGESTED_ORDER_LOGIC = hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER_LOGIC) != null ? hashMapHHTModuleConfig.get(CODE_SUGGESTED_ORDER_LOGIC) : false;
         this.IS_DELIVERY_REPORT = hashMapHHTModuleConfig.get(CODE_DELIVERY_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_DELIVERY_REPORT) : false;
         this.IS_TASK = hashMapHHTModuleConfig.get(CODE_TASK) != null ? hashMapHHTModuleConfig.get(CODE_TASK) : false;
         this.IS_PHOTO_CAPTURE = hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE) : false;
+        this.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) : false;
         this.IS_PHOTO_COMPETITOR = hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) : false;
         this.IS_JUMP = hashMapHHTModuleConfig.get(CODE_JUMP) != null ? hashMapHHTModuleConfig.get(CODE_JUMP) : false;
         this.IS_PASSWORD_ENCRIPTED = hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) != null ? hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) : false;
@@ -1584,6 +1611,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CREDIT_BALANCE = hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) : false;
         this.SHOW_NO_VISIT_REASON = hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) : false;
         this.SHOW_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) : false;
+        this.SHOW_ASSET_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) : false;
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
         this.SHOW_LPC_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) : false;
@@ -1770,6 +1798,10 @@ public class ConfigurationMasterHelper {
         this.SHOW_DIST_STOCK = hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) : false;
         this.IS_RTR_WISE_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) : false;
         this.IS_USER_WISE_RETAILER_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) : false;
+        if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_USER_WISE_RETAILER_DOWNLOAD) == 1)
+                IS_BEAT_WISE_RETAILER_DOWNLOAD = true;
+        }
         this.IS_SYNC_WITH_IMAGES = hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_WITH_IMAGES) : false;
         this.SHOW_STK_ORD_MRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_MRP) : false;
         this.IS_ENABLE_GCM_REGISTRATION = hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_GCM_REGISTRATION) : false;
@@ -1822,6 +1854,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
             this.IS_MUST_SELL_REASON = false;
@@ -2028,6 +2061,8 @@ public class ConfigurationMasterHelper {
         this.IS_PRODUCT_DISPLAY_FOR_PIRAMAL = hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) : false;
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
+        this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
+        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
@@ -2044,6 +2079,15 @@ public class ConfigurationMasterHelper {
                 this.SHOW_SPL_FLIER_NOT_NEEDED = false;
         }
 
+        this.SHOW_INVOICE_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INVOICE_HISTORY) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION) != null) {
+            if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION)) {
+                IS_PRODUCT_DISTRIBUTION=true;
+                loadProductDistributionConfig();
+
+            }
+        }
 
     }
 
@@ -2191,7 +2235,7 @@ public class ConfigurationMasterHelper {
     }
 
     public Vector<ConfigureBO> downloadStoreCheckMenu(String menuName) {
-        Vector<ConfigureBO> storeCheckMenu = new Vector<>();
+        storeCheckMenu = new Vector<>();
         try {
             sharedPrefs = PreferenceManager
                     .getDefaultSharedPreferences(context);
@@ -2268,6 +2312,10 @@ public class ConfigurationMasterHelper {
     }
 
 
+    public Vector<ConfigureBO> getStoreCheckMenu() {
+        return storeCheckMenu;
+    }
+
     public Vector<ConfigureBO> getActivityMenu() {
         return activitymenuconfig;
 
@@ -2289,7 +2337,7 @@ public class ConfigurationMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
+            String sql = "select distinct hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_HOME)
@@ -2770,6 +2818,31 @@ public class ConfigurationMasterHelper {
 
     }
 
+    public void loadProductDistributionConfig() {
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode="+bmodel.QT(CODE_SALES_DISTRIBUTION)+" and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                  this.PRD_DISTRIBUTION_TYPE=c.getString(0);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
     /**
      * This method will load the Order and Stock screen configurations. This is
      * mandatory, otherwise stock and order wont have any text entries.
@@ -2814,6 +2887,9 @@ public class ConfigurationMasterHelper {
             SHOW_STOCK_NEAREXPIRY_CB = false;
             SHOW_STOCK_NEAREXPIRY_OU = false;
             SHOW_STOCK_NEAREXPIRY_CS = false;
+            SHOW_STOCK_PRICECHECK_MRP_PCS = false;
+            SHOW_STOCK_PRICECHECK_MRP_CS = false;
+            SHOW_STOCK_PRICECHECK_MRP_OU = false;
 
             SHOW_INDEX_DASH = false;
             SHOW_TARGET_DASH = false;
@@ -3039,6 +3115,12 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_PRICECHECK_OU = true;
                         else if (temp.equals("CS"))
                             SHOW_STOCK_PRICECHECK_CS = true;
+                        else if (temp.equals("MPS"))
+                            SHOW_STOCK_PRICECHECK_MRP_PCS = true;
+                        else if (temp.equals("MOU"))
+                            SHOW_STOCK_PRICECHECK_MRP_OU = true;
+                        else if (temp.equals("MCS"))
+                            SHOW_STOCK_PRICECHECK_MRP_CS = true;
                     }
                 }
             }
@@ -4151,8 +4233,8 @@ public class ConfigurationMasterHelper {
         try {
             this.SHOW_SMS_IN_SURVEY = false;
             this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
-            this.SHOW_DRAGDROP_IN_SURVEY=false;
-            this.ENABLE_MULTIPLE_PHOTO=false;
+            this.SHOW_DRAGDROP_IN_SURVEY = false;
+            this.ENABLE_MULTIPLE_PHOTO = false;
             DBUtil db;
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -4173,11 +4255,6 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
                     this.photocapturemenutype = c.getString(0);
-                    // Enabling the dragDrop button based on the RField value
-                    if(c.getString(1)!=null && c.getString(1).equalsIgnoreCase("1"))
-                    {
-                        this.SHOW_DRAGDROP_IN_SURVEY=true;
-                    }
                 }
                 c.close();
             }
@@ -4187,7 +4264,16 @@ public class ConfigurationMasterHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     this.ENABLE_MULTIPLE_PHOTO = true;
-                    this.multiplePhotoCapture=c.getString(0);
+                    this.multiplePhotoCapture = c.getString(0);
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.SHOW_DRAGDROP_IN_SURVEY = true;
                 }
                 c.close();
             }
@@ -4210,8 +4296,7 @@ public class ConfigurationMasterHelper {
                     int value = c.getInt(0);
                     if (value == 2) {
                         SHOW_DATE_ROUTE = true;
-                    }
-                    if (value == 3) {
+                    } else if (value == 3) {
                         SHOW_BEAT_ROUTE = true;
                     } else {
                         SHOW_WEEK_ROUTE = true;
@@ -4376,7 +4461,7 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public enum FontType {
+    public static enum FontType {
         LIGHT, REGULAR, MEDIUM, BOLD, THIN
     }
 

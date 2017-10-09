@@ -5,14 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -26,6 +19,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -600,7 +594,11 @@ public class SODFragment extends IvyBaseFragment implements
             holder.tvBrandName.setText(holder.mSOD.getProductName());
             String strNorm = holder.mSOD.getNorm() + "";
             holder.tvNorm.setText(strNorm);
-            holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
+            if ("0.0".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
+                holder.etTotal.setText("0");
+            } else {
+                holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
+            }
             holder.tvActual.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual());
             holder.tvTarget.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget());
             holder.tvPercentage.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage());
@@ -620,7 +618,7 @@ public class SODFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))) {
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName())
+                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -798,7 +796,7 @@ public class SODFragment extends IvyBaseFragment implements
 
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER&&bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
+            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
             // If the nav drawer is open, hide action items related to the
@@ -1066,6 +1064,8 @@ public class SODFragment extends IvyBaseFragment implements
      */
     private void getTotalValue(final int categoryId) {
         mSelectedET = null;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -1097,6 +1097,9 @@ public class SODFragment extends IvyBaseFragment implements
         }
 
         ListView listView = (ListView) dialog.findViewById(R.id.lv);
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = displayMetrics.heightPixels / 3;
+        listView.setLayoutParams(params);
         listView.setAdapter(new TotalDialogAdapter());
         dialog.findViewById(R.id.calczero)
                 .setOnClickListener(new MyClickListener());
@@ -1287,15 +1290,23 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    private StringBuilder sb = new StringBuilder();
+
     private void eff(int val) {
+
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-                mSelectedET.setText(String.valueOf(val));
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText() + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
             } else {
-                String strVal = mSelectedET.getText() + String.valueOf(val);
-                mSelectedET.setText(strVal);
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -1346,7 +1357,7 @@ public class SODFragment extends IvyBaseFragment implements
                     }
                     mSelectedET.setText(s);
                 }
-
+                sb.append(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();
                 if (!s1.contains(".")) {

@@ -121,6 +121,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private int mSelectedBrandID = 0;
     private int mTotalScreenWidth = 0;
     private boolean isFromChild;
+    private Button mBtnFilterPopup;
 
 
     @Override
@@ -280,6 +281,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         mBtn_Search.setOnClickListener(this);
         mBtn_clear = (Button) getView().findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
+        mBtnFilterPopup = (Button) getView().findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup.setOnClickListener(this);
         btnSave = (Button) getView().findViewById(R.id.btn_save);
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -938,7 +941,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.CAMERA);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
+                //new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        CombinedStockFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
             } else {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.permission_enable_msg)
@@ -1302,7 +1312,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
                 // update review plan in DB
                 bmodel.setReviewPlanInDB();
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK);
+                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -1379,7 +1389,42 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         bmodel.setContext(getActivity());
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
+        } else if (vw == mBtnFilterPopup) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                    getActivity(),
+                    android.R.layout.select_dialog_singlechoice,
+                    mSearchTypeArray);
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+                    });
+            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
+                    .getProductFilter());
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+
+                    });
+            builderSingle.setPositiveButton(
+                    getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                        }
+                    });
+            bmodel.applyAlertDialogTheme(builderSingle);
+
         } else if (vw == mBtn_clear) {
+            viewFlipper.showPrevious();
             if (mEdt_searchproductName.getText().length() > 0)
                 mEdt_searchproductName.setText("");
         }
@@ -1627,6 +1672,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 strBarCodeSearch = result.getContents();
             }
+        } else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
         }
     }
 
