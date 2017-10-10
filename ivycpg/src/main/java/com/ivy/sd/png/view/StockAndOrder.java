@@ -374,6 +374,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist = (ListView) findViewById(R.id.lvwplist);
         lvwplist.setCacheColorHint(0);
 
+        productList = filterWareHouseProducts();
+
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
         /* Calculate the total and LPC value */
@@ -1339,7 +1341,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     protected void onStart() {
         super.onStart();
         Commons.print("OnStart Called");
-        productList = filterWareHouseProducts();
         // Configuration to Show Multi Seletion in Filter Fragment
         if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
             multiSelectProductFilterFragment();
@@ -2955,10 +2956,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             productName.setText(strProductObj);
                         } else
                             productName.setText(holder.pname);
-                        QUANTITY = holder.pcsQty;
-                        QUANTITY.setTag(holder.productObj);
-                        holder.pcsQty.selectAll();
-                        holder.pcsQty.requestFocus();
 
                         if (viewFlipper.getDisplayedChild() != 0) {
                             viewFlipper.showPrevious();
@@ -4576,6 +4573,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
+        if ("MENU_ORDER".equals(screenCode))
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_ORDER");
+        else
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_STK_ORD");
         updatebrandtext(BRAND, -1);
     }
 

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -148,17 +149,21 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 //                isFromHomeScreenTwo = true;
 //            }
 //        }
-        bundle = this.getArguments();
+        bundle = getActivity().getIntent().getExtras();
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
         }
 
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
+        if (getActionBar() != null)
             setUpActionBar();
 
         setHasOptionsMenu(true);
         init();
         return view;
+    }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
     private void init() {
@@ -771,10 +776,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
     private void setUpActionBar() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+            getActionBar().setElevation(0);
         }
 
 //screen title set based previous screen
@@ -793,9 +797,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             } else
                 setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
         }
-        if (!BusinessModel.dashHomeStatic)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (!BusinessModel.dashHomeStatic) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override

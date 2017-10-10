@@ -430,7 +430,19 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void loadSearchedList() {
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<ProductMasterBO> items = getTaggedProducts();
+            if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
+                for (ProductMasterBO productBo : getTaggedProducts()) {
+                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
+                        items.add(productBo);
+                }
+            } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
+                for (ProductMasterBO productBo : getTaggedProducts()) {
+                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
+                        items.add(productBo);
+                }
+            } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
+                items = getTaggedProducts();
+            }
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -1623,7 +1635,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         , Toast.LENGTH_LONG).show();
             }
             return true;
-        }else if (i == R.id.menu_reason) {
+        } else if (i == R.id.menu_reason) {
             bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), "MENU_STOCK");
             ReasonPhotoDialog dialog = new ReasonPhotoDialog();
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -1744,10 +1756,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (bmodel.hasStockCheck() || bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
-            if(!bmodel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS||bmodel.isReasonSelectedForAllProducts()) {
+            if (!bmodel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || bmodel.isReasonSelectedForAllProducts()) {
                 new SaveAsyncTask().execute();
-            }
-            else{
+            } else {
                 mDialog1(1);
             }
         } else {
@@ -1772,24 +1783,25 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 }
                             });
         } else if (type == 1) {
-            String text=" ";
-            for(ConfigureBO configureBO:bmodel.configurationMasterHelper.getGenFilter()){
+            String text = " ";
+            for (ConfigureBO configureBO : bmodel.configurationMasterHelper.getGenFilter()) {
 
 
-                if(configureBO.getConfigCode().equalsIgnoreCase("Filt11")){
-                    if(text.length()>1)
-                        text+=",";
-                    text+=configureBO.getMenuName();}
-                else if(configureBO.getConfigCode().equalsIgnoreCase("Filt12")){
-                    if(text.length()>1)
-                        text+=",";
-                    text+=configureBO.getMenuName();}
+                if (configureBO.getConfigCode().equalsIgnoreCase("Filt11")) {
+                    if (text.length() > 1)
+                        text += ",";
+                    text += configureBO.getMenuName();
+                } else if (configureBO.getConfigCode().equalsIgnoreCase("Filt12")) {
+                    if (text.length() > 1)
+                        text += ",";
+                    text += configureBO.getMenuName();
+                }
             }
             alertDialogBuilder1
                     .setIcon(null)
                     .setCancelable(false)
 
-                    .setTitle(getResources().getString(R.string.reason_required_for)+text)
+                    .setTitle(getResources().getString(R.string.reason_required_for) + text)
                     .setPositiveButton(getResources().getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
