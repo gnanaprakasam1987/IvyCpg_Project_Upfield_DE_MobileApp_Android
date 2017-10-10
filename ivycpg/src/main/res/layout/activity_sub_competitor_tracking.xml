@@ -101,7 +101,11 @@
                     android:layout_alignParentBottom="true"
                     android:layout_below="@+id/header"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:scrollbarSize="@dimen/dimen_5dp"
+                    android:scrollbarThumbVertical="@color/GRAY_TEXT"
+                    android:fadeScrollbars="false"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
