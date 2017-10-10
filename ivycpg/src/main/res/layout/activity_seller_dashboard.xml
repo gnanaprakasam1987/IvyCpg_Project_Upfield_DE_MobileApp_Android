@@ -8,10 +8,10 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <fragment
-        android:id="@+id/dashboard_fragment"
-        android:name="com.ivy.sd.png.view.SellerDashboardFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/content_fragemnt"
+        />
 
 </LinearLayout>
