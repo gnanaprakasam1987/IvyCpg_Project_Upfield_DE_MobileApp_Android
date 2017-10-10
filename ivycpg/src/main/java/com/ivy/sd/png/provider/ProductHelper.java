@@ -2183,7 +2183,6 @@ public class ProductHelper {
                 downloadExcludeProductTaxDetails();
 
 
-
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -2429,6 +2428,10 @@ public class ProductHelper {
                         locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
                     } else if (c1.getString(0).equals("USER"))
                         mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
+                    else if (c1.getString(0).equals("CLASS"))
+                        mappingId = bmodel.getRetailerMasterBO().getClassid() + "";
+                    else if (c1.getString(0).equals("ACCOUNT"))
+                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
                     moduletypeid = c1.getString(1);
                 }

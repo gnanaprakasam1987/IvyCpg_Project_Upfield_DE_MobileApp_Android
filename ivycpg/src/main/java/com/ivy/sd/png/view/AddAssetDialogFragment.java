@@ -53,6 +53,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     Button btnSave, btnCancel;
     private String append = "";
     EditText edittext;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -260,8 +261,13 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         assetBo.setMposm(bmodel.assetTrackingHelper.getassetposmids(masset
                 .getSelectedItem().toString()));
 
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(mbrand
-                .getSelectedItem().toString()));
+        if (!mbrand.getSelectedItem().toString()
+                .equals(SELECT))
+            assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(mbrand
+                    .getSelectedItem().toString()));
+        else
+            assetBo.setMbrand("0");
+
         assetBo.setMnewinstaldate(addinstalldate.getText().toString());
 
         assetBo.setMsno(mSNO.getText().toString());
@@ -272,12 +278,13 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     @Override
     public void onClick(View view) {
+
         if (view.getId() == R.id.btn_save) {
+
             try {
                 if (!masset.getSelectedItem().toString()
                         .equals(SELECT)
-                        && ((mbrand.getSelectedItem() == null) ? mbrand.getSelectedItem() == null : !mbrand.getSelectedItem().toString()
-                        .equals(SELECT))
+
                         && !mSNO.getText().toString().equals("")) {
                     if (!bmodel.assetTrackingHelper
                             .isExistingRetailersno(mSNO.getText()

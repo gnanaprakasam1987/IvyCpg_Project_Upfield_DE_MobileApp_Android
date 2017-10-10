@@ -2450,6 +2450,7 @@ SynchronizationHelper {
         }
         return "E01";
     }
+
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
@@ -2869,6 +2870,47 @@ SynchronizationHelper {
 
     }
 
+    public void downloadRetailerByRetailerName(String retailerName) {
+
+        mJsonObjectResponseByTableName = new HashMap<>();
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select url from urldownloadmaster where ");
+            sb.append("mastername='RETAILER' and typecode='GETRET'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadurl = c.getString(0);
+                    }
+                }
+            }
+
+            JSONObject json = new JSONObject();
+
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put("Key", retailerName);
+
+
+            downloadurl = DataMembers.SERVER_URL + downloadurl;
+            callVolley(downloadurl, FROM_SCREEN.RETAILER_SELECTION, 1, RETAILER_DOWNLOAD_BY_LOCATION, json);
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+
+    }
+
 
     public String getPasswordCreatedDate() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -2970,7 +3012,7 @@ SynchronizationHelper {
 
             if (retailerBeatMap != null && !retailerBeatMap.isEmpty()) {
                 for (int i = 0; i < mRetailerListByLocOrUserWise.size(); i++) {
-                    int  retailerId = Integer.parseInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
+                    int retailerId = Integer.parseInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
                     mRetailerListByLocOrUserWise.get(i).setBeatID(retailerBeatMap.get(retailerId) != null ? retailerBeatMap.get(retailerId) : 0);
                 }
             }
@@ -4647,6 +4689,7 @@ SynchronizationHelper {
         }
         return check;
     }
+
     public boolean isSaleDrafted() {
         DBUtil db = null;
         boolean check = true;

@@ -420,17 +420,23 @@ public class AssetTrackingHelper {
             sb.append(bmodel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
-            if (level == 2) {
+            if (level == 1) {
+                // account mapping
+                sb.append(" and AccountId =");
+                sb.append(bmodel.getRetailerMasterBO().getAccountid());
+            } else if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
                 sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            } else if (level == 3) {
+                // Class mapping
+                sb.append(" and Classid = ");
+                sb.append(bmodel.getRetailerMasterBO().getClassid());
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in (");
                 sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
-
-
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
@@ -452,7 +458,7 @@ public class AssetTrackingHelper {
             }
 
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+                sb.append(" and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
                 allMasterSb = allMasterSb + ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
@@ -1130,6 +1136,7 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
+
     /**
      * Method to save Asset Movement Details in sql table
      */
@@ -1161,8 +1168,8 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
                     + QT(assets.getMbrand()) + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))+ "," + QT("M") + "," + typeListId +","+
-                    QT(assets.getMreasonId())+","+ QT(assets.getMremarks())+","+ QT(assets.getmToRetailerId());
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
+                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks()) + "," + QT(assets.getmToRetailerId());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1174,8 +1181,9 @@ public class AssetTrackingHelper {
             db.closeDB();
         }
     }
+
     public void saveAddandDeletedetails(String posmid, String msno,
-                                        String msbdid, String mbrandid, String reasonId,String moduleName) {
+                                        String msbdid, String mbrandid, String reasonId, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -1206,7 +1214,7 @@ public class AssetTrackingHelper {
             String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmid) + "," + QT(msno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
-                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId+ "," + QT(reasonId) ;
+                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId + "," + QT(reasonId);
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
                     assetaddanddeleteValues);
@@ -1264,6 +1272,7 @@ public class AssetTrackingHelper {
             return false;
         }
     }
+
     /**
      * Method to check the Asset already scanned and mapped to other retailer in sql table
      */
@@ -1295,6 +1304,7 @@ public class AssetTrackingHelper {
             return false;
         }
     }
+
     public void saveAsset(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
