@@ -1267,6 +1267,17 @@ public class ProductHelper {
             }
 
             if (mChildLevel == 0 && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+
+                int mContentLevelId=0;
+                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = "+moduleCode);
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mContentLevelId= cur.getInt(0);
+                        mContentLevel = cur.getInt(1);
+                    }
+                    cur.close();
+                }
+
                 sql = "select A.pid, A.pcode,A.pname,A.parentid,A.sih, "
                         + "A.psname,A.barcode,A.vat,A.isfocus, max(ifnull("
                         + str
@@ -1281,12 +1292,12 @@ public class ProductHelper {
                         + ((filter12) ? "A.pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
                         + "dOuomQty,dOuomid,caseBarcode,outerBarcode,count(A.pid),piece_uomid,A.mrp, A.mrp,"
                         + " A.isSalable,A.isReturnable,A.isBom,A.TypeID,A.baseprice, '' as brandname,0"
-                        + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount"
-                        + ",A.Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                        + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount"
+                        + ",A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                         + ((filter20) ? "A.pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
                         + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A.tagDescription,"
+                        + "A.tagDescription as tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
@@ -1308,10 +1319,7 @@ public class ProductHelper {
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
-                        + " WHERE A.isSalable = 1 AND A.PLid IN"
-                        + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
-                        + bmodel.QT(moduleCode)
-                        + ")"
+                        + " WHERE A.isSalable = 1 AND A.PLid IN("+ mContentLevelId+ ")"
                         + " group by A.pid ORDER BY " + filter + " A.rowid";
 
             } else {
@@ -1562,6 +1570,7 @@ public class ProductHelper {
 
     private static final String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
     private static final String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
+    private static final String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE="SALES_TYPE";
     private String downloadProductDistribution(int mContentLevel){
 
         DBUtil db = null;
@@ -1596,9 +1605,15 @@ public class ProductHelper {
                 }
 
                 //getting products mapped
-                sql = "select productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                sql = "select distinct productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
                 if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
                     sql += " and criteriaid IN(" + beats + ")";
+                }
+                else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_RETAILER)){
+                    sql += " and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                }
+                else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)){
+                    sql += " and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")";
                 }
                 Cursor c = db.selectSQL(sql);
                 if (c.getCount() > 0) {
@@ -1612,34 +1627,39 @@ public class ProductHelper {
                     c.close();
                 }
 
-
                 ///////////////////////////////
-
-                // If given level is not content level then skipping..
-                if (givenLevelId != 0 && givenLevelId != mContentLevel) {
+                //If products not available for current distribution type all products will be loaded, so no additional joins
+                if(productIds.length()>0) {
 
                     int givenSequence = 0;
-                    sql = "select sequence from ProductLevel where levelid=" + givenLevelId;
-                    Cursor cursor = db.selectSQL(sql);
-                    if (cursor.getCount() > 0) {
-                        if (cursor.moveToNext()) {
-                            givenSequence = cursor.getInt(0);
+                    if (givenLevelId != 0) {
+                        sql = "select sequence from ProductLevel where levelid=" + givenLevelId;
+                        Cursor cursor = db.selectSQL(sql);
+                        if (cursor.getCount() > 0) {
+                            if (cursor.moveToNext()) {
+                                givenSequence = cursor.getInt(0);
+                            }
+                            cursor.close();
                         }
-                        cursor.close();
                     }
 
+                    // If given level is not content level then skipping..
+                    if (givenSequence != 0 && givenSequence != mContentLevel) {
 
-                    int loopEnd = mContentLevel - givenSequence + 1;
-                    finalQuery = "select P" + loopEnd + ".pid as productid from productmaster P1";
-                    for (int i = 2; i <= loopEnd; i++)
-                        finalQuery = finalQuery + " INNER JOIN ProductMaster P" + i + " ON P" + i
-                                + ".ParentId = P" + (i - 1) + ".PID";
 
-                    finalQuery += " WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")";
+                        int loopEnd = mContentLevel - givenSequence + 1;
+                        finalQuery = "select P" + loopEnd + ".pid as productid from productmaster P1";
+                        for (int i = 2; i <= loopEnd; i++)
+                            finalQuery = finalQuery + " INNER JOIN ProductMaster P" + i + " ON P" + i
+                                    + ".ParentId = P" + (i - 1) + ".PID";
 
-                } else {
-                    //content level so getting directly..
-                    finalQuery = " select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                        finalQuery += " WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")";
+
+                    } else {
+                        //content level so getting directly..
+                        finalQuery = " select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE)
+                                + " and productid IN(" + productIds + ")";
+                    }
                 }
             }
 
@@ -1910,11 +1930,11 @@ public class ProductHelper {
                         + ((filter12) ? "A.pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
                         + "dOuomQty,dOuomid,caseBarcode,outerBarcode,count(A.pid),piece_uomid,A.mrp, A.mrp,"
                         + " A.isSalable,A.isReturnable,A.isBom,A.TypeID,A.baseprice, '' as brandname,0"
-                        + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A.Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                        + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                         + ((filter20) ? "A.pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
                         + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A.tagDescription,"
+                        + "A.tagDescription as tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A";
@@ -2025,11 +2045,11 @@ public class ProductHelper {
                         + loopEnd
                         + ".baseprice,A1.pname as brandname,A1.parentid,F.priceoffvalue,F.PriceOffId"
                         + ((filter16) ? ",A" + loopEnd + ".pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A" + loopEnd + ".weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount "
-                        + ",A" + loopEnd + ".Hasserial, (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid, "
+                        + ",A" + loopEnd + ".Hasserial as Hasserial, (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid, "
                         + ((filter20) ? "A" + loopEnd + ".pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3, ")
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4, ")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP, ")
-                        + "A" + loopEnd + ".tagDescription,"
+                        + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
