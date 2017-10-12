@@ -1400,6 +1400,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         boolean isExclude = false;
         int answerSize = answers.size();
         subQuestionLL.removeAllViews();
+        mCurrentQuestionBO.setQuestScore(0);
         for (int i = 0; i < answerSize; i++) {
 
             checkBox = new CheckBox(getActivity());
@@ -1434,6 +1435,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                 if (answers.get(i).isExcluded())
                     isExclude = true;
+
+                mCurrentQuestionBO.setQuestScore((mCurrentQuestionBO.getQuestScore()+answers.get(i).getScore()));
             }
 
             if (isExclude) {
@@ -1443,7 +1446,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 mCurrentQuestionBO.setExcludeQuestionWeight(false);
             }
 
-            mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
+           // mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
 
             final float finalScore = score;
             checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {

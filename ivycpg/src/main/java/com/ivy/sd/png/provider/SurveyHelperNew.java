@@ -313,7 +313,7 @@ public class SurveyHelperNew {
             sb.append(" SMP.Weight,ifnull(SMP.GroupName,''), SMP.isScore, A.isPhotoReq, A.minPhoto,");
             sb.append(" A.maxPhoto,A.isBonus, IFNULL(OM.OptionId,0), OM.OptionText, OSM.Score,");
             sb.append(" CASE OSM.isExcluded WHEN '1' THEN 'true' ELSE 'false' END as isExcluded,");
-            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq FROM SurveyCriteriaMapping SCM");
+            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore FROM SurveyCriteriaMapping SCM");
             sb.append(" INNER JOIN StandardListMaster SL On SL.Listid=SCM.CriteriaType and SL.listtype='SURVEY_CRITERIA_TYPE'");
             sb.append(" INNER JOIN SurveyMapping SMP ON SMP.SurveyId = SCM.SurveyId");
             sb.append(" INNER JOIN SurveyMaster SM ON SM.SurveyId = SCM.SurveyId");
@@ -381,6 +381,7 @@ public class SurveyHelperNew {
                         questionBO.setMaxPhoto(c.getInt(14));
                         questionBO.setIsBonus(c.getInt(15));
                         questionBO.setIsSubQuestion(0);
+                        questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
 
 
                         sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
@@ -472,6 +473,7 @@ public class SurveyHelperNew {
                             questionBO.setMaxPhoto(c.getInt(14));
                             questionBO.setIsBonus(c.getInt(15));
                             questionBO.setIsSubQuestion(0);
+                            questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
 
                             sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
                                     "AND AH.surveyid='" + questionBO.getSurveyid() + "' " +
@@ -875,6 +877,8 @@ public class SurveyHelperNew {
                                 "uid = " + QT(headerCursor.getString(0)), false);
                         db.deleteSQL("AnswerImageDetail",
                                 "uid = " + QT(headerCursor.getString(0)), false);
+                        db.deleteSQL("AnswerScoreDetail",
+                                "uid = " + QT(headerCursor.getString(0)), false);
                         headerCursor.close();
                     }
                     isData = false;
@@ -891,10 +895,14 @@ public class SurveyHelperNew {
 
                     mAllQuestions.addAll(sBO.getQuestions());
                     questionSize = mAllQuestions.size();
+                    double totalAchievedScore=0;
                     for (int ii = 0; ii < questionSize; ii++) {
 
                         questionBO = mAllQuestions.get(ii);
                         if (sBO.getSurveyID() == questionBO.getSurveyid()) {
+
+                            double questTotalScore=0;
+                            boolean isAnswered=false;
 
                             String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                             String detailImageColumns = "uid, retailerid, qid,imgName";
@@ -914,6 +922,7 @@ public class SurveyHelperNew {
                             else
                                 weight = 0;
                             for (int j = 0; j < answerSize; j++) {
+                                questTotalScore+=questionBO.getQuestScore();
                                 if ("TEXT".equals(questionBO.getQuestionType()) ||
                                         "NUM".equals(questionBO.getQuestionType()) ||
                                         "PERC".equals(questionBO.getQuestionType()) || "OPT".equals(questionBO.getQuestionType())
@@ -935,6 +944,7 @@ public class SurveyHelperNew {
                                     db.insertSQL("AnswerDetail", detailColumns,
                                             detailvalues);
                                     isData = true;
+                                    isAnswered=true;
 
                                 } else {
                                     String detailvalues = values1
@@ -953,6 +963,7 @@ public class SurveyHelperNew {
                                     db.insertSQL("AnswerDetail", detailColumns,
                                             detailvalues);
                                     isData = true;
+                                    isAnswered=true;
                                 }
 
                             }
@@ -965,6 +976,21 @@ public class SurveyHelperNew {
                                 db.insertSQL("AnswerImageDetail", detailImageColumns,
                                         detailImageValues);
                             }
+
+                            if(isAnswered) {
+                                if("OPT".equals(questionBO.getQuestionType())
+                                        ||"MULTISELECT".equals(questionBO.getQuestionType())) {
+                                    //Insert Answer score detail
+                                    double score = ((questionBO.getMaxScore() > 0 && questTotalScore > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questTotalScore);
+                                    totalAchievedScore += score;
+                                    String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
+                                            + "," + questionBO.getQuestionID() + ","
+                                            + score;
+                                    db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score",
+                                            detailvalues);
+                                }
+                            }
+
                         }
 
                     }
@@ -980,7 +1006,7 @@ public class SurveyHelperNew {
                                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                         + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
                                         + superwiserID
-                                        + "," + qBO.getAchievedScore() + "," + qBO.getTargtScore()
+                                        + "," + totalAchievedScore + "," + qBO.getTargtScore()
                                         + "," + QT(menuCode)
                                         + "," + qBO.getBonusScoreAchieved()
                                         + "," + qBO.getMaxBonusScore()
@@ -1027,6 +1053,8 @@ public class SurveyHelperNew {
                                     "uid = " + QT(headerCursor.getString(0)), false);
                             db.deleteSQL("AnswerImageDetail",
                                     "uid = " + QT(headerCursor.getString(0)), false);
+                            db.deleteSQL("AnswerScoreDetail",
+                                    "uid = " + QT(headerCursor.getString(0)), false);
                             headerCursor.close();
                         }
 
@@ -1045,12 +1073,14 @@ public class SurveyHelperNew {
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
 
+                        double totalAchievedScore=0;
                         for (int ii = 0; ii < questionSize; ii++) {
 
                             questionBO = mAllQuestions.get(ii);
 
                             if (sBO.getSurveyID() ==
                                     questionBO.getSurveyid()) {
+                                double questTotalScore=0;
 
                                 String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                                 String detailImageColumns = "uid, retailerid, qid,imgName";
@@ -1070,6 +1100,7 @@ public class SurveyHelperNew {
                                 else
                                     weight = 0;
                                 for (int j = 0; j < answerSize; j++) {
+                                    questTotalScore+=questionBO.getQuestScore();
                                     if ("TEXT".equals(questionBO.getQuestionType()) ||
                                             "NUM".equals(questionBO.getQuestionType()) ||
                                             "PERC".equals(questionBO.getQuestionType()) && !questionBO
@@ -1120,6 +1151,20 @@ public class SurveyHelperNew {
                                     db.insertSQL("AnswerImageDetail", detailImageColumns,
                                             detailImageValues);
                                 }
+
+                                if(isData) {
+                                    //Insert Answer score detail
+                                    if("OPT".equals(questionBO.getQuestionType())
+                                            ||"MULTISELECT".equals(questionBO.getQuestionType())) {
+                                        double score = ((questionBO.getMaxScore() > 0 && questTotalScore > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questTotalScore);
+                                        totalAchievedScore += score;
+                                        String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
+                                                + "," + questionBO.getQuestionID() + ","
+                                                + score;
+                                        db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score",
+                                                detailvalues);
+                                    }
+                                }
                             }
                         }
                         if (isData) {
@@ -1134,7 +1179,7 @@ public class SurveyHelperNew {
                                             + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                             + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
                                             + superwiserID
-                                            + "," + sBO.getAchievedScore() + "," + sBO.getTargtScore()
+                                            + "," + totalAchievedScore + "," + sBO.getTargtScore()
                                             + "," + QT(menuCode)
                                             + "," + sBO.getBonusScoreAchieved()
                                             + "," + sBO.getMaxBonusScore()
