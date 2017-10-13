@@ -1726,6 +1726,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SYNC:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
+                if (bmodel.labelsMasterHelper.getSyncContentHTML().equals("")) {
+                    bmodel.labelsMasterHelper.downloadSyncContent();
+                }
                 fragment = new SynchronizationFragment();
                 handler = ((SynchronizationFragment) fragment).getHandler();
                 fragment.setArguments(bndl);
