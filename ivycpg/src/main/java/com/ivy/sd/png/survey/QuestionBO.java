@@ -268,4 +268,14 @@ public class QuestionBO {
         this.tempImagePath = tempImagePath;
     }
 
+    public double getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(double maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    private double maxScore;
+
 }
