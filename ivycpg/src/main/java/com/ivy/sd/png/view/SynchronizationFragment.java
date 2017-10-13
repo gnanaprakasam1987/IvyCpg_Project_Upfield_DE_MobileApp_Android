@@ -342,6 +342,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         download.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         download.setOnClickListener(this);
 
+
         backDateSelection = (Button) view.findViewById(R.id.downloaddate);
         if (bmodel.configurationMasterHelper.IS_ENABLE_BACKDATE_REPORTING) {
             backDateSelection.setVisibility(View.VISIBLE);
@@ -581,6 +582,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         }
         if (!bmodel.configurationMasterHelper.SHOW_SYNC_EXPORT_TXT)
             menu.findItem(R.id.menu_export_txt).setVisible(false);
+
+        if (!bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
+            menu.findItem(R.id.menu_catalog_img).setVisible(false);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -603,6 +608,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             showAlertOkCancel(
                     getResources().getString(
                             R.string.do_u_want_to_close_the_day), 1);
+
+        } else if (i == R.id.menu_catalog_img) {
+            startActivity(new Intent(getActivity(), CatalogImagesDownlaod.class));
 
         } else if (i == android.R.id.home) {
             startActivity(new Intent(getActivity(), HomeScreenActivity.class));
@@ -1482,8 +1490,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                     if (bmodel.isDigitalContentAvailable()) {
                         bmodel.configurationMasterHelper.setAmazonS3Credentials();
-
-
                         initializeTransferUtility();
                         downloaderThread = new DownloaderThreadNew(getActivity(),
                                 activityHandler, bmodel.getDigitalContentURLS(),
@@ -2234,14 +2240,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
 
-        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
-        if (isDistributorWise) {
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+        if (bmodel.synchronizationHelper.getUrlList().size() > 0) {
+            if (isDistributorWise) {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+            } else {
+                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+            }
         } else {
-            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
-        }
-        }
-        else{
             //on demand url not available
             SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
             callNextSyncMethod(next_method);
@@ -2395,15 +2400,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
 
             bmodel.distributorMasterHelper.downloadDistributorsList();
-            if(bmodel.distributorMasterHelper.getDistributors().size()>0) {
+            if (bmodel.distributorMasterHelper.getDistributors().size() > 0) {
                 if (alertDialog != null) {
                     alertDialog.dismiss();
                 }
 
                 Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
-            }
-            else{
+            } else {
                 //No distributors, so downloading on demand url without distributor selection.
                 downloadOnDemandMasterUrl(false);
             }
@@ -2438,50 +2442,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         bmodel.showAlert(getResources().getString(R.string.please_redownload_data), 5003);
         isClicked = false;
     }
-
-//    public class Category implements Parcelable {
-//        private List<SyncRetailerBO> objects;
-//
-//        public Category(List<SyncRetailerBO> objects) {
-//            this.objects = objects;
-//        }
-//
-//        protected Category(Parcel in) {
-//            //objects = in.readTypedList(objects,SyncRetailerBO.CREATOR);
-//            in.readList(objects,List.class.getClassLoader());
-//        }
-//
-//        public static final Creator<Category> CREATOR = new Creator<Category>() {
-//            @Override
-//            public Category createFromParcel(Parcel in) {
-//                return new Category(in);
-//            }
-//
-//            @Override
-//            public Category[] newArray(int size) {
-//                return new Category[size];
-//            }
-//        };
-//
-//        public List<SyncRetailerBO> getObjects() {
-//            return objects;
-//        }
-//
-////        public void setObjects(List<SyncRetailerBO> objects) {
-////            this.objects = objects;
-////        }
-//
-//        @Override
-//        public int describeContents() {
-//            return 0;
-//        }
-//
-//        @Override
-//        public void writeToParcel(Parcel dest, int flags) {
-//            dest.writeList(objects);
-//
-//        }
-//    }
 
 
 }

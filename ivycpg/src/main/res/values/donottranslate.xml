@@ -150,4 +150,7 @@
 
     <string name="executed">Is Executed</string>
 
+    <string name="catalog_images_download">Download Catalog Images</string>
+    <string name="downloading">Downloading.. Catalog Images</string>
+
 </resources>

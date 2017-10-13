@@ -37,6 +37,7 @@ public class DataMembers {
     public static final String LOYALTY_POINTS = "LLTY";
     public static final String PRINT = "PRINT";
     public static final String PROFILE = "PRO";
+    public static final String CATALOG = "CAT";
     public static final String USER = "USER";
 
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
@@ -228,6 +229,11 @@ public class DataMembers {
     public static final int SDCARD_NOT_AVAILABLE = 1007;
     public static final int MESSAGE_DOWNLOAD_COMPLETE_DC = 1008;
     public static final int MESSAGE_ENCOUNTERED_ERROR_DC = 1009;
+
+    /*Catolog Order*/
+    public static final int MESSAGE_ENCOUNTERED_ERROR_CATALOG = 1010;
+    public static final int MESSAGE_UPDATE_PROGRESS_CATALOG = 1011;
+    public static final int MESSAGE_DOWNLOAD_COMPLETE_CATALOG = 10112;
 
 
     public static final String tbl_beatMaster = "BeatMaster";

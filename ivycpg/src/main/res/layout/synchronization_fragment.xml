@@ -5,202 +5,210 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/content_card"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/card_margin_lr"
-        android:layout_marginRight="@dimen/card_margin_lr"
-        android:layout_marginTop="@dimen/card_margin_top"
-        card_view:cardBackgroundColor="@color/WHITE"
-        card_view:cardCornerRadius="1dp"
-        card_view:cardElevation="5dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true"
-        card_view:contentPadding="0dp">
+        android:layout_height="match_parent"
+        android:layout_margin="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/synctitle"
-                style="?textTitleStyle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/syncButtonBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/syn_back_margin"
-                android:layout_weight="1"
-                android:text="@string/close"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/gprsAvailablityButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/redball"
-                android:visibility="gone" />
-
-            <LinearLayout
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/content_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/card_margin_top"
-                android:layout_marginLeft="@dimen/content_margin_lr"
-                android:layout_marginRight="@dimen/content_margin_lr"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/card_margin_lr"
+                android:layout_marginRight="@dimen/card_margin_lr"
                 android:layout_marginTop="@dimen/card_margin_top"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/card_margin_top"
-                    android:layout_marginRight="@dimen/card_margin_top"
-                    android:gravity="bottom"
-                    android:hint="User Id"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:minHeight="70dp"
-                    android:padding="18dp"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:textColor="@color/Black"
-                    android:textColorHighlight="@color/GRAY_TEXT"
-                    android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_small" />
-
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/card_margin_top"
-                    android:layout_marginRight="@dimen/card_margin_top"
-                    android:gravity="bottom"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:minHeight="70dp"
-                    android:padding="18dp"
-                    android:textColor="@color/Black"
-                    android:textColorHighlight="@color/GRAY_TEXT"
-                    android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_small" />
+                card_view:cardBackgroundColor="@color/WHITE"
+                card_view:cardCornerRadius="1dp"
+                card_view:cardElevation="5dp"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="0dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="@dimen/content_margin_lr"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/withPhotos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/card_margin_top"
-                        android:layout_marginTop="@dimen/card_margin_top"
-                        android:text="@string/with_images"
-                        android:textColor="?attr/primarycolor"
-                        android:textSize="@dimen/font_micro_small" />
-
-                    <CheckBox
-                        android:id="@+id/download_retailer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/card_margin_top"
-                        android:layout_marginTop="@dimen/card_margin_top"
-                        android:text="Retailer download"
-                        android:textColor="?attr/primarycolor"
-                        android:textSize="@dimen/font_micro_small"
-                        android:visibility="gone"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/card_margin_lr"
-                android:background="#40c6c6c6">
-
-                <TextView
-                    android:id="@+id/close_day_tv"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:paddingLeft="@dimen/card_margin_top"
-                    android:paddingTop="@dimen/card_margin_top"
-                    android:text="@string/close_the_day"
-                    android:textSize="@dimen/font_micro_small" />
-
-                <TextView
-                    android:id="@+id/closingDay"
-                    style="?attr/customListItemSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/close_day_tv"
-                    android:paddingBottom="@dimen/card_margin_top"
-                    android:paddingLeft="@dimen/card_margin_top"
-                    android:paddingTop="2dp"
-                    android:textSize="@dimen/text_sz_small"
-                    tools:text="19/01/2017" />
-
-                <CheckBox
-                    android:id="@+id/dayClose"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/card_margin_top" />
-
-
-            </RelativeLayout>
-
-            <ScrollView
-                android:id="@+id/scrollView1"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:layout_margin="1dp"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:id="@+id/linearLayout1"
                     android:layout_width="match_parent"
-                    android:layout_height="0dip"
-                    android:layout_margin="2dp"
-                    android:padding="2dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/status"
-                        style="?attr/customListItemPrimary"
+                        android:id="@+id/synctitle"
+                        style="?textTitleStyle"
                         android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/syncButtonBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/syn_back_margin"
+                        android:layout_weight="1"
+                        android:text="@string/close"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/gprsAvailablityButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/redball"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/card_margin_top"
+                        android:layout_marginLeft="@dimen/content_margin_lr"
+                        android:layout_marginRight="@dimen/content_margin_lr"
+                        android:layout_marginTop="@dimen/card_margin_top"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/card_margin_top"
+                            android:layout_marginRight="@dimen/card_margin_top"
+                            android:clickable="false"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:gravity="bottom"
+                            android:hint="User Id"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:minHeight="70dp"
+                            android:padding="18dp"
+                            android:textColor="@color/Black"
+                            android:textColorHighlight="@color/GRAY_TEXT"
+                            android:textColorHint="@color/list_item_secondary_text_color"
+                            android:textSize="@dimen/font_small" />
+
+                        <EditText
+                            android:id="@+id/password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/card_margin_top"
+                            android:layout_marginRight="@dimen/card_margin_top"
+                            android:gravity="bottom"
+                            android:hint="Password"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:minHeight="70dp"
+                            android:padding="18dp"
+                            android:textColor="@color/Black"
+                            android:textColorHighlight="@color/GRAY_TEXT"
+                            android:textColorHint="@color/list_item_secondary_text_color"
+                            android:textSize="@dimen/font_small" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/content_margin_lr"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:id="@+id/withPhotos"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/card_margin_top"
+                                android:layout_marginTop="@dimen/card_margin_top"
+                                android:text="@string/with_images"
+                                android:textColor="?attr/primarycolor"
+                                android:textSize="@dimen/font_micro_small" />
+
+                            <CheckBox
+                                android:id="@+id/download_retailer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/card_margin_top"
+                                android:layout_marginTop="@dimen/card_margin_top"
+                                android:text="Retailer download"
+                                android:textColor="?attr/primarycolor"
+                                android:textSize="@dimen/font_micro_small"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_margin_lr"
+                        android:background="#40c6c6c6">
+
+                        <TextView
+                            android:id="@+id/close_day_tv"
+                            style="?attr/customListItemPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:paddingLeft="@dimen/card_margin_top"
+                            android:paddingTop="@dimen/card_margin_top"
+                            android:text="@string/close_the_day"
+                            android:textSize="@dimen/font_micro_small" />
+
+                        <TextView
+                            android:id="@+id/closingDay"
+                            style="?attr/customListItemSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/close_day_tv"
+                            android:paddingBottom="@dimen/card_margin_top"
+                            android:paddingLeft="@dimen/card_margin_top"
+                            android:paddingTop="2dp"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="19/01/2017" />
+
+                        <CheckBox
+                            android:id="@+id/dayClose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/card_margin_top" />
+
+
+                    </RelativeLayout>
+
+                    <ScrollView
+                        android:id="@+id/scrollView1"
+                        android:layout_width="match_parent"
                         android:layout_height="fill_parent"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="left"
-                        android:padding="2dp"
-                        android:text=""
-                        android:textSize="@dimen/text_sz_small"></TextView>
+                        android:layout_margin="1dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dip"
+                            android:layout_margin="2dp"
+                            android:padding="2dp">
+
+                            <TextView
+                                android:id="@+id/status"
+                                style="?attr/customListItemPrimary"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="left"
+                                android:padding="2dp"
+                                android:text=""
+                                android:textSize="@dimen/text_sz_small"></TextView>
+                        </LinearLayout>
+                    </ScrollView>
                 </LinearLayout>
-            </ScrollView>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
-
-
-    </android.support.v7.widget.CardView>
-
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -227,13 +235,13 @@
                 style="@style/datePickerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:clickable="true"
                 android:gravity="left|center"
-                android:layout_marginRight="10dp"
                 android:inputType="none"
                 android:maxLength="10"
                 android:text="11-05-2017"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/download"

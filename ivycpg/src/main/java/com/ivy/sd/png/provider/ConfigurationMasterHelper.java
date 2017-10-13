@@ -434,6 +434,9 @@ public class ConfigurationMasterHelper {
 
     public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
     public boolean IS_MULTI_STOCKORDER;
+
+    private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";//replace later
+    public boolean IS_CATALOG_IMG_DOWNLOAD = true;
     /**
      * RoadActivity config *
      */
@@ -1857,6 +1860,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        ///this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
