@@ -46,6 +46,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.github.mikephil.charting.utils.FileUtils;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -211,13 +212,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -6808,11 +6813,11 @@ public class BusinessModel extends Application {
                     + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
 
             String printFilePath = "";
-            if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
+            //if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + SDUtil.now(SDUtil.DATE_GLOBAL).replace("/", "") + "/"
                         + userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_ORDER + invoiceNumber + ".txt";
-            }
+           // }
 
 
             String values = uid
@@ -7500,7 +7505,9 @@ public class BusinessModel extends Application {
 
                 } else if (imageName.startsWith("DV_")) {
                     folderName = "Delivery" + path;
-                } else {
+                } else if(imageName.startsWith("PF")){
+                    folderName="PrintFile"+path;
+                }else {
                     folderName = userMasterHelper.getUserMasterBO()
                             .getDistributorid()
                             + "/"
@@ -7614,6 +7621,8 @@ public class BusinessModel extends Application {
             for (int i = 0; i < uploadFileSize; i++) {
 
                 String filename = sfFiles[i].getName();
+                //  print invoice file not upload to server
+
                 getResponseForUploadImageToAmazonCloud(filename, tm, handler);
 
             }
@@ -7686,6 +7695,7 @@ public class BusinessModel extends Application {
             } else if (imageName.startsWith("NP_")) {
                 mBucketName = mBucketDetails + "/" + "NonProductive" + path;
             } else if (imageName.startsWith("PF_")) {
+
                 mBucketName = mBucketDetails + "/" + "PrintFile" + path;
             } else if (imageName.startsWith("GROM_")) {
                 mBucketName = mBucketDetails + "/" + "Grooming" + path;
@@ -10748,8 +10758,8 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void writeToFile(String data, String filename) {
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
+    public void writeToFile(String data, String filename,String foldername) {
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
         File folder = new File(path);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -10761,15 +10771,88 @@ public class BusinessModel extends Application {
             FileOutputStream fOut = new FileOutputStream(newFile);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
             myOutWriter.append(data);
-
             myOutWriter.close();
-
             fOut.flush();
             fOut.close();
+            if(configurationMasterHelper.IS_PRINT_FILE_SAVE&&filename.startsWith("PF_INV")){
+                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/IvyDist/";
+                copyFile(newFile,destpath,filename);
+            }
         } catch (IOException e) {
             Commons.printException(e);
         }
     }
+
+    private void copyFile(File sourceFile,String path,String filename){
+
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File destFile = new File(path, filename + ".txt");
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+        }catch (FileNotFoundException e){
+            Commons.printException(e.getMessage());
+        }catch (IOException e){
+            Commons.printException(e.getMessage());
+        }finally {
+
+        }
+    }
+
+    public void readBuilder(String fileName){
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/PrintFile/";
+        File file = new File(path+fileName);
+        StringBuilder sb=new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+
+
+        String st;
+        while ((st = br.readLine()) != null) {
+            sb.append(st);
+            sb.append("\n");
+        }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        mCommonPrintHelper.setInvoiceData(sb);
+
+    }
+
+
+
+   /* public StringBuilder readFile(String filename){
+        BufferedReader br=null;
+        try {
+            br = new BufferedReader(new FileReader(filename));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+            br.close();
+        } catch (Exception e){
+            Commons.print(e.getMessage());
+        }
+        return sb;*/
+   // }
 
     public void updateGroupIdForRetailer() {
 
@@ -11328,6 +11411,7 @@ public class BusinessModel extends Application {
             Commons.printException(ex);
         }
     }
+
 }
 
 

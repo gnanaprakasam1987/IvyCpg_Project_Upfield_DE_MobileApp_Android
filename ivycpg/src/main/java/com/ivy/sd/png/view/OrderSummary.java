@@ -1457,9 +1457,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
 
-                                            if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                                           // if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber);
+                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/PrintFile/");
 
                                             i = new Intent(OrderSummary.this,
                                                     CommonPrintPreviewActivity.class);
@@ -2474,9 +2474,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
                                     bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
 
-                                    if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                                   // if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber);
+                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/PrintFile/");
 
                                     i = new Intent(OrderSummary.this,
                                             CommonPrintPreviewActivity.class);
@@ -2557,9 +2557,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
                             bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
 
-                            if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                           // if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber);
+                                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber,"/PrintFile");
 
                             Intent i = new Intent(OrderSummary.this,
                                     CommonPrintPreviewActivity.class);
