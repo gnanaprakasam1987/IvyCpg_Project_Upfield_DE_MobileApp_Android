@@ -338,7 +338,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
 
             holder.ProdName.setText(prodList.get(position));
             holder.PhoneCaptureGrid.setAdapter(new ProdGridAdapter(imghashMap.get(prodList.get(position)), typehashMap.get(prodList.get(position)), lochashMap.get(prodList.get(position))));
-            holder.ProdName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.ProdName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
 
         @Override
@@ -465,7 +465,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 /*if ("photo_cap".equals(fromScreen))
                     holder.loc_txt.setVisibility(View.GONE);*/
 
-                holder.type_loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.type_loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
                 holder.RLCheckBg.setOnClickListener(new View.OnClickListener() {

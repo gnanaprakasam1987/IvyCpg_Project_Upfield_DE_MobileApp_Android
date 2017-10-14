@@ -276,7 +276,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         mEdt_searchproductName = (EditText) getView().findViewById(
                 R.id.edt_searchproductName);
-        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mBtn_Search = (Button) getView().findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
         mBtn_clear = (Button) getView().findViewById(R.id.btn_clear);
@@ -286,7 +286,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         btnSave = (Button) getView().findViewById(R.id.btn_save);
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        ((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setOnEditorActionListener(this);
 
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
@@ -655,7 +655,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.ivAvailable = (ImageView) row
                             .findViewById(R.id.ivAvailable);
                     holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                    holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                     holder.psname.setOnLongClickListener(new View.OnLongClickListener() {

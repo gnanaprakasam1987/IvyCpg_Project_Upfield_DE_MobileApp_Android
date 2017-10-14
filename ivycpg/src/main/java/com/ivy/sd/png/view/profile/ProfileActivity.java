@@ -605,7 +605,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         } catch (Exception e) {
             Commons.printException(e);
         }
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         collapsingToolbarLayout.setTitleEnabled(false);

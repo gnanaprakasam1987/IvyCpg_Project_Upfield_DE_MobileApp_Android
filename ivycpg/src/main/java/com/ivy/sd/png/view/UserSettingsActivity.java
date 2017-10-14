@@ -266,7 +266,7 @@ public class UserSettingsActivity extends PreferenceActivity {
         //dialog.setContentView(R.layout.settings_printer_dialog);
 
         TextView textView9 = (TextView) view.findViewById(R.id.textView9);
-        textView9.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        textView9.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView9.setText("Enter MAC Address");
         TextView uname = (TextView) view.findViewById(R.id.uname);
         uname.setVisibility(View.GONE);

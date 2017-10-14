@@ -320,7 +320,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         userNameTv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
-        designation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        designation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
         ll_logout = (LinearLayout) view.findViewById(R.id.ll_logout);
@@ -2349,7 +2349,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             holder.position = position;
             holder.config = configTemp;
             holder.menuBTN.setText(configTemp.getMenuName());
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             Integer i = menuIcons.get(configTemp.getConfigCode());
             if (i != null)

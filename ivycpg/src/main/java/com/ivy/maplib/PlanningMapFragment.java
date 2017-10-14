@@ -214,8 +214,8 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
         fromTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         toTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        fromTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        toTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        fromTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        toTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         crossLine.setRotation(-5);
@@ -630,9 +630,9 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 this.infoDistance = (TextView) infoWindow.findViewById(R.id.distance_txt);
                 startVisitLty = (LinearLayout) infoWindow.findViewById(R.id.start_visit_lty);
                 startVisitBtn = (Button) infoWindow.findViewById(R.id.start_visitbtn);
-                this.infoTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                this.infoTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 this.infoSnippet.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                this.infoDistance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                this.infoDistance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 //
                 this.infoButtonListener = new OnInfoWindowElemTouchListener(startVisitLty) {
                     @Override

@@ -63,8 +63,8 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         outletname = (TextView) findViewById(R.id.BtnBrandPrev);
         productName = (TextView) findViewById(R.id.productName);
         TextView51= (TextView) findViewById(R.id.TextView51);
-        TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tv_lbl_total_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        tv_lbl_total_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         try {
             back = (Button) findViewById(R.id.btnPersBack);
@@ -292,8 +292,8 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
 
 
             holder.tvwpsname.setText(orderreport.getProductshortname());
-            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvbatchid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvbatchid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             holder.productName = orderreport.getProductname();
             holder.tvcaseqty.setText(orderreport.getCQty() + "");
@@ -311,7 +311,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             else if (orderreport.getIsBottleReturn() == 1)
                 holder.tvwpsname.setTextColor(Color.GREEN);
             holder.tvWeight.setText("WGT :"+orderreport.getTotalQty() * orderreport.getWeight() + "");
-            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             return (row);

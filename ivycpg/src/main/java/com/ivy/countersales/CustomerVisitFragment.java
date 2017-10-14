@@ -122,10 +122,10 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
         ageRadioGroup = (RadioGroup) view.findViewById(R.id.radiogroup);
 
-        edt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        edt_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        edt_contact.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        edt_freqVisit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        edt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        edt_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        edt_contact.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        edt_freqVisit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         edt_address.setHorizontallyScrolling(false);
@@ -133,8 +133,8 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
         chkMale = (CheckBox) view.findViewById(R.id.chk_male);
         chkFemale = (CheckBox) view.findViewById(R.id.chk_female);
-        chkMale.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        chkFemale.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        chkMale.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        chkFemale.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         chkMale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

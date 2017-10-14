@@ -196,7 +196,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         CardView cardView1 = (CardView) view.findViewById(R.id.card_view1);
         tv_storeVisit = (TextView) view.findViewById(R.id.tv_store_visit);
         tv_storeVisit.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         crossLine.setRotation(-5);
         if (getArguments() != null)
@@ -436,7 +436,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_areaLoc = (TextView) view.findViewById(R.id.daytv);
         tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
                 .getUserMasterBO().getDownloadDate()));
 
@@ -460,7 +460,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_target = (TextView) view.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
             tv_target.setText("" + getStoreVisited());
         } else {
@@ -500,7 +500,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         TextView tv_target1 = (TextView) view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tv_target1.setText(getTotalAchieved());
 
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
@@ -1160,7 +1160,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.tv_freq.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.tv_labelTgt1.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1431,7 +1431,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.imgDeviate.setVisibility(View.GONE);
 
             if (("Y").equals(holder.retailerObjectHolder.getIsNew())) {
-                holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletNew.setVisibility(View.VISIBLE);
                 holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
             } else {

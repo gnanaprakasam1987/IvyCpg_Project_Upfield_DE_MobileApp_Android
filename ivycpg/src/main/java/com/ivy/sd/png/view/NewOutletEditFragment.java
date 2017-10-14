@@ -239,7 +239,7 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
                 ll_retailer = (LinearLayout) v.findViewById(R.id.ll_retailer_name);
 
                 retailer_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                retailer_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                retailer_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
 
@@ -380,7 +380,7 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
                     super(itemView);
 
                     sortlist_radio_btn = (AppCompatRadioButton) itemView.findViewById(R.id.reason_radio_btn);
-                    sortlist_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    sortlist_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 }
             }
         }

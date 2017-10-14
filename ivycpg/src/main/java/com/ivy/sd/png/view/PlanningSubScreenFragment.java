@@ -607,7 +607,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
 
             holder.config = configTemp;
             holder.menuBTN.setText(configTemp.getMenuName());
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             Integer i = menuIcons.get(configTemp.getConfigCode());
             if (i != null)
                 holder.menuIcon.setImageResource(i);

@@ -175,7 +175,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         syncDone = bmodel.userMasterHelper.getSyncStatus();
         bmodel.userMasterHelper.downloadDistributionDetails();
         mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
-        mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (syncDone) {
             if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
                 bmodel.synchronizationHelper.setEncryptType();
@@ -299,7 +299,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         TextView version = (TextView) findViewById(R.id.version);
         version.setText(getResources().getString(R.string.version)
                 + bmodel.getApplicationVersionName());
-        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
         ll_footer.setOnClickListener(new OnClickListener() {

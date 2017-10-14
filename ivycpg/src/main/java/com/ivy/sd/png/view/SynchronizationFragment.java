@@ -357,7 +357,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             backDateSelection.setVisibility(View.VISIBLE);
         }
 
-        backDateSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        backDateSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (DataMembers.backDate.isEmpty()) {
             backDateSelection.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
                     .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
@@ -386,10 +386,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 .getLoginName());
 
         TextView closeDay_tv = (TextView) view.findViewById(R.id.close_day_tv);
-        closeDay_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        closeDay_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         TextView close_date = (TextView) view.findViewById(R.id.closingDay);
-        close_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        close_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         close_date.setText(DateUtil
                 .convertFromServerDateToRequestedFormat(
                         bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),

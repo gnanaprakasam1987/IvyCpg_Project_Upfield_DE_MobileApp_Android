@@ -159,7 +159,7 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
                     + ((bmodel.configurationMasterHelper.SHOW_RETAILER_FREQUENCY) ? " - F" + holder.retailerObjectHolder.getVisit_frequencey() : ""));
 
             holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
-                    .getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             return convertView;
         }
