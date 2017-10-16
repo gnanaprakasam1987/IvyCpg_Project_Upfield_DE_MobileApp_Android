@@ -31,6 +31,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public String visitday;
     public int accountid;
     int distributorId;
+    int distParentId;
     private String RetailerID = "0", movRetailerId="0";
     private String RetailerCode,movRetailerCode;
     private String RetailerName,movRetailerName;
@@ -1300,6 +1301,14 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setDistributorId(int distributorId) {
         this.distributorId = distributorId;
+    }
+
+    public int getDistParentId() {
+        return distParentId;
+    }
+
+    public void setDistParentId(int distParentId) {
+        this.distParentId = distParentId;
     }
 
     public String getContactLname() {

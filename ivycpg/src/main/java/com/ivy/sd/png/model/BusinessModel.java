@@ -1502,7 +1502,8 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId" : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId,")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
@@ -1628,7 +1629,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-
+                    retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -8731,10 +8732,10 @@ public class BusinessModel extends Application {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             if (configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE) {
-                sb.append("select did,dname,type,0 from DistributorMaster ");
+                sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -8750,6 +8751,7 @@ public class BusinessModel extends Application {
                         supplierMasterBO.setSupplierType(0);
                     }
                     supplierMasterBO.setIsPrimary(c.getInt(3));
+                    supplierMasterBO.setDistParentID(c.getInt(4));
                     mSupplierList.add(supplierMasterBO);
                 }
             }
