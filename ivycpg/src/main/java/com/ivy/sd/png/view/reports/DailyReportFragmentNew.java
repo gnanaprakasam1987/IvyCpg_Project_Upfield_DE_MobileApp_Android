@@ -370,7 +370,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 con.setMenuNumber(SDUtil.format((bmodel.getFITscoreForAllRetailers() / bmodel.getTotalCallsForTheDay()), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT23")) {
 
-                con.setMenuNumber(bmodel.getGreenFITscoreRetailersCount() + "");
+                con.setMenuNumber(bmodel.getGreenFITscoreRetailersCount() + "/"+ bmodel.getTotalCallsForTheDay());
             }
         }
 

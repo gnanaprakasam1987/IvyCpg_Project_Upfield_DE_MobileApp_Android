@@ -27,7 +27,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -163,6 +165,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     private void initializeItem() {
         TextView tvtitle = (TextView) view.findViewById(R.id.synctitle);
         tvtitle.setText(getArguments().getString("screentitle"));
+        CardView alert_card = (CardView) view.findViewById(R.id.alert_card);
+        if (!bmodel.labelsMasterHelper.getSyncContentHTML().equals("NULL") && !bmodel.labelsMasterHelper.getSyncContentHTML().equals("")) {
+            alert_card.setVisibility(View.VISIBLE);
+            TextView alert_txt = (TextView) view.findViewById(R.id.alert_txt);
+            alert_txt.setText(Html.fromHtml(bmodel.labelsMasterHelper.getSyncContentHTML()));
+        } else {
+            alert_card.setVisibility(View.GONE);
+        }
 
         txtUserName = (EditText) view.findViewById(R.id.username);
         txtPassword = (EditText) view.findViewById(R.id.password);

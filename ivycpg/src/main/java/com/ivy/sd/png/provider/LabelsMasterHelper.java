@@ -94,4 +94,37 @@ public class LabelsMasterHelper {
         }
         return null;
     }
+
+    public String getSyncContentHTML() {
+        return SyncContentHTML;
+    }
+
+    private String SyncContentHTML = "";
+
+    public void downloadSyncContent() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT value from LabelsMaster where lang = "
+                            + bmodel.QT(PreferenceManager
+                            .getDefaultSharedPreferences(mContext)
+                            .getString("languagePref",
+                                    ApplicationConfigs.LANGUAGE)) + " and key = 'SYNC_CONTENT'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    SyncContentHTML = c.getString(0);
+                }
+                c.close();
+            } else {
+                SyncContentHTML = "NULL";
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            SyncContentHTML = "NULL";
+        }
+    }
 }
