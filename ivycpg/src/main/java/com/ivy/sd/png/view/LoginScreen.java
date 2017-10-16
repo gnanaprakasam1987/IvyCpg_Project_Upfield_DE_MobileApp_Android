@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
@@ -46,6 +47,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
@@ -58,6 +61,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThread;
+import com.ivy.sd.png.model.DownloaderThreadCatalog;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -83,9 +87,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
+
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
         ApplicationConfigs {
@@ -109,7 +117,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     public SharedPreferences mPasswordLockCountPref;
 
     private TransferUtility transferUtility;
-    private AmazonS3Client s3;
     private int mTotalRetailerCount = 0;
     private int mIterateCount;
     private TextView mForgotPasswordTV;
@@ -192,7 +199,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             @Override
             public void onClick(View v) {
                 if (!editTextUserName.getText().toString().equals("")) {
-                    bmodel.userNameTemp=editTextUserName.getText().toString();
+                    bmodel.userNameTemp = editTextUserName.getText().toString();
                     new ForgetPassword().execute();
                 } else {
                     editTextUserName.setError(getResources().getString(R.string.enter_username));
@@ -713,7 +720,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
-
+                    if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
+                        new CatalogImagesDownload().execute();
                     checkLogin();
                     finish();
                     System.gc();
@@ -793,6 +801,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         dismissCurrentProgressDialog();
                         displayMessage(errorMessage);
                     }
+                    if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
+                        new CatalogImagesDownload().execute();
                     finish();
                     checkLogin();
                     break;
@@ -1150,7 +1160,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     private void initializeTransferUtility() {
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
-        s3 = new AmazonS3Client(myCredentials);
+        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
         transferUtility = new TransferUtility(s3, getApplicationContext());
     }
 
@@ -1334,7 +1344,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 jsonObj.put("DeviceId",
                         bmodel.activationHelper.getIMEINumber());
                 jsonObj.put("RegistrationId", bmodel.regid);
-                jsonObj.put("DeviceUniqueId",bmodel.activationHelper.getDeviceId());
+                jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
                 jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
@@ -1533,20 +1543,20 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
         bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
 
-        if(bmodel.synchronizationHelper.getUrlList().size()>0) {
+        if (bmodel.synchronizationHelper.getUrlList().size() > 0) {
             if (isDistributorWise) {
                 bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
             } else {
                 bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
             }
-        }
-        else{
+        } else {
             //on demand url not available
             SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
             callNextTask(next_method);
         }
 
     }
+
     /**
      * Distributor wise master will be downloaded if configuration enable.
      * This class is initiate distributor wise master download.we will send all
@@ -1576,7 +1586,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         jsonArray.put(distributorBO.getDId());
 
                         //update distributorid in usermaster
-                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(),distributorBO.getDName());
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getDName());
                     }
                 }
                 json.put("DistributorIds", jsonArray);
@@ -1878,14 +1888,14 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
 
             bmodel.distributorMasterHelper.downloadDistributorsList();
-            if(bmodel.distributorMasterHelper.getDistributors().size()>0) {
+            if (bmodel.distributorMasterHelper.getDistributors().size() > 0) {
                 if (alertDialog != null) {
                     alertDialog.dismiss();
                 }
                 // new InitiateDistributorDownload().execute();
                 Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
-            }else{
+            } else {
                 //No distributors, so downloading on demand url without distributor selection.
                 downloadOnDemandMasterUrl(false);
             }
@@ -1953,6 +1963,71 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     new InitiateDistributorDownload().execute();
                 }
         }
+    }
+
+    public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
+
+        ArrayList<S3ObjectSummary> filesList = new ArrayList<>();
+
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            try {
+                if (android.os.Build.VERSION.SDK_INT > 9) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+
+                    bmodel.getimageDownloadURL();
+                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
+                    initializeTransferUtility();
+
+                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                            ConfigurationMasterHelper.SECRET_KEY);
+                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+
+                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
+                    List<S3ObjectSummary> files = listing.getObjectSummaries();
+
+                    while (listing.isTruncated()) {
+                        listing = s3.listNextBatchOfObjects(listing);
+                        files.addAll(listing.getObjectSummaries());
+                    }
+
+                    if (files != null && files.size() > 0) {
+
+                        bmodel.synchronizationHelper.insertImageDetails(files);
+                        filesList = new ArrayList<>();
+                        for (int i = 0; i < files.size(); i++) {
+                            S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
+                            s3ObjectSummary.setBucketName(DataMembers.CATALOG);
+                            s3ObjectSummary.setKey(files.get(i).getKey());
+                            s3ObjectSummary.setETag("R");
+                            filesList.add(s3ObjectSummary);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                Commons.printException(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            Thread downloaderThread = new DownloaderThreadCatalog(LoginScreen.this,
+                    activityHandlerCatalog, filesList,
+                    bmodel.userMasterHelper.getUserMasterBO()
+                            .getUserid(), transferUtility);
+            downloaderThread.start();
+
+        }
+
     }
 
 }

@@ -151,4 +151,8 @@
     <string name="executed">Is Executed</string>
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Delivery Date is: </string>
+
+    <string name="catalog_images_download">Download Catalog Images</string>
+    <string name="downloading">Downloading.. Catalog Images</string>
+
 </resources>

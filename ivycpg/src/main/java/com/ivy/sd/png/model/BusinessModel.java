@@ -878,7 +878,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -4944,6 +4943,15 @@ public class BusinessModel extends Application {
                     }
                 }
                 c.close();
+            } else {
+                c = db
+                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                    }
+                }
+                c.close();
             }
             db.closeDB();
 
@@ -4965,18 +4973,6 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-
-            if (isAmazonUpload) {
-                Cursor c = db
-                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
-                    }
-                }
-                c.close();
-                c = null;
-            }
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
@@ -6413,7 +6409,7 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                double achieved = (((double) sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
@@ -8258,7 +8254,6 @@ public class BusinessModel extends Application {
         return true;
 
     }
-
 
 
     public void isModuleDone() {
