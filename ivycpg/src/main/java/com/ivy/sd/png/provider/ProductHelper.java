@@ -6818,6 +6818,7 @@ public class ProductHelper {
                 while (cur.moveToNext()) {
                     ProductMasterBO product = new ProductMasterBO();
                     product.setProductID(cur.getString(0));
+                    product.setProductName(cur.getString(1));
                     product.setProductShortName(cur.getString(1));
                     product.setParentid(cur.getInt(2));
                     product.setIsSaleable(1);
