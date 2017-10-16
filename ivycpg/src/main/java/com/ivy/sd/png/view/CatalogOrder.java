@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -58,6 +59,7 @@ import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
 
 import java.io.File;
@@ -946,28 +948,28 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     private boolean isSpecialFilterAppliedProduct(String generaltxt, ProductMasterBO ret) {
-        if (generaltxt.equals(mSbd) && ret.isRPS()
-                || (generaltxt.equals(mOrdered) && ret.getOrderedPcsQty() > 0)
-                || (generaltxt.equals(mPurchased) && ret.getIsPurchased() == 1)
-                || (generaltxt.equals(mInitiative) && ret.getIsInitiativeProduct() == 1)
-                || (generaltxt.equals(mCommon) && applyCommonFilterConfig(ret))
-                || (generaltxt.equals(mSbdGaps) && (ret.isRPS() && !ret.isSBDAcheived()))
-                || (generaltxt.equals(mInStock) && ret.getWSIH() > 0)
-                || (generaltxt.equals(mOnAllocation) && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
-                || (generaltxt.equals(mPromo) && ret.isPromo())
-                || (generaltxt.equals(mMustSell) && ret.getIsMustSell() == 1)
-                || (generaltxt.equals(mFocusBrand) && ret.getIsFocusBrand() == 1)
-                || (generaltxt.equals(mFocusBrand2) && ret.getIsFocusBrand2() == 1)
-                || (generaltxt.equals(msih) && ret.getSIH() > 0)
-                || (generaltxt.equals(mOOS) && ret.getOos() == 0)
-                || (generaltxt.equals(mNMustSell) && ret.getIsNMustSell() == 1)
-                || (generaltxt.equals(mDiscount) && ret.getIsDiscountable() == 1)
-                || (generaltxt.equals(mStock) && ret.getLocations().get(0).getShelfPiece() > 0)
-                || (generaltxt.equals(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
-                || (generaltxt.equals(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
-                || (generaltxt.equals(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
-                || (generaltxt.equals(mSMP) && ret.getIsSMP() == 1)
-                || (generaltxt.equals(mCompertior) && ret.getOwn() == 0)) {
+        if (generaltxt.equalsIgnoreCase(mSbd) && ret.isRPS()
+                || (generaltxt.equalsIgnoreCase(mOrdered) && ret.getOrderedPcsQty() > 0)
+                || (generaltxt.equalsIgnoreCase(mPurchased) && ret.getIsPurchased() == 1)
+                || (generaltxt.equalsIgnoreCase(mInitiative) && ret.getIsInitiativeProduct() == 1)
+                || (generaltxt.equalsIgnoreCase(mCommon) && applyCommonFilterConfig(ret))
+                || (generaltxt.equalsIgnoreCase(mSbdGaps) && (ret.isRPS() && !ret.isSBDAcheived()))
+                || (generaltxt.equalsIgnoreCase(mInStock) && ret.getWSIH() > 0)
+                || (generaltxt.equalsIgnoreCase(mOnAllocation) && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
+                || (generaltxt.equalsIgnoreCase(mPromo) && ret.isPromo())
+                || (generaltxt.equalsIgnoreCase(mMustSell) && ret.getIsMustSell() == 1)
+                || (generaltxt.equalsIgnoreCase(mFocusBrand) && ret.getIsFocusBrand() == 1)
+                || (generaltxt.equalsIgnoreCase(mFocusBrand2) && ret.getIsFocusBrand2() == 1)
+                || (generaltxt.equalsIgnoreCase(msih) && ret.getSIH() > 0)
+                || (generaltxt.equalsIgnoreCase(mOOS) && ret.getOos() == 0)
+                || (generaltxt.equalsIgnoreCase(mNMustSell) && ret.getIsNMustSell() == 1)
+                || (generaltxt.equalsIgnoreCase(mDiscount) && ret.getIsDiscountable() == 1)
+                || (generaltxt.equalsIgnoreCase(mStock) && ret.getLocations().get(0).getShelfPiece() > 0)
+                || (generaltxt.equalsIgnoreCase(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
+                || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
+                || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
+                || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
+                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)) {
             return true;
         }
         return false;
@@ -2186,8 +2188,25 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.pdt_image != null) {
                 if (bmodel.productHelper.getProductImageUrl() != null) {
-                    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                        File prd = new File(Utils.getSdcardPath(getApplicationContext()) + "/" + bmodel.productHelper.getProductImageUrl() + "/" + holder.productObj.getProductCode() + ".jpg");
+                    if (isExternalStorageAvailable()) {
+                        File prd = new File(getExternalFilesDir(
+                                Environment.DIRECTORY_DOWNLOADS)
+                                + "/"
+                                + bmodel.userMasterHelper.getUserMasterBO()
+                                .getUserid()
+                                + DataMembers.DIGITAL_CONTENT
+                                + "/"
+                                + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".png");
+                        if (!prd.exists()) {
+                            prd = new File(getExternalFilesDir(
+                                    Environment.DIRECTORY_DOWNLOADS)
+                                    + "/"
+                                    + bmodel.userMasterHelper.getUserMasterBO()
+                                    .getUserid()
+                                    + DataMembers.DIGITAL_CONTENT
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg");
+                        }
                         Glide.with(getApplicationContext())
                                 .load(prd)
                                 .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
@@ -2445,7 +2464,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .placeholder(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
-                            //.crossFade()
+                    //.crossFade()
                     .into(holder.brand_image);
             holder.brand_image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -2489,6 +2508,41 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 brand_name = (TextView) v.findViewById(R.id.brand_name);
 
             }
+        }
+    }
+
+    private boolean isExternalStorageAvailable() {
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
+                .getPath());
+        double sdAvailSize = (double) stat.getAvailableBlocks()
+                * (double) stat.getBlockSize();
+        // One binary gigabyte equals 1,073,741,824 bytes.
+        double mbAvailable = sdAvailSize / 1048576;
+
+        String state = Environment.getExternalStorageState();
+        boolean mExternalStorageAvailable = false;
+        boolean mExternalStorageWriteable = false;
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // We can read and write the media
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            // We can only read the media
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            // Something else is wrong. It may be one of many other states, but
+            // all we need
+            // to know is we can neither read nor write
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+
+        if (mExternalStorageAvailable == true
+                && mExternalStorageWriteable == true && mbAvailable > 10) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
