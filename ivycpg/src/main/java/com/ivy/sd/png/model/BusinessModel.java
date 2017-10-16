@@ -878,7 +878,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -4944,6 +4943,15 @@ public class BusinessModel extends Application {
                     }
                 }
                 c.close();
+            } else {
+                c = db
+                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                    }
+                }
+                c.close();
             }
             db.closeDB();
 
@@ -4965,18 +4973,6 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-
-            if (isAmazonUpload) {
-                Cursor c = db
-                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
-                    }
-                }
-                c.close();
-                c = null;
-            }
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
@@ -6413,7 +6409,7 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                double achieved = (((double) sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
@@ -8260,7 +8256,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public void isModuleDone() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -8424,13 +8419,14 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select  SMA.SurveyDesc,sum((AD.score*SM.weight)/100) Total from AnswerDetail  AD  " +
+                    .selectSQL("select  SMA.SurveyDesc,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail  AD  " +
+                            "INNER JOIN AnswerHeader AH  ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
-                            "and SM.qid=AD.qid where AD.retailerid="
-                            + getRetailerMasterBO().getRetailerID()
-                            + " and SMA.menucode='MENU_SURVEY' " +
-                            "and AD.upload='N' group by SMA.SurveyDesc");
+                            "and SM.qid=AD.qid where AH.retailerid="
+                            + getRetailerMasterBO().getRetailerID()+
+                            " and SMA.menucode='MENU_SURVEY'" +
+                            " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
@@ -8438,9 +8434,6 @@ public class BusinessModel extends Application {
                     bo = new ConfigureBO();
                     bo.setMenuName(c.getString(0));
                     bo.setMenuNumber(SDUtil.format(c.getDouble(1), 2, 0) + "");
-/*
-                    bo.setKpiTarget(c.getString(3));
-                    bo.setKpiAchieved(c.getString(2));*/
 
                     lst.add(bo);
                 }
@@ -8461,9 +8454,11 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select groupName,sum((AD.score*SM.weight)/100) Total from AnswerDetail  AD LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AD.retailerid="
+                    .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
+                            + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
-                            + " and AD.upload='N' group by groupName");
+                            + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
@@ -8473,8 +8468,6 @@ public class BusinessModel extends Application {
                     bo.setMenuName(c.getString(0));
                     bo.setMenuNumber(SDUtil.format(c.getDouble(1), 2, 0) + "");
 
-                       /* bo.setKpiTarget(c.getString(2));
-                        bo.setKpiAchieved(c.getString(1));*/
                     if (bo.getMenuName() != null && bo.getMenuNumber() != null)
                         lst.add(bo);
 
@@ -8497,7 +8490,7 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerDetail AD " +
+                    .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
                             "INNER JOIN  AnswerHeader AH ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid " +
                             "where AH.menuCode in('MENU_SURVEY')");
@@ -8522,7 +8515,10 @@ public class BusinessModel extends Application {
             db.openDataBase();
             int count = 0;
             Cursor c = db
-                    .selectSQL("select distinct retailerid, Sum(achScore), Sum(tgtScore) from AnswerHeader where menuCode in('MENU_SURVEY') group by retailerid");
+                    .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
+                            +" INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            +" INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
+                            +" where menuCode in('MENU_SURVEY') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
@@ -8546,10 +8542,11 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select  AD.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerDetail AD " +
+                    .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
+                            "INNER JOIN AnswerHeader AH  ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   and " +
-                            "SM.qid=AD.qid where SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AD.retailerid");
+                            "SM.qid=AD.qid where SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     for (RetailerMasterBO bo : retailerMaster) {
