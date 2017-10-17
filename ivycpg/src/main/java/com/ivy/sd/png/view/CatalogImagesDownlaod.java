@@ -207,8 +207,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         @Override
         protected void onPostExecute(String s) {
-            tvDownloadStatus.setText(getResources().getString(R.string.downloading));
             if (filesList.size() > 0) {
+                tvDownloadStatus.setText(getResources().getString(R.string.downloading));
                 Thread downloaderThread = new DownloaderThreadCatalog(CatalogImagesDownlaod.this,
                         activityHandlerCatalog, filesList,
                         bmodel.userMasterHelper.getUserMasterBO()
