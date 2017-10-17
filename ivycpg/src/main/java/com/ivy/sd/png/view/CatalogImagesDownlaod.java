@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -206,12 +207,18 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         @Override
         protected void onPostExecute(String s) {
-            tvDownloadStatus.setText(getResources().getString(R.string.downloading));
-            Thread downloaderThread = new DownloaderThreadCatalog(CatalogImagesDownlaod.this,
-                    activityHandlerCatalog, filesList,
-                    bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid(), transferUtility);
-            downloaderThread.start();
+            if (filesList.size() > 0) {
+                tvDownloadStatus.setText(getResources().getString(R.string.downloading));
+                Thread downloaderThread = new DownloaderThreadCatalog(CatalogImagesDownlaod.this,
+                        activityHandlerCatalog, filesList,
+                        bmodel.userMasterHelper.getUserMasterBO()
+                                .getUserid(), transferUtility);
+                downloaderThread.start();
+            } else {
+                Toast.makeText(CatalogImagesDownlaod.this, "All images are upto date", Toast.LENGTH_SHORT).show();
+                tvDownloadStatus.setText("Downloaded " + getTotalDowloadedImages() + "/" + bmodel.synchronizationHelper.getCatalogImagesCount());
+                catalogRefresh.setVisibility(View.VISIBLE);
+            }
         }
     }
 
