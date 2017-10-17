@@ -219,7 +219,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 tvDownloadStatus.setText("Downloaded " + getTotalDowloadedImages() + "/" + bmodel.synchronizationHelper.getCatalogImagesCount());
                 catalogRefresh.setVisibility(View.VISIBLE);
             }
-
         }
     }
 

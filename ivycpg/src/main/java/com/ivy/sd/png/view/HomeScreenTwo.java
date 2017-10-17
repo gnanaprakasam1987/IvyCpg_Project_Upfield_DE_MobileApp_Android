@@ -1814,6 +1814,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                 enableSchemeModule();
                             } else {
                                 bmodel.setOrderHeaderBO(null);
+                                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && menu.getConfigCode().equals(MENU_CATALOG_ORDER)) {
+                                    bmodel.loadTempOrderDetails();
+                                }
                             }
                             loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
                             if (bmodel.isEdit()) {
