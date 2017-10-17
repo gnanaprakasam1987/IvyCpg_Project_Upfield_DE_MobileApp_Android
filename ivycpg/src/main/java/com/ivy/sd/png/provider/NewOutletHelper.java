@@ -1835,7 +1835,7 @@ public class NewOutletHelper {
                     + "," + QT("N")
                     + "," + getNewoutlet().getCreditDays()
                     + "," + getNewoutlet().getIsSEZ()
-                    + "," + getNewoutlet().getGstNum()
+                    + "," + QT(getNewoutlet().getGstNum())
                     + "," + QT(getNewoutlet().getRfield5())
                     + "," + QT(getNewoutlet().getRfield6())
                     + "," + QT(getNewoutlet().getTinExpDate());

@@ -547,7 +547,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
                 isMapview = true;
                 retailerLng = retailerObj.getLongitude();
-            }else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+            }else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
                 isNonVisitReason = true;
             }
         }

@@ -55,6 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:id="@+id/txt_po"
             android:padding="5dp"
             android:text="@string/order_po"
             android:textColor="@android:color/black" />
@@ -78,6 +79,7 @@
         android:layout_weight="1">
 
         <TextView
+            android:id="@+id/textView5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -98,13 +100,18 @@
             android:textColor="@android:color/black" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/closeButton"
-
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center">
+    <Button
+        android:id="@+id/closeButton"
+        style="?attr/roundedCustomButtonNormal"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="5dp"
         android:text="@string/ok" >
     </Button>
+    </LinearLayout>
 
 </LinearLayout>
