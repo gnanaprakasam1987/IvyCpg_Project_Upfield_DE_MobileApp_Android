@@ -18,6 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.HashMap;
 public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {//implements TabLayout.OnTabSelectedListener {
     private BusinessModel bmodel;
     private Toolbar toolbar;
-    private HashMap<Integer,Integer> mSelectedIdByLevelId;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> mProductIdList;
 
     @Override
@@ -48,19 +49,39 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         }
         setScreenTitle("Product Details");
 
-        mSelectedIdByLevelId=(HashMap<Integer,Integer>)getIntent().getSerializableExtra("FiveFilter");
-        mProductIdList=getIntent().getStringArrayListExtra("ProductIdList");
+        mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");
+        mProductIdList = getIntent().getStringArrayListExtra("ProductIdList");
         ImageView pdt_image_details = (ImageView) findViewById(R.id.pdt_image_details);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File prd = new File(Utils.getSdcardPath(getApplicationContext()) + "/" + bmodel.productHelper.getProductImageUrl() + "/" + bmodel.selectedPdt.getProductCode() + ".jpg");
-            Glide.with(getApplicationContext())
-                    .load(prd)
-                    .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(pdt_image_details);
-        } else {
-            pdt_image_details.setImageResource(R.drawable.no_image_available);
+            if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+                File prd = new File(getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid()
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.CATALOG + "/" + bmodel.selectedPdt.getProductCode() + ".png");
+                if (!prd.exists()) {
+                    prd = new File(getExternalFilesDir(
+                            Environment.DIRECTORY_DOWNLOADS)
+                            + "/"
+                            + bmodel.userMasterHelper.getUserMasterBO()
+                            .getUserid()
+                            + DataMembers.DIGITAL_CONTENT
+                            + "/"
+                            + DataMembers.CATALOG + "/" + bmodel.selectedPdt.getProductCode() + ".jpg");
+                }
+                Glide.with(getApplicationContext())
+                        .load(prd)
+                        .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(pdt_image_details);
+
+            } else {
+                pdt_image_details.setImageResource(R.drawable.no_image_available);
+            }
         }
         TextView sih_detail = (TextView) findViewById(R.id.sih_detail);
         TextView pdt_name = (TextView) findViewById(R.id.pdt_name);
@@ -89,9 +110,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         // TODO Auto-generated method stub
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            Intent intent=new Intent(ProductDetailsCatalogActivity.this, CatalogOrder.class);
+            Intent intent = new Intent(ProductDetailsCatalogActivity.this, CatalogOrder.class);
             intent.putExtra("FiveFilter", mSelectedIdByLevelId);
-            intent.putStringArrayListExtra("ProductIdList",mProductIdList);
+            intent.putStringArrayListExtra("ProductIdList", mProductIdList);
             startActivity(intent);
             finish();
             return true;
