@@ -2187,7 +2187,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.pdt_image != null) {
-                if (bmodel.productHelper.getProductImageUrl() != null) {
+                if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
                     if (isExternalStorageAvailable()) {
                         File prd = new File(getExternalFilesDir(
                                 Environment.DIRECTORY_DOWNLOADS)

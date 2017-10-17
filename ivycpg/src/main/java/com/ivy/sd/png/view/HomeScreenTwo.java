@@ -2058,6 +2058,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
                 int count = bmodel.synchronizationHelper.getImagesCount();
                 bmodel.productHelper.getLocations();
+                bmodel.productHelper.downloadInStoreLocations();
                 bmodel.photoCaptureHelper.downloadPhotoCaptureProducts();
                 bmodel.photoCaptureHelper.downloadPhotoTypeMaster();
                 bmodel.photoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
