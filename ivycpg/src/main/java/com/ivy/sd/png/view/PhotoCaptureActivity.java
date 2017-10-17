@@ -121,14 +121,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 capturePic();
             }
         });
-
+        save_btn = (Button) findViewById(R.id.save_btn);
         if (isMaxPhotos())
             save_btn.setVisibility(View.GONE);
         else
             save_btn.setVisibility(View.VISIBLE);
 
-
-        save_btn = (Button) findViewById(R.id.save_btn);
         save_btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,6 +142,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
         if (isFromMenuClick) {
             bmodel.productHelper.getLocations();
+            bmodel.productHelper.downloadInStoreLocations();
             bmodel.photoCaptureHelper.downloadPhotoCaptureProducts();
             bmodel.photoCaptureHelper.downloadPhotoTypeMaster();
             bmodel.photoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
@@ -260,37 +259,37 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
             locationAdapter.add(temp);
 
+        if (bmodel.photoCaptureHelper.getPhotoTypeMaster() != null)
+            if (bmodel.photoCaptureHelper.getPhotoTypeMaster().size() > 0) {
+                photoTypeAdapter = new ArrayAdapter<PhotoTypeMasterBO>(
+                        this, R.layout.spinner_bluetext_layout,
+                        bmodel.photoCaptureHelper.getPhotoTypeMaster());
+                photoTypeAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        if (bmodel.photoCaptureHelper.getPhotoTypeMaster().size() > 0) {
-            photoTypeAdapter = new ArrayAdapter<PhotoTypeMasterBO>(
-                    this, R.layout.spinner_bluetext_layout,
-                    bmodel.photoCaptureHelper.getPhotoTypeMaster());
-            photoTypeAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                spnPhotoType
+                        .setOnItemSelectedListener(new OnItemSelectedListener() {
 
-            spnPhotoType
-                    .setOnItemSelectedListener(new OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent,
-                                                   View view, int pos, long id) {
-                            PhotoTypeMasterBO temp = (PhotoTypeMasterBO) parent
-                                    .getSelectedItem();
-                            mTypeID = temp.getPhotoTypeId();
-                            phcaptureList = temp.getPhotoCaptureProductList();
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent,
+                                                       View view, int pos, long id) {
+                                PhotoTypeMasterBO temp = (PhotoTypeMasterBO) parent
+                                        .getSelectedItem();
+                                mTypeID = temp.getPhotoTypeId();
+                                phcaptureList = temp.getPhotoCaptureProductList();
 //                            productSelectionSpinner.setAdapter(productSelectionAdapter);
-                            if (temp.getPhotoTypeCode().equals("PT"))
-                                isPLtype = true;
-                            else
-                                isPLtype = false;
-                            onLoadModule();
-                        }
+                                if (temp.getPhotoTypeCode().equals("PT"))
+                                    isPLtype = true;
+                                else
+                                    isPLtype = false;
+                                onLoadModule();
+                            }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> arg0) {
-                        }
-                    });
-        }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> arg0) {
+                            }
+                        });
+            }
 
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             StandardListBO selectedId = locationAdapter
