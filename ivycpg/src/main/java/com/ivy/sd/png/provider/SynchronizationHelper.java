@@ -2072,7 +2072,7 @@ SynchronizationHelper {
         } else if (tableName.equalsIgnoreCase("temp_product_priceMaster")) {
             if (IsDataAvailableInTable("temp_product_priceMaster")) {
                 sb = new StringBuffer();
-                sb.append("update ProductMaster set  Mrp=(select TPP.Mrp from temp_product_priceMaster TPP where ProductMaster.Pid=TPP.Pid),");
+                sb.append("update ProductMaster set  Mrp=(select mrp=TPP.Mrp, bp=tpp.baseprice from temp_product_priceMaster TPP where ProductMaster.Pid=TPP.Pid),");
                 sb.append("baseprice =(select TPP.baseprice from temp_product_priceMaster TPP where ProductMaster.Pid=TPP.Pid)");
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_product_priceMaster", null, true);

@@ -1503,7 +1503,7 @@ public class BusinessModel extends Application {
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
@@ -2831,7 +2831,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -2897,6 +2897,7 @@ public class BusinessModel extends Application {
 
             }
             sb.append("," + getRetailerMasterBO().getDistributorId());
+            sb.append("," + getRetailerMasterBO().getDistParentId());
             sb.append("," + supplierBO.getSupplierType());
             sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
             sb.append("," + getRetailerMasterBO().getCreditDays());
@@ -6806,7 +6807,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -6867,6 +6868,8 @@ public class BusinessModel extends Application {
                     + indicativeFlag
                     + ","
                     + getRetailerMasterBO().getDistributorId()
+                    + ","
+                    + getRetailerMasterBO().getDistParentId()
                     + ","
                     + supplierBO.getSupplierType() + "," + isVansales
                     + "," + QT(getOrderHeaderBO().getSignaturePath())

@@ -1432,6 +1432,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     SupplierMasterBO supplierBo = mSupplierAdapter
                                             .getItem(which);
                                     bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                    bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
                                     bmodel.updateGroupIdForRetailer();
 
                                     dialog.dismiss();
