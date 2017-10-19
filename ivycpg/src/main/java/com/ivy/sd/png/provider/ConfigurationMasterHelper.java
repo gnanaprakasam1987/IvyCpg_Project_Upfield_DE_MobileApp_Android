@@ -46,7 +46,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_DIGITAL_CONTENT = "DIGCON";
     public static final String CODE_NEW_OUTLET_UPLOAD = "FUN17";
     public static final String CODE_MRP_LEVEL_TAX = "TAX01";
-    public static final String CODE_IS_NEW_RETAILER_DEVIATION = "RTRS26";
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
@@ -445,7 +444,6 @@ public class ConfigurationMasterHelper {
      * Configuration not set in DB *
      */
     public boolean IS_CUMULATIVE_AND;
-    public boolean IS_NEW_RETAILER_DEVIATION = false;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
@@ -1765,7 +1763,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_DATE_BTN = hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) : false;
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
-        this.IS_NEW_RETAILER_DEVIATION = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
         //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
         this.IS_FIVE_LEVEL_FILTER = true;

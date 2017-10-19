@@ -180,6 +180,37 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_adPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="3">
+
+            <TextView
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text="Total Advance Payment"
+                android:textColor="@color/GREEN"
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totAd"
+                style="?textFieldStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="right"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_edittext_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/ll_creditNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

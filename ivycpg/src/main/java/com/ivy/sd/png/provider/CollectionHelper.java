@@ -916,19 +916,23 @@ public class CollectionHelper {
         }
     }
 
-    public boolean isEnterAmountExceed(ArrayList<PaymentBO> paymentList) {
+    public boolean isEnterAmountExceed(ArrayList<PaymentBO> paymentList,String selectedMode) {
         final ArrayList<InvoiceHeaderBO> invoiceList = bmodel.getInvoiceHeaderBO();
 
         double totalInvoiceAmt = 0;
         double totalPaidAmt = 0;
+        double totalDiscountAmt = 0;
         for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
             if (invoiceHeaderBO.isChkBoxChecked()) {
                 totalInvoiceAmt = totalInvoiceAmt + invoiceHeaderBO.getBalance();
+                totalDiscountAmt = totalDiscountAmt+invoiceHeaderBO.getRemainingDiscountAmt();
             }
         }
-        totalInvoiceAmt = Double.parseDouble(SDUtil.format(totalInvoiceAmt,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        totalInvoiceAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalInvoiceAmt));
+        if(selectedMode.equals(StandardListMasterConstants.CREDIT_NOTE)){
+            totalInvoiceAmt=totalInvoiceAmt+totalDiscountAmt;
+        }
+
         for (PaymentBO paymentBO : paymentList) {
             totalPaidAmt = totalPaidAmt + paymentBO.getAmount();
         }
