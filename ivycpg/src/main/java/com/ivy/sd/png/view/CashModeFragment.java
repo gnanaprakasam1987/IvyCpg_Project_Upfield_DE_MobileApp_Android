@@ -192,7 +192,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                     mCollectAmtET.setText(qty);
                     Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                             Toast.LENGTH_SHORT).show();
-                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList)) {
+                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CASH)) {
                     //updateTotalAmountEntered();
                 } else {
                     if (value > 0) {

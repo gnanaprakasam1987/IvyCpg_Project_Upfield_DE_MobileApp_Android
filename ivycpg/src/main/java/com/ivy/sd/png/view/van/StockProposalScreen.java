@@ -401,26 +401,33 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
-                for (LoadManagementBO productBO : stockPropVector) {
-                    Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
-                    if (productBO.getIssalable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            mylist.add(productBO);
+            if (parentidList.size() > 0 && !filtertext.equalsIgnoreCase("")) {
+                for (LevelBO levelBO : parentidList) {
+                    for (LoadManagementBO productBO : stockPropVector) {
+                        Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
+                        if (productBO.getIssalable() == 1) {
+                            if (levelBO.getProductID() == productBO.getParentid()) {
+                                mylist.add(productBO);
+                            }
                         }
-                    }
 
+                    }
                 }
+
+            } else {
+                updategeneraltext(GENERAL);
             }
         }
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         mDrawerLayout.closeDrawers();
+        if (!filtertext.equalsIgnoreCase("")) {
+            refreshList();
+            updateValue();
+        }
 
-        refreshList();
 
-        updateValue();
     }
 
     public void refreshList() {
@@ -2072,10 +2079,10 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                         holder.sihOuter.setText(sihTitel + ":" + holder.spbo.getSih()
                                 / holder.spbo.getOuterSize() + "");
                 } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    holder.sih.setText(sihTitel +":" + holder.spbo.getSih() + "");
+                    holder.sih.setText(sihTitel + ":" + holder.spbo.getSih() + "");
                 }
             } else
-                holder.sih.setText(sihTitel +":" + holder.spbo.getSih() + "");
+                holder.sih.setText(sihTitel + ":" + holder.spbo.getSih() + "");
             holder.newProposalQty.setText(holder.spbo.getStkprocaseqty() + "");
             holder.newproposalpcsQty
                     .setText(holder.spbo.getStkpropcsqty() + "");
