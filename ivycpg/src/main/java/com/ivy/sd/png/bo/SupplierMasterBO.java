@@ -5,6 +5,7 @@ public class SupplierMasterBO {
     private String supplierName;
     private int supplierType;
     private int isPrimary;
+    private int distParentID;
 
     public SupplierMasterBO(){
 
@@ -41,6 +42,14 @@ public class SupplierMasterBO {
     public String toString() {
 
         return this.supplierName;
+    }
+
+    public int getDistParentID() {
+        return distParentID;
+    }
+
+    public void setDistParentID(int distParentID) {
+        this.distParentID = distParentID;
     }
 
     public int getSupplierType() {

@@ -826,6 +826,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.getRetailerMasterBO().setSupplierBO(
                         mSupplierList.get(mDefaultSupplierSelection));
                 bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
+                bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
             }
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -3591,6 +3592,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                         bmodel.getRetailerMasterBO().setSupplierBO(
                                                 supplierBo);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                        bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
                                         bmodel.updateRetailerWiseSupplierType(supplierBo
                                                 .getSupplierID());
                                         dialog.dismiss();

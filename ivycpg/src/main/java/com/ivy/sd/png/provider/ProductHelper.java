@@ -1568,63 +1568,53 @@ public class ProductHelper {
 
     }
 
-    private static final String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
-    private static final String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
-    private static final String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE="SALES_TYPE";
+    /**
+     * Download products based on given distribution type(Route/Retailer/SalesType)
+     *
+     * @param mContentLevel to identify given products level
+     * @return Returns a query which gets products(content level) mapped to current distribution type
+     */
     private String downloadProductDistribution(int mContentLevel){
 
-        DBUtil db = null;
+        String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
+        String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
+        String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE="SALES_TYPE";
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         String finalQuery = "";
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.openDataBase();
-            String sql = "";
-
+            // String sql = "";
             String productIds = "";
             int givenLevelId = 0;
+            Cursor cursor=null;
+            StringBuilder stringBuilder ;
 
             if (!bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals("")) {
 
-                String beats = "";
-                //getting retailer beat..
-                if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
-
-
-                    sql = "select beatid from RetailerBeatMapping where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID();
-                    Cursor cursor = db.selectSQL(sql);
-                    if (cursor.getCount() > 0) {
-                        while (cursor.moveToNext()) {
-                            if (beats.length() > 0)
-                                beats += ",";
-
-                            beats += cursor.getString(0);
-                        }
-                        cursor.close();
-                    }
-                }
-
                 //getting products mapped
-                sql = "select distinct productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE);
+                stringBuilder=new StringBuilder();
+                stringBuilder.append("select distinct productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE));
                 if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
-                    sql += " and criteriaid IN(" + beats + ")";
+                    stringBuilder.append( " and criteriaid IN(" + getRetailerBeat(bmodel.getRetailerMasterBO().getRetailerID(),db) + ")");
                 }
                 else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_RETAILER)){
-                    sql += " and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                    stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
                 }
                 else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)){
-                    sql += " and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")";
+                    stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")");
                 }
-                Cursor c = db.selectSQL(sql);
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
+                cursor = db.selectSQL(stringBuilder.toString());
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
                         if (productIds.length() > 0)
                             productIds += ",";
 
-                        productIds += c.getString(0);
-                        givenLevelId = c.getInt(1);
+                        productIds += cursor.getString(0);
+                        givenLevelId = cursor.getInt(1);
                     }
-                    c.close();
+                    cursor.close();
                 }
 
                 ///////////////////////////////
@@ -1633,8 +1623,7 @@ public class ProductHelper {
 
                     int givenSequence = 0;
                     if (givenLevelId != 0) {
-                        sql = "select sequence from ProductLevel where levelid=" + givenLevelId;
-                        Cursor cursor = db.selectSQL(sql);
+                        cursor = db.selectSQL("select sequence from ProductLevel where levelid=" + givenLevelId);
                         if (cursor.getCount() > 0) {
                             if (cursor.moveToNext()) {
                                 givenSequence = cursor.getInt(0);
@@ -1648,18 +1637,23 @@ public class ProductHelper {
 
 
                         int loopEnd = mContentLevel - givenSequence + 1;
-                        finalQuery = "select P" + loopEnd + ".pid as productid from productmaster P1";
+                        stringBuilder=new StringBuilder();
+                        stringBuilder.append( "select P" + loopEnd + ".pid as productid from productmaster P1");
                         for (int i = 2; i <= loopEnd; i++)
-                            finalQuery = finalQuery + " INNER JOIN ProductMaster P" + i + " ON P" + i
-                                    + ".ParentId = P" + (i - 1) + ".PID";
+                            stringBuilder.append(" INNER JOIN ProductMaster P" + i + " ON P" + i
+                                    + ".ParentId = P" + (i - 1) + ".PID");
 
-                        finalQuery += " WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")";
+                        stringBuilder.append(" WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")");
 
                     } else {
                         //content level so getting directly..
-                        finalQuery = " select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE)
-                                + " and productid IN(" + productIds + ")";
+                        stringBuilder=new StringBuilder();
+                        stringBuilder.append(" select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE)
+                                + " and productid IN(" + productIds + ")");
+
+
                     }
+                    finalQuery=stringBuilder.toString();
                 }
             }
 
@@ -1669,10 +1663,44 @@ public class ProductHelper {
             Commons.printException(ex);
             return "";
         }
+        finally {
+            db.closeDB();
+        }
 
         return finalQuery;
 
     }
+
+    /**
+     * Get beat ids for current retailer
+     * @param retailerId
+     * @param db
+     * @return
+     */
+    private String getRetailerBeat(String retailerId,DBUtil db){
+        String beatids="";
+        try{
+            //getting retailer beat..
+            String beats = "";
+            Cursor cursor = db.selectSQL("select beatid from RetailerBeatMapping where retailerid=" + retailerId);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    if (beats.length() > 0)
+                        beats += ",";
+
+                    beats += cursor.getString(0);
+                }
+                cursor.close();
+            }
+
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return beatids;
+    }
+
 
     public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
         return mAttributeByProductId;
@@ -2415,8 +2443,13 @@ public class ProductHelper {
             if (c1 != null) {
                 if (c1.moveToNext()) {
 
+                    if (c1.getString(0).equals("RETAILER"))
+                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
-                    if (c1.getString(0).equals("CHANNEL")) {
+                    else if (c1.getString(0).equals("ACCOUNT"))
+                    mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+
+                    else if (c1.getString(0).equals("CHANNEL")) {
                         mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
@@ -2430,8 +2463,7 @@ public class ProductHelper {
                         mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
                     else if (c1.getString(0).equals("CLASS"))
                         mappingId = bmodel.getRetailerMasterBO().getClassid() + "";
-                    else if (c1.getString(0).equals("ACCOUNT"))
-                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+
 
                     moduletypeid = c1.getString(1);
                 }

@@ -278,7 +278,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -290,7 +290,8 @@ public class SalesReturnHelper {
                     + QT(bmodel.getSaleReturnNote()) + ","
                     + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
-                    + bmodel.retailerMasterBO.getDistributorId();
+                    + bmodel.retailerMasterBO.getDistributorId()+ ","
+                    + bmodel.retailerMasterBO.getDistParentId();
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             // insert sales replacement and decrease the stock in hand.
