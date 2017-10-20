@@ -1029,6 +1029,9 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
 
+    public boolean IS_SF_NORM_CHECK;
+    public static final String CODE_CHECK_NORM = "SFCHECK";
+
     public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
@@ -1857,6 +1860,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
         this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
