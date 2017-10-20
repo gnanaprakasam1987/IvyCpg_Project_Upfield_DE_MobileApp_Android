@@ -99,14 +99,13 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(bmodel.mSelectedActivityName);
-            getSupportActionBar().setIcon(R.drawable.icon_visit);
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setIcon(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         }
 
-
+         setScreenTitle(bmodel.mSelectedActivityName);
         mAbsenteesRetailersLV = (ListView) findViewById(R.id.lv_absentees_retailers);
         mPresentRetailerAllocLV = (ListView) findViewById(R.id.lv_allocate_retailer);
         mAbsenteesSpin = (Spinner) findViewById(R.id.spin_absent_user);
