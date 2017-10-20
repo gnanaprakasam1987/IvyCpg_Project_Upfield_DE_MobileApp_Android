@@ -1501,7 +1501,7 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
@@ -1628,7 +1628,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-                    retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistParentId")));
+                    retailer.setDistParentId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -8428,7 +8428,7 @@ public class BusinessModel extends Application {
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
-                            + getRetailerMasterBO().getRetailerID()+
+                            + getRetailerMasterBO().getRetailerID() +
                             " and SMA.menucode='MENU_SURVEY'" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
@@ -8460,7 +8460,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -8520,9 +8520,9 @@ public class BusinessModel extends Application {
             int count = 0;
             Cursor c = db
                     .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
-                            +" INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +" INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
-                            +" where menuCode in('MENU_SURVEY') group by AH.retailerid");
+                            + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
+                            + " where menuCode in('MENU_SURVEY') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {

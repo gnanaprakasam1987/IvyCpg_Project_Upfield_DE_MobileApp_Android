@@ -79,6 +79,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     public static final String MENU_COMBINED_STOCK = "MENU_COMBINE_STKCHK";
     private static final String MENU_ORDER = "MENU_ORDER";
     private static final String MENU_COLLECTION = "MENU_COLLECTION";
+    private static final String MENU_COLLECTION_REF = "MENU_COLLECTION_REF";
     private static final String MENU_WITS = "MENU_WITS";
     private static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
     private static final String MENU_INVOICE = "MENU_INVOICE";
@@ -473,6 +474,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         menuIcons.put(MENU_PLANOGRAM, R.drawable.icon_order);
         menuIcons.put(MENU_SKUWISERTGT, R.drawable.icon_order);
         menuIcons.put(MENU_COLLECTION, R.drawable.icon_collection);
+        menuIcons.put(MENU_COLLECTION_REF, R.drawable.icon_collection);
         menuIcons.put(MENU_WITS, R.drawable.icon_sbd);
         menuIcons.put(MENU_DGT, R.drawable.icon_photo);
         menuIcons.put(MENU_CLOSING, R.drawable.icon_order);
@@ -876,6 +878,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 // menuDB.get(i).setDone(false);
 
                 if (menuDB.get(i).getConfigCode().equals(MENU_COLLECTION)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_COLLECTION_REF)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -2255,6 +2265,31 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 intent.putExtra("screentitle", menu.getMenuName());
                 intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
+        } else if (menu.getConfigCode().equals(MENU_COLLECTION_REF)
+                && hasLink == 1) {
+            if (bmodel.configurationMasterHelper.IS_JUMP
+                    || isPreviousDone(menu)) {
+
+                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+                bmodel.collectionHelper.loadCollectionReference();
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                Intent intent = new Intent(HomeScreenTwo.this,
+                        CollectionReference.class);
+                bmodel.mSelectedActivityName = menu.getMenuName();
                 startActivity(intent);
                 finish();
             } else {
