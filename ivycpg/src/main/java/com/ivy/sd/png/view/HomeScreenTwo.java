@@ -547,7 +547,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         updateMenuVisitStatus(mInStoreMenu);
 
 
-        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
+        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             mSupplierList = bmodel.downloadSupplierDetails();
             mSupplierAdapter = new ArrayAdapter<>(this,
                     android.R.layout.select_dialog_singlechoice, mSupplierList);
