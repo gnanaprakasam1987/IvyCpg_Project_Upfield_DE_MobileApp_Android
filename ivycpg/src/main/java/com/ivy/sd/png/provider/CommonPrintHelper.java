@@ -90,6 +90,8 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
     private static String TAG_PRODUCT_PRICE_PIECE = "prod_price_piece";
 
+    private static String TAG_PRODUCT_PRICE_PIECE_ORIGINAL = "prod_price_piece_original";
+
     private static String TAG_PRODUCT_QTY_CASE = "prod_qty_case";
     private static String TAG_PRODUCT_QTY_OUTER = "prod_qty_outer";
     private static String TAG_PRODUCT_QTY_PIECE = "prod_qty_piece";
@@ -599,7 +601,7 @@ public class CommonPrintHelper {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
         }
         else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
-            value = label + formatValueInPrint(netSchemeAmount,precisionCount);
+            value = alignWithLabelForSingleLine(label, "156");//formatValueInPrint(netSchemeAmount,precisionCount));
         }
 
 
@@ -714,6 +716,8 @@ public class CommonPrintHelper {
                     mProductValue = formatValueInPrint(prod.getCsrp(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
                     mProductValue = formatValueInPrint(prod.getSrp(), attr.getmAttributePrecision());
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE_ORIGINAL)) {
+                    mProductValue = formatValueInPrint(prod.getOriginalSrp(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_OUTER)) {
                     mProductValue = formatValueInPrint(prod.getOsrp(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
@@ -864,6 +868,8 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint(batchProductBO.getCsrp(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getSrp(), attr.getmAttributePrecision());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE_ORIGINAL)) {
+                                mProductValue = formatValueInPrint(batchProductBO.getOriginalSrp(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_OUTER)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getOsrp(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {

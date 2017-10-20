@@ -173,6 +173,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_RFIELD2 = "tempRField2";
     private double totalvalue = 0;
 
+
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
 
@@ -348,6 +349,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+
+        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+            bmodel.resetSRPvalues();
+        }
 
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(this,
@@ -3779,6 +3785,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void nextButtonClick() {
         try {
             if (bmodel.hasOrder()) {
+
+
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -3840,6 +3848,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+
+
+        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+            bmodel.excludeTaxFromSRP();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");

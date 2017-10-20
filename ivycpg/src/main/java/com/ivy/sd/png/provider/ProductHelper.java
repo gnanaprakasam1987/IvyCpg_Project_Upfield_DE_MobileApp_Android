@@ -1269,7 +1269,7 @@ public class ProductHelper {
             if (mChildLevel == 0 && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
                 int mContentLevelId=0;
-                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = "+moduleCode);
+                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = "+bmodel.QT(moduleCode));
                 if (cur != null) {
                     if (cur.moveToNext()) {
                         mContentLevelId= cur.getInt(0);
