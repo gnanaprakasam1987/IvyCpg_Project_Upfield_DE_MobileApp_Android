@@ -11,7 +11,7 @@
         ivydist:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_review"
-        android:icon="@drawable/ic_action_collections_labels"
+        android:icon="@drawable/ic_remark"
         android:orderInCategory="101"
         android:title="Review"
         android:visible="false"

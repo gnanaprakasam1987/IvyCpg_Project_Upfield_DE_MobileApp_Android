@@ -46,7 +46,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_DIGITAL_CONTENT = "DIGCON";
     public static final String CODE_NEW_OUTLET_UPLOAD = "FUN17";
     public static final String CODE_MRP_LEVEL_TAX = "TAX01";
-    public static final String CODE_IS_NEW_RETAILER_DEVIATION = "RTRS26";
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
@@ -449,7 +448,6 @@ public class ConfigurationMasterHelper {
      * Configuration not set in DB *
      */
     public boolean IS_CUMULATIVE_AND;
-    public boolean IS_NEW_RETAILER_DEVIATION = false;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
@@ -1035,6 +1033,9 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SOS_RETAIN_LAST_VISIT_TRAN = "SOS02";
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
+
+    public boolean IS_SF_NORM_CHECK;
+    public static final String CODE_CHECK_NORM = "SFCHECK";
 
     public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED;
 
@@ -1771,7 +1772,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_DATE_BTN = hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) : false;
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
-        this.IS_NEW_RETAILER_DEVIATION = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
         //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
         this.IS_FIVE_LEVEL_FILTER = true;
@@ -1866,6 +1866,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
         this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {

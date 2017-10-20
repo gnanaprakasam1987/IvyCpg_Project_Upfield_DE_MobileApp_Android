@@ -52,6 +52,8 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     private ProductMasterBO productMasterBO;
     private SalesReturnHelper salesReturnHelper;
     private String BRAND_STRING = "Brand";
+    private TextView pnametitle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             Commons.printException(e);
         }
 
-
+        pnametitle = (TextView) findViewById(R.id.tvProductNameTitle);
         ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -91,7 +93,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if (getSupportActionBar()!=null) {
+                if (getSupportActionBar() != null) {
                     setScreenTitle(bmodel.configurationMasterHelper
                             .getHomescreentwomenutitle(StandardListMasterConstants.MENU_SALES_RET));
                 }
@@ -100,7 +102,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (getSupportActionBar()!=null) {
+                if (getSupportActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
                 }
 
@@ -135,7 +137,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 return;
         }
 
-            onKeyInvisibleSub();
+        onKeyInvisibleSub();
 
         mBtn_next.setOnClickListener(new OnClickListener() {
             @Override
@@ -161,6 +163,10 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     public void refreshList() {
+        String strPname = getResources().getString(
+                R.string.product_name)
+                + " (" + mylist.size() + ")";
+        pnametitle.setText(strPname);
         lvwplist.setAdapter(new MyAdapter(mylist));
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -237,7 +243,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                         int holderTop = (vChild == null) ? 0 : (vChild.getTop() - lvwplist.getPaddingTop());
 
                         productName.setText(holder.pname);
-                        showSalesReturnDialog(holder.productBO.getProductID(), v,holderPosition,holderTop);
+                        showSalesReturnDialog(holder.productBO.getProductID(), v, holderPosition, holderTop);
                     }
                 });
 
@@ -464,7 +470,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.closeDrawers();
                 else
-                showCustomDialog();
+                    showCustomDialog();
                 return true;
             default:
                 break;
@@ -674,7 +680,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         } else {
             for (LevelBO levelBO : parentidList) {
                 for (ProductMasterBO productBO : items) {
-                    if (levelBO.getProductID() == productBO.getParentid() && ret.getIsSaleable() == 1) {
+                    if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
                         mylist.add(productBO);
                         fiveFilter_productIDs.add(productBO.getProductID());
                     }
@@ -690,7 +696,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         updateValue();
     }
 
-    private void showSalesReturnDialog(String productId, View v,int holderPostion,int holderTop) {
+    private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
         Intent intent = new Intent(SalesReturnWithActionBar.this,
                 SalesReturnEntryActivity.class);
         intent.putExtra("pid", productId);
@@ -718,7 +724,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
                     intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode",""));
+                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                 }
 
                 startActivity(intent);
@@ -731,8 +737,8 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 overridePendingTransition(0, R.anim.zoom_exit);
                 updateValue();
                 refreshList();
-                Bundle extras=data.getExtras();
-                int holderPosition = extras.getInt("position",0);
+                Bundle extras = data.getExtras();
+                int holderPosition = extras.getInt("position", 0);
                 int holderTop = extras.getInt("top", 0);
                 if (mylist.size() > 0)
                     lvwplist.setSelectionFromTop(holderPosition, holderTop);

@@ -344,15 +344,15 @@ public class DataMembers {
     private static final String tbl_delivery_detail = "DeliveryDetail";
     private static final String tbl_delivery_detail_cols = "OrderId,PId,OrderedQty,DeliveredQty,UOMId,Price";
 
-    private static final String tbl_orderHeader_cols = "OrderID,RetailerID,RouteId,OrderValue,LinesPerCall,OrderDate,DeliveryDate,IsToday,po,remark,discount,is_splitted_order,is_processed,latitude,longitude,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,timestampid,JFlag,totalTaxValue,invoicestatus,imagename,SalesType,totalweight,isApproval,PrintFilePath,RField1,RField2,ordertime";
+    private static final String tbl_orderHeader_cols = "OrderID,RetailerID,RouteId,OrderValue,LinesPerCall,OrderDate,DeliveryDate,IsToday,po,remark,discount,is_splitted_order,is_processed,latitude,longitude,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,timestampid,JFlag,totalTaxValue,invoicestatus,imagename,SalesType,totalweight,isApproval,PrintFilePath,RField1,RField2,ordertime,SParentID";
     private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId";
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score";
 
     private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score";
-    private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath";
+    private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID";
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount";
-    private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath";
+    private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate";
@@ -363,7 +363,7 @@ public class DataMembers {
     public static final String tbl_DayClose_cols = "status,TimeOut";
 
     private static final String tbl_NonProductiveTable_cols = "UID,retailerid,RouteID,Date,ReasonID,ReasonTypes,DistributorID,ImagePath";
-    private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid";
+    private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID";
     private static final String tbl_SalesReturnDetails_cols = "uid,outerQty,dOuomQty,dOuomid,Cqty,duomQty,duomid,Pqty,batchid,Condition,mfgdate,expdate,oldmrp,ProductID,invoiceno,srpedited,totalQty,reason_type,LotNumber,piece_uomid";
     private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID";
     private static final String tbl_AnswerDetail_cols = "answerid,qid,answer,qtype,uid,score,isExcluded";

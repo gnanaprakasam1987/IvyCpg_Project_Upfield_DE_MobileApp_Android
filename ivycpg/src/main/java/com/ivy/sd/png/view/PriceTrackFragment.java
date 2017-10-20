@@ -748,7 +748,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         TextView mProductCodeTV;
 
         RelativeLayout rl_prev_price;
-        LinearLayout ll_prev_case, ll_prev_oo, ll_prev_pc;
+        LinearLayout ll_prev_case, ll_prev_oo, ll_prev_pc, ll_prev_price_Lty;
+        LinearLayout ll_prev_mrp_main_Lty, ll_prev_mrp_ca_Lty, ll_prev_mrp_oo_Lty, ll_prev_mrp_pc_Lty;
     }
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -867,11 +868,21 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 holder.ll_prev_case = (LinearLayout) row.findViewById(R.id.ll_prev_price_ca);
                 holder.ll_prev_pc = (LinearLayout) row.findViewById(R.id.ll_prev_price_pc);
                 holder.ll_prev_oo = (LinearLayout) row.findViewById(R.id.ll_prev_price_oo);
+                holder.ll_prev_price_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_price);
+                holder.ll_prev_mrp_main_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp);
+                holder.ll_prev_mrp_pc_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_pc);
+                holder.ll_prev_mrp_ca_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_ca);
+                holder.ll_prev_mrp_oo_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_oo);
 
-                if (!bmodel.configurationMasterHelper.IS_SHOW_PREV_MRP_IN_PRICE) {
-                    holder.tv_prev_mrp_pc.setVisibility(View.GONE);
-                    holder.tv_prev_mrp_ca.setVisibility(View.GONE);
-                    holder.tv_prev_mrp_ou.setVisibility(View.GONE);
+                if (bmodel.configurationMasterHelper.IS_SHOW_PREV_MRP_IN_PRICE) {
+                    if (bmodel.configurationMasterHelper.SHOW_PRICE_PC)
+                        holder.ll_prev_mrp_pc_Lty.setVisibility(View.VISIBLE);
+                    if (bmodel.configurationMasterHelper.SHOW_PRICE_CA)
+                        holder.ll_prev_mrp_ca_Lty.setVisibility(View.VISIBLE);
+                    if (bmodel.configurationMasterHelper.SHOW_PRICE_OU)
+                        holder.ll_prev_mrp_oo_Lty.setVisibility(View.VISIBLE);
+                } else if (!bmodel.configurationMasterHelper.IS_SHOW_PREV_MRP_IN_PRICE) {
+                    holder.ll_prev_mrp_main_Lty.setVisibility(View.GONE);
                 }
 
                 holder.mChanged.setOnClickListener(new OnClickListener() {
@@ -1116,6 +1127,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             }
                         });
 
+                if (!bmodel.configurationMasterHelper.IS_SHOW_PRICE_LASTVP)
+                    holder.ll_prev_price_Lty.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.IS_SHOW_PRICE_LASTVP) {
                     holder.mPrev_CA.setVisibility(View.GONE);

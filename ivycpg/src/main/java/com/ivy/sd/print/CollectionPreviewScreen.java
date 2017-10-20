@@ -277,9 +277,9 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                             tv_cashType.setText(getResources().getString(R.string.mobile_payment));
                             total_mob_payment += payBO.getAmount();
                         } else if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
-                            if(payBO.getReferenceNumber().startsWith("AP")) {
+                            if (payBO.getReferenceNumber().startsWith("AP")) {
                                 tv_cashType.setText(getResources().getString(R.string.advance_payment));
-                            }else{
+                            } else {
                                 tv_cashType.setText(getResources().getString(R.string.credit_note));
                             }
                             totalCn += payBO.getAmount();
@@ -331,7 +331,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
         if (i == android.R.id.home) {
             finish();
             /*Intent i = new Intent(this, ReportMenu.class);
-			startActivity(i);*/
+            startActivity(i);*/
 
             return true;
         } else if (i == R.id.menu_print) {
@@ -737,11 +737,11 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                                 + ""
                                 + bmodel.userMasterHelper.getUserMasterBO()
                                 .getUserCode() + "\r\n";
-                        String retailername="";
-                        if(payHeaderBO.getRetailerName().length()>30){
-                            retailername=payHeaderBO.getRetailerName().substring(0,30);
-                        }else{
-                            retailername=payHeaderBO.getRetailerName();
+                        String retailername = "";
+                        if (payHeaderBO.getRetailerName().length() > 30) {
+                            retailername = payHeaderBO.getRetailerName().substring(0, 30);
+                        } else {
+                            retailername = payHeaderBO.getRetailerName();
                         }
 
                         x += 40;
@@ -752,8 +752,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                                 + "\r\n";
 
 
-
-                        x+=40;
+                        x += 40;
                         Printitem += "LEFT \r\n";
                         Printitem += "T 5 0 10 " + x + " "
                                 + "CustCode:"
@@ -770,7 +769,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         Printitem += "T 5 0 10 " + x + " Inv No" + "\r\n";
 
                         x += 20;
-                        double totalDiscount=0;
+                        double totalDiscount = 0;
                         Printitem += "T 5 0 80 " + x + " Type" + "\r\n";
                         Printitem += "T 5 0 180 " + x + " Date" + "\r\n";
                         Printitem += "T 5 0 310 " + x + " Chq Num" + "\r\n";
@@ -820,7 +819,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                             Printitem += "T 5 0 180 " + x + " "
                                     + payBO.getChequeDate()
                                     + "\r\n";
-                            x=x-30;
+                            x = x - 30;
                             if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
                                 Printitem += "T 5 0 310 " + x + " "
                                         + payBO.getChequeNumber() + "\r\n";
@@ -828,13 +827,14 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                                 Printitem += "T 5 0 310 " + x + " "
                                         + payBO.getReferenceNumber() + "\r\n";
                             }
-                            x=x+30;
+                            x = x + 30;
 
                             Printitem += "T 5 0 450 " + x + " "
                                     + bmodel.formatValue(payBO.getAmount())
                                     + "\r\n";
-
-                            total += payBO.getAmount();
+                            //if pay via credit note than  amt not calculated in net total
+                            if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE))
+                                total += payBO.getAmount();
                             totalDiscount += payBO.getAppliedDiscountAmount();
 
                         }
@@ -1487,9 +1487,9 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
         }
     }
 
-    public byte[] printThai(){
+    public byte[] printThai() {
         byte[] PrintDataBytes = null;
-        try{
+        try {
             StringBuilder tempsb = new StringBuilder();
 
             tempsb.append("! U1 SETLP ANG12PT.CPF 0 34 \n");
@@ -1498,7 +1498,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
             tempsb.append("SETBOLD 1 \r\n");
 
-            if(bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                         + "Unipal General Trading Company" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
@@ -1523,8 +1523,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         + "Gaza - lndus. Zone - Carny, Tel: +972 7 2830324" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
-            }
-            else{
+            } else {
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                         + bmodel.userMasterHelper.getUserMasterBO()
                         .getDistributorName() + "\r\n");
@@ -1556,10 +1555,10 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 tempsb.append("PRINT\r\n");
             }
 
-            if(!mSelectedRetailer.equals("ALL")) {
+            if (!mSelectedRetailer.equals("ALL")) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                if(IsOriginal)
+                if (IsOriginal)
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + "Original Print" + "\r\n");
                 else
@@ -1570,25 +1569,25 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             tempsb.append("PRINT\r\n");
 
             double total;
-            double totalDiscount=0;
-            for (String groupid:bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
-                PaymentBO payHeaderBO=bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
+            double totalDiscount = 0;
+            for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
+                PaymentBO payHeaderBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
                 if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && payHeaderBO.getRetailerName().equals(mSelectedRetailer))) {
-                    total=0;
+                    total = 0;
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+"---------------------------------------------------------------------------\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    if(payHeaderBO.getAdvancePaymentId()!=null){
+                    if (payHeaderBO.getAdvancePaymentId() != null) {
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                                 + "Rcpt Date:"
                                 + ""
                                 + payHeaderBO.getAdvancePaymentDate() + "\r\n");
-                    }else {
+                    } else {
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                                 + "Rcpt Date:"
                                 + ""
@@ -1627,11 +1626,11 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
-                    String retailername="";
-                    if(payHeaderBO.getRetailerName().length()>30){
-                        retailername=payHeaderBO.getRetailerName().substring(0,30);
-                    }else{
-                        retailername=payHeaderBO.getRetailerName();
+                    String retailername = "";
+                    if (payHeaderBO.getRetailerName().length() > 30) {
+                        retailername = payHeaderBO.getRetailerName().substring(0, 30);
+                    } else {
+                        retailername = payHeaderBO.getRetailerName();
                     }
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
@@ -1656,32 +1655,32 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+"---------------------------------------------------------------------------\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+"Inv No" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Inv No" + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "+ "Type" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 " + "Type" + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 "+ "Date" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 " + "Date" + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 "+ "Chq Num" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 " + "Chq Num" + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1693,24 +1692,24 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ " ---------------------------------------------------------------------------\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + " ---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
                     for (int i = 0; i < bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
-                        PaymentBO payBO =bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
+                        PaymentBO payBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
 
 
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                                + (payBO.getBillNumber()!=null?payBO.getBillNumber():getResources().getString(R.string.advance_payment))
+                                + (payBO.getBillNumber() != null ? payBO.getBillNumber() : getResources().getString(R.string.advance_payment))
                                 + "\r\n");
                         tempsb.append("SETBOLD 0 \r\n");
                         tempsb.append("PRINT\r\n");
 
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
-                        if(payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
+                        if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
                             if (payBO.getReferenceNumber().startsWith("AP")) {
                                 tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
                                         + getResources().getString(R.string.advance_payment) + "\r\n");
@@ -1718,7 +1717,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                                 tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
                                         + getResources().getString(R.string.credit_note) + "\r\n");
                             }
-                        }else {
+                        } else {
                             if (payBO.getCashMode().equals(StandardListMasterConstants.CASH)) {
                                 tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
                                         + getResources().getString(R.string.cash) + "\r\n");
@@ -1750,10 +1749,10 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
-                        if(!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)&&!payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
+                        if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
                             tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 "
                                     + payBO.getChequeNumber() + "\r\n");
-                        else{
+                        else {
                             tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 "
                                     + payBO.getReferenceNumber() + "\r\n");
                         }
@@ -1764,25 +1763,25 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 "
-                                +  bmodel.formatValue(payBO.getAmount())
+                                + bmodel.formatValue(payBO.getAmount())
                                 + "\r\n");
                         tempsb.append("SETBOLD 0 \r\n");
                         tempsb.append("PRINT\r\n");
 
-                        total+=payBO.getAmount();
-                        totalDiscount+=payBO.getAppliedDiscountAmount();
+                        total += payBO.getAmount();
+                        totalDiscount += payBO.getAppliedDiscountAmount();
 
                     }
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Discount " + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Discount " + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1795,7 +1794,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 "+ "Total " + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + "Total " + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1808,7 +1807,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
@@ -1818,20 +1817,20 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Comments:------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Comments:------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Signature:--------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Signature:--------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
             tempsb.append("\r\n");
 
             PrintDataBytes = String.valueOf(tempsb).getBytes("ISO-8859-11");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return PrintDataBytes;

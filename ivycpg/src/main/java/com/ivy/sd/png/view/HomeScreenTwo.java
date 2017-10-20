@@ -826,6 +826,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.getRetailerMasterBO().setSupplierBO(
                         mSupplierList.get(mDefaultSupplierSelection));
                 bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
+                bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
             }
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -2061,6 +2062,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
                 int count = bmodel.synchronizationHelper.getImagesCount();
                 bmodel.productHelper.getLocations();
+                bmodel.productHelper.downloadInStoreLocations();
                 bmodel.photoCaptureHelper.downloadPhotoCaptureProducts();
                 bmodel.photoCaptureHelper.downloadPhotoTypeMaster();
                 bmodel.photoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
@@ -2413,7 +2415,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             }
 
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)) {
-            if (isPreviousDone(menu)
+            if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3041,7 +3043,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_CALL)
                 && hasLink == 1) {
-            if (isPreviousDone(menu)
+            if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.reasonHelper.downloadClosecallReasonList();
@@ -3074,7 +3076,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
                 && hasLink == 1) {
             {
-                if (isPreviousDone(menu)
+                if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                         || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                         || !canAllowCallAnalysis()) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3593,6 +3595,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                         bmodel.getRetailerMasterBO().setSupplierBO(
                                                 supplierBo);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                        bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
                                         bmodel.updateRetailerWiseSupplierType(supplierBo
                                                 .getSupplierID());
                                         dialog.dismiss();

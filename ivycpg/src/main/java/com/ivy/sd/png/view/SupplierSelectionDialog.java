@@ -130,6 +130,7 @@ public class SupplierSelectionDialog extends DialogFragment {
 
                         bmodel.getRetailerMasterBO().setSupplierBO(childHolder.childList.get(childHolder.childPosition));
                         bmodel.getRetailerMasterBO().setDistributorId(childHolder.childList.get(childHolder.childPosition).getSupplierID());
+                        bmodel.getRetailerMasterBO().setDistParentId(childHolder.childList.get(childHolder.childPosition).getDistParentID());
                         bmodel.updateRetailerWiseSupplierType(childHolder.childList.get(childHolder.childPosition)
                                 .getSupplierID());
                         getDialog().dismiss();
