@@ -154,5 +154,7 @@
 
     <string name="catalog_images_download">Download Catalog Images</string>
     <string name="downloading">Downloading.. Catalog Images</string>
+    <string name="docRefNo">DocRefNo</string>
+    <string name="contact_name">Contact Name</string>
 
 </resources>

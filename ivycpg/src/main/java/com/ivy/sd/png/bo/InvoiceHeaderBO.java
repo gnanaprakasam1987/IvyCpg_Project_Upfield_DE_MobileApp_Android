@@ -11,6 +11,11 @@ public class InvoiceHeaderBO {
 	private double remainingDiscountAmt;
 	private int linesPerCall;
 
+    /*Collection Reference*/
+    private String contactName;
+    private String contactNo;
+    private String docRefNo;
+
 	public boolean isDebitNote() {
 		return isDebitNote;
 	}
@@ -104,4 +109,28 @@ public class InvoiceHeaderBO {
 	public void setChkBoxChecked(boolean isChkBoxChecked) {
 		this.isChkBoxChecked = isChkBoxChecked;
 	}
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
+
+    public String getDocRefNo() {
+        return docRefNo;
+    }
+
+    public void setDocRefNo(String docRefNo) {
+        this.docRefNo = docRefNo;
+    }
 }
