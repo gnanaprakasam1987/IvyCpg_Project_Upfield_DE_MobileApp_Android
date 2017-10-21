@@ -94,9 +94,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private int tabPos;
     private int tabCount;
-    private String imageName = "",pathSrc="";;
+    private String imageName = "", pathSrc = "";
+    ;
     private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int DRAG_AND_DROP=2;
+    private static final int DRAG_AND_DROP = 2;
     private boolean isClicked = true;
     private QuestionBO surveyPhcapture = new QuestionBO();
     private SurveyBO surveyBO = new SurveyBO();
@@ -144,10 +145,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private boolean hide_selectuser_icon = false;
     private ArrayList<StandardListBO> childList;
     private ArrayAdapter<String> mChildUserNameAdapter;
-    private int mSelectedIdIndex = -1,isFromDragDrop=-1;
+    private int mSelectedIdIndex = -1, isFromDragDrop = -1;
     private String childUserName = "";
     private boolean isFromChild;
-    protected Boolean isMultiPhotoCaptureEnabled=false;
+    protected Boolean isMultiPhotoCaptureEnabled = false;
 
     @Override
     public void onAttach(Context context) {
@@ -322,8 +323,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        if(bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
-            isMultiPhotoCaptureEnabled=true;
+        if (bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+            isMultiPhotoCaptureEnabled = true;
         //condition to check CNT01
         if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
             //if CNT01 is enabled
@@ -343,11 +344,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private void loadListData() {
 
-        if(isFromDragDrop==-1) {
-            bmodel.mSurveyHelperNew
-                    .loadSurveyAnswers(0);
+        if (isFromDragDrop == -1) {
+            if (!mFrom.equalsIgnoreCase("HomeScreenTwo"))
+                bmodel.mSurveyHelperNew
+                        .loadSurveyAnswers(0);
         }
-      //  isFromDragDrop=-1;
+        //  isFromDragDrop=-1;
 
         bmodel.mSurveyHelperNew.mSelectedFilter = -1;
 
@@ -798,8 +800,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.camBtn = (ImageView) row.findViewById(R.id.imgBtn);
                 holder.tv_counter = (TextView) row.findViewById(R.id.textOne);
                 holder.photoBtn = (ImageView) row.findViewById(R.id.photos);
-                holder.dragBtn=(ImageView)row.findViewById(R.id.dragDropIcon);
-                holder.dragDropLayout=(LinearLayout)row.findViewById(R.id.dragDropLayout);
+                holder.dragBtn = (ImageView) row.findViewById(R.id.dragDropIcon);
+                holder.dragDropLayout = (LinearLayout) row.findViewById(R.id.dragDropLayout);
                 holder.camIndicatorLty = (LinearLayout) row.findViewById(R.id.indicator_view);
                 holder.minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
@@ -825,16 +827,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.dragBtn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
+                        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
                         surveyHelperNew.setQuestionBODragDrop(holder.questionBO);
                         surveyPhcapture = holder.questionBO;
 
-                        Intent intent=new Intent(getActivity(),DragDropPictureActivity.class);
-                        intent.putExtra("BrandId",holder.questionBO.getBrandID());
-                        intent.putExtra("QuestiionId",holder.questionBO.getQuestionID());
-                        intent.putExtra("QuestionDesc",holder.questionBO.getQuestionDescription());
-                        intent.putExtra("SurveyId",bmodel.mSurveyHelperNew.mSelectedSurvey);
-                        startActivityForResult(intent,DRAG_AND_DROP);
+                        Intent intent = new Intent(getActivity(), DragDropPictureActivity.class);
+                        intent.putExtra("BrandId", holder.questionBO.getBrandID());
+                        intent.putExtra("QuestiionId", holder.questionBO.getQuestionID());
+                        intent.putExtra("QuestionDesc", holder.questionBO.getQuestionDescription());
+                        intent.putExtra("SurveyId", bmodel.mSurveyHelperNew.mSelectedSurvey);
+                        startActivityForResult(intent, DRAG_AND_DROP);
                     }
                 });
 
@@ -912,8 +914,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
 
-            if(!bmodel.configurationMasterHelper.SHOW_DRAGDROP_IN_SURVEY)
-            {
+            if (!bmodel.configurationMasterHelper.SHOW_DRAGDROP_IN_SURVEY) {
                 //Drag and Drop Functionality Disabled
                 holder.camIndicatorLty.setVisibility(View.GONE);
                 holder.dragBtn.setVisibility(View.GONE);
@@ -988,14 +989,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     class QuestionHolder {
         QuestionBO questionBO;
         LinearLayout answerLayout;
-        LinearLayout groupNameLayout, camIndicatorLty,dragDropLayout;
+        LinearLayout groupNameLayout, camIndicatorLty, dragDropLayout;
         LinearLayout subQuestLayout;
         RelativeLayout right_container;
         TextView questionNO;
         TextView questionTV;
         TextView tv_counter;
         TextView imp;
-        ImageView camBtn, photoBtn,dragBtn;
+        ImageView camBtn, photoBtn, dragBtn;
         LinearLayout photoLayout;
         TextView groupName;
         TextView minPhoto;
@@ -1022,7 +1023,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 //                }
 
                 surveyPhcapture.getImageNames().add(path + imageName);
-                if(isMultiPhotoCaptureEnabled) {
+                if (isMultiPhotoCaptureEnabled) {
                     Toast.makeText(getActivity(), "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
                     isClicked = true;
                     if (surveyPhcapture.getImageNames().size() < surveyPhcapture.getMaxPhoto()) {
@@ -1030,22 +1031,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     }
                 }
             }
-        }
-        else if(requestCode == DRAG_AND_DROP)
-        {
-            if(resultCode== Activity.RESULT_OK)
-            {
-                ArrayList<String> mSavedData=data.getStringArrayListExtra("savedData");
-                if(mSavedData!=null && mSavedData.size()!=0)
-                {
+        } else if (requestCode == DRAG_AND_DROP) {
+            if (resultCode == Activity.RESULT_OK) {
+                ArrayList<String> mSavedData = data.getStringArrayListExtra("savedData");
+                if (mSavedData != null && mSavedData.size() != 0) {
                     surveyPhcapture.getImageNames().clear();
                     surveyPhcapture.getImageNames().addAll(mSavedData);
-                }
-                else if(mSavedData!=null && mSavedData.size()==0)
-                {
+                } else if (mSavedData != null && mSavedData.size() == 0) {
                     surveyPhcapture.getImageNames().clear();
                 }
-                isFromDragDrop=1;
+                isFromDragDrop = 1;
             }
 //            SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
 //            questBO=surveyHelperNew.getQuestionBODragDrop();
@@ -1436,7 +1431,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if (answers.get(i).isExcluded())
                     isExclude = true;
 
-                mCurrentQuestionBO.setQuestScore((mCurrentQuestionBO.getQuestScore()+answers.get(i).getScore()));
+                mCurrentQuestionBO.setQuestScore((mCurrentQuestionBO.getQuestScore() + answers.get(i).getScore()));
             }
 
             if (isExclude) {
@@ -1446,7 +1441,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 mCurrentQuestionBO.setExcludeQuestionWeight(false);
             }
 
-           // mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
+            // mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
 
             final float finalScore = score;
             checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -1818,8 +1813,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     questBO.setImage2Path(path);
                                     questBO.setImage2Captured(true);
                                 }
-                                pathSrc=path;
-                                Log.e("TakenPath",path);
+                                pathSrc = path;
+                                Log.e("TakenPath", path);
                                 intent.putExtra("quality", 40);
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
@@ -2339,7 +2334,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             // result is the value returned from doInBackground
            /* String temp = SDUtil.now(SDUtil.DATE_TIME_ID);
             bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));*/
-           Log.e("Result", String.valueOf(result));
+            Log.e("Result", String.valueOf(result));
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
             alertDialog.dismiss();
             bmodel.mSurveyHelperNew.remarkDone = "N";
@@ -2527,7 +2522,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
         }
-        SurveyHelperNew surveyHelperNew= SurveyHelperNew.getInstance(getActivity());
+        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
         surveyHelperNew.setmQuestionData(mQuestions);
 
         /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {

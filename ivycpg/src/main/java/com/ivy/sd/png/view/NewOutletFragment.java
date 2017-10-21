@@ -1402,10 +1402,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("CONTACTPERSON1")
                         && mandatory == 1) {
-                    edittextinputLayout4 = (TextInputLayout) editText[i + 50 + 5].getParentForAccessibility();
+
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     edittextinputLayout2 = (TextInputLayout) editText[i + 50].getParentForAccessibility();
                     if (isContactTitle) {
+                        edittextinputLayout4 = (TextInputLayout) editText[i + 50 + 5].getParentForAccessibility();
                         if (contactTitleSpinner1.getSelectedItem().toString()
                                 .contains("Select")) {
                             validate = false;
@@ -1453,10 +1454,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("CONTACTPERSON2")
                         && mandatory == 1) {
-                    edittextinputLayout3 = (TextInputLayout) editText[i + 51 + 5].getParentForAccessibility();
+
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     edittextinputLayout2 = (TextInputLayout) editText[i + 51].getParentForAccessibility();
                     if (isContactTitle) {
+                        edittextinputLayout3 = (TextInputLayout) editText[i + 51 + 5].getParentForAccessibility();
                         if (contactTitleSpinner2.getSelectedItem().toString()
                                 .contains("Select")) {
                             validate = false;
