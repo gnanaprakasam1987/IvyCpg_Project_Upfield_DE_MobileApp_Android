@@ -6,13 +6,15 @@
     <include
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/spin_absent_user" />
 
     <Spinner
         android:id="@+id/spin_absent_user"
         android:layout_width="@dimen/absentees_lv_width"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"></Spinner>
+        android:layout_below="@+id/toolbar"
+       ></Spinner>
 
 
     <LinearLayout
@@ -46,6 +48,7 @@
         android:layout_width="@dimen/present_lv_width"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
+        android:layout_below="@+id/toolbar"
         android:layout_toRightOf="@+id/layout1"
 
         >
