@@ -151,4 +151,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
+    compile 'com.itextpdf:itextg:5.5.10'
 }
