@@ -3600,7 +3600,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 titleLayout.addView(mn_textview, titleParams);
             }
             TextView titleTV = new TextView(getActivity());
-            titleTV.setText(getResources().getString(R.string.attribute));
+            titleTV.setText(MName);
             titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_medium));
             titleTV.setTextColor(Color.BLACK);
             titleLayout.addView(titleTV, titleParams);

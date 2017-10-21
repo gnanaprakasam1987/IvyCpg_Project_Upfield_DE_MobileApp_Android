@@ -1771,7 +1771,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
                     ((LinearLayout) row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
                 else {
                     try {
@@ -3320,7 +3320,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                 holder.srp.setText(bmodel.formatValue(holder.productObj
                         .getSrp()));
-            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
                 holder.srpEdit.setText(bmodel.formatValue(holder.productObj
                         .getSrp()));
 
