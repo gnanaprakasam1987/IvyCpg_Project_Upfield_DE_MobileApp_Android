@@ -16,6 +16,9 @@ public class InvoiceHeaderBO {
     private String contactNo;
     private String docRefNo;
 
+	//pending invoice
+	String retailerName;
+
 	public boolean isDebitNote() {
 		return isDebitNote;
 	}
@@ -133,4 +136,12 @@ public class InvoiceHeaderBO {
     public void setDocRefNo(String docRefNo) {
         this.docRefNo = docRefNo;
     }
+
+	public String getRetailerName() {
+		return retailerName;
+	}
+
+	public void setRetailerName(String retailerName) {
+		this.retailerName = retailerName;
+	}
 }
