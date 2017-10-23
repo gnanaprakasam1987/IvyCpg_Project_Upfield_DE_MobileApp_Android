@@ -103,7 +103,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setIcon(R.drawable.icon_visit);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+          //  getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         }
 
 
@@ -804,7 +804,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
             final int size = holder.retailerList.size();
             if (size > 0) {
 
-                holder.presentNameLL.getLayoutParams().height = dpToPx(45);
+                holder.presentNameLL.getLayoutParams().height = dpToPx(50);
                 holder.retailerListLL.getLayoutParams().height = dpToPx(100);
                 holder.retailerCountTV.setText(size + "");
 
@@ -826,7 +826,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
             } else {
 
                 holder.userTV.setHeight(dpToPx(50));
-                holder.userTV.setTextSize(dpToPx(22));
+                holder.userTV.setTextSize(dpToPx(12));
                 holder.retailerListLL.removeAllViews();
                 holder.retailerCountTV.setText(0 + "");
 

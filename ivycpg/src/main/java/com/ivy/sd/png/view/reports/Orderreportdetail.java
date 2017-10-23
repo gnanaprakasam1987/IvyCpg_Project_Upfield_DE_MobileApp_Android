@@ -141,7 +141,6 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
                 findViewById(R.id.TextView51).setVisibility(View.GONE);
                 findViewById(R.id.txttotal).setVisibility(View.GONE);
-                findViewById(R.id.view1).setVisibility(View.GONE);
             }
             if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                 findViewById(R.id.lpc).setVisibility(View.GONE);
@@ -209,6 +208,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         } else {
             totalLines.setVisibility(View.GONE);
             tv_lbl_total_lines.setVisibility(View.GONE);
+            findViewById(R.id.view1).setVisibility(View.GONE);
         }
 
 
