@@ -152,4 +152,8 @@ dependencies {
     compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
+    compile 'com.itextpdf:itextg:5.5.10'
 }

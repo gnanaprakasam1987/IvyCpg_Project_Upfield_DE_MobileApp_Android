@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.SparseArray;
 
+import com.amazonaws.services.s3.model.transform.Unmarshallers;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -90,6 +91,8 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
     private static String TAG_PRODUCT_PRICE_PIECE = "prod_price_piece";
 
+    private static String TAG_PRODUCT_MRP = "prod_mrp";
+
     private static String TAG_PRODUCT_QTY_CASE = "prod_qty_case";
     private static String TAG_PRODUCT_QTY_OUTER = "prod_qty_outer";
     private static String TAG_PRODUCT_QTY_PIECE = "prod_qty_piece";
@@ -100,7 +103,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
     private static String TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX = "prod_line_value_incl_tax";
 
-    private static String TAG_PRODUCT_BASE_UOM = "prod_base_uom";
+    private static String TAG_PRODUCT_TAG_DESC = "prod_tag_desc";
 
     private int mProductCaseQtyTotal;
     private int mProductPieceQtyTotal;
@@ -320,6 +323,7 @@ public class CommonPrintHelper {
                                     && !attr_name.contains("empty_total")
                                     && !attr_name.contains("line_total")
                                     && !attr_name.contains("net_amount")
+                                    && !attr_name.contains("net_scheme_discount")
                                     && !attr_name.contains("amount_word")) {
                                 if (attr_align.equalsIgnoreCase(ALIGNMENT_LEFT)) {
                                     if (mAttrValue.length() > attr_length) {
@@ -599,7 +603,7 @@ public class CommonPrintHelper {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
         }
         else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
-            value = label + formatValueInPrint(netSchemeAmount,precisionCount);
+            value = alignWithLabelForSingleLine(label,formatValueInPrint(netSchemeAmount,precisionCount));
         }
 
 
@@ -714,6 +718,8 @@ public class CommonPrintHelper {
                     mProductValue = formatValueInPrint(prod.getCsrp(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
                     mProductValue = formatValueInPrint(prod.getSrp(), attr.getmAttributePrecision());
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_MRP)) {
+                    mProductValue = formatValueInPrint(prod.getMRP(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_OUTER)) {
                     mProductValue = formatValueInPrint(prod.getOsrp(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
@@ -751,7 +757,7 @@ public class CommonPrintHelper {
                             + (prod.getOrderedPcsQty()
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
-                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_BASE_UOM)) {
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription();
                 }
 
@@ -864,6 +870,8 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint(batchProductBO.getCsrp(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_PIECE)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getSrp(), attr.getmAttributePrecision());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_MRP)) {
+                                mProductValue = formatValueInPrint(batchProductBO.getMRP(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PRICE_OUTER)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getOsrp(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
@@ -896,6 +904,9 @@ public class CommonPrintHelper {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
+                            }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
+                                mProductValue = prod.getDescription();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1069,6 +1080,7 @@ public class CommonPrintHelper {
 
         ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
                 .getAppliedSchemeList();
+        double mBuyProdDiscountedValue=0;
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
@@ -1076,6 +1088,23 @@ public class CommonPrintHelper {
                     if (schemeBO.isAmountTypeSelected()) {
 
                         mSchemeValueByAmountType=mSchemeValueByAmountType+schemeBO.getSelectedAmount();
+                        netSchemeAmount+=schemeBO.getSelectedAmount();
+                    }
+                    else if (schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                        for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
+                            ProductMasterBO productBO = bmodel.productHelper
+                                    .getProductMasterBOById(buyProd
+                                            .getProductId());
+                            if (productBO != null) {
+                                if (productBO.getOrderedPcsQty() > 0
+                                        || productBO.getOrderedCaseQty() > 0
+                                        || productBO.getOrderedOuterQty() > 0) {
+                                    mBuyProdDiscountedValue = mBuyProdDiscountedValue + buyProd.getDiscountValue();
+                                }
+                            }
+                        }
+
+                        netSchemeAmount+=schemeBO.getSelectedAmount();
                     }
 
 
@@ -1104,6 +1133,7 @@ public class CommonPrintHelper {
                         schemeName = schemeBO.getProductName();
                         schemeValue = schemeBO.getSelectedAmount();
                         mSchemeValueByAmountType=mSchemeValueByAmountType+schemeValue;
+                        netSchemeAmount+=schemeValue;
                     } else if (schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
                         schemeName = schemeBO.getProductName();
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
@@ -1121,8 +1151,9 @@ public class CommonPrintHelper {
 
 
                         schemeValue = mBuyProdDiscountedValue;
+                        netSchemeAmount+=schemeValue;
                     }
-                    netSchemeAmount+=schemeValue;
+
 
                     if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
                         for (AttributeListBO attr : mAttrList) {
@@ -1782,6 +1813,7 @@ public class CommonPrintHelper {
         totalPriceOffValue = 0;
         isLogoEnabled = false;
         mSchemeValueByAmountType=0;
+        netSchemeAmount=0;
     }
 
     private String formatValueInPrint(double value, int precision) {
