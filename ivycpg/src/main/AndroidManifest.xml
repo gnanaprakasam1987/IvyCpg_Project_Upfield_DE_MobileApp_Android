@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1220"
-    android:versionName="122.0.5">
+    android:versionName="122.0.7">
 
     <supports-screens
         android:anyDensity="true"
@@ -760,36 +760,40 @@
         <activity
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.sd.png.view.AssetMovementActivity"
+        <activity
+            android:name="com.ivy.sd.png.view.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"/>
-            <activity
-                android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait" />
-            <activity
-                android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait" />
-            <activity
-                android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait" />
-            <activity
-                android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DistributorSelectionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.FitScoreDashboardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
 
-            <meta-data
+        <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9b1eac89f0eeff5747964654e134359f51160fde" />
 
         <activity
             android:name="com.ivy.sd.png.view.CatalogImagesDownlaod"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.CollectionReference"
             android:screenOrientation="portrait"/>
     </application>
 

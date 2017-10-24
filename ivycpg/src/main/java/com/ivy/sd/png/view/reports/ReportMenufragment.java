@@ -66,8 +66,7 @@ public class ReportMenufragment extends IvyBaseFragment {
 
             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
-            if (actionBar != null)
-            {
+            if (actionBar != null) {
                 actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setIcon(null);
                 actionBar.setElevation(0);
@@ -110,7 +109,6 @@ public class ReportMenufragment extends IvyBaseFragment {
             }
 
 
-
             menuIcons.put(StandardListMasterConstants.MENU_ORDER_REPORT,
                     R.drawable.icon_stock);
             menuIcons.put(StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT,
@@ -118,6 +116,8 @@ public class ReportMenufragment extends IvyBaseFragment {
             menuIcons.put(StandardListMasterConstants.MENU_DAY_REPORT,
                     R.drawable.icon_new_retailer);
             menuIcons.put(StandardListMasterConstants.MENU_INVOICE_REPORT,
+                    R.drawable.icon_dash);
+            menuIcons.put(StandardListMasterConstants.MENU_PND_INVOICE_REPORT,
                     R.drawable.icon_dash);
             menuIcons.put(StandardListMasterConstants.MENU_SKU_REPORT,
                     R.drawable.icon_monthly_plan);
@@ -161,87 +161,59 @@ public class ReportMenufragment extends IvyBaseFragment {
     }
 
     private boolean isCreated;
-    protected void gotoSelectedFragement(ConfigureBO config)
-    {
-        if(config.getConfigCode().equals(StandardListMasterConstants.MENU_INVOICE_REPORT))
-        {
-            if(bmodel.reportHelper.downloadInvoicereport().size()>=1)
-            {
 
+    protected void gotoSelectedFragement(ConfigureBO config) {
+        if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVOICE_REPORT)) {
+            if (bmodel.reportHelper.downloadInvoicereport().size() >= 1) {
                 intoreportacti(config);
-
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
-            }
-        }
-       else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_ORDER_REPORT))
-        {
-
-            if(bmodel.reportHelper.downloadOrderreport().size()>=1)
-            {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PND_INVOICE_REPORT)) {
+            bmodel.downloadInvoice();
+            if (bmodel.getInvoiceHeaderBO().size() >= 1) {
                 intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORDER_REPORT)) {
 
-            if(bmodel.reportHelper.downloadCurrentStockReport().size()>=1)
-            {
+            if (bmodel.reportHelper.downloadOrderreport().size() >= 1) {
                 intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_DAY_REPORT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
 
-            if(bmodel.configurationMasterHelper.downloadDayReportList().size()>=1)
-            {
+            if (bmodel.reportHelper.downloadCurrentStockReport().size() >= 1) {
                 intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_SKU_REPORT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_DAY_REPORT)) {
 
-            if(bmodel.reportHelper.downloadSKUReport().size()>=1)
-            {
+            if (bmodel.configurationMasterHelper.downloadDayReportList().size() >= 1) {
                 intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SKU_REPORT)) {
+
+            if (bmodel.reportHelper.downloadSKUReport().size() >= 1) {
+                intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        }
-        else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_CS_RPT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CS_RPT)) {
             bmodel.mCounterSalesHelper.loadVisitedCustomer();
-            if(bmodel.mCounterSalesHelper.getCSCustomerVisitedUID().size()>=1)
-            {
+            if (bmodel.mCounterSalesHelper.getCSCustomerVisitedUID().size() >= 1) {
                 intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(getActivity(),"Data Not Available",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
-        }
-        else
-        {
+        } else {
             intoreportacti(config);
         }
 
@@ -321,24 +293,21 @@ public class ReportMenufragment extends IvyBaseFragment {
             convertView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onClick(View v)
-                {
-                    if(holder.menuCode.equals("MENU_AUDITSCORE_REPORT")||holder.menuCode.equals("MENU_DAY_PERFORMA")
-                                ||holder.menuCode.equals("MENU_FOCUS_REPORT")||holder.menuCode.equals("MENU_MSL_REPORT")||holder.menuCode.equals("MENU_POSM_REPORT")
-                                ||holder.menuCode.equals("MENU_SCHEME_REPORT")||holder.menuCode.equals("MENU_STORERANK_REPORT")||holder.menuCode.equals("MENU_TASKEXEC_REPORT")
-                                ||holder.menuCode.equals("MENU_TIME_REPORT")||holder.menuCode.equals("MENU_REPORT01"))
-                        {
+                public void onClick(View v) {
+                    if (holder.menuCode.equals("MENU_AUDITSCORE_REPORT") || holder.menuCode.equals("MENU_DAY_PERFORMA")
+                            || holder.menuCode.equals("MENU_FOCUS_REPORT") || holder.menuCode.equals("MENU_MSL_REPORT") || holder.menuCode.equals("MENU_POSM_REPORT")
+                            || holder.menuCode.equals("MENU_SCHEME_REPORT") || holder.menuCode.equals("MENU_STORERANK_REPORT") || holder.menuCode.equals("MENU_TASKEXEC_REPORT")
+                            || holder.menuCode.equals("MENU_TIME_REPORT") || holder.menuCode.equals("MENU_REPORT01")) {
 
-                            Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
 
-                        }
-                            else {
-                             //isCreated = true;
-                                gotoSelectedFragement(holder.config);
-                            }
+                    } else {
+                        //isCreated = true;
+                        gotoSelectedFragement(holder.config);
+                    }
 
 
-               }
+                }
             });
 
 

@@ -47,6 +47,7 @@ public class ReplaceFragment extends IvyBaseFragment {
     private EditText etRepPiece, etRepCase, etRepOuter;
     private CustomKeyBoard dialogCustomKeyBoard;
     private int holderPosition, holderTop;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,11 +113,24 @@ public class ReplaceFragment extends IvyBaseFragment {
             productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
         }
         if (productMasterBO != null) {
-            int total = 0;
-            for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
+            int total = 0, caseSize = 0, outerSize = 0;
+            for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList()) {
                 total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                caseSize = obj.getCaseSize();
+                outerSize = obj.getOuterSize();
+            }
             String strTotal = Integer.toString(total);
             tvReturnQty.setText(strTotal);
+
+            if (caseSize > 0)
+                ((TextView) view.findViewById(R.id.srcaseTitle)).setText(getResources().getString(R.string.avail_cases) + "(" + caseSize + " pcs)");
+            else
+                ((TextView) view.findViewById(R.id.srcaseTitle)).setText(getResources().getString(R.string.avail_cases));
+
+            if (outerSize > 0)
+                ((TextView) view.findViewById(R.id.sroutercaseTitle)).setText(getResources().getString(R.string.avail_outer) + "(" + outerSize + " pcs)");
+            else
+                ((TextView) view.findViewById(R.id.sroutercaseTitle)).setText(getResources().getString(R.string.avail_outer));
 
 
             etRepPiece.addTextChangedListener(new TextWatcher() {

@@ -566,7 +566,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRODUCT_SCHEME_DIALOG;
     public boolean IS_SCHEME_CHECK;
     public boolean IS_SCHEME_CHECK_DISABLED;
-    public boolean SHOW_STK_ORD_SRP;
+    public boolean SHOW_STK_ORD_SRP=true;
     public boolean SHOW_STK_ORD_SRP_SEC;
     public boolean SHOW_STK_ORD_SRP_EDT;
     public boolean SHOW_D1;
