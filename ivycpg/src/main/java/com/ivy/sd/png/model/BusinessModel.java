@@ -2329,9 +2329,11 @@ public class BusinessModel extends Application {
         float taxAmount=0;
         try{
           ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
-            for(TaxBO taxBO:productHelper.getmTaxListByProductId().get(productId)){
-                if (taxBO.getParentType().equals("0")) {
-                    taxAmount+=  SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100),2).floatValue();
+            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+                for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
                 }
             }
         }
@@ -2352,11 +2354,6 @@ public class BusinessModel extends Application {
         catch (Exception ex){
             Commons.printException(ex);
         }
-    }
-
-    public void updateTaxOnProducts(double totalAmount){
-
-
     }
 
     public boolean isReasonProvided() {

@@ -719,9 +719,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         for(ProductMasterBO bo:mOrderedProductList){
             float finalAmount=0;
 
-            for(TaxBO taxBO:bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())){
-                if (taxBO.getParentType().equals("0")) {
-                    finalAmount+=  SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100),2).floatValue();
+            if(bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())!=null) {
+                for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                    if (taxBO.getParentType().equals("0")) {
+                        finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
                 }
             }
 
