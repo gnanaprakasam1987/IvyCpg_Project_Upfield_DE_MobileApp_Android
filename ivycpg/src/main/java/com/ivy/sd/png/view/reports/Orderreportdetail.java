@@ -34,7 +34,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
     private Button back;
     private ArrayList<ReportonorderbookingBO> mylist;
     private ListView lvwplist;
-    private TextView outletname, txttotal, productName, totalLines, tv_lbl_total_lines,TextView51;
+    private TextView outletname, txttotal, productName, totalLines, tv_lbl_total_lines, TextView51;
     private BusinessModel bmodel;
     private ReportonorderbookingBO obj;
     private boolean isFromOrderReport;
@@ -53,7 +53,6 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
 
-
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
@@ -62,7 +61,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         tv_lbl_total_lines = (TextView) findViewById(R.id.lbl_total_lines);
         outletname = (TextView) findViewById(R.id.BtnBrandPrev);
         productName = (TextView) findViewById(R.id.productName);
-        TextView51= (TextView) findViewById(R.id.TextView51);
+        TextView51 = (TextView) findViewById(R.id.TextView51);
         TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         tv_lbl_total_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -120,7 +119,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(
                         getResources().getString(R.string.order_report_details));
-       //     getSupportActionBar().setIcon(R.drawable.icon_order);
+            //     getSupportActionBar().setIcon(R.drawable.icon_order);
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             // Used to remove the app logo actionbar icon and set title as home
@@ -142,7 +141,6 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
                 findViewById(R.id.TextView51).setVisibility(View.GONE);
                 findViewById(R.id.txttotal).setVisibility(View.GONE);
-                findViewById(R.id.view1).setVisibility(View.GONE);
             }
             if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                 findViewById(R.id.lpc).setVisibility(View.GONE);
@@ -210,6 +208,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         } else {
             totalLines.setVisibility(View.GONE);
             tv_lbl_total_lines.setVisibility(View.GONE);
+            findViewById(R.id.view1).setVisibility(View.GONE);
         }
 
 
@@ -273,14 +272,14 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.VISIBLE);
+                    holder.tvWeight.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     holder.tvwval.setVisibility(View.GONE);
                 }
 
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
-                     //   productName.setText(holder.productName);
+                        //   productName.setText(holder.productName);
 
                     }
                 });
@@ -303,14 +302,14 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             holder.outerQty.setText(orderreport.getOuterOrderedCaseQty() + "");
             if (orderreport.getBatchNo() != null && !orderreport.getBatchNo().equals("null"))
                 holder.tvbatchid.setText("Batch No : " + orderreport.getBatchNo());
-            else holder.tvbatchid.setText(""+" ");
+            else holder.tvbatchid.setText("" + " ");
 
             holder.tvwpsname.setTextColor(holder.outerQty.getTextColors());
             if (orderreport.getIsCrown() == 1)
                 holder.tvwpsname.setTextColor(Color.BLUE);
             else if (orderreport.getIsBottleReturn() == 1)
                 holder.tvwpsname.setTextColor(Color.GREEN);
-            holder.tvWeight.setText("WGT :"+orderreport.getTotalQty() * orderreport.getWeight() + "");
+            holder.tvWeight.setText("WGT :" + orderreport.getTotalQty() * orderreport.getWeight() + "");
             holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
 
 

@@ -352,7 +352,7 @@ public class CollectionHelper {
                                 + bmodel.QT(paymentBO.getChequeDate()) + ","
                                 + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                 + bmodel.QT(payTypeID) + "," + bmodel.QT(paymentBO.getImageName()) + "," + (groupID) + "," + listid + ",0"
-                                + "," + bmodel.getRetailerMasterBO().getDistributorId() + ",''"
+                                + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + bmodel.getRetailerMasterBO().getDistParentId() + ",''"
                                 + "," + bmodel.QT(groupDate) + ",0,0";
 
                         db.insertSQL(DataMembers.tbl_Payment, columns, values);
@@ -916,19 +916,23 @@ public class CollectionHelper {
         }
     }
 
-    public boolean isEnterAmountExceed(ArrayList<PaymentBO> paymentList) {
+    public boolean isEnterAmountExceed(ArrayList<PaymentBO> paymentList, String selectedMode) {
         final ArrayList<InvoiceHeaderBO> invoiceList = bmodel.getInvoiceHeaderBO();
 
         double totalInvoiceAmt = 0;
         double totalPaidAmt = 0;
+        double totalDiscountAmt = 0;
         for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
             if (invoiceHeaderBO.isChkBoxChecked()) {
                 totalInvoiceAmt = totalInvoiceAmt + invoiceHeaderBO.getBalance();
+                totalDiscountAmt = totalDiscountAmt + invoiceHeaderBO.getRemainingDiscountAmt();
             }
         }
-        totalInvoiceAmt = Double.parseDouble(SDUtil.format(totalInvoiceAmt,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        totalInvoiceAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalInvoiceAmt));
+        if (selectedMode.equals(StandardListMasterConstants.CREDIT_NOTE)) {
+            totalInvoiceAmt = totalInvoiceAmt + totalDiscountAmt;
+        }
+
         for (PaymentBO paymentBO : paymentList) {
             totalPaidAmt = totalPaidAmt + paymentBO.getAmount();
         }
@@ -945,7 +949,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,ReceiptNo,datetime,refid,refno,PrintFilePath";
+            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath";
             double calculateCredit = 0;
             String groupID;
 
@@ -1104,6 +1108,7 @@ public class CollectionHelper {
                         + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
                         .toPlainString())
                         + "," + bmodel.getRetailerMasterBO().getDistributorId()
+                        + "," + bmodel.getRetailerMasterBO().getDistParentId()
                         + "," + bmodel.QT(receiptno)
                         + "," + bmodel.QT(groupDate) + ",0,0"
                         + "," + bmodel.QT(printFilePath);
@@ -1223,6 +1228,7 @@ public class CollectionHelper {
                 + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
                 .toPlainString())
                 + "," + bmodel.getRetailerMasterBO().getDistributorId()
+                + "," + bmodel.getRetailerMasterBO().getDistParentId()
                 + "," + bmodel.QT(receiptno)
                 + "," + bmodel.QT(groupDate) + "," + creditNoteListBO.getRefid() + "," + bmodel.QT(creditNoteListBO.getId())
                 + "," + bmodel.QT(printFilePath);
@@ -1674,6 +1680,87 @@ public class CollectionHelper {
 
         bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
         loadPaymentMode();
+    }
+
+    public void loadCollectionReference() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo from CollectionDocument ");
+            sb.append("where RetailerID = ");
+            sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append(" and upload='N'");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String billNo = c.getString(0);
+                    String contactName = c.getString(1);
+                    String contactNo = c.getString(2);
+                    String docRefNo = c.getString(3);
+                    setRefDetails(billNo, contactName, contactNo, docRefNo);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void setRefDetails(String billNo, String contactName, String contactNo, String docRefNo) {
+
+        for (InvoiceHeaderBO invoiceHeaderBO : bmodel.getInvoiceHeaderBO()) {
+            if (invoiceHeaderBO.getInvoiceNo().equalsIgnoreCase(billNo)) {
+                invoiceHeaderBO.setContactName(contactName);
+                invoiceHeaderBO.setContactNo(contactNo);
+                invoiceHeaderBO.setDocRefNo(docRefNo);
+                break;
+            }
+        }
+    }
+
+    public void saveCollectionReference(ArrayList<InvoiceHeaderBO> collectionRefList) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String columns = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo";
+
+            String payID = bmodel.QT("CRF"
+                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+
+            db.deleteSQL("CollectionDocument", "RetailerID=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "and upload = 'N'", false);
+
+            for (int i = 0; i < collectionRefList.size(); i++) {
+
+                if ((collectionRefList.get(i).getContactName() != null && collectionRefList.get(i).getContactName().length() > 0) ||
+                        (collectionRefList.get(i).getContactNo() != null && collectionRefList.get(i).getContactNo().length() > 0) ||
+                        (collectionRefList.get(i).getDocRefNo() != null && collectionRefList.get(i).getDocRefNo().length() > 0)) {
+
+                    String values = payID
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getInvoiceNo())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getContactName())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getContactNo())
+                            + ","
+                            + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getDocRefNo());
+
+                    db.insertSQL("CollectionDocument", columns, values);
+                }
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("CollectionDocument insert" + e);
+        }
     }
 
 }

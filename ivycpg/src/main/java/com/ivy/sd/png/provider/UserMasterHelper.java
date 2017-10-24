@@ -179,7 +179,6 @@ public class UserMasterHelper {
 
                     userBO.setDistributorid(c.getInt(c
                             .getColumnIndex("distributorid")));
-
                     userBO.setDistributorTinNumber(c.getString(c
                             .getColumnIndex("distributorTinNumber")));
                     userBO.setDistributorName(c.getString(c
@@ -311,7 +310,7 @@ public class UserMasterHelper {
         }
     }
 
-    public void updateDistributorId(String distid, String distname){
+    public void updateDistributorId(String distid, String parentId, String distname){
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -319,7 +318,7 @@ public class UserMasterHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String query = "update userMaster set distributorid=" + distid
+            String query = "update userMaster set distributorid=" + parentId
                     + ", branchid="+distid+", distributorName='"+distname+"' where userID=" + userMasterBO.getUserid();
 
             db.executeQ(query);

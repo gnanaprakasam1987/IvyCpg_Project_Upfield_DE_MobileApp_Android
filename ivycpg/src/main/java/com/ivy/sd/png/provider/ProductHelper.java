@@ -2443,8 +2443,13 @@ public class ProductHelper {
             if (c1 != null) {
                 if (c1.moveToNext()) {
 
+                    if (c1.getString(0).equals("RETAILER"))
+                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
-                    if (c1.getString(0).equals("CHANNEL")) {
+                    else if (c1.getString(0).equals("ACCOUNT"))
+                    mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+
+                    else if (c1.getString(0).equals("CHANNEL")) {
                         mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
@@ -2458,8 +2463,7 @@ public class ProductHelper {
                         mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
                     else if (c1.getString(0).equals("CLASS"))
                         mappingId = bmodel.getRetailerMasterBO().getClassid() + "";
-                    else if (c1.getString(0).equals("ACCOUNT"))
-                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+
 
                     moduletypeid = c1.getString(1);
                 }
@@ -6846,6 +6850,7 @@ public class ProductHelper {
                 while (cur.moveToNext()) {
                     ProductMasterBO product = new ProductMasterBO();
                     product.setProductID(cur.getString(0));
+                    product.setProductName(cur.getString(1));
                     product.setProductShortName(cur.getString(1));
                     product.setParentid(cur.getInt(2));
                     product.setIsSaleable(1);

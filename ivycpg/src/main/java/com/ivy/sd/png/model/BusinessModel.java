@@ -888,7 +888,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -1512,7 +1511,8 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId" : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
@@ -1638,7 +1638,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-
+                    retailer.setDistParentId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -2901,7 +2901,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -2967,6 +2967,7 @@ public class BusinessModel extends Application {
 
             }
             sb.append("," + getRetailerMasterBO().getDistributorId());
+            sb.append("," + getRetailerMasterBO().getDistParentId());
             sb.append("," + supplierBO.getSupplierType());
             sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
             sb.append("," + getRetailerMasterBO().getCreditDays());
@@ -5015,6 +5016,15 @@ public class BusinessModel extends Application {
                     }
                 }
                 c.close();
+            } else {
+                c = db
+                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                    }
+                }
+                c.close();
             }
             db.closeDB();
 
@@ -5036,18 +5046,6 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-
-            if (isAmazonUpload) {
-                Cursor c = db
-                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
-                    }
-                }
-                c.close();
-                c = null;
-            }
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
@@ -6484,7 +6482,7 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                double achieved = (((double) sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
@@ -6876,7 +6874,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -6937,6 +6935,8 @@ public class BusinessModel extends Application {
                     + indicativeFlag
                     + ","
                     + getRetailerMasterBO().getDistributorId()
+                    + ","
+                    + getRetailerMasterBO().getDistParentId()
                     + ","
                     + supplierBO.getSupplierType() + "," + isVansales
                     + "," + QT(getOrderHeaderBO().getSignaturePath())
@@ -8331,7 +8331,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public void isModuleDone() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -8500,7 +8499,7 @@ public class BusinessModel extends Application {
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
-                            + getRetailerMasterBO().getRetailerID()+
+                            + getRetailerMasterBO().getRetailerID() +
                             " and SMA.menucode='MENU_SURVEY'" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
@@ -8532,7 +8531,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -8592,9 +8591,9 @@ public class BusinessModel extends Application {
             int count = 0;
             Cursor c = db
                     .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
-                            +" INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +" INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
-                            +" where menuCode in('MENU_SURVEY') group by AH.retailerid");
+                            + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
+                            + " where menuCode in('MENU_SURVEY') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
@@ -8802,10 +8801,10 @@ public class BusinessModel extends Application {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             if (configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE) {
-                sb.append("select did,dname,type,0 from DistributorMaster ");
+                sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -8821,6 +8820,7 @@ public class BusinessModel extends Application {
                         supplierMasterBO.setSupplierType(0);
                     }
                     supplierMasterBO.setIsPrimary(c.getInt(3));
+                    supplierMasterBO.setDistParentID(c.getInt(4));
                     mSupplierList.add(supplierMasterBO);
                 }
             }
@@ -10705,7 +10705,6 @@ public class BusinessModel extends Application {
         }
         c.close();
 
-
     }
 
     public String getRetailerAttributeList() {
@@ -11439,6 +11438,80 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
 
             Commons.printException(ex);
+        }
+    }
+
+
+    //Pending invoice report
+
+    public void downloadInvoice() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
+            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),RM.RetailerName as RetailerName,IFNULL(RM.creditPeriod,'') as creditPeriod");
+            sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
+            sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
+            sb.append(" INNER JOIN RetailerMaster RM ON inv.Retailerid = RM.RetailerID");
+            sb.append(" GROUP BY Inv.InvoiceNo,inv.Retailerid");
+            sb.append(" ORDER BY Inv.InvoiceDate");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                InvoiceHeaderBO invocieHeaderBO;
+                invoiceHeader = new ArrayList<>();
+                while (c.moveToNext()) {
+                    invocieHeaderBO = new InvoiceHeaderBO();
+                    invocieHeaderBO.setInvoiceNo(c.getString(0));
+                    invocieHeaderBO.setInvoiceDate(c.getString(1));
+                    invocieHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invocieHeaderBO.setPaidAmount(c.getDouble(3));
+                    invocieHeaderBO.setBalance(c.getDouble(4));
+                    invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
+                    invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
+
+                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+
+                    double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
+                    if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
+                        remaingAmount = Double.parseDouble(SDUtil.format(remaingAmount,
+                                0,
+                                0, configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    }
+
+                    invocieHeaderBO.setRemainingDiscountAmt(remaingAmount);
+                    int crediiDays = c.getInt(c.getColumnIndex("creditPeriod"));
+
+                    if (crediiDays != 0) {
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = format.parse(invocieHeaderBO.getInvoiceDate());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
+                        Date dueDate = format.parse(format.format(calendar.getTime()));
+
+                        invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                dueDate, configurationMasterHelper.outDateFormat));
+
+                    }
+                    if (invocieHeaderBO.getBalance() > 0)
+                        invoiceHeader.add(invocieHeaderBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
         }
     }
 }

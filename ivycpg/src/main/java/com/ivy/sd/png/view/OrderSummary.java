@@ -1276,7 +1276,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         switch (id) {
             case DATE_DIALOG_ID:
                 Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_YEAR, 1);
+                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
                 int cyear = c.get(Calendar.YEAR);
                 int cmonth = c.get(Calendar.MONTH);
                 int cday = c.get(Calendar.DAY_OF_MONTH);

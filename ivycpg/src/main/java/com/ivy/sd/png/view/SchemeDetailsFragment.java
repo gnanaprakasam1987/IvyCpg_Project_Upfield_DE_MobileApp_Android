@@ -514,7 +514,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                         ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(parentId);
                         if (schemeList != null) {
-                            for (int k = 0; k < schemeList.size(); k++) {
+                            for (int k = schemeList.size() - 1; k >= 0; k--) {
 
                                 TextView slab = getTextViewTitle(true, Gravity.CENTER, false);
                                 slab.setLayoutParams(layoutParams2);

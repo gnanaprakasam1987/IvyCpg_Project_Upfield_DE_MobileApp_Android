@@ -335,8 +335,7 @@ public class ReasonHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "update retailermaster set isDeviated='Y' where retailerid="
-                    + retailerid + " and beatid=" + beatid;
+            String sql = "update retailermaster set isDeviated='Y' where retailerid=" + retailerid;
             db.executeQ(sql);
 
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
@@ -606,15 +605,15 @@ public class ReasonHelper {
 
     }
 
-    public  ArrayList<StandardListBO> downloadCSAgeGroup() {
-        ArrayList<StandardListBO> lst=null;
+    public ArrayList<StandardListBO> downloadCSAgeGroup() {
+        ArrayList<StandardListBO> lst = null;
         try {
             StandardListBO reason;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String s = "SELECT ListId, ListName, ListCode FROM StandardListMaster "
-                    + " WHERE ListTYPE = '" + StandardListMasterConstants.COUNTER_SALES_AGE_GROUP_TYPE+"'";
+                    + " WHERE ListTYPE = '" + StandardListMasterConstants.COUNTER_SALES_AGE_GROUP_TYPE + "'";
 
             Cursor c = db.selectSQL(s);
             if (c != null) {
@@ -632,7 +631,7 @@ public class ReasonHelper {
         } catch (SQLException e) {
             Commons.printException(e);
         }
-        return  lst;
+        return lst;
     }
 
     public ArrayList<CS_StockReasonBO> getLstCSstockReasons() {
@@ -644,9 +643,10 @@ public class ReasonHelper {
     }
 
     ArrayList<CS_StockReasonBO> lstCSstockReasons;
-    public  void downloadCSStockReasons() {
+
+    public void downloadCSStockReasons() {
         try {
-            lstCSstockReasons=new ArrayList<>();
+            lstCSstockReasons = new ArrayList<>();
             CS_StockReasonBO reason;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

@@ -96,6 +96,9 @@ public class PlanogramFragment extends IvyBaseFragment implements
     private String imageFileName = "";
     private boolean isFromChild;
     private String menuCode = "";
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
 
     @Override
     public void onAttach(Context context) {
@@ -253,12 +256,20 @@ public class PlanogramFragment extends IvyBaseFragment implements
             mDrawerLayout.addDrawerListener(mDrawerToggle);
 
             if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM) {
-                updatebrandtext(BRAND, 0);
+                if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+                    updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+                } else {
+                    updatebrandtext(BRAND, 0);
+                }
             } else {
 
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+                        updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+                    } else {
+                        updategeneraltext(GENERAL);
+                    }
                 } else {
                     if (bmodel.mSFSelectedFilter == -1)
                         if (selectedCategory == 0)
@@ -1300,7 +1311,10 @@ public class PlanogramFragment extends IvyBaseFragment implements
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
-        brandbutton = filtertext;
+        this.parentidList = parentidList;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
         vPlanogram = new Vector<>();
         if (items == null) {
             bmodel.showAlert(
