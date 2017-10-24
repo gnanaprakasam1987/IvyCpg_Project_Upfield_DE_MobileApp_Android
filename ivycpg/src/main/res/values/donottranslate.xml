@@ -157,4 +157,8 @@
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
 
+
+    <string name="share_invoice_using">Share invoice using..</string>
+    <string name="error_in_creating_pdf">Error in creating pdf.</string>
+    <string name="preparing_pdf">Preparing Pdf file</string>
 </resources>
