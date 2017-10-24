@@ -110,7 +110,7 @@
     <string name="cheque">Cheque</string>
     <string name="bank_name">Bank Name</string>
 
-    <string name="branch_area">Branch Area</string>
+    <string name="branch_area">Branch</string>
     <string name="price">Price</string>
     <string name="rp">RP</string>
     <string name="disc">Dist%</string>

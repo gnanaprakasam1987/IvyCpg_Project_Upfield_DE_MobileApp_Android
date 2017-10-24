@@ -1631,7 +1631,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-                    retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistParentId")));
+                    retailer.setDistParentId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -8490,7 +8490,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -11358,6 +11358,80 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
 
             Commons.printException(ex);
+        }
+    }
+
+
+    //Pending invoice report
+
+    public void downloadInvoice() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
+            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),RM.RetailerName as RetailerName,IFNULL(RM.creditPeriod,'') as creditPeriod");
+            sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
+            sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
+            sb.append(" INNER JOIN RetailerMaster RM ON inv.Retailerid = RM.RetailerID");
+            sb.append(" GROUP BY Inv.InvoiceNo,inv.Retailerid");
+            sb.append(" ORDER BY Inv.InvoiceDate");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                InvoiceHeaderBO invocieHeaderBO;
+                invoiceHeader = new ArrayList<>();
+                while (c.moveToNext()) {
+                    invocieHeaderBO = new InvoiceHeaderBO();
+                    invocieHeaderBO.setInvoiceNo(c.getString(0));
+                    invocieHeaderBO.setInvoiceDate(c.getString(1));
+                    invocieHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invocieHeaderBO.setPaidAmount(c.getDouble(3));
+                    invocieHeaderBO.setBalance(c.getDouble(4));
+                    invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
+                    invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
+
+                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+
+                    double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
+                    if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
+                        remaingAmount = Double.parseDouble(SDUtil.format(remaingAmount,
+                                0,
+                                0, configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    }
+
+                    invocieHeaderBO.setRemainingDiscountAmt(remaingAmount);
+                    int crediiDays = c.getInt(c.getColumnIndex("creditPeriod"));
+
+                    if (crediiDays != 0) {
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = format.parse(invocieHeaderBO.getInvoiceDate());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
+                        Date dueDate = format.parse(format.format(calendar.getTime()));
+
+                        invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                dueDate, configurationMasterHelper.outDateFormat));
+
+                    }
+                    if (invocieHeaderBO.getBalance() > 0)
+                        invoiceHeader.add(invocieHeaderBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
         }
     }
 

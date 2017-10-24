@@ -327,8 +327,11 @@ public class SalesFundamentalHelper {
             }
             sBuffer.append(query);
 
-            sBuffer.append(" LEFT JOIN "
-                    + moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
+            if (bmodel.configurationMasterHelper.IS_SF_NORM_CHECK)
+            {       sBuffer.append(" INNER JOIN ");
+            }else {
+                sBuffer.append(" LEFT JOIN ");
+            }               sBuffer.append( moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
                     + ".pid = SFN.pid  ");
 
             if (IsRetailer) {

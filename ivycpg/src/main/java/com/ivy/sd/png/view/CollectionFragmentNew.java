@@ -492,7 +492,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
             }
             if (count < 0)
                 count = 0;
-            String strCount = "(" + count + ")";
+            String strCount = "(" + (count + 1) + ")";
             holder.tvAge.setText(strCount);
 
             String strPayment = bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()) + "";

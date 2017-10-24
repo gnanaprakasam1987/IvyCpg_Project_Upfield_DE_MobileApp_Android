@@ -197,7 +197,7 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
 
         mPaymentBO.setAmount(mTotalCreditNoteValue);
 
-        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList)) {
+        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.ADVANCE_PAYMENT)) {
             mPaymentBO.setAmount(mTotalCreditNoteValue);
         } else {
             mTotalCreditNoteValue = bmodel.collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList,false);
