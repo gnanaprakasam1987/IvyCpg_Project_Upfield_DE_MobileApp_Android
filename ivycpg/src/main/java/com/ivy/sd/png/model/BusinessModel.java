@@ -1504,7 +1504,7 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
