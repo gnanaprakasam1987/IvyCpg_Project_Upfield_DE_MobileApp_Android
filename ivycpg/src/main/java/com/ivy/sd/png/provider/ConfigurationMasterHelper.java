@@ -1188,6 +1188,12 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRODUCT_DISTRIBUTION;
     public String PRD_DISTRIBUTION_TYPE = "";
 
+    private static final String CODE_REMOVE_TAX_ON_SRP = "ORDB67";
+    public boolean IS_REMOVE_TAX_ON_SRP;
+
+    private static final String CODE_SHARE_INVOICE = "ORDB68";
+    public boolean IS_SHARE_INVOICE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2107,6 +2113,8 @@ public class ConfigurationMasterHelper {
             }
         }
 
+        this.IS_REMOVE_TAX_ON_SRP=hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
+        this.IS_SHARE_INVOICE=hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
     }
 
     private void getTaxModel(String hhtCode) {

@@ -77,6 +77,10 @@ public class ProductMasterBO {
     private int deliveredPcsQty;
     private int deliveredOuterQty;
 
+
+    // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
+    private float originalSrp;
+
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
     }
@@ -1761,4 +1765,13 @@ public class ProductMasterBO {
     public void setAvailableinWareHouse(boolean availableinWareHouse) {
         isAvailableinWareHouse = availableinWareHouse;
     }
+
+    public float getOriginalSrp() {
+        return originalSrp;
+    }
+
+    public void setOriginalSrp(float originalSrp) {
+        this.originalSrp = originalSrp;
+    }
+
 }

@@ -59,6 +59,12 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
@@ -211,9 +217,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -235,6 +243,8 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
+
+import static com.itextpdf.text.pdf.PdfName.TEXT;
 
 public class BusinessModel extends Application {
 
@@ -2288,6 +2298,67 @@ public class BusinessModel extends Application {
         return false;
     }
 
+    /**
+     *
+     */
+    public void excludeTaxFromSRP(){
+        try{
+          for(ProductMasterBO productMasterBO:productHelper.getProductMaster()){
+
+              productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+
+              if (productMasterBO.getOrderedCaseQty() > 0
+                      || productMasterBO.getOrderedPcsQty() > 0
+                      || productMasterBO.getOrderedOuterQty() > 0){
+                  if(productMasterBO.getSrp()>0) {
+
+                      float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()),2).floatValue();
+
+                      if (srpWithoutTax > 0)
+                          productMasterBO.setSrp(srpWithoutTax);
+                      else productMasterBO.setSrp(0);
+
+                  }
+              }
+
+          }
+        }
+        catch (Exception ex){
+         Commons.printException(ex);
+        }
+    }
+
+    private float getTaxAmount(String productId){
+        float taxAmount=0;
+        try{
+          ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
+            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+                for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+         Commons.printException(ex);
+        }
+      return taxAmount;
+    }
+
+    public void resetSRPvalues(){
+        try {
+            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
+                if(productMasterBO.getOriginalSrp()>0) {
+                    productMasterBO.setSrp(productMasterBO.getOriginalSrp());
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
     public boolean isReasonProvided() {
         // To check wether reason provided for un satisfied inidicative order
         int siz = productHelper.getProductMaster().size();
@@ -3171,7 +3242,7 @@ public class BusinessModel extends Application {
         int priceOffId = 0;
 
         int totalqty = 0;
-        double srp = 0;
+        float srp = 0;
         double csrp = 0;
         double osrp = 0;
         double prodDisc = 0;
@@ -7341,7 +7412,7 @@ public class BusinessModel extends Application {
                                          ProductMasterBO batchProductBO, String orderId, boolean isBatchWise) {
 
         int pieceCount = 0;
-        double srp = 0;
+        float srp = 0;
         double csrp = 0;
         double osrp = 0;
         double totalValue = 0;
@@ -10781,6 +10852,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename) {
+
         String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
         File folder = new File(path);
         if (!folder.exists()) {
@@ -10801,6 +10873,45 @@ public class BusinessModel extends Application {
         } catch (IOException e) {
             Commons.printException(e);
         }
+    }
+
+    public boolean createPdf(String pdfFileName,String content) {
+
+        try {
+
+            if (isExternalStorageAvailable()) {
+                File folder;
+                folder = new File(
+                        getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                + "/IvyInvoice/");
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                String path = folder + "";
+                File SDPath = new File(path);
+                if (!SDPath.exists()) {
+                    SDPath.mkdir();
+                }
+
+
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(path + "/" + pdfFileName + ".pdf"));
+                document.open();
+
+                Font normal = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+                Paragraph p = new Paragraph(content, normal);
+                document.add(p);
+
+                document.close();
+            }
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return false;
+        }
+     return true;
     }
 
     public void updateGroupIdForRetailer() {
