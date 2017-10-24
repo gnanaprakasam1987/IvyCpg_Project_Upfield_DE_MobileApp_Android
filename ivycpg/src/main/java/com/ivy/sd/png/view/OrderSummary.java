@@ -2161,6 +2161,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
                     if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
@@ -2244,9 +2246,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE && shortListOrder != null)
                 bmodel.productHelper.setShortProductMaster(shortListOrder);
             fromorder = false;
+
             if (!isClick) {
                 isClick = true;
-
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
                 if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && !bmodel.isStockAvailableToDeliver(mOrderedProductList)) {
                     Toast.makeText(
                             this,

@@ -240,6 +240,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -447,6 +448,8 @@ public class BusinessModel extends Application {
     public String latlongImageFileName;
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
+    public Timer orderTimer;
+
 
     public BusinessModel() {
 
@@ -3712,9 +3715,7 @@ public class BusinessModel extends Application {
                     + " where orderId="
                     + QT(orderID) + " order by rowid";
 
-			/*
-             * if (!canIncludeFreeProduct) { sql1 += " AND isFreeProduct = 0"; }
-			 */
+
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 String productId = "";
@@ -3777,9 +3778,11 @@ public class BusinessModel extends Application {
                     }
                     // }
 
+
                 }
             }
             orderDetailCursor.close();
+
             if (configurationMasterHelper.SHOW_PRODUCTRETURN
                     && configurationMasterHelper.IS_SIH_VALIDATION) {
                 String str = "SELECT Pid,LiableQty,ReturnQty,TypeID FROM "
@@ -4162,9 +4165,31 @@ public class BusinessModel extends Application {
                 }
                 productHelper.getProductMaster().setElementAt(product, i);
 
-                // Logs.exception("INVOICE",
-                // "product.getSchemeProducts().size : " +
-                // product.getSchemeProducts().size());
+                return;
+            }
+        }
+        return;
+    }
+
+    private void setProductDetails(String productid, int pieceqty, int caseqty,
+                                   int outerQty) {
+        ProductMasterBO product;
+        int siz = productHelper.getProductMaster().size();
+        if (siz == 0)
+            return;
+
+        if (productid == null)
+            return;
+
+        for (int i = 0; i < siz; ++i) {
+            product = productHelper.getProductMaster().get(i);
+
+            if (product.getProductID().equals(productid)) {
+                product.setOrderedPcsQty(pieceqty);
+                product.setOrderedCaseQty(caseqty);
+                product.setOrderedOuterQty(outerQty);
+
+                productHelper.getProductMaster().setElementAt(product, i);
 
                 return;
             }
@@ -6723,6 +6748,11 @@ public class BusinessModel extends Application {
                 db.deleteSQL("OrderHeader", "OrderID=" + this.getOrderid(),
                         false);
                 db.deleteSQL("OrderDetail", "OrderID=" + this.getOrderid(),
+                        false);
+            }
+
+            if (configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
+                db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
                         false);
             }
 
@@ -11511,6 +11541,81 @@ public class BusinessModel extends Application {
             db.closeDB();
         } catch (Exception e) {
 
+            Commons.printException(e);
+        }
+    }
+
+
+    public void insertTempOrder() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            int siz = productHelper.getProductMaster().size();
+
+            db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+                    false);
+
+            String columns = "RetailerID,ProductID,pieceqty,caseQty,outerQty";
+
+            for (int i = 0; i < siz; ++i) {
+                ProductMasterBO product = productHelper
+                        .getProductMaster().get(i);
+                if (product.getOrderedCaseQty() > 0
+                        || product.getOrderedPcsQty() > 0
+                        || product.getOrderedOuterQty() > 0) {
+
+                    String values = QT(getRetailerMasterBO().getRetailerID())
+                            + ","
+                            + QT(product.getProductID())
+                            + ","
+                            + product.getOrderedPcsQty()
+                            + ","
+                            + product.getOrderedCaseQty()
+                            + ","
+                            + product.getOrderedOuterQty();
+
+
+                    db.insertSQL("TempOrderDetail", columns, values);
+                }
+            }
+        } catch (Exception ex) {
+
+            Commons.printException(ex);
+        }
+    }
+
+
+    public void loadTempOrderDetails(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql2 = "select productId,pieceqty,caseQty,outerQty from TempOrderDetail "
+                    + " where RetailerID="
+                    + QT(getRetailerMasterBO().getRetailerID()) + " order by rowid";
+
+            Cursor tOrderDetailCursor = db.selectSQL(sql2);
+
+            if (tOrderDetailCursor != null) {
+                while (tOrderDetailCursor.moveToNext()) {
+
+                    String productId = tOrderDetailCursor.getString(0);
+                    int pieceqty = tOrderDetailCursor.getInt(1);
+                    int caseqty = tOrderDetailCursor.getInt(2);
+                    int outerQty = tOrderDetailCursor.getInt(3);
+
+                    setProductDetails(productId, pieceqty, caseqty,
+                            outerQty);
+
+                }
+            }
+            tOrderDetailCursor.close();
+
+        }catch (Exception e){
             Commons.printException(e);
         }
     }
