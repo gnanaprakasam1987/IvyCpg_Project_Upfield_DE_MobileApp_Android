@@ -23,6 +23,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -184,6 +187,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRField1;
     private String tempRField2;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
+    private LevelBO mSelectedLevelBO = new LevelBO();
+    private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
+    private Vector<LevelBO> sequence;
+    private FilterAdapter filterAdapter;
+    private RecyclerView rvFilterList;
     private int mTotalScreenWidth = 0;
     private String strProductObj;
     private int SbdDistPre = 0; // Dist stock
@@ -363,6 +371,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        rvFilterList = (RecyclerView) findViewById(R.id.rvFilter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvFilterList.setLayoutManager(mLayoutManager);
+        rvFilterList.setItemAnimator(new DefaultItemAnimator());
 
         hideAndSeek();
 
@@ -375,7 +387,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
-
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
         /* Calculate the total and LPC value */
@@ -1347,6 +1358,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else {
             productFilterClickedFragment(); // Normal Filter Fragment
         }
+
+        loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+        sequence = bmodel.productHelper.getSequenceValues();
+        if (!sequence.isEmpty()) {
+            mSelectedLevelBO = sequence.get(0);
+            int levelID = sequence.get(0).getProductID();
+            Vector<LevelBO> filterValues = new Vector<>();
+            filterValues.addAll(loadedFilterValues.get(levelID));
+            filterAdapter = new FilterAdapter(filterValues);
+            rvFilterList.setAdapter(filterAdapter);
+        }
+
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
@@ -5492,6 +5515,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         updateValue();
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        filterAdapter.notifyDataSetChanged();
 
         updateOrderedCount();
         if (!bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
@@ -5770,4 +5794,60 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
         return newItems;
     }
+
+    public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.MyViewHolder> {
+
+        private Vector<LevelBO> filterList;
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public Button btnFilter;
+
+            public MyViewHolder(View view) {
+                super(view);
+                btnFilter = (Button) view.findViewById(R.id.btn_filter);
+            }
+        }
+
+        public FilterAdapter(Vector<LevelBO> filterList) {
+            this.filterList = filterList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.filter_rv_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            LevelBO levelBO = filterList.get(position);
+            holder.btnFilter.setText(levelBO.getLevelName());
+            try {
+                if (mSelectedIdByLevelId != null && mSelectedLevelBO != null) {
+                    int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+                    TypedArray typearr = getTheme().obtainStyledAttributes(R.styleable.MyCustomButton);
+
+                    if (levelId == levelBO.getProductID()) {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_rounded_corner_blue);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.white));
+                    } else {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.Black));
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return filterList.size();
+        }
+    }
+
 }
