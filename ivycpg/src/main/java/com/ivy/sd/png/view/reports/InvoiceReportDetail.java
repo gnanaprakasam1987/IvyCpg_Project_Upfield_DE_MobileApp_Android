@@ -508,9 +508,9 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
 
                 //bmodel.mCommonPrintHelper.xmlRead("print_z320_invoice_best_one.xml",true,bmodel.productHelper.getProductMaster(),null);
 
-                if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+
                      bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
-                }
+
               /*  else {
                     bmodel.mCommonPrintHelper.xmlRead("invoice", false, bmodel.productHelper.getProductMaster(), null);
                 }*/

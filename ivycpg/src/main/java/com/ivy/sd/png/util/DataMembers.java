@@ -604,6 +604,11 @@ public class DataMembers {
     private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
     private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
 
+    // print file
+    public static final String IVYDIST_PATH="IvyDist";
+    public static final String PRINT_FILE_PATH="PrintFile";
+    public static final String PRINT_FILE_START="PF_INV";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {

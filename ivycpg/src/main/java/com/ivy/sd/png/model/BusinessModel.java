@@ -6813,11 +6813,11 @@ public class BusinessModel extends Application {
                     + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
 
             String printFilePath = "";
-            //if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
+            if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + SDUtil.now(SDUtil.DATE_GLOBAL).replace("/", "") + "/"
                         + userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_ORDER + invoiceNumber + ".txt";
-           // }
+           }
 
 
             String values = uid
@@ -10774,8 +10774,8 @@ public class BusinessModel extends Application {
             myOutWriter.close();
             fOut.flush();
             fOut.close();
-            if(configurationMasterHelper.IS_PRINT_FILE_SAVE&&filename.startsWith("PF_INV")){
-                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/IvyDist/";
+            if(configurationMasterHelper.IS_PRINT_FILE_SAVE&&filename.startsWith(DataMembers.PRINT_FILE_START)){
+                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+DataMembers.IVYDIST_PATH+"/";
                 copyFile(newFile,destpath,filename);
             }
         } catch (IOException e) {

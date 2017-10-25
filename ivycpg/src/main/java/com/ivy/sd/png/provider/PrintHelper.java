@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
@@ -2843,12 +2844,12 @@ public class PrintHelper {
     public void deletePrintFileAfterDownload(){
         File folder = new File(
                 mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        + "/PrintFile/");
+                        + "/"+DataMembers.PRINT_FILE_PATH+"/");
 
         File sfFiles[] = folder.listFiles();
         for (int i = 0; i < sfFiles.length; i++) {
             String filename = sfFiles[i].getName();
-            if(filename.startsWith("PF_INV")) {
+            if(filename.startsWith(DataMembers.PRINT_FILE_START)) {
                 File deleteFile = new File(folder, "/" + sfFiles[i].getName());
                 deleteFile.delete();
             }
