@@ -4879,7 +4879,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-
+            //bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
