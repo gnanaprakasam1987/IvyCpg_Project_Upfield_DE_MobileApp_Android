@@ -4492,18 +4492,10 @@ public class ConfigurationMasterHelper {
             if (mFontRobotoLight == null)
                 mFontRobotoLight = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
             return mFontRobotoLight;
-        } else if (mFontType == FontType.REGULAR) {
-            if (mFontRobotoRegular == null)
-                mFontRobotoRegular = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
-            return mFontRobotoRegular;
-        } else if (mFontType == FontType.MEDIUM) {
+        }else if (mFontType == FontType.MEDIUM) {
             if (mFontRobotoMedium == null)
                 mFontRobotoMedium = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
             return mFontRobotoMedium;
-        } else if (mFontType == FontType.BOLD) {
-            if (mFontRobotoBold == null)
-                mFontRobotoBold = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
-            return mFontRobotoBold;
         } else if (mFontType == FontType.THIN) {
             if (mFontRobotoThin == null)
                 mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Thin.ttf");
