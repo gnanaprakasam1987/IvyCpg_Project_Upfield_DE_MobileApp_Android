@@ -230,8 +230,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
 
         if (!sequence.isEmpty()) {
-         /*   if (isFrom.equalsIgnoreCase("STK"))
-                sequence.remove(0);*/
+            if (isFrom.equalsIgnoreCase("STK"))
+                sequence.remove(0);
             adapter = new FilterAdapter(sequence);
             filterlistview.setAdapter(adapter);
             mSelectedLevelBO = sequence.get(0);
