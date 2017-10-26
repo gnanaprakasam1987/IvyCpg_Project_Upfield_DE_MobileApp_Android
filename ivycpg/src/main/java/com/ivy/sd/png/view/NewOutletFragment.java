@@ -1275,7 +1275,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 int yDistanceToControlsView = 0;
                 View parentView = (View) specificSpinner.getParent();
                 while (true) {
-                    if (parentView != null) {
+                    if (parentView.equals(scrollview2)) {
                         break;
                     }
                     yDistanceToControlsView += parentView.getTop();

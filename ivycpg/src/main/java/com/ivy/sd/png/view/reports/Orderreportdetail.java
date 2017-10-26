@@ -34,7 +34,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
     private Button back;
     private ArrayList<ReportonorderbookingBO> mylist;
     private ListView lvwplist;
-    private TextView outletname, txttotal, productName, totalLines, tv_lbl_total_lines,TextView51;
+    private TextView outletname, txttotal, productName, totalLines, tv_lbl_total_lines, TextView51;
     private BusinessModel bmodel;
     private ReportonorderbookingBO obj;
     private boolean isFromOrderReport;
@@ -120,7 +120,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(
                         getResources().getString(R.string.order_report_details));
-       //     getSupportActionBar().setIcon(R.drawable.icon_order);
+            //     getSupportActionBar().setIcon(R.drawable.icon_order);
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             // Used to remove the app logo actionbar icon and set title as home
@@ -273,7 +273,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.VISIBLE);
+                    holder.tvWeight.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     holder.tvwval.setVisibility(View.GONE);
                 }
@@ -303,7 +303,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             holder.outerQty.setText(orderreport.getOuterOrderedCaseQty() + "");
             if (orderreport.getBatchNo() != null && !orderreport.getBatchNo().equals("null"))
                 holder.tvbatchid.setText("Batch No : " + orderreport.getBatchNo());
-            else holder.tvbatchid.setText(""+" ");
+            else holder.tvbatchid.setText("" + " ");
 
             holder.tvwpsname.setTextColor(holder.outerQty.getTextColors());
             if (orderreport.getIsCrown() == 1)

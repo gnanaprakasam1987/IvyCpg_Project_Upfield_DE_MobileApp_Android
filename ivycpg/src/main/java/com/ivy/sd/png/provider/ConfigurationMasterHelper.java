@@ -434,6 +434,13 @@ public class ConfigurationMasterHelper {
 
     public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
     public boolean IS_MULTI_STOCKORDER;
+
+    private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";
+    public boolean IS_CATALOG_IMG_DOWNLOAD;
+
+    private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
+    public boolean IS_TEMP_ORDER_SAVE;
+
     /**
      * RoadActivity config *
      */
@@ -693,6 +700,7 @@ public class ConfigurationMasterHelper {
     public int globalSeqId = 0;
     public int sosDigits = 4;
     public int sodDigits = 4;
+    public int tempOrderInterval = 10;
     public static String outDateFormat = "MM/dd/yyyy";//default date format
     public int printCount;
     public int PRINTER_SIZE;
@@ -1171,12 +1179,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
     public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
 
+
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
 
-    private static final String CODE_SALES_DISTRIBUTION="SALES_DISTRIBUTION_TAGGING";
+    private static final String CODE_SALES_DISTRIBUTION = "SALES_DISTRIBUTION_TAGGING";
     public boolean IS_PRODUCT_DISTRIBUTION;
-    public String PRD_DISTRIBUTION_TYPE="";
+    public String PRD_DISTRIBUTION_TYPE = "";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1857,6 +1866,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
@@ -2065,8 +2075,12 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
-        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
+        this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
+        this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
+        this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
+
+        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1)
@@ -2086,7 +2100,7 @@ public class ConfigurationMasterHelper {
 
         if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION) != null) {
             if (hashMapHHTModuleConfig.get(CODE_SALES_DISTRIBUTION)) {
-                IS_PRODUCT_DISTRIBUTION=true;
+                IS_PRODUCT_DISTRIBUTION = true;
                 loadProductDistributionConfig();
 
             }
@@ -2148,9 +2162,7 @@ public class ConfigurationMasterHelper {
             db.closeDB();
         }
         return IS_ATTRIBUTE_MENU;
-
     }
-
 
     /**
      * This method will downlaod the Menu configured for this particular channel
@@ -2830,11 +2842,11 @@ public class ConfigurationMasterHelper {
 
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode="+bmodel.QT(CODE_SALES_DISTRIBUTION)+" and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SALES_DISTRIBUTION) + " and Flag=1";
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
-                  this.PRD_DISTRIBUTION_TYPE=c.getString(0);
+                    this.PRD_DISTRIBUTION_TYPE = c.getString(0);
                 }
                 c.close();
             }

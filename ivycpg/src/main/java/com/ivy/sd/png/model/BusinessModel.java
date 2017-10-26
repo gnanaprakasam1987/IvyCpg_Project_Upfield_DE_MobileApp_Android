@@ -232,6 +232,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -437,6 +438,8 @@ public class BusinessModel extends Application {
     public String latlongImageFileName;
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
+    public Timer orderTimer;
+
 
     public BusinessModel() {
 
@@ -876,7 +879,6 @@ public class BusinessModel extends Application {
         }
         return listName;
     }
-
 
 
     @Override
@@ -1502,7 +1504,8 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId" : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
@@ -1628,7 +1631,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-
+                    retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -2830,7 +2833,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -2896,6 +2899,7 @@ public class BusinessModel extends Application {
 
             }
             sb.append("," + getRetailerMasterBO().getDistributorId());
+            sb.append("," + getRetailerMasterBO().getDistParentId());
             sb.append("," + supplierBO.getSupplierType());
             sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
             sb.append("," + getRetailerMasterBO().getCreditDays());
@@ -3640,9 +3644,7 @@ public class BusinessModel extends Application {
                     + " where orderId="
                     + QT(orderID) + " order by rowid";
 
-			/*
-             * if (!canIncludeFreeProduct) { sql1 += " AND isFreeProduct = 0"; }
-			 */
+
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 String productId = "";
@@ -3705,9 +3707,11 @@ public class BusinessModel extends Application {
                     }
                     // }
 
+
                 }
             }
             orderDetailCursor.close();
+
             if (configurationMasterHelper.SHOW_PRODUCTRETURN
                     && configurationMasterHelper.IS_SIH_VALIDATION) {
                 String str = "SELECT Pid,LiableQty,ReturnQty,TypeID FROM "
@@ -4090,9 +4094,31 @@ public class BusinessModel extends Application {
                 }
                 productHelper.getProductMaster().setElementAt(product, i);
 
-                // Logs.exception("INVOICE",
-                // "product.getSchemeProducts().size : " +
-                // product.getSchemeProducts().size());
+                return;
+            }
+        }
+        return;
+    }
+
+    private void setProductDetails(String productid, int pieceqty, int caseqty,
+                                   int outerQty) {
+        ProductMasterBO product;
+        int siz = productHelper.getProductMaster().size();
+        if (siz == 0)
+            return;
+
+        if (productid == null)
+            return;
+
+        for (int i = 0; i < siz; ++i) {
+            product = productHelper.getProductMaster().get(i);
+
+            if (product.getProductID().equals(productid)) {
+                product.setOrderedPcsQty(pieceqty);
+                product.setOrderedCaseQty(caseqty);
+                product.setOrderedOuterQty(outerQty);
+
+                productHelper.getProductMaster().setElementAt(product, i);
 
                 return;
             }
@@ -4944,6 +4970,15 @@ public class BusinessModel extends Application {
                     }
                 }
                 c.close();
+            } else {
+                c = db
+                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                    }
+                }
+                c.close();
             }
             db.closeDB();
 
@@ -4965,18 +5000,6 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-
-            if (isAmazonUpload) {
-                Cursor c = db
-                        .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
-                    }
-                }
-                c.close();
-                c = null;
-            }
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
@@ -6413,7 +6436,7 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                double achieved = (((double) sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
@@ -6657,6 +6680,11 @@ public class BusinessModel extends Application {
                         false);
             }
 
+            if (configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
+                db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+                        false);
+            }
+
             String timeStampid = "";
             int flag = 0; // flag for joint call
             int isVansales = 1;
@@ -6805,7 +6833,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -6866,6 +6894,8 @@ public class BusinessModel extends Application {
                     + indicativeFlag
                     + ","
                     + getRetailerMasterBO().getDistributorId()
+                    + ","
+                    + getRetailerMasterBO().getDistParentId()
                     + ","
                     + supplierBO.getSupplierType() + "," + isVansales
                     + "," + QT(getOrderHeaderBO().getSignaturePath())
@@ -8260,7 +8290,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public void isModuleDone() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -8429,7 +8458,7 @@ public class BusinessModel extends Application {
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
-                            + getRetailerMasterBO().getRetailerID()+
+                            + getRetailerMasterBO().getRetailerID() +
                             " and SMA.menucode='MENU_SURVEY'" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
@@ -8461,7 +8490,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -8521,9 +8550,9 @@ public class BusinessModel extends Application {
             int count = 0;
             Cursor c = db
                     .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
-                            +" INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +" INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
-                            +" where menuCode in('MENU_SURVEY') group by AH.retailerid");
+                            + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
+                            + " where menuCode in('MENU_SURVEY') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
@@ -8731,10 +8760,10 @@ public class BusinessModel extends Application {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             if (configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE) {
-                sb.append("select did,dname,type,0 from DistributorMaster ");
+                sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -8750,6 +8779,7 @@ public class BusinessModel extends Application {
                         supplierMasterBO.setSupplierType(0);
                     }
                     supplierMasterBO.setIsPrimary(c.getInt(3));
+                    supplierMasterBO.setDistParentID(c.getInt(4));
                     mSupplierList.add(supplierMasterBO);
                 }
             }
@@ -11328,6 +11358,81 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
 
             Commons.printException(ex);
+        }
+    }
+
+
+    public void insertTempOrder() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            int siz = productHelper.getProductMaster().size();
+
+            db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+                    false);
+
+            String columns = "RetailerID,ProductID,pieceqty,caseQty,outerQty";
+
+            for (int i = 0; i < siz; ++i) {
+                ProductMasterBO product = productHelper
+                        .getProductMaster().get(i);
+                if (product.getOrderedCaseQty() > 0
+                        || product.getOrderedPcsQty() > 0
+                        || product.getOrderedOuterQty() > 0) {
+
+                    String values = QT(getRetailerMasterBO().getRetailerID())
+                            + ","
+                            + QT(product.getProductID())
+                            + ","
+                            + product.getOrderedPcsQty()
+                            + ","
+                            + product.getOrderedCaseQty()
+                            + ","
+                            + product.getOrderedOuterQty();
+
+
+                    db.insertSQL("TempOrderDetail", columns, values);
+                }
+            }
+        } catch (Exception ex) {
+
+            Commons.printException(ex);
+        }
+    }
+
+
+    public void loadTempOrderDetails(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql2 = "select productId,pieceqty,caseQty,outerQty from TempOrderDetail "
+                    + " where RetailerID="
+                    + QT(getRetailerMasterBO().getRetailerID()) + " order by rowid";
+
+            Cursor tOrderDetailCursor = db.selectSQL(sql2);
+
+            if (tOrderDetailCursor != null) {
+                while (tOrderDetailCursor.moveToNext()) {
+
+                    String productId = tOrderDetailCursor.getString(0);
+                    int pieceqty = tOrderDetailCursor.getInt(1);
+                    int caseqty = tOrderDetailCursor.getInt(2);
+                    int outerQty = tOrderDetailCursor.getInt(3);
+
+                    setProductDetails(productId, pieceqty, caseqty,
+                            outerQty);
+
+                }
+            }
+            tOrderDetailCursor.close();
+
+        }catch (Exception e){
+            Commons.printException(e);
         }
     }
 }

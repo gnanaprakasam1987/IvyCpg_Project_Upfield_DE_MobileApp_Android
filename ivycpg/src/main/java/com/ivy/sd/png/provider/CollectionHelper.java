@@ -352,7 +352,7 @@ public class CollectionHelper {
                                 + bmodel.QT(paymentBO.getChequeDate()) + ","
                                 + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                 + bmodel.QT(payTypeID) + "," + bmodel.QT(paymentBO.getImageName()) + "," + (groupID) + "," + listid + ",0"
-                                + "," + bmodel.getRetailerMasterBO().getDistributorId() + ",''"
+                                + "," + bmodel.getRetailerMasterBO().getDistributorId()+ "," + bmodel.getRetailerMasterBO().getDistParentId() + ",''"
                                 + "," + bmodel.QT(groupDate) + ",0,0";
 
                         db.insertSQL(DataMembers.tbl_Payment, columns, values);
@@ -945,7 +945,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,ReceiptNo,datetime,refid,refno,PrintFilePath";
+            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath";
             double calculateCredit = 0;
             String groupID;
 
@@ -1104,6 +1104,7 @@ public class CollectionHelper {
                         + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
                         .toPlainString())
                         + "," + bmodel.getRetailerMasterBO().getDistributorId()
+                        + "," + bmodel.getRetailerMasterBO().getDistParentId()
                         + "," + bmodel.QT(receiptno)
                         + "," + bmodel.QT(groupDate) + ",0,0"
                         + "," + bmodel.QT(printFilePath);
@@ -1223,6 +1224,7 @@ public class CollectionHelper {
                 + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
                 .toPlainString())
                 + "," + bmodel.getRetailerMasterBO().getDistributorId()
+                + "," + bmodel.getRetailerMasterBO().getDistParentId()
                 + "," + bmodel.QT(receiptno)
                 + "," + bmodel.QT(groupDate) + "," + creditNoteListBO.getRefid() + "," + bmodel.QT(creditNoteListBO.getId())
                 + "," + bmodel.QT(printFilePath);

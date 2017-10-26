@@ -787,5 +787,10 @@
             <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9b1eac89f0eeff5747964654e134359f51160fde" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.CatalogImagesDownlaod"
+            android:screenOrientation="portrait"/>
     </application>
+
 </manifest>
