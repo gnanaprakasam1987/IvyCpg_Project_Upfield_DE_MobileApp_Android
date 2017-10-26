@@ -834,7 +834,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.soTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.ME
+                        ((TextView) findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM
                         ));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.soTitle).getTag()) != null)
