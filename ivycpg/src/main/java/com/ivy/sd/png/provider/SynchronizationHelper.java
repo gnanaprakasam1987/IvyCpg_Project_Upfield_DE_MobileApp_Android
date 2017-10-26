@@ -3046,16 +3046,7 @@ SynchronizationHelper {
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            // For POST only - START
-          /*  Uri.Builder builder = new Uri.Builder()
-                    .appendQueryParameter(USER_IDENTITY, null);
-            String query = builder.build().getEncodedQuery();
 
-            OutputStream os = con.getOutputStream();
-            os.write(query.getBytes());
-            os.flush();
-            os.close();*/
-            // For POST only - END
 
 
             int responseCode = con.getResponseCode();
@@ -3071,17 +3062,14 @@ SynchronizationHelper {
                 }
                 in.close();
 
-                // security token key updated
 
-
-                // return response.toString();
             } else {
                 Commons.print("POST request not worked");
             }
 
 
 
-            // Commons.print("UTCDate Response " + jsonObject.toString());
+
             JSONObject jsonObject=new JSONObject(response.toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 

@@ -4464,8 +4464,8 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public static enum FontType {
-        LIGHT, REGULAR, MEDIUM, BOLD, THIN
+    public enum FontType {
+        LIGHT, MEDIUM, THIN,REGULAR
     }
 
     private Typeface mFontBaloobhaiRegular;
@@ -4482,9 +4482,7 @@ public class ConfigurationMasterHelper {
     }
 
     private Typeface mFontRobotoLight;
-    private Typeface mFontRobotoRegular;
     private Typeface mFontRobotoMedium;
-    private Typeface mFontRobotoBold;
     private Typeface mFontRobotoThin;
 
     public Typeface getFontRoboto(FontType mFontType) {
@@ -4502,7 +4500,7 @@ public class ConfigurationMasterHelper {
             return mFontRobotoThin;
         }
 
-        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Regular.ttf");
+        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
     public Typeface getProductNameFont() {
