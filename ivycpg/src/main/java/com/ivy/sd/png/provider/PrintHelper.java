@@ -2841,10 +2841,8 @@ public class PrintHelper {
      * When save invoice print file created and stored in mobile
      * this method will be deleted print file while downloading
      */
-    public void deletePrintFileAfterDownload(){
-        File folder = new File(
-                mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        + "/"+DataMembers.PRINT_FILE_PATH+"/");
+    public void deletePrintFileAfterDownload(String path){
+        File folder = new File(path);
 
         File sfFiles[] = folder.listFiles();
         for (int i = 0; i < sfFiles.length; i++) {

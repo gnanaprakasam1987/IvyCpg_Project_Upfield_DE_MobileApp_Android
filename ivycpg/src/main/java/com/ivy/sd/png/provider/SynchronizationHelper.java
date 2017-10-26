@@ -4550,7 +4550,8 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
             bmodel.synchronizationHelper.setEncryptType();
 
-        bmodel.printHelper.deletePrintFileAfterDownload();
+        bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/"+DataMembers.PRINT_FILE_PATH+"/");
     }
 
     /**
