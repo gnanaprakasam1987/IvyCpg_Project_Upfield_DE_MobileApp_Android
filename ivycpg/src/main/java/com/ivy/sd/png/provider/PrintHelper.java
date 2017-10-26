@@ -2848,11 +2848,9 @@ public class PrintHelper {
 
         File sfFiles[] = folder.listFiles();
         for (int i = 0; i < sfFiles.length; i++) {
-            String filename = sfFiles[i].getName();
-            if(filename.startsWith(DataMembers.PRINT_FILE_START)) {
-                File deleteFile = new File(folder, "/" + sfFiles[i].getName());
+            File deleteFile = new File(folder, "/" + sfFiles[i].getName());
                 deleteFile.delete();
-            }
+
         }
     }
 }

@@ -10809,7 +10809,7 @@ public class BusinessModel extends Application {
     }
 
     public void readBuilder(String fileName){
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/PrintFile/";
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+DataMembers.PRINT_FILE_PATH+"/";
         File file = new File(path+fileName);
         StringBuilder sb=new StringBuilder();
         BufferedReader br = null;
