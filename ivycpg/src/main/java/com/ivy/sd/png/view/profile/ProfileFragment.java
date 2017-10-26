@@ -418,7 +418,8 @@ public class ProfileFragment extends Fragment {
                             + "/"
                             + DataMembers.PROFILE + "/"
                             + path);
-                    if (bmodel.isDigitalContentAvailable() && !imgFile.exists()) {
+                    if (imgFile.exists()) {
+                        bmodel.getimageDownloadURL();
                         bmodel.configurationMasterHelper.setAmazonS3Credentials();
                         initializeTransferUtility();
                         HashMap<String, String> hashMap = new HashMap<>();

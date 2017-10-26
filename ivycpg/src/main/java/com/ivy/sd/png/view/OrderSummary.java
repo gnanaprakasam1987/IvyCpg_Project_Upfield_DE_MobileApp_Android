@@ -1251,6 +1251,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     @Override
     protected Dialog onCreateDialog(int id) {
+        String msg = "";
+        String delivery_date_txt = "";
         switch (id) {
             case DATE_DIALOG_ID:
                 Calendar c = Calendar.getInstance();
@@ -1329,6 +1331,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
 
             case 2:
+                delivery_date_txt = delievery_date.getText().toString();
+                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) { // if
+                    // seller
+                    // dialog
+                    // enable
+                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        delivery_date_txt = "";
+                    }
+                } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
+                    delivery_date_txt = "";
+                }
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -1480,10 +1493,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         }
                                     }
                                 });
+                if (!delivery_date_txt.equals("")) {
+                    builder1.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
+                }
                 bmodel.applyAlertDialogTheme(builder1);
                 break;
 
             case 3:
+                delivery_date_txt = delievery_date.getText().toString();
+                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) { // if
+                    // seller
+                    // dialog
+                    // enable
+                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        delivery_date_txt = "";
+                    }
+                } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
+                    delivery_date_txt = "";
+                }
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -1526,6 +1553,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         }
                                     }
                                 });
+                if (!delivery_date_txt.equals("")) {
+                    builder2.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
+                }
                 bmodel.applyAlertDialogTheme(builder2);
                 break;
 
@@ -2109,6 +2139,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
                     if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
@@ -2192,9 +2224,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE && shortListOrder != null)
                 bmodel.productHelper.setShortProductMaster(shortListOrder);
             fromorder = false;
+
             if (!isClick) {
                 isClick = true;
-
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
                 if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && !bmodel.isStockAvailableToDeliver(mOrderedProductList)) {
                     Toast.makeText(
                             this,

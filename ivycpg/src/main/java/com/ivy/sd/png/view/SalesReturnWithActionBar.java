@@ -674,7 +674,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         } else {
             for (LevelBO levelBO : parentidList) {
                 for (ProductMasterBO productBO : items) {
-                    if (levelBO.getProductID() == productBO.getParentid() && ret.getIsSaleable() == 1) {
+                    if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
                         mylist.add(productBO);
                         fiveFilter_productIDs.add(productBO.getProductID());
                     }

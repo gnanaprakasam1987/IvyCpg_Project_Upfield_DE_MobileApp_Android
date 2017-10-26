@@ -547,7 +547,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
                 isMapview = true;
                 retailerLng = retailerObj.getLongitude();
-            }else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+            }else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
                 isNonVisitReason = true;
             }
         }
@@ -1432,6 +1432,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     SupplierMasterBO supplierBo = mSupplierAdapter
                                             .getItem(which);
                                     bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                    bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
                                     bmodel.updateGroupIdForRetailer();
 
                                     dialog.dismiss();

@@ -83,6 +83,7 @@ public class CommonPrintHelper {
     private static String TAG_RETAILER_TIN_NUMBER = "ret_tin";
     private static String TAG_RETAILER_CST_NUMBER = "ret_cst";
     private static String TAG_RETAILER_GST_NUMBER = "ret_gst_no";
+    private static String TAG_RETAILER_ROUTE = "ret_route";
 
     private static String TAG_SELLER_NAME = "seller_name";
     private static String TAG_SELLER_ID = "seller_id";
@@ -103,6 +104,8 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_LINE_VALUE = "prod_line_value";
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
     private static String TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX = "prod_line_value_incl_tax";
+
+    private static String TAG_PRODUCT_BASE_UOM = "prod_base_uom";
 
     private int mProductCaseQtyTotal;
     private int mProductPieceQtyTotal;
@@ -136,6 +139,8 @@ public class CommonPrintHelper {
 
     private static String TAG_NET_PAYABLE_IN_WORDS = "amount_word";
 
+    private static String TAG_NET_SCHEME_DISCOUNT = "net_scheme_discount";
+
     private static String TAG_KEY1 = "key1";
     private static String TAG_KEY2 = "key2";
 
@@ -152,6 +157,7 @@ public class CommonPrintHelper {
     public int width_image = 100;
     public int height_image = 100;
     private double mSchemeValueByAmountType=0;
+    private double netSchemeAmount=0;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
@@ -594,6 +600,13 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_ORDER_NUMBER)) {
             value = label + bmodel.getOrderid().replaceAll("\'", "");
         }
+        else if (tag.equalsIgnoreCase(TAG_RETAILER_ROUTE)) {
+            value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
+        }
+        else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
+            value = label + formatValueInPrint(netSchemeAmount,precisionCount);
+        }
+
 
         return value;
     }
@@ -743,6 +756,8 @@ public class CommonPrintHelper {
                             + (prod.getOrderedPcsQty()
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_BASE_UOM)) {
+                    mProductValue = prod.getDescription();
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1112,6 +1127,8 @@ public class CommonPrintHelper {
 
                         schemeValue = mBuyProdDiscountedValue;
                     }
+                    netSchemeAmount+=schemeValue;
+
                     if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";

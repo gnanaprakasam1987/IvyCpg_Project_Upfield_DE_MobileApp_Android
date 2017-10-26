@@ -15,6 +15,7 @@ import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.StringInputStream;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -38,6 +39,7 @@ import com.ivy.lib.existing.HttpRequest;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -75,6 +77,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1389,13 +1392,12 @@ SynchronizationHelper {
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
 
-                int  insert=VOLLEY_DOWNLOAD_INSERT;
+                int insert = VOLLEY_DOWNLOAD_INSERT;
                 if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD) {
                     json.put("IsRetailer", 1);
-                }
-                else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
+                } else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
                     json.put("IsDistributor", 1);
-                    insert=DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
+                    insert = DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
 
                 }
 
@@ -4736,4 +4738,118 @@ SynchronizationHelper {
         return check;
     }
 
+    public void insertImageDetails(List<S3ObjectSummary> filesList) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String columns = "Key,lastModified";
+
+            for (int i = 0; i < filesList.size(); i++) {
+
+                String values = bmodel.QT(filesList.get(i).getKey())
+                        + ","
+                        + bmodel.QT(filesList.get(i).getLastModified() + "");
+
+                db.insertSQL("CatalogImagesDetails", columns, values);
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("insertImageDetails" + e);
+        }
+    }
+
+    public List<S3ObjectSummary> getImageDetails() {
+        List<S3ObjectSummary> filesList = new ArrayList<>();
+        S3ObjectSummary fileData;
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT * from CatalogImagesDetails");
+
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    fileData = new S3ObjectSummary();
+                    fileData.setKey(c.getString(c.getColumnIndex("Key")));
+                    fileData.setETag(c.getString(c.getColumnIndex("lastModified")));
+                    filesList.add(fileData);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error catalog images list", e);
+        }
+        return filesList;
+    }
+
+    public void updateImageDetails(List<S3ObjectSummary> filesList) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String columns = "Key,lastModified";
+
+            for (S3ObjectSummary s3ObjectSummary : filesList) {
+                db.deleteSQL("CatalogImagesDetails", "Key=" + bmodel.QT(s3ObjectSummary.getKey()), false);
+            }
+
+            for (int i = 0; i < filesList.size(); i++) {
+
+                String values = bmodel.QT(filesList.get(i).getKey())
+                        + ","
+                        + bmodel.QT(filesList.get(i).getLastModified() + "");
+
+                db.insertSQL("CatalogImagesDetails", columns, values);
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("insertImageDetails" + e);
+        }
+    }
+
+    public void deleteImageDetails(List<S3ObjectSummary> filesList) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            for (S3ObjectSummary s3ObjectSummary : filesList) {
+                db.deleteSQL("CatalogImagesDetails", "Key=" + s3ObjectSummary.getKey(), false);
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("deleteImageDetails" + e);
+        }
+    }
+
+    public int getCatalogImagesCount() {
+        DBUtil db = null;
+        int count = 0;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+
+            Cursor c = db
+                    .selectSQL("select COUNT(Key) from CatalogImagesDetails");
+            if (c != null) {
+                if (c.moveToFirst())
+                    count = c.getInt(0);
+            }
+            Commons.print("Count of getImagesCount ," + count + "");
+            c.close();
+            db.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return count;
+    }
 }
