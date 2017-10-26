@@ -239,6 +239,9 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             double totalLines = 0;
             int totalAllQty = 0;
             if(bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON){
+                // All products not need to load.only invoice products loaded from
+                // sqlite and stored in object.Because invoice print file saved in sdcard
+                // we can show other details using the text file
                 mProductsForAdapter=bmodel.reportHelper.getReportDetails(minvoiceid);
             }else {
                 for (ProductMasterBO productBO : mProducts) {
@@ -344,104 +347,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
         }
     }
 
-    int pos;
 
-    // class MyAdapter extends ArrayAdapter<ProductMasterBO> {
-    // Vector<ProductMasterBO> items;
-    // SchemeProductBO schemebo;
-    //
-    // MyAdapter(Vector<ProductMasterBO> items) {
-    // super(InvoiceReportDetail.this, R.layout.row_invoice_report_detail,
-    // items);
-    // this.items = items;
-    // }
-    //
-    // public View getView(int position, View convertView, ViewGroup parent) {
-    // final ViewHolder holder;
-    // pos = position;
-    // bmodel = (BusinessModel) getApplicationContext();
-    //
-    // bmodel.setContext(InvoiceReportDetail.this);
-    // ProductMasterBO orderreport = (ProductMasterBO) items.get(pos);
-    // View row = convertView;
-    // bmodel = (BusinessModel) getApplicationContext();
-    //
-    // if (row == null) {
-    // LayoutInflater inflater = getLayoutInflater();
-    // row = inflater.inflate(R.layout.row_invoice_report_detail,
-    // parent, false);
-    // holder = new ViewHolder();
-    // holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME);
-    //
-    // holder.tvwval = (TextView) row.findViewById(R.id.PRDQTY);
-    // holder.tvwqty = (TextView) row.findViewById(R.id.PRDPCSQTY);
-    // holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDVAL);
-    // holder.outerQty = (TextView) row
-    // .findViewById(R.id.outerCaseQty);
-    // holder.psname = (TextView) row.findViewById(R.id.pname);
-    // holder.scaseqty = (TextView) row.findViewById(R.id.caseqty);
-    // holder.spcsqty = (TextView) row.findViewById(R.id.pcsqty);
-    // holder.souterqty = (TextView) row.findViewById(R.id.outerqty);
-    // holder.stotal = (TextView) row.findViewById(R.id.total);
-    //
-    // try {
-    // if (bmodel.labelsMasterHelper.applyLabels(holder.tvwqty
-    // .getTag()) != null)
-    // holder.tvwqty.setText(bmodel.labelsMasterHelper
-    // .applyLabels(holder.tvwqty.getTag()));
-    //
-    // if (bmodel.labelsMasterHelper.applyLabels(holder.tvcaseqty
-    // .getTag()) != null)
-    // holder.tvcaseqty.setText(bmodel.labelsMasterHelper
-    // .applyLabels(holder.tvcaseqty.getTag()));
-    // } catch (Exception e) {
-    // Commons.printException(e);
-    // }
-    // /** hide Pcs,Case,outer **/
-    // if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-    // holder.tvcaseqty.setVisibility(View.GONE);
-    // if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-    // holder.tvwqty.setVisibility(View.GONE);
-    // if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-    // holder.outerQty.setVisibility(View.GONE);
-    //
-    // row.setOnClickListener(new OnClickListener() {
-    // public void onClick(View v) {
-    // productName.setText(holder.productName);
-    //
-    // }
-    // });
-    //
-    // row.setTag(holder);
-    // } else {
-    // holder = (ViewHolder) row.getTag();
-    // }
-    //
-    // holder.tvwpsname.setText(orderreport.getProductShortName());
-    // holder.productName = orderreport.getProductName();
-    // holder.tvcaseqty.setText(orderreport.getOrderedCaseQty() + "");
-    // holder.tvwqty.setText(orderreport.getOrderedPcsQty() + "");
-    // holder.tvwval.setText(bmodel.formatValue(orderreport
-    // .getTotalamount()));
-    // holder.outerQty.setText(orderreport.getOrderedOuterQty() + "");
-    // if (orderreport.getIsscheme() == 1
-    // && orderreport.getSchemeProducts() != null) {
-    //
-    // int size = orderreport.getSchemeProducts().size();
-    // Commons.print("scheme products not null=" + size);
-    // for (int i = 0; i < size; i++) {
-    // schemebo = orderreport.getSchemeProducts().get(i);
-    // holder.psname.setText(schemebo.getProductName());
-    // holder.productName = schemebo.getProductFullName();
-    // holder.scaseqty.setText("0");
-    // holder.spcsqty.setText(schemebo.getQuantitySelected() + "");
-    // holder.stotal.setText("0");
-    // holder.souterqty.setText("0");
-    // }
-    // }
-    // return (row);
-    // }
-    // }
 
     @Override
     public void onClick(View comp) {
@@ -495,25 +401,8 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
                 showDialog(2);
             } else if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                     || bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
-               /* SalesReturnHelper.getInstance(this).clearSalesReturnTable();
-                bmodel.productHelper.updateSalesReturnInfoInProductObj(null, bmodel.invoiceNumber, false);
-                bmodel.productHelper.updateDistributorDetails();
-                if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-                    bmodel.productHelper.downloadBillwiseDiscount();
-                    bmodel.productHelper.loadBillwiseDiscount(bmodel.invoiceNumber);
-                }
-                if (bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                    bmodel.productHelper.downloadTaxDetails();*/
-
-
-                //bmodel.mCommonPrintHelper.xmlRead("print_z320_invoice_best_one.xml",true,bmodel.productHelper.getProductMaster(),null);
-
-
-                     bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
-
-              /*  else {
-                    bmodel.mCommonPrintHelper.xmlRead("invoice", false, bmodel.productHelper.getProductMaster(), null);
-                }*/
+                // Print file already saved.so not need to reload the object.we can get the object from print text file
+                bmodel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
                 intent.setClass(InvoiceReportDetail.this,
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);

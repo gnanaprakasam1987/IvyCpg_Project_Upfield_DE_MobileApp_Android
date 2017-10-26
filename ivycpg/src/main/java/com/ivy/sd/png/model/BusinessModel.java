@@ -10808,51 +10808,11 @@ public class BusinessModel extends Application {
         }
     }
 
-    public void readBuilder(String fileName){
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+DataMembers.PRINT_FILE_PATH+"/";
-        File file = new File(path+fileName);
-        StringBuilder sb=new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(file));
-
-
-        String st;
-        while ((st = br.readLine()) != null) {
-            sb.append(st);
-            sb.append("\n");
-        }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-        mCommonPrintHelper.setInvoiceData(sb);
-
-    }
 
 
 
-   /* public StringBuilder readFile(String filename){
-        BufferedReader br=null;
-        try {
-            br = new BufferedReader(new FileReader(filename));
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
 
-            while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
-            }
-            String everything = sb.toString();
-            br.close();
-        } catch (Exception e){
-            Commons.print(e.getMessage());
-        }
-        return sb;*/
-   // }
+
 
     public void updateGroupIdForRetailer() {
 

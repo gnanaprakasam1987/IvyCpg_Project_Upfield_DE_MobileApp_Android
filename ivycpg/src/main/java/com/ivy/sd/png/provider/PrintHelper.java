@@ -2852,5 +2852,6 @@ public class PrintHelper {
                 deleteFile.delete();
 
         }
+        folder.delete();
     }
 }
