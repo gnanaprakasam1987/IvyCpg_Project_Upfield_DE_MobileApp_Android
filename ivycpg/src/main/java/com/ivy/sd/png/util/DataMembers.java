@@ -21,7 +21,7 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    public static String SERVER_URL = "http://192.168.1.155/IvyCPG/IvyCPG_Sync/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_webapi/api";
     // public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
 //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
@@ -611,6 +611,11 @@ public class DataMembers {
 
     private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
     private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
+
+    // print file
+    public static final String IVYDIST_PATH="IvyDist";
+    public static final String PRINT_FILE_PATH="PrintFile";
+    public static final String PRINT_FILE_START="PF_INV";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 

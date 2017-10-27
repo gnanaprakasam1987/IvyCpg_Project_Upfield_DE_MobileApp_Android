@@ -319,7 +319,18 @@ SynchronizationHelper {
                         return fileName.endsWith(".jpg");
                     }
                 });
-                imageSize = files.length;
+
+                    File printfiles[] = f.listFiles(new FilenameFilter() {
+                        public boolean accept(File directory, String fileName) {
+
+                            return fileName.startsWith("PF");
+                        }
+                    });
+
+                if(bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                imageSize = files.length+printfiles.length;
+                else
+                    imageSize=files.length;
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -4564,6 +4575,9 @@ SynchronizationHelper {
             bmodel.downloadChatCredentials();
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
             bmodel.synchronizationHelper.setEncryptType();
+
+        bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/"+DataMembers.PRINT_FILE_PATH+"/");
     }
 
     /**
@@ -4577,8 +4591,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!isDistributorDownloadDone && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
-            isDistributorDownloadDone = true;
+        } else if (!isDistributorDownloadDone) {
+            isDistributorDownloadDone=true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

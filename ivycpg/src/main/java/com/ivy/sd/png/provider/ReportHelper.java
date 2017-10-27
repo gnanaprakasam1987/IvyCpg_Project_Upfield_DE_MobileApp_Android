@@ -30,6 +30,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
 import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.TaskReportBo;
@@ -52,6 +53,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 import static com.ivy.sd.png.asean.view.R.string.pm;
+import static com.ivy.sd.png.asean.view.R.string.sc;
 
 public class ReportHelper {
 
@@ -3014,5 +3016,81 @@ public class ReportHelper {
         }
 
         return lst;
+    }
+
+    /**
+     * Method to retrieve transaction invoice details from invoicedetails table
+     * @param invoiceno to fetch selected invoiceno from detail table
+     * @return ArryList<ProductmasterBO> retrieve productmasterlist to show in ui
+     */
+    public ArrayList<ProductMasterBO> getReportDetails(String invoiceno){
+        ArrayList<ProductMasterBO> reportList=new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb=new StringBuilder();
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalamount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("inner join productmaster PM on ID.productid=PM.pid ");
+        sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
+        sb.append(" where invoiceid="+bmodel.QT(invoiceno));
+        Cursor c=db.selectSQL(sb.toString());
+        if(c!=null){
+            ProductMasterBO productMasterBO;
+            while (c.moveToNext()){
+                productMasterBO=new ProductMasterBO();
+                productMasterBO.setProductShortName(c.getString(0));
+                productMasterBO.setProductID(c.getString(1));
+                productMasterBO.setOrderedPcsQty(c.getInt(2));
+                productMasterBO.setOrderedCaseQty(c.getInt(3));
+                productMasterBO.setOrderedOuterQty(c.getInt(4));
+                productMasterBO.setTotalamount(c.getDouble(5));
+                productMasterBO.setBatchNo(c.getString(6));
+                productMasterBO.setWeight(c.getInt(7));
+                productMasterBO.setTotalQty(c.getInt(8));
+                reportList.add(productMasterBO);
+
+            }
+        }
+        c.close();
+        db.closeDB();
+        return reportList;
+    }
+
+    /**
+     * if free product available for selected invoice,this method use to retrieve data from
+     * scheme detail table and display in invoice detai report screen
+     * @param invoiceno  - selected invoice
+     * @return - free product list
+     */
+    public ArrayList<SchemeProductBO> getSchemeProductDetails(String invoiceno){
+        ArrayList<SchemeProductBO> freeProductList=new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb=new StringBuilder();
+        sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
+        sb.append("CASE WHEN uomid= PM.dUomid THEN "+bmodel.QT("CASE"));
+        sb.append(" WHEN uomid=PM.dOUomid THEN "+bmodel.QT("OUTER")+" ELSE "+bmodel.QT("PIECE")+" END AS you ");
+        sb.append("from SchemeFreeProductDetail SFP ");
+        sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
+        sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
+        sb.append("where invoiceid="+bmodel.QT(invoiceno));
+        Cursor c=db.selectSQL(sb.toString());
+        if(c!=null){
+            SchemeProductBO schemeProductBO;
+            while (c.moveToNext()){
+                schemeProductBO=new SchemeProductBO();
+                schemeProductBO.setProductName(c.getString(0));
+                schemeProductBO.setProductId(c.getString(1));
+                schemeProductBO.setQuantitySelected(c.getInt(2));
+                schemeProductBO.setBatchId(c.getString(3));
+                schemeProductBO.setUomDescription(c.getString(4));
+                freeProductList.add(schemeProductBO);
+
+            }
+        }
+        c.close();
+        db.closeDB();
+        return freeProductList;
     }
 }

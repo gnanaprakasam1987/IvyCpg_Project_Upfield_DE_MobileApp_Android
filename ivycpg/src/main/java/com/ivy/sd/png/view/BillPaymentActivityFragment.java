@@ -485,7 +485,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(appendString));
             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bmodel.writeToFile(appendString,
-                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""));
+                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""),"/IvyDist/");
             }
             return "";
         }

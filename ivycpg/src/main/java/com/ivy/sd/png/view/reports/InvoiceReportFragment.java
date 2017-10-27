@@ -175,18 +175,6 @@ public class InvoiceReportFragment extends Fragment implements
             Commons.printException(e);
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
-          //  view.findViewById(R.id.txtweight).setVisibility(View.VISIBLE);
-        }
-
-        if(!bmodel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT) {
-            //view.findViewById(R.id.txtpriceoff).setVisibility(View.VISIBLE);
-        }
-        if(!bmodel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
-           // view.findViewById(R.id.txttax).setVisibility(View.VISIBLE);
-        }
-
-
         return view;
     }
 
@@ -492,38 +480,46 @@ public class InvoiceReportFragment extends Fragment implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                downloadRetailerMaster(retailerid);
-                //bmodel.productHelper.downloadProductFilter("");
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
-                else bmodel.productHelper.downloadProducts("MENU_STK_ORD");
+                if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+                    InvoiceReportBO inv =  mylist.get(params[0]);
+                    totalamount = inv.getInvoiceAmount();
+                    bmodel.setOrderid(inv.getOrderID());
+                    minvoiceid = inv.getInvoiceNumber();
+                }else{
+                    downloadRetailerMaster(retailerid);
+                    //bmodel.productHelper.downloadProductFilter("");
+                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                        bmodel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
+                    else bmodel.productHelper.downloadProducts("MENU_STK_ORD");
 
-                bmodel.schemeDetailsMasterHelper.downloadSchemeMethods();
-//			
-                InvoiceReportBO inv = (InvoiceReportBO) mylist.get(params[0]);
-                totalamount = inv.getInvoiceAmount();
-                bmodel.setInvoiceNumber(inv.getInvoiceNumber());
-                bmodel.loadInvoiceProducts(inv.getInvoiceNumber());
+                    bmodel.schemeDetailsMasterHelper.downloadSchemeMethods();
+//
+                    InvoiceReportBO inv = (InvoiceReportBO) mylist.get(params[0]);
+                    totalamount = inv.getInvoiceAmount();
+                    bmodel.setInvoiceNumber(inv.getInvoiceNumber());
+                    bmodel.loadInvoiceProducts(inv.getInvoiceNumber());
 
-                minvoiceid = inv.getInvoiceNumber();
-                bmodel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
-                bmodel.setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat)));
-                bmodel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
-                bmodel.batchAllocationHelper.downloadProductBatchCount();
-                if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
-                    bmodel.productHelper.downloadProductDiscountDetails();
-                    bmodel.productHelper.downloadDiscountIdListByTypeId();
+                    minvoiceid = inv.getInvoiceNumber();
+                    bmodel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
+                    bmodel.setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat)));
+                    bmodel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
+                    bmodel.batchAllocationHelper.downloadProductBatchCount();
+                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
+                        bmodel.productHelper.downloadProductDiscountDetails();
+                        bmodel.productHelper.downloadDiscountIdListByTypeId();
 
+                    }
+                    if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+                        bmodel.productHelper.downloadExcludeProductTaxDetails();
+                        bmodel.productHelper.updateProductWiseTax();
+                    }
+
+                    bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);
+
+
+                    bmodel.setOrderid(inv.getOrderID());
                 }
-                if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                    bmodel.productHelper.downloadExcludeProductTaxDetails();
-                    bmodel.productHelper.updateProductWiseTax();
-                }
 
-                bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);
-
-
-                bmodel.setOrderid(inv.getOrderID());
 
             } catch (Exception e) {
                 Commons.printException(e);
