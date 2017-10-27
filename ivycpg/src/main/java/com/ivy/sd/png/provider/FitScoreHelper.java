@@ -328,7 +328,8 @@ public class FitScoreHelper {
                             "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
                             "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
                             "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
-                            "inner join HHTModuleWeightage G on G.Module = F.ListCode WHERE G.Module = '" + Module + "'");
+                            "inner join HHTModuleWeightage G on G.Module = F.ListCode WHERE G.Module = '" + Module + "'" +
+                            " AND B.retailerid=" + retailerID);
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -367,10 +368,10 @@ public class FitScoreHelper {
             }
             Cursor c = db
                     .selectSQL("Select A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from PosmMaster A " +
-                    "inner join AssetDetail B on A.Posmid = B.AssetID " +
-                    "inner join AssetHeader C on C.Uid = B.UID " +
-                    "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
-                    "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
+                            "inner join AssetDetail B on A.Posmid = B.AssetID " +
+                            "inner join AssetHeader C on C.Uid = B.UID " +
+                            "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
+                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
 //            Cursor c = db
 //                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
 //                            "inner join AssetDetail B on A.Pid = B.ProductID " +
