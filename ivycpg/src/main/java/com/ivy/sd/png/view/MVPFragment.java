@@ -116,7 +116,7 @@ public class MVPFragment extends IvyBaseFragment {
         userName = (TextView) view.findViewById(R.id.tv_username);
         userName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         userDesignation = (TextView) view.findViewById(R.id.tv_designation);
-        userDesignation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        userDesignation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         return view;
     }
@@ -204,7 +204,7 @@ public class MVPFragment extends IvyBaseFragment {
                     ((TextView) view.findViewById(R.id.badge_count)).setText(strBadgeCount);
                 }
 
-                ((TextView) view.findViewById(R.id.badge_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) view.findViewById(R.id.badge_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tv_badge_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 String strBadgename = mvpbadge.getBadgeName() + "";

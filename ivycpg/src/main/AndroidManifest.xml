@@ -204,7 +204,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -215,7 +214,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -226,7 +224,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

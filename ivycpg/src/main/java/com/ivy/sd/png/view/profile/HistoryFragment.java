@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,8 +60,8 @@ public class HistoryFragment extends IvyBaseFragment {
         mavgOrderLines = (TextView) view.findViewById(R.id.avg_lines_val);
         mavgOrderValue = (TextView) view.findViewById(R.id.history_avg_val);
 
-        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mavgOrderLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         mavgOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
@@ -193,6 +194,12 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.invoice_qty_val.setText(projectObj.getRF3());
             holder.del_rep_code_val.setText(projectObj.getRF4());
 
+            if (projectObj.getDelieveryStatus().equalsIgnoreCase("Y")) {
+                holder.delieveryStatusValue.setVisibility(View.VISIBLE);
+            } else {
+                holder.delieveryStatusValue.setVisibility(View.GONE);
+            }
+
             try {
                 Calendar c = Calendar.getInstance();
                 c.setTime(sdf.parse(projectObj.getOrderdate()));
@@ -218,6 +225,7 @@ public class HistoryFragment extends IvyBaseFragment {
             private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt;
             private TextView orderId, date, totLines, totVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
+            ImageView delieveryStatusValue;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -250,6 +258,9 @@ public class HistoryFragment extends IvyBaseFragment {
                 invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
                 invoice_qty_layout = (LinearLayout) itemView.findViewById(R.id.invoice_qty_layout);
                 del_rep_code_layout = (LinearLayout) itemView.findViewById(R.id.del_rep_code_layout);
+
+                delieveryStatusValue = (ImageView) itemView.findViewById(R.id.deliveryStatusValue);
+
 
                 if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
                         && !bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
@@ -295,15 +306,15 @@ public class HistoryFragment extends IvyBaseFragment {
 
 
                 //typeface for label text
-                orderIdTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                dateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                orderIdTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                dateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                invoice_qty_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                del_rep_code_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                invoice_qty_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                del_rep_code_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 //typeface for value text font
@@ -311,7 +322,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 del_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

@@ -107,17 +107,17 @@ public class OrderReportFragment extends Fragment implements OnClickListener,
         lvwplist.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
 
-        lvwplist.setOnItemClickListener(this);
-        totalvaluetitle = (TextView) view.findViewById(R.id.totalvaluetitle);
-        lab_dist_pre_post = (TextView) view.findViewById(R.id.lab_dist_pre_post);
-        mlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        lab_dist_pre_post.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        mylist = bmodel.reportHelper.downloadOrderreport();
-        updateOrderGrid();
-        int avglinesorderbooking = bmodel.reportHelper
-                .getavglinesfororderbooking("OrderHeader");
-        if (bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+		lvwplist.setOnItemClickListener(this);
+		totalvaluetitle=(TextView) view.findViewById(R.id.totalvaluetitle);
+		lab_dist_pre_post=(TextView) view.findViewById(R.id.lab_dist_pre_post);
+        mlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		lab_dist_pre_post.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		mylist = bmodel.reportHelper.downloadOrderreport();
+		updateOrderGrid();
+		int avglinesorderbooking = bmodel.reportHelper
+				.getavglinesfororderbooking("OrderHeader");
+		if (bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
 
             double totoutlets = bmodel.reportHelper
                     .getorderbookingCount("OrderHeader");
@@ -156,12 +156,18 @@ public class OrderReportFragment extends Fragment implements OnClickListener,
             totalLines.setVisibility(View.GONE);
             view.findViewById(R.id.lbl_total_lines).setVisibility(View.GONE);
 
+		}
+		if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+			view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.VISIBLE);
+			view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.VISIBLE);
+			view.findViewById(R.id.dist).setVisibility(View.VISIBLE);
+
         }
         if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.dist).setVisibility(View.GONE);
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         }
@@ -191,12 +197,12 @@ public class OrderReportFragment extends Fragment implements OnClickListener,
         }
 
 
-        try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.outna).getTag()) != null)
-                ((TextView) view.findViewById(R.id.outna))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+		try {
+			if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+					R.id.outna).getTag()) != null)
+				((TextView) view.findViewById(R.id.outna))
+						.setText(bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -394,19 +400,19 @@ public class OrderReportFragment extends Fragment implements OnClickListener,
 
             }
 
-            holder.tvwrname.setText(orderreport.getretailerName());
-            holder.tvwrname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+			holder.tvwrname.setText(orderreport.getretailerName());
+            holder.tvwrname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.ordertxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvOrderNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvMustSellCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.weighttitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.tvoutid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.focusbrandlabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.mustselllabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvOrderNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvMustSellCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.weighttitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.tvoutid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.focusbrandlabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.mustselllabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {

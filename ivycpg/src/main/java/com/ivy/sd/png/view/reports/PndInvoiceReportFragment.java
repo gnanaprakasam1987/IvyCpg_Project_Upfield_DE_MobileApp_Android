@@ -82,7 +82,7 @@ public class PndInvoiceReportFragment extends Fragment {
         ArrayList<InvoiceHeaderBO> items;
 
         private MyAdapter(ArrayList<InvoiceHeaderBO> items) {
-            super(getActivity(), R.layout.row_invoice_report_new, items);
+            super(getActivity(), R.layout.row_pnd_invoice_report, items);
             this.items = items;
         }
 

@@ -98,12 +98,12 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         activityList = (ListView) view.findViewById(R.id.listView1);
         cName = (TextView) view.findViewById(R.id.counterName);
         retailerNameTxt = (TextView) view.findViewById(R.id.retailer_name);
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         cName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         activityList.setCacheColorHint(0);
         activityList.setDivider(null);
 
-        ((TextView) view.findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        ((TextView) view.findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         mActivityDoneCount = (TextView) view.findViewById(R.id.activity_done_count);
         mActivityTotalCount = (TextView) view.findViewById(R.id.activity_total_count);

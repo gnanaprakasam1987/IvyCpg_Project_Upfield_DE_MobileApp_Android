@@ -46,6 +46,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.github.mikephil.charting.utils.FileUtils;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -220,12 +221,14 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -240,6 +243,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -447,6 +451,8 @@ public class BusinessModel extends Application {
     public String latlongImageFileName;
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
+    public Timer orderTimer;
+
 
     public BusinessModel() {
 
@@ -886,6 +892,7 @@ public class BusinessModel extends Application {
         }
         return listName;
     }
+
 
 
     @Override
@@ -3712,9 +3719,7 @@ public class BusinessModel extends Application {
                     + " where orderId="
                     + QT(orderID) + " order by rowid";
 
-			/*
-             * if (!canIncludeFreeProduct) { sql1 += " AND isFreeProduct = 0"; }
-			 */
+
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 String productId = "";
@@ -3777,9 +3782,11 @@ public class BusinessModel extends Application {
                     }
                     // }
 
+
                 }
             }
             orderDetailCursor.close();
+
             if (configurationMasterHelper.SHOW_PRODUCTRETURN
                     && configurationMasterHelper.IS_SIH_VALIDATION) {
                 String str = "SELECT Pid,LiableQty,ReturnQty,TypeID FROM "
@@ -4162,9 +4169,31 @@ public class BusinessModel extends Application {
                 }
                 productHelper.getProductMaster().setElementAt(product, i);
 
-                // Logs.exception("INVOICE",
-                // "product.getSchemeProducts().size : " +
-                // product.getSchemeProducts().size());
+                return;
+            }
+        }
+        return;
+    }
+
+    private void setProductDetails(String productid, int pieceqty, int caseqty,
+                                   int outerQty) {
+        ProductMasterBO product;
+        int siz = productHelper.getProductMaster().size();
+        if (siz == 0)
+            return;
+
+        if (productid == null)
+            return;
+
+        for (int i = 0; i < siz; ++i) {
+            product = productHelper.getProductMaster().get(i);
+
+            if (product.getProductID().equals(productid)) {
+                product.setOrderedPcsQty(pieceqty);
+                product.setOrderedCaseQty(caseqty);
+                product.setOrderedOuterQty(outerQty);
+
+                productHelper.getProductMaster().setElementAt(product, i);
 
                 return;
             }
@@ -6726,6 +6755,11 @@ public class BusinessModel extends Application {
                         false);
             }
 
+            if (configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
+                db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+                        false);
+            }
+
             String timeStampid = "";
             int flag = 0; // flag for joint call
             int isVansales = 1;
@@ -7571,7 +7605,9 @@ public class BusinessModel extends Application {
 
                 } else if (imageName.startsWith("DV_")) {
                     folderName = "Delivery" + path;
-                } else {
+                } else if(imageName.startsWith("PF")){
+                    folderName="PrintFile"+path;
+                }else {
                     folderName = userMasterHelper.getUserMasterBO()
                             .getDistributorid()
                             + "/"
@@ -7685,6 +7721,8 @@ public class BusinessModel extends Application {
             for (int i = 0; i < uploadFileSize; i++) {
 
                 String filename = sfFiles[i].getName();
+                //  print invoice file not upload to server
+
                 getResponseForUploadImageToAmazonCloud(filename, tm, handler);
 
             }
@@ -8531,7 +8569,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -10705,6 +10743,7 @@ public class BusinessModel extends Application {
         }
         c.close();
 
+
     }
 
     public String getRetailerAttributeList() {
@@ -10820,6 +10859,8 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
+    public void writeToFile(String data, String filename,String foldername) {
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
     public void writeToFile(String data, String filename) {
 
         String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
@@ -10834,15 +10875,48 @@ public class BusinessModel extends Application {
             FileOutputStream fOut = new FileOutputStream(newFile);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
             myOutWriter.append(data);
-
             myOutWriter.close();
-
             fOut.flush();
             fOut.close();
+            if(configurationMasterHelper.IS_PRINT_FILE_SAVE&&filename.startsWith(DataMembers.PRINT_FILE_START)){
+                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+DataMembers.IVYDIST_PATH+"/";
+                copyFile(newFile,destpath,filename);
+            }
         } catch (IOException e) {
             Commons.printException(e);
         }
     }
+
+    private void copyFile(File sourceFile,String path,String filename){
+
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File destFile = new File(path, filename + ".txt");
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+        }catch (FileNotFoundException e){
+            Commons.printException(e.getMessage());
+        }catch (IOException e){
+            Commons.printException(e.getMessage());
+        }finally {
+
+        }
+    }
+
+
+
+
+
+
 
     public boolean createPdf(String pdfFileName,String content) {
 
@@ -11442,6 +11516,7 @@ public class BusinessModel extends Application {
     }
 
 
+
     //Pending invoice report
 
     public void downloadInvoice() {
@@ -11511,6 +11586,81 @@ public class BusinessModel extends Application {
             db.closeDB();
         } catch (Exception e) {
 
+            Commons.printException(e);
+        }
+    }
+
+
+    public void insertTempOrder() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            int siz = productHelper.getProductMaster().size();
+
+            db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
+                    false);
+
+            String columns = "RetailerID,ProductID,pieceqty,caseQty,outerQty";
+
+            for (int i = 0; i < siz; ++i) {
+                ProductMasterBO product = productHelper
+                        .getProductMaster().get(i);
+                if (product.getOrderedCaseQty() > 0
+                        || product.getOrderedPcsQty() > 0
+                        || product.getOrderedOuterQty() > 0) {
+
+                    String values = QT(getRetailerMasterBO().getRetailerID())
+                            + ","
+                            + QT(product.getProductID())
+                            + ","
+                            + product.getOrderedPcsQty()
+                            + ","
+                            + product.getOrderedCaseQty()
+                            + ","
+                            + product.getOrderedOuterQty();
+
+
+                    db.insertSQL("TempOrderDetail", columns, values);
+                }
+            }
+        } catch (Exception ex) {
+
+            Commons.printException(ex);
+        }
+    }
+
+
+    public void loadTempOrderDetails(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql2 = "select productId,pieceqty,caseQty,outerQty from TempOrderDetail "
+                    + " where RetailerID="
+                    + QT(getRetailerMasterBO().getRetailerID()) + " order by rowid";
+
+            Cursor tOrderDetailCursor = db.selectSQL(sql2);
+
+            if (tOrderDetailCursor != null) {
+                while (tOrderDetailCursor.moveToNext()) {
+
+                    String productId = tOrderDetailCursor.getString(0);
+                    int pieceqty = tOrderDetailCursor.getInt(1);
+                    int caseqty = tOrderDetailCursor.getInt(2);
+                    int outerQty = tOrderDetailCursor.getInt(3);
+
+                    setProductDetails(productId, pieceqty, caseqty,
+                            outerQty);
+
+                }
+            }
+            tOrderDetailCursor.close();
+
+        }catch (Exception e){
             Commons.printException(e);
         }
     }

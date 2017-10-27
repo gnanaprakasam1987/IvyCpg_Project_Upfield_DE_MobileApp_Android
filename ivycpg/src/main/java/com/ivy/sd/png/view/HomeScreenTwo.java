@@ -344,7 +344,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
         //  bmodel.configurationMasterHelper.downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
 
-        ((TextView) findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        ((TextView) findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         mActivityDoneCount = (TextView) findViewById(R.id.activity_done_count);
         mActivityTotalCount = (TextView) findViewById(R.id.activity_total_count);
@@ -1825,6 +1825,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                 enableSchemeModule();
                             } else {
                                 bmodel.setOrderHeaderBO(null);
+                                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && menu.getConfigCode().equals(MENU_CATALOG_ORDER)) {
+                                    bmodel.loadTempOrderDetails();
+                                }
                             }
                             loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
                             if (bmodel.isEdit()) {

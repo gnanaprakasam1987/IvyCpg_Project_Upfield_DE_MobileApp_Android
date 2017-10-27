@@ -32,10 +32,8 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.lib.existing.HttpRequest;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -321,7 +319,18 @@ SynchronizationHelper {
                         return fileName.endsWith(".jpg");
                     }
                 });
-                imageSize = files.length;
+
+                    File printfiles[] = f.listFiles(new FilenameFilter() {
+                        public boolean accept(File directory, String fileName) {
+
+                            return fileName.startsWith("PF");
+                        }
+                    });
+
+                if(bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                imageSize = files.length+printfiles.length;
+                else
+                    imageSize=files.length;
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -3037,6 +3046,7 @@ SynchronizationHelper {
      * @return 0 - error , 1 - date and time is correct, 2 - Date time miss match.
      */
     public int getUTCDateTimeNew(String ur) {
+
         String url = DataMembers.SERVER_URL
                 + ur;
         Date from, to;
@@ -3044,10 +3054,36 @@ SynchronizationHelper {
         int flag = 0;
         try {
 
-            HttpRequest httpRequest = new HttpRequest(url);
-            JSONObject jsonObject = httpRequest.preparePost().sendAndReadJSON();
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            Commons.print("UTCDate Response " + jsonObject.toString());
+
+
+
+            int responseCode = con.getResponseCode();
+            Commons.print("POST Response Code :: " + responseCode);
+            StringBuilder response=new StringBuilder();
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+
+            } else {
+                Commons.print("POST request not worked");
+            }
+
+
+
+
+            JSONObject jsonObject=new JSONObject(response.toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
@@ -3064,8 +3100,7 @@ SynchronizationHelper {
             datefrom = formatter.parse(formatter.format(from));
             dateto = formatter.parse(formatter.format(to));
 
-            Commons.print("Sync Url Success response code>>>>>>>>>>"
-                    + jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16) + " " + datefrom + " " + dateto);
+
 
             datenow = formatter.parse(jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16));
 
@@ -4540,6 +4575,9 @@ SynchronizationHelper {
             bmodel.downloadChatCredentials();
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
             bmodel.synchronizationHelper.setEncryptType();
+
+        bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/"+DataMembers.PRINT_FILE_PATH+"/");
     }
 
     /**
@@ -4553,8 +4591,8 @@ SynchronizationHelper {
                 && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!isDistributorDownloadDone && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
-            isDistributorDownloadDone = true;
+        } else if (!isDistributorDownloadDone) {
+            isDistributorDownloadDone=true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {

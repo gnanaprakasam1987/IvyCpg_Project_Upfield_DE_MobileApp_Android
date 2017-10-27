@@ -23,6 +23,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -63,6 +66,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -186,6 +190,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRField1;
     private String tempRField2;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
+    private LevelBO mSelectedLevelBO = new LevelBO();
+    private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
+    private Vector<LevelBO> sequence;
+    private FilterAdapter filterAdapter;
+    private RecyclerView rvFilterList;
     private int mTotalScreenWidth = 0;
     private String strProductObj;
     private int SbdDistPre = 0; // Dist stock
@@ -374,6 +383,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        rvFilterList = (RecyclerView) findViewById(R.id.rvFilter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvFilterList.setLayoutManager(mLayoutManager);
+        rvFilterList.setItemAnimator(new DefaultItemAnimator());
 
         hideAndSeek();
 
@@ -386,7 +399,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
-
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
         /* Calculate the total and LPC value */
@@ -845,7 +857,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.soTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        ((TextView) findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM
+                        ));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.soTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.soTitle))
@@ -1016,7 +1029,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.shelfPcsTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.shelfPcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.shelfPcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.shelfPcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.shelfPcsTitle))
@@ -1033,7 +1046,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     findViewById(R.id.shelfPcsCB).setVisibility(View.GONE);
 
-                ((TextView) findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 // On/Off order case and pcs
@@ -1041,7 +1054,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.caseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.caseTitle))
@@ -1056,7 +1069,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.pcsTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.pcsTitle))
@@ -1071,7 +1084,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.srpTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.srpTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.srpTitle))
@@ -1087,7 +1100,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.outercaseTitle))
@@ -1265,7 +1278,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                         findViewById(R.id.rep_pcsTitle).setVisibility(View.GONE);
                     else {
-                        ((TextView) findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.rep_pcsTitle))
@@ -1358,6 +1371,61 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else {
             productFilterClickedFragment(); // Normal Filter Fragment
         }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
+
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
+                            }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
+                        }
+
+                    }
+                }
+            }
+
+
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
+            }
+
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
+        }
+
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
@@ -1482,34 +1550,34 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 //setting typefaces
-                holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.msq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.psq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.shelfCaseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.shelfPcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.shelfouter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.srpEdit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.so.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.socs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.wsih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.srp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.weight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.rep_cs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.rep_ou.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.rep_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.msq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.psq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.shelfCaseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.shelfPcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.shelfouter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.srpEdit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.so.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.socs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.wsih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.srp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.weight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.rep_cs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.rep_ou.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.rep_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -1531,7 +1599,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_INDICATIVE_ORDER) {
                     ((LinearLayout) row.findViewById(R.id.llIo)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.io_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    ((TextView) row.findViewById(R.id.io_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.io_oc_Title).getTag()) != null)
@@ -1548,7 +1616,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.IS_WSIH) {
                     ((LinearLayout) row.findViewById(R.id.llwsih)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.wsihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    ((TextView) row.findViewById(R.id.wsihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.wsihTitle).getTag()) != null)
@@ -1564,7 +1632,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_CLEANED_ORDER) {
                     ((LinearLayout) row.findViewById(R.id.llCo)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.co_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    ((TextView) row.findViewById(R.id.co_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.co_oc_Title).getTag()) != null)
@@ -1584,7 +1652,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
 
-                ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC
                         || screenCode
@@ -1592,7 +1660,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.shelfCaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.shelfCaseTitle))
@@ -1610,7 +1678,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.shelfPcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.shelfPcsTitle))
@@ -1628,7 +1696,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.shelfOuterTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.shelfOuterTitle))
@@ -1646,7 +1714,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER)
                     ((LinearLayout) row.findViewById(R.id.llSo)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    ((TextView) row.findViewById(R.id.soTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
 
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -1662,7 +1730,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_SO_SPLIT)
                     ((LinearLayout) row.findViewById(R.id.llSoc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.soCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    ((TextView) row.findViewById(R.id.soCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.soCaseTitle).getTag()) != null)
@@ -1696,7 +1764,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                     //typeface and lables apply
                     try {
-                        ((TextView) row.findViewById(R.id.sihCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        ((TextView) row.findViewById(R.id.sihCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.sihCaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.sihCaseTitle))
@@ -1707,7 +1775,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                     try {
-                        ((TextView) row.findViewById(R.id.sihOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        ((TextView) row.findViewById(R.id.sihOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.sihOuterTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.sihOuterTitle))
@@ -1718,7 +1786,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                     try {
-                        ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.sihTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.sihTitle))
@@ -1739,7 +1807,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -1754,7 +1822,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -1769,7 +1837,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -1786,7 +1854,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpeditTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.srpeditTitle))
@@ -1802,7 +1870,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.srpTitle))
@@ -1818,7 +1886,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.totalTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.totalTitle))
@@ -1835,7 +1903,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.weight)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.weight)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.weight).getTag()) != null)
                             ((TextView) row.findViewById(R.id.weight))
@@ -1864,7 +1932,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
                     ((LinearLayout) row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_caseTitle).getTag()) != null)
@@ -1880,7 +1948,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
                     ((LinearLayout) row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_outerTitle).getTag()) != null)
@@ -1896,7 +1964,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     ((LinearLayout) row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
@@ -2396,7 +2464,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -2582,7 +2650,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -2769,7 +2837,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -3637,12 +3705,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 findViewById(R.id.ll_lpc).setVisibility(View.GONE);
             }
 
-            ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -4591,6 +4659,58 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
+
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
+                            }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
+                        }
+
+                    }
+                }
+            }
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
+            }
+
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
+        }
 
         if ("MENU_ORDER".equals(screenCode))
             title = bmodel.configurationMasterHelper
@@ -4599,6 +4719,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
         updatebrandtext(BRAND, -1);
+
     }
 
     @Override
@@ -4668,11 +4789,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
+            if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER && sequence.size() == 1) {
+                menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            }
         }/* else {
             if (isFilter) {
                 menu.findItem(R.id.menu_product_filter).setVisible(true);
             }
         }*/
+
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -4898,7 +5023,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -5511,8 +5635,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         updateValue();
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-
         updateOrderedCount();
+
         if (!bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
             if (count == 1) {
                 String strPname = filtertext + " (" + mylist.size() + ")";
@@ -5565,6 +5689,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         setScreenTitle(totalOrdCount + "/" + strPname);
                 }
             }
+        }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            filterAdapter.notifyDataSetChanged();
         }
     }
 
@@ -5788,5 +5915,261 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getProductMaster());
         }
         return newItems;
+    }
+
+    public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.MyViewHolder> {
+
+        private Vector<LevelBO> filterList;
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public Button btnFilter;
+
+            public MyViewHolder(View view) {
+                super(view);
+                btnFilter = (Button) view.findViewById(R.id.btn_filter);
+                btnFilter.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            }
+        }
+
+        public FilterAdapter(Vector<LevelBO> filterList) {
+            this.filterList = filterList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.filter_rv_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+            final LevelBO levelBO = filterList.get(position);
+            holder.btnFilter.setText(levelBO.getLevelName());
+            try {
+                if (mSelectedIdByLevelId != null && mSelectedLevelBO != null) {
+                    int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+
+                    if (levelId == levelBO.getProductID()) {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_rounded_corner_blue);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.white));
+                    } else {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.Black));
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            holder.btnFilter.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                        mSelectedIdByLevelId = new HashMap<>();
+
+                        for (LevelBO levelBO : sequence) {
+
+                            mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                        }
+                    }
+                    int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+                    if (levelId == filterList.get(position).getProductID()) {
+                        mSelectedIdByLevelId.put(
+                                mSelectedLevelBO.getProductID(), 0);
+                    } else {
+                        mSelectedIdByLevelId.put(mSelectedLevelBO
+                                .getProductID(), filterList.get(position)
+                                .getProductID());
+                    }
+
+                    updateSelectedID();
+
+                    Vector<LevelBO> finalParentList = new Vector<>();
+
+                    if (bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
+
+                        if (isAttributeFilterSelected()) {
+                            //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
+                            if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
+                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                            }
+
+                            ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
+                            for (LevelBO bo : sequence) {
+                                for (int i = 0; i < mSelectedIdByLevelId.size(); i++) {
+                                    if (mSelectedIdByLevelId.get(bo.getProductID()) > 0) {
+                                        lstSelectedAttributesIds.add(mSelectedIdByLevelId.get(bo.getProductID()));
+                                    }
+
+                                }
+                            }
+
+                            ArrayList<Integer> lstFinalProductIds = new ArrayList<>();
+                            for (int j = 0; j < lstSelectedAttributesIds.size(); j++) {
+                                for (int k = 0; k < bmodel.productHelper.getLstProductAttributeMapping().size(); k++) {
+
+                                    if (bmodel.productHelper.getLstProductAttributeMapping().get(k).getAttributeId() == lstSelectedAttributesIds.get(j)
+                                            && !lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
+                                        lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
+                                    }
+                                }
+                            }
+                            updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
+                            return;
+                        } else
+                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+
+                    } else
+                        finalParentList = updateProductLoad(sequence.size());
+
+                    updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, levelBO.getLevelName());
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return filterList.size();
+        }
+    }
+
+    private void updateSelectedID() {
+        boolean flag = false;
+
+        for (LevelBO levelBO : sequence) {
+            if (flag) {
+                mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+            }
+            if (mSelectedLevelBO.getProductID() == levelBO.getProductID()) {
+                int selectedLeveId = mSelectedIdByLevelId.get(levelBO.getProductID());
+                if (selectedLeveId != 0) {
+                    flag = true;
+                }
+
+            }
+
+        }
+
+    }
+
+    private boolean isAttributeFilterSelected() {
+        for (LevelBO bo : sequence) {
+            if (mSelectedIdByLevelId.get(bo.getProductID()) > 0 && bo.getProductID() < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFilterContentSelected(int pos) {
+        for (int i = 0; i <= pos - 1; i++) {
+            if (i <= sequence.size()) {
+                LevelBO levelbo = sequence.get(i);
+                if (mSelectedIdByLevelId.get(levelbo.getProductID()) != 0) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    private Vector<LevelBO> updateProductLoad(int pos) {
+
+        Vector<LevelBO> finalValuelist = new Vector<>();
+
+        if (isFilterContentSelected(pos)) {
+
+            int selectedGridLevelID = 0;
+            ArrayList<Integer> parentIdList = null;
+
+            for (int i = 0; i < pos; i++) {
+                LevelBO levelBO = sequence.get(i);
+
+                if (i != 0) {
+
+                    parentIdList = getParenIdList(selectedGridLevelID,
+                            parentIdList, levelBO);
+
+                }
+                selectedGridLevelID = mSelectedIdByLevelId.get(levelBO
+                        .getProductID());
+
+                if (i == pos - 1) {
+
+                    Vector<LevelBO> gridViewlist = loadedFilterValues
+                            .get(levelBO.getProductID());
+                    finalValuelist = new Vector<>();
+                    if (selectedGridLevelID != 0) {
+                        for (LevelBO gridViewBO : gridViewlist) {
+                            if (selectedGridLevelID == gridViewBO.getProductID()) {
+                                finalValuelist.add(gridViewBO);
+                            }
+
+                        }
+
+                    } else {
+                        if (parentIdList != null)
+                            if (!parentIdList.isEmpty()) {
+                                for (int productID : parentIdList) {
+                                    for (LevelBO gridViewBO : gridViewlist) {
+                                        if (productID == gridViewBO.getProductID()) {
+                                            finalValuelist.add(gridViewBO);
+                                        }
+
+                                    }
+                                }
+                            }
+                    }
+                }
+
+            }
+
+
+        } else {
+            if (pos > 0)
+                finalValuelist = loadedFilterValues.get(sequence.get(pos - 1)
+                        .getProductID());
+
+        }
+        return finalValuelist;
+
+    }
+
+    private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
+                                              ArrayList<Integer> list, LevelBO levelBO) {
+        ArrayList<Integer> parentIdList = new ArrayList<>();
+        Vector<LevelBO> gridViewlist = loadedFilterValues.get(levelBO
+                .getProductID());
+        if (selectedGridLevelID != 0) {
+            if (gridViewlist != null) {
+                for (LevelBO gridlevelBO : gridViewlist) {
+                    if (selectedGridLevelID == gridlevelBO.getParentID()) {
+                        parentIdList.add(gridlevelBO.getProductID());
+                    }
+
+                }
+            }
+
+        } else {
+
+            if (gridViewlist != null && list != null && list.size() > 0) {
+                for (int id : list) {
+                    for (LevelBO gridlevelBO : gridViewlist) {
+                        if (gridlevelBO.getParentID() == id) {
+                            parentIdList
+                                    .add(gridlevelBO.getProductID());
+                        }
+                    }
+                }
+            }
+
+        }
+        return parentIdList;
     }
 }
