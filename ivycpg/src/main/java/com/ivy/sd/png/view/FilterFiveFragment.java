@@ -67,12 +67,11 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         isFrom = getArguments().getString("isFrom");
         isFrom = (isFrom == null) ? "STK" : isFrom;
 
-        isAttributeFilter = getArguments().get("isAttributeFilter") == null ||getArguments().getBoolean("isAttributeFilter");
+        isAttributeFilter = getArguments().get("isAttributeFilter") == null || getArguments().getBoolean("isAttributeFilter");
 
-        mSelectedIdByLevelId = (HashMap<Integer, Integer>)getArguments().getSerializable("selectedFilter");
+        mSelectedIdByLevelId = (HashMap<Integer, Integer>) getArguments().getSerializable("selectedFilter");
 
         viewInitialization();
-
 
 
         btnOK.setOnClickListener(new View.OnClickListener() {
@@ -88,15 +87,13 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 break;
                             }
                         }
-
-
                     }
                 }
 
 
                 Vector<LevelBO> finalParentList = new Vector<>();
 
-                if (isAttributeFilter&&bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
+                if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
 
                     if (isAttributeFilterSelected()) {
                         //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
@@ -119,8 +116,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                             for (int k = 0; k < bmodel.productHelper.getLstProductAttributeMapping().size(); k++) {
 
                                 if (bmodel.productHelper.getLstProductAttributeMapping().get(k).getAttributeId() == lstSelectedAttributesIds.get(j)
-                                        &&!lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
-                                        lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
+                                        && !lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
+                                    lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
                                 }
                             }
 
@@ -176,6 +173,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         if (isFrom != null) {
             switch (isFrom) {
                 case "STK":
+                    if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
+                        bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
                     loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
                     sequence = bmodel.productHelper.getSequenceValues();
                     break;
@@ -186,14 +185,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 default:
                     loadedFilterValues = bmodel.productHelper.getRetailerModuleFilerContentBySequenct();
                     sequence = bmodel.productHelper.getRetailerModuleSequenceValues();
-                break;
+                    break;
             }
         } else {
             loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
             sequence = bmodel.productHelper.getSequenceValues();
         }
 
-        if(loadedFilterValues!=null) {
+        if (loadedFilterValues != null) {
             if (isAttributeFilter && loadedFilterValues.get(-1) == null) {
                 if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
                     int newAttributeId = 0;
@@ -213,12 +212,11 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         loadedFilterValues.put(newAttributeId, lstAttributes);
 
                     }
-
                 }
             }
         }
 
-        if(sequence == null) {
+        if (sequence == null) {
             sequence = new Vector<LevelBO>();
         }
 
@@ -233,7 +231,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
 
         if (!sequence.isEmpty()) {
-
             adapter = new FilterAdapter(sequence);
             filterlistview.setAdapter(adapter);
             mSelectedLevelBO = sequence.get(0);
@@ -325,8 +322,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
             if (holder.levelBO.getProductID() == mSelectedLevelBO
                     .getProductID()) {
-                holder.text.setTextColor(ContextCompat.getColor(getActivity(),R.color.WHITE));
-                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.Black));
+                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
+                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Black));
             } else {
                 holder.text.setTextColor(Color.BLACK);
                 holder.gridItem.setBackgroundColor(Color.parseColor("#f7f7f7"));
@@ -346,7 +343,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
                     mSelectedLevelBO = holder.levelBO;
                     int size = 0;
-                    if (isAttributeFilter&&bmodel.productHelper.getmAttributeTypes() != null)
+                    if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null)
                         size = bmodel.productHelper.getmAttributeTypes().size();
                     //checking whether selected level is attribute or product level
                     if (position < (sequence.size() - size)) {
@@ -453,7 +450,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
             }
 
-
             return finalValuelist;
 
         }
@@ -462,10 +458,9 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     class ViewHolder {
         private TextView text;
         private LevelBO levelBO;
-     //   private ImageView filtericons;
+        //   private ImageView filtericons;
         private ImageView selectedfilters;
         private LinearLayout gridItem;
-
     }
 
     @SuppressLint("ResourceAsColor")
@@ -508,7 +503,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 holder = new ViewHolder();
                 holder.text = (TextView) gridrow
                         .findViewById(R.id.grid_item_text);
-                holder.selectedfilters=(ImageView)gridrow.findViewById(R.id.selectedfilters);
+                holder.selectedfilters = (ImageView) gridrow.findViewById(R.id.selectedfilters);
                 gridrow.setTag(holder);
             } else {
                 holder = (ViewHolder) gridrow.getTag();
@@ -545,7 +540,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 .getProductID(), filteritem.get(position)
                                 .getProductID());
                     }
-
                     updateSelectedID();
                     gridadapter.notifyDataSetChanged();
                     adapter.notifyDataSetChanged();
@@ -626,17 +620,17 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         }
 
                     } else {
-                        if (parentIdList!=null)
-                        if (!parentIdList.isEmpty()) {
-                            for (int productID : parentIdList) {
-                                for (LevelBO gridViewBO : gridViewlist) {
-                                    if (productID == gridViewBO.getProductID()) {
-                                        finalValuelist.add(gridViewBO);
-                                    }
+                        if (parentIdList != null)
+                            if (!parentIdList.isEmpty()) {
+                                for (int productID : parentIdList) {
+                                    for (LevelBO gridViewBO : gridViewlist) {
+                                        if (productID == gridViewBO.getProductID()) {
+                                            finalValuelist.add(gridViewBO);
+                                        }
 
+                                    }
                                 }
                             }
-                        }
                     }
                 }
 
@@ -671,15 +665,15 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
         } else {
 
-            if (gridViewlist != null&&list != null&&list.size() > 0) {
-                        for (int id : list) {
-                            for (LevelBO gridlevelBO : gridViewlist) {
-                                if (gridlevelBO.getParentID() == id) {
-                                    parentIdList
-                                            .add(gridlevelBO.getProductID());
-                                }
-                            }
+            if (gridViewlist != null && list != null && list.size() > 0) {
+                for (int id : list) {
+                    for (LevelBO gridlevelBO : gridViewlist) {
+                        if (gridlevelBO.getParentID() == id) {
+                            parentIdList
+                                    .add(gridlevelBO.getProductID());
                         }
+                    }
+                }
             }
 
         }
