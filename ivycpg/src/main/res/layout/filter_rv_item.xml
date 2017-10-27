@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/list_margin">
+    android:paddingBottom="@dimen/list_margin"
+    android:paddingTop="@dimen/list_margin">
 
     <Button
         android:id="@+id/btn_filter"

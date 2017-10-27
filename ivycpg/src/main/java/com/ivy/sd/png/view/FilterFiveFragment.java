@@ -173,6 +173,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         if (isFrom != null) {
             switch (isFrom) {
                 case "STK":
+                    if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
+                        bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
                     loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
                     sequence = bmodel.productHelper.getSequenceValues();
                     break;
@@ -210,7 +212,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         loadedFilterValues.put(newAttributeId, lstAttributes);
 
                     }
-
                 }
             }
         }
@@ -230,8 +231,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
 
         if (!sequence.isEmpty()) {
-            if (isFrom.equalsIgnoreCase("STK"))
-                sequence.remove(0);
             adapter = new FilterAdapter(sequence);
             filterlistview.setAdapter(adapter);
             mSelectedLevelBO = sequence.get(0);

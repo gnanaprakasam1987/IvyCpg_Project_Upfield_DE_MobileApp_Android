@@ -1359,56 +1359,59 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else {
             productFilterClickedFragment(); // Normal Filter Fragment
         }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
 
-        loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-        sequence = bmodel.productHelper.getSequenceValues();
-
-        if (loadedFilterValues != null) {
-            if (loadedFilterValues.get(-1) == null) {
-                if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
-                    int newAttributeId = 0;
-                    for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
-                        newAttributeId -= 1;
-                        sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
-                        Vector<LevelBO> lstAttributes = new Vector<>();
-                        LevelBO attLevelBO;
-                        for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
-                            attLevelBO = new LevelBO();
-                            if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
-                                attLevelBO.setProductID(attrBO.getAttributeId());
-                                attLevelBO.setLevelName(attrBO.getAttributeName());
-                                lstAttributes.add(attLevelBO);
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
                             }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
                         }
-                        loadedFilterValues.put(newAttributeId, lstAttributes);
 
                     }
-
                 }
             }
-        }
 
 
-        if (sequence == null) {
-            sequence = new Vector<LevelBO>();
-        }
-
-        if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
-            mSelectedIdByLevelId = new HashMap<>();
-
-            for (LevelBO levelBO : sequence) {
-
-                mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
             }
-        }
 
-        if (!sequence.isEmpty()) {
-            mSelectedLevelBO = sequence.get(0);
-            int levelID = sequence.get(0).getProductID();
-            Vector<LevelBO> filterValues = new Vector<>();
-            filterValues.addAll(loadedFilterValues.get(levelID));
-            filterAdapter = new FilterAdapter(filterValues);
-            rvFilterList.setAdapter(filterAdapter);
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -4636,54 +4639,57 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
 
-        loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-        sequence = bmodel.productHelper.getSequenceValues();
-
-        if (loadedFilterValues != null) {
-            if (loadedFilterValues.get(-1) == null) {
-                if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
-                    int newAttributeId = 0;
-                    for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
-                        newAttributeId -= 1;
-                        sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
-                        Vector<LevelBO> lstAttributes = new Vector<>();
-                        LevelBO attLevelBO;
-                        for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
-                            attLevelBO = new LevelBO();
-                            if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
-                                attLevelBO.setProductID(attrBO.getAttributeId());
-                                attLevelBO.setLevelName(attrBO.getAttributeName());
-                                lstAttributes.add(attLevelBO);
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
                             }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
                         }
-                        loadedFilterValues.put(newAttributeId, lstAttributes);
 
                     }
-
                 }
             }
-        }
-        if (sequence == null) {
-            sequence = new Vector<LevelBO>();
-        }
-
-        if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
-            mSelectedIdByLevelId = new HashMap<>();
-
-            for (LevelBO levelBO : sequence) {
-
-                mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
             }
-        }
 
-        if (!sequence.isEmpty()) {
-            mSelectedLevelBO = sequence.get(0);
-            int levelID = sequence.get(0).getProductID();
-            Vector<LevelBO> filterValues = new Vector<>();
-            filterValues.addAll(loadedFilterValues.get(levelID));
-            filterAdapter = new FilterAdapter(filterValues);
-            rvFilterList.setAdapter(filterAdapter);
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
         }
 
         if ("MENU_ORDER".equals(screenCode))
@@ -4763,11 +4769,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
+            if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER && sequence.size() == 1) {
+                menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            }
         }/* else {
             if (isFilter) {
                 menu.findItem(R.id.menu_product_filter).setVisible(true);
             }
         }*/
+
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -4993,7 +5003,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-            bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -5606,9 +5615,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         updateValue();
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        filterAdapter.notifyDataSetChanged();
-
         updateOrderedCount();
+
         if (!bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
             if (count == 1) {
                 String strPname = filtertext + " (" + mylist.size() + ")";
@@ -5661,6 +5669,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         setScreenTitle(totalOrdCount + "/" + strPname);
                 }
             }
+        }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            filterAdapter.notifyDataSetChanged();
         }
     }
 
@@ -5896,6 +5907,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             public MyViewHolder(View view) {
                 super(view);
                 btnFilter = (Button) view.findViewById(R.id.btn_filter);
+                btnFilter.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             }
         }
 
@@ -5935,7 +5947,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.btnFilter.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                        mSelectedIdByLevelId = new HashMap<>();
 
+                        for (LevelBO levelBO : sequence) {
+
+                            mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                        }
+                    }
                     int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
                             .getProductID());
                     if (levelId == filterList.get(position).getProductID()) {
