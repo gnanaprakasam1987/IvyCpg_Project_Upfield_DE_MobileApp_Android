@@ -559,8 +559,8 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
                         getResources().getString(R.string.leaveToday),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
 //                bmodel.mSelectedActivityName = menuItem.getMenuName();

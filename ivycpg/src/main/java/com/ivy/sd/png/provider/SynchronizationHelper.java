@@ -141,6 +141,7 @@ SynchronizationHelper {
     public boolean isSihDownloadDone;
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
+    public String dataMissedTable = "";
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -927,6 +928,8 @@ SynchronizationHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         Cursor c;
+        String tableName = "";
+        dataMissedTable = "";
         int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
         try {
             c = db.selectSQL("select  count(retailerid) from "
@@ -973,6 +976,17 @@ SynchronizationHelper {
         if (standList > 0 && beatMaster > 0 && hhtCount > 0
                 && retailerCount > 0) {
             return true;
+        } else {
+            if (standList == 0)
+                tableName = tableName + " LovMaster";
+            if (beatMaster == 0)
+                tableName = tableName + " BeatMaster";
+            if (hhtCount == 0)
+                tableName = tableName + " Configuration";
+            if (retailerCount == 0)
+                tableName = tableName + " Retailer";
+
+            dataMissedTable = tableName;
         }
 
         return false;
