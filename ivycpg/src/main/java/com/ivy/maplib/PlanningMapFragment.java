@@ -1150,7 +1150,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
             } else {
                 infoDistance.setVisibility(View.VISIBLE);
-                startVisitLty.setVisibility(View.GONE);
+                startVisitLty.setVisibility(View.VISIBLE);
                 startVisitBtn.setVisibility(View.VISIBLE);
                 String[] str_snippet = marker.getSnippet().split("\n");
                 String str_title = marker.getTitle().split(",")[0];
