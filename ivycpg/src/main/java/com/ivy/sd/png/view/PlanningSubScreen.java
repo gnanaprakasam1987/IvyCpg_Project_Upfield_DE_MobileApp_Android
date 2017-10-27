@@ -164,8 +164,8 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(this,
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(this, bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
