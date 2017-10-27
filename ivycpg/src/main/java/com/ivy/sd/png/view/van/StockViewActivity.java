@@ -34,7 +34,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
     private ArrayList<LoadManagementBO> filterlist;
     private ArrayList<LoadManagementBO> mylist;
     private Vector<LoadManagementBO> mylist2;
-    private ArrayList<LoadManagementBO> childList;
+    private ArrayList<LoadManagementBO> childList = null;
     private HashMap<String, ArrayList<LoadManagementBO>> listDataChild;
     private ExpandableListAdapter expandableListAdapter;
     private boolean isExpandList = false;
@@ -261,7 +261,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
         listDataChild = new HashMap<>();
 
         for (LoadManagementBO parentBo : temp) {
-            childList = new ArrayList<>();
+            childList = new ArrayList<LoadManagementBO>();
             for (LoadManagementBO childBO : temp2) {
                 if (parentBo.getProductid() == childBO.getProductid()
                         && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
@@ -271,8 +271,9 @@ public class StockViewActivity extends ToolBarwithFilter implements
             listDataChild.put(pid, childList);//load child batch List data
         }
 
-        if (childList.size() > 0)
-            showExpandButton();
+        if (childList != null)
+            if (childList.size() > 0)
+                showExpandButton();
 //---------- remove duplicate product name from given list-----------//
 
         for (int i = 0; i < temp.size(); i++) {
@@ -481,8 +482,9 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
             listDataChild.put(pid, childList);//load child batch List data
         }
-        if (childList.size() > 0)
-            showExpandButton();
+        if (childList != null)
+            if (childList.size() > 0)
+                showExpandButton();
 
 //---------- remove duplicate product name from given list-----------///
         for (int i = 0; i < filterlist.size(); i++) {
