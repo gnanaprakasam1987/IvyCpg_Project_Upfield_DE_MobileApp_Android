@@ -578,8 +578,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 if (bmodel.reasonHelper.getDeviatedReturnMaster().size() != 0) {
 
-                    if (("Y").equals(rm.getIsNew())
-                            && (!bmodel.configurationMasterHelper.IS_NEW_RETAILER_DEVIATION)) {
+                    if (("Y").equals(rm.getIsNew())) {
                         deviationNotAllowedforNewRetailer = true;
                     } else if (bmodel.isAlreadyExistInToday(rm.getRetailerID())) {
                         retailerAlreadyPlannedtoday = true;
@@ -1026,8 +1025,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                             if (bmodel.reasonHelper.getDeviatedReturnMaster()
                                     .size() != 0) {
 
-                                if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())
-                                        && (!bmodel.configurationMasterHelper.IS_NEW_RETAILER_DEVIATION)) {
+                                if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
 
                                     Toast t = Toast
                                             .makeText(

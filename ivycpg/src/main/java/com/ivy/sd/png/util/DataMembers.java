@@ -169,6 +169,7 @@ public class DataMembers {
     public static final String tbl_SalesReturnDetails = "SalesReturnDetails";
     public static final String tbl_vanload = "VanLoad";
     private static final String tbl_odameter = "Odameter";
+    private static final String tbl_CollectionDocument = "CollectionDocument";
 
     public static final String tbl_closingstockheader = "ClosingStockHeader";
     public static final String tbl_closingstockdetail = "ClosingStockDetail";
@@ -353,6 +354,7 @@ public class DataMembers {
     private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID";
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID";
+    private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate";
@@ -649,6 +651,7 @@ public class DataMembers {
         uploadColumn.put(tbl_NonProductiveTable, tbl_NonProductiveTable_cols);
         uploadColumn.put(tbl_DailyTargetPlanned, tbl_DailyTargetPlanned_cols);
         uploadColumn.put(tbl_Payment, tbl_PaymentUpload_cols);
+        uploadColumn.put(tbl_CollectionDocument, tbl_CollectionDocument_cols);
         uploadColumn.put(tbl_SalesReturnHeader, tbl_SalesReturnHeader_cols);
         uploadColumn.put(tbl_SalesReturnDetails, tbl_SalesReturnDetails_cols);
         uploadColumn.put(tbl_AnswerHeader, tbl_AnswerHeader_cols);
@@ -819,6 +822,7 @@ public class DataMembers {
                 tbl_NonProductiveTable_cols);
 
         uploadColumnWithRetailer.put(tbl_Payment, tbl_PaymentUpload_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDocument, tbl_CollectionDocument_cols);
         uploadColumnWithRetailer.put(tbl_SalesReturnHeader,
                 tbl_SalesReturnHeader_cols);
         uploadColumnWithRetailer.put(tbl_SalesReturnDetails,

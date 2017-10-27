@@ -46,7 +46,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_DIGITAL_CONTENT = "DIGCON";
     public static final String CODE_NEW_OUTLET_UPLOAD = "FUN17";
     public static final String CODE_MRP_LEVEL_TAX = "TAX01";
-    public static final String CODE_IS_NEW_RETAILER_DEVIATION = "RTRS26";
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
@@ -441,6 +440,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
     public boolean IS_TEMP_ORDER_SAVE;
 
+    private static final String CODE_ORDER_FILTER_TOP = "FUN61";
+    public boolean IS_TOP_ORDER_FILTER;
+
     /**
      * RoadActivity config *
      */
@@ -449,7 +451,6 @@ public class ConfigurationMasterHelper {
      * Configuration not set in DB *
      */
     public boolean IS_CUMULATIVE_AND;
-    public boolean IS_NEW_RETAILER_DEVIATION = false;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
@@ -568,7 +569,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRODUCT_SCHEME_DIALOG;
     public boolean IS_SCHEME_CHECK;
     public boolean IS_SCHEME_CHECK_DISABLED;
-    public boolean SHOW_STK_ORD_SRP;
+    public boolean SHOW_STK_ORD_SRP = true;
     public boolean SHOW_STK_ORD_SRP_SEC;
     public boolean SHOW_STK_ORD_SRP_EDT;
     public boolean SHOW_D1;
@@ -1036,6 +1037,9 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
 
+    public boolean IS_SF_NORM_CHECK;
+    public static final String CODE_CHECK_NORM = "SFCHECK";
+
     public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
@@ -1186,6 +1190,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALES_DISTRIBUTION = "SALES_DISTRIBUTION_TAGGING";
     public boolean IS_PRODUCT_DISTRIBUTION;
     public String PRD_DISTRIBUTION_TYPE = "";
+
+    private static final String CODE_REMOVE_TAX_ON_SRP = "ORDB67";
+    public boolean IS_REMOVE_TAX_ON_SRP;
+
+    private static final String CODE_SHARE_INVOICE = "ORDB68";
+    public boolean IS_SHARE_INVOICE;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1771,7 +1781,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_DATE_BTN = hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DATE_BTN) : false;
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
-        this.IS_NEW_RETAILER_DEVIATION = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_DEVIATION) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
         //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
         this.IS_FIVE_LEVEL_FILTER = true;
@@ -1866,6 +1875,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
         this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
@@ -2075,6 +2085,7 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
+        this.IS_TOP_ORDER_FILTER = hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) : false;
 
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
@@ -2106,6 +2117,8 @@ public class ConfigurationMasterHelper {
             }
         }
 
+        this.IS_REMOVE_TAX_ON_SRP=hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
+        this.IS_SHARE_INVOICE=hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
     }
 
     private void getTaxModel(String hhtCode) {

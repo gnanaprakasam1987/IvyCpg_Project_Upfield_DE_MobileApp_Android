@@ -593,13 +593,14 @@ public class PrintHelper {
 
 
                     x += 40;
+                    Printitem += "LEFT \r\n";
                     Printitem += "T 5 0 10 " + x + " "
                             + "CustName"
                             + ":"
                             + retailername
                             + "\r\n";
 
-                    Printitem += "LEFT \r\n";
+                    x += 40;
                     Printitem += "T 5 0 10 " + x + " "
                             + "CustCode:"
                             + ""

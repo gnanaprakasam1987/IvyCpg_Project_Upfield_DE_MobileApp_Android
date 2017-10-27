@@ -264,7 +264,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
             if (mPaymentList.get(position).getAmount() > 0) {
                 holder.paidLabel.append(holder.paidAmtLabel.getText().toString());
-                holder.paidLabel.append(" " + mPaymentList.get(position).getAmount() + " paid");
+                holder.paidLabel.append(" " + bmodel.formatValueBasedOnConfig(mPaymentList.get(position).getAmount()) + " paid");
                 holder.paidAmtLabel.setText(holder.paidLabel.toString());
             } else {
                 holder.paidAmtLabel.setText("");
@@ -367,9 +367,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        totalPayableAmt = Double.parseDouble(SDUtil.format(totalPayableAmt,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        totalPayableAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
         if (totalCollected > totalPayableAmt) {
             flag = true;
         }
@@ -508,7 +506,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 Intent i = new Intent(getActivity(),
                         CommonPrintPreviewActivity.class);
                 i.putExtra("isHomeBtnEnable", true);
-                i.putExtra("isFromCollection",true);
+                i.putExtra("isFromCollection", true);
                 startActivity(i);
                 getActivity().finish();
             } else {
@@ -613,7 +611,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
         mPaymentBO.setAmount(mTotalCreditNoteValue);
 
-        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList)) {
+        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CASH)) {
             mPaymentBO.setAmount(mTotalCreditNoteValue);
         } else {
             mTotalCreditNoteValue = bmodel.collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList, false);
@@ -874,7 +872,8 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                     sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 12));
                     sb.append(LineFeed(1));
 
-                    total += payBO.getAmount();
+                    if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE))
+                        total += payBO.getAmount();
                     totalDiscount += payBO.getAppliedDiscountAmount();
 
                 }
@@ -909,9 +908,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         }
         return sb.toString();
     }
-
-
-
 
 
 }

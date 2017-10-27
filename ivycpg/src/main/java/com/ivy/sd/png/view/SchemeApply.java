@@ -1421,9 +1421,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
      */
     private boolean isValidateSchemePriceEntered(SchemeBO schemeBO) {
 
-        if (!(schemeBO.getSelectedPrice() >= schemeBO.getActualPrice()
-                && schemeBO.getSelectedPrice() <= schemeBO.getMaximumPrice() && schemeBO
-                .getSelectedPrice() > 0)) {
+        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 0, 2))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 0, 2))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) > 0)) {
             /*
              * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
 			 * 0) || (priceEntered > schemeBO.getActualPrice())) {
@@ -1467,9 +1467,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
      */
     private boolean isValidateSchemeAmountEntered(SchemeBO schemeBO) {
 
-        if (!(schemeBO.getSelectedAmount() >= schemeBO.getMinimumAmount()
-                && schemeBO.getSelectedAmount() <= schemeBO.getMaximumAmount() && schemeBO
-                .getSelectedAmount() > 0)) {
+        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 0, 2)) >= Double.parseDouble(SDUtil.format(schemeBO.getMinimumAmount(), 0, 2))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 0, 2)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumAmount(), 0, 2))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 0, 2)) > 0)) {
             /*
              * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
 			 * 0) || (priceEntered > schemeBO.getActualPrice())) {

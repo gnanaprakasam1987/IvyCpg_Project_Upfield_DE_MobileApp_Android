@@ -1,12 +1,14 @@
 package com.ivy.sd.print;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +38,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderSummary;
@@ -132,11 +135,25 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if(!bmodel.configurationMasterHelper.IS_SHARE_INVOICE){
+            menu.findItem(R.id.menu_share_pdf).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (isFromOrder) {
                     bmodel.productHelper.clearOrderTable();
+
+                    if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+                        bmodel.resetSRPvalues();
+                    }
 
                     Intent i = new Intent(
                             CommonPrintPreviewActivity.this,
@@ -176,10 +193,63 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     }
                 }
                 break;
+            case R.id.menu_share_pdf:
+                new CreatePdf().execute();
+                break;
         }
         return false;
     }
 
+    private class CreatePdf extends AsyncTask<Integer, Integer, Boolean> {
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder = new AlertDialog.Builder(CommonPrintPreviewActivity.this);
+            bmodel.customProgressDialog(alertDialog, builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+
+            return bmodel.createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber
+                    , bmodel.mCommonPrintHelper.getInvoiceData().toString());
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            alertDialog.dismiss();
+
+            try {
+                if (result) {
+
+                    Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                    ArrayList<Uri> uriList = new ArrayList<>();
+                    File newFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/IvyInvoice/"
+                            , StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
+                    uriList.add(Uri.fromFile(newFile));
+
+                    sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
+                    sharingIntent.setType("application/pdf");
+                    sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    sharingIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_invoice_using)));
+
+                } else {
+                    Toast.makeText(CommonPrintPreviewActivity.this, getResources().getString(R.string.error_in_creating_pdf), Toast.LENGTH_LONG).show();
+                }
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+            }
+
+        }
+
+    }
     private void onScreenPreparation() {
         try {
 
@@ -464,6 +534,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
             public void onPositiveButtonClick() {
                 if (isFromOrder) {
                     bmodel.productHelper.clearOrderTable();
+
+                    if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+                        bmodel.resetSRPvalues();
+                    }
 
                     Intent i = new Intent(
                             CommonPrintPreviewActivity.this,

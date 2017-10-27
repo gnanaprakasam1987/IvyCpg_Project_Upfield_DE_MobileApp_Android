@@ -236,6 +236,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     public void onClick(View v) {
         Button btn = (Button) v;
         if (btn == applyBtn) {
+            mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
             getActivity().finish();
 
@@ -295,7 +296,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                                     updateTotal();
                                     Toast.makeText(getActivity(),getResources().getString(R.string.please_user_advancepayment),
                                             Toast.LENGTH_SHORT).show();
-                                } else  if(bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW||!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList))
+                                } else  if(bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW||!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CREDIT_NOTE))
                                     updateTotal();
                                 else{
 
@@ -374,7 +375,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 currentCollectionValue = tempCreditNoteValue;
             } else {
 
-                if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList)) {
+                if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CREDIT_NOTE)) {
                     mPaymentBO.setAmount(mTotalCreditNoteValue);
                     currentCollectionValue = mTotalCreditNoteValue;
                 } else {

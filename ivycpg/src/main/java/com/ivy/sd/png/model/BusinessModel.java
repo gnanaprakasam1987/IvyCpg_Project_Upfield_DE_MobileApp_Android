@@ -60,6 +60,12 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
@@ -240,6 +246,8 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
+
+import static com.itextpdf.text.pdf.PdfName.TEXT;
 
 public class BusinessModel extends Application {
 
@@ -1510,7 +1518,7 @@ public class BusinessModel extends Application {
                             + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistributorId,")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
@@ -1637,7 +1645,7 @@ public class BusinessModel extends Application {
                     retailer.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     retailer.setContractLovid(c.getInt(c.getColumnIndex("contractstatuslovid")));
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
-                    retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistParentId")));
+                    retailer.setDistParentId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
                         retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
@@ -2292,6 +2300,67 @@ public class BusinessModel extends Application {
                 return true;
         }
         return false;
+    }
+
+    /**
+     *
+     */
+    public void excludeTaxFromSRP(){
+        try{
+          for(ProductMasterBO productMasterBO:productHelper.getProductMaster()){
+
+              productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+
+              if (productMasterBO.getOrderedCaseQty() > 0
+                      || productMasterBO.getOrderedPcsQty() > 0
+                      || productMasterBO.getOrderedOuterQty() > 0){
+                  if(productMasterBO.getSrp()>0) {
+
+                      float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()),2).floatValue();
+
+                      if (srpWithoutTax > 0)
+                          productMasterBO.setSrp(srpWithoutTax);
+                      else productMasterBO.setSrp(0);
+
+                  }
+              }
+
+          }
+        }
+        catch (Exception ex){
+         Commons.printException(ex);
+        }
+    }
+
+    private float getTaxAmount(String productId){
+        float taxAmount=0;
+        try{
+          ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
+            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+                for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+         Commons.printException(ex);
+        }
+      return taxAmount;
+    }
+
+    public void resetSRPvalues(){
+        try {
+            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
+                if(productMasterBO.getOriginalSrp()>0) {
+                    productMasterBO.setSrp(productMasterBO.getOriginalSrp());
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
     }
 
     public boolean isReasonProvided() {
@@ -3177,7 +3246,7 @@ public class BusinessModel extends Application {
         int priceOffId = 0;
 
         int totalqty = 0;
-        double srp = 0;
+        float srp = 0;
         double csrp = 0;
         double osrp = 0;
         double prodDisc = 0;
@@ -7347,7 +7416,7 @@ public class BusinessModel extends Application {
                                          ProductMasterBO batchProductBO, String orderId, boolean isBatchWise) {
 
         int pieceCount = 0;
-        double srp = 0;
+        float srp = 0;
         double csrp = 0;
         double osrp = 0;
         double totalValue = 0;
@@ -8500,7 +8569,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -10792,6 +10861,9 @@ public class BusinessModel extends Application {
 
     public void writeToFile(String data, String filename,String foldername) {
         String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+    public void writeToFile(String data, String filename) {
+
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
         File folder = new File(path);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -10845,6 +10917,45 @@ public class BusinessModel extends Application {
 
 
 
+
+    public boolean createPdf(String pdfFileName,String content) {
+
+        try {
+
+            if (isExternalStorageAvailable()) {
+                File folder;
+                folder = new File(
+                        getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                + "/IvyInvoice/");
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                String path = folder + "";
+                File SDPath = new File(path);
+                if (!SDPath.exists()) {
+                    SDPath.mkdir();
+                }
+
+
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(path + "/" + pdfFileName + ".pdf"));
+                document.open();
+
+                Font normal = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+                Paragraph p = new Paragraph(content, normal);
+                document.add(p);
+
+                document.close();
+            }
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return false;
+        }
+     return true;
+    }
 
     public void updateGroupIdForRetailer() {
 
@@ -11404,6 +11515,80 @@ public class BusinessModel extends Application {
         }
     }
 
+
+
+    //Pending invoice report
+
+    public void downloadInvoice() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
+            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),RM.RetailerName as RetailerName,IFNULL(RM.creditPeriod,'') as creditPeriod");
+            sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
+            sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
+            sb.append(" INNER JOIN RetailerMaster RM ON inv.Retailerid = RM.RetailerID");
+            sb.append(" GROUP BY Inv.InvoiceNo,inv.Retailerid");
+            sb.append(" ORDER BY Inv.InvoiceDate");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                InvoiceHeaderBO invocieHeaderBO;
+                invoiceHeader = new ArrayList<>();
+                while (c.moveToNext()) {
+                    invocieHeaderBO = new InvoiceHeaderBO();
+                    invocieHeaderBO.setInvoiceNo(c.getString(0));
+                    invocieHeaderBO.setInvoiceDate(c.getString(1));
+                    invocieHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invocieHeaderBO.setPaidAmount(c.getDouble(3));
+                    invocieHeaderBO.setBalance(c.getDouble(4));
+                    invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
+                    invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
+
+                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+
+                    double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
+                    if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
+                        remaingAmount = Double.parseDouble(SDUtil.format(remaingAmount,
+                                0,
+                                0, configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    }
+
+                    invocieHeaderBO.setRemainingDiscountAmt(remaingAmount);
+                    int crediiDays = c.getInt(c.getColumnIndex("creditPeriod"));
+
+                    if (crediiDays != 0) {
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = format.parse(invocieHeaderBO.getInvoiceDate());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
+                        Date dueDate = format.parse(format.format(calendar.getTime()));
+
+                        invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                dueDate, configurationMasterHelper.outDateFormat));
+
+                    }
+                    if (invocieHeaderBO.getBalance() > 0)
+                        invoiceHeader.add(invocieHeaderBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+    }
 
 
     public void insertTempOrder() {

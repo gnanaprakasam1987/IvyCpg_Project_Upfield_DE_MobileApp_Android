@@ -52,7 +52,7 @@ public class DistributorMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "select DISTINCT DId,DName, IFNULL(GroupId,'') as GroupId from "
+            String sql = "select DISTINCT DId,DName, ParentID, IFNULL(GroupId,'') as GroupId from "
                     + DataMembers.tbl_DistributorMaster + " LEFT JOIN DistributorPriceMapping ON Did = DistId";
 
             Cursor c = db.selectSQL(sql);
@@ -63,6 +63,7 @@ public class DistributorMasterHelper {
                     con = new DistributorMasterBO();//DId,DName,CNumber,Address1,Address2,Address3,Type,TinNo
                     con.setDId(c.getString(c.getColumnIndex("DId")));
                     con.setDName(c.getString(c.getColumnIndex("DName")));
+                    con.setParentID(c.getString(c.getColumnIndex("ParentID")));
                     /*con.setCNumber(c.getString(2));
                     con.setAddress1(c.getString(3));
                     con.setAddress2(c.getString(4));
