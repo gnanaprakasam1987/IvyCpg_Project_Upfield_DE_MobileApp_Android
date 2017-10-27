@@ -324,9 +324,9 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 vanLoadDateTxt = (TextView) itemView.findViewById(R.id.vanLoad_date);
                 totalLineTxt = (TextView) itemView.findViewById(R.id.total_lines_txt);
 
-                vanLoadNoTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                vanLoadDateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totalLineTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                vanLoadNoTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                vanLoadDateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                totalLineTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
         }

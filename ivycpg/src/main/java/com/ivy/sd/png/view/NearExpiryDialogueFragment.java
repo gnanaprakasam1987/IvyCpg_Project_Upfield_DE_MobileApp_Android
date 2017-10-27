@@ -135,7 +135,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
         if (getView() != null) {
             tvtitle = (TextView) getView().findViewById(R.id.nearexpirybutton);
-            tvtitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            tvtitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             TextView skuName = (TextView) getView().findViewById(R.id.tvskuname);
             skuName.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
             skuName.setText(mSKUBO.getProductName());
@@ -373,7 +373,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getBaseContext());
                 row = inflater.inflate(R.layout.dialog_enter_expiry, parent, false);
                 date1 = (Button) row.findViewById(R.id.datePicker1);
-                date1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 CA1 = (EditText) row.findViewById(R.id.ca1);
                 PC1 = (EditText) row.findViewById(R.id.pc1);
@@ -384,9 +384,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece = (TextView) row.findViewById(R.id.tv_piece);
                 TextView tv_case = (TextView) row.findViewById(R.id.tv_case);
                 TextView tv_outer = (TextView) row.findViewById(R.id.tv_outer);
-                tv_piece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date1.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
@@ -409,7 +409,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(0).getNearexpOU());
 
                 date2 = (Button) row.findViewById(R.id.datePicker2);
-                date2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA2 = (EditText) row.findViewById(R.id.ca2);
                 PC2 = (EditText) row.findViewById(R.id.pc2);
                 OU2 = (EditText) row.findViewById(R.id.ou2);
@@ -419,9 +419,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece2 = (TextView) row.findViewById(R.id.tv_piece2);
                 TextView tv_case2 = (TextView) row.findViewById(R.id.tv_case2);
                 TextView tv_outer2 = (TextView) row.findViewById(R.id.tv_outer2);
-                tv_piece2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date2.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
@@ -443,7 +443,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(1).getNearexpOU());
 
                 date3 = (Button) row.findViewById(R.id.datePicker3);
-                date3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA3 = (EditText) row.findViewById(R.id.ca3);
                 PC3 = (EditText) row.findViewById(R.id.pc3);
                 OU3 = (EditText) row.findViewById(R.id.ou3);
@@ -453,9 +453,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece3 = (TextView) row.findViewById(R.id.tv_piece3);
                 TextView tv_case3 = (TextView) row.findViewById(R.id.tv_case3);
                 TextView tv_outer3 = (TextView) row.findViewById(R.id.tv_outer3);
-                tv_piece3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date3.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
@@ -477,7 +477,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(2).getNearexpOU());
 
                 date4 = (Button) row.findViewById(R.id.datePicker4);
-                date4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA4 = (EditText) row.findViewById(R.id.ca4);
                 PC4 = (EditText) row.findViewById(R.id.pc4);
                 OU4 = (EditText) row.findViewById(R.id.ou4);
@@ -487,9 +487,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece4 = (TextView) row.findViewById(R.id.tv_piece4);
                 TextView tv_case4 = (TextView) row.findViewById(R.id.tv_case4);
                 TextView tv_outer4 = (TextView) row.findViewById(R.id.tv_outer4);
-                tv_piece4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date4.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
@@ -511,7 +511,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(3).getNearexpOU());
 
                 date5 = (Button) row.findViewById(R.id.datePicker5);
-                date5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA5 = (EditText) row.findViewById(R.id.ca5);
                 PC5 = (EditText) row.findViewById(R.id.pc5);
                 OU5 = (EditText) row.findViewById(R.id.ou5);
@@ -521,9 +521,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece5 = (TextView) row.findViewById(R.id.tv_piece5);
                 TextView tv_case5 = (TextView) row.findViewById(R.id.tv_case5);
                 TextView tv_outer5 = (TextView) row.findViewById(R.id.tv_outer5);
-                tv_piece5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date5.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
@@ -544,7 +544,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(4).getNearexpOU());
 
                 date6 = (Button) row.findViewById(R.id.datePicker6);
-                date6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                date6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA6 = (EditText) row.findViewById(R.id.ca6);
                 PC6 = (EditText) row.findViewById(R.id.pc6);
                 OU6 = (EditText) row.findViewById(R.id.ou6);
@@ -554,9 +554,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 TextView tv_piece6 = (TextView) row.findViewById(R.id.tv_piece6);
                 TextView tv_case6 = (TextView) row.findViewById(R.id.tv_case6);
                 TextView tv_outer6 = (TextView) row.findViewById(R.id.tv_outer6);
-                tv_piece6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_case6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_outer6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_piece6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date6.setText(mSKUBO.getLocations()
                         .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)

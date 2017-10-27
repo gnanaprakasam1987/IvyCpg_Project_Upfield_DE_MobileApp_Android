@@ -142,7 +142,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             tvtotalLines = (TextView) findViewById(R.id.txttotalqty);
             tv_lbl_total_lines = (TextView) findViewById(R.id.TextView52);
             TextView51 = (TextView) findViewById(R.id.TextView51);
-            TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             lvwplist = (ListView) findViewById(R.id.lvwplistorddet);
             lvwplist.setCacheColorHint(0);
@@ -682,8 +682,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
                 holder.tvBatchNo.setText("12345" + holder.productBO.getBatchNo() + " , ");
             }
-            holder.tvBatchNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvBatchNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.tvwpsname.setText(holder.productBO.getProductShortName());
             holder.productName = holder.productBO.getProductName();
             holder.tvwqty.setText(holder.productBO.getOrderedPcsQty() + "");
@@ -691,7 +691,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             holder.outerQty.setText(holder.productBO.getOrderedOuterQty() + "");
             int totalQty = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
             holder.tvWeight.setText(" WGT : " + totalQty * holder.productBO.getWeight() + "");
-            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             /**
              * This line wise total may be wrong is amount discount appied via
              * scheme

@@ -175,9 +175,9 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                 //setting typefaces
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
 
-                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 // Order Field - Enable/Disable
@@ -185,7 +185,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_case_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_case_Title))
@@ -200,7 +200,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ((LinearLayout) row.findViewById(R.id.ll_pcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_pcs_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_pcs_Title))
@@ -215,7 +215,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_outer_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_outer_Title))

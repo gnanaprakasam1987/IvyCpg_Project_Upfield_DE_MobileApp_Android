@@ -109,7 +109,7 @@ public class ActivationDialog extends Dialog implements OnClickListener {
 				holder = new ViewHolder();
 				holder.environmentRadioBtn = (RadioButton) row
 						.findViewById(R.id.environmentRadioBtn);
-				holder.environmentRadioBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+				holder.environmentRadioBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 				holder.environmentRadioBtn
 						.setOnClickListener(new View.OnClickListener() {
 

@@ -102,9 +102,9 @@ public class TopOpportunities extends Fragment {
                 holder.vh_purchasevalue = (TextView) row.findViewById(R.id.tv_purchase_values);
                 holder.vh_linesavg = (TextView) row.findViewById(R.id.tv_lines_value);
 
-                holder.vh_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.vh_purchasevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.vh_linesavg.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.vh_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.vh_purchasevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.vh_linesavg.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 row.setTag(holder);
             } else {
