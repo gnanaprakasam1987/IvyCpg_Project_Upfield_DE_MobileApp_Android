@@ -176,6 +176,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
     private double totalvalue = 0;
+    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
@@ -218,6 +220,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
+    boolean isFromHomeScreen=false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -245,6 +249,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD1);
                 tempRField2 = extras.getString(TEMP_RFIELD2) == null ? ""
                         : extras.getString(TEMP_RFIELD2);
+                isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -264,6 +269,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
+            isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -357,6 +363,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+
+        if(!isFromHomeScreen&&bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+            bmodel.resetSRPvalues();
+        }
 
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(this,
@@ -3846,6 +3857,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void nextButtonClick() {
         try {
             if (bmodel.hasOrder()) {
+
+
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -3907,6 +3920,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+
+
+        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+            bmodel.excludeTaxFromSRP();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");
