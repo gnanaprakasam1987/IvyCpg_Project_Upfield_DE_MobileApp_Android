@@ -132,7 +132,7 @@ public class FitScoreChartFragment extends Fragment {
             //}
             setData();
             target_tv.setText(mDashboardList.getTarget() + "");
-            previous_score_TV.setText("0");
+            previous_score_TV.setText(""+bmodel.getRetailerMasterBO().getRField5());
             growth_tv.setText(mDashboardList.getAchieved() + "");
             target_tv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
             previous_score_TV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));

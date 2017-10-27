@@ -547,7 +547,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         updateMenuVisitStatus(mInStoreMenu);
 
 
-        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             mSupplierList = bmodel.downloadSupplierDetails();
             mSupplierAdapter = new ArrayAdapter<>(this,
                     android.R.layout.select_dialog_singlechoice, mSupplierList);
@@ -3831,10 +3831,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     }
 
     public void dataNotMapped() {
-        Toast.makeText(HomeScreenTwo.this,
+        bmodel.showAlert(
                 getResources().getString(R.string.data_not_mapped),
-                Toast.LENGTH_SHORT).show();
-
+                0);
     }
 
     /**
