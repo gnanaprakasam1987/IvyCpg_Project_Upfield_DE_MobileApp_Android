@@ -461,7 +461,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/inv_view_layout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -469,20 +468,36 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/inv_view_btn"
-            android:layout_width="@dimen/profile_history_20dp"
+        <ImageView
+            android:id="@+id/deliveryStatusValue"
+            android:layout_width="@dimen/profile_history_25dp"
             android:layout_height="@dimen/profile_history_25dp"
+            android:background="@drawable/coll_tick"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_marginTop="@dimen/list_margin"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
-            android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
-            android:background="@drawable/ic_double_right_arrow"
-            android:backgroundTint="@color/history_invbtn_color"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
-            android:textColor="@color/toolbar_title"
-            android:textSize="@dimen/text_sz_extra_small" />
+            android:padding="@dimen/dimen_2dp" />
 
+        <LinearLayout
+            android:id="@+id/inv_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/inv_view_btn"
+                android:layout_width="@dimen/profile_history_25dp"
+                android:layout_height="@dimen/profile_history_25dp"
+                android:background="@drawable/ic_double_right_arrow"
+                android:backgroundTint="@color/history_invbtn_color"
+                android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
+                android:layout_gravity="center"
+                android:textColor="@color/toolbar_title"
+                android:textSize="@dimen/text_sz_extra_small" />
+
+        </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

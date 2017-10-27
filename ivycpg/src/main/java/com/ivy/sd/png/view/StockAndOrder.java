@@ -23,6 +23,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -63,6 +66,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -172,6 +176,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
     private double totalvalue = 0;
+    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
@@ -184,6 +190,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRField1;
     private String tempRField2;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
+    private LevelBO mSelectedLevelBO = new LevelBO();
+    private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
+    private Vector<LevelBO> sequence;
+    private FilterAdapter filterAdapter;
+    private RecyclerView rvFilterList;
     private int mTotalScreenWidth = 0;
     private String strProductObj;
     private int SbdDistPre = 0; // Dist stock
@@ -208,6 +219,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String totalOrdCount;
 
     private Vector<ProductMasterBO> productList = new Vector<>();
+
+    boolean isFromHomeScreen=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -236,6 +249,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD1);
                 tempRField2 = extras.getString(TEMP_RFIELD2) == null ? ""
                         : extras.getString(TEMP_RFIELD2);
+                isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -255,6 +269,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
+            isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -349,6 +364,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+
+        if(!isFromHomeScreen&&bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+            bmodel.resetSRPvalues();
+        }
+
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(this,
                 android.R.layout.select_dialog_singlechoice);
@@ -363,6 +383,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        rvFilterList = (RecyclerView) findViewById(R.id.rvFilter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvFilterList.setLayoutManager(mLayoutManager);
+        rvFilterList.setItemAnimator(new DefaultItemAnimator());
 
         hideAndSeek();
 
@@ -375,7 +399,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
-
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
         /* Calculate the total and LPC value */
@@ -1348,6 +1371,61 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else {
             productFilterClickedFragment(); // Normal Filter Fragment
         }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
+
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
+                            }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
+                        }
+
+                    }
+                }
+            }
+
+
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
+            }
+
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
+        }
+
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
@@ -1772,7 +1850,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
                     ((LinearLayout) row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
                 else {
                     try {
@@ -2386,7 +2464,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -2572,7 +2650,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -2759,7 +2837,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
                             if (!totalOrdCount.equals("0"))
                                 updateScreenTitle();
-                            else
+                            else if (mSelectedFiltertext.equals(BRAND))
                                 setScreenTitle(title + " ("
                                         + mylist.size() + ")");
                         }
@@ -3321,7 +3399,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                 holder.srp.setText(bmodel.formatValue(holder.productObj
                         .getSrp()));
-            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
                 holder.srpEdit.setText(bmodel.formatValue(holder.productObj
                         .getSrp()));
 
@@ -3780,6 +3858,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void nextButtonClick() {
         try {
             if (bmodel.hasOrder()) {
+
+
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -3841,6 +3921,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+
+
+        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+            bmodel.excludeTaxFromSRP();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");
@@ -4573,6 +4659,58 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
+            sequence = bmodel.productHelper.getSequenceValues();
+
+            if (loadedFilterValues != null) {
+                if (loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
+                            }
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
+
+                        }
+
+                    }
+                }
+            }
+            if (sequence == null) {
+                sequence = new Vector<LevelBO>();
+            }
+
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
+
+            if (!sequence.isEmpty()) {
+                mSelectedLevelBO = sequence.get(0);
+                int levelID = sequence.get(0).getProductID();
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                filterAdapter = new FilterAdapter(filterValues);
+                rvFilterList.setAdapter(filterAdapter);
+            }
+        } else {
+            rvFilterList.setVisibility(View.GONE);
+        }
 
         if ("MENU_ORDER".equals(screenCode))
             title = bmodel.configurationMasterHelper
@@ -4581,6 +4719,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
         updatebrandtext(BRAND, -1);
+
     }
 
     @Override
@@ -4650,11 +4789,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
+            if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER && sequence.size() == 1) {
+                menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            }
         }/* else {
             if (isFilter) {
                 menu.findItem(R.id.menu_product_filter).setVisible(true);
             }
         }*/
+
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -4880,7 +5023,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
-
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -5493,8 +5635,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         updateValue();
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-
         updateOrderedCount();
+
         if (!bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
             if (count == 1) {
                 String strPname = filtertext + " (" + mylist.size() + ")";
@@ -5547,6 +5689,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         setScreenTitle(totalOrdCount + "/" + strPname);
                 }
             }
+        }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            filterAdapter.notifyDataSetChanged();
         }
     }
 
@@ -5770,5 +5915,261 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getProductMaster());
         }
         return newItems;
+    }
+
+    public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.MyViewHolder> {
+
+        private Vector<LevelBO> filterList;
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public Button btnFilter;
+
+            public MyViewHolder(View view) {
+                super(view);
+                btnFilter = (Button) view.findViewById(R.id.btn_filter);
+                btnFilter.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            }
+        }
+
+        public FilterAdapter(Vector<LevelBO> filterList) {
+            this.filterList = filterList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.filter_rv_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+            final LevelBO levelBO = filterList.get(position);
+            holder.btnFilter.setText(levelBO.getLevelName());
+            try {
+                if (mSelectedIdByLevelId != null && mSelectedLevelBO != null) {
+                    int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+
+                    if (levelId == levelBO.getProductID()) {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_rounded_corner_blue);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.white));
+                    } else {
+                        holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.Black));
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            holder.btnFilter.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                        mSelectedIdByLevelId = new HashMap<>();
+
+                        for (LevelBO levelBO : sequence) {
+
+                            mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                        }
+                    }
+                    int levelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+                    if (levelId == filterList.get(position).getProductID()) {
+                        mSelectedIdByLevelId.put(
+                                mSelectedLevelBO.getProductID(), 0);
+                    } else {
+                        mSelectedIdByLevelId.put(mSelectedLevelBO
+                                .getProductID(), filterList.get(position)
+                                .getProductID());
+                    }
+
+                    updateSelectedID();
+
+                    Vector<LevelBO> finalParentList = new Vector<>();
+
+                    if (bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
+
+                        if (isAttributeFilterSelected()) {
+                            //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
+                            if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
+                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                            }
+
+                            ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
+                            for (LevelBO bo : sequence) {
+                                for (int i = 0; i < mSelectedIdByLevelId.size(); i++) {
+                                    if (mSelectedIdByLevelId.get(bo.getProductID()) > 0) {
+                                        lstSelectedAttributesIds.add(mSelectedIdByLevelId.get(bo.getProductID()));
+                                    }
+
+                                }
+                            }
+
+                            ArrayList<Integer> lstFinalProductIds = new ArrayList<>();
+                            for (int j = 0; j < lstSelectedAttributesIds.size(); j++) {
+                                for (int k = 0; k < bmodel.productHelper.getLstProductAttributeMapping().size(); k++) {
+
+                                    if (bmodel.productHelper.getLstProductAttributeMapping().get(k).getAttributeId() == lstSelectedAttributesIds.get(j)
+                                            && !lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
+                                        lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
+                                    }
+                                }
+                            }
+                            updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
+                            return;
+                        } else
+                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+
+                    } else
+                        finalParentList = updateProductLoad(sequence.size());
+
+                    updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, levelBO.getLevelName());
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return filterList.size();
+        }
+    }
+
+    private void updateSelectedID() {
+        boolean flag = false;
+
+        for (LevelBO levelBO : sequence) {
+            if (flag) {
+                mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+            }
+            if (mSelectedLevelBO.getProductID() == levelBO.getProductID()) {
+                int selectedLeveId = mSelectedIdByLevelId.get(levelBO.getProductID());
+                if (selectedLeveId != 0) {
+                    flag = true;
+                }
+
+            }
+
+        }
+
+    }
+
+    private boolean isAttributeFilterSelected() {
+        for (LevelBO bo : sequence) {
+            if (mSelectedIdByLevelId.get(bo.getProductID()) > 0 && bo.getProductID() < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFilterContentSelected(int pos) {
+        for (int i = 0; i <= pos - 1; i++) {
+            if (i <= sequence.size()) {
+                LevelBO levelbo = sequence.get(i);
+                if (mSelectedIdByLevelId.get(levelbo.getProductID()) != 0) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    private Vector<LevelBO> updateProductLoad(int pos) {
+
+        Vector<LevelBO> finalValuelist = new Vector<>();
+
+        if (isFilterContentSelected(pos)) {
+
+            int selectedGridLevelID = 0;
+            ArrayList<Integer> parentIdList = null;
+
+            for (int i = 0; i < pos; i++) {
+                LevelBO levelBO = sequence.get(i);
+
+                if (i != 0) {
+
+                    parentIdList = getParenIdList(selectedGridLevelID,
+                            parentIdList, levelBO);
+
+                }
+                selectedGridLevelID = mSelectedIdByLevelId.get(levelBO
+                        .getProductID());
+
+                if (i == pos - 1) {
+
+                    Vector<LevelBO> gridViewlist = loadedFilterValues
+                            .get(levelBO.getProductID());
+                    finalValuelist = new Vector<>();
+                    if (selectedGridLevelID != 0) {
+                        for (LevelBO gridViewBO : gridViewlist) {
+                            if (selectedGridLevelID == gridViewBO.getProductID()) {
+                                finalValuelist.add(gridViewBO);
+                            }
+
+                        }
+
+                    } else {
+                        if (parentIdList != null)
+                            if (!parentIdList.isEmpty()) {
+                                for (int productID : parentIdList) {
+                                    for (LevelBO gridViewBO : gridViewlist) {
+                                        if (productID == gridViewBO.getProductID()) {
+                                            finalValuelist.add(gridViewBO);
+                                        }
+
+                                    }
+                                }
+                            }
+                    }
+                }
+
+            }
+
+
+        } else {
+            if (pos > 0)
+                finalValuelist = loadedFilterValues.get(sequence.get(pos - 1)
+                        .getProductID());
+
+        }
+        return finalValuelist;
+
+    }
+
+    private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
+                                              ArrayList<Integer> list, LevelBO levelBO) {
+        ArrayList<Integer> parentIdList = new ArrayList<>();
+        Vector<LevelBO> gridViewlist = loadedFilterValues.get(levelBO
+                .getProductID());
+        if (selectedGridLevelID != 0) {
+            if (gridViewlist != null) {
+                for (LevelBO gridlevelBO : gridViewlist) {
+                    if (selectedGridLevelID == gridlevelBO.getParentID()) {
+                        parentIdList.add(gridlevelBO.getProductID());
+                    }
+
+                }
+            }
+
+        } else {
+
+            if (gridViewlist != null && list != null && list.size() > 0) {
+                for (int id : list) {
+                    for (LevelBO gridlevelBO : gridViewlist) {
+                        if (gridlevelBO.getParentID() == id) {
+                            parentIdList
+                                    .add(gridlevelBO.getProductID());
+                        }
+                    }
+                }
+            }
+
+        }
+        return parentIdList;
     }
 }

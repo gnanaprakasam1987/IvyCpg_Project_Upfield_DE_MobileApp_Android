@@ -1008,9 +1008,10 @@ public class ProfileFragment extends Fragment {
             case "PROFILE46": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(bmodel.beatMasterHealper.
-                        getBeatMasterBOByID(retailerObj.
-                                getBeatID()).getBeatDescription());
+                if (bmodel.beatMasterHealper.getBeatMaster().size() > 0)
+                    outletBO.setValueText(bmodel.beatMasterHealper.
+                            getBeatMasterBOByID(retailerObj.
+                                    getBeatID()).getBeatDescription());
                 finalProfileList.add(outletBO);
                 break;
             }

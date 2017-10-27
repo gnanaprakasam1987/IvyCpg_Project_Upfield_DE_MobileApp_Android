@@ -405,12 +405,23 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            if (parentidList.size() > 0 && !filtertext.equalsIgnoreCase("")) {
+                for (LevelBO levelBO : parentidList) {
+                    for (LoadManagementBO productBO : vanunloadlist) {
+                        if (levelBO.getProductID() == productBO.getParentid()) {
+                            filterlist.add(productBO);
+                        }
+                    }
+                }
+            } else {
+                int bid = -1;
                 for (LoadManagementBO productBO : vanunloadlist) {
-                    if (levelBO.getProductID() == productBO.getParentid()) {
+                    if (bid == productBO.getParentid() || bid == -1) {
+
                         filterlist.add(productBO);
                     }
                 }
+
             }
         }
         mSchedule = new MyAdapter(filterlist);

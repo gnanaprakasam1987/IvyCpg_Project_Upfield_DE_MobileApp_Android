@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -193,6 +194,12 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.invoice_qty_val.setText(projectObj.getRF3());
             holder.del_rep_code_val.setText(projectObj.getRF4());
 
+            if (projectObj.getDelieveryStatus().equalsIgnoreCase("Y")) {
+                holder.delieveryStatusValue.setVisibility(View.VISIBLE);
+            } else {
+                holder.delieveryStatusValue.setVisibility(View.GONE);
+            }
+
             try {
                 Calendar c = Calendar.getInstance();
                 c.setTime(sdf.parse(projectObj.getOrderdate()));
@@ -218,6 +225,7 @@ public class HistoryFragment extends IvyBaseFragment {
             private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt;
             private TextView orderId, date, totLines, totVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
+            ImageView delieveryStatusValue;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -250,6 +258,9 @@ public class HistoryFragment extends IvyBaseFragment {
                 invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
                 invoice_qty_layout = (LinearLayout) itemView.findViewById(R.id.invoice_qty_layout);
                 del_rep_code_layout = (LinearLayout) itemView.findViewById(R.id.del_rep_code_layout);
+
+                delieveryStatusValue = (ImageView) itemView.findViewById(R.id.deliveryStatusValue);
+
 
                 if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
                         && !bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {

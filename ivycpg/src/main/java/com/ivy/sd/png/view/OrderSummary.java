@@ -605,6 +605,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             updateSchemeDetails();
         }
 
+        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+            //applying removed tax..
+            updateTaxOnProduct();
+        }
+
         //  Apply product entry level discount
         if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG) {
             productEntryLevelDis = bmodel.productHelper.updateProductDiscountUsingEntry(mOrderedProductList);
@@ -710,6 +715,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
+    private void updateTaxOnProduct(){
+        for(ProductMasterBO bo:mOrderedProductList){
+            float finalAmount=0;
+
+            if(bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())!=null) {
+                for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                    if (taxBO.getParentType().equals("0")) {
+                        finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
+                }
+            }
+
+            bo.setDiscount_order_value((bo.getDiscount_order_value()+finalAmount));
+        }
+    }
     @Override
     public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
@@ -1256,7 +1276,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         switch (id) {
             case DATE_DIALOG_ID:
                 Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_YEAR, 1);
+                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
                 int cyear = c.get(Calendar.YEAR);
                 int cmonth = c.get(Calendar.MONTH);
                 int cday = c.get(Calendar.DAY_OF_MONTH);
@@ -1473,6 +1493,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                                         StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber);
+
+
 
                                             i = new Intent(OrderSummary.this,
                                                     CommonPrintPreviewActivity.class);
@@ -2589,7 +2611,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
                             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-                            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
+                            bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true, orderList, null);
 
                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),

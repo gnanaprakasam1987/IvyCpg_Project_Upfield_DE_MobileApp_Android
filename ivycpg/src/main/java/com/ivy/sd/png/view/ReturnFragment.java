@@ -64,6 +64,7 @@ public class ReturnFragment extends IvyBaseFragment {
     private View view;
     static Button dateBtn;
     private int holderPosition, holderTop;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -281,6 +282,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_outer_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) row.findViewById(R.id.tv_mfd_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
@@ -641,6 +643,16 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 }
             }
+
+            if (holder.reasonBO.getCaseSize() > 0)
+                ((TextView) row.findViewById(R.id.tv_case_title)).setText(getResources().getString(R.string.avail_cases) + "(" + holder.reasonBO.getCaseSize() + " pcs)");
+            else
+                ((TextView) row.findViewById(R.id.tv_case_title)).setText(getResources().getString(R.string.avail_cases));
+
+            if (holder.reasonBO.getOuterSize() > 0)
+                ((TextView) row.findViewById(R.id.tv_outer_title)).setText(getResources().getString(R.string.avail_outer) + "(" + holder.reasonBO.getOuterSize() + " pcs)");
+            else
+                ((TextView) row.findViewById(R.id.tv_outer_title)).setText(getResources().getString(R.string.avail_outer));
 
 
             String strCaseQty = holder.reasonBO.getCaseQty() + "";

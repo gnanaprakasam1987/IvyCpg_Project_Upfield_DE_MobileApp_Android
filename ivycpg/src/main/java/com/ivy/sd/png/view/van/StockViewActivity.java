@@ -177,6 +177,15 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // Change color if Filter is selected
+        if (!generalbutton.equals(GENERAL))
+            menu.findItem(R.id.menu_spl_filter).setIcon(
+                    R.drawable.ic_action_star_select);
+        if (!brandbutton.equals(BRAND))
+            menu.findItem(R.id.menu_product_filter).setIcon(
+                    R.drawable.ic_action_filter_select);
+
+
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -340,7 +349,8 @@ public class StockViewActivity extends ToolBarwithFilter implements
             for (LoadManagementBO parentBo : temp) {
                 childList = new ArrayList<>();
                 for (LoadManagementBO childBO : temp) {
-                    if (parentBo.getProductid() == childBO.getProductid())
+                    if (parentBo.getProductid() == childBO.getProductid()
+                            && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
                         childList.add(childBO);
                 }
                 String pid = String.valueOf(parentBo.getProductid());
@@ -387,7 +397,8 @@ public class StockViewActivity extends ToolBarwithFilter implements
         for (LoadManagementBO parentBo : filterlist) {
             childList = new ArrayList<>();
             for (LoadManagementBO childBO : filterlist) {
-                if (parentBo.getProductid() == childBO.getProductid())
+                if (parentBo.getProductid() == childBO.getProductid()
+                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
@@ -462,13 +473,16 @@ public class StockViewActivity extends ToolBarwithFilter implements
         for (LoadManagementBO parentBo : filterlist) {
             childList = new ArrayList<>();
             for (LoadManagementBO childBO : filterlist) {
-                if (parentBo.getProductid() == childBO.getProductid())
+                if (parentBo.getProductid() == childBO.getProductid()
+                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
 
             listDataChild.put(pid, childList);//load child batch List data
         }
+        if (childList.size() > 0)
+            showExpandButton();
 
 //---------- remove duplicate product name from given list-----------///
         for (int i = 0; i < filterlist.size(); i++) {

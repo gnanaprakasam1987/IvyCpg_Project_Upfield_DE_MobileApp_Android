@@ -311,7 +311,7 @@ public class CheckModeFragment extends IvyBaseFragment
                     mCollectAmountET.setText(qty);
                     Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                             Toast.LENGTH_SHORT).show();
-                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList)) {
+                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CHEQUE)) {
                     //updateTotalAmountEntered();
                 } else {
                     if (!qty.contains("."))

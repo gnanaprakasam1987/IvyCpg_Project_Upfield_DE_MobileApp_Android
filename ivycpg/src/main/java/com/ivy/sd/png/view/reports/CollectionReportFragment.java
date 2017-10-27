@@ -46,6 +46,8 @@ public class CollectionReportFragment extends Fragment {
     Double totalRTGS = 0.0;
     Double total_mob_payment = 0.0;
     Double totalCn = 0.0;
+    Double totalAd = 0.0;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class CollectionReportFragment extends Fragment {
         final LinearLayout ll_cheque = (LinearLayout) view.findViewById(R.id.ll_cheque);
         final LinearLayout ll_dd = (LinearLayout) view.findViewById(R.id.ll_dd);
         final LinearLayout ll_credit_note = (LinearLayout) view.findViewById(R.id.ll_creditNote);
+        final LinearLayout ll_adPayment = (LinearLayout) view.findViewById(R.id.ll_adPayment);
         final LinearLayout ll_rtgs = (LinearLayout) view.findViewById(R.id.ll_rtgs);
         final LinearLayout ll_mob_pymt = (LinearLayout) view.findViewById(R.id.ll_mob_pymt);
         final ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
@@ -86,6 +89,7 @@ public class CollectionReportFragment extends Fragment {
         TextView tv_cn = (TextView) view.findViewById(R.id.totCn);
         TextView tv_rtgs = (TextView) view.findViewById(R.id.total_rtgs);
         TextView tv_mob_pymt = (TextView) view.findViewById(R.id.total_mob_payment);
+        TextView tv_ad = (TextView) view.findViewById(R.id.totAd);
 
         if (totalCash != null)
             tv_cash.setText(bModel.formatValue(totalCash));
@@ -99,6 +103,8 @@ public class CollectionReportFragment extends Fragment {
             tv_mob_pymt.setText(bModel.formatValue(total_mob_payment));
         if (totalCn != null)
             tv_cn.setText(bModel.formatValue(totalCn));
+        if (totalAd != null)
+            tv_ad.setText(bModel.formatValue(totalAd));
         if (totalColl != null)
             tv_collected.setText(bModel.formatValue(totalColl));
 
@@ -114,6 +120,7 @@ public class CollectionReportFragment extends Fragment {
                     ll_cash.setVisibility(View.VISIBLE);
                     ll_cheque.setVisibility(View.VISIBLE);
                     ll_dd.setVisibility(View.VISIBLE);
+                    ll_adPayment.setVisibility(View.VISIBLE);
                     ll_credit_note.setVisibility(View.VISIBLE);
                     ll_rtgs.setVisibility(View.VISIBLE);
                     ll_mob_pymt.setVisibility(View.VISIBLE);
@@ -122,6 +129,7 @@ public class CollectionReportFragment extends Fragment {
                     ll_cash.setVisibility(View.GONE);
                     ll_cheque.setVisibility(View.GONE);
                     ll_dd.setVisibility(View.GONE);
+                    ll_adPayment.setVisibility(View.GONE);
                     ll_credit_note.setVisibility(View.GONE);
                     ll_rtgs.setVisibility(View.GONE);
                     ll_mob_pymt.setVisibility(View.GONE);
@@ -596,7 +604,10 @@ public class CollectionReportFragment extends Fragment {
                     } else if (payBO.getCashMode().equals(StandardListMasterConstants.MOBILE_PAYMENT)) {
                         total_mob_payment += payBO.getAmount();
                     } else if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
-                        totalCn += payBO.getAmount();
+                        if (payBO.getReferenceNumber().startsWith("AP"))
+                            totalAd = +payBO.getAmount();
+                        else
+                            totalCn += payBO.getAmount();
                     }
                 }
             }

@@ -1586,7 +1586,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         jsonArray.put(distributorBO.getDId());
 
                         //update distributorid in usermaster
-                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getDName());
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(),distributorBO.getDName());
                     }
                 }
                 json.put("DistributorIds", jsonArray);
