@@ -708,16 +708,18 @@ public class SurveyHelperNew {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
 
                 for (QuestionBO qus : mParentQuestions) {
+                    qus.setIsMandatoryQuestNotAnswered(false);
                     if (qus.getIsSubQuestion() == 0) {
                         if (qus.getIsMandatory() == 1) {
                             if (qus.getSelectedAnswer().isEmpty()
                                     && qus.getSelectedAnswerIDs().isEmpty()) {
                                 //parent question itself not answered
-                                return false;
+                                qus.setIsMandatoryQuestNotAnswered(true);
+                                returnFlag = false;
                             } else {
                                 //Parent question answered,then checking sub question
                                 if (!isMandatorySubQuestionsAnswered(qus, sBO)) {
-                                    return false;
+                                    returnFlag = false;
                                 }
                             }
 
@@ -725,7 +727,7 @@ public class SurveyHelperNew {
                         } else {
                             //Parent question not mandatory,then checking for sub question if mandatory
                             if (!isMandatorySubQuestionsAnswered(qus, sBO)) {
-                                return false;
+                                returnFlag = false;
                             }
                         }
                     }
@@ -737,6 +739,7 @@ public class SurveyHelperNew {
     }
 
     private boolean isMandatorySubQuestionsAnswered(QuestionBO qus, SurveyBO surveyBO) {
+        boolean returnFlag = true;
         final ArrayList<AnswerBO> answers = qus.getAnswersList();
         for (AnswerBO answerBO : answers) {
             if (qus.getSelectedAnswerIDs().contains(answerBO.getAnswerID())) {
@@ -745,11 +748,13 @@ public class SurveyHelperNew {
 
                     for (QuestionBO subQBO : surveyBO.getQuestions()) {
                         if (subQBO.getQuestionID() == subQid) {
+                            subQBO.setIsMandatoryQuestNotAnswered(false);
                             if (subQBO.getIsMandatory() == 1) {
                                 if (subQBO.getIsMandatory() == 1
                                         && subQBO.getSelectedAnswer().isEmpty()
                                         && subQBO.getSelectedAnswerIDs().isEmpty()) {
-                                    return false;
+                                    subQBO.setIsMandatoryQuestNotAnswered(true);
+                                    returnFlag = false;
 
                                 }
                             }
@@ -758,7 +763,7 @@ public class SurveyHelperNew {
                 }
             }
         }
-        return true;
+        return returnFlag;
     }
 
 
@@ -895,13 +900,13 @@ public class SurveyHelperNew {
 
                     mAllQuestions.addAll(sBO.getQuestions());
                     questionSize = mAllQuestions.size();
-                    double totalAchievedScore=0;
+                    double totalAchievedScore = 0;
                     for (int ii = 0; ii < questionSize; ii++) {
 
                         questionBO = mAllQuestions.get(ii);
                         if (sBO.getSurveyID() == questionBO.getSurveyid()) {
 
-                            boolean isAnswered=false;
+                            boolean isAnswered = false;
 
                             String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                             String detailImageColumns = "uid, retailerid, qid,imgName";
@@ -921,7 +926,7 @@ public class SurveyHelperNew {
                             else
                                 weight = 0;
 
-                            double optionScore=0;
+                            double optionScore = 0;
                             for (int j = 0; j < answerSize; j++) {
 
                                 //option wise score needed here for MULTI SELECTION
@@ -952,7 +957,7 @@ public class SurveyHelperNew {
                                     db.insertSQL("AnswerDetail", detailColumns,
                                             detailvalues);
                                     isData = true;
-                                    isAnswered=true;
+                                    isAnswered = true;
 
                                 } else {
                                     String detailvalues = values1
@@ -963,7 +968,7 @@ public class SurveyHelperNew {
                                             + DatabaseUtils
                                             .sqlEscapeString(questionBO
                                                     .getSelectedAnswer().get(j))
-                                            + "," +optionScore
+                                            + "," + optionScore
                                             + "," + weight
                                             + "," + questionBO.getSurveyid()
                                             + "," + questionBO.getIsSubQuestion();
@@ -971,7 +976,7 @@ public class SurveyHelperNew {
                                     db.insertSQL("AnswerDetail", detailColumns,
                                             detailvalues);
                                     isData = true;
-                                    isAnswered=true;
+                                    isAnswered = true;
                                 }
 
                             }
@@ -985,9 +990,9 @@ public class SurveyHelperNew {
                                         detailImageValues);
                             }
 
-                            if(isAnswered) {
-                                if("OPT".equals(questionBO.getQuestionType())
-                                        ||"MULTISELECT".equals(questionBO.getQuestionType())) {
+                            if (isAnswered) {
+                                if ("OPT".equals(questionBO.getQuestionType())
+                                        || "MULTISELECT".equals(questionBO.getQuestionType())) {
                                     //Insert Answer score detail
                                     double score = ((questionBO.getMaxScore() > 0 && questionBO.getQuestScore() > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questionBO.getQuestScore());
                                     totalAchievedScore += score;
@@ -1081,7 +1086,7 @@ public class SurveyHelperNew {
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
 
-                        double totalAchievedScore=0;
+                        double totalAchievedScore = 0;
                         for (int ii = 0; ii < questionSize; ii++) {
 
                             questionBO = mAllQuestions.get(ii);
@@ -1089,7 +1094,7 @@ public class SurveyHelperNew {
                             if (sBO.getSurveyID() ==
                                     questionBO.getSurveyid()) {
 
-                                boolean isAnswered=false;
+                                boolean isAnswered = false;
 
                                 String detailColumns = "uid, retailerid, qid, qtype, answerid, answer,score,isExcluded,surveyid,isSubQuest";
                                 String detailImageColumns = "uid, retailerid, qid,imgName";
@@ -1109,7 +1114,7 @@ public class SurveyHelperNew {
                                 else
                                     weight = 0;
 
-                                double optionScore=0;
+                                double optionScore = 0;
                                 for (int j = 0; j < answerSize; j++) {
 
                                     //option wise score needed here for MULTI SELECTION
@@ -1139,7 +1144,7 @@ public class SurveyHelperNew {
                                         db.insertSQL("AnswerDetail", detailColumns,
                                                 detailvalues);
                                         isData = true;
-                                        isAnswered=true;
+                                        isAnswered = true;
 
                                     } else {
                                         String detailvalues = values1
@@ -1158,7 +1163,7 @@ public class SurveyHelperNew {
                                         db.insertSQL("AnswerDetail", detailColumns,
                                                 detailvalues);
                                         isData = true;
-                                        isAnswered=true;
+                                        isAnswered = true;
                                     }
 
                                 }
@@ -1172,10 +1177,10 @@ public class SurveyHelperNew {
                                             detailImageValues);
                                 }
 
-                                if(isAnswered) {
+                                if (isAnswered) {
                                     //Insert Answer score detail
-                                    if("OPT".equals(questionBO.getQuestionType())
-                                            ||"MULTISELECT".equals(questionBO.getQuestionType())) {
+                                    if ("OPT".equals(questionBO.getQuestionType())
+                                            || "MULTISELECT".equals(questionBO.getQuestionType())) {
                                         double score = ((questionBO.getMaxScore() > 0 && questionBO.getQuestScore() > questionBO.getMaxScore()) ? questionBO.getMaxScore() : questionBO.getQuestScore());
                                         totalAchievedScore += score;
                                         String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
@@ -1226,16 +1231,15 @@ public class SurveyHelperNew {
     }
 
 
-    private double getScoreForAnswerId(QuestionBO questionBO,int answerId){
-        try{
-            for(AnswerBO answerBO: questionBO.getAnswersList()){
-                if(answerBO.getAnswerID()==answerId){
+    private double getScoreForAnswerId(QuestionBO questionBO, int answerId) {
+        try {
+            for (AnswerBO answerBO : questionBO.getAnswersList()) {
+                if (answerBO.getAnswerID() == answerId) {
                     return answerBO.getScore();
                 }
             }
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return 0;

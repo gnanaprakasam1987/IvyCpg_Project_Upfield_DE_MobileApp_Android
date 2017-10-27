@@ -258,6 +258,24 @@
                 </LinearLayout>
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mandatory_view"
+                android:layout_width="@dimen/dimen_30dp"
+                android:layout_height="@dimen/dimen_30dp"
+                android:layout_alignParentRight="true"
+                android:visibility="visible">
+
+                <com.ivy.sd.png.view.SlantView
+                    android:id="@+id/slant_view_bg"
+                    android:layout_width="@dimen/dimen_30dp"
+                    android:layout_height="@dimen/dimen_30dp"
+
+                    android:background="@color/RED"
+                    android:visibility="gone">
+
+                </com.ivy.sd.png.view.SlantView>
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
