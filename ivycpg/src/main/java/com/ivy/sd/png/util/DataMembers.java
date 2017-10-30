@@ -43,6 +43,10 @@ public class DataMembers {
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
     public static final int ATTENDANCE_UPLOAD = 101;
+    // print file
+    public static final String IVYDIST_PATH="IvyDist";
+    public static final String PRINT_FILE_PATH="PrintFile";
+    public static final String PRINT_FILE_START="PF_INV";
 
     public static String COMP_PLEVELNAME = "";
 

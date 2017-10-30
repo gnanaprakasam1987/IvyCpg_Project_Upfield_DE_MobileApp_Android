@@ -813,7 +813,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.spqty = (TextView) row.findViewById(R.id.sp_quantity);
 
                 holder.tvwspname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.tvwtot.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tvwtot.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
