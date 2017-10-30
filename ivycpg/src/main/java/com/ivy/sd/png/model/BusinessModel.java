@@ -10861,9 +10861,7 @@ public class BusinessModel extends Application {
 
     public void writeToFile(String data, String filename,String foldername) {
         String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
-    public void writeToFile(String data, String filename) {
 
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
         File folder = new File(path);
         if (!folder.exists()) {
             folder.mkdirs();

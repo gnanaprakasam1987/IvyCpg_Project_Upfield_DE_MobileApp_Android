@@ -94,7 +94,7 @@ public class ReplaceFragment extends IvyBaseFragment {
         productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
 
 
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.BOLD));
+        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.tvTitleReturnQty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) view.findViewById(R.id.tvTitlerep)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.srpcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
