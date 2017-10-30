@@ -62,9 +62,9 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             if (isPartialOrder)
-                setScreenTitle("Partial Invoice");
+                setScreenTitle(getResources().getString(R.string.partial_delivery));
             else
-                setScreenTitle("Invoice");
+                setScreenTitle(getResources().getString(R.string.text_invoice));
 
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

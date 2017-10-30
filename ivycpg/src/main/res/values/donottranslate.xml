@@ -161,5 +161,7 @@
     <string name="share_invoice_using">Share invoice using..</string>
     <string name="error_in_creating_pdf">Error in creating pdf.</string>
     <string name="preparing_pdf">Preparing Pdf file</string>
+
+    <string name="partial_delivery">Partial Delivery</string>
     <string name="total_vol">Total Volume</string>
 </resources>

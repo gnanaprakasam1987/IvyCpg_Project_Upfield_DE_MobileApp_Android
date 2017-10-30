@@ -6158,10 +6158,9 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            db.executeQ("update retailerMaster set isVisited='Y' where retailerid ="
-                    + getRetailerMasterBO().getRetailerID()
-                    + " and beatid= "
-                    + getRetailerMasterBO().getBeatID());
+            db.updateSQL("Update RetailerMaster set isVisited='Y' where RetailerID ="
+                    + getRetailerMasterBO().getRetailerID());
+
             db.closeDB();
 
             // update loaded retailerMaster flag.

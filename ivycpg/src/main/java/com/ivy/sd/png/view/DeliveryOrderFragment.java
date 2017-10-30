@@ -1037,9 +1037,11 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         //scheme available
 
                         boolean isStockAvailableForScheme = true;
+                        boolean isFreeProductsAvailable=false;
                         for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
 
                             if (schemeBO.isQuantityTypeSelected()) {
+                                isFreeProductsAvailable=true;
                                 for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
 
                                     ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
@@ -1064,34 +1066,43 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                         }
 
-                        if (isStockAvailableForScheme) {
-                            Intent intent = new Intent(getActivity(), DeliveryOrderScheme.class);
+                        if(isFreeProductsAvailable) {
+                            if (isStockAvailableForScheme) {
+                                Intent intent = new Intent(getActivity(), DeliveryOrderScheme.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                            } else {
+                                //No stock available for scheme free products..
+
+                                new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                                        getResources().getString(R.string.stock_not_availble_for_free_product),
+                                        getResources().getString(R.string.do_want_to_continue_with_partial_invoice),
+                                        false, getActivity().getResources().getString(R.string.ok),
+                                        getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                                    @Override
+                                    public void onPositiveButtonClick() {
+
+                                        Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
+                                        intent.putExtra("isPartial", true);
+                                        startActivity(intent);
+                                        getActivity().finish();
+
+                                    }
+                                }, new CommonDialog.negativeOnClickListener() {
+                                    @Override
+                                    public void onNegativeButtonClick() {
+                                    }
+                                }).show();
+
+
+                            }
+                        }
+                        else{
+                            // No free products
+                            Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
+                            intent.putExtra("isPartial", false);
                             startActivity(intent);
                             getActivity().finish();
-                        } else {
-                            //No stock available for scheme free products..
-
-                            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                                    getResources().getString(R.string.stock_not_availble_for_free_product),
-                                    getResources().getString(R.string.do_want_to_continue_with_partial_invoice),
-                                    false, getActivity().getResources().getString(R.string.ok),
-                                    getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
-                                @Override
-                                public void onPositiveButtonClick() {
-
-                                    Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
-                                    intent.putExtra("isPartial", true);
-                                    startActivity(intent);
-                                    getActivity().finish();
-
-                                }
-                            }, new CommonDialog.negativeOnClickListener() {
-                                @Override
-                                public void onNegativeButtonClick() {
-                                }
-                            }).show();
-
-
                         }
 
                     } else {
