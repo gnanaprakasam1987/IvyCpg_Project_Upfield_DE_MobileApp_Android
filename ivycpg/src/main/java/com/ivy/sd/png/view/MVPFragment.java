@@ -108,7 +108,7 @@ public class MVPFragment extends IvyBaseFragment {
         pointTxtv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         TextView badgesTxtv = (TextView) view.findViewById(R.id.textview411);
-        badgesTxtv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.BOLD));
+        badgesTxtv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
 
         TextView peerTxtv = (TextView) view.findViewById(R.id.peer_textview);
         peerTxtv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
