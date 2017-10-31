@@ -60,8 +60,6 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -217,11 +215,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -242,8 +238,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
-import static com.itextpdf.text.pdf.PdfName.TEXT;
 
 public class BusinessModel extends Application {
 
@@ -4134,14 +4128,14 @@ public class BusinessModel extends Application {
                     product.getSchemeBO().setPriceTypeSeleted(true);
                 }
                 product.setCheked(true);
-
-                if (!configurationMasterHelper.IS_INVOICE) {
+                /* No need for preseller */
+                /*if (!configurationMasterHelper.IS_INVOICE) {
                     if (product.isAllocation() == 1) {
                         int newsih = product.getSIH()
                                 + ((caseSize * caseqty) + pieceqty + (outerQty * outerSize));
                         product.setSIH(newsih);
                     }
-                }
+                }*/
                 if (OrderDetails != null) {
 
                     product.setD1(OrderDetails.getDouble(OrderDetails
@@ -4209,8 +4203,9 @@ public class BusinessModel extends Application {
             }
             orderDetailCursor.close();
             this.setOrderid(orderId + "");
-            if (!configurationMasterHelper.IS_INVOICE)
-                updateSIHOnDeleteOrder("'" + orderId + "'");
+            /* No need for preseller */
+            /*if (!configurationMasterHelper.IS_INVOICE)
+                updateSIHOnDeleteOrder("'" + orderId + "'");*/
             db.deleteSQL(DataMembers.tbl_orderHeader, "OrderID=" + QT(orderId)
                     + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_orderDetails, "OrderID=" + QT(orderId)
@@ -6701,7 +6696,7 @@ public class BusinessModel extends Application {
     /**
      * This method will save the Order into Database.
      */
-    void saveOrder() {
+    public void saveOrder() {
         try {
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -6814,14 +6809,14 @@ public class BusinessModel extends Application {
                     if (orderDetailCursor.getCount() > 0) {
                         orderDetailCursor.moveToNext();
                         uid = QT(orderDetailCursor.getString(0));
-
-                        if (!configurationMasterHelper.IS_INVOICE) {
-                            /**
+                        /* No need for preseller */
+                        /*if (!configurationMasterHelper.IS_INVOICE) {
+                            *//**
                              * before deleting the order, SIH in productmaster
                              * should get updated.
-                             **/
+                         **//*
                             updateSIHOnDeleteOrder(uid);
-                        }
+                        }*/
                         db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
                         db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
 
@@ -7025,9 +7020,9 @@ public class BusinessModel extends Application {
                         db.insertSQL(DataMembers.tbl_orderDetails, columns,
                                 values);
                     }
-
-                    if (!configurationMasterHelper.IS_INVOICE) {
-                        /** subract the sold product from SIH **/
+                    /* No need for PreSeller */
+                  /*  if (!configurationMasterHelper.IS_INVOICE) {
+                        *//** subract the sold product from SIH **//*
                         if (productHelper.getProductMaster().get(i)
                                 .isAllocation() == 1) {
                             int s = product.getSIH() > pieceCount ? product
@@ -7045,7 +7040,7 @@ public class BusinessModel extends Application {
                                     + product.getProductID());
                         }
                     }
-
+*/
                     // Insert the Crown Product Details
                     if (configurationMasterHelper.SHOW_CROWN_MANAGMENT
                             && configurationMasterHelper.IS_SIH_VALIDATION) {

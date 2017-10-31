@@ -110,6 +110,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
+                    bmodel.saveOrder();
                     bmodel.saveNewInvoice();
                 }
 
