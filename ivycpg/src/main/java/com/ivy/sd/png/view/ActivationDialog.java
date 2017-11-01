@@ -45,7 +45,7 @@ public class ActivationDialog extends Dialog implements OnClickListener {
 		setCancelable(true);
 		bmodel = (BusinessModel) activity.getApplicationContext();
 		TextView title = (TextView) findViewById(R.id.title);
-		title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.BOLD));
+		title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
 		add = (Button) findViewById(R.id.add);
 		add.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 		add.setOnClickListener(this);

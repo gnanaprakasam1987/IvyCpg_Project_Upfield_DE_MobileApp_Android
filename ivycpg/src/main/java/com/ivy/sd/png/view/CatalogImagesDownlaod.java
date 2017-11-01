@@ -73,7 +73,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         tvDownloadStatus = (TextView) findViewById(R.id.tv_downloadStaus);
         catalogRefresh = (Button) findViewById(R.id.refresh_catalog);
-        tvDownloadStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        tvDownloadStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         catalogRefresh.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         catalogRefresh.setOnClickListener(new View.OnClickListener() {

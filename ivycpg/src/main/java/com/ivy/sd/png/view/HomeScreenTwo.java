@@ -101,6 +101,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     public static final String MENU_NEAREXPIRY = "MENU_NEAREXPIRY";
     private static final String MENU_SKUWISERTGT = "MENU_SKUWISERTGT";
     public static final String MENU_PRICE = "MENU_PRICE";
+    public static final String MENU_PRICE_COMP = "MENU_PRICE_COMP";
     private static final String MENU_EMPTY_RETURN = "MENU_EMPTY_RETURN";
     private static final String MENU_SURVEY_QDVP3 = "MENU_SURVEY_QDVP3";
     private static final String MENU_SURVEY01 = "MENU_SURVEY01";
@@ -503,6 +504,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         menuIcons.put(StandardListMasterConstants.MENU_STOCK_REPLACEMENT,
                 R.drawable.icon_sales_return);
         menuIcons.put(MENU_PRICE, R.drawable.icon_pricecheck);
+        menuIcons.put(MENU_PRICE_COMP, R.drawable.icon_pricecheck);
         menuIcons.put(MENU_EMPTY_RETURN, R.drawable.icon_pricecheck);
         menuIcons.put(MENU_SOS, R.drawable.icon_sos);
         menuIcons.put(MENU_SOD, R.drawable.icon_sod);
@@ -547,7 +549,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         updateMenuVisitStatus(mInStoreMenu);
 
 
-        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE&&!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             mSupplierList = bmodel.downloadSupplierDetails();
             mSupplierAdapter = new ArrayAdapter<>(this,
                     android.R.layout.select_dialog_singlechoice, mSupplierList);
@@ -1191,6 +1193,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_PRICE_COMP)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
                 } else if (menuDB.get(i).getConfigCode()
                         .equals(MENU_EMPTY_RETURN)) {
                     if (menuDB.get(i).getHasLink() == 1) {
@@ -1407,6 +1417,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || menu.getConfigCode().equals(MENU_SALES_RET)
                     || menu.getConfigCode().equals(MENU_NEAREXPIRY)
                     || menu.getConfigCode().equals(MENU_PRICE)
+                    || menu.getConfigCode().equals(MENU_PRICE_COMP)
                     || menu.getConfigCode().equals(MENU_EMPTY_RETURN)
                     || menu.getConfigCode().equals(MENU_DELIVERY)
                     || menu.getConfigCode().equals(MENU_DGT)
@@ -2742,6 +2753,61 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 Intent in = new Intent(HomeScreenTwo.this,
                         PriceTrackActivity.class);
+                in.putExtra("CurrentActivityCode", menu.getConfigCode());
+                if (isFromChild)
+                    in.putExtra("isFromChild", isFromChild);
+                startActivity(in);
+                finish();
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
+        } else if (menu.getConfigCode().equals(MENU_PRICE_COMP) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP
+                    ) {
+
+                // To set the screen name, we are taking the menu name storing in global obj.
+                bmodel.mSelectedActivityName = menu.getMenuName();
+
+                // Load survey if floating survey is enabled for the price check module.
+                if (bmodel.configurationMasterHelper
+                        .downloadFloatingSurveyConfig(MENU_PRICE_COMP)) {
+                    bmodel.mSurveyHelperNew.setFromHomeScreen(false);
+                    bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
+                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_PRICE_COMP);
+                    bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                }
+
+                // Download Tagged products and update the product master obj
+                bmodel.productHelper.downloadTaggedProducts("PC");
+
+                // Load Price related configurations.
+                bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
+                //its menu price comp
+                bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
+
+                bmodel.mPriceTrackingHelper.clearPriceCheck();
+                bmodel.mPriceTrackingHelper.loadPriceTransaction();
+                bmodel.competitorTrackingHelper.downloadPriceCompanyMaster(MENU_PRICE_COMP);
+
+                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !bmodel.mPriceTrackingHelper.isPriceCheckDone()) {
+                    bmodel.mPriceTrackingHelper.updateLastVisitPriceAndMRP();
+                }
+
+                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_PRICE_COMP), 0);
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+
+                Intent in = new Intent(HomeScreenTwo.this,
+                        PriceTrackCompActivity.class);
                 in.putExtra("CurrentActivityCode", menu.getConfigCode());
                 if (isFromChild)
                     in.putExtra("isFromChild", isFromChild);
