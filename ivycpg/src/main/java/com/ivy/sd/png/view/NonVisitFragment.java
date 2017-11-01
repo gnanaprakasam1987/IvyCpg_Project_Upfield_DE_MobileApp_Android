@@ -338,6 +338,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             Collections.sort(retailer, RetailerMasterBO.RetailerNameComparator);
             IconicAdapter mSchedule = new IconicAdapter(retailer);
+            ((PlanningActivity) getActivity()).updateRetailerCount(mSchedule.getCount(), 2);
             if (listView != null) {
                 listView.setAdapter(mSchedule);
                 setHasOptionsMenu(true);

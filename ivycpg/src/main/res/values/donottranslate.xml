@@ -163,4 +163,5 @@
     <string name="preparing_pdf">Preparing Pdf file</string>
 
     <string name="partial_delivery">Partial Delivery</string>
+    <string name="total_vol">Total Volume</string>
 </resources>
