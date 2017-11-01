@@ -19,6 +19,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
@@ -34,6 +35,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.TaskReportBo;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -3092,5 +3094,75 @@ public class ReportHelper {
         c.close();
         db.closeDB();
         return freeProductList;
+    }
+
+    public ArrayList<OutletReportBO> downloadOutletReports(){
+        ArrayList<OutletReportBO> lst=new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                OutletReportBO outletReportBO;
+                while (c.moveToNext()) {
+                    outletReportBO = new OutletReportBO();
+                    outletReportBO.setUserId(c.getInt(0));
+                    outletReportBO.setUserName(c.getString(1));
+                    outletReportBO.setRetailerId(c.getInt(2));
+                    outletReportBO.setRetailerName(c.getString(3));
+                    outletReportBO.setLocationName(c.getString(4));
+                    outletReportBO.setAddress(c.getString(5));
+                    outletReportBO.setIsPlanned(c.getString(6));
+                    outletReportBO.setIsVisited(c.getString(7));
+                    outletReportBO.setTimeIn(c.getString(8));
+                    outletReportBO.setTimeOut(c.getString(9));
+                    outletReportBO.setDuration(c.getString(10));
+                    outletReportBO.setSalesValue(c.getString(11));
+                    outletReportBO.setLatitude(c.getDouble(12));
+                    outletReportBO.setLongitude(c.getDouble(13));
+
+                    lst.add(outletReportBO);
+
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return lst;
+
+    }
+
+    public ArrayList<OutletReportBO> downloadUsers(){
+        ArrayList<OutletReportBO> lstUsers=new ArrayList<>();
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct UseriD,UserName from OutletPerfomanceReport");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                OutletReportBO outletReportBO;
+                while (c.moveToNext()) {
+                    outletReportBO = new OutletReportBO();
+                    outletReportBO.setUserId(c.getInt(0));
+                    outletReportBO.setUserName(c.getString(1));
+                    lstUsers.add(outletReportBO);
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+     return lstUsers;
     }
 }

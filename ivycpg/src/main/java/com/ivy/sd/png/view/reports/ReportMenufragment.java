@@ -143,6 +143,8 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_CS_RPT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT,
+                    R.drawable.icon_reports);
 
             // Load the HHTTable
             menuDB = bmodel.configurationMasterHelper
@@ -213,7 +215,10 @@ public class ReportMenufragment extends IvyBaseFragment {
             }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
-        } else {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
+            intoreportacti(config);
+        }
+        else {
             intoreportacti(config);
         }
 

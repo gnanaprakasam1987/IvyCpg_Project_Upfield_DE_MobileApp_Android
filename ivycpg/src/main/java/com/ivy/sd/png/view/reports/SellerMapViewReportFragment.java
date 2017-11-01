@@ -5,11 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,23 +31,35 @@ import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.maplib.OnInfoWindowElemTouchListener;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.CustomMapFragment;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.SellerListFragment;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+
+import java.util.ArrayList;
 
 /**
  * Created by rajkumar.s on 10/27/2017.
  */
 
-public class SellerMapViewReportFragment extends SupportMapFragment {
+public class SellerMapViewReportFragment extends IvyBaseFragment implements SellerListFragment.SellerSelectionInterface{
 
     View view;
     BusinessModel bmodel;
 
-    MapWrapperLayout mainLayout;
-    GoogleMap mMap;
+    private DrawerLayout mDrawerLayout;
+    FrameLayout drawer;
+
+    private ArrayList<OutletReportBO> lstUsers;
+    private ArrayList<OutletReportBO>lstReports;
+
+    private GoogleMap mMap;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -57,66 +79,148 @@ public class SellerMapViewReportFragment extends SupportMapFragment {
         }
 
 
+        if(lstUsers==null)
+        lstUsers=bmodel.reportHelper.downloadUsers();
+
+        if(lstReports==null)
+            lstReports=bmodel.reportHelper.downloadOutletReports();
+
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mainLayout = (MapWrapperLayout) getView()
-                .findViewById(R.id.planningmapnew);
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        setHasOptionsMenu(true);
 
-        setUpMapIfNeeded();
-    }
+        ActionBarDrawerToggle mDrawerToggle;
+        drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
 
-    private void setUpMapIfNeeded() {
-        try {
-            final ViewGroup nullParent = null;
-            if (mMap == null) {
-                mMap = this.getMap();
-                float pxlDp = 39 + 20;
-                mainLayout.init(mMap, getPixelsFromDp(SellerMapViewReportFragment.this.getActivity(), pxlDp));
-              /*  this.infoWindow = (ViewGroup) layInflater.inflate(
-                        R.layout.custom_info_window, nullParent);
-                this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
-                this.infoSnippet = (TextView) infoWindow
-                        .findViewById(R.id.snippet);
-                this.infoDistance = (TextView) infoWindow.findViewById(R.id.distance_txt);
-                startVisitLty = (LinearLayout) infoWindow.findViewById(R.id.start_visit_lty);
-                startVisitBtn = (Button) infoWindow.findViewById(R.id.start_visitbtn);
-                this.infoTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                this.infoSnippet.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                this.infoDistance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-//
+      /*  int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);*/
 
-                startVisitLty.setOnTouchListener(infoButtonListener);*/
-                setUpMap();
+        mDrawerLayout = (DrawerLayout) getView().findViewById(
+                R.id.drawer_layout);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
+        ) {
+            public void onDrawerClosed(View view) {
+                if (getActionBar() != null) {
+                    setScreenTitle(bmodel.mSelectedActivityName);
+                }
+
+                getActivity().supportInvalidateOptionsMenu();
             }
-        } catch (Exception e) {
-            Commons.printException("" + e);
+
+            public void onDrawerOpened(View drawerView) {
+                if (getActionBar() != null) {
+                    setScreenTitle(getResources().getString(R.string.filter));
+                }
+
+                getActivity().supportInvalidateOptionsMenu();
+            }
+        };
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+
+
+        CustomMapFragment mCustomMapFragment = ((CustomMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.seller_map));
+      //  mCustomMapFragment.setOnDragListener(ProfileActivity.this);
+      //  mMap = mCustomMapFragment.getMap();
+
+
+
+    }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_seller_mapview, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+        menu.findItem(R.id.menu_users).setVisible(!drawerOpen);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == R.id.menu_users) {
+            loadUsers();
         }
-    }
-
-    public static int getPixelsFromDp(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
-
-    private void setUpMap() {
-        try {
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-            mMap.setMyLocationEnabled(false);
-         //   mMap.setInfoWindowAdapter(new PlanningMapFragment.CustomInfoWindowAdapter());
-        } catch (Exception e) {
-            Commons.printException("" + e);
+        else if(i==android.R.id.home){
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                onBackButtonClick();
+            }
         }
+        return super.onOptionsItemSelected(item);
     }
 
+    private void onBackButtonClick() {
+        Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+        i.putExtra("menuCode", "MENU_REPORT");
+        i.putExtra("title", "aaa");
+        startActivity(i);
+        getActivity().finish();
+        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+    }
+
+    private void loadUsers(){
+
+        mDrawerLayout.openDrawer(GravityCompat.END);
+
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        SellerListFragment frag = (SellerListFragment) fm.findFragmentByTag("filter");
+        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        if (frag != null)
+            ft.detach(frag);
+
+        SellerListFragment fragment=new SellerListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("users",lstUsers);
+        fragment.setArguments(bundle);
+
+        ft.replace(R.id.right_drawer, fragment, "filter");
+        ft.commit();
+    }
+
+    @Override
+    public void updateMapView(ArrayList<Integer> mSelectedUsers,boolean isAlluser) {
+
+    }
+
+    @Override
+    public void updateClose() {
+        mDrawerLayout.closeDrawers();
+    }
 }
