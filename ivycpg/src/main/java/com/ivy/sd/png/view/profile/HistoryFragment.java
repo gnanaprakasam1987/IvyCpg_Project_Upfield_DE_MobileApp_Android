@@ -193,6 +193,7 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.invoice_qty_val.setText(projectObj.getRF3());
             holder.del_rep_code_val.setText(projectObj.getRF4());
             holder.totVol.setText("" + projectObj.getVolume());
+            holder.deliveryStatus_val.setText("Delivered");
 
             try {
                 Calendar c = Calendar.getInstance();
@@ -216,10 +217,11 @@ public class HistoryFragment extends IvyBaseFragment {
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private final LinearLayout del_date_layout, invoice_date_layout, invoice_qty_layout, del_rep_code_layout;
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt,totVolTxt;
-            private TextView orderId, date, totLines, totVal,totVol;
+            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt, totVolTxt;
+            private TextView orderId, date, totLines, totVal, totVol;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
-            private LinearLayout tot_val_layout;
+            private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout;
+            private TextView deliveryStatus_txt, deliveryStatus_val;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -230,14 +232,14 @@ public class HistoryFragment extends IvyBaseFragment {
                 dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
                 totLinesTxt = (TextView) itemView.findViewById(R.id.tot_lines_txt);
                 totValTxt = (TextView) itemView.findViewById(R.id.tot_val_txt);
-                totVolTxt = (TextView)itemView.findViewById(R.id.tot_vol_txt);
+                totVolTxt = (TextView) itemView.findViewById(R.id.tot_vol_txt);
 
 
                 orderId = (TextView) itemView.findViewById(R.id.order_id_val);
                 date = (TextView) itemView.findViewById(R.id.date_val);
                 totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
                 totVal = (TextView) itemView.findViewById(R.id.tot_val);
-                totVol=(TextView)itemView.findViewById(R.id.tot_vol);
+                totVol = (TextView) itemView.findViewById(R.id.tot_vol);
                 invViewBtn = (TextView) itemView.findViewById(R.id.inv_view_btn);
 
                 del_date_val = (TextView) itemView.findViewById(R.id.del_date_val);
@@ -254,10 +256,14 @@ public class HistoryFragment extends IvyBaseFragment {
                 invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
                 invoice_qty_layout = (LinearLayout) itemView.findViewById(R.id.invoice_qty_layout);
                 del_rep_code_layout = (LinearLayout) itemView.findViewById(R.id.del_rep_code_layout);
-                tot_val_layout = (LinearLayout)itemView.findViewById(R.id.tot_val_layout);
+                tot_val_layout = (LinearLayout) itemView.findViewById(R.id.tot_val_layout);
+                tot_vol_layout = (LinearLayout) itemView.findViewById(R.id.tot_vol_layout);
+                del_status_layout = (LinearLayout) itemView.findViewById(R.id.del_status_layout);
+                start_date_layout = (LinearLayout) itemView.findViewById(R.id.date_layout);
+                deliveryStatus_txt = (TextView) itemView.findViewById(R.id.del_status_txt);
+                deliveryStatus_val = (TextView) itemView.findViewById(R.id.deliveryStatusValue);
 
-                if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
-                        && !bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
+                /*if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
                     totValTxt.setVisibility(View.GONE);
                     totVal.setVisibility(View.GONE);
                     invViewLayout.setVisibility(View.GONE);
@@ -271,14 +277,13 @@ public class HistoryFragment extends IvyBaseFragment {
                     ((LinearLayout) itemView.findViewById(R.id.tot_val_layout)).setVisibility(View.VISIBLE);
                     if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL)
                         invViewLayout.setVisibility(View.VISIBLE);
-                }
+                }*/
 
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER
-                                && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
+                        if (bmodel.configurationMasterHelper.SHOW_HST_INVDET) {
                             Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
                             intent.putExtra("selected_list_id", getLayoutPosition());
                             intent.putExtra("from", "OrderHistory");
@@ -295,6 +300,14 @@ public class HistoryFragment extends IvyBaseFragment {
                                         .applyLabels(itemView.findViewById(
                                                 R.id.order_id_txt)
                                                 .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.date_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.date_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.date_txt)
+                                                .getTag()));
                 } catch (Exception ex) {
 
                 }
@@ -306,6 +319,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 totVolTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                deliveryStatus_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
                 del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -325,29 +339,49 @@ public class HistoryFragment extends IvyBaseFragment {
                 invoice_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_qty_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 del_rep_code_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                deliveryStatus_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
 
 
-                if (bmodel.configurationMasterHelper.IS_HST01) {
+                if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {
                     del_date_layout.setVisibility(View.VISIBLE);
                 } else {
                     del_date_layout.setVisibility(View.GONE);
                 }
-                if (bmodel.configurationMasterHelper.IS_HST02) {
+                if (bmodel.configurationMasterHelper.SHOW_HST_INVDATE) {
                     invoice_date_layout.setVisibility(View.VISIBLE);
                 } else {
                     invoice_date_layout.setVisibility(View.GONE);
                 }
-                if (bmodel.configurationMasterHelper.IS_HST03) {
+                if (bmodel.configurationMasterHelper.SHOW_HST_INVQTY) {
                     invoice_qty_layout.setVisibility(View.VISIBLE);
                 } else {
                     invoice_qty_layout.setVisibility(View.GONE);
                 }
-                if (bmodel.configurationMasterHelper.IS_HST04) {
+                if (bmodel.configurationMasterHelper.SHOW_HST_REPCODE) {
                     del_rep_code_layout.setVisibility(View.VISIBLE);
                 } else {
                     del_rep_code_layout.setVisibility(View.GONE);
                 }
-
+                if (bmodel.configurationMasterHelper.SHOW_HST_TOTAL) {
+                    tot_val_layout.setVisibility(View.VISIBLE);
+                } else {
+                    tot_val_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_VOLUM) {
+                    tot_vol_layout.setVisibility(View.VISIBLE);
+                } else {
+                    tot_vol_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_DELSTATUS) {
+                    del_status_layout.setVisibility(View.VISIBLE);
+                } else {
+                    del_status_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_STARTDATE) {
+                    start_date_layout.setVisibility(View.VISIBLE);
+                } else {
+                    start_date_layout.setVisibility(View.GONE);
+                }
             }
         }
     }
