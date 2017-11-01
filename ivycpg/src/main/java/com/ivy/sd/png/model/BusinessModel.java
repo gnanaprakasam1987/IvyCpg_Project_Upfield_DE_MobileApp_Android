@@ -894,7 +894,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -2305,60 +2304,57 @@ public class BusinessModel extends Application {
     /**
      *
      */
-    public void excludeTaxFromSRP(){
-        try{
-          for(ProductMasterBO productMasterBO:productHelper.getProductMaster()){
+    public void excludeTaxFromSRP() {
+        try {
+            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
 
-              productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
 
-              if (productMasterBO.getOrderedCaseQty() > 0
-                      || productMasterBO.getOrderedPcsQty() > 0
-                      || productMasterBO.getOrderedOuterQty() > 0){
-                  if(productMasterBO.getSrp()>0) {
+                if (productMasterBO.getOrderedCaseQty() > 0
+                        || productMasterBO.getOrderedPcsQty() > 0
+                        || productMasterBO.getOrderedOuterQty() > 0) {
+                    if (productMasterBO.getSrp() > 0) {
 
-                      float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()),2).floatValue();
+                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()), 2).floatValue();
 
-                      if (srpWithoutTax > 0)
-                          productMasterBO.setSrp(srpWithoutTax);
-                      else productMasterBO.setSrp(0);
+                        if (srpWithoutTax > 0)
+                            productMasterBO.setSrp(srpWithoutTax);
+                        else productMasterBO.setSrp(0);
 
-                  }
-              }
+                    }
+                }
 
-          }
-        }
-        catch (Exception ex){
-         Commons.printException(ex);
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
     }
 
-    private float getTaxAmount(String productId){
-        float taxAmount=0;
-        try{
-          ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
-            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+    private float getTaxAmount(String productId) {
+        float taxAmount = 0;
+        try {
+            ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
+            if (productHelper.getmTaxListByProductId().get(productId) != null) {
                 for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
                     if (taxBO.getParentType().equals("0")) {
                         taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
                     }
                 }
             }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
-        catch (Exception ex){
-         Commons.printException(ex);
-        }
-      return taxAmount;
+        return taxAmount;
     }
 
-    public void resetSRPvalues(){
+    public void resetSRPvalues() {
         try {
             for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
-                if(productMasterBO.getOriginalSrp()>0) {
+                if (productMasterBO.getOriginalSrp() > 0) {
                     productMasterBO.setSrp(productMasterBO.getOriginalSrp());
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -7605,9 +7601,9 @@ public class BusinessModel extends Application {
 
                 } else if (imageName.startsWith("DV_")) {
                     folderName = "Delivery" + path;
-                } else if(imageName.startsWith("PF")){
-                    folderName="PrintFile"+path;
-                }else {
+                } else if (imageName.startsWith("PF")) {
+                    folderName = "PrintFile" + path;
+                } else {
                     folderName = userMasterHelper.getUserMasterBO()
                             .getDistributorid()
                             + "/"
@@ -8569,7 +8565,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -10859,7 +10855,7 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void writeToFile(String data, String filename,String foldername) {
+    public void writeToFile(String data, String filename, String foldername) {
         String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
         File folder = new File(path);
@@ -10876,16 +10872,16 @@ public class BusinessModel extends Application {
             myOutWriter.close();
             fOut.flush();
             fOut.close();
-            if(configurationMasterHelper.IS_PRINT_FILE_SAVE&&filename.startsWith(DataMembers.PRINT_FILE_START)){
-                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+DataMembers.IVYDIST_PATH+"/";
-                copyFile(newFile,destpath,filename);
+            if (configurationMasterHelper.IS_PRINT_FILE_SAVE && filename.startsWith(DataMembers.PRINT_FILE_START)) {
+                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/";
+                copyFile(newFile, destpath, filename);
             }
         } catch (IOException e) {
             Commons.printException(e);
         }
     }
 
-    private void copyFile(File sourceFile,String path,String filename){
+    private void copyFile(File sourceFile, String path, String filename) {
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -10901,22 +10897,17 @@ public class BusinessModel extends Application {
             destination.transferFrom(source, 0, source.size());
             source.close();
             destination.close();
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             Commons.printException(e.getMessage());
-        }catch (IOException e){
+        } catch (IOException e) {
             Commons.printException(e.getMessage());
-        }finally {
+        } finally {
 
         }
     }
 
 
-
-
-
-
-
-    public boolean createPdf(String pdfFileName,String content) {
+    public boolean createPdf(String pdfFileName, String content) {
 
         try {
 
@@ -10947,12 +10938,11 @@ public class BusinessModel extends Application {
                 document.close();
             }
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
             return false;
         }
-     return true;
+        return true;
     }
 
     public void updateGroupIdForRetailer() {
@@ -11514,7 +11504,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     //Pending invoice report
 
     public void downloadInvoice() {
@@ -11630,7 +11619,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public void loadTempOrderDetails(){
+    public void loadTempOrderDetails() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -11658,7 +11647,7 @@ public class BusinessModel extends Application {
             }
             tOrderDetailCursor.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }
