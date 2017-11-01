@@ -327,7 +327,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //bmodel.synchronizationHelper.backUpDB();
+                bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -612,8 +612,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
@@ -662,8 +662,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
@@ -712,8 +712,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
                 bmodel.mSelectedActivityName = menuItem.getMenuName();

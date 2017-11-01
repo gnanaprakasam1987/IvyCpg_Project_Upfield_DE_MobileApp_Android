@@ -3897,10 +3897,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     }
 
     public void dataNotMapped() {
-        Toast.makeText(HomeScreenTwo.this,
+        bmodel.showAlert(
                 getResources().getString(R.string.data_not_mapped),
-                Toast.LENGTH_SHORT).show();
-
+                0);
     }
 
     /**
