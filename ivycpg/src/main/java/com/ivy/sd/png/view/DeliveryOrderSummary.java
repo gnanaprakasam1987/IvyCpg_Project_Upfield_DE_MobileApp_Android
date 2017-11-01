@@ -75,6 +75,11 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
         listView = (ListView) findViewById(R.id.lvwplist);
         btnSave = (Button) findViewById(R.id.btn_next);
+        if (isPartialOrder)
+            btnSave.setText(getResources().getString(R.string.partial_delivery));
+        else
+            btnSave.setText(getResources().getString(R.string.text_invoice));
+
         btnSave.setOnClickListener(this);
 
         loadProducts();
@@ -110,6 +115,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
+                    bmodel.saveOrder();
                     bmodel.saveNewInvoice();
                 }
 

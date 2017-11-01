@@ -89,6 +89,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
+                android:maxLength="8"
                 android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:visibility="gone" />
@@ -97,6 +98,7 @@
                 android:id="@+id/ooprice"
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
+                android:maxLength="8"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
@@ -106,6 +108,7 @@
                 android:id="@+id/pcprice"
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
+                android:maxLength="8"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
