@@ -484,7 +484,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         //buyParent.setAlpha(0.2f);
 
                         TextView buyTitleTV = getTextViewTitle(true, Gravity.LEFT, false);
-                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 3) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         //layoutParams1.weight=0.1f;
                         layoutParams1.setMargins(0, 10, 0, 10);
                         layoutParams1.gravity = Gravity.CENTER_VERTICAL;

@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -425,30 +426,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 @Override
                 public void onClick(View v) {
                     try {
-                        if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD)
-                            bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
-                            //for loaeral
-                        else
-                            bmodel.dashBoardHelper.downloadLorealSkuDetails(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), selectedInterval);
 
-                        if (bmodel.dashBoardHelper.getSellerKpiSku().size() > 0) {
-                            Intent i = new Intent(getActivity(),
-                                    SellerKPISKUActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            i.putExtra("screentitle",
-                                    bmodel.getMenuName("MENU_SKUWISESTGT"));
-                            i.putExtra("screentitlebk",
-                                    ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle());
-                            i.putExtra("from", "4");
-                            i.putExtra("flex1", holder.dashboardDataObj.getFlex1());
-                            i.putExtra("pid",
-                                    holder.dashboardDataObj.getPId());
-                            i.putExtra("isFromDash", true);
-                            startActivity(i);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.no_products_exists), 0);
-                        }
+                        new LoadAsyncTask(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), holder.dashboardDataObj.getFlex1(), holder.dashboardDataObj.getPId()).execute();
+
+
                     } catch (Exception e) {
                         Commons.printException(e + "");
                     }
@@ -1700,4 +1681,72 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         }
     }
 
+    class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private ProgressDialog progressDialogue;
+        private int kpiId, kpiTypeLovId;
+        private int flex1, pId;
+
+
+        public LoadAsyncTask(int kpiId, int kpiTypeLovId, int flex1, int pId) {
+            super();
+            this.kpiId = kpiId;
+            this.kpiTypeLovId = kpiTypeLovId;
+            this.flex1 = flex1;
+            this.pId = pId;
+        }
+
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD)
+                    bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
+                    //for loaeral
+                else
+                    bmodel.dashBoardHelper.downloadLorealSkuDetails(kpiId, kpiTypeLovId, selectedInterval);
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+
+        }
+
+        protected void onPreExecute() {
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.loading_data),
+                    true, false);
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            // result is the value returned from doInBackground
+
+            progressDialogue.dismiss();
+
+            if (bmodel.dashBoardHelper.getSellerKpiSku().size() > 0) {
+                Intent i = new Intent(getActivity(),
+                        SellerKPISKUActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                i.putExtra("screentitle",
+                        bmodel.getMenuName("MENU_SKUWISESTGT"));
+                i.putExtra("screentitlebk",
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle());
+                i.putExtra("from", "4");
+                i.putExtra("flex1", flex1);
+                i.putExtra("pid",
+                        pId);
+                i.putExtra("isFromDash", true);
+                startActivity(i);
+            } else {
+                bmodel.showAlert(
+                        getResources().getString(R.string.no_products_exists), 0);
+            }
+
+
+        }
+
+    }
 }
