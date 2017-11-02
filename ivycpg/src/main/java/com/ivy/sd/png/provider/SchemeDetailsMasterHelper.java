@@ -1145,7 +1145,7 @@ public class SchemeDetailsMasterHelper {
 
                     }
 
-                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_OTP)) {
+                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE)) {
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
                         quantityActual = minimumQuantity * maxSchemeValue;
                         quantityMax = maximumQuantity * maxSchemeValue;

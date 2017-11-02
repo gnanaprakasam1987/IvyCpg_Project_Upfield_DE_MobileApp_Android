@@ -3169,8 +3169,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             //set SIH value
             if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
-                if ((holder.productObj.isAllocation() == 1
-                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || bmodel.configurationMasterHelper.IS_INVOICE) {
                     if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                         if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
                                 && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
@@ -3311,7 +3309,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         String strSih = holder.productObj.getSIH() + "";
                         holder.sih.setText(strSih);
                     }
-                }
+
             }
 
             // Set order qty

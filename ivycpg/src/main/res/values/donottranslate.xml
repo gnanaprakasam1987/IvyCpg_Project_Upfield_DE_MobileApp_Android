@@ -164,4 +164,6 @@
 
     <string name="partial_delivery">Partial Delivery</string>
     <string name="total_vol">Total Volume</string>
+    <string name="order_history_detail">Order History</string>
+    <string name="invoice_history_detail">Invoice History</string>
 </resources>

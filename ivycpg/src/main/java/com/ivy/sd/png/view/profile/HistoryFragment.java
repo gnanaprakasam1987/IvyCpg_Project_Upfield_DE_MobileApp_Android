@@ -193,7 +193,7 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.invoice_qty_val.setText(projectObj.getRF3());
             holder.del_rep_code_val.setText(projectObj.getRF4());
             holder.totVol.setText("" + projectObj.getVolume());
-            holder.deliveryStatus_val.setText("Delivered");
+            holder.deliveryStatus_val.setText(projectObj.getDelieveryStatus());
 
             try {
                 Calendar c = Calendar.getInstance();
