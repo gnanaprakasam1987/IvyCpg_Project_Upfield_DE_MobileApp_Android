@@ -113,7 +113,7 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                 String previous_month_year = currentyear + "/" + (Integer.parseInt(current_month) - 1) + "/";
 
                 month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
-                month_wise_group.put("LAST MONTH", new ArrayList<DigitalContentBO>());
+                month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("OLDER", new ArrayList<DigitalContentBO>());
                 ArrayList<DigitalContentBO> temp;
                 for (int i = 0; i < audioList.size(); i++) {
