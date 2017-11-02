@@ -551,6 +551,9 @@
             android:name="com.ivy.sd.png.view.PriceTrackActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.sd.png.view.PriceTrackCompActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"
             android:screenOrientation="portrait" />
         <activity
