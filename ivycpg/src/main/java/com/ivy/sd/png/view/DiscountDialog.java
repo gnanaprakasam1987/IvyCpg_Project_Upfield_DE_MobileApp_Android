@@ -38,7 +38,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
     private BusinessModel bmodel;
     private Context context;
     private Button back;
-    private TextView totalval;
+    private TextView totalval, oldTotalValue;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY, D1;
@@ -75,6 +75,15 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         back.setOnClickListener(this);
 
         totalval = (TextView) findViewById(R.id.totalValue);
+        oldTotalValue = (TextView) findViewById(R.id.oldTotalValue);
+        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.old_order_volume).getTag()) != null) {
+            ((TextView) findViewById(R.id.old_order_volume))
+                    .setText(bmodel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.old_order_volume)
+                                    .getTag()));
+        }
         D1 = (EditText) findViewById(R.id.d1);
 
         ((TextView) findViewById(R.id.titlebar)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -358,6 +367,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             }
         }
         totalval.setText(bmodel.formatValue(totalOrderValue) + "");
+        oldTotalValue.setText(bmodel.formatValue(totalOrderValue));
         MyAdapter mSchedule = new MyAdapter(context, mylist);
         lvwplist.setAdapter(mSchedule);
 

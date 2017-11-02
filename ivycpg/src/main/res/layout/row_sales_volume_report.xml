@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="@dimen/list_product_name_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/PRDNAME"
+            android:textColor="@android:color/black"
+            android:layout_width="@dimen/list_product_name_width"
+            android:layout_height="@dimen/list_title_height"
+            android:gravity="left|center_vertical"
+            android:padding="1dp"
+            android:textSize="@dimen/font_micro_small"
+            tools:text="t esr ewres" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/pdt_total_qty"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/list_item_width"
+        android:layout_height="@dimen/list_title_height"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="@dimen/font_micro_small"
+        tools:text="gfdf"
+        android:layout_gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/pdt_total_value"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/list_item_width"
+        android:layout_height="@dimen/list_title_height"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="@dimen/font_micro_small"
+        tools:text="gfdf"
+        android:layout_gravity="center_vertical" />
+
+
+</LinearLayout>

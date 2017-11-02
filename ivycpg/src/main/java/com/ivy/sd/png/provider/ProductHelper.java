@@ -8117,7 +8117,7 @@ public class ProductHelper {
             }
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select Percentage,Typeid from PayTermDiscount ");
+            sb.append("select Percentage,DiscountTypeID from PayTermDiscount ");
             sb.append("where Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             sb.append(" and " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between FromDate and ToDate");
             c = db.selectSQL(sb.toString());

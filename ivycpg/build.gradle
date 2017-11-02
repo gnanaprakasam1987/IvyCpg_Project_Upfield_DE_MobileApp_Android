@@ -150,7 +150,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'me.relex:circleindicator:1.2.2@aar'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
