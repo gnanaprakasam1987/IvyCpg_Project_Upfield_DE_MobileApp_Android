@@ -440,6 +440,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
     public boolean IS_TEMP_ORDER_SAVE;
 
+    private static final String CODE_ORDER_FILTER_TOP = "FUN61";
+    public boolean IS_TOP_ORDER_FILTER;
+
     /**
      * RoadActivity config *
      */
@@ -566,7 +569,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRODUCT_SCHEME_DIALOG;
     public boolean IS_SCHEME_CHECK;
     public boolean IS_SCHEME_CHECK_DISABLED;
-    public boolean SHOW_STK_ORD_SRP=true;
+    public boolean SHOW_STK_ORD_SRP = true;
     public boolean SHOW_STK_ORD_SRP_SEC;
     public boolean SHOW_STK_ORD_SRP_EDT;
     public boolean SHOW_D1;
@@ -2082,6 +2085,7 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
+        this.IS_TOP_ORDER_FILTER = hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) : false;
 
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
@@ -4485,8 +4489,8 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public static enum FontType {
-        LIGHT, REGULAR, MEDIUM, BOLD, THIN
+    public enum FontType {
+        LIGHT, MEDIUM, THIN,REGULAR
     }
 
     private Typeface mFontBaloobhaiRegular;
@@ -4503,9 +4507,7 @@ public class ConfigurationMasterHelper {
     }
 
     private Typeface mFontRobotoLight;
-    private Typeface mFontRobotoRegular;
     private Typeface mFontRobotoMedium;
-    private Typeface mFontRobotoBold;
     private Typeface mFontRobotoThin;
 
     public Typeface getFontRoboto(FontType mFontType) {
@@ -4513,25 +4515,17 @@ public class ConfigurationMasterHelper {
             if (mFontRobotoLight == null)
                 mFontRobotoLight = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
             return mFontRobotoLight;
-        } else if (mFontType == FontType.REGULAR) {
-            if (mFontRobotoRegular == null)
-                mFontRobotoRegular = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
-            return mFontRobotoRegular;
-        } else if (mFontType == FontType.MEDIUM) {
+        }else if (mFontType == FontType.MEDIUM) {
             if (mFontRobotoMedium == null)
                 mFontRobotoMedium = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
             return mFontRobotoMedium;
-        } else if (mFontType == FontType.BOLD) {
-            if (mFontRobotoBold == null)
-                mFontRobotoBold = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
-            return mFontRobotoBold;
         } else if (mFontType == FontType.THIN) {
             if (mFontRobotoThin == null)
                 mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Thin.ttf");
             return mFontRobotoThin;
         }
 
-        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Regular.ttf");
+        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
     public Typeface getProductNameFont() {

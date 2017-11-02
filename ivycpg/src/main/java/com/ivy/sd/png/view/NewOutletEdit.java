@@ -233,7 +233,7 @@ public class NewOutletEdit extends IvyBaseActivityNoActionBar {
                 ll_retailer = (LinearLayout) v.findViewById(R.id.ll_retailer_name);
 
                 retailer_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                retailer_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                retailer_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
 
@@ -287,8 +287,8 @@ public class NewOutletEdit extends IvyBaseActivityNoActionBar {
                         getResources().getString(R.string.leaveToday),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(this,
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(this, bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
 //                bmodel.mSelectedActivityName = menuItem.getMenuName();
@@ -464,7 +464,7 @@ public class NewOutletEdit extends IvyBaseActivityNoActionBar {
                     super(itemView);
 
                     sortlist_radio_btn = (AppCompatRadioButton) itemView.findViewById(R.id.reason_radio_btn);
-                    sortlist_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    sortlist_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 }
             }
         }

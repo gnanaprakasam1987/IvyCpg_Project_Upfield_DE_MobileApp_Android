@@ -93,7 +93,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             }
 
             tv_duration = (TextView) findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             tv_edt_time_taken = (TextView) findViewById(R.id.edt_time_taken);
             tv_edt_time_taken.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -119,10 +119,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                 for (TaskDataBO taskBo : taskDataBO) {
                     cardView = inflater.inflate(R.layout.task_child_view, null);
                     TextView tv_taskDesc = (TextView) cardView.findViewById(R.id.tv_task_desc);
-                    tv_taskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    tv_taskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     tv_taskDesc.setText(taskBo.getTaskDesc());
                     TextView tv_taskOwner = (TextView) cardView.findViewById(R.id.tv_task_owner);
-                    tv_taskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    tv_taskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     tv_taskOwner.setText(taskBo.getTaskOwner());
                     ll_content.addView(cardView);
                 }

@@ -464,7 +464,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     TextView schemeTitleTV = getTextViewTitle(false, Gravity.LEFT, true);
                     schemeTitleTV.setText(schemeBO.getProductName());
                     schemeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                    schemeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    schemeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     //schemeTitleTV.setTextSize(((mTotalScreenWidth*2)/100));
                     schemeTitleTV.setTextSize(mTextViewSize);
                     schemeTitleTV.setGravity(Gravity.LEFT | Gravity.BOTTOM);
@@ -853,7 +853,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     for (SchemeProductBO schemeProductBO : buyProductList) {
                         if (groupName.equals(schemeProductBO.getGroupName())) {
                             TextView tv = getNameTv();
-                            tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                            tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             tv.setTextColor(getResources().getColor(R.color.FullBlack));
                             ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                             if (productBO != null) {
@@ -1086,7 +1086,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             for (SchemeProductBO schemeProductBO : buyProductList) {
                                 if (groupName.equals(schemeProductBO.getGroupName())) {
                                     TextView tv = getNameTv();
-                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                     tv.setTextColor(getResources().getColor(R.color.FullBlack));
                                     ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                                     if (productBO != null) {
@@ -1228,7 +1228,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             }
 
                             schemeDetailsTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                            schemeDetailsTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                            schemeDetailsTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             schemeDetailsTV.setText(sb.toString());
                             schemeDetailsTV.setWidth(mSchemeDetailWidth);
                             mAddViewHorizontalLayout.addView(schemeDetailsTV);
@@ -1355,7 +1355,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                         tv.setWidth(mSchemeDetailWidth);
 
                                         tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                        tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                                        tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                         schemeChildView.addView(tv);
                                         break;
                                     }
@@ -1472,7 +1472,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                                     }
                                     tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                     schemeChildView.addView(tv);
                                 }
                             }
@@ -1580,7 +1580,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         }
 
                         TextView amountTV = getTextViewTitle(false, Gravity.CENTER, false);
-                        amountTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        amountTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         amountTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                         amountTV.setWidth(mSchemeDetailWidth);
 
@@ -1647,7 +1647,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                         TextView priceTV = getTextViewTitle(false, Gravity.CENTER, false);
                         priceTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-                        priceTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        priceTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (freeproductBO.getPriceActual() > 0) {
                             if (freeproductBO.getPriceActual() == freeproductBO.getPriceMaximum()) {
                                 priceTV.setText(freeproductBO.getPriceActual() + "");

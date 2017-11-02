@@ -77,9 +77,9 @@ public class InvoiceReportFragment extends Fragment implements
         totalvaluetitle=(TextView)view.findViewById(R.id.totalvaluetitle);
         lbl_total_qty=(TextView)view.findViewById(R.id.lbl_total_qty);
         lbl_avg_lines=(TextView)view.findViewById(R.id.lbl_avg_lines);
-        totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        lbl_total_qty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        lbl_avg_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lbl_total_qty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lbl_avg_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
 
@@ -166,26 +166,14 @@ public class InvoiceReportFragment extends Fragment implements
                 ((TextView) view.findViewById(R.id.outna))
                         .setText(bmodel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.outna).getTag()));
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            outid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            invoicenotitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            outid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            invoicenotitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         } catch (Exception e) {
             Commons.printException(e);
         }
-
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
-          //  view.findViewById(R.id.txtweight).setVisibility(View.VISIBLE);
-        }
-
-        if(!bmodel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT) {
-            //view.findViewById(R.id.txtpriceoff).setVisibility(View.VISIBLE);
-        }
-        if(!bmodel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
-           // view.findViewById(R.id.txttax).setVisibility(View.VISIBLE);
-        }
-
 
         return view;
     }
@@ -398,14 +386,14 @@ public class InvoiceReportFragment extends Fragment implements
 
 
             holder.tvwrname.setText(orderreport.getRetailerName());
-            holder.tvwrname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvinvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvwlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvwDist.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvTaxValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvDiscValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.tvwrname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvinvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvwDist.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvTaxValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvDiscValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.tvwvalue.setText(bmodel.formatValue(orderreport
                     .getInvoiceAmount()));
@@ -492,38 +480,46 @@ public class InvoiceReportFragment extends Fragment implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                downloadRetailerMaster(retailerid);
-                //bmodel.productHelper.downloadProductFilter("");
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
-                else bmodel.productHelper.downloadProducts("MENU_STK_ORD");
+                if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+                    InvoiceReportBO inv =  mylist.get(params[0]);
+                    totalamount = inv.getInvoiceAmount();
+                    bmodel.setOrderid(inv.getOrderID());
+                    minvoiceid = inv.getInvoiceNumber();
+                }else{
+                    downloadRetailerMaster(retailerid);
+                    //bmodel.productHelper.downloadProductFilter("");
+                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                        bmodel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
+                    else bmodel.productHelper.downloadProducts("MENU_STK_ORD");
 
-                bmodel.schemeDetailsMasterHelper.downloadSchemeMethods();
-//			
-                InvoiceReportBO inv = (InvoiceReportBO) mylist.get(params[0]);
-                totalamount = inv.getInvoiceAmount();
-                bmodel.setInvoiceNumber(inv.getInvoiceNumber());
-                bmodel.loadInvoiceProducts(inv.getInvoiceNumber());
+                    bmodel.schemeDetailsMasterHelper.downloadSchemeMethods();
+//
+                    InvoiceReportBO inv = (InvoiceReportBO) mylist.get(params[0]);
+                    totalamount = inv.getInvoiceAmount();
+                    bmodel.setInvoiceNumber(inv.getInvoiceNumber());
+                    bmodel.loadInvoiceProducts(inv.getInvoiceNumber());
 
-                minvoiceid = inv.getInvoiceNumber();
-                bmodel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
-                bmodel.setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat)));
-                bmodel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
-                bmodel.batchAllocationHelper.downloadProductBatchCount();
-                if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
-                    bmodel.productHelper.downloadProductDiscountDetails();
-                    bmodel.productHelper.downloadDiscountIdListByTypeId();
+                    minvoiceid = inv.getInvoiceNumber();
+                    bmodel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
+                    bmodel.setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat)));
+                    bmodel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
+                    bmodel.batchAllocationHelper.downloadProductBatchCount();
+                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
+                        bmodel.productHelper.downloadProductDiscountDetails();
+                        bmodel.productHelper.downloadDiscountIdListByTypeId();
 
+                    }
+                    if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+                        bmodel.productHelper.downloadExcludeProductTaxDetails();
+                        bmodel.productHelper.updateProductWiseTax();
+                    }
+
+                    bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);
+
+
+                    bmodel.setOrderid(inv.getOrderID());
                 }
-                if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                    bmodel.productHelper.downloadExcludeProductTaxDetails();
-                    bmodel.productHelper.updateProductWiseTax();
-                }
 
-                bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);
-
-
-                bmodel.setOrderid(inv.getOrderID());
 
             } catch (Exception e) {
                 Commons.printException(e);

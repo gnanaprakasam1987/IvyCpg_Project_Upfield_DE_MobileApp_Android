@@ -257,10 +257,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             updateGoldFlag();
 
             tv_store_status = (TextView) findViewById(R.id.tv_store_status);
-            tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             tv_duration = (TextView) findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             tv_edt_time_taken = (TextView) findViewById(R.id.edt_time_taken);
             tv_edt_time_taken.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -497,7 +497,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             OperationHolder(View row) {
 
                 Name = (TextView) row.findViewById(R.id.menunametxt);
-                Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tv_achieved_value = (TextView) row.findViewById(R.id.tv_menuvalue_achieved);
                 tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 tv_target_value = (TextView) row.findViewById(R.id.tv_menuvalue_target);
@@ -505,12 +505,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 ll_seekbar = (LinearLayout) row.findViewById(R.id.ll_seekbar);
                 seekBar = (SeekBar) row.findViewById(R.id.seek);
                 tv_progress_text = (TextView) row.findViewById(R.id.tv_progress_text);
-                tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 //
                 if (row.findViewById(R.id.ll_second_layout) != null) {// Tab view
                     Name_right = (TextView) row.findViewById(R.id.menunametxt_two);
-                    Name_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    Name_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     tv_achieved_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_achieved_two);
                     tv_achieved_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     tv_target_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_target_two);
@@ -518,7 +518,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     ll_seekbar_right = (LinearLayout) row.findViewById(R.id.ll_seekbar_two);
                     seekBar_right = (SeekBar) row.findViewById(R.id.seek_two);
                     tv_progress_text_right = (TextView) row.findViewById(R.id.tv_progress_text_two);
-                    tv_progress_text_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    tv_progress_text_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                     view_separator = (View) row.findViewById(R.id.view_separator);
                 }

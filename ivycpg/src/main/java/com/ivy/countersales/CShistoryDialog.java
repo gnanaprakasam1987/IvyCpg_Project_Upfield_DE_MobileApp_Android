@@ -374,12 +374,12 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                 TextView tv_gender_header = (TextView) rowDetail.findViewById(R.id.tv_gender_header);
                 TextView tv_email_header = (TextView) rowDetail.findViewById(R.id.tv_email_header);
 
-                tv_name_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_address_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_contact_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_ageGroup_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_gender_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                tv_email_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_name_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_address_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_contact_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_ageGroup_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_gender_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_email_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 TextView tv_name = (TextView) rowDetail.findViewById(R.id.tv_name);
                 TextView tv_address = (TextView) rowDetail.findViewById(R.id.tv_address);
@@ -388,12 +388,12 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                 TextView tv_gender = (TextView) rowDetail.findViewById(R.id.tv_gender);
                 TextView tv_email = (TextView) rowDetail.findViewById(R.id.tv_email);
 
-                tv_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tv_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tv_contact.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tv_ageGroup.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tv_gender.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tv_email.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tv_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_contact.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_ageGroup.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_gender.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_email.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 tv_name.setText(mLstHeader.get("name"));
                 tv_address.setText(mLstHeader.get("address"));
@@ -422,10 +422,10 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                             TextView tv_outlet_header = (TextView) rowSale.findViewById(R.id.tv_outlet_header);
                             TextView tv_counter_header = (TextView) rowSale.findViewById(R.id.tv_counter_header);
                             TextView tv_location_header = (TextView) rowSale.findViewById(R.id.tv_location_header);
-                            tv_date_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                            tv_outlet_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                            tv_counter_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                            tv_location_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                            tv_date_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_outlet_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_counter_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_location_header.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                             TextView tv_date = (TextView) rowSale.findViewById(R.id.tv_date);
                             TextView tv_retailer = (TextView) rowSale.findViewById(R.id.tv_retailer);
@@ -433,10 +433,10 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                             TextView tv_location = (TextView) rowSale.findViewById(R.id.tv_location);
                             ll_prod_list = (LinearLayout) rowSale.findViewById(R.id.ll_prod_list);
 
-                            tv_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                            tv_retailer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                            tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                            tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                            tv_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            tv_retailer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                             tv_date.setText(data.get("date"));
                             tv_retailer.setText(data.get("retailername"));
@@ -453,9 +453,9 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                         TextView tv_piece = (TextView) rowSaleDetail.findViewById(R.id.tv_piece);
                         TextView tv_value = (TextView) rowSaleDetail.findViewById(R.id.tv_value);
 
-                        tv_pname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        tv_piece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        tv_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        tv_pname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        tv_piece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        tv_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                         tv_pname.setText(data.get("pname"));
                         tv_piece.setText(data.get("qty"));
@@ -484,10 +484,10 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                     TextView tv_result = (TextView) rowtest.findViewById(R.id.tv_result);
                     TextView tv_feedback = (TextView) rowtest.findViewById(R.id.tv_feedback);
 
-                    tv_pname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                    tv_timespent.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                    tv_result.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                    tv_feedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    tv_pname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    tv_timespent.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    tv_result.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    tv_feedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                     tv_pname.setText(data.get("productName"));
                     tv_timespent.setText(data.get("timetaken"));
@@ -565,7 +565,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
             }
         }
@@ -613,7 +613,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                 super(itemView);
                 menuText = (TextView) itemView.findViewById(R.id.menu_name);
                 valueText = (TextView) itemView.findViewById(R.id.value_name);
-                menuText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                menuText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 valueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             }

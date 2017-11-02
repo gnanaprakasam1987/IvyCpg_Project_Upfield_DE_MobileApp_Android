@@ -1156,6 +1156,7 @@ public class DownloadService extends IntentService {
         bmodel.getRetailerMasterBO().setOtpActivatedDate("");
         bmodel.updateIsTodayAndIsVanSalesInRetailerMasterInfo();
 
+
     }
 
 }

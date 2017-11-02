@@ -46,6 +46,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.github.mikephil.charting.utils.FileUtils;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -220,12 +221,14 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -2301,60 +2304,57 @@ public class BusinessModel extends Application {
     /**
      *
      */
-    public void excludeTaxFromSRP(){
-        try{
-          for(ProductMasterBO productMasterBO:productHelper.getProductMaster()){
+    public void excludeTaxFromSRP() {
+        try {
+            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
 
-              productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
 
-              if (productMasterBO.getOrderedCaseQty() > 0
-                      || productMasterBO.getOrderedPcsQty() > 0
-                      || productMasterBO.getOrderedOuterQty() > 0){
-                  if(productMasterBO.getSrp()>0) {
+                if (productMasterBO.getOrderedCaseQty() > 0
+                        || productMasterBO.getOrderedPcsQty() > 0
+                        || productMasterBO.getOrderedOuterQty() > 0) {
+                    if (productMasterBO.getSrp() > 0) {
 
-                      float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()),2).floatValue();
+                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()), 2).floatValue();
 
-                      if (srpWithoutTax > 0)
-                          productMasterBO.setSrp(srpWithoutTax);
-                      else productMasterBO.setSrp(0);
+                        if (srpWithoutTax > 0)
+                            productMasterBO.setSrp(srpWithoutTax);
+                        else productMasterBO.setSrp(0);
 
-                  }
-              }
+                    }
+                }
 
-          }
-        }
-        catch (Exception ex){
-         Commons.printException(ex);
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
     }
 
-    private float getTaxAmount(String productId){
-        float taxAmount=0;
-        try{
-          ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
-            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+    private float getTaxAmount(String productId) {
+        float taxAmount = 0;
+        try {
+            ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
+            if (productHelper.getmTaxListByProductId().get(productId) != null) {
                 for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
                     if (taxBO.getParentType().equals("0")) {
                         taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
                     }
                 }
             }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
-        catch (Exception ex){
-         Commons.printException(ex);
-        }
-      return taxAmount;
+        return taxAmount;
     }
 
-    public void resetSRPvalues(){
+    public void resetSRPvalues() {
         try {
             for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
-                if(productMasterBO.getOriginalSrp()>0) {
+                if (productMasterBO.getOriginalSrp() > 0) {
                     productMasterBO.setSrp(productMasterBO.getOriginalSrp());
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -7601,6 +7601,8 @@ public class BusinessModel extends Application {
 
                 } else if (imageName.startsWith("DV_")) {
                     folderName = "Delivery" + path;
+                } else if (imageName.startsWith("PF")) {
+                    folderName = "PrintFile" + path;
                 } else {
                     folderName = userMasterHelper.getUserMasterBO()
                             .getDistributorid()
@@ -7715,6 +7717,8 @@ public class BusinessModel extends Application {
             for (int i = 0; i < uploadFileSize; i++) {
 
                 String filename = sfFiles[i].getName();
+                //  print invoice file not upload to server
+
                 getResponseForUploadImageToAmazonCloud(filename, tm, handler);
 
             }
@@ -8561,7 +8565,7 @@ public class BusinessModel extends Application {
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
-                            +"  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
+                            + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
                             + " and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
@@ -10851,9 +10855,9 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void writeToFile(String data, String filename) {
+    public void writeToFile(String data, String filename, String foldername) {
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
         File folder = new File(path);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -10865,17 +10869,45 @@ public class BusinessModel extends Application {
             FileOutputStream fOut = new FileOutputStream(newFile);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
             myOutWriter.append(data);
-
             myOutWriter.close();
-
             fOut.flush();
             fOut.close();
+            if (configurationMasterHelper.IS_PRINT_FILE_SAVE && filename.startsWith(DataMembers.PRINT_FILE_START)) {
+                String destpath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/";
+                copyFile(newFile, destpath, filename);
+            }
         } catch (IOException e) {
             Commons.printException(e);
         }
     }
 
-    public boolean createPdf(String pdfFileName,String content) {
+    private void copyFile(File sourceFile, String path, String filename) {
+
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File destFile = new File(path, filename + ".txt");
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+        } catch (FileNotFoundException e) {
+            Commons.printException(e.getMessage());
+        } catch (IOException e) {
+            Commons.printException(e.getMessage());
+        } finally {
+
+        }
+    }
+
+
+    public boolean createPdf(String pdfFileName, String content) {
 
         try {
 
@@ -10906,12 +10938,11 @@ public class BusinessModel extends Application {
                 document.close();
             }
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
             return false;
         }
-     return true;
+        return true;
     }
 
     public void updateGroupIdForRetailer() {
@@ -11588,7 +11619,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public void loadTempOrderDetails(){
+    public void loadTempOrderDetails() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -11616,7 +11647,7 @@ public class BusinessModel extends Application {
             }
             tOrderDetailCursor.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }

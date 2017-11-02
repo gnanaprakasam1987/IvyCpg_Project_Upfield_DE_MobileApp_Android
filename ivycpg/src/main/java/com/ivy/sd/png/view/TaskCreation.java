@@ -89,11 +89,11 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
         TextView task_title = (TextView) findViewById(R.id.task_title_tv);
         TextView applicable_tv = (TextView) findViewById(R.id.applicable_tv);
-        task_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-        applicable_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        task_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        applicable_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         taskTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         taskView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.LIGHT));
 
         /*channelSpinner.setEnabled(false);
         retailerSpinner.setEnabled(false);*/
@@ -107,13 +107,13 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         final RadioButton seller_rb = (RadioButton) findViewById(R.id.seller);
         final RadioButton channelwise_rb = (RadioButton) findViewById(R.id.Channelwise);
         final RadioButton retailerwise_rb = (RadioButton) findViewById(R.id.Retailerwise);
-        seller_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        seller_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
         final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);
         seller_rb.setTextColor(color);
-        channelwise_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        retailerwise_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        channelwise_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        retailerwise_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.seller) {

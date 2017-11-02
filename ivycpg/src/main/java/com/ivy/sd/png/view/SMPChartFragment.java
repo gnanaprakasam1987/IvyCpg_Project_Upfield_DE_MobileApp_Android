@@ -84,7 +84,7 @@ public class SMPChartFragment extends Fragment {
                 mChart.setRotationAngle(180f);
                 // entry label styling
                 mChart.setEntryLabelColor(Color.WHITE);
-                mChart.setEntryLabelTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                mChart.setEntryLabelTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 mChart.setEntryLabelTextSize(0f);
             //}
             setData();
@@ -165,7 +165,7 @@ public class SMPChartFragment extends Fragment {
             data.setValueFormatter(new PercentFormatter());
             data.setValueTextSize(12f);
             data.setValueTextColor(Color.BLACK);
-            data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             mChart.setData(data);
             mChart.invalidate();
         }

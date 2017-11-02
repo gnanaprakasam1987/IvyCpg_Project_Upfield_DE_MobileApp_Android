@@ -111,7 +111,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
                 tabOne.setTextSize(getResources().getDimensionPixelSize(R.dimen.font_nano_small));
                 tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
                 if (first_tab == 0) {
-                    tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
                 first_tab++;
             }
@@ -173,7 +173,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
                 TextView text = (TextView) tab.getCustomView();
-                text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
 
             @Override

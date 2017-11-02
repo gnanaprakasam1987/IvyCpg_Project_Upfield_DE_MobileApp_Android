@@ -39,6 +39,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
@@ -142,7 +144,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             tvtotalLines = (TextView) findViewById(R.id.txttotalqty);
             tv_lbl_total_lines = (TextView) findViewById(R.id.TextView52);
             TextView51 = (TextView) findViewById(R.id.TextView51);
-            TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             lvwplist = (ListView) findViewById(R.id.lvwplistorddet);
             lvwplist.setCacheColorHint(0);
@@ -236,44 +238,57 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 			}*/
             double totalLines = 0;
             int totalAllQty = 0;
-            for (ProductMasterBO productBO : mProducts) {
-                // if (productBO.isCheked()
-                // && (productBO.getCaseQty() > 0 || productBO.getPieceQty() >
-                // 0)) {
-                if ((productBO.getOrderedPcsQty() > 0
-                        || productBO.getOrderedCaseQty() > 0 || productBO
-                        .getOrderedOuterQty() > 0)) {
-                    totalLines = totalLines + 1;
+            if(bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON){
+                // All products not need to load.only invoice products loaded from
+                // sqlite and stored in object.Because invoice print file saved in sdcard
+                // we can show other details using the text file
+                mProductsForAdapter=bmodel.reportHelper.getReportDetails(minvoiceid);
+            }else {
+                for (ProductMasterBO productBO : mProducts) {
+                    // if (productBO.isCheked()
+                    // && (productBO.getCaseQty() > 0 || productBO.getPieceQty() >
+                    // 0)) {
+                    if ((productBO.getOrderedPcsQty() > 0
+                            || productBO.getOrderedCaseQty() > 0 || productBO
+                            .getOrderedOuterQty() > 0)) {
+                        totalLines = totalLines + 1;
 
-                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productBO.getBatchwiseProductCount() > 0) {
-                        ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
-                        if (batchList != null) {
-                            for (ProductMasterBO batchproductBo : batchList) {
-                                int totalQty = batchproductBo.getOrderedPcsQty() + (batchproductBo.getOrderedCaseQty() * productBO.getCaseSize())
-                                        + (batchproductBo.getOrderedOuterQty() * productBO.getOutersize());
-                                totalAllQty = totalAllQty + totalQty;
-                                if (totalQty > 0) {
-                                    batchproductBo.setProductShortName(productBO.getProductShortName());
-                                    batchproductBo.setTotalamount(batchproductBo.getDiscount_order_value());
-                                    mProductsForAdapter.add(batchproductBo);
+                        if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productBO.getBatchwiseProductCount() > 0) {
+                            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
+                            if (batchList != null) {
+                                for (ProductMasterBO batchproductBo : batchList) {
+                                    int totalQty = batchproductBo.getOrderedPcsQty() + (batchproductBo.getOrderedCaseQty() * productBO.getCaseSize())
+                                            + (batchproductBo.getOrderedOuterQty() * productBO.getOutersize());
+                                    totalAllQty = totalAllQty + totalQty;
+                                    if (totalQty > 0) {
+                                        batchproductBo.setProductShortName(productBO.getProductShortName());
+                                        batchproductBo.setTotalamount(batchproductBo.getDiscount_order_value());
+                                        mProductsForAdapter.add(batchproductBo);
+                                    }
                                 }
                             }
+
+                        } else {
+                            productBO.setBatchNo("");
+                            int totalQty = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
+                            totalAllQty = totalAllQty + totalQty;
+                            mProductsForAdapter.add(productBO);
                         }
 
-                    } else {
-                        productBO.setBatchNo("");
-                        int totalQty = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
-                        totalAllQty = totalAllQty + totalQty;
-                        mProductsForAdapter.add(productBO);
                     }
 
                 }
-
             }
 
 
-            //load accumulation scheme free products
-            schemeProductList = bmodel.schemeDetailsMasterHelper.downLoadAccumulationSchemeDetailReport(minvoiceid, true);
+
+
+if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+    schemeProductList = bmodel.reportHelper.getSchemeProductDetails(minvoiceid);
+}else {
+    //load accumulation scheme free products
+    schemeProductList = bmodel.schemeDetailsMasterHelper.downLoadAccumulationSchemeDetailReport(minvoiceid, true);
+}
             if (schemeProductList != null &&
                     mProductsForAdapter != null) {
                 if (mProductsForAdapter.get(mProductsForAdapter.size() - 1).getSchemeProducts() != null)
@@ -287,9 +302,16 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES) {
                 if (bmodel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
+
+                    if(mProductsForAdapter!=null) {
+                        for (ProductMasterBO productMasterBO : mProductsForAdapter) {
+                            totalAllQty = totalAllQty + productMasterBO.getTotalQty();
+                        }
+                    }
                     tvtotalLines.setText(totalAllQty + "");
                     tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
                 } else {
+                    totalLines =mProductsForAdapter.size();
                     tvtotalLines.setText(totalLines + "");
                     tv_lbl_total_lines.setText(getResources().getString(R.string.tot_line));
                 }
@@ -300,14 +322,14 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
             // Show alert if error loading data.
-            if (mProducts == null) {
+            if (mProductsForAdapter == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.unable_to_load_data),
                         0);
                 return;
             }
             // Show alert if no order exist.
-            if (mProducts.size() == 0) {
+            if (mProductsForAdapter.size() == 0) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_orders_available),
                         0);
@@ -325,104 +347,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    int pos;
 
-    // class MyAdapter extends ArrayAdapter<ProductMasterBO> {
-    // Vector<ProductMasterBO> items;
-    // SchemeProductBO schemebo;
-    //
-    // MyAdapter(Vector<ProductMasterBO> items) {
-    // super(InvoiceReportDetail.this, R.layout.row_invoice_report_detail,
-    // items);
-    // this.items = items;
-    // }
-    //
-    // public View getView(int position, View convertView, ViewGroup parent) {
-    // final ViewHolder holder;
-    // pos = position;
-    // bmodel = (BusinessModel) getApplicationContext();
-    //
-    // bmodel.setContext(InvoiceReportDetail.this);
-    // ProductMasterBO orderreport = (ProductMasterBO) items.get(pos);
-    // View row = convertView;
-    // bmodel = (BusinessModel) getApplicationContext();
-    //
-    // if (row == null) {
-    // LayoutInflater inflater = getLayoutInflater();
-    // row = inflater.inflate(R.layout.row_invoice_report_detail,
-    // parent, false);
-    // holder = new ViewHolder();
-    // holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME);
-    //
-    // holder.tvwval = (TextView) row.findViewById(R.id.PRDQTY);
-    // holder.tvwqty = (TextView) row.findViewById(R.id.PRDPCSQTY);
-    // holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDVAL);
-    // holder.outerQty = (TextView) row
-    // .findViewById(R.id.outerCaseQty);
-    // holder.psname = (TextView) row.findViewById(R.id.pname);
-    // holder.scaseqty = (TextView) row.findViewById(R.id.caseqty);
-    // holder.spcsqty = (TextView) row.findViewById(R.id.pcsqty);
-    // holder.souterqty = (TextView) row.findViewById(R.id.outerqty);
-    // holder.stotal = (TextView) row.findViewById(R.id.total);
-    //
-    // try {
-    // if (bmodel.labelsMasterHelper.applyLabels(holder.tvwqty
-    // .getTag()) != null)
-    // holder.tvwqty.setText(bmodel.labelsMasterHelper
-    // .applyLabels(holder.tvwqty.getTag()));
-    //
-    // if (bmodel.labelsMasterHelper.applyLabels(holder.tvcaseqty
-    // .getTag()) != null)
-    // holder.tvcaseqty.setText(bmodel.labelsMasterHelper
-    // .applyLabels(holder.tvcaseqty.getTag()));
-    // } catch (Exception e) {
-    // Commons.printException(e);
-    // }
-    // /** hide Pcs,Case,outer **/
-    // if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-    // holder.tvcaseqty.setVisibility(View.GONE);
-    // if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-    // holder.tvwqty.setVisibility(View.GONE);
-    // if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-    // holder.outerQty.setVisibility(View.GONE);
-    //
-    // row.setOnClickListener(new OnClickListener() {
-    // public void onClick(View v) {
-    // productName.setText(holder.productName);
-    //
-    // }
-    // });
-    //
-    // row.setTag(holder);
-    // } else {
-    // holder = (ViewHolder) row.getTag();
-    // }
-    //
-    // holder.tvwpsname.setText(orderreport.getProductShortName());
-    // holder.productName = orderreport.getProductName();
-    // holder.tvcaseqty.setText(orderreport.getOrderedCaseQty() + "");
-    // holder.tvwqty.setText(orderreport.getOrderedPcsQty() + "");
-    // holder.tvwval.setText(bmodel.formatValue(orderreport
-    // .getTotalamount()));
-    // holder.outerQty.setText(orderreport.getOrderedOuterQty() + "");
-    // if (orderreport.getIsscheme() == 1
-    // && orderreport.getSchemeProducts() != null) {
-    //
-    // int size = orderreport.getSchemeProducts().size();
-    // Commons.print("scheme products not null=" + size);
-    // for (int i = 0; i < size; i++) {
-    // schemebo = orderreport.getSchemeProducts().get(i);
-    // holder.psname.setText(schemebo.getProductName());
-    // holder.productName = schemebo.getProductFullName();
-    // holder.scaseqty.setText("0");
-    // holder.spcsqty.setText(schemebo.getQuantitySelected() + "");
-    // holder.stotal.setText("0");
-    // holder.souterqty.setText("0");
-    // }
-    // }
-    // return (row);
-    // }
-    // }
 
     @Override
     public void onClick(View comp) {
@@ -476,19 +401,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 showDialog(2);
             } else if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                     || bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
-                SalesReturnHelper.getInstance(this).clearSalesReturnTable();
-                bmodel.productHelper.updateSalesReturnInfoInProductObj(null, bmodel.invoiceNumber, false);
-                bmodel.productHelper.updateDistributorDetails();
-                if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-                    bmodel.productHelper.downloadBillwiseDiscount();
-                    bmodel.productHelper.loadBillwiseDiscount(bmodel.invoiceNumber);
-                }
-                if (bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                    bmodel.productHelper.downloadTaxDetails();
-
-
-                //bmodel.mCommonPrintHelper.xmlRead("print_z320_invoice_best_one.xml",true,bmodel.productHelper.getProductMaster(),null);
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, bmodel.productHelper.getProductMaster(), null);
+                // Print file already saved.so not need to reload the object.we can get the object from print text file
+                bmodel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
                 intent.setClass(InvoiceReportDetail.this,
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);
@@ -542,6 +456,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 holder.tvwqty = (TextView) row.findViewById(R.id.PRDPCSQTY);
                 holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDQTY);
                 holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
+                holder.tvBatchNo=(TextView)row.findViewById(R.id.batch_no);
                 holder.outerQty = (TextView) row
                         .findViewById(R.id.outerCaseQty);
 
@@ -572,6 +487,23 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             holder.tvwpsname.setText(productBO.getProductName());
 
             holder.productName = productBO.getProductFullName();
+            if(productBO.getBatchId()!=null&&!productBO.getBatchId().equals("null"))
+            holder.tvBatchNo.setText(productBO.getBatchId());
+
+            if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+                if(productBO.getUomDescription().equals("CASE")){
+                    holder.tvcaseqty.setText(productBO.getQuantitySelected() + "");
+                    holder.tvwqty.setText(0 + "");
+                }else if(productBO.getUomDescription().equals("OUTER")){
+                    holder.outerQty.setText(productBO.getQuantitySelected()+"");
+                    holder.tvwqty.setText(0 + "");
+                    holder.tvcaseqty.setText(0 + "");
+                }else{
+                    holder.tvwqty.setText(productBO.getQuantitySelected() + "");
+                    holder.tvcaseqty.setText(0 + "");
+                    holder.outerQty.setText(0 + "");
+                }
+            }else{
 
             holder.productBO = bmodel.productHelper
                     .getProductMasterBOById(productBO.getProductId());
@@ -586,7 +518,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 } else if (holder.productBO.getOuUomid() == productBO
                         .getUomID() && holder.productBO.getOuUomid() != 0) {
                     // outer wise free quantity update
-                    holder.outerQty.setText(productBO.getQuantitySelected());
+                    holder.outerQty.setText(productBO.getQuantitySelected()+"");
                     holder.tvwqty.setText(0 + "");
                     holder.tvcaseqty.setText(0 + "");
                 } else {
@@ -594,6 +526,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.tvcaseqty.setText(0 + "");
                     holder.outerQty.setText(0 + "");
                 }
+            }
             }
 
             holder.tvwval.setText("0");
@@ -603,11 +536,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         @Override
         public int getChildrenCount(int groupPosition) {
 
-            if (mProductsForAdapter.get(groupPosition).getIsscheme() == 1) {
+
                 if (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null) {
                     return mProductsForAdapter.get(groupPosition)
                             .getSchemeProducts().size();
-                }
+
             }
 
             return 0;
@@ -679,11 +612,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
             holder.productBO = mProductsForAdapter.get(groupPosition);
             if (!bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-
-                holder.tvBatchNo.setText("12345" + holder.productBO.getBatchNo() + " , ");
+                if(holder.productBO.getBatchNo()!=null&&!holder.productBO.getBatchNo().equals("null"))
+                    holder.tvBatchNo.setText("12345" + holder.productBO.getBatchNo() + " , ");
             }
-            holder.tvBatchNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvBatchNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.tvwpsname.setText(holder.productBO.getProductShortName());
             holder.productName = holder.productBO.getProductName();
             holder.tvwqty.setText(holder.productBO.getOrderedPcsQty() + "");
@@ -691,7 +624,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             holder.outerQty.setText(holder.productBO.getOrderedOuterQty() + "");
             int totalQty = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
             holder.tvWeight.setText(" WGT : " + totalQty * holder.productBO.getWeight() + "");
-            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             /**
              * This line wise total may be wrong is amount discount appied via
              * scheme
