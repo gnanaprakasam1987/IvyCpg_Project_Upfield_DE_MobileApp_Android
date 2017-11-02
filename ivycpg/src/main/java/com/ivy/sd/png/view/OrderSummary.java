@@ -1286,9 +1286,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 MyDatePickerDialog d = new MyDatePickerDialog(this,
                         mDateSetListener, cyear, cmonth, cday);
                 int maxDeliverydate = bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE;
-                if (maxDeliverydate > 0) {
+                d.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+               /* if (maxDeliverydate > 0) {
                     d.getDatePicker().setMaxDate(DateUtil.addDaystoDate(new Date(), maxDeliverydate).getTime());
-                }
+                }*/
                 d.setPermanentTitle(getResources().getString(R.string.choose_date));
                 return d;
 

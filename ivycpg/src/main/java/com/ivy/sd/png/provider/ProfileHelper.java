@@ -219,7 +219,7 @@ public class ProfileHelper {
 
             Cursor c = db
                     .selectSQL("SELECT POH.Retailerid,RetailerCode,POH.refid,orderdate,ordervalue,lpc,Flag,POH.PaidAmount," +
-                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid,IM .RField1,IM.RField2,IM.RField3,IM.RField4" +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,'')" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
                             " left join productMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
@@ -282,6 +282,7 @@ public class ProfileHelper {
                         orderHistory.setRF2(c.getString(19));
                         orderHistory.setRF3(c.getString(20));
                         orderHistory.setRF4(c.getString(21));
+                        orderHistory.setVolume(c.getString(22));
                         historyList.add(orderHistory);
                     }
 

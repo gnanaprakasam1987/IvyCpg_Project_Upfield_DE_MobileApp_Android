@@ -274,9 +274,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //	pd.dismiss();
                     alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.stock_download_successfully), 0);
+                    if (getActivity() != null)
+                        bmodel.showAlert(
+                                getResources().getString(
+                                        R.string.stock_download_successfully), 0);
 
                 } else {
                     String errorDownlodCode = bundle

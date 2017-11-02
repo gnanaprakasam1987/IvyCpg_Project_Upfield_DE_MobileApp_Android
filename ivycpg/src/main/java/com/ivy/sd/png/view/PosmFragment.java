@@ -918,7 +918,7 @@ public class PosmFragment extends IvyBaseFragment implements
 //                                showFileDeleteAlert(holder.assetBO.getAssetID()
 //                                        + "", fnameStarts);
                                 showFileDeleteAlertWithImage(holder.assetBO.getAssetID()
-                                        + "", fnameStarts,holder.assetBO.getImageName());
+                                        + "", fnameStarts, holder.assetBO.getImageName());
                             } else {
                                 captureCustom();
                             }
@@ -1007,15 +1007,12 @@ public class PosmFragment extends IvyBaseFragment implements
 
             if (!bmodel.assetTrackingHelper.SHOW_POSM_TARGET) {
                 holder.targetTV.setVisibility(View.GONE);
-                holder.availQtyET.setVisibility(View.GONE);
-
-
-            } else {
-                if (!bmodel.assetTrackingHelper.SHOW_POSM_QTY) {
-                    holder.availQtyET.setVisibility(View.GONE);
-                }
-
             }
+
+            if (!bmodel.assetTrackingHelper.SHOW_POSM_QTY) {
+                holder.availQtyET.setVisibility(View.GONE);
+            }
+
 
             if (!bmodel.assetTrackingHelper.SHOW_POSM_REASON) {
                 holder.reason1Spin.setVisibility(View.GONE);
@@ -1198,17 +1195,16 @@ public class PosmFragment extends IvyBaseFragment implements
      */
     private void showFileDeleteAlertWithImage(final String bbid,
                                               final String imageNameStarts,
-                                              final String imageSrc)
-    {
-       final CommonDialog commonDialog=new CommonDialog(getActivity().getApplicationContext(), //Context
-               getActivity(), //Context
+                                              final String imageSrc) {
+        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
+                getActivity(), //Context
                 "", //Title
-               getResources().getString(R.string.word_already) + " " + 1 +" " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
-               true, //ToDisplayImage
-               getResources().getString(R.string.yes), //Positive Button
-               getResources().getString(R.string.no), //Negative Button
-               false, //MoveToNextActivity
-               getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                true, //ToDisplayImage
+                getResources().getString(R.string.yes), //Positive Button
+                getResources().getString(R.string.no), //Negative Button
+                false, //MoveToNextActivity
+                getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
                 new CommonDialog.positiveOnClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
@@ -1242,6 +1238,7 @@ public class PosmFragment extends IvyBaseFragment implements
         commonDialog.show();
         commonDialog.setCancelable(false);
     }
+
     private void showFileDeleteAlert(final String bbid,
                                      final String imageNameStarts) {
 
