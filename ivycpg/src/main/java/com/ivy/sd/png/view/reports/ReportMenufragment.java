@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -145,6 +146,8 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT,
+                    R.drawable.icon_reports);
 
             // Load the HHTTable
             menuDB = bmodel.configurationMasterHelper
@@ -217,8 +220,14 @@ public class ReportMenufragment extends IvyBaseFragment {
             intoreportacti(config);
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             intoreportacti(config);
-        }
-        else {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
+            if (bmodel.reportHelper.isPerformReport()) {
+                intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+            }
+
+        } else {
             intoreportacti(config);
         }
 

@@ -1200,8 +1200,6 @@
     <string name="select_reason_for_no_order">Select Reason for no order</string>
 
 
-
-
     <string-array name="task_tab_header">
         <item>All</item>
         <item>Assigned</item>

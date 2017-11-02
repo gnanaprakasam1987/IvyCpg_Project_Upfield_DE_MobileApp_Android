@@ -96,6 +96,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_PROMO_REPORT = "MENU_PRMPJ_RPT";
 	public static final String MENU_ASSET_REPORT = "MENU_ASTPJ_RPT";
 	public static final String MENU_SELLER_MAPVIEW_REPORT = "MENU_SELLER_MAPVIEW_RPT";
+	public static final String MENU_SELLER_PERFOMANCE_REPORT = "MENU_SELLER_PERORM_RPT";
 
 	public static final String VISITCONFIG_PLANNING = "MENU_PLANNING";
 	public static final String VISITCONFIG_COVERAGE = "MENU_VISIT";

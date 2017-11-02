@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 public class ReportActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface,SellerListFragment.SellerSelectionInterface {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
     private OrderReportFragment orderFragment;
     private PreviousDayOrderReportFragment pvsorderFragment;
@@ -97,6 +97,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private CSCustomerVisited csCustomerVisited;
     private InventoryReportFragment mInventoryReport;
     private SellerMapViewReportFragment mSellerMapviewReport;
+    private SellerPerformanceReportFragment mSellerPerformReport;
     private Toolbar toolbar;
 
     @SuppressLint("NewApi")
@@ -217,7 +218,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mProductivityReport.setArguments(getIntent().getExtras());
         csCustomerVisited = new CSCustomerVisited();
         mInventoryReport = new InventoryReportFragment();
-        mSellerMapviewReport=new SellerMapViewReportFragment();
+        mSellerMapviewReport = new SellerMapViewReportFragment();
+        mSellerPerformReport = new SellerPerformanceReportFragment();
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
         salesFundamentalGapReportFragment.setArguments(getIntent().getExtras());
@@ -629,10 +631,18 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
-            transaction.replace(R.id.fragment_content, mSellerMapviewReport,StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
+            transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            bmodel.mSelectedActivityName = config.getMenuName();
+            transaction.addToBackStack(null);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
+            transaction.replace(R.id.fragment_content, mSellerPerformReport);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
             bmodel.mSelectedActivityName = config.getMenuName();
@@ -773,8 +783,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
-        if(fragment!=null)
-            fragment.updateMapView(mSelectedUsers,isAllUser);
+        if (fragment != null)
+            fragment.updateMapView(mSelectedUsers, isAllUser);
     }
 
     @Override
@@ -782,7 +792,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
-        if(fragment!=null)
+        if (fragment != null)
             fragment.updateClose();
     }
 }

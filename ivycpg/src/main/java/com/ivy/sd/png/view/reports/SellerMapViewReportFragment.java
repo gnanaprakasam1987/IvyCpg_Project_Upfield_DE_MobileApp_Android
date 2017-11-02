@@ -1,10 +1,8 @@
 package com.ivy.sd.png.view.reports;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,30 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
-import com.ivy.maplib.MapWrapperLayout;
-import com.ivy.maplib.OnInfoWindowElemTouchListener;
-import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OutletReportBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
-import com.ivy.sd.png.view.profile.ProfileActivity;
 
 import java.util.ArrayList;
 
