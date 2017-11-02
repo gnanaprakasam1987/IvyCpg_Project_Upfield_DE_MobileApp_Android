@@ -223,6 +223,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -11741,6 +11742,13 @@ public class BusinessModel extends Application {
         }catch (Exception e){
             Commons.printException(e);
         }
+    }
+
+    DecimalFormat df = new DecimalFormat("###.00");
+
+    public String getWithoutExponential(Double value) {
+        return ((value + "").contains("E")
+                ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
     }
 }
 

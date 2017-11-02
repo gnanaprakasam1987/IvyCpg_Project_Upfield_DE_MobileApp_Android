@@ -11,7 +11,6 @@ import com.ivy.sd.png.bo.AssetTrackingBrandBO;
 import com.ivy.sd.png.bo.AssetTrackingReportBO;
 import com.ivy.sd.png.bo.AttendanceReportBo;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InventoryBO_Proj;
@@ -3185,41 +3184,54 @@ public class ReportHelper {
 
     }
 
+    public HashMap<Integer, Vector<LevelBO>> getMfilterlevelBo() {
+        return mfilterlevelBo;
+    }
+
     private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo = new HashMap<>();
 
+    public Vector<LevelBO> getSequencevalues() {
+        return sequencevalues;
+    }
+
+    private Vector<LevelBO> sequencevalues;
     public void downloadSellerReportFilter() {
+        int LevelID = 0;
+        sequencevalues = new Vector<>();
         try {
 
-            ChildLevelBo childLevelBo;
             LevelBO levelBo;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
 
             db.openDataBase();
 
-            String sql = "select distinct PM.PID,PM.psname," +
+            String sql = "select distinct PM.PID,PM.PName," +
                     "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1)";
 
             Cursor c = db.selectSQL(sql);
-            sellerReportChildBO = new Vector<>();
             Vector<LevelBO> levelBOVector = new Vector<>();
             if (c != null) {
                 while (c.moveToNext()) {
                     if (parentIdsMap.containsKey(c.getInt(0))) {
-                        childLevelBo = new ChildLevelBo();
-                        childLevelBo.setProductid(c.getInt(0));
-                        childLevelBo.setPlevelName(c.getString(1));
-                        childLevelBo.setParentid(c.getInt(2));
-                        childLevelBo.setProductLevel(c.getString(4));
-
-                        sellerReportChildBO.add(childLevelBo);
-
+                        LevelID = c.getInt(3);
                         levelBo = new LevelBO();
+                        levelBo.setProductID(c.getInt(0));
+                        levelBo.setLevelName(c.getString(1));
+                        levelBo.setParentID(c.getInt(2));
+                        //levelBo.setProductLevel(c.getString(4));
                         levelBOVector.add(levelBo);
-                    }
-                    //productMasterById.put(product.getProductID(), product);
+                        if (sequencevalues.size() == 0) {
+                            levelBo = new LevelBO();
+                            levelBo.setProductID(LevelID);
+                            levelBo.setLevelName(c.getString(4));
+                            levelBo.setParentID(c.getInt(2));
+                            sequencevalues.add(levelBo);
+                        }
 
+                    }
                 }
+                mfilterlevelBo.put(LevelID, levelBOVector);
                 c.close();
             }
             db.closeDB();
@@ -3229,12 +3241,4 @@ public class ReportHelper {
         }
     }
 
-    private Vector<ChildLevelBo> sellerReportChildBO = new Vector<>();
-
-    public Vector<ChildLevelBo> getSellerReportChildLevelBO() {
-        if (sellerReportChildBO != null) {
-            return sellerReportChildBO;
-        }
-        return new Vector<ChildLevelBo>();
-    }
 }

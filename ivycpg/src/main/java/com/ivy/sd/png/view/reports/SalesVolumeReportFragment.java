@@ -181,8 +181,6 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
             if (frag != null)
                 ft.detach(frag);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("serilizeContent",
-                    bmodel.reportHelper.getSellerReportChildLevelBO());
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
             bundle.putString("isFrom", "SVR");
             // set Fragmentclass Arguments
@@ -255,7 +253,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
             holder.PRDNAME.setText(holder.productMasterBO.getProductShortName());
             holder.pdt_total_qty.setText(holder.productMasterBO.getTotalQty() + "");
-            holder.pdt_total_value.setText(holder.productMasterBO.getTotalamount() + "");
+            holder.pdt_total_value.setText(bmodel.getWithoutExponential(holder.productMasterBO.getTotalamount()) + "");
 
             return (row);
         }
@@ -331,7 +329,9 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        if (parentidList != null && parentidList.size() > 0) {
+        if (bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+            updateList(-1);
+        } else if (parentidList != null && parentidList.size() > 0) {
             updateList(parentidList.get(0).getProductID());
         }
         mDrawerLayout.closeDrawers();

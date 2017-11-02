@@ -29,7 +29,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -262,15 +261,9 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (brandInterface == null) {
             if (activity instanceof BrandDialogInterface) {
                 this.brandInterface = (BrandDialogInterface) activity;
             }
-        }
-    }
-
-    public void setBrandDialogInterface(SalesVolumeReportFragment sellerOrderReportFragment) {
-        this.brandInterface = sellerOrderReportFragment;
     }
 
     @SuppressWarnings("unchecked")

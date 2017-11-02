@@ -183,6 +183,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     loadedFilterValues = bmodel.salesFundamentalHelper.getFiveLevelFilters();
                     sequence = bmodel.salesFundamentalHelper.getSequenceValues();
                     break;
+                case "SVR":
+                    loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();
+                    sequence = bmodel.reportHelper.getSequencevalues();
+                    break;
                 default:
                     loadedFilterValues = bmodel.productHelper.getRetailerModuleFilerContentBySequenct();
                     sequence = bmodel.productHelper.getRetailerModuleSequenceValues();
