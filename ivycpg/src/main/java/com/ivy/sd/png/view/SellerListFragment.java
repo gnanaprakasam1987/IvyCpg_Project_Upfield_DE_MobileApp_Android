@@ -3,10 +3,8 @@ package com.ivy.sd.png.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.itextpdf.text.List;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -29,13 +26,13 @@ import java.util.ArrayList;
  * Created by rajkumar.s on 10/31/2017.
  */
 
-public class SellerListFragment extends Fragment implements View.OnClickListener {
+public class SellerListFragment<E> extends Fragment implements View.OnClickListener {
 
     View view;
     Context context;
     BusinessModel bmodel;
     ListView listView;
-    ArrayList<OutletReportBO> lstUsers;
+    ArrayList<OutletReportBO> lstUsers=new ArrayList<>();
 
     CardView card_all_user;
     CheckBox chk_all_user;
@@ -64,7 +61,7 @@ public class SellerListFragment extends Fragment implements View.OnClickListener
             btnApply=(Button) view.findViewById(R.id.btn_ok);
             btnApply.setOnClickListener(this);
 
-            lstUsers = (ArrayList) getArguments().get("users");
+            lstUsers = (ArrayList) getArguments().getSerializable("users");
 
             MyAdapter adapter=new MyAdapter(lstUsers);
             listView.setAdapter(adapter);
@@ -88,18 +85,35 @@ public class SellerListFragment extends Fragment implements View.OnClickListener
     public void onStart() {
         super.onStart();
 
+        updateAllUserCheckboxStatus();
+
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.btn_cancel){
-         sellerInterface.updateClose();
-        }
-        else if(view.getId()==R.id.btn_ok){
+        try {
+            if (view.getId() == R.id.btn_cancel) {
+                sellerInterface.updateClose();
+            } else if (view.getId() == R.id.btn_ok) {
 
+                if (chk_all_user.isChecked()) {
+                    sellerInterface.updateUserSelection(null, true);
+                } else {
+                    ArrayList<Integer> mSelectedIds = new ArrayList<>();
+                    for (OutletReportBO bo : lstUsers) {
+                        if (bo.isChecked()) {
+                            mSelectedIds.add(bo.getUserId());
+                        }
+                    }
+
+                    sellerInterface.updateUserSelection(mSelectedIds, false);
+                }
+            } else if (view.getId() == R.id.card_all_user) {
+                onClickAllUser();
+            }
         }
-        else if(view.getId()==R.id.card_all_user){
-            onClickAllUser();
+        catch (Exception ex){
+            Commons.printException(ex);
         }
 
     }
@@ -188,9 +202,8 @@ public class SellerListFragment extends Fragment implements View.OnClickListener
                     @Override
                     public void onClick(View view) {
 
-                        unCheckAllUsers();
-
                         if(!holder.checkBox.isChecked()) {
+                            unCheckAllUsers();
                             holder.checkBox.setChecked(true);
                             holder.bo.setChecked(true);
                         }else {
@@ -233,7 +246,7 @@ public class SellerListFragment extends Fragment implements View.OnClickListener
     }
 
     public interface SellerSelectionInterface{
-        void updateMapView(ArrayList<Integer> mSelectedUsers,boolean isAllUser);
+        void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser);
         void updateClose();
     }
 

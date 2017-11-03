@@ -84,6 +84,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private SalesFundamentalGapReportFragment salesFundamentalGapReportFragment;
     private PromotionTrackingReport promotionTrackingReportFragment;
     private AssetTrackingReportFragment assetTrackingReportFragment;
+    private OutletPerformanceReportFragmnet mOutletPerformanceReportFragmnet;
 
     private BusinessModel bmodel;
     private String menuTitle;
@@ -217,6 +218,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mProductivityReport.setArguments(getIntent().getExtras());
         csCustomerVisited = new CSCustomerVisited();
         mInventoryReport = new InventoryReportFragment();
+        mOutletPerformanceReportFragmnet=new OutletPerformanceReportFragmnet();
         mSellerMapviewReport=new SellerMapViewReportFragment();
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
@@ -640,6 +642,16 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
         }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_RETPERFO_RPT)) {
+            transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet,StandardListMasterConstants.MENU_RETPERFO_RPT);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            bmodel.mSelectedActivityName = config.getMenuName();
+            transaction.addToBackStack(null);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+        }
         // Commit the transaction
     }
 
@@ -769,12 +781,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMapView(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {
+    public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
         if(fragment!=null)
-            fragment.updateMapView(mSelectedUsers,isAllUser);
+            fragment.updateUserSelection(mSelectedUsers,isAllUser);
     }
 
     @Override

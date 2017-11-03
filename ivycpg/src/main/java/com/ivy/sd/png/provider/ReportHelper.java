@@ -3098,13 +3098,13 @@ public class ReportHelper {
 
     public ArrayList<OutletReportBO> downloadOutletReports(){
         ArrayList<OutletReportBO> lst=new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,Retailerid,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -3134,16 +3134,45 @@ public class ReportHelper {
         catch (Exception ex){
             Commons.printException(ex);
         }
+        finally {
+            db.closeDB();
+        }
         return lst;
+
+    }
+
+    public Integer downloadlastVisitedRetailer(int userId){
+       int retailerid=0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct Retailerid from OutletPerfomanceReport where userid="+userId+" order by timein,timeout  desc limit 1");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    retailerid=c.getInt(0);
+
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        finally {
+            db.closeDB();
+        }
+        return retailerid;
 
     }
 
     public ArrayList<OutletReportBO> downloadUsers(){
         ArrayList<OutletReportBO> lstUsers=new ArrayList<>();
-
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName from OutletPerfomanceReport");
@@ -3161,6 +3190,9 @@ public class ReportHelper {
         }
         catch (Exception ex){
             Commons.printException(ex);
+        }
+        finally {
+            db.closeDB();
         }
 
      return lstUsers;
