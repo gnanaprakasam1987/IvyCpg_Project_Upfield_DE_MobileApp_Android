@@ -6,9 +6,9 @@ package com.ivy.sd.png.bo;
 
 public class OutletReportBO {
 
-    int userId,retailerId;
-    String userName,retailerName,locationName,Address,isPlanned,isVisited;
-    String timeIn,timeOut,duration;
+    int userId, retailerId, isPlanned = 0, isVisited = 0;
+    String userName, retailerName, locationName, Address;
+    String timeIn, timeOut, duration;
 
     public int getUserId() {
         return userId;
@@ -58,19 +58,19 @@ public class OutletReportBO {
         Address = address;
     }
 
-    public String getIsPlanned() {
+    public int getIsPlanned() {
         return isPlanned;
     }
 
-    public void setIsPlanned(String isPlanned) {
+    public void setIsPlanned(int isPlanned) {
         this.isPlanned = isPlanned;
     }
 
-    public String getIsVisited() {
+    public int getIsVisited() {
         return isVisited;
     }
 
-    public void setIsVisited(String isVisited) {
+    public void setIsVisited(int isVisited) {
         this.isVisited = isVisited;
     }
 
@@ -124,7 +124,7 @@ public class OutletReportBO {
 
     String salesValue;
     double latitude = 0;
-    double longitude=0;
+    double longitude = 0;
 
     public boolean isChecked() {
         return isChecked;

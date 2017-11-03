@@ -3117,8 +3117,8 @@ public class ReportHelper {
                     outletReportBO.setRetailerName(c.getString(3));
                     outletReportBO.setLocationName(c.getString(4));
                     outletReportBO.setAddress(c.getString(5));
-                    outletReportBO.setIsPlanned(c.getString(6));
-                    outletReportBO.setIsVisited(c.getString(7));
+                    outletReportBO.setIsPlanned(c.getInt(6));
+                    outletReportBO.setIsVisited(c.getInt(7));
                     outletReportBO.setTimeIn(c.getString(8));
                     outletReportBO.setTimeOut(c.getString(9));
                     outletReportBO.setDuration(c.getString(10));
@@ -3188,5 +3188,28 @@ public class ReportHelper {
         }
 
         return isAvailable;
+    }
+
+    public String getPerformRptUrl() {
+        String url = "";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select URL from UrlDownloadMaster where MasterName = 'RPT_RETAILER_PERFORMANCE'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    url = c.getString(0);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return url;
     }
 }

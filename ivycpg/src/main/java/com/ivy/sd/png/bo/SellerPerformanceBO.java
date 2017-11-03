@@ -6,7 +6,8 @@ package com.ivy.sd.png.bo;
 
 public class SellerPerformanceBO {
 
-    int userId,plannedCall,DeviatedCall,actualCall,productiveCall;
+    int userId;
+    int plannedCall,DeviatedCall,actualCall,productiveCall;
     String userName;
     String timeSpent,objective,actual,visitPer,productivePer,lastSync;
 
@@ -16,38 +17,6 @@ public class SellerPerformanceBO {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getPlannedCall() {
-        return plannedCall;
-    }
-
-    public void setPlannedCall(int plannedCall) {
-        this.plannedCall = plannedCall;
-    }
-
-    public int getDeviatedCall() {
-        return DeviatedCall;
-    }
-
-    public void setDeviatedCall(int deviatedCall) {
-        DeviatedCall = deviatedCall;
-    }
-
-    public int getActualCall() {
-        return actualCall;
-    }
-
-    public void setActualCall(int actualCall) {
-        this.actualCall = actualCall;
-    }
-
-    public int getProductiveCall() {
-        return productiveCall;
-    }
-
-    public void setProductiveCall(int productiveCall) {
-        this.productiveCall = productiveCall;
     }
 
     public String getUserName() {
@@ -104,5 +73,37 @@ public class SellerPerformanceBO {
 
     public void setObjective(String objective) {
         this.objective = objective;
+    }
+
+    public int getPlannedCall() {
+        return plannedCall;
+    }
+
+    public void setPlannedCall(int plannedCall) {
+        this.plannedCall = plannedCall;
+    }
+
+    public int getDeviatedCall() {
+        return DeviatedCall;
+    }
+
+    public void setDeviatedCall(int deviatedCall) {
+        DeviatedCall = deviatedCall;
+    }
+
+    public int getActualCall() {
+        return actualCall;
+    }
+
+    public void setActualCall(int actualCall) {
+        this.actualCall = actualCall;
+    }
+
+    public int getProductiveCall() {
+        return productiveCall;
+    }
+
+    public void setProductiveCall(int productiveCall) {
+        this.productiveCall = productiveCall;
     }
 }

@@ -2,35 +2,48 @@ package com.ivy.sd.png.view.reports;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.SellerPerformanceBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.StockAndOrder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +55,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
     View view;
     BusinessModel bmodel;
     private RecyclerView rvPerformance;
+    private PerformanceAdapter performanceAdapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,6 +101,22 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         rvPerformance.setItemAnimator(new DefaultItemAnimator());
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_seller_perrpt, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String rptDownload = sharedPrefs.getString("rpt_dwntime", "");
+        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, SDUtil.now(SDUtil.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
+            menu.findItem(R.id.menu_refresh).setVisible(true);
+        else
+            menu.findItem(R.id.menu_refresh).setVisible(false);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -94,6 +124,9 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
 
         if (i == android.R.id.home) {
             onBackButtonClick();
+        }
+        if (i == R.id.menu_refresh) {
+            new PerformRptDownloadData().execute();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -130,13 +163,13 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                     for (OutletReportBO outletReport : outLetReportList) {
                         if (user.getUserId() == outletReport.getUserId()) {
                             actual += Double.parseDouble(outletReport.getSalesValue());
-                            if (outletReport.getIsPlanned().equalsIgnoreCase("Y"))
+                            if (outletReport.getIsPlanned() == 1)
                                 plannedCall += 1;
-                            if (!outletReport.getIsPlanned().equalsIgnoreCase("Y") && outletReport.getIsVisited().equalsIgnoreCase("Y"))
+                            if (outletReport.getIsPlanned() == 0 && outletReport.getIsVisited() == 1)
                                 deviateCall += 1;
-                            if (outletReport.getIsVisited().equalsIgnoreCase("Y"))
+                            if (outletReport.getIsVisited() == 1)
                                 actualCall += 1;
-                            if (outletReport.getIsVisited().equalsIgnoreCase("Y") && Double.parseDouble(outletReport.getSalesValue()) > 0)
+                            if (outletReport.getIsVisited() == 1 && Double.parseDouble(outletReport.getSalesValue()) > 0)
                                 productiveCall += 1;
 
                             //parse date and sum up intervals
@@ -158,15 +191,18 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                     sellerPerformanceBO.setActualCall(actualCall);
                     sellerPerformanceBO.setProductiveCall(productiveCall);
 
-                    sellerPerformanceBO.setTimeSpent(TimeUnit.MILLISECONDS.toHours(duration) + ":" +
-                            TimeUnit.MILLISECONDS.toMinutes(duration) + ":" +
-                            TimeUnit.MILLISECONDS.toSeconds(duration));
+                    sellerPerformanceBO.setTimeSpent(String.format("%02d:%02d:%02d",
+                            TimeUnit.MILLISECONDS.toHours(duration),
+                            TimeUnit.MILLISECONDS.toMinutes(duration) -
+                                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
+                            TimeUnit.MILLISECONDS.toSeconds(duration) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))));
 
                     sellerPerformanceBO.setLastSync(lastSync);
-                    int totalCall = plannedCall + deviateCall;
-                    vistPer = (actualCall / totalCall) * 100;
+                    double totalCall = plannedCall + deviateCall;
+                    vistPer = ((double) actualCall / totalCall) * 100;
                     sellerPerformanceBO.setVisitPer(bmodel.formatPercent(vistPer));
-                    productivePer = (productiveCall / actualCall) * 100;
+                    productivePer = ((double) productiveCall / (double) actualCall) * 100;
                     sellerPerformanceBO.setProductivePer(bmodel.formatPercent(productivePer));
                     performanceList.add(sellerPerformanceBO);
                 }
@@ -192,13 +228,31 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             progressDialogue.dismiss();
+            if (performanceList.size() > 0) {
+                performanceAdapter = new PerformanceAdapter(performanceList);
+                rvPerformance.setAdapter(performanceAdapter);
+            }
         }
 
     }
 
     private long getDiffDuration(String startDate, String endData) {
         long diffDuration = 0;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        try {
+            Date d1 = format.parse(startDate);
+            Date d2 = format.parse(endData);
+            diffDuration = d2.getTime() - d1.getTime();
+        } catch (ParseException e) {
+            Commons.printException(e);
+        }
+        return diffDuration;
+    }
+
+    private long getDiffDurationMenu(String startDate, String endData) {
+        long diffDuration = 0;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         try {
             Date d1 = format.parse(startDate);
@@ -215,12 +269,41 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         private ArrayList<SellerPerformanceBO> performList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            public Button btnFilter;
+            public TextView tvUserName, tvLastSync, tvTimeSpent, tvActual, tvVistPer, tvProdPer, tvPlannedCall, tvDeviateCall, tvActualCall, tvProdCall;
 
             public MyViewHolder(View view) {
                 super(view);
-                btnFilter = (Button) view.findViewById(R.id.btn_filter);
-                btnFilter.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                tvUserName = (TextView) view.findViewById(R.id.tv_username);
+                tvLastSync = (TextView) view.findViewById(R.id.tv_last_sync_value);
+                tvTimeSpent = (TextView) view.findViewById(R.id.tv_timespent_value);
+                tvActual = (TextView) view.findViewById(R.id.tvactualValue);
+                tvVistPer = (TextView) view.findViewById(R.id.tvVisitPerValue);
+                tvProdPer = (TextView) view.findViewById(R.id.tvProdPerValue);
+                tvPlannedCall = (TextView) view.findViewById(R.id.tvPlnCallValue);
+                tvDeviateCall = (TextView) view.findViewById(R.id.tvadevCallValue);
+                tvActualCall = (TextView) view.findViewById(R.id.tvActualCallValue);
+                tvProdCall = (TextView) view.findViewById(R.id.tvProdCallValue);
+
+                tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvLastSync.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvTimeSpent.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvActual.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvVistPer.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvProdPer.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvPlannedCall.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvDeviateCall.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvActualCall.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvProdCall.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                ((TextView) view.findViewById(R.id.tv_last_sync_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tv_time_spent_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvActualTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvVisitPerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvProdPerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvplnCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvdevCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvActCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tvProdCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             }
         }
 
@@ -231,7 +314,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.filter_rv_item, parent, false);
+                    .inflate(R.layout.perform_rv_item, parent, false);
 
             return new MyViewHolder(itemView);
         }
@@ -240,6 +323,16 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             final SellerPerformanceBO performanceBO = performList.get(position);
 
+            holder.tvUserName.setText(performanceBO.getUserName());
+            holder.tvLastSync.setText(performanceBO.getLastSync());
+            holder.tvTimeSpent.setText(performanceBO.getTimeSpent());
+            holder.tvActual.setText(performanceBO.getActual());
+            holder.tvVistPer.setText(performanceBO.getVisitPer());
+            holder.tvProdPer.setText(performanceBO.getProductivePer());
+            holder.tvPlannedCall.setText(performanceBO.getPlannedCall() + "");
+            holder.tvDeviateCall.setText(performanceBO.getDeviatedCall() + "");
+            holder.tvActualCall.setText(performanceBO.getActualCall() + "");
+            holder.tvProdCall.setText(performanceBO.getProductiveCall() + "");
 
         }
 
@@ -249,6 +342,74 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         }
     }
 
+    class PerformRptDownloadData extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+        private ProgressDialog progressDialogue;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.downloading_rpt),
+                    true, false);
+            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            bmodel.synchronizationHelper.updateAuthenticateToken();
+            String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.reportHelper.getPerformRptUrl(), jsonObject);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, true);
+
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity())
+                                    .edit();
+                            editor.putString("rpt_dwntime",
+                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                            editor.commit();
+
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            progressDialogue.dismiss();
+            if (errorCode
+                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (bmodel.reportHelper.isPerformReport()) {
+                    new LoadAsyncTask().execute();
+                    getActivity().invalidateOptionsMenu();
+                } else {
+                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                    onBackButtonClick();
+                }
+
+            } else {
+                String errorMessage = bmodel.synchronizationHelper
+                        .getErrormessageByErrorCode().get(errorCode);
+                if (errorMessage != null) {
+                    bmodel.showAlert(errorMessage, 0);
+                }
+            }
+        }
+    }
 }
 
 

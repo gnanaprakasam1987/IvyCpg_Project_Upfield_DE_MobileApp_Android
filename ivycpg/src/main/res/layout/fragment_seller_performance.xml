@@ -6,10 +6,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvPerformance"
+        android:layout_marginTop="@dimen/list_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/list_margin"
-        android:layout_marginRight="@dimen/list_margin"
         android:scrollbars="none" />
 
 </LinearLayout>

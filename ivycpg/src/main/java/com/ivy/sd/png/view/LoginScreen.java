@@ -1040,6 +1040,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
                         && (totalTableCount == updateTableCount)) {
+                    //outelet Performac
+                    if (bmodel.reportHelper.getPerformRptUrl().length() > 0) {
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(this)
+                                .edit();
+                        editor.putString("rpt_dwntime",
+                                SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        editor.commit();
+                    }
                     new UpdateFinish().execute();
                 } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
@@ -1586,7 +1595,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         jsonArray.put(distributorBO.getDId());
 
                         //update distributorid in usermaster
-                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(),distributorBO.getDName());
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(), distributorBO.getDName());
                     }
                 }
                 json.put("DistributorIds", jsonArray);
