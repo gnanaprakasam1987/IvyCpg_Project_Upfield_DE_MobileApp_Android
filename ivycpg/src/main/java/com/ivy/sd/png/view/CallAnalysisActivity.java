@@ -58,7 +58,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
     private BusinessModel bmodel;
     private ImageView mGoldStoreIV;
-    private Spinner spinnerNoOrderReason,spinnerNooCollectionReason,spinnerFeedback;
+    private Spinner spinnerNoOrderReason, spinnerNooCollectionReason, spinnerFeedback;
     private TextView mTime;
     private ArrayAdapter<ReasonMaster> spinnerAdapter, collectionReasonAdapter, feedBackReasonAdapter;
     public static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
@@ -179,7 +179,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
             if (bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
 
-                feedBackReasonAdapter = new ArrayAdapter<ReasonMaster>(this,  R.layout.call_analysis_spinner_layout);
+                feedBackReasonAdapter = new ArrayAdapter<ReasonMaster>(this, R.layout.call_analysis_spinner_layout);
                 feedBackReasonAdapter
                         .setDropDownViewResource(R.layout.call_analysis_spinner_list_item);
                 feedBackReasonAdapter.add(new ReasonMaster("0", getResources().getString(R.string.select_feedback)));
@@ -409,7 +409,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         if (percent > 100) {
                             percent = 100;
                         }
-                        holder.tv_progress_text.setText(percent + getResources().getString(R.string.percent_of_tot_target_achieved));
+                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                     } /*else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
                         holder.tv_progress_text.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
                     }*/
@@ -453,9 +453,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             if (percent > 100) {
                                 percent = 100;
                             }
-                            holder.tv_progress_text_right.setText(percent + getResources().getString(R.string.percent_of_tot_target_achieved));
+                            holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                         } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
-                            holder.tv_progress_text_right.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
+                            holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                         }
                     }
                 } catch (Exception ex) {

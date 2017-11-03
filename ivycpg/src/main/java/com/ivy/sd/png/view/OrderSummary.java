@@ -691,7 +691,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             cmyDiscount = cmy_disc + bmodel.getRetailerMasterBO().getBillWiseCompanyDiscount();
             distDiscount = dist_disc + bmodel.getRetailerMasterBO().getBillWiseDistributorDiscount();
 
-            icAmountSpilitup_lty.setOnClickListener(new OnClickListener() {
+            icAmountSpilitup.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (dialogFragment == null) {

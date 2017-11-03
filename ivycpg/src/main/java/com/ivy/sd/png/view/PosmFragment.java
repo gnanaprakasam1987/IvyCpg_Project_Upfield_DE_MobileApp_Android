@@ -127,21 +127,22 @@ public class PosmFragment extends IvyBaseFragment implements
     /**
      * This ArrayList contains downloaded assetreason records
      */
-    private ArrayList<ReasonMaster> mAssetReasonList;
+    private ArrayList<ReasonMaster> mPOSMReasonList;
     /**
      * This ArrayList contains downloaded assetremarks records
      */
-    private ArrayList<ReasonMaster> mAssetRemarksList;
-    private ArrayList<ReasonMaster> mAssetconditionList;
+  /*  private ArrayList<ReasonMaster> mAssetRemarksList;*/
+
+    private ArrayList<ReasonMaster> mPOSMConditionList;
     /**
      * This ArrayAdapter used to set AssetReason in spinner
      */
-    private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+    private ArrayAdapter<ReasonMaster> mPOSMReasonSpinAdapter;
     /**
      * This ArrayAdapter used to set AssetRemarks in spinner
      */
-    private ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
-    private ArrayAdapter<ReasonMaster> mAssetconditionAdapter;
+   /* private ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;*/
+    private ArrayAdapter<ReasonMaster> mPOSMConditionAdapter;
 
     /**
      * After scanned Asset barcode value stored in this string
@@ -497,28 +498,29 @@ public class PosmFragment extends IvyBaseFragment implements
         reason1.setReasonDesc("Select " + getResources().getString(R.string.condition));
 
 
-        mAssetReasonList = bmodel.assetTrackingHelper.getAssetReasonList();
-        mAssetReasonList.add(0, reason);
+        mPOSMReasonList = bmodel.assetTrackingHelper.getPOSMReasonList();
+        mPOSMReasonList.add(0, reason);
 
-        mAssetRemarksList = bmodel.assetTrackingHelper.getAssetRemarksList();
-        mAssetRemarksList.add(0, reason);
+      /*  mAssetRemarksList = bmodel.assetTrackingHelper.getAssetRemarksList();
+        mAssetRemarksList.add(0, reason);*/
 
-        mAssetconditionList = bmodel.assetTrackingHelper.getmAssetconditionList();
-        mAssetconditionList.add(0, reason1);
+        mPOSMConditionList = bmodel.assetTrackingHelper.getmPOSMconditionList();
+        mPOSMConditionList.add(0, reason1);
 
-        mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetReasonList);
-        mAssetReasonSpinAdapter
+        mPOSMReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout, mPOSMReasonList);
+        mPOSMReasonSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        mAssetRemarksSpinAdapter = new ArrayAdapter<>(
+
+      /*  mAssetRemarksSpinAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout,
                 mAssetRemarksList);
         mAssetRemarksSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);*/
 
-        mAssetconditionAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetconditionList);
-        mAssetconditionAdapter
+        mPOSMConditionAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout, mPOSMConditionList);
+        mPOSMConditionAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
     }
@@ -624,13 +626,13 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.reason1Spin = (Spinner) row
                         .findViewById(R.id.spin_reason1);
 
-                holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
+                holder.reason1Spin.setAdapter(mPOSMReasonSpinAdapter);
               /*  holder.reason2Spin = (Spinner) row
                         .findViewById(R.id.spin_reason2);*/
                 //  holder.reason2Spin.setAdapter(mAssetRemarksSpinAdapter);
                 holder.mconditionSpin = (Spinner) row
                         .findViewById(R.id.spin_condition);
-                holder.mconditionSpin.setAdapter(mAssetconditionAdapter);
+                holder.mconditionSpin.setAdapter(mPOSMConditionAdapter);
                 holder.minstalldate = (Button) row
                         .findViewById(R.id.Btn_instal_Date);
                 holder.mservicedate = (Button) row
@@ -946,7 +948,7 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
             holder.assetNameTV.setText(holder.assetBO.getAssetName());
             holder.reason1Spin.setSelection(bmodel.assetTrackingHelper
-                    .getItemIndex(holder.assetBO.getReason1ID(), mAssetReasonList));
+                    .getItemIndex(holder.assetBO.getReason1ID(), mPOSMReasonList));
 
            /* holder.reason2Spin.setSelection(bmodel.assetTrackingHelper
                     .getItemIndex(holder.assetBO.getRemarkID(),
@@ -983,7 +985,7 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.mconditionSpin.setEnabled(true);
                 holder.mconditionSpin.setSelection(bmodel.assetTrackingHelper
                         .getItemIndex(holder.assetBO.getConditionID(),
-                                mAssetconditionList));
+                                mPOSMConditionList));
                 holder.minstalldate.setEnabled(true);
                 holder.mservicedate.setEnabled(true);
 

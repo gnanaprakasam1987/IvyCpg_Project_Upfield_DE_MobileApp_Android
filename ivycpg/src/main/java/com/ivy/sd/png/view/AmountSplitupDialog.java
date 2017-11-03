@@ -97,7 +97,7 @@ public class AmountSplitupDialog extends DialogFragment {
         tv_comy_disc.setText("- " + bmodel.formatValue(companyDis + totalSchemeDiscValue));
         tv_dist_disc.setText("- " + bmodel.formatValue(distributorDis));
         tv_total_value.setText(bmodel.formatValue(totalValue));
-        tvOrderValue.setText(bmodel.formatValue(totalValue + distributorDis + companyDis));
+        tvOrderValue.setText(bmodel.formatValue(totalValue + distributorDis + companyDis + totalSchemeDiscValue));
 
         closeBTN.setOnClickListener(new OnClickListener() {
             @Override
