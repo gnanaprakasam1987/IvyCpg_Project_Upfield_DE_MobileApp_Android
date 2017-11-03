@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 public class ReportActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface,SellerListFragment.SellerSelectionInterface {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
     private OrderReportFragment orderFragment;
     private PreviousDayOrderReportFragment pvsorderFragment;
@@ -98,6 +98,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private CSCustomerVisited csCustomerVisited;
     private InventoryReportFragment mInventoryReport;
     private SellerMapViewReportFragment mSellerMapviewReport;
+    private SellerPerformanceReportFragment mSellerPerformReport;
     private Toolbar toolbar;
 
     @SuppressLint("NewApi")
@@ -218,8 +219,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mProductivityReport.setArguments(getIntent().getExtras());
         csCustomerVisited = new CSCustomerVisited();
         mInventoryReport = new InventoryReportFragment();
+        mSellerMapviewReport = new SellerMapViewReportFragment();
+        mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet=new OutletPerformanceReportFragmnet();
-        mSellerMapviewReport=new SellerMapViewReportFragment();
+
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
         salesFundamentalGapReportFragment.setArguments(getIntent().getExtras());
@@ -634,7 +637,16 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         }
         else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
-            transaction.replace(R.id.fragment_content, mSellerMapviewReport,StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
+            transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            bmodel.mSelectedActivityName = config.getMenuName();
+            transaction.addToBackStack(null);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
+            transaction.replace(R.id.fragment_content, mSellerPerformReport);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
             bmodel.mSelectedActivityName = config.getMenuName();
