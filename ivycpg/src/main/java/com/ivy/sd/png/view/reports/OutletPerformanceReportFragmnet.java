@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
@@ -40,6 +42,9 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
     private ArrayList<OutletReportBO> lstUsers;
     private ArrayList<OutletReportBO>lstReports;
 
+    View cardView;
+    LinearLayout ll_content;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -59,9 +64,12 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         }
 
 
+        ll_content=(LinearLayout)view.findViewById(R.id.ll_content);
 
+        if(lstUsers==null) {
             lstUsers = bmodel.reportHelper.downloadUsers();
             lstReports = bmodel.reportHelper.downloadOutletReports();
+        }
 
         return view;
     }
@@ -83,7 +91,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     GravityCompat.START);
             mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                     GravityCompat.END);
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            //  mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
             mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
                     mDrawerLayout,
@@ -91,12 +99,12 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     R.string.close
             ) {
                 public void onDrawerClosed(View view) {
-                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+                    ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
                     getActivity().supportInvalidateOptionsMenu();
                 }
 
                 public void onDrawerOpened(View drawerView) {
-                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(getResources().getString(R.string.filter));
+                    ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(getResources().getString(R.string.filter));
 
                     getActivity().supportInvalidateOptionsMenu();
                 }
@@ -106,6 +114,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
             mDrawerLayout.closeDrawer(GravityCompat.END);
 
 
+            updateView(null,true);
         }
         catch (Exception ex){
             Commons.printException(ex);
@@ -114,10 +123,94 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
     }
 
-    private void updateView(ArrayList<OutletReportBO> mSelectedUsers,boolean isAllUser){
 
+    private void updateView(ArrayList<Integer> mSelectedUsers,boolean isAllUser){
+
+        LinearLayout ll_product_layout;
+        View detailView;
+
+        ll_content.removeAllViews();
         if(isAllUser||mSelectedUsers!=null){
 
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+            for(OutletReportBO bo:lstUsers){
+
+                if(isAllUser||mSelectedUsers.contains(bo.getUserId())) {
+
+                    cardView = inflater.inflate(R.layout.layout_outlet_perf_report_header, null);
+                    TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
+                    tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    tv_groupName.setText(bo.getUserName());
+
+                    ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
+
+                    int sequence=0;
+                    for (OutletReportBO detailBO : lstReports) {
+                        if (detailBO.getUserId() == bo.getUserId()) {
+                            detailView = inflater.inflate(R.layout.layout_outlet_perf_child, null);
+                            ((View) detailView.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+
+                            sequence+=1;
+                            bo.setSequence(sequence);
+
+
+                            TextView tv_retailername = (TextView) detailView.findViewById(R.id.tv_retailer_name);
+                            TextView tv_location = (TextView) detailView.findViewById(R.id.tv_location);
+                            TextView tv_address = (TextView) detailView.findViewById(R.id.tv_address);
+
+                            TextView lbl_time_in = (TextView) detailView.findViewById(R.id.lbl_time_in);
+                            TextView tv_time_in = (TextView) detailView.findViewById(R.id.tv_time_in);
+                            TextView lbl_time_out = (TextView) detailView.findViewById(R.id.lbl_time_out);
+                            TextView tv_time_out = (TextView) detailView.findViewById(R.id.tv_time_out);
+
+                            TextView lbl_duration = (TextView) detailView.findViewById(R.id.lbl_duration);
+                            TextView tv_duration = (TextView) detailView.findViewById(R.id.tv_duration);
+                            TextView lbl_order_value = (TextView) detailView.findViewById(R.id.lbl_order_value);
+                            TextView tv_order_value = (TextView) detailView.findViewById(R.id.tv_order_value);
+                            TextView tv_sequence = (TextView) detailView.findViewById(R.id.tv_sequence);
+
+                            tv_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_sequence.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                            lbl_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            lbl_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            lbl_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            lbl_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                            tv_retailername.setText(detailBO.getRetailerName());
+                            tv_location.setText(detailBO.getLocationName());
+                            tv_address.setText(detailBO.getAddress());
+                            tv_time_in.setText(detailBO.getTimeIn());
+                            tv_time_out.setText(detailBO.getTimeOut());
+                            tv_duration.setText(detailBO.getDuration());
+                            tv_order_value.setText(detailBO.getSalesValue());
+
+                            if(detailBO.getTimeOut()!=null) {
+                                tv_sequence.setText("Seq:" + sequence);
+                            }
+                            else{
+                                tv_sequence.setVisibility(View.GONE);
+                            }
+
+                            ll_product_layout.addView(detailView);
+                        }
+
+                    }
+
+
+                    ll_content.addView(cardView);
+
+                }
+
+            }
         }
 
     }
@@ -191,9 +284,11 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {
 
+        updateView(mSelectedUsers,isAllUser);
 
         mDrawerLayout.closeDrawers();
     }
+
 
     @Override
     public void updateClose() {

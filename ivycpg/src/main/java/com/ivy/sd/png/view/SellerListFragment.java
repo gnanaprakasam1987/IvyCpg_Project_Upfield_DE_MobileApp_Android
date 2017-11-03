@@ -40,6 +40,7 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
     Button btnCancel,btnApply;
 
     private SellerSelectionInterface sellerInterface;
+    TextView txt_all_user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +61,9 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
             btnCancel.setOnClickListener(this);
             btnApply=(Button) view.findViewById(R.id.btn_ok);
             btnApply.setOnClickListener(this);
+
+            txt_all_user=(TextView) view.findViewById(R.id.tv_user_all);
+            txt_all_user.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             lstUsers = (ArrayList) getArguments().getSerializable("users");
 
