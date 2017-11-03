@@ -8,10 +8,11 @@
         android:id="@+id/card_all_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         card_view:cardElevation="6dp"
         card_view:cardPreventCornerOverlap="true"
-        >
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"

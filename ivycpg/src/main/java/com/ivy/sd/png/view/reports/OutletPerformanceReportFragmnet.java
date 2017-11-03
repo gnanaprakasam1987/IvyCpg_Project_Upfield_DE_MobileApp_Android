@@ -91,7 +91,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     GravityCompat.START);
             mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                     GravityCompat.END);
-            //  mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+          //  mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
             mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
                     mDrawerLayout,
@@ -99,12 +99,12 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     R.string.close
             ) {
                 public void onDrawerClosed(View view) {
-                    ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
                     getActivity().supportInvalidateOptionsMenu();
                 }
 
                 public void onDrawerOpened(View drawerView) {
-                    ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(getResources().getString(R.string.filter));
+                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(getResources().getString(R.string.filter));
 
                     getActivity().supportInvalidateOptionsMenu();
                 }
@@ -134,83 +134,84 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-            for(OutletReportBO bo:lstUsers){
+          for(OutletReportBO bo:lstUsers){
 
-                if(isAllUser||mSelectedUsers.contains(bo.getUserId())) {
+              if(isAllUser||mSelectedUsers.contains(bo.getUserId())) {
 
-                    cardView = inflater.inflate(R.layout.layout_outlet_perf_report_header, null);
-                    TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
-                    tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    tv_groupName.setText(bo.getUserName());
+                  cardView = inflater.inflate(R.layout.layout_outlet_perf_report_header, null);
+                  TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
+                  tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                  tv_groupName.setText(bo.getUserName());
 
-                    ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
+                  ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
 
-                    int sequence=0;
-                    for (OutletReportBO detailBO : lstReports) {
-                        if (detailBO.getUserId() == bo.getUserId()) {
-                            detailView = inflater.inflate(R.layout.layout_outlet_perf_child, null);
-                            ((View) detailView.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-
-                            sequence+=1;
-                            bo.setSequence(sequence);
+                  int sequence=0;
+                  for (OutletReportBO detailBO : lstReports) {
+                      if (detailBO.getUserId() == bo.getUserId()) {
+                          detailView = inflater.inflate(R.layout.layout_outlet_perf_child, null);
+                          ((View) detailView.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 
-                            TextView tv_retailername = (TextView) detailView.findViewById(R.id.tv_retailer_name);
-                            TextView tv_location = (TextView) detailView.findViewById(R.id.tv_location);
-                            TextView tv_address = (TextView) detailView.findViewById(R.id.tv_address);
-
-                            TextView lbl_time_in = (TextView) detailView.findViewById(R.id.lbl_time_in);
-                            TextView tv_time_in = (TextView) detailView.findViewById(R.id.tv_time_in);
-                            TextView lbl_time_out = (TextView) detailView.findViewById(R.id.lbl_time_out);
-                            TextView tv_time_out = (TextView) detailView.findViewById(R.id.tv_time_out);
-
-                            TextView lbl_duration = (TextView) detailView.findViewById(R.id.lbl_duration);
-                            TextView tv_duration = (TextView) detailView.findViewById(R.id.tv_duration);
-                            TextView lbl_order_value = (TextView) detailView.findViewById(R.id.lbl_order_value);
-                            TextView tv_order_value = (TextView) detailView.findViewById(R.id.tv_order_value);
-                            TextView tv_sequence = (TextView) detailView.findViewById(R.id.tv_sequence);
-
-                            tv_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                            tv_sequence.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-                            lbl_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                            lbl_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                            lbl_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                            lbl_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-                            tv_retailername.setText(detailBO.getRetailerName());
-                            tv_location.setText(detailBO.getLocationName());
-                            tv_address.setText(detailBO.getAddress());
-                            tv_time_in.setText(detailBO.getTimeIn());
-                            tv_time_out.setText(detailBO.getTimeOut());
-                            tv_duration.setText(detailBO.getDuration());
-                            tv_order_value.setText(detailBO.getSalesValue());
-
-                            if(detailBO.getTimeOut()!=null) {
-                                tv_sequence.setText("Seq:" + sequence);
-                            }
-                            else{
-                                tv_sequence.setVisibility(View.GONE);
-                            }
-
-                            ll_product_layout.addView(detailView);
-                        }
-
-                    }
+                              sequence+=1;
+                              bo.setSequence(sequence);
 
 
-                    ll_content.addView(cardView);
+                          TextView tv_retailername = (TextView) detailView.findViewById(R.id.tv_retailer_name);
+                          TextView tv_location = (TextView) detailView.findViewById(R.id.tv_location);
+                          TextView tv_address = (TextView) detailView.findViewById(R.id.tv_address);
 
-                }
+                          TextView lbl_time_in = (TextView) detailView.findViewById(R.id.lbl_time_in);
+                          TextView tv_time_in = (TextView) detailView.findViewById(R.id.tv_time_in);
+                          TextView lbl_time_out = (TextView) detailView.findViewById(R.id.lbl_time_out);
+                          TextView tv_time_out = (TextView) detailView.findViewById(R.id.tv_time_out);
 
-            }
+                          TextView lbl_duration = (TextView) detailView.findViewById(R.id.lbl_duration);
+                          TextView tv_duration = (TextView) detailView.findViewById(R.id.tv_duration);
+                          TextView lbl_order_value = (TextView) detailView.findViewById(R.id.lbl_order_value);
+                          TextView tv_order_value = (TextView) detailView.findViewById(R.id.tv_order_value);
+                          TextView tv_sequence = (TextView) detailView.findViewById(R.id.tv_sequence);
+
+                          tv_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                          tv_sequence.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                          lbl_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                          lbl_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                          lbl_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                          lbl_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                          tv_retailername.setText(detailBO.getRetailerName());
+                          tv_location.setText(detailBO.getLocationName());
+                          tv_address.setText(detailBO.getAddress());
+                          tv_time_in.setText(detailBO.getTimeIn());
+                          tv_time_out.setText(detailBO.getTimeOut());
+                          tv_duration.setText(detailBO.getDuration());
+                          tv_order_value.setText(detailBO.getSalesValue());
+
+                          if(detailBO.getTimeOut()!=null) {
+                              tv_sequence.setVisibility(View.VISIBLE);
+                              tv_sequence.setText("Seq:" + sequence);
+                          }
+                          else{
+                              tv_sequence.setVisibility(View.GONE);
+                          }
+
+                          ll_product_layout.addView(detailView);
+                      }
+
+                  }
+
+
+                  ll_content.addView(cardView);
+
+              }
+
+          }
         }
 
     }

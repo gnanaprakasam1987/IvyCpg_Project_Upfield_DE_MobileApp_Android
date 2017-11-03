@@ -164,5 +164,6 @@
     <string name="time_in">Time In</string>
     <string name="time_out">Time out</string>
     <string name="sales_value">Sales value</string>
+    <string name="duration">Duration</string>
 
 </resources>
