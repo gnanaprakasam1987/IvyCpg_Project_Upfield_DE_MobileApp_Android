@@ -32,9 +32,9 @@ public class SDUtil {
     private BusinessModel bmodel;
 
 
-
     /**
      * Removing single quotes from input string
+     *
      * @param str - input string
      * @return formatted string
      */
@@ -44,6 +44,7 @@ public class SDUtil {
 
     /**
      * Convert String into Int. handle exception.
+     *
      * @param val - string value
      * @return equivalent Int value or 0 if exception
      */
@@ -61,6 +62,7 @@ public class SDUtil {
 
     /**
      * Convert String into Long. handle exception.
+     *
      * @param val - string value
      * @return equivalent Long value or -1 if exception
      */
@@ -79,6 +81,7 @@ public class SDUtil {
 
     /**
      * Convert String into Float. handle exception.
+     *
      * @param val
      * @return equivalent Float value or 0 if exception
      */
@@ -95,6 +98,7 @@ public class SDUtil {
 
     /**
      * Convert String into Double. handle exception.
+     *
      * @param val
      * @return equivalent double value or 0 if exception
      */
@@ -113,6 +117,7 @@ public class SDUtil {
     /**
      * This method will round the float or Decimal value. It wont round off like
      * Math.round instead it will simply truncate the value.
+     *
      * @param val
      * @param n   - decimal place length
      * @return
@@ -140,7 +145,7 @@ public class SDUtil {
 
     public static BigDecimal truncateDecimal(double value, int numberofDecimals) {
 
-        return  new BigDecimal(SDUtil.format(value,
+        return new BigDecimal(SDUtil.format(value,
                 numberofDecimals,
                 0));
     }
@@ -231,13 +236,12 @@ public class SDUtil {
         Calendar cal = Calendar.getInstance();
         //DataMembers.backDate="2017/16/05";
         //DataMembers.backDate="05/16/2017";
-        if(!DataMembers.backDate.isEmpty())
-        {
-            int year,day,month;
-            month= Integer.parseInt(DataMembers.backDate.substring(0,2));
-            day= Integer.parseInt(DataMembers.backDate.substring(3,5));
-            year= Integer.parseInt(DataMembers.backDate.substring(6,10));
-            cal.set(year,month-1,day);
+        if (!DataMembers.backDate.isEmpty()) {
+            int year, day, month;
+            month = Integer.parseInt(DataMembers.backDate.substring(0, 2));
+            day = Integer.parseInt(DataMembers.backDate.substring(3, 5));
+            year = Integer.parseInt(DataMembers.backDate.substring(6, 10));
+            cal.set(year, month - 1, day);
         }
 
         if (TIME == dateFormat) {
@@ -249,7 +253,7 @@ public class SDUtil {
         } else if (DATE_TIME == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else if (DATE_TIME_NEW == dateFormat) {
+        } else if (DATE_TIME_NEW == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         } else if (DATE_GLOBAL == dateFormat) {
@@ -258,14 +262,14 @@ public class SDUtil {
         } else if (DATE_TIME_ID_MILLIS == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmssSSS", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else if (GMT_DATE_TIME == dateFormat) {
+        } else if (GMT_DATE_TIME == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             return sdf.format(cal.getTime());
-        }else if (DATE_GLOBAL_PLAIN == dateFormat) {
+        } else if (DATE_GLOBAL_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else if (DATE_GLOBAL_EIPHEN == dateFormat) {
+        } else if (DATE_GLOBAL_EIPHEN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         } else {
@@ -336,10 +340,5 @@ public class SDUtil {
         }
         return base64String;
     }
-
-
-
-
-
 
 }

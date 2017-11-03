@@ -2843,14 +2843,18 @@ public class PrintHelper {
      * this method will be deleted print file while downloading
      */
     public void deletePrintFileAfterDownload(String path){
-        File folder = new File(path);
+        try {
+            File folder = new File(path);
 
-        File sfFiles[] = folder.listFiles();
-        for (int i = 0; i < sfFiles.length; i++) {
-            File deleteFile = new File(folder, "/" + sfFiles[i].getName());
+            File sfFiles[] = folder.listFiles();
+            for (int i = 0; i < sfFiles.length; i++) {
+                File deleteFile = new File(folder, "/" + sfFiles[i].getName());
                 deleteFile.delete();
 
+            }
+            folder.delete();
+        }catch (Exception e){
+            Commons.printException(e);
         }
-        folder.delete();
     }
 }
