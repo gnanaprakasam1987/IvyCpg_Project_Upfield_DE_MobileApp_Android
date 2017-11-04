@@ -119,7 +119,7 @@ public class HistoryFragment extends IvyBaseFragment {
 //        Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
 
         bmodel.profilehelper.downloadOrderHistory();
-        Vector<OrderHistoryBO> items = bmodel.profilehelper.getHistoryList();
+        Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
         int siz = items.size();
         Vector<OrderHistoryBO> mylist = new Vector<>();
         int numcount = 1;

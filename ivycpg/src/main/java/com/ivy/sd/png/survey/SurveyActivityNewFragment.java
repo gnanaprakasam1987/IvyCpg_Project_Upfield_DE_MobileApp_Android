@@ -39,6 +39,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -591,6 +592,19 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         listAdapter = new QuestionAdapter();
         questionsListView.setAdapter(listAdapter);
+        questionsListView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                if (view.hasFocus()) {
+                    view.clearFocus(); //we can put it inside the second if as well, but it makes sense to do it to all scraped views
+                    //Optional: also hide keyboard in that case
+                    if (view instanceof EditText) {
+                        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
 
         /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeRight() {
@@ -805,8 +819,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.dragDropLayout = (LinearLayout) row.findViewById(R.id.dragDropLayout);
                 holder.camIndicatorLty = (LinearLayout) row.findViewById(R.id.indicator_view);
                 holder.minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.mandatoryView = (RelativeLayout)row.findViewById(R.id.mandatory_view);
-                holder.slantView = (SlantView)row.findViewById(R.id.slant_view_bg);
+                holder.mandatoryView = (RelativeLayout) row.findViewById(R.id.mandatory_view);
+                holder.slantView = (SlantView) row.findViewById(R.id.slant_view_bg);
 
                 holder.questionBO = mQuestions.get(position);
 
@@ -1663,8 +1677,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 final ImageView camBtn = (ImageView) view.findViewById(R.id.imgBtn);
                 final TextView tv_counter = (TextView) view.findViewById(R.id.textOne);
                 final ImageView photoBtn = (ImageView) view.findViewById(R.id.photos);
-                final RelativeLayout mandatoryView = (RelativeLayout)view.findViewById(R.id.sub_mandatory_view);
-                final SlantView slantView = (SlantView)view.findViewById(R.id.slant_view_bg);
+                final RelativeLayout mandatoryView = (RelativeLayout) view.findViewById(R.id.sub_mandatory_view);
+                final SlantView slantView = (SlantView) view.findViewById(R.id.slant_view_bg);
                 tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 slantView.setColor(Color.WHITE);
                 camBtn.setOnClickListener(new OnClickListener() {

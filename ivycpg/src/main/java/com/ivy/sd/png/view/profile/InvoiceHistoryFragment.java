@@ -89,7 +89,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 //                bmodel.getRetailerMasterBO().getRetailerCode());
 
         bmodel.profilehelper.downloadInvoiceHistory();
-        Vector<OrderHistoryBO> items = bmodel.profilehelper.getInvoiceHistoryList();
+        Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentInvoiceHistory();
 
 //        int siz = items.size();
 //        Vector<OrderHistoryBO> mylist = new Vector<>();
