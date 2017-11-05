@@ -1365,6 +1365,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     .now(SDUtil.TIME), mFeedbackReasonId);
         }
         bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+        bmodel.productHelper.clearProductHelper();
         BusinessModel.loadActivity(CallAnalysisActivity.this,
                 DataMembers.actPlanning);
         finish();

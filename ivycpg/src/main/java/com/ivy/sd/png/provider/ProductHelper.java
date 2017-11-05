@@ -63,7 +63,7 @@ public class ProductHelper {
 
     private Context mContext;
     private BusinessModel bmodel;
-    private Vector<ProductMasterBO> productMaster;
+    private Vector<ProductMasterBO> productMaster = null;
     private Vector<ProductMasterBO> shortProductMaster;
 
     private Map<String, ProductMasterBO> productMasterById;
@@ -80,7 +80,7 @@ public class ProductHelper {
     public ArrayList<LoyaltyBO> lotyPointsList;
     private ArrayList<LoyaltyBenifitsBO> ltyBenifitsList;
     private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
-    private Vector<ProductMasterBO> mTaggedProducts;
+    private Vector<ProductMasterBO> mTaggedProducts = null;
     private Map<String, ProductMasterBO> mTaggedProductById;
     private ArrayList<Integer> mIndicativeList;
     private ArrayList<TaxBO> mTaxList = new ArrayList<TaxBO>();
@@ -211,6 +211,14 @@ public class ProductHelper {
         productMaster = new Vector<ProductMasterBO>();
         mTaggedProducts = new Vector<ProductMasterBO>();
         // bmodel = (BusinessModel) context.getApplicationContext();
+    }
+
+    public void clearProductHelper() {
+        productMaster = null;
+        mTaggedProducts = null;
+        mTaggedProductById = null;
+        productMasterById = null;
+        System.gc();
     }
 
     public static ProductHelper getInstance(Context context) {

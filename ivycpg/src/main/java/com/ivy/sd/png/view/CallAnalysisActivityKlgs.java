@@ -318,6 +318,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
                 .now(SDUtil.TIME), "");
         bmodel.saveModuleCompletion("MENU_CALL_ANALYS_KELGS");
+        bmodel.productHelper.clearProductHelper();
         BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
                 DataMembers.actPlanning);
         finish();

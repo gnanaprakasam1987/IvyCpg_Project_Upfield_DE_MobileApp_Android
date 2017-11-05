@@ -218,6 +218,7 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
                         .now(SDUtil.TIME));
                 bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
                         .now(SDUtil.TIME), "");
+                bmodel.productHelper.clearProductHelper();
                 BusinessModel.loadActivity(CloseCallActivity.this,
                         DataMembers.actPlanning);
                 finish();
