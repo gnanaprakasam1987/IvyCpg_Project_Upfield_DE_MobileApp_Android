@@ -63,4 +63,14 @@ public class LoyaltyBenifitsBO {
     public void setBenifitQty(int benifitQty) {
         this.benifitQty = benifitQty;
     }
+
+    public int getPointTypeId() {
+        return pointTypeId;
+    }
+
+    public void setPointTypeId(int pointTypeId) {
+        this.pointTypeId = pointTypeId;
+    }
+
+    int pointTypeId;
 }

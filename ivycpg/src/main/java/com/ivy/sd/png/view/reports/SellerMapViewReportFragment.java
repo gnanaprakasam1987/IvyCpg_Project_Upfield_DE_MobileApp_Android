@@ -455,11 +455,11 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                         infoSalesValue.setText(bo.getSalesValue());
                         infoSeller.setText("Seller: "+bo.getUserName());
 
-                        if(bo.getIsPlanned().equalsIgnoreCase("Y")) {
+                        if(bo.getIsPlanned()==1) {
                             iv_planned.setVisibility(View.VISIBLE);
                             iv_deviated.setVisibility(View.GONE);
                         }
-                        else if(bo.getIsPlanned().equalsIgnoreCase("N")&&bo.getIsVisited().equalsIgnoreCase("Y")) {
+                        else if(bo.getIsPlanned()==0&&bo.getIsVisited()==1) {
                             iv_deviated.setVisibility(View.VISIBLE);
                             iv_planned.setVisibility(View.GONE);
                         }

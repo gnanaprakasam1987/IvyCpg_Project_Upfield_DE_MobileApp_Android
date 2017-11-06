@@ -3143,10 +3143,10 @@ public class ReportHelper {
 
     public ArrayList<OutletReportBO> downloadUsers(){
         ArrayList<OutletReportBO> lstUsers=new ArrayList<>();
-
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName from OutletPerfomanceReport");

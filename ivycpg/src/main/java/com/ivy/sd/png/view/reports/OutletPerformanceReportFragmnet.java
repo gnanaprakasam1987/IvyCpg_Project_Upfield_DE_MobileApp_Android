@@ -1,7 +1,11 @@
 package com.ivy.sd.png.view.reports;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,13 +24,24 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by rajkumar.s on 11/3/2017.
@@ -51,29 +66,36 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-
         view = inflater.inflate(R.layout.fragment_outlet_performance_report, container, false);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        try {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            getActivity().finish();
+            if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.sessionout_loginagain),
+                        Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+
+
+            ll_content = (LinearLayout) view.findViewById(R.id.ll_content);
+
+            downloadReportData();
         }
-
-
-        ll_content=(LinearLayout)view.findViewById(R.id.ll_content);
-
-        if(lstUsers==null) {
-            lstUsers = bmodel.reportHelper.downloadUsers();
-            lstReports = bmodel.reportHelper.downloadOutletReports();
+        catch (Exception ex){
+            Commons.printException(ex);
         }
 
         return view;
     }
 
+    private void downloadReportData(){
+        if(lstUsers==null) {
+            lstUsers = bmodel.reportHelper.downloadUsers();
+            lstReports = bmodel.reportHelper.downloadOutletReports();
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -227,6 +249,28 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_users).setVisible(!drawerOpen);
+
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String rptDownload = sharedPrefs.getString("rpt_dwntime", "");
+        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, SDUtil.now(SDUtil.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
+            menu.findItem(R.id.menu_refresh).setVisible(true);
+        else
+            menu.findItem(R.id.menu_refresh).setVisible(false);
+    }
+
+    private long getDiffDurationMenu(String startDate, String endData) {
+        long diffDuration = 0;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        try {
+            Date d1 = format.parse(startDate);
+            Date d2 = format.parse(endData);
+            diffDuration = d2.getTime() - d1.getTime();
+        } catch (ParseException e) {
+            Commons.printException(e);
+        }
+        return diffDuration;
     }
 
     @Override
@@ -242,8 +286,83 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         else if (i == R.id.menu_users) {
             loadUsers();
         }
+        else if(i==R.id.menu_refresh){
+            new PerformRptDownloadData().execute();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class PerformRptDownloadData extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+        private ProgressDialog progressDialogue;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.downloading_rpt),
+                    true, false);
+            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            bmodel.synchronizationHelper.updateAuthenticateToken();
+            String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.reportHelper.getPerformRptUrl(), jsonObject);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, true);
+
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity())
+                                    .edit();
+                            editor.putString("rpt_dwntime",
+                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                            editor.commit();
+
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            progressDialogue.dismiss();
+            if (errorCode
+                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (bmodel.reportHelper.isPerformReport()) {
+
+                    downloadReportData();
+                    updateView(null,true);
+
+                    getActivity().invalidateOptionsMenu();
+                } else {
+                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                    onBackButtonClick();
+                }
+
+            } else {
+                String errorMessage = bmodel.synchronizationHelper
+                        .getErrormessageByErrorCode().get(errorCode);
+                if (errorMessage != null) {
+                    bmodel.showAlert(errorMessage, 0);
+                }
+            }
+        }
     }
 
     private void loadUsers(){
