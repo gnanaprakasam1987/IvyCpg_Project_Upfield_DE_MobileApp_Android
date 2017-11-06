@@ -166,6 +166,10 @@ public class PosmFragment extends IvyBaseFragment implements
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private boolean isFromChild;
 
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -319,7 +323,11 @@ public class PosmFragment extends IvyBaseFragment implements
             isShowed = true;
         }
         hideAndSeeK();
-        updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             mSelectedFilterMap.put("General", GENERAL);
             updategeneraltext(GENERAL);
@@ -1787,6 +1795,11 @@ public class PosmFragment extends IvyBaseFragment implements
 
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+        this.parentidList = parentidList;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
+
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         brandbutton = filtertext;

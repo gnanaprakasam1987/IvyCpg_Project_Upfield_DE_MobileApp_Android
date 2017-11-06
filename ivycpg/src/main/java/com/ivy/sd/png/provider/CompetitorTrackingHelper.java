@@ -77,6 +77,7 @@ public class CompetitorTrackingHelper {
             db.closeDB();
         }
     }
+
     public void downloadPriceCompanyMaster(String menucode) {
         DBUtil db = null;
         try {

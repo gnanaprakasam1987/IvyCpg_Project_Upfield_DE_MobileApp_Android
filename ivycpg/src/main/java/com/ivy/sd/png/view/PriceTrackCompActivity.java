@@ -5,16 +5,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BrandDialogInterface;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-public class PriceTrackCompActivity extends IvyBaseActivityNoActionBar  {
+public class PriceTrackCompActivity extends IvyBaseActivityNoActionBar {
 
     private Toolbar toolbar;
 

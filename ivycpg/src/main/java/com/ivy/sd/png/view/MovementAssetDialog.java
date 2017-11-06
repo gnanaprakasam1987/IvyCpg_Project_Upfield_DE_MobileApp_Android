@@ -109,7 +109,7 @@ public class MovementAssetDialog extends DialogFragment {
     private void initSpinner() {
         //Generating Reason List
         mAssetReasonList=new ArrayList<>();
-        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Move");
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_MOVE");
         mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
         mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
 

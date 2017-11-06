@@ -167,4 +167,6 @@
     <string name="sales_value">Sales value</string>
     <string name="duration">Duration</string>
 
+    <string name="partial_delivery">Partial Delivery</string>
+    <string name="old_order_volume">Original value</string>
 </resources>

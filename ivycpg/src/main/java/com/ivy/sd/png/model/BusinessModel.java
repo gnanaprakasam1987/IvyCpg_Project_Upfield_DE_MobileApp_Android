@@ -46,7 +46,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.github.mikephil.charting.utils.FileUtils;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -61,8 +60,6 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -218,16 +215,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -246,8 +242,6 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
-import static com.itextpdf.text.pdf.PdfName.TEXT;
 
 public class BusinessModel extends Application {
 
@@ -1728,6 +1722,10 @@ public class BusinessModel extends Application {
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
+                    if (configurationMasterHelper.isRetailerBOMEnabled) {
+                        setIsBOMAchieved(retailer);
+                    }
+
                     getRetailerMaster().add(retailer);
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
@@ -1764,6 +1762,83 @@ public class BusinessModel extends Application {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
+        }
+    }
+
+    private void setIsBOMAchieved(RetailerMasterBO Retailer) {
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "";
+            Cursor c = null;
+
+            sql = "select RDP.pid,CSD.Shelfpqty,CSD.Shelfcqty,CSD.shelfoqty,OD.pieceqty,OD.caseQty,OD.outerQty from RtrWiseDeadProducts RDP " +
+                    "left join ClosingStockDetail CSD on CSD.ProductID = RDP.pid And CSD.retailerid = RDP.rid " +
+                    "left join OrderDetail OD on OD.retailerid = RDP.rid And OD.ProductID = RDP.pid where RDP.rid = " + Integer.parseInt(Retailer.getRetailerID());
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    Commons.print("qty " + c.getString(1) + ", " + c.getString(2) + "," + c.getString(3) + "," + c.getString(4) + "," + c.getString(5) + "," + c.getString(6));
+                    if ((c.getString(1) != null && !c.getString(1).equals("0")) ||
+                            (c.getString(2) != null && !c.getString(2).equals("0")) ||
+                            (c.getString(3) != null && !c.getString(3).equals("0")) ||
+                            (c.getString(4) != null && !c.getString(4).equals("0")) ||
+                            (c.getString(5) != null && !c.getString(5).equals("0")) ||
+                            (c.getString(6) != null && !c.getString(6).equals("0"))) {
+                        Retailer.setBomAchieved(true);
+                    } else {
+                        Retailer.setBomAchieved(false);
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.closeDB();
+        }
+    }
+
+    private boolean getStockAndOrderForRetailerPdts(int pdtId) {
+        int siz = productHelper.getProductMaster().size();
+        if (siz == 0)
+            return false;
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = (ProductMasterBO) productHelper
+                    .getProductMaster().get(i);
+            if (Integer.parseInt(product.getProductID()) == pdtId) {
+                for (int j = 0; j < product.getLocations().size(); j++) {
+                    if (product.getLocations().get(j).getShelfPiece() > 0 ||
+                            product.getLocations().get(j).getShelfCase() > 0 ||
+                            product.getLocations().get(j).getShelfOuter() > 0) {
+                        return true;
+                    }
+                }
+                if (product.getOrderedCaseQty() > 0
+                        || product.getOrderedPcsQty() > 0
+                        || product.getOrderedOuterQty() > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void isDeadGoldenAchieved() {
+        int bomCount = 0;
+        if (mRetailerHelper.getmRtrWiseDeadProductsList() != null && mRetailerHelper.getmRtrWiseDeadProductsList().size() > 0) {
+            for (int i = 0; i < mRetailerHelper.getmRtrWiseDeadProductsList().size(); i++) {
+                if (getStockAndOrderForRetailerPdts(mRetailerHelper.getmRtrWiseDeadProductsList().get(i).getPid())) {
+                    bomCount++;
+                }
+            }
+            if (bomCount == mRetailerHelper.getmRtrWiseDeadProductsList().size()) {
+                getRetailerMasterBO().setBomAchieved(true);
+            }
         }
     }
 
@@ -4149,14 +4224,15 @@ public class BusinessModel extends Application {
                     product.getSchemeBO().setPriceTypeSeleted(true);
                 }
                 product.setCheked(true);
-
-                if (!configurationMasterHelper.IS_INVOICE) {
+                /* No need for preseller
+                * SIH ll get updated while saving invoice */
+                /*if (!configurationMasterHelper.IS_INVOICE) {
                     if (product.isAllocation() == 1) {
                         int newsih = product.getSIH()
                                 + ((caseSize * caseqty) + pieceqty + (outerQty * outerSize));
                         product.setSIH(newsih);
                     }
-                }
+                }*/
                 if (OrderDetails != null) {
 
                     product.setD1(OrderDetails.getDouble(OrderDetails
@@ -4246,8 +4322,10 @@ public class BusinessModel extends Application {
             }
             orderDetailCursor.close();
             this.setOrderid(orderId + "");
-            if (!configurationMasterHelper.IS_INVOICE)
-                updateSIHOnDeleteOrder("'" + orderId + "'");
+            /* No need for preseller
+            * SIH ll get updated while saving invoice */
+            /*if (!configurationMasterHelper.IS_INVOICE)
+                updateSIHOnDeleteOrder("'" + orderId + "'");*/
             db.deleteSQL(DataMembers.tbl_orderHeader, "OrderID=" + QT(orderId)
                     + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_orderDetails, "OrderID=" + QT(orderId)
@@ -6738,7 +6816,7 @@ public class BusinessModel extends Application {
     /**
      * This method will save the Order into Database.
      */
-    void saveOrder() {
+    public void saveOrder() {
         try {
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -6859,14 +6937,15 @@ public class BusinessModel extends Application {
                     if (orderDetailCursor.getCount() > 0) {
                         orderDetailCursor.moveToNext();
                         uid = QT(orderDetailCursor.getString(0));
-
-                        if (!configurationMasterHelper.IS_INVOICE) {
-                            /**
+                        /* No need for preseller
+                        * SIH ll get updated while saving invoice */
+                        /*if (!configurationMasterHelper.IS_INVOICE) {
+                            *//**
                              * before deleting the order, SIH in productmaster
                              * should get updated.
-                             **/
+                         **//*
                             updateSIHOnDeleteOrder(uid);
-                        }
+                        }*/
                         db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
                         db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
 
@@ -7070,9 +7149,11 @@ public class BusinessModel extends Application {
                         db.insertSQL(DataMembers.tbl_orderDetails, columns,
                                 values);
                     }
+                    /* No need for preseller
+                    * SIH ll get updated while saving Invoice */
 
-                    if (!configurationMasterHelper.IS_INVOICE) {
-                        /** subract the sold product from SIH **/
+                    /*if (!configurationMasterHelper.IS_INVOICE) {
+                        *//** subract the sold product from SIH **//*
                         if (productHelper.getProductMaster().get(i)
                                 .isAllocation() == 1) {
                             int s = product.getSIH() > pieceCount ? product
@@ -7089,7 +7170,7 @@ public class BusinessModel extends Application {
                                     + " else 0 end) where pid="
                                     + product.getProductID());
                         }
-                    }
+                    }*/
 
                     // Insert the Crown Product Details
                     if (configurationMasterHelper.SHOW_CROWN_MANAGMENT
@@ -11677,6 +11758,13 @@ public class BusinessModel extends Application {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    DecimalFormat df = new DecimalFormat("###.00");
+
+    public String getWithoutExponential(Double value) {
+        return ((value + "").contains("E")
+                ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
     }
 }
 

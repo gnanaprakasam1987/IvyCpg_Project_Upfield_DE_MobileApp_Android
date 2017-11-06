@@ -1134,6 +1134,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.imgDeviate = (ImageView) convertView
                         .findViewById(R.id.iv_deviate);
 
+                holder.iv_dead_gold_store = (ImageView) convertView
+                        .findViewById(R.id.iv_dead_gold_store);
+
+                holder.iv_asset_mapped = (ImageView) convertView
+                        .findViewById(R.id.iv_asset_mapped);
+
                 holder.tv_labelTgt1 = (TextView) convertView
                         .findViewById(R.id.labelTgt1);
                 holder.tv_actualTgt1 = (TextView) convertView
@@ -1190,6 +1196,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                         if (!profileclick) {
                             profileclick = true;
+                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                            }
                             bmodel.newOutletHelper.downloadLinkRetailer();
                             Intent i = new Intent(getActivity(), ProfileActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1479,6 +1488,28 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.imgIndicative.setVisibility(View.GONE);
             }
 
+            if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
+                if (Integer.parseInt(holder.retailerObjectHolder.getCredit_invoice_count()) > 0) {
+                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                } else if (holder.retailerObjectHolder.isBomAchieved()) {
+                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iv_dead_gold_store.setVisibility(View.GONE);
+                }
+            } else {
+                holder.iv_dead_gold_store.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY08"))
+                    && holder.retailerObjectHolder.getRField4().equals("1")) {
+                holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                holder.iv_asset_mapped.setVisibility(View.VISIBLE);
+            } else {
+                holder.iv_asset_mapped.setVisibility(View.GONE);
+            }
+
             if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {
                 try {
                     if (holder.retailerObjectHolder.getRField5() != null) {
@@ -1507,6 +1538,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             private ImageView imgInvoice;
             private ImageView imgIndicative;
             private ImageView imgDeviate;
+            private ImageView iv_dead_gold_store;
+            private ImageView iv_asset_mapped;
 
             private TextView tv_labelTgt1;
             private TextView tv_actualTgt1;

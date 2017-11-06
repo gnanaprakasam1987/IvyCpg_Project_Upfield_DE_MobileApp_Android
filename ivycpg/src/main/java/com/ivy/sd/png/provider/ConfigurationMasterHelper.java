@@ -870,6 +870,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ORDER_TYPE_DIALOG;//ORDB39
     public boolean SHOW_ORDER_FOCUS_COUNT; //ORDB54
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
+    public boolean isRetailerBOMEnabled = false;
+
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -4233,6 +4235,9 @@ public class ConfigurationMasterHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerProperty.add(c.getString(0));
+                    if (c.getString(0).equals("RTPRTY07")) {
+                        isRetailerBOMEnabled = true;
+                    }
 
                 }
             }

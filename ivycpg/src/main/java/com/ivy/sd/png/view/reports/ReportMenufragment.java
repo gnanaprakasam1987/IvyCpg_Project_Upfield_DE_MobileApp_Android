@@ -160,6 +160,8 @@ public class ReportMenufragment extends IvyBaseFragment {
             menuIcons.put(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT,
                     R.drawable.icon_reports);
 
+            menuIcons.put(StandardListMasterConstants.MENU_PRDVOL_RPT,
+                    R.drawable.icon_reports);
             // Load the HHTTable
             menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);

@@ -1869,7 +1869,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         @Override
         protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
             super.onPostExecute(response);
-            alertDialog.dismiss();
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
                 bmodel.configurationMasterHelper.setAmazonS3Credentials();
                 initializeTransferUtility();
