@@ -1268,11 +1268,11 @@ public class ProductHelper {
 
             if (mChildLevel == 0 && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
-                int mContentLevelId=0;
-                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = "+bmodel.QT(moduleCode));
+                int mContentLevelId = 0;
+                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
                 if (cur != null) {
                     if (cur.moveToNext()) {
-                        mContentLevelId= cur.getInt(0);
+                        mContentLevelId = cur.getInt(0);
                         mContentLevel = cur.getInt(1);
                     }
                     cur.close();
@@ -1303,10 +1303,10 @@ public class ProductHelper {
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
                         + " from ProductMaster A";
 
-                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
                     //downloading product distribution and preparing query to get products mapped..
-                    String pdQuery=downloadProductDistribution(mContentLevel);
-                    if(pdQuery.length()>0) {
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
                         sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
                     }
                 }
@@ -1319,7 +1319,7 @@ public class ProductHelper {
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
-                        + " WHERE A.isSalable = 1 AND A.PLid IN("+ mContentLevelId+ ")"
+                        + " WHERE A.isSalable = 1 AND A.PLid IN(" + mContentLevelId + ")"
                         + " group by A.pid ORDER BY " + filter + " A.rowid";
 
             } else {
@@ -1421,11 +1421,11 @@ public class ProductHelper {
                     sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
                             + ".ParentId = A" + (i - 1) + ".PID";
 
-                if(bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
                     //downloading product distribution and preparing query to get products(content level) mapped..
-                    String pdQuery=downloadProductDistribution(mContentLevel);
-                    if(pdQuery.length()>0) {
-                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                    String pdQuery = downloadProductDistribution(mContentLevel);
+                    if (pdQuery.length() > 0) {
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A" + loopEnd + ".pid = PD.productid";
                     }
                 }
                 sql = sql + " left join " + "PriceMaster F on A" + loopEnd
@@ -1574,11 +1574,11 @@ public class ProductHelper {
      * @param mContentLevel to identify given products level
      * @return Returns a query which gets products(content level) mapped to current distribution type
      */
-    private String downloadProductDistribution(int mContentLevel){
+    private String downloadProductDistribution(int mContentLevel) {
 
-        String PRODUCT_DISTRIBUTION_TYPE_ROUTE="ROUTE";
-        String PRODUCT_DISTRIBUTION_TYPE_RETAILER="RETAILER";
-        String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE="SALES_TYPE";
+        String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
+        String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
+        String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE = "SALES_TYPE";
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1588,21 +1588,19 @@ public class ProductHelper {
             // String sql = "";
             String productIds = "";
             int givenLevelId = 0;
-            Cursor cursor=null;
-            StringBuilder stringBuilder ;
+            Cursor cursor = null;
+            StringBuilder stringBuilder;
 
             if (!bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals("")) {
 
                 //getting products mapped
-                stringBuilder=new StringBuilder();
+                stringBuilder = new StringBuilder();
                 stringBuilder.append("select distinct productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE));
                 if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
-                    stringBuilder.append( " and criteriaid IN(" + getRetailerBeat(bmodel.getRetailerMasterBO().getRetailerID(),db) + ")");
-                }
-                else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_RETAILER)){
+                    stringBuilder.append(" and criteriaid IN(" + getRetailerBeat(bmodel.getRetailerMasterBO().getRetailerID(), db) + ")");
+                } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_RETAILER)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
-                }
-                else if(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)){
+                } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")");
                 }
                 cursor = db.selectSQL(stringBuilder.toString());
@@ -1619,7 +1617,7 @@ public class ProductHelper {
 
                 ///////////////////////////////
                 //If products not available for current distribution type all products will be loaded, so no additional joins
-                if(productIds.length()>0) {
+                if (productIds.length() > 0) {
 
                     int givenSequence = 0;
                     if (givenLevelId != 0) {
@@ -1637,8 +1635,8 @@ public class ProductHelper {
 
 
                         int loopEnd = mContentLevel - givenSequence + 1;
-                        stringBuilder=new StringBuilder();
-                        stringBuilder.append( "select P" + loopEnd + ".pid as productid from productmaster P1");
+                        stringBuilder = new StringBuilder();
+                        stringBuilder.append("select P" + loopEnd + ".pid as productid from productmaster P1");
                         for (int i = 2; i <= loopEnd; i++)
                             stringBuilder.append(" INNER JOIN ProductMaster P" + i + " ON P" + i
                                     + ".ParentId = P" + (i - 1) + ".PID");
@@ -1647,23 +1645,21 @@ public class ProductHelper {
 
                     } else {
                         //content level so getting directly..
-                        stringBuilder=new StringBuilder();
+                        stringBuilder = new StringBuilder();
                         stringBuilder.append(" select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE)
                                 + " and productid IN(" + productIds + ")");
 
 
                     }
-                    finalQuery=stringBuilder.toString();
+                    finalQuery = stringBuilder.toString();
                 }
             }
 
             db.closeDB();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
             return "";
-        }
-        finally {
+        } finally {
             db.closeDB();
         }
 
@@ -1673,13 +1669,14 @@ public class ProductHelper {
 
     /**
      * Get beat ids for current retailer
+     *
      * @param retailerId
      * @param db
      * @return
      */
-    private String getRetailerBeat(String retailerId,DBUtil db){
-        String beatids="";
-        try{
+    private String getRetailerBeat(String retailerId, DBUtil db) {
+        String beatids = "";
+        try {
             //getting retailer beat..
             String beats = "";
             Cursor cursor = db.selectSQL("select beatid from RetailerBeatMapping where retailerid=" + retailerId);
@@ -1694,8 +1691,7 @@ public class ProductHelper {
             }
 
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return beatids;
@@ -1975,7 +1971,7 @@ public class ProductHelper {
                     }
                 }
 
-                sql = sql +  " left join PriceMaster F on A.Pid = F.pid and F.scid = "
+                sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                         + bmodel.getRetailerMasterBO().getGroupId()
                         + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
@@ -2091,7 +2087,7 @@ public class ProductHelper {
                     //downloading product distribution and preparing query to get products(content level) mapped..
                     String pdQuery = downloadProductDistribution(mContentLevel);
                     if (pdQuery.length() > 0) {
-                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A"+loopEnd+".pid = PD.productid";
+                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A" + loopEnd + ".pid = PD.productid";
                     }
                 }
 
@@ -2447,7 +2443,7 @@ public class ProductHelper {
                         mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
                     else if (c1.getString(0).equals("ACCOUNT"))
-                    mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
                     else if (c1.getString(0).equals("CHANNEL")) {
                         mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
@@ -6840,7 +6836,7 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor cur = db
-                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid FROM CompetitorProductMaster CP"
+                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID FROM CompetitorProductMaster CP"
                             + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                             + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                             + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
@@ -6863,6 +6859,7 @@ public class ProductHelper {
                     product.setPcUomid(cur.getInt(5));
                     product.setProductCode(cur.getString(6));
                     product.setOwnPID(cur.getString(7));
+                    product.setCompanyId(cur.getInt(8));
 
                     // for level skiping
                     ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
