@@ -18,6 +18,7 @@ public class LoyaltyBenifitsBO {
         this.benifitDescription = benifitsObj.benifitDescription;
         this.imagePath = benifitsObj.imagePath;
         this.benifitsPoints = benifitsObj.benifitsPoints;
+        this.pointTypeId=benifitsObj.getPointTypeId();
     }
 
     public LoyaltyBenifitsBO() {

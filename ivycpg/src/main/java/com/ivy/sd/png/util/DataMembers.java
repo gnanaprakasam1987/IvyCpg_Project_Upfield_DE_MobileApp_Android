@@ -573,11 +573,11 @@ public class DataMembers {
 
     //Loyalty Points Uploaded Tables and fields
     public static final String tbl_loyaltyredemptionheader = "LoyaltyRedemptionHeader";
-    public static final String tbl_tbl_loyaltyredemptionheader_cols = "UID,RetailerId,LoyaltyId,TotalPoints,Date";
+    public static final String tbl_tbl_loyaltyredemptionheader_cols = "UID,RetailerId,LoyaltyId,TotalPoints,Date,PointsTypeID";
     public static final String tbl_loyaltyredemptiondetail = "LoyaltyRedemptionDetail";
     public static final String tbl_loyaltyredemptiondetail_cols = "UID,BenefitId,Qty,Points";
     public static final String tbl_LoyaltyPoints = "LoyaltyPoints";
-    public static final String tbl_LoyaltyPoints_cols = "RetailerId,LoyaltyId,BalancePoints";
+    public static final String tbl_LoyaltyPoints_cols = "RetailerId,LoyaltyId,BalancePoints,PointsTypeID";
 
 
     public static final String tbl_SOSHeader_Proj = "SOSHeader_Proj";
