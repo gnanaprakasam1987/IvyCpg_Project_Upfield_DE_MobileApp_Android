@@ -18,6 +18,7 @@ public class LoyaltyBenifitsBO {
         this.benifitDescription = benifitsObj.benifitDescription;
         this.imagePath = benifitsObj.imagePath;
         this.benifitsPoints = benifitsObj.benifitsPoints;
+        this.pointTypeId=benifitsObj.getPointTypeId();
     }
 
     public LoyaltyBenifitsBO() {
@@ -63,4 +64,14 @@ public class LoyaltyBenifitsBO {
     public void setBenifitQty(int benifitQty) {
         this.benifitQty = benifitQty;
     }
+
+    public int getPointTypeId() {
+        return pointTypeId;
+    }
+
+    public void setPointTypeId(int pointTypeId) {
+        this.pointTypeId = pointTypeId;
+    }
+
+    int pointTypeId;
 }

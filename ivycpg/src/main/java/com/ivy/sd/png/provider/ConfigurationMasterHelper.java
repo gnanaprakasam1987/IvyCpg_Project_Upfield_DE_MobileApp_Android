@@ -701,6 +701,7 @@ public class ConfigurationMasterHelper {
     public int globalSeqId = 0;
     public int sosDigits = 4;
     public int sodDigits = 4;
+    public int refreshMin = 5;
     public int tempOrderInterval = 10;
     public static String outDateFormat = "MM/dd/yyyy";//default date format
     public int printCount;
@@ -1038,6 +1039,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SOS_RETAIN_LAST_VISIT_TRAN = "SOS02";
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
+    public static final String CODE_PERRPT_REFRESH = "PERFRPTSYNC";
 
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
@@ -1971,6 +1973,9 @@ public class ConfigurationMasterHelper {
         this.sodDigits = hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) != null ? hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) : 4;
         this.sodDigits = this.sodDigits > 4 ? 4 : this.sodDigits;
 
+        this.refreshMin = hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) != null ? hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) : 5;
+        this.refreshMin = this.refreshMin > 5 ? this.refreshMin : 5;
+
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_MAX_NO_PRODUCT_LINES) != null)
             this.MAX_NO_OF_PRODUCT_LINES = 2;
@@ -2119,8 +2124,8 @@ public class ConfigurationMasterHelper {
             }
         }
 
-        this.IS_REMOVE_TAX_ON_SRP=hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
-        this.IS_SHARE_INVOICE=hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
+        this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
+        this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
     }
 
     private void getTaxModel(String hhtCode) {
@@ -4495,7 +4500,7 @@ public class ConfigurationMasterHelper {
     }
 
     public enum FontType {
-        LIGHT, MEDIUM, THIN,REGULAR
+        LIGHT, MEDIUM, THIN, REGULAR
     }
 
     private Typeface mFontBaloobhaiRegular;
@@ -4520,7 +4525,7 @@ public class ConfigurationMasterHelper {
             if (mFontRobotoLight == null)
                 mFontRobotoLight = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
             return mFontRobotoLight;
-        }else if (mFontType == FontType.MEDIUM) {
+        } else if (mFontType == FontType.MEDIUM) {
             if (mFontRobotoMedium == null)
                 mFontRobotoMedium = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
             return mFontRobotoMedium;

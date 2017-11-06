@@ -810,7 +810,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && bmodel.synchronizationHelper.countImageFiles() >0) {
+                            && bmodel.synchronizationHelper.countImageFiles() > 0) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
@@ -1953,6 +1953,15 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         edt.apply();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    //outelet Performac
+                    if (bmodel.reportHelper.getPerformRptUrl().length() > 0) {
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity())
+                                .edit();
+                        editor.putString("rpt_dwntime",
+                                SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        editor.commit();
+                    }
                     new UpdateFinish().execute();
                 } else {
                     reDownloadAlert(bundle);

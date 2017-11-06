@@ -321,17 +321,17 @@ SynchronizationHelper {
                     }
                 });
 
-                    File printfiles[] = f.listFiles(new FilenameFilter() {
-                        public boolean accept(File directory, String fileName) {
+                File printfiles[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
 
-                            return fileName.startsWith("PF");
-                        }
-                    });
+                        return fileName.startsWith("PF");
+                    }
+                });
 
-                if(bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
-                imageSize = files.length+printfiles.length;
+                if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                    imageSize = files.length + printfiles.length;
                 else
-                    imageSize=files.length;
+                    imageSize = files.length;
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -3078,7 +3078,7 @@ SynchronizationHelper {
 
             int responseCode = con.getResponseCode();
             Commons.print("POST Response Code :: " + responseCode);
-            StringBuilder response=new StringBuilder();
+            StringBuilder response = new StringBuilder();
             if (responseCode == HttpURLConnection.HTTP_OK) { //success
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         con.getInputStream()));
@@ -3095,9 +3095,7 @@ SynchronizationHelper {
             }
 
 
-
-
-            JSONObject jsonObject=new JSONObject(response.toString());
+            JSONObject jsonObject = new JSONObject(response.toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
@@ -3113,7 +3111,6 @@ SynchronizationHelper {
 
             datefrom = formatter.parse(formatter.format(from));
             dateto = formatter.parse(formatter.format(to));
-
 
 
             datenow = formatter.parse(jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16));
@@ -4591,7 +4588,7 @@ SynchronizationHelper {
             bmodel.synchronizationHelper.setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                + "/"+DataMembers.PRINT_FILE_PATH+"/");
+                + "/" + DataMembers.PRINT_FILE_PATH + "/");
     }
 
     /**
@@ -4606,7 +4603,7 @@ SynchronizationHelper {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
         } else if (!isDistributorDownloadDone) {
-            isDistributorDownloadDone=true;
+            isDistributorDownloadDone = true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
