@@ -755,6 +755,8 @@ SynchronizationHelper {
                 allTableName.close();
             }
 
+            db.executeQ("DROP INDEX index_productmaster");
+
             db.closeDB();
 
             /** Added following line to fix the Order split download issues. **/
@@ -2062,9 +2064,9 @@ SynchronizationHelper {
                 sb.append("ifnull(a.priceoffvalue,ifnull(b.priceoffvalue,ifnull(c.priceoffvalue,0))) ,ifnull(a.PriceOffId,");
                 sb.append("ifnull(b.PriceOffId,ifnull(c.PriceOffId,0))),ifnull(a.cp,ifnull(b.cp,ifnull(c.cp,0))) from productmaster pm  ");
                 sb.append("inner join temp_pricemaster tm on pm.pid=tm.pid ");
-                sb.append("left join temp_pricemaster a on tm.pid=a.pid and a.uom='PIECE' and tm.scid=a.scid and a.batchid= tm.batchid ");
-                sb.append("left join temp_pricemaster b on tm.pid=b.pid and b.uom='CASE' and tm.scid=b.scid and b.batchid= tm.batchid ");
-                sb.append("left join temp_pricemaster c on tm.pid=c.pid and c.uom='MSQ' and tm.scid=c.scid and c.batchid= tm.batchid ");
+                sb.append("left join temp_pricemaster a on a.uom='PIECE' and tm.pid=a.pid and tm.scid=a.scid and a.batchid= tm.batchid ");
+                sb.append("left join temp_pricemaster b on b.uom='CASE' and tm.pid=b.pid and tm.scid=b.scid and b.batchid= tm.batchid ");
+                sb.append("left join temp_pricemaster c on c.uom='MSQ' and tm.pid=c.pid and tm.scid=c.scid and c.batchid= tm.batchid ");
                 sb.append("group by pm.pid ,scid1,batchid1 order by pm.pid");
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_pricemaster", null, true);
@@ -2142,6 +2144,7 @@ SynchronizationHelper {
                 sb = null;
             }
         }
+        db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(PLid, ParentId)");
     }
 
     /**
