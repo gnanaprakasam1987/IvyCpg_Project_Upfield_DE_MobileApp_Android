@@ -119,6 +119,10 @@ public class SOSFragment extends IvyBaseFragment implements
     private boolean isFromChild;
     private ArrayList<String> totalImgList = new ArrayList<>();
 
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -291,9 +295,11 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
-
-        updatebrandtext(BRAND, selectedfilterid);
-
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, selectedfilterid);
+        }
         loadReasons();
 
         if (bmodel.salesFundamentalHelper.getmSOSList() != null)
@@ -824,6 +830,12 @@ public class SOSFragment extends IvyBaseFragment implements
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
 
         mDrawerLayout.closeDrawers();
+
+        this.parentidList = parentidList;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
+
         loadData(parentidList, mSelectedIdByLevelId);
     }
 

@@ -160,5 +160,6 @@
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
-
+    <string name="partial_delivery">Partial Delivery</string>
+    <string name="old_order_volume">Original value</string>
 </resources>

@@ -87,7 +87,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     private void initCustomSpinner(View view) {
 
         spinnerCustom = (Spinner) view.findViewById(R.id.spinnerCustomDialog);
-        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Add");
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_ADD");
         ArrayList<String> reasonList = new ArrayList<String>();
         reasonList.add("--Select Reason--");
         try {
@@ -111,7 +111,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                reasonId = parent.getItemAtPosition(position).toString();
+                reasonId = getReasonId(parent.getItemAtPosition(position).toString());
                 Toast.makeText(parent.getContext(), "Output..." + reasonId, Toast.LENGTH_SHORT).show();
             }
 
@@ -122,6 +122,17 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         });
     }
 
+    private String getReasonId(String reasonDesc) {
+        for (int i = 0; i < bmodel.reasonHelper
+                .getAssetReasonsBasedOnType().size(); i++) {
+            if (bmodel.reasonHelper
+                    .getAssetReasonsBasedOnType().get(i).getReasonDesc().equals(reasonDesc)) {
+                return bmodel.reasonHelper
+                        .getAssetReasonsBasedOnType().get(i).getReasonID();
+            }
+        }
+        return "0";
+    }
     private void setAddAssetDetails() {
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(

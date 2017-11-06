@@ -934,7 +934,7 @@
     <string name="text_mdate">Tanggal Yang Terlewat</string>
     <string name="menu_not_available">Menu(S) Tidak Tersedia</string>
     <string name="download_url_empty">Alamat Url Untuk Mengunduh Kosong</string>
-    <string name="out_of">Tersisa 1$D% Dari Master Data Diunduh</string>
+    <string name="out_of">Tersisa %1$d Dari Master Data Diunduh</string>
     <string name="still_you_can">Anda Masih Memiliki Sisa Foto “%1$D” Atau Lebih. Apakah Anda Ingin Melanjutkan</string>
     <string name="table_downloaded">Tabel “%1$D” Telah Diunduh</string>
     <string name="error">Error :</string>

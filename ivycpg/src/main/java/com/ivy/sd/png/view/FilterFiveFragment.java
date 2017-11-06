@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,6 +183,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     loadedFilterValues = bmodel.salesFundamentalHelper.getFiveLevelFilters();
                     sequence = bmodel.salesFundamentalHelper.getSequenceValues();
                     break;
+                case "SVR":
+                    loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();
+                    sequence = bmodel.reportHelper.getSequencevalues();
+                    break;
                 default:
                     loadedFilterValues = bmodel.productHelper.getRetailerModuleFilerContentBySequenct();
                     sequence = bmodel.productHelper.getRetailerModuleSequenceValues();
@@ -268,9 +273,15 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (activity instanceof BrandDialogInterface) {
-            this.brandInterface = (BrandDialogInterface) activity;
+        if (brandInterface == null) {
+            if (activity instanceof BrandDialogInterface) {
+                this.brandInterface = (BrandDialogInterface) activity;
+            }
         }
+    }
+
+    public void setBrandDialogInterface(SalesVolumeReportFragment sellerOrderReportFragment) {
+        this.brandInterface = sellerOrderReportFragment;
     }
 
     public class FilterAdapter extends BaseAdapter {

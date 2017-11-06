@@ -3857,6 +3857,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void nextButtonClick() {
         try {
+            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                bmodel.isDeadGoldenAchieved();
+            }
             if (bmodel.hasOrder()) {
 
 

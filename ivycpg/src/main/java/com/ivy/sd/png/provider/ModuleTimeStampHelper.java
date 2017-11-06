@@ -54,7 +54,7 @@ public class ModuleTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
             String columns = "Tid,DistributorId,UserId,Date,ModuleCode,Activity,Latitude,Longitude,GpsAccuracy,upload";
-            String values = bmodel.QT(getTid()) + "," + bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + "," +
+            String values = bmodel.QT(getTid()) + "," + bmodel.userMasterHelper.getUserMasterBO().getBranchId() + "," +
                     bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL) + " " + SDUtil.now(SDUtil.TIME)) + "," +
                     bmodel.QT(getModuleCode()) + "," + bmodel.QT(inOrout) + "," + bmodel.QT(LocationUtil.latitude + "") + "," +
                     bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.QT(LocationUtil.accuracy + "") + ",'N'";

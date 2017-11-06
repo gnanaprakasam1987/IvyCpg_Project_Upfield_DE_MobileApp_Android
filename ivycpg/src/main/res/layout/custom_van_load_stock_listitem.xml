@@ -36,7 +36,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:gravity="left|center"
-                android:text="@string/zero" />
+                android:text="@string/zero"
+                android:layout_weight="1"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/vanLoad_date"

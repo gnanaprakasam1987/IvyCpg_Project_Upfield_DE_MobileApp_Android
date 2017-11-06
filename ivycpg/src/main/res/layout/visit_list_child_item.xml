@@ -88,6 +88,22 @@
                     android:visibility="visible" />
 
                 <ImageView
+                    android:id="@+id/iv_dead_gold_store"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_dashboard_golden_store"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_asset_mapped"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/ic_action_star_select"
+                    android:visibility="visible" />
+
+                <ImageView
                     android:id="@+id/iv_deviate"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"

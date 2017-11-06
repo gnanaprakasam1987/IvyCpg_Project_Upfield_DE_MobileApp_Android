@@ -52,6 +52,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
 
     private OrderReportFragment orderFragment;
+    private SalesVolumeReportFragment salesVolumeReportFragment;
     private PreviousDayOrderReportFragment pvsorderFragment;
     private DailyReportFragmentNew dayFragment;
     private InvoiceReportFragment invoiceReportFragment;
@@ -165,6 +166,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mContractReport = new ContractReportFragment();
         orderFragment = new OrderReportFragment();
         orderFragment.setArguments(getIntent().getExtras());
+        salesVolumeReportFragment = new SalesVolumeReportFragment();
+        salesVolumeReportFragment.setArguments(getIntent().getExtras());
         mDeliveryStockReport = new DeliveryStockReport();
         mDeliveryStockReport.setArguments(getIntent().getExtras());
         pvsorderFragment = new PreviousDayOrderReportFragment();
@@ -625,6 +628,13 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             bmodel.mSelectedActivityName = config.getMenuName();
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PRDVOL_RPT)) {
+            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
             transaction.commit();
         }
         // Commit the transaction
