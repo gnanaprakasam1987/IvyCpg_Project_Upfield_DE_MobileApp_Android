@@ -119,6 +119,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     private EditText QUANTITY;
     private String append = "";
     private boolean isFromChild;
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -222,9 +225,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
-
-        updatebrandtext(BRAND, mselectedfilterid);
-
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, mselectedfilterid);
+        }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
         else
@@ -1387,6 +1392,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         try {
+            this.parentidList = parentidList;
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+            this.mAttributeProducts = mAttributeProducts;
+            this.filtertext = filtertext;
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
                 bmodel.showAlert(

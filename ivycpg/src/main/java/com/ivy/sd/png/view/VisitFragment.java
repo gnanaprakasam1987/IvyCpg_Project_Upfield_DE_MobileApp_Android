@@ -1137,6 +1137,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.iv_dead_gold_store = (ImageView) convertView
                         .findViewById(R.id.iv_dead_gold_store);
 
+                holder.iv_asset_mapped = (ImageView) convertView
+                        .findViewById(R.id.iv_asset_mapped);
+
                 holder.tv_labelTgt1 = (TextView) convertView
                         .findViewById(R.id.labelTgt1);
                 holder.tv_actualTgt1 = (TextView) convertView
@@ -1499,6 +1502,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.iv_dead_gold_store.setVisibility(View.GONE);
             }
 
+            if ("1".equals(mRetailerProp.get("RTPRTY08"))
+                    && holder.retailerObjectHolder.getRField4().equals("1")) {
+                holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                holder.iv_asset_mapped.setVisibility(View.VISIBLE);
+            } else {
+                holder.iv_asset_mapped.setVisibility(View.GONE);
+            }
+
             if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {
                 try {
                     if (holder.retailerObjectHolder.getRField5() != null) {
@@ -1528,6 +1539,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             private ImageView imgIndicative;
             private ImageView imgDeviate;
             private ImageView iv_dead_gold_store;
+            private ImageView iv_asset_mapped;
 
             private TextView tv_labelTgt1;
             private TextView tv_actualTgt1;
