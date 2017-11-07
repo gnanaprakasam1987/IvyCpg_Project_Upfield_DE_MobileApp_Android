@@ -197,11 +197,6 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.totVol.setText("" + projectObj.getVolume());
             holder.deliveryStatus_val.setText(projectObj.getDelieveryStatus());
 
-            if (projectObj.getDelieveryStatus().equalsIgnoreCase("Y")) {
-                holder.delieveryStatusValue.setVisibility(View.VISIBLE);
-            } else {
-                holder.delieveryStatusValue.setVisibility(View.GONE);
-            }
 
             try {
                 Calendar c = Calendar.getInstance();
@@ -346,13 +341,13 @@ public class HistoryFragment extends IvyBaseFragment {
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVol.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.THIN));
 
                 del_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_qty_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 del_rep_code_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                deliveryStatus_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                deliveryStatus_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {
