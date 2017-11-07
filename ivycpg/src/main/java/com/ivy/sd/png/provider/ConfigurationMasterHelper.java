@@ -483,7 +483,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_DELSTATUS;
     public boolean SHOW_HST_INVDET;
     public boolean SHOW_HST_STARTDATE;
-
+    public boolean SHOW_HST_DUETDATE;
     public boolean IS_PRESENTATION_INORDER;
     public boolean SHOW_ALL_ROUTES; // RTRS07
     public boolean SHOW_RETAILER_VISIT_CONFIRMATION; // RTRS08
@@ -2766,6 +2766,7 @@ public class ConfigurationMasterHelper {
             SHOW_HST_VOLUM = false;
             SHOW_HST_INVDET = false;
             SHOW_HST_STARTDATE = false;
+            SHOW_HST_DUETDATE = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -2786,32 +2787,35 @@ public class ConfigurationMasterHelper {
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit) {
                     switch (temp) {
-                        case "DELDATE":
+                        case "DEDT":
                             SHOW_HST_DELDATE = true;
                             break;
-                        case "INVDATE":
+                        case "INDT":
                             SHOW_HST_INVDATE = true;
                             break;
                         case "INVQTY":
                             SHOW_HST_INVQTY = true;
                             break;
-                        case "REPCODE":
+                        case "RPC":
                             SHOW_HST_REPCODE = true;
                             break;
-                        case "TOTAL":
+                        case "TOT":
                             SHOW_HST_TOTAL = true;
                             break;
-                        case "VOLUM":
+                        case "VOL":
                             SHOW_HST_VOLUM = true;
                             break;
-                        case "INVDET":
+                        case "INVDT":
                             SHOW_HST_INVDET = true;
                             break;
-                        case "DELSTATUS":
+                        case "ST":
                             SHOW_HST_DELSTATUS = true;
                             break;
-                        case "STARTDATE":
+                        case "STDT":
                             SHOW_HST_STARTDATE = true;
+                            break;
+                        case "DUDT":
+                            SHOW_HST_DUETDATE = true;
                             break;
                     }
 

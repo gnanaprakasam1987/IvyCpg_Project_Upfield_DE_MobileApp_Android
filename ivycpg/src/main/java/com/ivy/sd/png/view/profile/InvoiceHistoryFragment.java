@@ -19,7 +19,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -159,6 +158,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
             holder.orderId.setText(projectObj.getOrderid());
+            holder.invDate.setText(projectObj.getOrderdate());
             holder.totLines.setText(projectObj.getLpc() + "");
             holder.totVal.setText(bmodel.formatValue(projectObj.getOrderValue()));
 
@@ -172,17 +172,17 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 holder.del_rep_code_val.setText(getResources().getString(R.string.close));
                 holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
             }
-            try {
+            /*try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 Calendar c = Calendar.getInstance();
                 c.setTime(sdf.parse(projectObj.getOrderdate()));
-                holder.date.setText(DateUtil.convertDateObjectToRequestedFormat(
+                holder.invDate.setText(DateUtil.convertDateObjectToRequestedFormat(
                         sdf.parse(sdf.format(c.getTime())), bmodel.configurationMasterHelper.outDateFormat));
             } catch (ParseException e) {
                 Commons.printException(e);
-                holder.date.setText("");
+                holder.invDate.setText("");
             }
-
+*/
         }
 
         @Override
@@ -195,7 +195,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private LinearLayout listBgLayout, invViewLayout;
             private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt;
-            private TextView orderId, date, totLines, totVal;
+            private TextView orderId, invDate, totLines, totVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
 
             public ViewHolder(View itemView) {
@@ -210,7 +210,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
 
                 orderId = (TextView) itemView.findViewById(R.id.order_id_val);
-                date = (TextView) itemView.findViewById(R.id.date_val);
+                invDate = (TextView) itemView.findViewById(R.id.date_val);
                 totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
                 totVal = (TextView) itemView.findViewById(R.id.tot_val);
                 invViewBtn = (TextView) itemView.findViewById(R.id.inv_view_btn);
@@ -225,19 +225,19 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 invoice_qty_txt = (TextView) itemView.findViewById(R.id.invoice_qty_txt);
                 del_rep_code_txt = (TextView) itemView.findViewById(R.id.del_rep_code_txt);
 
-                if(bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL){
+                if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
                     invViewLayout.setVisibility(View.VISIBLE);
                     itemView.setClickable(true);
                     itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
-                                intent.putExtra("selected_list_id", getLayoutPosition());
-                                intent.putExtra("from", "InvoiceHistory");
-                                startActivity(intent);
-                            }
+                            Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
+                            intent.putExtra("selected_list_id", getLayoutPosition());
+                            intent.putExtra("from", "InvoiceHistory");
+                            startActivity(intent);
+                        }
                     });
-                }else{
+                } else {
                     invViewLayout.setVisibility(View.GONE);
                     itemView.setClickable(false);
                     itemView.setOnClickListener(null);
@@ -257,7 +257,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
                 //typeface for value text font
                 orderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                invDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));

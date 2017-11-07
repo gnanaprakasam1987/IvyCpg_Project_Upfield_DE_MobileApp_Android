@@ -42,10 +42,9 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/store_margin_top"
-        android:layout_marginRight="@dimen/store_margin_top"
-        android:layout_marginTop="@dimen/toolbar_image_top"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
 
         <include layout="@layout/visit_fragment_title_layout" />
 
