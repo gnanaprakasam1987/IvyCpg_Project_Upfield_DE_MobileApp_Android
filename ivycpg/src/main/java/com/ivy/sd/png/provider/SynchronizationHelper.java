@@ -754,8 +754,15 @@ SynchronizationHelper {
                 }
                 allTableName.close();
             }
+                Cursor allIndexName = db.selectSQL("SELECT name FROM sqlite_master WHERE type == 'index'  and name LIKE 'index%' ");
+                if (allIndexName != null) {
+                    while (allIndexName.moveToNext()) {
+                        String indexName = allIndexName.getString(0);
+                        db.executeQ("DROP INDEX IF EXISTS " + indexName);
 
-            db.executeQ("DROP INDEX index_productmaster");
+                    }
+            }
+
 
             db.closeDB();
 
@@ -2053,6 +2060,12 @@ SynchronizationHelper {
                 db.deleteSQL("temp_productuommaster", null, true);
             }
 
+                db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
+                db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
+                db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
+                db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
+                db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
+                db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
 
@@ -2071,7 +2084,7 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_pricemaster", null, true);
             }
-
+                db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
 
         } else if (tableName.equalsIgnoreCase("temp_product_priceMaster")) {
             if (IsDataAvailableInTable("temp_product_priceMaster")) {
@@ -2144,7 +2157,6 @@ SynchronizationHelper {
                 sb = null;
             }
         }
-        db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(PLid, ParentId)");
     }
 
     /**
@@ -2157,17 +2169,17 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            bmodel.synchronizationHelper.updateTable("temp_productmaster", db);
-            bmodel.synchronizationHelper.updateTable("temp_pricemaster", db);
-            bmodel.synchronizationHelper.updateTable("temp_vanload", db);
+            updateTable("temp_productmaster", db);
+            updateTable("temp_pricemaster", db);
+            updateTable("temp_vanload", db);
 
-            bmodel.synchronizationHelper.updateTable("temp_productopeningstock", db);
-            bmodel.synchronizationHelper.updateTable("temp_product_priceMaster", db);
-            bmodel.synchronizationHelper.updateTable("temp_productstandardstockmaster", db);
+            updateTable("temp_productopeningstock", db);
+            updateTable("temp_product_priceMaster", db);
+            updateTable("temp_productstandardstockmaster", db);
 
-            bmodel.synchronizationHelper.updateTable("temp_indicativeorder", db);
-            bmodel.synchronizationHelper.updateTable("temp_retailerprogramtarget", db);
-            bmodel.synchronizationHelper.updateTable("temp_product_warehousestockmaster", db);
+            updateTable("temp_indicativeorder", db);
+            updateTable("temp_retailerprogramtarget", db);
+            updateTable("temp_product_warehousestockmaster", db);
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -2183,7 +2195,7 @@ SynchronizationHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            bmodel.synchronizationHelper.updateTable("temp_retailerprogramtarget", db);
+            updateTable("temp_retailerprogramtarget", db);
         } catch (Exception e) {
             Commons.printException("" + e);
         } finally {
