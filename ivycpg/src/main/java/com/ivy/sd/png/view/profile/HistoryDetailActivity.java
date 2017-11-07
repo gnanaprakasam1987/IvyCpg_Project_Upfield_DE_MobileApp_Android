@@ -27,7 +27,7 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     int selectedPosition = -1;
     TextView tvpiece, tvcase, tvouter;
-    String fromScreen="";
+    String fromScreen = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +43,14 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
             setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle(null);
-        TextView toolBarTitle = (TextView) toolbar.findViewById(R.id.tv_toolbar_title);
-        toolBarTitle.setText("Invoice");
-        toolBarTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         getSupportActionBar().setIcon(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if (fromScreen.equalsIgnoreCase("OrderHistory"))
+            setScreenTitle(getResources().getString(R.string.order_history_detail));
+        else if (fromScreen.equalsIgnoreCase("InvoiceHistory"))
+            setScreenTitle(getResources().getString(R.string.invoice_history_detail));
 
         tvpiece = (TextView) findViewById(R.id.tvpiece);
         tvcase = (TextView) findViewById(R.id.tvcase);
@@ -83,10 +85,10 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         Vector<OrderHistoryBO> orderList;
 
         public MyAdapter() {
-            if(fromScreen.equalsIgnoreCase("OrderHistory")){
+            if (fromScreen.equalsIgnoreCase("OrderHistory")) {
                 orderList = bmodel.profilehelper.getChild_orderHistoryList()
                         .get(selectedPosition);
-            }else if(fromScreen.equalsIgnoreCase("InvoiceHistory")){
+            } else if (fromScreen.equalsIgnoreCase("InvoiceHistory")) {
                 orderList = bmodel.profilehelper.getChild_invoiceHistoryList()
                         .get(selectedPosition);
             }

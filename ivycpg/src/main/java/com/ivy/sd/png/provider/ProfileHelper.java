@@ -219,7 +219,7 @@ public class ProfileHelper {
 
             Cursor c = db
                     .selectSQL("SELECT POH.Retailerid,RetailerCode,POH.refid,orderdate,ordervalue,lpc,Flag,POH.PaidAmount," +
-                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid,IM .RField1,IM.RField2,IM.RField3,IM.RField4" +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,'')" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
                             " left join productMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
@@ -282,6 +282,7 @@ public class ProfileHelper {
                         orderHistory.setRF2(c.getString(19));
                         orderHistory.setRF3(c.getString(20));
                         orderHistory.setRF4(c.getString(21));
+                        orderHistory.setVolume(c.getString(22));
                         historyList.add(orderHistory);
                     }
 
@@ -297,7 +298,7 @@ public class ProfileHelper {
                 if (childItemList == null) {
                     childItemList = new Vector<>();
                     childItemList.add(historyBO);
-                    if (!isHistoryBOAvailable(historyBO)) {
+                    if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
                         parent_orderHistoryLIst.add(historyBO);
                     }
                     HistBOTemp = historyBO;
@@ -308,7 +309,7 @@ public class ProfileHelper {
 
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO)) {
+                        if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
                             parent_orderHistoryLIst.add(historyBO);
                         }
                     } else {
@@ -316,14 +317,14 @@ public class ProfileHelper {
                         childItemList = new Vector<>();
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO)) {
+                        if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
                             parent_orderHistoryLIst.add(historyBO);
                         }
                     }
                 }
             }
             if (childItemList != null) {
-                if (!isHistoryBOAvailable(HistBOTemp)) {
+                if (!isHistoryBOAvailable(HistBOTemp, "orderHistory")) {
                     parent_orderHistoryLIst.add(HistBOTemp);
                 }
                 child_orderHistoryList.add(childItemList);
@@ -356,9 +357,9 @@ public class ProfileHelper {
         db.closeDB();
     }
 
-    private boolean isHistoryBOAvailable(OrderHistoryBO payBOTemp) {
+    private boolean isHistoryBOAvailable(OrderHistoryBO payBOTemp, String tabName) {
         try {
-            for (OrderHistoryBO pbo : parent_orderHistoryLIst) {
+            for (OrderHistoryBO pbo : ((tabName.equals("orderHistory")) ? parent_orderHistoryLIst : parent_invoiceHistoryLIst)) {
                 if (pbo.getOrderid().equals(payBOTemp.getOrderid()))
                     return true;
             }
@@ -506,7 +507,7 @@ public class ProfileHelper {
                 if (childItemList == null) {
                     childItemList = new Vector<>();
                     childItemList.add(historyBO);
-                    if (!isHistoryBOAvailable(historyBO)) {
+                    if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                         parent_invoiceHistoryLIst.add(historyBO);
                     }
                     HistBOTemp = historyBO;
@@ -517,7 +518,7 @@ public class ProfileHelper {
 
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO)) {
+                        if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                             parent_invoiceHistoryLIst.add(historyBO);
                         }
                     } else {
@@ -525,14 +526,14 @@ public class ProfileHelper {
                         childItemList = new Vector<>();
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO)) {
+                        if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                             parent_invoiceHistoryLIst.add(historyBO);
                         }
                     }
                 }
             }
             if (childItemList != null) {
-                if (!isHistoryBOAvailable(HistBOTemp)) {
+                if (!isHistoryBOAvailable(HistBOTemp, "invoiceHistory")) {
                     parent_invoiceHistoryLIst.add(HistBOTemp);
                 }
                 child_invoiceHistoryList.add(childItemList);

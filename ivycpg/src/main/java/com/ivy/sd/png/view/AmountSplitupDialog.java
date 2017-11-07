@@ -23,7 +23,7 @@ public class AmountSplitupDialog extends DialogFragment {
 
     private ImageView closeBTN;
 
-    private double totalValue, companyDis, distributorDis;
+    private double totalValue, companyDis, distributorDis, totalSchemeDiscValue;
 
     private TextView tvOrderValue, tv_comy_disc, tv_dist_disc, tv_total_value;
 
@@ -43,6 +43,7 @@ public class AmountSplitupDialog extends DialogFragment {
         totalValue = getArguments().getDouble("totalOrderValue");
         companyDis = getArguments().getDouble("cmy_disc");
         distributorDis = getArguments().getDouble("dist_disc");
+        totalSchemeDiscValue = getArguments().getDouble("scheme_disc");
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -93,10 +94,10 @@ public class AmountSplitupDialog extends DialogFragment {
 
         getDialog().getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
-        tv_comy_disc.setText("- " + bmodel.formatValue(companyDis));
+        tv_comy_disc.setText("- " + bmodel.formatValue(companyDis + totalSchemeDiscValue));
         tv_dist_disc.setText("- " + bmodel.formatValue(distributorDis));
         tv_total_value.setText(bmodel.formatValue(totalValue));
-        tvOrderValue.setText(bmodel.formatValue(totalValue + distributorDis + companyDis));
+        tvOrderValue.setText(bmodel.formatValue(totalValue + distributorDis + companyDis + totalSchemeDiscValue));
 
         closeBTN.setOnClickListener(new OnClickListener() {
             @Override

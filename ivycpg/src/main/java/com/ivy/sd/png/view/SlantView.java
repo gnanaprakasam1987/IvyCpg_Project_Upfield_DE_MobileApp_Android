@@ -15,6 +15,7 @@ public class SlantView extends View {
     private Context mContext;
     Paint paint;
     Path path;
+    private int color = 0;
 
     public SlantView(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
@@ -28,7 +29,10 @@ public class SlantView extends View {
 
         int w = getWidth(), h = getHeight();
         paint.setStrokeWidth(2);
-        paint.setColor(Color.WHITE);
+        if (color == 0)
+            paint.setColor(Color.WHITE);
+        else
+            paint.setColor(color);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setAntiAlias(true);
 
@@ -39,5 +43,9 @@ public class SlantView extends View {
         path.lineTo(w, h);
         path.close();
         canvas.drawPath(path, paint);
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

@@ -801,9 +801,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     startActivity(i);
                     finish();
                 } else {
-                    bmodel.showAlert(
-                            getResources().getString(R.string.data_not_mapped),
-                            0);
+                    dataNotMapped();
                     isClick = false;
                 }
             }
@@ -1998,9 +1996,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     finish();
                     isCreated = true;
                 } else {
-                    showsurveyAlert(
-                            getResources().getString(R.string.data_not_mapped),
-                            0);
+                    dataNotMapped();
                     isCreated = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
@@ -2410,9 +2406,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     startActivity(i);
                     finish();
                 } else {
-                    bmodel.showAlert(
-                            getResources().getString(R.string.data_not_mapped),
-                            0);
+                    dataNotMapped();
                     isCreated = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
@@ -2695,9 +2689,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     startActivity(in);
                     finish();
                 } else {
-                    Toast.makeText(this,
-                            getResources().getString(R.string.data_not_mapped),
-                            Toast.LENGTH_SHORT).show();
+                    dataNotMapped();
                     isCreated = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
@@ -3235,9 +3227,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     startActivity(i);
                     isCreated = true;
                 } else {
-                    bmodel.showAlert(
-                            getResources().getString(R.string.data_not_mapped),
-                            0);
+                    dataNotMapped();
                     isCreated = false;
                 }
 
@@ -3763,6 +3753,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         + getResources().getString(R.string.is_not_done) + "\n");
             }
 
+        }
+
+        if (isStoreCheckMenu) {
+            for (ConfigureBO config : mInStoreMenu) {
+                if (config.getMandatory() == 1 && !config.isDone()
+                        && !config.getConfigCode().equals("MENU_CLOSE")) {
+
+                    sb.append(config.getMenuName() + " "
+                            + getResources().getString(R.string.is_not_done) + "\n");
+                }
+
+            }
         }
 
         return sb.toString();

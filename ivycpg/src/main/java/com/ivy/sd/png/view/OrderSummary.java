@@ -101,6 +101,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private AlertDialog alertDialog;
     private ImageView icAmountSpilitup;
     AmountSplitupDialog dialogFragment;
+    LinearLayout icAmountSpilitup_lty;
     /**
      * Objects *
      */
@@ -162,6 +163,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private StorewiseDiscountDialogFragment mStoreWiseDiscountDialogFragment;
 
     private Toolbar toolbar;
+
+    private double totalSchemeDiscValue;
 
     public static String mActivityCode;
 
@@ -264,7 +267,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         btnsaveAndGoInvoice = (Button) findViewById(R.id.saveAndGoInvoice);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
 
-
+        icAmountSpilitup_lty = (LinearLayout)findViewById(R.id.icAmountSpilitup_lty);
         icAmountSpilitup = (ImageView) findViewById(R.id.icAmountSpilitup);
 
         getNextDate();
@@ -704,6 +707,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         args.putDouble("totalOrderValue", totalOrderValue);
                         args.putDouble("cmy_disc", cmyDiscount);
                         args.putDouble("dist_disc", distDiscount);
+                        args.putDouble("scheme_disc",totalSchemeDiscValue);
                         dialogFragment.setArguments(args);
                         dialogFragment.show(getSupportFragmentManager(), "AmtSplitupDialog");
                     }
@@ -1286,9 +1290,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 MyDatePickerDialog d = new MyDatePickerDialog(this,
                         mDateSetListener, cyear, cmonth, cday);
                 int maxDeliverydate = bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE;
-                if (maxDeliverydate > 0) {
+                d.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+               /* if (maxDeliverydate > 0) {
                     d.getDatePicker().setMaxDate(DateUtil.addDaystoDate(new Date(), maxDeliverydate).getTime());
-                }
+                }*/
                 d.setPermanentTitle(getResources().getString(R.string.choose_date));
                 return d;
 
@@ -2842,12 +2847,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void updateSchemeDetails() {
         ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
                 .getAppliedSchemeList();
+        totalSchemeDiscValue = 0;
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalOrderValue = totalOrderValue
                                 - schemeBO.getSelectedAmount();
+                        totalSchemeDiscValue += schemeBO.getSelectedAmount();
                     }
 
                     List<SchemeProductBO> schemeproductList = schemeBO
@@ -2939,6 +2946,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 totalOrderValue = totalOrderValue
                                                         - totalpriceDiscount;
 
+                                                totalSchemeDiscValue += totalpriceDiscount;
+
                                             } else if (schemeBO
                                                     .isDiscountPrecentSelected()) {
                                                 double totalPercentageDiscount;
@@ -2981,6 +2990,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 schemeProductBo.setDiscountValue(totalPercentageDiscount);
                                                 totalOrderValue = totalOrderValue
                                                         - totalPercentageDiscount;
+                                                totalSchemeDiscValue += totalPercentageDiscount;
                                             } else if (schemeBO
                                                     .isQuantityTypeSelected()) {
                                                 updateSchemeFreeproduct(schemeBO,

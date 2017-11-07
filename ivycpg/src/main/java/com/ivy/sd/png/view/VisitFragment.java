@@ -752,7 +752,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     continue;
                 } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
                     continue;
-                }else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
+                } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
                     continue;
                 }
                 if (filter != null) {
@@ -816,7 +816,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 continue;
             } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
                 continue;
-            }else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
+            } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
                 continue;
             }
 
@@ -1700,7 +1700,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private int getStoreVisited() {
         int count = 0;
         for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
-            if (retObj.getIsVisited().equalsIgnoreCase("Y")) {
+            if (retObj.getIsVisited().equalsIgnoreCase("Y")
+                    && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
                 count++;
             }
 

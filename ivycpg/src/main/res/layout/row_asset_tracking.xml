@@ -102,26 +102,27 @@
     </LinearLayout>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/plano_adherence_bottom"
-        android:weightSum="4">
+        android:layout_marginTop="@dimen/list_item_inter_margin"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_instal_date"
-            android:layout_width="@dimen/dimen_0dp"
+            android:layout_width="@dimen/list_item_date_picker_width"
             android:layout_height="wrap_content"
-            android:layout_weight=".9"
-            android:orientation="vertical">
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical"
+
+            >
 
             <TextView
-                style="?attr/customListItemSecondary"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/installed_on"/>
+                android:text="@string/installed_on"
+                style="?attr/customListItemSecondary"
+                android:textSize="@dimen/text_sz_extra_small" />
 
             <Button
                 android:id="@+id/Btn_instal_Date"
@@ -136,21 +137,22 @@
 
         <LinearLayout
             android:id="@+id/ll_service_date"
-            android:layout_width="@dimen/dimen_0dp"
+            android:layout_width="@dimen/list_item_date_picker_width"
             android:layout_height="wrap_content"
-            android:layout_weight=".9"
+            android:layout_toRightOf="@+id/ll_instal_date"
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/serviced_on" />
+                android:text="@string/serviced_on"
+                style="?attr/customListItemSecondary"
+                android:textSize="@dimen/text_sz_extra_small" />
 
             <Button
                 android:id="@+id/Btn_service_Date"
                 style="@style/datePickerButton"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/list_item_date_picker_width"
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginRight="@dimen/dimen_2dp"
                 android:gravity="center"
@@ -160,23 +162,23 @@
 
         <Spinner
             android:id="@+id/spin_reason1"
-            android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/spinner_height"
             android:layout_marginRight="@dimen/dimen_2dp"
-            android:layout_weight="1.1"
-            android:layout_gravity="bottom"
             android:background="@android:color/transparent"
-            android:overlapAnchor="false" />
+            android:overlapAnchor="false"
+            android:textAlignment="center"
+            android:layout_toRightOf="@+id/ll_service_date" />
 
         <Spinner
             android:id="@+id/spin_condition"
-            android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/spinner_height"
             android:layout_marginRight="@dimen/dimen_2dp"
-            android:layout_weight="1.1"
-            android:layout_gravity="bottom"
+            android:overlapAnchor="false"
             android:background="@android:color/transparent"
-            android:overlapAnchor="false" />
+            android:textAlignment="center"
+            android:layout_toRightOf="@+id/spin_reason1" />
 
         <!--<Spinner
             android:id="@+id/spin_reason2"
@@ -187,5 +189,5 @@
             android:visibility="gone" />-->
 
 
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

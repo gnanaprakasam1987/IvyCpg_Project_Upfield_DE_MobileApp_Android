@@ -23,6 +23,7 @@ public class OrderHistoryBO {
     private String dueDate;
     private String overDueDays;
     private double outStandingAmt;
+    private String volume;
 
     public String getNoorderReason() {
         return noorderReason;
@@ -203,6 +204,7 @@ public class OrderHistoryBO {
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
+
     public String getOverDueDays() {
         return overDueDays;
     }
@@ -210,11 +212,20 @@ public class OrderHistoryBO {
     public void setOverDueDays(String overDueDays) {
         this.overDueDays = overDueDays;
     }
+
     public double getOutStandingAmt() {
         return outStandingAmt;
     }
 
     public void setOutStandingAmt(double outStandingAmt) {
         this.outStandingAmt = outStandingAmt;
+    }
+
+    public String getVolume() {
+        return volume;
+    }
+
+    public void setVolume(String volume) {
+        this.volume = volume;
     }
 }

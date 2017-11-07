@@ -1054,13 +1054,14 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.availQtyRB.setChecked(false);
             }
 
-            if (holder.assetBO.getscanComplete() == 1) {
-                holder.availQtyRB.setChecked(true);
-                holder.availQtyRB.setEnabled(false);
-            } else {
-                holder.availQtyRB.setChecked(false);
-                holder.availQtyRB.setEnabled(true);
-            }
+            if (bmodel.assetTrackingHelper.SHOW_ASSET_BARCODE)
+                if (holder.assetBO.getscanComplete() == 1) {
+                    holder.availQtyRB.setChecked(true);
+                    holder.availQtyRB.setEnabled(false);
+                } else {
+                    holder.availQtyRB.setChecked(false);
+                    holder.availQtyRB.setEnabled(true);
+                }
 
 
             return row;

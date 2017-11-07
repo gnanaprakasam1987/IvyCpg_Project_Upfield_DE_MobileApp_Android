@@ -39,6 +39,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -78,6 +79,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.PhotoCaptureActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.sd.png.view.SlantView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -590,6 +592,19 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         listAdapter = new QuestionAdapter();
         questionsListView.setAdapter(listAdapter);
+        questionsListView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                if (view.hasFocus()) {
+                    view.clearFocus(); //we can put it inside the second if as well, but it makes sense to do it to all scraped views
+                    //Optional: also hide keyboard in that case
+                    if (view instanceof EditText) {
+                        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
 
         /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeRight() {
@@ -804,6 +819,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.dragDropLayout = (LinearLayout) row.findViewById(R.id.dragDropLayout);
                 holder.camIndicatorLty = (LinearLayout) row.findViewById(R.id.indicator_view);
                 holder.minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.mandatoryView = (RelativeLayout) row.findViewById(R.id.mandatory_view);
+                holder.slantView = (SlantView) row.findViewById(R.id.slant_view_bg);
 
                 holder.questionBO = mQuestions.get(position);
 
@@ -848,8 +865,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
             holder.questionBO = mQuestions.get(position);
             if (position % 2 == 0) {
+                holder.slantView.setColor(Color.WHITE);
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             } else {
+                holder.slantView.setColor(ContextCompat.getColor(getActivity(), R.color.row_alternate_grey));
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.row_alternate_grey));
             }
 
@@ -864,6 +883,18 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             String strQuestionNo = qNo + ". ";
             holder.questionNO.setText(strQuestionNo);
             holder.questionTV.setText(holder.questionBO.getQuestionDescription());
+
+            if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
+                if (holder.questionBO.getIsMandatory() == 1 && holder.questionBO.isMandatoryQuestNotAnswered()) {
+                    holder.mandatoryView.setVisibility(View.VISIBLE);
+                } else {
+                    holder.mandatoryView.setVisibility(View.GONE);
+                }
+            } else {
+                holder.mandatoryView.setVisibility(View.GONE);
+            }
+
+
             if (holder.questionBO.getIsBonus() == 1)
                 holder.questionTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             else
@@ -1002,6 +1033,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         TextView minPhoto;
         TextView QscoreTV;
         boolean isScoreAvailable, isPhotoAvailable;
+        RelativeLayout mandatoryView;
+        SlantView slantView;
     }
 
 
@@ -1646,6 +1679,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 final ImageView photoBtn = (ImageView) view.findViewById(R.id.photos);
                 tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                final RelativeLayout mandatoryView = (RelativeLayout) view.findViewById(R.id.sub_mandatory_view);
+                final SlantView slantView = (SlantView) view.findViewById(R.id.slant_view_bg);
+                tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                slantView.setColor(Color.WHITE);
                 camBtn.setOnClickListener(new OnClickListener() {
 
                     @Override
@@ -1675,6 +1712,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     minPhoto.setText(strMinPhoto + " Photo Required");
                 else
                     minPhoto.setText("0 Photo  required");
+
+                if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
+                    if (questBO.getIsMandatory() == 1 && questBO.isMandatoryQuestNotAnswered()) {
+                        mandatoryView.setVisibility(View.VISIBLE);
+                    } else {
+                        mandatoryView.setVisibility(View.GONE);
+                    }
+                } else {
+                    mandatoryView.setVisibility(View.GONE);
+                }
 
                 if (questBO.getIsPhotoReq() != 0 && questBO.getMinPhoto() > 1) {
                     minPhoto.setVisibility(View.VISIBLE);

@@ -45,6 +45,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -226,8 +227,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         dayCloseCheckBox = (CheckBox) view.findViewById(R.id.dayClose);
         if (bmodel.configurationMasterHelper.SHOW_SYNC_DAYCLOSE) {
+            ((RelativeLayout) view.findViewById(R.id.dayclose_lty)).setVisibility(View.VISIBLE);
             dayCloseCheckBox.setVisibility(View.VISIBLE);
         } else {
+            ((RelativeLayout) view.findViewById(R.id.dayclose_lty)).setVisibility(View.GONE);
             dayCloseCheckBox.setVisibility(View.GONE);
         }
 

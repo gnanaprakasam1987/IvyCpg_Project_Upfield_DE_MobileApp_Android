@@ -34,7 +34,7 @@ public class FitScoreChartFragment extends Fragment {
     boolean isSemiCircleChartRequired;
     TextView target_tv, previous_score_TV, growth_tv, txtTitle;
     LinearLayout lnrPreviousScore;
-    TextView textView11,textView12,textView13;
+    TextView textView11, textView12, textView13;
 
     public static FitScoreChartFragment newInstance(String retailerID, String Module, String title) {
         FitScoreChartFragment myFragment = new FitScoreChartFragment();
@@ -51,8 +51,8 @@ public class FitScoreChartFragment extends Fragment {
         view = inflater.inflate(R.layout.fitscore_dashboard_toolbar, container, false);
         Bundle b = getArguments();
         String retailerID = b.getString("retailerID", "");
-        String Module = b.getString("Module","");
-        String title = b.getString("Title","");
+        String Module = b.getString("Module", "");
+        String title = b.getString("Title", "");
 
         target_tv = (TextView) view.findViewById(R.id.target_tv);
         previous_score_TV = (TextView) view.findViewById(R.id.previous_score_TV);
@@ -67,7 +67,7 @@ public class FitScoreChartFragment extends Fragment {
         view.findViewById(R.id.color_rep_orange).setBackgroundColor(Color.rgb(119, 147, 60));
 
         lnrPreviousScore = (LinearLayout) view.findViewById(R.id.lnrPreviousScore);
-        if(!Module.equalsIgnoreCase("ALL")){
+        if (!Module.equalsIgnoreCase("ALL")) {
             lnrPreviousScore.setVisibility(View.GONE);
         }
 
@@ -132,7 +132,8 @@ public class FitScoreChartFragment extends Fragment {
             //}
             setData();
             target_tv.setText(mDashboardList.getTarget() + "");
-            previous_score_TV.setText(""+bmodel.getRetailerMasterBO().getRField5());
+            previous_score_TV.setText((bmodel.getRetailerMasterBO().getRField5().isEmpty()
+                    ? "0" : bmodel.getRetailerMasterBO().getRField5()));
             growth_tv.setText(mDashboardList.getAchieved() + "");
             target_tv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
             previous_score_TV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -154,7 +155,7 @@ public class FitScoreChartFragment extends Fragment {
 
         if (mDashboardList.getTarget() != null && !mDashboardList.getTarget().equals("0")) {
             ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-            float temp_ach = Float.parseFloat(mDashboardList.getAchieved())- Float.parseFloat(mDashboardList.getTarget());
+            float temp_ach = Float.parseFloat(mDashboardList.getAchieved()) - Float.parseFloat(mDashboardList.getTarget());
             if (temp_ach > 0) {
                 int round = Math.round(Float.parseFloat(mDashboardList.getAchieved()) /
                         (Float.parseFloat(mDashboardList.getTarget())) * 100);
@@ -168,9 +169,9 @@ public class FitScoreChartFragment extends Fragment {
                         (Float.parseFloat(mDashboardList.getTarget())) * 100);
                 entries.add(new PieEntry(temp_ach, bonus + "%"));
 
-                if(temp_ach>Float.parseFloat(mDashboardList.getTarget())){
+                if (temp_ach > Float.parseFloat(mDashboardList.getTarget())) {
                     entries.add(new PieEntry(Float.parseFloat(mDashboardList.getAchieved()) - temp_ach, (rounded) + "%"));
-                }else {
+                } else {
                     entries.add(new PieEntry(Float.parseFloat(mDashboardList.getTarget()) - temp_ach, (rounded) + "%"));
                 }
             } else {
@@ -219,7 +220,7 @@ public class FitScoreChartFragment extends Fragment {
 //                //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 //                dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 //            } else{
-                mChart.setDrawSliceText(false);
+            mChart.setDrawSliceText(false);
 //            }
 
             PieData data = new PieData(dataSet);

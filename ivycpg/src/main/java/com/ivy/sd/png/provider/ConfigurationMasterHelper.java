@@ -481,6 +481,16 @@ public class ConfigurationMasterHelper {
     public boolean IS_HST02;//history fragment
     public boolean IS_HST03;//history fragment
     public boolean IS_HST04;//history fragment
+    public boolean SHOW_HST_DELDATE;
+    public boolean SHOW_HST_INVDATE;
+    public boolean SHOW_HST_INVQTY;
+    public boolean SHOW_HST_REPCODE;
+    public boolean SHOW_HST_TOTAL;
+    public boolean SHOW_HST_VOLUM;
+    public boolean SHOW_HST_DELSTATUS;
+    public boolean SHOW_HST_INVDET;
+    public boolean SHOW_HST_STARTDATE;
+    public boolean SHOW_HST_DUETDATE;
     public boolean IS_PRESENTATION_INORDER;
     public boolean SHOW_ALL_ROUTES; // RTRS07
     public boolean SHOW_RETAILER_VISIT_CONFIRMATION; // RTRS08
@@ -1413,6 +1423,7 @@ public class ConfigurationMasterHelper {
             loadOrderSummaryDetailConfig();
             loadPriceUOMConfiguration(0);
             loadDeliveryUOMConfiguration();
+            loadProfileHistoryConfiguration();
             if (IS_CNT01)
                 bmodel.mAttendanceHelper.loadChildUserList();
             getDateFormat();
@@ -1621,10 +1632,10 @@ public class ConfigurationMasterHelper {
         this.IS_DATE_VALIDATION_REQUIRED = hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) != null ? hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) : false;
         this.IS_INITIATIVE = hashMapHHTModuleConfig.get(CODE_INITIATIVE) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE) : false;
         this.IS_CNT01 = hashMapHHTModuleConfig.get(CODE_CNT01) != null ? hashMapHHTModuleConfig.get(CODE_CNT01) : false;
-        this.IS_HST01 = hashMapHHTModuleConfig.get(CODE_HST01) != null ? hashMapHHTModuleConfig.get(CODE_HST01) : false;//history fragment
+        /*this.IS_HST01 = hashMapHHTModuleConfig.get(CODE_HST01) != null ? hashMapHHTModuleConfig.get(CODE_HST01) : false;//history fragment
         this.IS_HST02 = hashMapHHTModuleConfig.get(CODE_HST02) != null ? hashMapHHTModuleConfig.get(CODE_HST02) : false;//history fragment
         this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
-        this.IS_HST04 = hashMapHHTModuleConfig.get(CODE_HST04) != null ? hashMapHHTModuleConfig.get(CODE_HST04) : false;//history fragment
+        this.IS_HST04 = hashMapHHTModuleConfig.get(CODE_HST04) != null ? hashMapHHTModuleConfig.get(CODE_HST04) : false;//history fragment*/
         this.IS_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_CHAT) : false;
         this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_TASK) : false;
         this.HAS_PROFILE_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) : false;
@@ -2750,6 +2761,80 @@ public class ConfigurationMasterHelper {
                             break;
                         case "OC":
                             SHOW_DELIVERY_CA = true;
+                            break;
+                    }
+
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadProfileHistoryConfiguration() {
+        try {
+
+            SHOW_HST_DELDATE = false;
+            SHOW_HST_DELSTATUS = false;
+            SHOW_HST_INVDATE = false;
+            SHOW_HST_INVQTY = false;
+            SHOW_HST_REPCODE = false;
+            SHOW_HST_TOTAL = false;
+            SHOW_HST_VOLUM = false;
+            SHOW_HST_INVDET = false;
+            SHOW_HST_STARTDATE = false;
+            SHOW_HST_DUETDATE = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='HST01' and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "DEDT":
+                            SHOW_HST_DELDATE = true;
+                            break;
+                        case "INDT":
+                            SHOW_HST_INVDATE = true;
+                            break;
+                        case "INVQTY":
+                            SHOW_HST_INVQTY = true;
+                            break;
+                        case "RPC":
+                            SHOW_HST_REPCODE = true;
+                            break;
+                        case "TOT":
+                            SHOW_HST_TOTAL = true;
+                            break;
+                        case "VOL":
+                            SHOW_HST_VOLUM = true;
+                            break;
+                        case "INVDT":
+                            SHOW_HST_INVDET = true;
+                            break;
+                        case "ST":
+                            SHOW_HST_DELSTATUS = true;
+                            break;
+                        case "STDT":
+                            SHOW_HST_STARTDATE = true;
+                            break;
+                        case "DUDT":
+                            SHOW_HST_DUETDATE = true;
                             break;
                     }
 

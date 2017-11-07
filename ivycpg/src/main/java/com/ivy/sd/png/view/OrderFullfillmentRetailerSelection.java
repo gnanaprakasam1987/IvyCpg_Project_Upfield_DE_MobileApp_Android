@@ -135,6 +135,8 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
                         R.layout.activity_orderfullfillment_retailer_selection_list_item, null, false);
                 holder = new ViewHolder();
                 holder.outletNameTextView = (TextView) convertView.findViewById(R.id.outletName_tv);
+                holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
+                        .getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -157,9 +159,6 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
 
             holder.outletNameTextView.setText(holder.retailerObjectHolder.getRetailername()
                     + ((bmodel.configurationMasterHelper.SHOW_RETAILER_FREQUENCY) ? " - F" + holder.retailerObjectHolder.getVisit_frequencey() : ""));
-
-            holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
-                    .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             return convertView;
         }

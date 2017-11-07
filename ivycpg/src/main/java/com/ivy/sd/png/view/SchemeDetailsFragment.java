@@ -477,14 +477,14 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     ArrayList<String> groupName = new ArrayList<>();
                     if (schemeBuyList != null && schemeBuyList.size() > 0) {
 
-                        LinearLayout.LayoutParams buyParentLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams buyParentLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 9) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         LinearLayout buyParent = new LinearLayout(ctxt);
                         buyParent.setLayoutParams(buyParentLayout);
                         buyParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                         //buyParent.setAlpha(0.2f);
 
                         TextView buyTitleTV = getTextViewTitle(true, Gravity.LEFT, false);
-                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         //layoutParams1.weight=0.1f;
                         layoutParams1.setMargins(0, 10, 0, 10);
                         layoutParams1.gravity = Gravity.CENTER_VERTICAL;
@@ -508,7 +508,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         buyLayout.setLayoutParams(layoutParams1);
                         buyLayout.addView(buyTitleTV);
 
-                        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 8) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams2.gravity = Gravity.CENTER_VERTICAL;
 
 

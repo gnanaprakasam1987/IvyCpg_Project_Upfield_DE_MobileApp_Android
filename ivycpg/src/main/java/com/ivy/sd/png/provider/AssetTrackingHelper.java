@@ -19,8 +19,6 @@ import com.ivy.sd.png.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import static com.baidu.platform.comapi.map.f.e;
-
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
     private final Context context;
@@ -56,6 +54,14 @@ public class AssetTrackingHelper {
      */
     private ArrayList<ReasonMaster> mAssetRemarkList = new ArrayList<>();
     private ArrayList<ReasonMaster> mAssetconditionList = new ArrayList<>();
+
+    /**
+     * This ArrayLsit contains download posm reason,condition and remarks records
+     */
+    private ArrayList<ReasonMaster> mPOSMReasonList = new ArrayList<>();
+    private ArrayList<ReasonMaster> mPOSMconditionList = new ArrayList<>();
+    private ArrayList<ReasonMaster> mPOSMRemarkList = new ArrayList<>();
+
 
     /**
      * This String used to store captured images asset id
@@ -108,6 +114,9 @@ public class AssetTrackingHelper {
     private static final String ASSET_REASON = "AR";
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
+
+    private static final String POSM_REASON = "POSMR";
+    private static final String POSM_CONDITION = "POSMCD";
 
     private static final String CODE_POSM_COLUMNS = "POSM01";
     public boolean SHOW_POSM_TARGET;
@@ -281,11 +290,11 @@ public class AssetTrackingHelper {
             db.closeDB();
 
             if (SHOW_ASSET_REASON)
-                downloadAssetReason(ASSET_REASON);
+                downloadAssetPOSMReason(ASSET_REASON);
             if (SHOW_ASSET_CONDITION)
-                downloadAssetReason(ASSET_CONDITION);
+                downloadAssetPOSMReason(ASSET_CONDITION);
             if (SHOW_REMARKS_ASSET)
-                downloadAssetReason(ASSET_REMARK);
+                downloadAssetPOSMReason(ASSET_REMARK);
 
         } catch (Exception e) {
             Commons.printException("loadAssetConfigs " + e);
@@ -377,11 +386,9 @@ public class AssetTrackingHelper {
             db.closeDB();
 
             if (SHOW_POSM_REASON)
-                downloadAssetReason(ASSET_REASON);
+                downloadAssetPOSMReason(POSM_REASON);
             if (SHOW_POSM_CONDITION)
-                downloadAssetReason(ASSET_CONDITION);
-            if (SHOW_REMARKS_POSM)
-                downloadAssetReason(ASSET_REMARK);
+                downloadAssetPOSMReason(POSM_CONDITION);
 
         } catch (Exception e) {
             Commons.printException("loadPOSMConfigs " + e);
@@ -673,7 +680,7 @@ public class AssetTrackingHelper {
      *
      * @param category
      */
-    private void downloadAssetReason(String category) {
+    private void downloadAssetPOSMReason(String category) {
         switch (category) {
             case ASSET_REASON:
                 mAssetReasonList = new ArrayList<>();
@@ -683,6 +690,12 @@ public class AssetTrackingHelper {
                 break;
             case ASSET_CONDITION:
                 mAssetconditionList = new ArrayList<>();
+                break;
+            case POSM_REASON:
+                mPOSMReasonList = new ArrayList<>();
+                break;
+            case POSM_CONDITION:
+                mPOSMconditionList = new ArrayList<>();
                 break;
         }
         ReasonMaster reasonBO;
@@ -712,6 +725,13 @@ public class AssetTrackingHelper {
                         case ASSET_CONDITION:
                             mAssetconditionList.add(reasonBO);
                             break;
+                        case POSM_REASON:
+                            mPOSMReasonList.add(reasonBO);
+                            break;
+                        case POSM_CONDITION:
+                            mPOSMconditionList.add(reasonBO);
+                            break;
+
                     }
                 }
             }
@@ -1035,6 +1055,47 @@ public class AssetTrackingHelper {
         }
         return new ArrayList<>();
     }
+
+
+    /**
+     * Method return reason name arraylist
+     *
+     * @return ArrayList<Reasonmaster>
+     */
+
+    public ArrayList<ReasonMaster> getPOSMReasonList() {
+        if (mPOSMReasonList != null) {
+            return mPOSMReasonList;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Method return reason remarks arraylist
+     *
+     * @return ArrayList<Reasonmaster>
+     */
+
+    public ArrayList<ReasonMaster> getPOSMRemarksList() {
+        if (mPOSMRemarkList != null) {
+            return mPOSMRemarkList;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Method return reason conditions arraylist
+     *
+     * @return ArrayList<Reasonmaster>
+     */
+
+    public ArrayList<ReasonMaster> getmPOSMconditionList() {
+        if (mPOSMconditionList != null) {
+            return mPOSMconditionList;
+        }
+        return new ArrayList<>();
+    }
+
 
     /**
      * Method return the correct position to selected reasonid
