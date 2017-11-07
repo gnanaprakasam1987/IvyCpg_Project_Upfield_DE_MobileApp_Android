@@ -272,9 +272,9 @@ public class TaskListFragment extends Fragment {
 
                 holder.taskTitle = (TextView) v
                         .findViewById(R.id.task_title_tv);
-                holder.taskTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.taskTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.taskCreatedDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.taskTaskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.taskTaskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.taskTitle.setText(task.getTasktitle());
                 holder.taskTitle.setOnClickListener(new OnClickListener() {
 
@@ -287,7 +287,7 @@ public class TaskListFragment extends Fragment {
 
                 holder.taskDescription = (TextView) v
                         .findViewById(R.id.task_description_tv);
-                holder.taskDescription.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.taskDescription.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (holder.taskBO.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);

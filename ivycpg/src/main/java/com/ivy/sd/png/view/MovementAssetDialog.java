@@ -84,11 +84,11 @@ public class MovementAssetDialog extends DialogFragment {
             }
         });
 
-        TVAssetName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        TVSerialNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        TVAssetName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.LIGHT));
+        TVSerialNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) view.findViewById(R.id.input_current_outletcode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.to_outletcode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TVOutletName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        TVOutletName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         BTCancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         BTSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -109,7 +109,7 @@ public class MovementAssetDialog extends DialogFragment {
     private void initSpinner() {
         //Generating Reason List
         mAssetReasonList=new ArrayList<>();
-        bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Move");
+        bmodel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_MOVE");
         mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
         mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
 

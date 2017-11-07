@@ -256,11 +256,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 holder.sih = (TextView) convertView.findViewById(R.id.sih);
 
                 holder.productNameTV.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.batchNoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.pieceET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.caseET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.outerET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.batchNoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.pieceET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.caseET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.outerET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     holder.pieceET.setVisibility(View.GONE);

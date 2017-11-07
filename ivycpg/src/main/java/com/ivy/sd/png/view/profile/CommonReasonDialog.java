@@ -70,8 +70,8 @@ public class CommonReasonDialog extends Dialog {
         cancelReason = (Button) findViewById(R.id.cancel_reason);
 
         //set typface
-        reasonVisitTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-        headerText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        reasonVisitTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        headerText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         cancelReason.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         addReason.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         addReason1.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -188,7 +188,7 @@ public class CommonReasonDialog extends Dialog {
             public ViewHolder(View v) {
                 super(v);
                 reason_radio_btn = (AppCompatRadioButton) v.findViewById(R.id.reason_radio_btn);
-                reason_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                reason_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 //                mState1 = new StateListDrawable();
 //
 //                mState1.addState(new int[]{android.R.attr.state_pressed},

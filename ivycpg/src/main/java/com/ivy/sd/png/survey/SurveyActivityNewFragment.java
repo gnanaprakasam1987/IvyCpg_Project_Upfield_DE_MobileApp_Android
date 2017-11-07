@@ -390,7 +390,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 tabLayout.addTab(tab, false);
             }
             if (i == 0) {
-                tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
         }
 
@@ -631,7 +631,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }
         }
         TextView text = (TextView) tab.getCustomView();
-        text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         bmodel.mSurveyHelperNew.mSelectedSurvey = Integer.parseInt(tab.getTag()
                 .toString());
@@ -792,8 +792,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         .findViewById(R.id.questionno);
                 holder.questionTV = (TextView) row
                         .findViewById(R.id.questionTV);
-                holder.questionTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.questionNO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.questionTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.questionNO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.groupName = (TextView) row
                         .findViewById(R.id.groupname);
                 holder.groupName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -1651,8 +1651,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 TextView questionTV = (TextView) view
                         .findViewById(R.id.questionTV);
 
-                questionTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                questionNO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                questionTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                questionNO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 TextView minPhoto = (TextView) view
@@ -1677,6 +1677,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 final ImageView camBtn = (ImageView) view.findViewById(R.id.imgBtn);
                 final TextView tv_counter = (TextView) view.findViewById(R.id.textOne);
                 final ImageView photoBtn = (ImageView) view.findViewById(R.id.photos);
+                tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
                 final RelativeLayout mandatoryView = (RelativeLayout) view.findViewById(R.id.sub_mandatory_view);
                 final SlantView slantView = (SlantView) view.findViewById(R.id.slant_view_bg);
                 tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));

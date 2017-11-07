@@ -319,18 +319,18 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 //setting typefaces
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
 
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
-                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
-                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 // Order Field - Enable/Disable
@@ -339,8 +339,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_case)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -364,8 +364,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_pcs)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -388,8 +388,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     ((LinearLayout) row.findViewById(R.id.ll_ordered_outer)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outerTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outerTitle))
@@ -1037,11 +1037,11 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         //scheme available
 
                         boolean isStockAvailableForScheme = true;
-                        boolean isFreeProductsAvailable=false;
+                        boolean isFreeProductsAvailable = false;
                         for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
 
                             if (schemeBO.isQuantityTypeSelected()) {
-                                isFreeProductsAvailable=true;
+                                isFreeProductsAvailable = true;
                                 for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
 
                                     ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
@@ -1065,8 +1065,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                             }
 
                         }
-
-                        if(isFreeProductsAvailable) {
+                        if (isFreeProductsAvailable) {
                             if (isStockAvailableForScheme) {
                                 Intent intent = new Intent(getActivity(), DeliveryOrderScheme.class);
                                 startActivity(intent);
@@ -1096,15 +1095,14 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
 
                             }
-                        }
-                        else{
+
+                        } else {
                             // No free products
                             Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);
                             intent.putExtra("isPartial", false);
                             startActivity(intent);
                             getActivity().finish();
                         }
-
                     } else {
                         //No scheme
                         Intent intent = new Intent(getActivity(), DeliveryOrderSummary.class);

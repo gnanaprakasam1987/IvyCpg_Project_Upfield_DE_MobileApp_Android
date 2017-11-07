@@ -73,7 +73,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
 
         if (flag == 1) {
             TextView productTitleTV = (TextView) rootView.findViewById(R.id.product_info_title);
-            productTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            productTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             productTitleTV.setText(pdname);
             productTitleTV.setWidth(outMetrics.widthPixels);
         }
@@ -145,7 +145,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         public void onBindViewHolder(final ProdDetailRecyclerAdapter.MyViewHolder holder, int position) {
 
             holder.menuTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.valueTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.valueTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.configureBO = productConfigs.get(position);
             holder.menuTV.setText(holder.configureBO.getMenuName());

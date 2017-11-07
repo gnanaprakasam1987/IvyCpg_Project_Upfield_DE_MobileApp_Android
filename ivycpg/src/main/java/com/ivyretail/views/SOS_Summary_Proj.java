@@ -55,13 +55,13 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
         }
 
         lbl_group = (TextView) findViewById(R.id.tv_group_lbl);
-        lbl_group.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_group.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_target = (TextView) findViewById(R.id.tv_target_lbl);
-        lbl_target.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_target.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_avail = (TextView) findViewById(R.id.tv_available_lbl);
-        lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tv_lbl_gap = (TextView) findViewById(R.id.tv_gap_lbl);
-        tv_lbl_gap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tv_lbl_gap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         btnSave = (Button) findViewById(R.id.btn_save);
@@ -99,13 +99,13 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
 
                         view = inflater.inflate(R.layout.layout_sos_summary_list_item_proj, null);
                         TextView tv_groupName = (TextView) view.findViewById(R.id.tv_group_name);
-                        tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         TextView tv_target = (TextView) view.findViewById(R.id.tv_target);
-                        tv_target.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        tv_target.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         TextView tv_available = (TextView) view.findViewById(R.id.tv_available);
-                        tv_available.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        tv_available.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         TextView tv_gap = (TextView) view.findViewById(R.id.tv_gap);
-                        tv_gap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        tv_gap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                         tv_groupName.setText(groupName);
                         tv_target.setText(target + "");

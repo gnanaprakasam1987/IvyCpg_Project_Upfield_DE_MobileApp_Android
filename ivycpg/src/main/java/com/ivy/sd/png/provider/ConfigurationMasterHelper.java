@@ -434,8 +434,15 @@ public class ConfigurationMasterHelper {
     public static final String CODE_MULTI_STOCKORDER = "FUN59";//replace later
     public boolean IS_MULTI_STOCKORDER;
 
-    private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";//replace later
+    private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";
     public boolean IS_CATALOG_IMG_DOWNLOAD;
+
+    private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
+    public boolean IS_TEMP_ORDER_SAVE;
+
+    private static final String CODE_ORDER_FILTER_TOP = "FUN61";
+    public boolean IS_TOP_ORDER_FILTER;
+
     /**
      * RoadActivity config *
      */
@@ -704,6 +711,8 @@ public class ConfigurationMasterHelper {
     public int globalSeqId = 0;
     public int sosDigits = 4;
     public int sodDigits = 4;
+    public int refreshMin = 5;
+    public int tempOrderInterval = 10;
     public static String outDateFormat = "MM/dd/yyyy";//default date format
     public int printCount;
     public int PRINTER_SIZE;
@@ -871,6 +880,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ORDER_TYPE_DIALOG;//ORDB39
     public boolean SHOW_ORDER_FOCUS_COUNT; //ORDB54
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
+    public boolean isRetailerBOMEnabled = false;
+
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -1038,6 +1049,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SOS_RETAIN_LAST_VISIT_TRAN = "SOS02";
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
+    public static final String CODE_PERRPT_REFRESH = "PERFRPTSYNC";
 
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
@@ -1184,6 +1196,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
     public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
+
 
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
@@ -1971,6 +1984,9 @@ public class ConfigurationMasterHelper {
         this.sodDigits = hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) != null ? hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) : 4;
         this.sodDigits = this.sodDigits > 4 ? 4 : this.sodDigits;
 
+        this.refreshMin = hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) != null ? hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) : 5;
+        this.refreshMin = this.refreshMin > 5 ? this.refreshMin : 5;
+
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_MAX_NO_PRODUCT_LINES) != null)
             this.MAX_NO_OF_PRODUCT_LINES = 2;
@@ -2087,8 +2103,13 @@ public class ConfigurationMasterHelper {
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
-        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
+        this.IS_TOP_ORDER_FILTER = hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) : false;
 
+        this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
+        this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
+        this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
+
+        this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1)
@@ -2172,9 +2193,7 @@ public class ConfigurationMasterHelper {
             db.closeDB();
         }
         return IS_ATTRIBUTE_MENU;
-
     }
-
 
     /**
      * This method will downlaod the Menu configured for this particular channel
@@ -4301,6 +4320,9 @@ public class ConfigurationMasterHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerProperty.add(c.getString(0));
+                    if (c.getString(0).equals("RTPRTY07")) {
+                        isRetailerBOMEnabled = true;
+                    }
 
                 }
             }
@@ -4562,8 +4584,8 @@ public class ConfigurationMasterHelper {
         return MVPTheme;
     }
 
-    public static enum FontType {
-        LIGHT, REGULAR, MEDIUM, BOLD, THIN
+    public enum FontType {
+        LIGHT, MEDIUM, THIN, REGULAR
     }
 
     private Typeface mFontBaloobhaiRegular;
@@ -4580,9 +4602,7 @@ public class ConfigurationMasterHelper {
     }
 
     private Typeface mFontRobotoLight;
-    private Typeface mFontRobotoRegular;
     private Typeface mFontRobotoMedium;
-    private Typeface mFontRobotoBold;
     private Typeface mFontRobotoThin;
 
     public Typeface getFontRoboto(FontType mFontType) {
@@ -4590,25 +4610,17 @@ public class ConfigurationMasterHelper {
             if (mFontRobotoLight == null)
                 mFontRobotoLight = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
             return mFontRobotoLight;
-        } else if (mFontType == FontType.REGULAR) {
-            if (mFontRobotoRegular == null)
-                mFontRobotoRegular = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
-            return mFontRobotoRegular;
         } else if (mFontType == FontType.MEDIUM) {
             if (mFontRobotoMedium == null)
                 mFontRobotoMedium = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
             return mFontRobotoMedium;
-        } else if (mFontType == FontType.BOLD) {
-            if (mFontRobotoBold == null)
-                mFontRobotoBold = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
-            return mFontRobotoBold;
         } else if (mFontType == FontType.THIN) {
             if (mFontRobotoThin == null)
                 mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Thin.ttf");
             return mFontRobotoThin;
         }
 
-        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Regular.ttf");
+        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
     public Typeface getProductNameFont() {

@@ -38,7 +38,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
     private BusinessModel bmodel;
     private Context context;
     private Button back;
-    private TextView totalval;
+    private TextView totalval, oldTotalValue;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY, D1;
@@ -75,6 +75,15 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         back.setOnClickListener(this);
 
         totalval = (TextView) findViewById(R.id.totalValue);
+        oldTotalValue = (TextView) findViewById(R.id.oldTotalValue);
+        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.old_order_volume).getTag()) != null) {
+            ((TextView) findViewById(R.id.old_order_volume))
+                    .setText(bmodel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.old_order_volume)
+                                    .getTag()));
+        }
         D1 = (EditText) findViewById(R.id.d1);
 
         ((TextView) findViewById(R.id.titlebar)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -82,7 +91,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         ((TextView) findViewById(R.id.tvTotalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.minmax)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         lvwplist = (ListView) findViewById(R.id.lvwplist);
         lvwplist.setCacheColorHint(0);
@@ -358,6 +367,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             }
         }
         totalval.setText(bmodel.formatValue(totalOrderValue) + "");
+        oldTotalValue.setText(bmodel.formatValue(totalOrderValue));
         MyAdapter mSchedule = new MyAdapter(context, mylist);
         lvwplist.setAdapter(mSchedule);
 
@@ -412,13 +422,13 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 holder.min_max = (TextView) row
                         .findViewById(R.id.min_max);
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.pieceqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.pieceqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.d1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.da.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.min_max.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 

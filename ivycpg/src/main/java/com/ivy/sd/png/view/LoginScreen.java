@@ -182,7 +182,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         syncDone = bmodel.userMasterHelper.getSyncStatus();
         bmodel.userMasterHelper.downloadDistributionDetails();
         mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
-        mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (syncDone) {
             if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
                 bmodel.synchronizationHelper.setEncryptType();
@@ -306,7 +306,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         TextView version = (TextView) findViewById(R.id.version);
         version.setText(getResources().getString(R.string.version)
                 + bmodel.getApplicationVersionName());
-        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
         ll_footer.setOnClickListener(new OnClickListener() {
@@ -1040,6 +1040,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
                         && (totalTableCount == updateTableCount)) {
+                    //outelet Performac
+                    if (bmodel.reportHelper.getPerformRptUrl().length() > 0) {
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(this)
+                                .edit();
+                        editor.putString("rpt_dwntime",
+                                SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        editor.commit();
+                    }
                     new UpdateFinish().execute();
                 } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
@@ -1586,7 +1595,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         jsonArray.put(distributorBO.getDId());
 
                         //update distributorid in usermaster
-                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(),distributorBO.getDName());
+                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(), distributorBO.getDName());
                     }
                 }
                 json.put("DistributorIds", jsonArray);

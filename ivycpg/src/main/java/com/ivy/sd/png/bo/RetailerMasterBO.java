@@ -1427,4 +1427,14 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     private int isSameZone;
+
+    public boolean isBomAchieved() {
+        return isBomAchieved;
+    }
+
+    public void setBomAchieved(boolean bomAchieved) {
+        isBomAchieved = bomAchieved;
+    }
+
+    private boolean isBomAchieved = false;
 }

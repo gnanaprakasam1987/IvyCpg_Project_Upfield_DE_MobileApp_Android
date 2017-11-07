@@ -289,12 +289,12 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                         .findViewById(R.id.tv_group_type);
 
 
-                holder.productNameTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.productNameTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.quantityET.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.sihTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.minValueTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.maxValueTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.groupTypeTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.groupTypeTV.setTypeface(mBmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 holder.productNameTV

@@ -26,11 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ import com.bumptech.glide.request.target.Target;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -75,7 +78,13 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
     private LinearLayout linearLayout;
     public int screenwidth = 0, screenheight = 0;
     private Button saveBtn;
+    Spinner spn_point_type;
 
+    ArrayList<StandardListBO> lstPointTypes;
+    ArrayAdapter<StandardListBO> mPointTypeAdapter;
+    int mSelectedPointTypeId=0;
+
+    private ArrayList<LoyaltyBO> lstLoyalty;// unique loyalty list for filter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +94,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
         linearLayout = (LinearLayout) rootView.findViewById(R.id.ll_snackbar);
         saveBtn = (Button) rootView.findViewById(R.id.btn_save);
         saveBtn.setOnClickListener(this);
+
+        spn_point_type=(Spinner) rootView.findViewById(R.id.spn_pointType);
 
         setHasOptionsMenu(true);
         return rootView;
@@ -100,64 +111,117 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
     @Override
     public void onStart() {
         super.onStart();
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        if (!bmodel.configurationMasterHelper.IS_LOYALTY_AUTO_PAYOUT) {
-            ((RelativeLayout) getView().findViewById(R.id.footer)).setVisibility(View.VISIBLE);
-        } else {
-            ((RelativeLayout) getView().findViewById(R.id.footer)).setVisibility(View.GONE);
-        }
-
-        if (Build.VERSION.SDK_INT >= 13) {
-            Point size = new Point();
-            getActivity().getWindowManager().getDefaultDisplay().getSize(size);
-            screenwidth = size.x;
-            screenheight = size.y;
-        } else {
-            screenwidth = getActivity().getWindowManager().getDefaultDisplay().getWidth();
-            screenheight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
-        }
-        recyclerView = (RecyclerView) getView().findViewById(R.id.loyalty_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        givenPointsTxt = (TextView) getView().findViewById(R.id.tos_amount);
-        selectedPointsTxt = (TextView) getView().findViewById(R.id.totalProducts_redeem_points);
-
-        givenPointsTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        selectedPointsTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.tv_selectedpts)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) getView().findViewById(R.id.tv_givenpts)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
-        setScreenTitle(bmodel.mSelectedActivityName);
-
-        inputManager = (InputMethodManager) getActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-
-        if (screenwidth > 600) {
-            gridlaymanager = new GridLayoutManager(getActivity(), 3);
-        } else {
-            gridlaymanager = new GridLayoutManager(getActivity(), 2);
-        }
-
-
-        recyclerView.setLayoutManager(gridlaymanager);
-
-        mloylatAdapter = new ArrayAdapter<LoyaltyBO>(getActivity(),
-                android.R.layout.select_dialog_singlechoice);
-        loylatyitems = bmodel.productHelper.getProductloyalties();
-
-        for (LoyaltyBO temp : loylatyitems) {
-            if (temp.getSelectedPoints() > 0) {
-                temp.setGivenPoints(temp.getGivenPoints());
+        try {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
+            saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            if (!bmodel.configurationMasterHelper.IS_LOYALTY_AUTO_PAYOUT) {
+                ((RelativeLayout) getView().findViewById(R.id.footer)).setVisibility(View.VISIBLE);
+            } else {
+                ((RelativeLayout) getView().findViewById(R.id.footer)).setVisibility(View.GONE);
             }
-            mloylatAdapter.add(temp);
+
+            if (Build.VERSION.SDK_INT >= 13) {
+                Point size = new Point();
+                getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+                screenwidth = size.x;
+                screenheight = size.y;
+            } else {
+                screenwidth = getActivity().getWindowManager().getDefaultDisplay().getWidth();
+                screenheight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
+            }
+            recyclerView = (RecyclerView) getView().findViewById(R.id.loyalty_recyclerview);
+            recyclerView.setHasFixedSize(true);
+            givenPointsTxt = (TextView) getView().findViewById(R.id.tos_amount);
+            selectedPointsTxt = (TextView) getView().findViewById(R.id.totalProducts_redeem_points);
+
+            givenPointsTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            selectedPointsTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) getView().findViewById(R.id.tv_selectedpts)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) getView().findViewById(R.id.tv_givenpts)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(false);
+            }
+            setScreenTitle(bmodel.mSelectedActivityName);
+
+            inputManager = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+
+            if (screenwidth > 600) {
+                gridlaymanager = new GridLayoutManager(getActivity(), 3);
+            } else {
+                gridlaymanager = new GridLayoutManager(getActivity(), 2);
+            }
+
+
+            recyclerView.setLayoutManager(gridlaymanager);
+
+
+            loylatyitems = bmodel.productHelper.getProductloyalties();
+
+            ArrayList<Integer> lstTemp=new ArrayList<>();
+            lstLoyalty=new ArrayList<>();
+            for (LoyaltyBO temp : loylatyitems) {
+
+                if (temp.getSelectedPoints() > 0) {
+                    temp.setGivenPoints(temp.getGivenPoints());
+                }
+
+                if(!lstTemp.contains(temp.getLoyaltyId())) {
+                    LoyaltyBO bo=new LoyaltyBO();
+                    bo.setLoyaltyId(temp.getLoyaltyId());
+                    bo.setLoyaltyDescription(temp.getLoyaltyDescription());
+                    lstLoyalty.add(bo);
+                   // mloylatAdapter.add(temp);
+                }
+                lstTemp.add(temp.getLoyaltyId());
+            }
+            lstTemp=null;
+
+            mloylatAdapter = new ArrayAdapter<LoyaltyBO>(getActivity(),
+                    android.R.layout.select_dialog_singlechoice,lstLoyalty);
+
+            lstPointTypes = bmodel.mLoyalityHelper.downloadLoyaltyPointsType();
+            if (lstPointTypes != null && lstPointTypes.size() > 0&&lstLoyalty.size()>0) {
+
+                if (lstPointTypes.size() > 1) {
+                    spn_point_type.setVisibility(View.VISIBLE);
+                    mPointTypeAdapter = new ArrayAdapter<StandardListBO>(getActivity(), R.layout.dashboard_spinner_layout, lstPointTypes);
+                    spn_point_type.setAdapter(mPointTypeAdapter);
+                    mPointTypeAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+                    spn_point_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+                            mSelectedPointTypeId = Integer.parseInt(lstPointTypes.get(position).getListID());
+
+                            updateTotalPoints(lstLoyalty.get(mSelectedLoyaltyIndex).getLoyaltyId());
+                            updateloadLoyaltyBeniftsProducts(lstLoyalty.get(mSelectedLoyaltyIndex).getLoyaltyId());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+                } else {
+
+                    spn_point_type.setVisibility(View.GONE);
+                    mSelectedPointTypeId = Integer.parseInt(lstPointTypes.get(0).getListID());
+
+                    updateTotalPoints(lstLoyalty.get(0).getLoyaltyId());
+                    updateloadLoyaltyBeniftsProducts(lstLoyalty.get(0).getLoyaltyId());
+                }
+            }
+
+
         }
-        updateloadLoyaltyBeniftsProducts(bmodel.productHelper.getProductloyalties().get(0).getLoyaltyId());
-        updateTotalPoints(bmodel.productHelper.getProductloyalties().get(0).getLoyaltyId());
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
     }
 
 
@@ -197,10 +261,9 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                         mSelectedLoyaltyIndex = item;
                         bmodel.productHelper.setmSelectedLoyaltyIndex(item);
 
-                        updateloadLoyaltyBeniftsProducts(
-                                bmodel.productHelper.getProductloyalties().get(item).getLoyaltyId());
+                        updateloadLoyaltyBeniftsProducts(lstLoyalty.get(item).getLoyaltyId());
 
-                        updateTotalPoints(bmodel.productHelper.getProductloyalties().get(item).getLoyaltyId());
+                        updateTotalPoints(lstLoyalty.get(item).getLoyaltyId());
 
                         dialog.dismiss();
 
@@ -296,21 +359,24 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 @Override
                 public void onClick(View v) {
 
-                    if (loylatyitems.get(mSelectedLoyaltyIndex).getSelectedPoints() < loylatyitems.get(mSelectedLoyaltyIndex).getGivenPoints()) {
-                        if ((items.get(position).getBenifitPoints() + loylatyitems.get(mSelectedLoyaltyIndex).getSelectedPoints()) > loylatyitems.get(mSelectedLoyaltyIndex).getGivenPoints())
-                            snackBarShow("Points Should Not be exceed");
-                        else {
-                            items.get(position).setBenifitQty((Integer.parseInt(holder.productQtyTxt.getText().toString()) + 1));
-                            bPoints = items.get(position).getBenifitPoints();
-                            totlaSelectedPoints += bPoints;
-                            updatePoints(totlaSelectedPoints);
-                            holder.productQtyTxt.setText(projectObj.getBenifitQty() + "");
-                            //notifyItemChanged(position);
+                    LoyaltyBO loyaltyBO=getCurrentLoyaltyBO();
+                    if(loyaltyBO!=null) {
+                        if (loyaltyBO.getSelectedPoints() < loyaltyBO.getGivenPoints()) {
+                            if ((items.get(position).getBenifitPoints() + loyaltyBO.getSelectedPoints()) > loyaltyBO.getGivenPoints())
+                                snackBarShow("Points Should Not be exceed");
+                            else {
+                                items.get(position).setBenifitQty((Integer.parseInt(holder.productQtyTxt.getText().toString()) + 1));
+                                bPoints = items.get(position).getBenifitPoints();
+                                totlaSelectedPoints += bPoints;
+                                updatePoints(totlaSelectedPoints);
+                                holder.productQtyTxt.setText(projectObj.getBenifitQty() + "");
+                                //notifyItemChanged(position);
+
+                            }
+                        } else {
+                            snackBarShow("You Reached Maximum Redeem Points");
 
                         }
-                    } else {
-                        snackBarShow("You Reached Maximum Redeem Points");
-
                     }
                 }
             });
@@ -388,7 +454,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
     private void updatePoints(int totlaRedeemPoints) {
         try {
             for (LoyaltyBO tpoints : loylatyitems) {
-                if (mSelectedLoyaltyID == tpoints.getLoyaltyId()) {
+                if (mSelectedLoyaltyID == tpoints.getLoyaltyId()&& tpoints.getPointTypeId()==mSelectedPointTypeId) {
                     tpoints.setSelectedPoints(totlaRedeemPoints);
                     tpoints.setBalancePoints(tpoints.getGivenPoints() - tpoints.getSelectedPoints());
                     totlaRedeemPoints = tpoints.getSelectedPoints();
@@ -405,6 +471,21 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
     }
 
+    private LoyaltyBO getCurrentLoyaltyBO(){
+        try {
+            for (LoyaltyBO tpoints : loylatyitems) {
+                if(tpoints.getLoyaltyId()==mSelectedLoyaltyID&&tpoints.getPointTypeId()==mSelectedPointTypeId){
+                    return tpoints;
+                }
+
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return  null;
+    }
+
     public void updateTotalPoints(int mltyId) {
         mSelectedLoyaltyID = mltyId;
         try {
@@ -415,9 +496,12 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 return;
             }
 
+            givenPoints=0;
+            totlaSelectedPoints=0;
+
             for (LoyaltyBO tpoints : loylatyitems) {
 
-                if (mltyId == tpoints.getLoyaltyId()) {
+                if (mltyId == tpoints.getLoyaltyId()&& mSelectedPointTypeId==tpoints.getPointTypeId()) {
                     totlaSelectedPoints = tpoints.getSelectedPoints();
                     givenPoints = tpoints.getGivenPoints();
                 }
@@ -446,7 +530,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             }
             mylist = new ArrayList<>();
             for (LoyaltyBO ret : loylatyitems) {
-                if (mltyId == ret.getLoyaltyId()) {
+                if (mltyId == ret.getLoyaltyId()&&mSelectedPointTypeId==ret.getPointTypeId()) {
                     mylist = ret.getLoyaltyTrackingList();
                 }
             }
@@ -463,7 +547,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
     public void onNextButtonClick() {
 
-        if (loylatyitems.get(mSelectedLoyaltyIndex).getSelectedPoints() > 0) {
+        LoyaltyBO currentBO=getCurrentLoyaltyBO();
+        if (currentBO.getSelectedPoints() > 0) {
             new SaveAsyncTask().execute();
         } else {
             mDialog1();

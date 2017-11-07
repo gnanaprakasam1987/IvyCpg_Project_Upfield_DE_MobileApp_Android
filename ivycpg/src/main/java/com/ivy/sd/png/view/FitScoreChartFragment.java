@@ -229,7 +229,7 @@ public class FitScoreChartFragment extends Fragment {
 //            }
             data.setValueTextSize(12f);
             data.setValueTextColor(Color.WHITE);
-            data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             mChart.setData(data);
             mChart.invalidate();
         }

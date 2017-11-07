@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,8 +60,8 @@ public class HistoryFragment extends IvyBaseFragment {
         mavgOrderLines = (TextView) view.findViewById(R.id.avg_lines_val);
         mavgOrderValue = (TextView) view.findViewById(R.id.history_avg_val);
 
-        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mavgOrderLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         mavgOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
@@ -195,6 +196,12 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.del_rep_code_val.setText(projectObj.getRF4());
             holder.totVol.setText("" + projectObj.getVolume());
             holder.deliveryStatus_val.setText(projectObj.getDelieveryStatus());
+
+            if (projectObj.getDelieveryStatus().equalsIgnoreCase("Y")) {
+                holder.delieveryStatusValue.setVisibility(View.VISIBLE);
+            } else {
+                holder.delieveryStatusValue.setVisibility(View.GONE);
+            }
 
             try {
                 Calendar c = Calendar.getInstance();

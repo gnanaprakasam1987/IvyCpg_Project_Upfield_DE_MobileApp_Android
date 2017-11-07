@@ -488,7 +488,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
                 holder.mBarCode = (TextView) row
                         .findViewById(R.id.barcode);
-                holder.mBarCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mBarCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.mSKU = (TextView) row.findViewById(R.id.sku);
                 holder.mSKU.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
