@@ -1514,6 +1514,7 @@ public class BusinessModel extends Application {
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
 
+
                             + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
                             + " , RC1.contactname as pc_name, RC1.ContactName_LName as pc_LName, RC1.ContactNumber as pc_Number,"
@@ -2970,6 +2971,16 @@ public class BusinessModel extends Application {
                 invid = seqNo.toString();
             }
 
+            String timeStampid = "";
+            String query = "select max(VisitID) from OutletTimestamp where retailerid="
+                    + QT(getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    timeStampid = c.getString(0);
+                }
+            }
+
             this.invoiceNumber = invid;
 
             String printFilePath = "";
@@ -2979,7 +2990,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -3050,6 +3061,7 @@ public class BusinessModel extends Application {
             sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
             sb.append("," + getRetailerMasterBO().getCreditDays());
             sb.append("," + QT(printFilePath));
+            sb.append("," + QT(timeStampid));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -6847,19 +6859,22 @@ public class BusinessModel extends Application {
 
                 }
             }
-            if (outletTimeStampHelper.isJointCall(userMasterHelper
-                    .getUserMasterBO().getJoinCallUserList())) {
+
                 String query = "select max(VisitID) from OutletTimestamp where retailerid="
                         + QT(getRetailerMasterBO().getRetailerID());
                 Cursor c = db.selectSQL(query);
                 if (c.getCount() > 0) {
                     if (c.moveToFirst()) {
                         timeStampid = c.getString(0);
-                        flag = 1;
+
+                        if (outletTimeStampHelper.isJointCall(userMasterHelper
+                                .getUserMasterBO().getJoinCallUserList())) {
+                            flag = 1;
+                        }
                     }
                 }
 
-            }
+
 
             String id = userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
@@ -11219,6 +11234,17 @@ public class BusinessModel extends Application {
 
             }
 
+            String timeStampid = "";
+            String query = "select max(VisitID) from OutletTimestamp where retailerid="
+                    + QT(getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    timeStampid = c.getString(0);
+                }
+            }
+
+
             this.invoiceNumber = invid;
             String printFilePath = "";
            /* if (configurationMasterHelper.IS_PRINT_FILE_SAVE)
@@ -11226,7 +11252,7 @@ public class BusinessModel extends Application {
                         + userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";*/
 
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,stype,imgName,creditPeriod,PrintFilePath,timestampid";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -11298,6 +11324,7 @@ public class BusinessModel extends Application {
             sb.append("," + QT(getOrderHeaderBO().getSignatureName()));
             sb.append("," + getRetailerMasterBO().getCreditDays());
             sb.append("," + QT(printFilePath));
+            sb.append("," + QT(timeStampid));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());

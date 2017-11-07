@@ -7834,7 +7834,7 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql1 = "SELECT Distinct  IFNULL(LM.LoyaltyId,0),IFNULL(LM.Description,'Common'),LP.RetailerId,LP.Points FROM LoyaltyPoints LP LEFT JOIN LoyaltyMaster LM ON LM.LoyaltyId = LP.LoyaltyId"
+            String sql1 = "SELECT Distinct  IFNULL(LM.LoyaltyId,0),IFNULL(LM.Description,'Common'),LP.RetailerId,LP.Points,LP.PointsTypeID FROM LoyaltyPoints LP LEFT JOIN LoyaltyMaster LM ON LM.LoyaltyId = LP.LoyaltyId"
                     + " WHERE LP.RetailerId =" + retailerID;
 
             Cursor c = db.selectSQL(sql1);
@@ -7845,6 +7845,7 @@ public class ProductHelper {
                     loyalties.setLoyaltyDescription(c.getString(1));
                     loyalties.setRetailerId(c.getInt(2));
                     loyalties.setGivenPoints(c.getInt(3));
+                    loyalties.setPointTypeId(c.getInt(4));
                     loyaltyproductList.add(loyalties);
                 }
                 if (loyaltyproductList != null && loyaltyproductList.size() > 0) {
@@ -7852,7 +7853,10 @@ public class ProductHelper {
 
                         ArrayList<LoyaltyBenifitsBO> clonedList = new ArrayList<LoyaltyBenifitsBO>(ltyBenifitsList.size());
                         for (LoyaltyBenifitsBO loyaltysBO : ltyBenifitsList) {
-                            clonedList.add(new LoyaltyBenifitsBO(loyaltysBO));
+
+                            if(loyaltyBO.getPointTypeId()==loyaltysBO.getPointTypeId()) {
+                                clonedList.add(new LoyaltyBenifitsBO(loyaltysBO));
+                            }
                         }
 
                         loyaltyBO.setLoyaltyTrackingList(clonedList);
@@ -7910,6 +7914,7 @@ public class ProductHelper {
                     ltyBenifits.setBenifitDescription(c.getString(1));
                     ltyBenifits.setImagePath(c.getString(2));
                     ltyBenifits.setBenifitPoints(c.getInt(3));
+                    ltyBenifits.setPointTypeId(c.getInt(4));
                     getLoyaltBenifitsList().add(ltyBenifits);
                 }
                 c.close();

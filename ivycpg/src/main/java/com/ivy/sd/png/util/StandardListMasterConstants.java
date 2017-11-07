@@ -68,7 +68,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_DAY_REPORT = "MENU_DAY_REPORT";
 	public static final String MENU_PRDVOL_RPT = "MENU_PRDVOL_RPT";
 	public static final String MENU_INVOICE_REPORT = "MENU_INVOICE_REPORT";
-	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_REPORT";
+	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_RPT";
 	public static final String MENU_SKU_REPORT = "MENU_SKU_REPORT";
 	public static final String MENU_CURRENT_STOCK_REPORT = "MENU_CURRENT_STOCK_REPORT";
 	public static final String MENU_BEGINNING_STOCK_REPORT = "MENU_BEG_STOCK_REPORT";
@@ -96,6 +96,9 @@ public class StandardListMasterConstants {
 	public static final String MENU_SFG_REPORT = "MENU_SFPJ_RPT";
 	public static final String MENU_PROMO_REPORT = "MENU_PRMPJ_RPT";
 	public static final String MENU_ASSET_REPORT = "MENU_ASTPJ_RPT";
+	public static final String MENU_SELLER_MAPVIEW_REPORT = "MENU_SELLERMAP_RPT";
+	public static final String MENU_SELLER_PERFOMANCE_REPORT = "MENU_SELPERFO_RPT";
+	public static final String MENU_RETPERFO_RPT="MENU_RETPERFO_RPT";
 
 	public static final String VISITCONFIG_PLANNING = "MENU_PLANNING";
 	public static final String VISITCONFIG_COVERAGE = "MENU_VISIT";
