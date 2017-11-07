@@ -185,6 +185,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
             holder.orderId.setText(projectObj.getOrderid());
+            holder.orderDate.setText(projectObj.getOrderdate());
             holder.totLines.setText(projectObj.getLpc() + "");
             holder.totVal.setText(bmodel.formatValue(projectObj.getOrderValue()));
 
@@ -199,10 +200,10 @@ public class HistoryFragment extends IvyBaseFragment {
                 Calendar c = Calendar.getInstance();
                 c.setTime(sdf.parse(projectObj.getOrderdate()));
                 c.add(Calendar.DATE, bmodel.retailerMasterBO.getCreditDays());
-                holder.date.setText(sdf.format(c.getTime()));
+                holder.due_date_val.setText(sdf.format(c.getTime()));
             } catch (ParseException e) {
                 Commons.printException(e);
-                holder.date.setText("");
+                holder.due_date_val.setText("");
             }
 
         }
@@ -217,26 +218,28 @@ public class HistoryFragment extends IvyBaseFragment {
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private final LinearLayout del_date_layout, invoice_date_layout, invoice_qty_layout, del_rep_code_layout;
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt, totVolTxt;
-            private TextView orderId, date, totLines, totVal, totVol;
-            private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
-            private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout;
+            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt, totVolTxt, dueDateTxt;
+            private TextView orderId, orderDate, totLines, totVal, totVol;
+            private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val, due_date_val;
+            private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout, due_date_layout;
             private TextView deliveryStatus_txt, deliveryStatus_val;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 invViewLayout = (LinearLayout) itemView.findViewById(R.id.inv_view_layout);
+                due_date_layout = (LinearLayout) itemView.findViewById(R.id.due_date_layout);
                 listBgLayout = (LinearLayout) itemView.findViewById(R.id.list_background);
                 orderIdTxt = (TextView) itemView.findViewById(R.id.order_id_txt);
                 dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
                 totLinesTxt = (TextView) itemView.findViewById(R.id.tot_lines_txt);
                 totValTxt = (TextView) itemView.findViewById(R.id.tot_val_txt);
                 totVolTxt = (TextView) itemView.findViewById(R.id.tot_vol_txt);
+                dueDateTxt = (TextView) itemView.findViewById(R.id.due_date_txt);
 
 
                 orderId = (TextView) itemView.findViewById(R.id.order_id_val);
-                date = (TextView) itemView.findViewById(R.id.date_val);
+                orderDate = (TextView) itemView.findViewById(R.id.date_val);
                 totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
                 totVal = (TextView) itemView.findViewById(R.id.tot_val);
                 totVol = (TextView) itemView.findViewById(R.id.tot_vol);
@@ -246,6 +249,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 invoice_date_val = (TextView) itemView.findViewById(R.id.invoice_date_val);
                 invoice_qty_val = (TextView) itemView.findViewById(R.id.invoice_qty_val);
                 del_rep_code_val = (TextView) itemView.findViewById(R.id.del_rep_code_val);
+                due_date_val = (TextView) itemView.findViewById(R.id.due_date_val);
 
                 del_date_txt = (TextView) itemView.findViewById(R.id.del_date_txt);
                 invoice_date_txt = (TextView) itemView.findViewById(R.id.invoice_date_txt);
@@ -319,8 +323,10 @@ public class HistoryFragment extends IvyBaseFragment {
                 totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 totVolTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                dueDateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 deliveryStatus_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
+                due_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 invoice_qty_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -329,7 +335,7 @@ public class HistoryFragment extends IvyBaseFragment {
 
                 //typeface for value text font
                 orderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                orderDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVol.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -381,6 +387,16 @@ public class HistoryFragment extends IvyBaseFragment {
                     start_date_layout.setVisibility(View.VISIBLE);
                 } else {
                     start_date_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_DUETDATE) {
+                    due_date_layout.setVisibility(View.VISIBLE);
+                } else {
+                    due_date_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_INVDET) {
+                    invViewLayout.setVisibility(View.VISIBLE);
+                } else {
+                    invViewLayout.setVisibility(View.GONE);
                 }
             }
         }
