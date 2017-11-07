@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -25,7 +24,6 @@ import com.ivy.sd.png.util.DateUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Vector;
 
 /**
@@ -39,6 +37,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
     RecyclerView invoiceHistoryList;
     TextView havgOrderLinesTxt, hOrderValueTxt;
     private HistoryViewAdapter historyViewAdapter;
+    private boolean _hasLoadedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,9 +46,14 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
         view = inflater.inflate(R.layout.fragment_history_new, container,
                 false);
+
+        return view;
+    }
+
+    private void initializeViews() {
+
 
         invoiceHistoryList = (RecyclerView) view.findViewById(R.id.history_recyclerview);
         havgOrderLinesTxt = (TextView) view.findViewById(R.id.avg_line_txt);
@@ -108,7 +112,23 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
         invoiceHistoryList.setAdapter(historyViewAdapter);
         if (!(items.size() > 0))
             ((LinearLayout) view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
-        return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
     }
 
 

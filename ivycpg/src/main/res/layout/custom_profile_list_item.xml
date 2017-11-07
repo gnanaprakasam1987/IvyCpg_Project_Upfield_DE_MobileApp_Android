@@ -11,12 +11,13 @@
         android:id="@+id/custom_list_profilelyt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="left|center_vertical"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:background="@color/history_list_bg"
         android:orientation="vertical">
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/first_listlyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,21 +26,24 @@
             android:layout_marginLeft="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/profile_custom_label_txt"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical">-->
 
             <TextView
                 android:id="@+id/menu_name"
                 style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|top"
                 android:gravity="left|top"
                 android:text="Channel"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginBottom="@dimen/profile_custom_label_txt"
+                android:layout_marginLeft="@dimen/dimen_20dp"
+                android:layout_marginTop="@dimen/profile_custom_label_txt" />
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/first_listlyt2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,18 +53,21 @@
             android:layout_marginTop="@dimen/profile_margin_top_minus"
             android:gravity="center"
             android:orientation="vertical">
-
+-->
             <TextView
                 android:id="@+id/value_name"
                 style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:gravity="bottom|left"
+                android:gravity="left|bottom"
                 android:text="Retailer Shop"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginBottom="@dimen/dimen_20dp"
+                android:layout_marginLeft="@dimen/dimen_20dp"
+                android:layout_marginTop="@dimen/profile_margin_top_minus" />
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
     </LinearLayout>
 
     <View

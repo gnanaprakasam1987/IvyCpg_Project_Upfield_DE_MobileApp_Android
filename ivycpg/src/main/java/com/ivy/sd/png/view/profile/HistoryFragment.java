@@ -40,6 +40,7 @@ public class HistoryFragment extends IvyBaseFragment {
     RecyclerView orderHistoryList;
     TextView havgOrderLinesTxt, hOrderValueTxt;
     private HistoryViewAdapter historyViewAdapter;
+    private boolean _hasLoadedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +54,11 @@ public class HistoryFragment extends IvyBaseFragment {
         view = inflater.inflate(R.layout.fragment_history_new, container,
                 false);
 
+
+        return view;
+    }
+
+    private void initializeViews() {
         orderHistoryList = (RecyclerView) view.findViewById(R.id.history_recyclerview);
         havgOrderLinesTxt = (TextView) view.findViewById(R.id.avg_line_txt);
         hOrderValueTxt = (TextView) view.findViewById(R.id.avg_val_txt);
@@ -154,9 +160,24 @@ public class HistoryFragment extends IvyBaseFragment {
 
         if (!(items.size() > 0))
             ((LinearLayout) view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
-        return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
+    }
 
     public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryViewAdapter.ViewHolder> {
 
