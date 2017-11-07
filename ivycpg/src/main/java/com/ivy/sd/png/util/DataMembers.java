@@ -22,7 +22,7 @@ public class DataMembers {
 
     // Sync
     //public static String SERVER_URL = "https://fe-mm-qa.ivycpg.com/webapi/api";
-    public static String SERVER_URL = "https://soho-id.ivydms.com/webapi/api";//"http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";//"http://dev.ivymobileapps.com/ivycpg_product_webapi/api";
+    public static String SERVER_URL = "http://dev.ivymobileapps.com/ivycpg_product_webapi/api";
 //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
