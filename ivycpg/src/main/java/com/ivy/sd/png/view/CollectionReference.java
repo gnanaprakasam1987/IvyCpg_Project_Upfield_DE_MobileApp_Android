@@ -104,15 +104,19 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
-            finish();
-            BusinessModel.loadActivity(this,
-                    DataMembers.actHomeScreenTwo);
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onBackClicked() {
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME));
+        finish();
+        BusinessModel.loadActivity(this,
+                DataMembers.actHomeScreenTwo);
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -169,6 +173,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                         String qty = s.toString();
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setDocRefNo(qty);
+                        } else {
+                            holder.invoiceHeaderBO.setDocRefNo("");
                         }
 
                     }
@@ -189,6 +195,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                         String qty = s.toString();
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setContactName(qty);
+                        } else {
+                            holder.invoiceHeaderBO.setContactName("");
                         }
 
                     }
@@ -209,6 +217,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                         String qty = s.toString();
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setContactNo(qty);
+                        } else {
+                            holder.invoiceHeaderBO.setContactNo("");
                         }
 
                     }
@@ -287,6 +297,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             Toast.makeText(CollectionReference.this,
                     getResources().getString(R.string.saved_successfully),
                     Toast.LENGTH_SHORT).show();
+            onBackClicked();
 
 
         }

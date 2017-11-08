@@ -1433,6 +1433,34 @@ public class CollectionHelper {
         }
     }
 
+    public void updateInvoiceDiscountAmount() {
+        InvoiceHeaderBO invoiceHeaderBO;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select InvoiceNo,InvoiceDate,invNetamount,paidAmount from invoicemaster ");
+            sb.append("where discountedAmount==0 and upload='Y'");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    invoiceHeaderBO = new InvoiceHeaderBO();
+                    invoiceHeaderBO.setInvoiceNo(c.getString(0));
+                    invoiceHeaderBO.setInvoiceDate(c.getString(1));
+                    invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invoiceHeaderBO.setPaidAmount(c.getDouble(3));
+                    setInvoiceDiscoutAmount(invoiceHeaderBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
     /**
      * update discount amount in invoice header master
      *
@@ -1689,7 +1717,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
-            sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo from CollectionDocument ");
+            sb.append("select BillNumber,IFNULL(ContactName,''),IFNULL(ContactNumber,''),IFNULL(DocRefNo,'') from CollectionDocument ");
             sb.append("where RetailerID = ");
             sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and upload='N'");
