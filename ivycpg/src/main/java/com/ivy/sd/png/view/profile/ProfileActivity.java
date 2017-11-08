@@ -1150,6 +1150,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
                 bnd.putBoolean("isFromHomeScreenTwo", true);
+                bnd.putBoolean("isFromTab", true);
                 bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
                 retailerKpiFragment.setArguments(bnd);
                 return retailerKpiFragment;

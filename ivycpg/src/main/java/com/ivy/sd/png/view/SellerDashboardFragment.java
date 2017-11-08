@@ -152,14 +152,20 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 //            }
 //        }
         bundle = getActivity().getIntent().getExtras();
+        boolean isFromTab = false;
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
+            isFromTab = bundle.getBoolean("isFromTab", false);
         }
 
         if (getActionBar() != null)
             setUpActionBar();
 
         setHasOptionsMenu(true);
+
+        if (isFromTab == false) {
+            initializeViews();
+        }
 
         return view;
     }
