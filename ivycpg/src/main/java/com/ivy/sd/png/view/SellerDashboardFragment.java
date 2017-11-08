@@ -160,7 +160,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             setUpActionBar();
 
         setHasOptionsMenu(true);
-
+        initializeViews();
         return view;
     }
 
@@ -170,22 +170,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         init();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isFragmentVisible_) {
-        super.setUserVisibleHint(isFragmentVisible_);
-
-
-        if (this.isVisible()) {
-            // we check that the fragment is becoming visible
-            isFragmentVisible_ = false;
-            if (!isFragmentVisible_ && !_hasLoadedOnce) {
-                //run your async task here since the user has just focused on your fragment
-                initializeViews();
-                _hasLoadedOnce = true;
-
-            }
-        }
-    }
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }

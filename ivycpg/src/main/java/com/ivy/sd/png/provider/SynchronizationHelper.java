@@ -754,13 +754,13 @@ SynchronizationHelper {
                 }
                 allTableName.close();
             }
-                Cursor allIndexName = db.selectSQL("SELECT name FROM sqlite_master WHERE type == 'index'  and name LIKE 'index%' ");
-                if (allIndexName != null) {
-                    while (allIndexName.moveToNext()) {
-                        String indexName = allIndexName.getString(0);
-                        db.executeQ("DROP INDEX IF EXISTS " + indexName);
+            Cursor allIndexName = db.selectSQL("SELECT name FROM sqlite_master WHERE type == 'index'  and name LIKE 'index%' ");
+            if (allIndexName != null) {
+                while (allIndexName.moveToNext()) {
+                    String indexName = allIndexName.getString(0);
+                    db.executeQ("DROP INDEX IF EXISTS " + indexName);
 
-                    }
+                }
             }
 
 
@@ -2060,12 +2060,12 @@ SynchronizationHelper {
                 db.deleteSQL("temp_productuommaster", null, true);
             }
 
-                db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
-                db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
-                db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
-                db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
-                db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
-                db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
+            db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
+            db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
+            db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
+            db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
+            db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
+            db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
 
@@ -2084,7 +2084,7 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_pricemaster", null, true);
             }
-                db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
+            db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
 
         } else if (tableName.equalsIgnoreCase("temp_product_priceMaster")) {
             if (IsDataAvailableInTable("temp_product_priceMaster")) {
