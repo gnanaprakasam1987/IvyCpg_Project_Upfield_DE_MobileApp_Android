@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,12 +20,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +38,14 @@ import com.aem.api.AEMScrybeDevice;
 import com.aem.api.IAemScrybe;
 import com.bixolon.android.library.BxlService;
 import com.bixolon.printer.BixolonPrinter;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -50,11 +64,14 @@ import com.zebra.sdk.graphics.ZebraImageI;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -91,6 +108,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
+    Bitmap screen;
 
 
     @Override
@@ -194,7 +212,17 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 }
                 break;
             case R.id.menu_share_pdf:
-                new CreatePdf().execute();
+
+                try {
+                    LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                    RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
+                    root.setDrawingCacheEnabled(true);
+                    screen = getBitmapFromView(this.getWindow().findViewById(R.id.root_print));
+                    new CreatePdf().execute();
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
                 break;
         }
         return false;
@@ -216,8 +244,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
 
-            return bmodel.createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber
-                    , bmodel.mCommonPrintHelper.getInvoiceData().toString());
+            return createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber
+                    );
         }
 
         @Override
@@ -229,7 +257,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                     ArrayList<Uri> uriList = new ArrayList<>();
-                    File newFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/IvyInvoice/"
+                    File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
                             , StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
                     uriList.add(Uri.fromFile(newFile));
 
@@ -250,6 +278,98 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         }
 
     }
+
+    public boolean createPdf(String pdfFileName) {
+
+        try {
+
+            if (bmodel.isExternalStorageAvailable()) {
+                File folder;
+                folder = new File(Environment.getExternalStorageDirectory().getPath()
+                        + "/IvyInvoice/");
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                String path = folder + "";
+                File SDPath = new File(path);
+                if (!SDPath.exists()) {
+                    SDPath.mkdir();
+                }
+
+
+              /*  Document document = new Document(PageSize.A4);
+                PdfWriter.getInstance(document, new FileOutputStream(path + "/" + pdfFileName + ".pdf"));
+                document.open();
+                Font normal = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+                Paragraph p = new Paragraph(content, normal);
+                document.add(p);
+                document.close();*/
+
+
+                //Create a directory for your PDF
+                File f = new File(path, (pdfFileName).replace("'", "") + ".pdf");
+
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(f));
+                document.open();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                screen.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                byte[] byteArray = stream.toByteArray();
+                addImage(document, byteArray);
+                document.close();
+
+
+            }
+
+            }
+        catch (Exception ex){
+                Commons.printException(ex);
+                return false;
+            }
+            return true;
+        }
+
+    public Bitmap getBitmapFromView(View view) {
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        //Get the view's background
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        else
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        view.draw(canvas);
+        //return the bitmap
+        return returnedBitmap;
+    }
+
+    private static void addImage(Document document, byte[] byteArray) {
+        Image image = null;
+        try {
+            image = Image.getInstance(byteArray);
+        } catch (BadElementException e) {
+            Commons.print("exception => " + e);
+        } catch (MalformedURLException e) {
+            Commons.print("exception => " + e);
+        } catch (IOException e) {
+            Commons.print("exception => " + e);
+        }
+        try {
+            image.setAlignment(Image.MIDDLE);
+            image.scaleToFit(PageSize.A4.getWidth(), PageSize.A4.getHeight());
+            image.setAbsolutePosition((float) ((document.getPageSize().getWidth() / 2) - (image.getScaledWidth() / 2)), 0);
+            document.add(image);
+        } catch (DocumentException e) {
+            Commons.print("exception => " + e);
+        }
+    }
+
     private void onScreenPreparation() {
         try {
 

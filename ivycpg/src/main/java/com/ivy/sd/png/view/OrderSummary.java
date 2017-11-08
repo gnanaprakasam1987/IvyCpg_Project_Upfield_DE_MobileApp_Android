@@ -2612,7 +2612,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
                             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-                            bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true, orderList, null);
+                            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
 
                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
