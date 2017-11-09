@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,6 +40,7 @@ public class HistoryFragment extends IvyBaseFragment {
     RecyclerView orderHistoryList;
     TextView havgOrderLinesTxt, hOrderValueTxt;
     private HistoryViewAdapter historyViewAdapter;
+    private boolean _hasLoadedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +54,11 @@ public class HistoryFragment extends IvyBaseFragment {
         view = inflater.inflate(R.layout.fragment_history_new, container,
                 false);
 
+
+        return view;
+    }
+
+    private void initializeViews() {
         orderHistoryList = (RecyclerView) view.findViewById(R.id.history_recyclerview);
         havgOrderLinesTxt = (TextView) view.findViewById(R.id.avg_line_txt);
         hOrderValueTxt = (TextView) view.findViewById(R.id.avg_val_txt);
@@ -69,26 +74,7 @@ public class HistoryFragment extends IvyBaseFragment {
         orderHistoryList.setNestedScrollingEnabled(false);
         orderHistoryList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-//        orderHistoryListView = (ExpandableListView) view.findViewById(R.id.history_lvwplist);
-//        orderHistoryListView.setCacheColorHint(0);
-//        //   orderHistoryListView.setOnItemClickListener(getActivity());
-//        historyLayout = (LinearLayout) view.findViewById(R.id.history_lhis);
-//        orderHistoryFooterValues = (TableLayout) view.findViewById(R.id.history_history_footer_values);
-
-        // mpastordereddays = (TextView) view.findViewById(R.id.history_orderdays);
         sdf = new SimpleDateFormat("yyyy/MM/dd");
-       /* try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.tv_totalvalue).getTag()) != null)
-                ((TextView) view.findViewById(R.id.tv_totalvalue))
-                        .setText(bmodel.labelsMasterHelper
-                                .applyLabels(view.findViewById(
-                                        R.id.tv_totalvalue)
-                                        .getTag()));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }*/
 
 
         try {
@@ -116,8 +102,6 @@ public class HistoryFragment extends IvyBaseFragment {
         bmodel.profilehelper.getOSAmtandInvoiceCount(
                 bmodel.getRetailerMasterBO().getRetailerID(),
                 bmodel.getRetailerMasterBO().getRetailerCode());
-//        bmodel.profilehelper.downloadOrderHistory();
-//        Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
 
         bmodel.profilehelper.downloadOrderHistory();
         Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
@@ -136,28 +120,27 @@ public class HistoryFragment extends IvyBaseFragment {
 
         historyViewAdapter = new HistoryViewAdapter(mylist);
         orderHistoryList.setAdapter(historyViewAdapter);
-//        if (historyLayout != null)
-//            historyLayout
-//                    .setVisibility(View.VISIBLE);
-//
-//        if (orderHistoryFooterValues != null)
-//            orderHistoryFooterValues
-//                    .setVisibility(View.VISIBLE);
-      /*  MyAdapterForHistory mSchedule = new MyAdapterForHistory(mylist);
-        orderHistoryListView.setAdapter(mSchedule);*/
-
-//        HistoryAdapter adapter = new HistoryAdapter(mylist);
-//        orderHistoryListView.setAdapter(adapter);
-//
-//
-//        historyLayout.setVisibility(View.VISIBLE);
-//        orderHistoryFooterValues.setVisibility(View.VISIBLE);
 
         if (!(items.size() > 0))
             ((LinearLayout) view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
-        return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
+    }
 
     public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryViewAdapter.ViewHolder> {
 

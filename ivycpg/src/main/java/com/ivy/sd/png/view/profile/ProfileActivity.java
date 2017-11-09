@@ -233,6 +233,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         deviateBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         addPlaneBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        bundle = new Bundle();
+        bundle.putBoolean("fromHomeClick", fromHomeClick);
+        bundle.putBoolean("non_visit", non_visit);
+        addTabLayout();
         hideVisibleComponents();
 
         try {
@@ -256,10 +260,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             registerReceiver();
         }
 
-        bundle = new Bundle();
-        bundle.putBoolean("fromHomeClick", fromHomeClick);
-        bundle.putBoolean("non_visit", non_visit);
-        addTabLayout();
+
 
     }
 
@@ -410,6 +411,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 Commons.printException("Error while setting label for InvoiceHist Tab",ex);
             }
         }
+        if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
+            tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
+        }
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -537,7 +541,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         retailerObj = bmodel.getRetailerMasterBO();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        new LoadProfileConfigs().execute();
         Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         for (ConfigureBO conBo : profileConfig) {
             if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
@@ -710,7 +714,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 markerList.add(storeLatLng);
                 MarkerOptions options = new MarkerOptions();
                 options.position(storeLatLng);// Setting the position of the marker
-                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(this, R.drawable.store_loc)));
+                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(this)));
 
                 if (mMap != null) {
                     mMap.addMarker(options);
@@ -737,8 +741,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
+    public Bitmap getBitmapFromVectorDrawable(Context context) {
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.store_loc);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = (DrawableCompat.wrap(drawable)).mutate();
         }
@@ -1115,41 +1119,33 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         @Override
         public Fragment getItem(int position) {
 
-            ProfileFragment profileFragment = new ProfileFragment();
-            HistoryFragment historyFragment = new HistoryFragment();
-            InvoiceHistoryFragment invoiceHistoryFragment = new InvoiceHistoryFragment();
-            PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
-            planningOutletFragment.setArguments(null);
-            SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-            MSLUnsoldFragment mslUnsoldFragment = new MSLUnsoldFragment();
-            AssetHistoryFragment assetHistoryFragment=new AssetHistoryFragment();
-//            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
-//            retailerKpiFragment.setArguments(null);
-            bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-            bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");
-            Bundle bnd = new Bundle();
-            bnd.putString("screentitle", "");
-            bnd.putBoolean("isFromHomeScreenTwo", true);
-            bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
-            retailerKpiFragment.setArguments(bnd);
-
-            mslUnsoldFragment.setArguments(null);
-
             String tabName = tabLayout.getTabAt(position).getText().toString();
             if (tabName.equals(profile_title)) {
+                ProfileFragment profileFragment = new ProfileFragment();
                 profileFragment.setArguments(bundleAdapter);
                 //profileFragment.onProfileFragemntListener(ProfileActivity.this);
                 return profileFragment;
             } else if (tabName.equals(order_history_title)) {
-                return historyFragment;
+                return new HistoryFragment();
             } else if (tabName.equals(plan_outlet_title)) {
-                return planningOutletFragment;
+                return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
+                SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                Bundle bnd = new Bundle();
+                bnd.putString("screentitle", "");
+                bnd.putBoolean("isFromHomeScreenTwo", true);
+                bnd.putBoolean("isFromTab", true);
+                bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
+                retailerKpiFragment.setArguments(bnd);
                 return retailerKpiFragment;
             } else if (tabName.equals(msl_title)) {
-                return mslUnsoldFragment;
+                return new MSLUnsoldFragment();
             } else if (tabName.equals(invoice_history_title)) {
-                return invoiceHistoryFragment;
+                return new InvoiceHistoryFragment();
+            } else if (tabName.equals("Asset History")) {
+                return new AssetHistoryFragment();
             }
             return null;
         }
@@ -2063,5 +2059,41 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 break;
         }
 
+    }
+
+    // load profile config and map related data
+    private class LoadProfileConfigs extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+            return "Success";
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+            for (ConfigureBO conBo : profileConfig) {
+                if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLat = retailerObj.getLatitude();
+
+                } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLng = retailerObj.getLongitude();
+                } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
+                    isNonVisitReason = true;
+                }
+            }
+            if (!isMapview) {
+                View mapFrag = findViewById(R.id.profile_map);
+                mapFrag.setVisibility(View.GONE);
+                retailerCodeTxt.setVisibility(View.GONE);
+            }
+        }
     }
 }

@@ -133,6 +133,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     boolean isFromHomeScreenTwo = false;
     //boolean isSemiCircleChartRequired = false;
     Bundle bundle;
+    private boolean _hasLoadedOnce = false;
 
     @Nullable
     @Override
@@ -151,18 +152,43 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 //            }
 //        }
         bundle = getActivity().getIntent().getExtras();
+        boolean isFromTab = false;
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
+            isFromTab = bundle.getBoolean("isFromTab", false);
         }
 
         if (getActionBar() != null)
             setUpActionBar();
 
         setHasOptionsMenu(true);
-        init();
+        if (isFromTab == false) {
+            initializeViews();
+        }
         return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
+    }
+
+
+    private void initializeViews() {
+        init();
+    }
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
