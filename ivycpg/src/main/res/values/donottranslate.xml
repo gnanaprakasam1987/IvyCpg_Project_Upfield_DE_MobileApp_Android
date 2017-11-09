@@ -166,4 +166,6 @@
     <string name="total_vol">Total Volume</string>
     <string name="order_history_detail">Order History</string>
     <string name="invoice_history_detail">Invoice History</string>
+    <string name="please_close_the_day_for_current_Distributor">Please close the day for current distributor.</string>
+    <string name="please_select_a_Distributor_to_download">Please select a distributor to download.</string>
 </resources>
