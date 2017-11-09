@@ -314,7 +314,7 @@ public class PosmFragment extends IvyBaseFragment implements
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
         if (!isShowed) {
-            if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+            if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION && bmodel.productHelper.getInStoreLocation().size() > 1)
                 showLocation();
             loadedItem();
             isShowed = true;
@@ -388,10 +388,9 @@ public class PosmFragment extends IvyBaseFragment implements
 
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION || screenCode.equals("MENU_POSM_CS"))
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
-        else {
-            if (bmodel.productHelper.getInStoreLocation().size() < 1)
-                menu.findItem(R.id.menu_loc_filter).setVisible(false);
-        }
+
+        if (bmodel.productHelper.getInStoreLocation().size() <= 1)
+            menu.findItem(R.id.menu_loc_filter).setVisible(false);
         //Move Asset is removed in Posm
         menu.removeItem(R.id.menu_move);
         // hardcoded for demo
@@ -1441,7 +1440,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
     private void hideAndSeeK() {
         View view = getView();
-        if (view != null && (!bmodel.assetTrackingHelper.SHOW_POSM_TARGET || !bmodel.assetTrackingHelper.SHOW_POSM_QTY)) {
+        if (view != null && (!bmodel.assetTrackingHelper.SHOW_POSM_TARGET && !bmodel.assetTrackingHelper.SHOW_POSM_QTY)) {
             view.findViewById(R.id.keypad).setVisibility(View.GONE);
         }
         if (view != null && bmodel.assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
