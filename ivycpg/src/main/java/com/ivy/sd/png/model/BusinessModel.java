@@ -61,6 +61,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
@@ -215,6 +216,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11001,44 +11003,6 @@ public class BusinessModel extends Application {
         }
     }
 
-
-    public boolean createPdf(String pdfFileName, String content) {
-
-        try {
-
-            if (isExternalStorageAvailable()) {
-                File folder;
-                folder = new File(
-                        getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                + "/IvyInvoice/");
-                if (!folder.exists()) {
-                    folder.mkdir();
-                }
-
-                String path = folder + "";
-                File SDPath = new File(path);
-                if (!SDPath.exists()) {
-                    SDPath.mkdir();
-                }
-
-
-                Document document = new Document();
-                PdfWriter.getInstance(document, new FileOutputStream(path + "/" + pdfFileName + ".pdf"));
-                document.open();
-
-                Font normal = new Font(Font.FontFamily.TIMES_ROMAN, 12);
-                Paragraph p = new Paragraph(content, normal);
-                document.add(p);
-
-                document.close();
-            }
-
-        } catch (Exception ex) {
-            Commons.printException(ex);
-            return false;
-        }
-        return true;
-    }
 
     public void updateGroupIdForRetailer() {
 
