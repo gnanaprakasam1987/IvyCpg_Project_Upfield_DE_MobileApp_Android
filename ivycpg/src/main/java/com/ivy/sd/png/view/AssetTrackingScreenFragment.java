@@ -90,7 +90,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private ListView lvwplist;
     private static Button dateBtn;
 
-    private String append = "";
     private static String outPutDateFormat;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int MOVEMENT_ASSET = 2;
@@ -103,7 +102,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private static final String GENERAL = "General";
 
 
-    private final AssetTrackingBO assetBo = new AssetTrackingBO();
     /**
      * This PATH_NAME used to store Asset photos in sdcard
      */
@@ -116,27 +114,20 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * This ArrayList contains downloaded assettracking records
      */
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
-    /**
-     * This ArrayList contains downloaded assettracking records
-     */
-    private ArrayList<AssetTrackingBO> mAllAssetTrackingList;
+
     /**
      * This ArrayList contains downloaded assetreason records
      */
     private ArrayList<ReasonMaster> mAssetReasonList;
-    /**
-     * This ArrayList contains downloaded assetremarks records
-     */
-    private ArrayList<ReasonMaster> mAssetRemarksList;
+
+
     private ArrayList<ReasonMaster> mAssetconditionList;
     /**
      * This ArrayAdapter used to set AssetReason in spinner
      */
     private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
-    /**
-     * This ArrayAdapter used to set AssetRemarks in spinner
-     */
-    private ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
+
+
     private ArrayAdapter<ReasonMaster> mAssetconditionAdapter;
 
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
@@ -488,11 +479,21 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mAssetReasonList = bmodel.assetTrackingHelper.getAssetReasonList();
         mAssetReasonList.add(0, reason1);
 
+        //Load Remarks
+        ArrayList<ReasonMaster> mAssetRemarksList;
+        ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
         ReasonMaster reason2 = new ReasonMaster();
         reason2.setReasonID(Integer.toString(0));
         reason2.setReasonDesc("Select");
         mAssetRemarksList = bmodel.assetTrackingHelper.getAssetRemarksList();
         mAssetRemarksList.add(0, reason2);
+        mAssetRemarksSpinAdapter = new ArrayAdapter<>(
+                getActivity(), R.layout.spinner_bluetext_layout,
+                mAssetRemarksList);
+        mAssetRemarksSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        //
+
 
         ReasonMaster reason3 = new ReasonMaster();
         reason3.setConditionID(Integer.toString(0));
@@ -504,11 +505,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 R.layout.spinner_bluetext_layout, mAssetReasonList);
         mAssetReasonSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        mAssetRemarksSpinAdapter = new ArrayAdapter<>(
-                getActivity(), R.layout.spinner_bluetext_layout,
-                mAssetRemarksList);
-        mAssetRemarksSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
 
         mAssetconditionAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout, mAssetconditionList);
@@ -523,6 +520,8 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private void updateList(int bid, StandardListBO standardListBO) {
         int k = 0;
         myList = new ArrayList<>();
+
+        ArrayList<AssetTrackingBO> mAllAssetTrackingList;
         mAssetTrackingList = standardListBO.getAssetTrackingList();
         mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
         if (mAssetTrackingList != null) {
@@ -537,7 +536,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         myList.add(assetBO);
                     }
                 } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
-                    Log.e("Barcode", "Scanned Added");
                     assetBO.setscanComplete(1);
                     myList.add(assetBO);
                 } else {
@@ -924,11 +922,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             holder.reason1Spin.setSelection(bmodel.assetTrackingHelper
                     .getItemIndex(holder.assetBO.getReason1ID(),
                             mAssetReasonList));
-
-
-            /*holder.reason2Spin.setSelection(bmodel.assetTrackingHelper
-                    .getItemIndex(holder.assetBO.getRemarkID(),
-                            mAssetRemarksList));*/
 
 
             String serialNo = getResources().getString(R.string.serial_no)
