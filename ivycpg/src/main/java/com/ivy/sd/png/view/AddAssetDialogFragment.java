@@ -272,7 +272,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         assetBo.setMsno(mSNO.getText().toString());
 
-        bmodel.assetTrackingHelper.setMassetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
 
     }
 

@@ -41,20 +41,20 @@ public class PlanogramActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PlanogramFragment asf = (PlanogramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
-        asf.updatebrandtext(filtertext, id);
+        asf.updateBrandText(mFilterText, id);
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PlanogramFragment asf = (PlanogramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
-        asf.updategeneraltext(filtertext);
+        asf.updateGeneralText(mFilterText);
     }
 
     @Override
@@ -67,14 +67,14 @@ public class PlanogramActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
@@ -86,19 +86,19 @@ public class PlanogramActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PlanogramFragment asf = (PlanogramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
-        asf.updatefromFiveLevelFilter(parentidList);
+        asf.updateFromFiveLevelFilter(mParentIdList);
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PlanogramFragment asf = (PlanogramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
-        asf.updatefromFiveLevelFilter(parentidList,mSelectedIdByLevelId,mAttributeProducts,filtertext);
+        asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 }

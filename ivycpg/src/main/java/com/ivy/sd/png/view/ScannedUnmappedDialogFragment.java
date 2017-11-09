@@ -145,7 +145,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         assetBo.setMsno(serialNo);
         assetBo.setMreasonId(reasonId);
         assetBo.setMremarks(remarks);
-        bmodel.assetTrackingHelper.setMassetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
 
     }
 

@@ -226,9 +226,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         }
 
         if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
         } else {
-            updatebrandtext(BRAND, mselectedfilterid);
+            updateBrandText(BRAND, mselectedfilterid);
         }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
@@ -913,7 +913,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                                 .equals(SELECT)) {
 
                             savePromoAddandDeletedetails();
-                            updatebrandtext("Brand", -1);
+                            updateBrandText("Brand", -1);
                             dialog.dismiss();
                             dialog = null;
 
@@ -1175,12 +1175,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int mPid) {
+    public void updateBrandText(String mFilterText, int mPid) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
             // Change the Brand button Name
-            brandFilterText = filtertext;
+            brandFilterText = mFilterText;
             mselectedfilterid = mPid;
             if (mPid == -1)
                 tvdesc.setText(getResources()
@@ -1339,7 +1339,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
     }
 
     @Override
@@ -1353,16 +1353,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         try {
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
@@ -1373,7 +1373,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             }
             promoList = new ArrayList<>();
 
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (PromotionBO promoBO : items) {
                     if (levelBO.getProductID() == promoBO.getProductId()) {
                         promoList.add(promoBO);
@@ -1390,12 +1390,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         try {
-            this.parentidList = parentidList;
+            this.parentidList = mParentIdList;
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
             this.mAttributeProducts = mAttributeProducts;
-            this.filtertext = filtertext;
+            this.filtertext = mFilterText;
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
                 bmodel.showAlert(
@@ -1406,8 +1406,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             promoList = new ArrayList<>();
 
             if (mAttributeProducts != null) {
-                if (!parentidList.isEmpty()) {
-                    for (LevelBO levelBO : parentidList) {
+                if (!mParentIdList.isEmpty()) {
+                    for (LevelBO levelBO : mParentIdList) {
                         for (PromotionBO productBO : items) {
                             if (levelBO.getProductID() == productBO.getProductId()
                                     && mAttributeProducts.contains(productBO.getProductId())) {
@@ -1430,7 +1430,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                     promoList.addAll(items);
                 } else {
-                    for (LevelBO levelBO : parentidList) {
+                    for (LevelBO levelBO : mParentIdList) {
                         for (PromotionBO promoBO : items) {
                             if (levelBO.getProductID() == promoBO.getProductId()) {
                                 promoList.add(promoBO);
@@ -1460,7 +1460,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
                         mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
-                        updatebrandtext("", mselectedfilterid);
+                        updateBrandText("", mselectedfilterid);
                         dialog.dismiss();
 
                     }

@@ -193,7 +193,7 @@ public class MovementAssetDialog extends DialogFragment {
         assetBo.setMreasonId(reasonId);
         assetBo.setMremarks(remarks);
         assetBo.setmToRetailerId(retailerId);
-        bmodel.assetTrackingHelper.setMassetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
 
     }
     private boolean validateDesc() {

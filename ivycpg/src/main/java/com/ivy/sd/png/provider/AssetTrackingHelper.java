@@ -22,9 +22,9 @@ import java.util.Vector;
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
     private final Context context;
-    private final BusinessModel bmodel;
+    private final BusinessModel mBusinessModel;
     private static AssetTrackingHelper instance = null;
-    private AssetTrackingBO massetTrackingBO;
+    private AssetTrackingBO mAssetTrackingBO;
 
     /**
      * This ArrayList contains downloaded assettracking records
@@ -151,15 +151,15 @@ public class AssetTrackingHelper {
 
     private AssetTrackingHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.mBusinessModel = (BusinessModel) context;
     }
 
-    private AssetTrackingBO getMassetTrackingBO() {
-        return massetTrackingBO;
+    private AssetTrackingBO getmAssetTrackingBO() {
+        return mAssetTrackingBO;
     }
 
-    public void setMassetTrackingBO(AssetTrackingBO massetTrackingBO) {
-        this.massetTrackingBO = massetTrackingBO;
+    public void setmAssetTrackingBO(AssetTrackingBO mAssetTrackingBO) {
+        this.mAssetTrackingBO = mAssetTrackingBO;
     }
 
     public Vector<AssetTrackingBO> getAddremoveassets() {
@@ -174,13 +174,13 @@ public class AssetTrackingHelper {
     }
 
     public void loadDataForAssetPOSM(String mMenuCode) {
-        if (bmodel.configurationMasterHelper
+        if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
-            bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-            bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-            bmodel.mSurveyHelperNew.downloadQuestionDetails(mMenuCode);
-            bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
-            bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+            mBusinessModel.mSurveyHelperNew.setFromHomeScreen(false);
+            mBusinessModel.mSurveyHelperNew.downloadModuleId("STANDARD");
+            mBusinessModel.mSurveyHelperNew.downloadQuestionDetails(mMenuCode);
+            mBusinessModel.mSurveyHelperNew.loadSurveyAnswers(0);
+            mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         }
 
         if (MENU_ASSET.equalsIgnoreCase(mMenuCode))
@@ -188,14 +188,14 @@ public class AssetTrackingHelper {
         else if ("MENU_POSM".equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
             loadPOSMConfigs();
 
-        bmodel.productHelper.downloadInStoreLocations();
+        mBusinessModel.productHelper.downloadInStoreLocations();
 
-        bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
-        // bmodel.productHelper.downloadProductFilter(mMenuCode);
+        mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        // mBusinessModel.productHelper.downloadProductFilter(mMenuCode);
 
         downloadAssetMaster(mMenuCode);
 
-        loadAssetData(bmodel
+        loadAssetData(mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
@@ -419,54 +419,54 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
 
-            int level = bmodel.productHelper.getRetailerlevel(moduleName);
+            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and ListType='POSM_GROUP_TYPE' ");
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
-            sb.append(bmodel.QT(type));
+            sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
             if (level == 1) {
                 // account mapping
                 sb.append(" and AccountId =");
-                sb.append(bmodel.getRetailerMasterBO().getAccountid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getAccountid());
             } else if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 3) {
                 // Class mapping
                 sb.append(" and Classid = ");
-                sb.append(bmodel.getRetailerMasterBO().getClassid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getClassid());
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
+                sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
                 sb.append(")");
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             }
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
-                allMasterSb = allMasterSb + ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                sb.append(" and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+                allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
             Cursor c = db.selectSQL(sb.toString());
@@ -499,7 +499,7 @@ public class AssetTrackingHelper {
                 }
 
 //                if (mAssetTrackingList != null) {
-//                    for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+//                    for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
 //
 //                        ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
 //                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -512,7 +512,7 @@ public class AssetTrackingHelper {
 //                }
             }
             if (mAssetTrackingList != null) {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         clonedList.add(new AssetTrackingBO(assetBO));
@@ -521,7 +521,7 @@ public class AssetTrackingHelper {
                 }
 
             } else {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
             }
@@ -554,7 +554,7 @@ public class AssetTrackingHelper {
 
             }
             if (mAllAssetTrackingList != null) {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAllAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAllAssetTrackingList) {
                         clonedList.add(new AssetTrackingBO(assetBO));
@@ -563,7 +563,7 @@ public class AssetTrackingHelper {
                 }
 
             } else {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
             }
@@ -597,7 +597,7 @@ public class AssetTrackingHelper {
             db.openDataBase();
 
             String sb = "select uid, ifnull(remark,'') from AssetHeader where retailerid=" + QT(retailerid) + " and TypeLovId=" +
-                    "(select listid from StandardListMaster where ListCode=" + bmodel.QT(type) + " and ListType='SBD_TYPE') " +
+                    "(select listid from StandardListMaster where ListCode=" + mBusinessModel.QT(type) + " and ListType='SBD_TYPE') " +
                     "and (upload='N' OR refid!=0)";
 
             Cursor c = db.selectSQL(sb);
@@ -605,10 +605,10 @@ public class AssetTrackingHelper {
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     uid = c.getString(0);
-                    bmodel.setAssetRemark(c.getString(1));
+                    mBusinessModel.setAssetRemark(c.getString(1));
                 }
             } else {
-                bmodel.setAssetRemark("");
+                mBusinessModel.setAssetRemark("");
             }
             /*String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted  from assetDetail where uid=" +
                     QT(uid);*/
@@ -704,7 +704,7 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-            Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(category));
+            Cursor c = db.selectSQL(mBusinessModel.reasonHelper.getReasonFromStdListMaster(category));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     reasonBO = new ReasonMaster();
@@ -923,7 +923,7 @@ public class AssetTrackingHelper {
                     typeListId = c0.getInt(0);
                 }
             }
-            int level = bmodel.productHelper.getRetailerlevel(moduleName);
+            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
 
 
             StringBuilder sb = new StringBuilder();
@@ -940,31 +940,31 @@ public class AssetTrackingHelper {
             if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
 
 
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
 
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             }
 
@@ -990,7 +990,7 @@ public class AssetTrackingHelper {
                 }
             }
             String sb1 = "select distinct  AssetId,P.Posmdesc,serialNum,installdate,flag ,uid,Productid  from PosmMaster P  inner  join AssetAddDelete AAD on P.PosmId=AAD.AssetId where flag!='D'  and retailerid=" +
-                    QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and AAD.TypeLovId=" + typeListId;
+                    QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + " and AAD.TypeLovId=" + typeListId;
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
@@ -1173,12 +1173,12 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
-            AssetTrackingBO assets = getMassetTrackingBO();
+            AssetTrackingBO assets = getmAssetTrackingBO();
             String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId,reasonid,remarks";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
+            String assetaddanddeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
                     + QT(assets.getMbrand()) + ","
                     + QT(DateUtil.convertToServerDateFormat(
@@ -1221,12 +1221,12 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
-            AssetTrackingBO assets = getMassetTrackingBO();
+            AssetTrackingBO assets = getmAssetTrackingBO();
             String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,creationdate,flag,TypeLovId,reasonid,remarks,toRetailerId";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
+            String assetaddanddeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
                     + QT(assets.getMbrand()) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
@@ -1267,12 +1267,12 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             String addassetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId,reasonid";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
+            String assetaddanddeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmid) + "," + QT(msno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
                     + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId + "," + QT(reasonId);
@@ -1315,7 +1315,7 @@ public class AssetTrackingHelper {
             String sql = "select serialNum from "
                     + DataMembers.tbl_AssetAddDelete + "  where serialNum="
                     + QT(msno) + " and retailerid = "
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID()) + "";
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + "";
 
             Cursor cursor = db.selectSQL(sql);
 
@@ -1347,7 +1347,7 @@ public class AssetTrackingHelper {
             String sql = "select AssetId from "
                     + DataMembers.tbl_AssetAddDelete + "  where serialNum="
                     + QT(serialNum) + " and retailerid = "
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID()) + "";
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + "";
 
             Cursor cursor = db.selectSQL(sql);
 
@@ -1389,7 +1389,7 @@ public class AssetTrackingHelper {
                 }
             }
             String query = "select uid,refid from AssetHeader where retailerid ="
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID())
                     + " and TypeLovid=" + typeListId;
             query += " and (upload='N' OR refid!=0)";
 
@@ -1407,7 +1407,7 @@ public class AssetTrackingHelper {
             int moduleWeightage = 0;
             double productWeightage = 0, sum = 0;
 
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid";
@@ -1416,21 +1416,21 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            assetHeaderValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(bmodel.getAssetRemark()));
+            assetHeaderValues.append(QT(mBusinessModel.getAssetRemark()));
             assetHeaderValues.append(",");
             assetHeaderValues.append(typeListId);
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
             }
             int totalTarget = 0;
             int totalActualQty = 0;
-            for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+            for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 if (mAssetTrackingList != null) {
                     productWeightage = (double) 100 / (double) mAssetTrackingList.size();
@@ -1531,7 +1531,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
@@ -1546,7 +1546,7 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                     assetDetailValues.append("," + productWeightage);
                                     sum = sum + productWeightage;
                                 }
@@ -1643,7 +1643,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
@@ -1658,7 +1658,7 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                     assetDetailValues.append("," + productWeightage);
                                     sum = sum + productWeightage;
                                 }
@@ -1677,11 +1677,11 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(refId));
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 if (MENU_ASSET.equals(moduleName)) {
-                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
+                    moduleWeightage = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
                 } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
-                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
+                    moduleWeightage = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
                 }
                 assetHeaderValues.append("," + moduleWeightage);
                 double achieved = ((sum / (double) 100) * moduleWeightage);
@@ -1717,7 +1717,7 @@ public class AssetTrackingHelper {
 
         AssetTrackingBO assetBO = null;
         mAssetTrackingList = null;
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+        for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
             if (standardListBO.getListID().equals(Integer.toString(locid))) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 break;
@@ -1764,7 +1764,7 @@ public class AssetTrackingHelper {
      */
 
     public boolean hasAssetTaken() {
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+        for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {

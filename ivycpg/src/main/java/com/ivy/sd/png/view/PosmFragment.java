@@ -325,13 +325,13 @@ public class PosmFragment extends IvyBaseFragment implements
         }
         hideAndSeeK();
         if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
         } else {
-            updatebrandtext(BRAND, mSelectedLastFilterSelection);
+            updateBrandText(BRAND, mSelectedLastFilterSelection);
         }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             mSelectedFilterMap.put("General", GENERAL);
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
     }
 
@@ -1729,8 +1729,8 @@ public class PosmFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
-        brandbutton = filtertext;
+    public void updateBrandText(String mFilterText, int id) {
+        brandbutton = mFilterText;
         mDrawerLayout.closeDrawers();
         mSelectedLastFilterSelection = id;
         mCapturedNFCTag = "";
@@ -1743,22 +1743,22 @@ public class PosmFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        updateBrandText(BRAND, mSelectedLastFilterSelection);
     }
 
     @Override
@@ -1767,10 +1767,10 @@ public class PosmFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if (levelBO.getProductID() == assetBO.getProductid()) {
                     if ("ALL".equals(strBarCodeSearch)) {
@@ -1793,23 +1793,23 @@ public class PosmFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        this.parentidList = parentidList;
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        this.parentidList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
 
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         if (mAssetTrackingList == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
             return;
         }
 
-        if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-            for (LevelBO levelBO : parentidList) {
+        if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+            for (LevelBO levelBO : mParentIdList) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (levelBO.getProductID() == assetBO.getProductid()) {
                         if ("ALL".equals(strBarCodeSearch)) {
@@ -1828,11 +1828,11 @@ public class PosmFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
+        } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
             if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                 myList.addAll(mAssetTrackingList);
             } else {
-                for (LevelBO levelBO : parentidList) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         if (levelBO.getProductID() == assetBO.getProductid()) {
                             if ("ALL".equals(strBarCodeSearch)) {
@@ -1851,7 +1851,7 @@ public class PosmFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+        } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (pid == assetBO.getProductid()) {
