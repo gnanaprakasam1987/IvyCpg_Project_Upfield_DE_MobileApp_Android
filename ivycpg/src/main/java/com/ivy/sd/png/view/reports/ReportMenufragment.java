@@ -188,6 +188,7 @@ public class ReportMenufragment extends IvyBaseFragment {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PND_INVOICE_REPORT)) {
+            bmodel.collectionHelper.updateInvoiceDiscountAmount();
             bmodel.downloadInvoice();
             if (bmodel.getInvoiceHeaderBO().size() >= 1) {
                 intoreportacti(config);

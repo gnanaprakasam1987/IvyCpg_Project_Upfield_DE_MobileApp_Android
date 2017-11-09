@@ -2290,6 +2290,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.IS_JUMP
                     || isPreviousDone(menu)) {
 
+                bmodel.collectionHelper.updateInvoiceDiscountedAmount();
                 bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
                 bmodel.collectionHelper.loadCollectionReference();
 

@@ -10,19 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AssetHistoryBO;
-import com.ivy.sd.png.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.view.AssetMovementActivity;
-import com.ivy.sd.png.view.MovementAssetDialog;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -34,6 +29,8 @@ public class AssetHistoryFragment extends IvyBaseFragment {
     protected BusinessModel bmodel;
     protected RecyclerView recyclerView;
     protected RecyclerAdapter recyclerAdapter;
+    private boolean _hasLoadedOnce = false;
+    private View view;
 
     @Nullable
     @Override
@@ -42,8 +39,13 @@ public class AssetHistoryFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        View view = inflater.inflate(R.layout.fragment_asset_history, container,
+        view = inflater.inflate(R.layout.fragment_asset_history, container,
                 false);
+
+        return view;
+    }
+
+    private void initializeViews() {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_asset_history);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
@@ -53,7 +55,23 @@ public class AssetHistoryFragment extends IvyBaseFragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         loadListData();
-        return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
     }
 
     private void loadListData() {

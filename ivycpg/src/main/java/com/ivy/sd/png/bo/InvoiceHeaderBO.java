@@ -12,9 +12,9 @@ public class InvoiceHeaderBO {
 	private int linesPerCall;
 
     /*Collection Reference*/
-    private String contactName;
-    private String contactNo;
-    private String docRefNo;
+    private String contactName = "";
+    private String contactNo = "";
+    private String docRefNo = "";
 
 	//pending invoice
 	String retailerName;
