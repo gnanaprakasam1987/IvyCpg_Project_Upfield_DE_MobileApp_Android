@@ -22,6 +22,7 @@ public class MSLUnsoldFragment extends IvyBaseFragment {
     private View view;
     private ListView lv_msl;
     private ArrayList<String> mslUnsoldList;
+    private boolean _hasLoadedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,11 +37,31 @@ public class MSLUnsoldFragment extends IvyBaseFragment {
         return view;
     }
 
+    private void initializeViews() {
+        mslUnsoldList = bmodel.dashBoardHelper.loadMSLUnsold(bmodel.retailerMasterBO.getRetailerID());
+        initialization();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        mslUnsoldList = bmodel.dashBoardHelper.loadMSLUnsold(bmodel.retailerMasterBO.getRetailerID());
-        initialization();
 
 
     }
