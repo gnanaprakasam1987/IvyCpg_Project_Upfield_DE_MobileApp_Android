@@ -54,8 +54,8 @@ public class CSConsultingActivity extends IvyBaseActivityNoActionBar implements 
         edt_resolution = (EditText) findViewById(R.id.edt_resolution);
         edt_feedback = (EditText) findViewById(R.id.edt_feedback);
 
-        edt_feedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        edt_resolution.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        edt_feedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        edt_resolution.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         spinnerAdapter = new ArrayAdapter<AttributeBO>(
                 CSConsultingActivity.this, android.R.layout.simple_spinner_item, bmodel.mCounterSalesHelper.getLstConcern());

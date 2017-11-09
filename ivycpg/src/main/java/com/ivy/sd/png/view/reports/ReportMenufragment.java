@@ -1,13 +1,17 @@
 package com.ivy.sd.png.view.reports;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,17 +28,25 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -143,7 +155,13 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_CS_RPT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT,
+                    R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT,
+                    R.drawable.icon_reports);
 
+            menuIcons.put(StandardListMasterConstants.MENU_PRDVOL_RPT,
+                    R.drawable.icon_reports);
             // Load the HHTTable
             menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
@@ -213,6 +231,20 @@ public class ReportMenufragment extends IvyBaseFragment {
             }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
+            intoreportacti(config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
+            if (bmodel.reportHelper.isPerformReport()) {
+                intoreportacti(config);
+            } else {
+                String Url = bmodel.reportHelper.getPerformRptUrl();
+                if (Url != null && Url.length() > 0) {
+                    new PerformRptDownloadData(config, Url).execute();
+                }else {
+                    Toast.makeText(getActivity(), "Download Url Not Available", Toast.LENGTH_LONG).show();
+                }
+            }
+
         } else {
             intoreportacti(config);
         }
@@ -275,7 +307,7 @@ public class ReportMenufragment extends IvyBaseFragment {
 
             holder.menuBTN.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_bg1));
             holder.menuBTN.setText(configTemp.getMenuName());
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.position = position;
             holder.menuCode = configTemp.getConfigCode();
@@ -327,6 +359,85 @@ public class ReportMenufragment extends IvyBaseFragment {
             String menuCode;
             int position;
             int hasLink;
+        }
+    }
+
+    class PerformRptDownloadData extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+        ConfigureBO config;
+        String Url;
+        private ProgressDialog progressDialogue;
+
+        PerformRptDownloadData(ConfigureBO config, String Url) {
+            this.config = config;
+            this.Url = Url;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.downloading_rpt),
+                    true, false);
+            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            bmodel.synchronizationHelper.updateAuthenticateToken();
+            String response = bmodel.synchronizationHelper.sendPostMethod(Url, jsonObject);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, true);
+
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity())
+                                    .edit();
+                            editor.putString("rpt_dwntime",
+                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                            editor.commit();
+
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            progressDialogue.dismiss();
+            if (errorCode
+                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (bmodel.reportHelper.isPerformReport()) {
+                    Intent intent = new Intent(getActivity(), ReportActivity.class);
+                    Bundle bun = new Bundle();
+                    bun.putSerializable("config", config);
+                    intent.putExtras(bun);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                }
+
+            } else {
+                String errorMessage = bmodel.synchronizationHelper
+                        .getErrormessageByErrorCode().get(errorCode);
+                if (errorMessage != null) {
+                    bmodel.showAlert(errorMessage, 0);
+                }
+            }
         }
     }
 }

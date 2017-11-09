@@ -119,6 +119,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     private EditText QUANTITY;
     private String append = "";
     private boolean isFromChild;
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -222,9 +225,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
-
-        updatebrandtext(BRAND, mselectedfilterid);
-
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, mselectedfilterid);
+        }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
         else
@@ -462,14 +467,14 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
                 holder.tvpromoName = (TextView) row
                         .findViewById(R.id.tvPromoName);
-                holder.tvpromoName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tvpromoName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.rbExecuted = (CheckBox) row
                         .findViewById(R.id.executed_CB);
                 holder.rbAnnounced = (CheckBox) row
                         .findViewById(R.id.announced_CB);
 
                 holder.etPromoQty = (EditText) row.findViewById(R.id.et_promoqty);
-                holder.etPromoQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.etPromoQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.btnPhoto = (ImageView) row
                         .findViewById(R.id.btn_photo);
@@ -767,7 +772,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             holder.ratingSpin.setSelection(getRatingIndex(holder.mPromotionMasterBO.getRatingId()));
             String promo_groupName = " : " + holder.mPromotionMasterBO.getGroupName();
             holder.tvgroupName.setText(promo_groupName);
-            holder.tvgroupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.tvgroupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             String promoQty = holder.mPromotionMasterBO.getPromoQty() + "";
             holder.etPromoQty.setText(promoQty);
 
@@ -1387,6 +1392,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         try {
+            this.parentidList = parentidList;
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+            this.mAttributeProducts = mAttributeProducts;
+            this.filtertext = filtertext;
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
                 bmodel.showAlert(

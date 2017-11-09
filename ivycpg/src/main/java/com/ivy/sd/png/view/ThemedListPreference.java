@@ -46,7 +46,7 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
         mDialogTitle = getDialogTitle();
         if (mDialogTitle == null) mDialogTitle = getTitle();
         TextView mTitleView = (TextView) view.findViewById(R.id.dialog_title);
-        mTitleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        mTitleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mTitleView.setText(mDialogTitle);
         Button mDoneBTN = (Button) view.findViewById(R.id.ok_btn);
         mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -161,9 +161,9 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
         bmodel = (BusinessModel) getContext().getApplicationContext();
         TextView titleView = (TextView) view.findViewById(android.R.id.title);
         titleView.setTextColor(ContextCompat.getColor(getContext(),R.color.white));
-        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
-        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         summaryView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 }

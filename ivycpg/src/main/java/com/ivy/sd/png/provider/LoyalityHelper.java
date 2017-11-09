@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -59,7 +60,7 @@ public class LoyalityHelper {
             String sql;
             Cursor headerCursor;
             LoyaltyBO ret;
-            String headerColumns = "UID, RetailerId,LoyaltyId,TotalPoints, Date, TimeZone";
+            String headerColumns = "UID, RetailerId,LoyaltyId,TotalPoints, Date, TimeZone,PointsTypeID";
             String detailColumns = "UID,BenefitId,Qty,Points ";
 
             String values;
@@ -94,7 +95,9 @@ public class LoyalityHelper {
                             + ltyBo.getLoyaltyId() + ","
                             + ltyBo.getSelectedPoints() + ","
                             + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                            + QT(bmodel.getTimeZone());
+                            + QT(bmodel.getTimeZone())+","
+                            + ltyBo.getPointTypeId();
+
                     db.insertSQL(mLoyaltyRedemptionHeader, headerColumns, values);//save into  LoyaltyRedemption Header Table
 
 
@@ -105,6 +108,7 @@ public class LoyalityHelper {
                             + ", Upload = 'N'"
                             + " WHERE LoyaltyId ="
                             + ltyBo.getLoyaltyId()
+                            + " AND PointsTypeID="+ltyBo.getPointTypeId()
                             + " AND RetailerID ="
                             + bmodel.getRetailerMasterBO().getRetailerID());
 
@@ -157,6 +161,42 @@ public class LoyalityHelper {
         }
     }
 
+    public ArrayList<StandardListBO> downloadLoyaltyPointsType(){
+        DBUtil db=null;
+        ArrayList<StandardListBO> lstPointTypes=new ArrayList<>();
+        try{
+
+             db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql = "select listid,listname,listcode from StandardListMaster where listtype='LOYALTY_POINTS_TYPE'";
+
+            Cursor cursor = db.selectSQL(sql);
+            if(cursor.getCount()>0) {
+                StandardListBO standardListBO;
+                while (cursor.moveToNext()) {
+                    standardListBO=new StandardListBO();
+                    standardListBO.setListID(cursor.getString(0));
+                    standardListBO.setListName(cursor.getString(1));
+                    standardListBO.setListCode(cursor.getString(2));
+
+                    lstPointTypes.add(standardListBO);
+                }
+            }
+
+        }
+        catch (Exception e) {
+            Commons.printException(e);
+        }
+        finally {
+            db.closeDB();
+        }
+
+        return lstPointTypes;
+    }
+
 
     public void updatedLoyaltyPoints(String retailerId) {
         DBUtil db = null;
@@ -170,8 +210,9 @@ public class LoyalityHelper {
             int benefitId = 0;
             int qty = 0;
             int tpoints = 0;
+            int pointTypeId=0;
             Vector<LoyaltyBO> ltyBo = bmodel.productHelper.getProductloyalties();
-            String sql1 = "SELECT Distinct LH.UID,LH.LoyaltyId,LH.TotalPoints,LD.BenefitId,LD.Qty FROM LoyaltyRedemptionHeader LH INNER JOIN LoyaltyRedemptionDetail LD ON LH.UID = LD.UID"
+            String sql1 = "SELECT Distinct LH.UID,LH.LoyaltyId,LH.TotalPoints,LD.BenefitId,LD.Qty,LH.PointsTypeID FROM LoyaltyRedemptionHeader LH INNER JOIN LoyaltyRedemptionDetail LD ON LH.UID = LD.UID"
                     + " WHERE LH.RetailerID =" + retailerId
                     + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " AND LH.Upload='N'";
@@ -184,14 +225,17 @@ public class LoyalityHelper {
                     tpoints = cHeader.getInt(2);
                     benefitId = cHeader.getInt(3);
                     qty = cHeader.getInt(4);
+                    pointTypeId=cHeader.getInt(5);
                     if (ltyBo != null) {
                         for (int i = 0; i < ltyBo.size(); i++) {
                             LoyaltyBO ret = ltyBo.elementAt(i);
-                            if (ret.getLoyaltyId() == ltyId) {
+                            if (ret.getLoyaltyId() == ltyId && pointTypeId==ret.getPointTypeId()) {
                                 ret.setSelectedPoints(tpoints);
                             }
                             for (int j = 0; j < ret.getLoyaltyTrackingList().size(); j++) {
-                                if (ret.getLoyaltyId() == ltyId && ret.getLoyaltyTrackingList().get(j).getBenifitsId() == benefitId) {
+                                if (ret.getLoyaltyId() == ltyId && pointTypeId==ret.getPointTypeId()
+                                        && ret.getLoyaltyTrackingList().get(j).getBenifitsId() == benefitId) {
+
                                     ret.getLoyaltyTrackingList().get(j).setBenifitQty(qty);
                                 }
                             }

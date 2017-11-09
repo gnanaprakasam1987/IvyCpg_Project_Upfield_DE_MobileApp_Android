@@ -134,6 +134,60 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/due_date_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/due_date_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|top"
+                        android:gravity="left|top"
+                        android:text="@string/due_date"
+                        android:textColor="@color/history_label_color"
+                        android:textSize="@dimen/list_item_primary_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/due_date_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|bottom"
+                        android:gravity="bottom|left"
+                        android:text=" "
+                        android:textColor="@color/history_date_color"
+                        android:textSize="@dimen/font_micro_small" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/total_lines_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -567,7 +621,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/inv_view_layout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -575,20 +628,36 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/inv_view_btn"
-            android:layout_width="@dimen/profile_history_20dp"
+        <ImageView
+            android:id="@+id/deliveryStatusValue"
+            android:layout_width="@dimen/profile_history_25dp"
             android:layout_height="@dimen/profile_history_25dp"
+            android:background="@drawable/coll_tick"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_marginTop="@dimen/list_margin"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
-            android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
-            android:background="@drawable/ic_double_right_arrow"
-            android:backgroundTint="@color/history_invbtn_color"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
-            android:textColor="@color/toolbar_title"
-            android:textSize="@dimen/text_sz_extra_small" />
+            android:padding="@dimen/dimen_2dp" />
 
+        <LinearLayout
+            android:id="@+id/inv_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/inv_view_btn"
+                android:layout_width="@dimen/profile_history_25dp"
+                android:layout_height="@dimen/profile_history_25dp"
+                android:background="@drawable/ic_double_right_arrow"
+                android:backgroundTint="@color/history_invbtn_color"
+                android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
+                android:layout_gravity="center"
+                android:textColor="@color/toolbar_title"
+                android:textSize="@dimen/text_sz_extra_small" />
+
+        </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

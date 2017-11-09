@@ -15,14 +15,19 @@ import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1878,5 +1883,34 @@ public class CommonPrintHelper {
         }
 
         return formattedValue;
+    }
+
+    /**
+     * read text from given file and convert to string object
+     * and store in object
+     * @param fileName
+     */
+    public void readBuilder(String fileName){
+        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+ DataMembers.PRINT_FILE_PATH+"/";
+        File file = new File(path+fileName);
+        StringBuilder sb=new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+
+
+            String st;
+            while ((st = br.readLine()) != null) {
+                sb.append(st);
+                sb.append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        setInvoiceData(sb);
+
     }
 }

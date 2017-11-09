@@ -78,6 +78,37 @@ public class CompetitorTrackingHelper {
         }
     }
 
+    public void downloadPriceCompanyMaster(String menucode) {
+        DBUtil db = null;
+        try {
+            CompanyBO competitor;
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT distinct CM.CompanyID,CM.CompanyName FROM CompanyMaster CM"
+                            + " INNER JOIN CompetitorMappingMaster cpm on cpm.cpid=cp.cpid"
+                            + " INNER JOIN competitorProductmaster cp on cp.CompanyID=cM.CompanyID"
+                            + " where CP.plid in (select ProductContent from configactivityfilter where ActivityCode =" + bmodel.QT(menucode) + ") and cm.isown != 1");
+
+            if (c != null) {
+                companyList = new ArrayList<CompanyBO>();
+
+                while (c.moveToNext()) {
+                    competitor = new CompanyBO();
+                    competitor.setCompetitorid(c.getInt(0));
+                    competitor.setCompetitorName(c.getString(1));
+                    companyList.add(competitor);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            db.closeDB();
+        }
+    }
+
+
     /**
      * Downlaod Competitior Products which are related to Competitor Company
      */

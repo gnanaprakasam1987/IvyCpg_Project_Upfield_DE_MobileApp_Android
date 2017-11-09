@@ -58,9 +58,9 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
         btnSave.setOnClickListener(this);
 
         lbl_prod_name = (TextView) view.findViewById(R.id.tv_prod_lbl);
-        lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_avail = (TextView) view.findViewById(R.id.tv_availability);
-        lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
@@ -121,11 +121,11 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
                 productView = inflater.inflate(R.layout.layout_sos_group_list_item, null);
 
                 TextView tv_prod_name = (TextView) productView.findViewById(R.id.tv_productname);
-                tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tv_prod_name.setText(bo.getProductName());
 
                 final EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
-                edt_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                edt_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 edt_availability.setTag(bo.getGroupId() + "" + bo.getProductID());
                 edt_availability.setText(bo.getAvailability() + "");
 

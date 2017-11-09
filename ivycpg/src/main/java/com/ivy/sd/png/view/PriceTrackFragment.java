@@ -788,12 +788,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 holder.mBarCode = (TextView) row
                         .findViewById(R.id.barcode);
-                holder.mBarCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mBarCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mSKU = (TextView) row.findViewById(R.id.sku);
                 holder.mSKU.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 holder.mSKU.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.mSrp = (TextView) row.findViewById(R.id.tv_srp);
-                holder.mSrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mSrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.rl_PriceChanged = (RelativeLayout) row
                         .findViewById(R.id.rl_PriceChanged);
@@ -803,23 +803,23 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 holder.mPrev_CA = (TextView) row
                         .findViewById(R.id.prev_ca);
-                holder.mPrev_CA.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.mPrev_CA.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.mPrev_PC = (TextView) row
                         .findViewById(R.id.prev_pc);
-                holder.mPrev_PC.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.mPrev_PC.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.mPrev_OO = (TextView) row
                         .findViewById(R.id.prev_oo);
-                holder.mPrev_OO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.mPrev_OO.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.mPrev_CA_label = (TextView) row
                         .findViewById(R.id.prev_ca_label);
-                holder.mPrev_CA_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mPrev_CA_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mPrev_PC_label = (TextView) row
                         .findViewById(R.id.prev_pc_label);
-                holder.mPrev_PC_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mPrev_PC_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mPrev_OO_label = (TextView) row
                         .findViewById(R.id.prev_oo_label);
-                holder.mPrev_OO_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mPrev_OO_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 holder.mCaPrice = (EditText) row
@@ -847,21 +847,21 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         .findViewById(R.id.reason);
                 holder.mProductCodeTV = (TextView) row
                         .findViewById(R.id.prdcode_tv);
-                holder.mProductCodeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.mProductCodeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.tv_prev_mrp_pc = (TextView) row.findViewById(R.id.tv_prev_mrp_pc);
-                holder.tv_prev_mrp_pc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tv_prev_mrp_pc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_prev_mrp_ca = (TextView) row.findViewById(R.id.tv_prev_mrp_ca);
-                holder.tv_prev_mrp_ca.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tv_prev_mrp_ca.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_prev_mrp_ou = (TextView) row.findViewById(R.id.tv_prev_mrp_oo);
-                holder.tv_prev_mrp_ou.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tv_prev_mrp_ou.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.tv_prev_mrp_ca_label = (TextView) row.findViewById(R.id.prev_mrp_ca_label);
-                holder.tv_prev_mrp_ca_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tv_prev_mrp_ca_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.tv_prev_mrp_ou_label = (TextView) row.findViewById(R.id.prev_mrp_oo_label);
-                holder.tv_prev_mrp_ou_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tv_prev_mrp_ou_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.tv_prev_mrp_pc_label = (TextView) row.findViewById(R.id.prev_mrp_pc_label);
-                holder.tv_prev_mrp_pc_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tv_prev_mrp_pc_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 holder.rl_prev_price = (RelativeLayout) row.findViewById(R.id.rl_prev_price_n_mrp_layout);

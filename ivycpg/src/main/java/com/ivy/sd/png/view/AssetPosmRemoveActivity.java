@@ -140,7 +140,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 //		reason1.setReasonDesc("Select Reason");
 	//	mAssetReasonList.add(0, reason1);
 		mAssetReasonList=new ArrayList<>();
-		bmodel.reasonHelper.loadAssetReasonsBasedOnType("Asset_Remove");
+		bmodel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_REMOVE");
 		mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
 		mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
 		mAssetReasonSpinAdapter = new ArrayAdapter<>(AssetPosmRemoveActivity.this,

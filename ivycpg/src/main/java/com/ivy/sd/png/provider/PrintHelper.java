@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
@@ -35,6 +36,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
+
+import javax.mail.Folder;
 
 public class PrintHelper {
     private final Context mContext;
@@ -2833,5 +2836,25 @@ public class PrintHelper {
         }
 
         return formattedValue;
+    }
+
+    /**
+     * When save invoice print file created and stored in mobile
+     * this method will be deleted print file while downloading
+     */
+    public void deletePrintFileAfterDownload(String path){
+        try {
+            File folder = new File(path);
+
+            File sfFiles[] = folder.listFiles();
+            for (int i = 0; i < sfFiles.length; i++) {
+                File deleteFile = new File(folder, "/" + sfFiles[i].getName());
+                deleteFile.delete();
+
+            }
+            folder.delete();
+        }catch (Exception e){
+            Commons.printException(e);
+        }
     }
 }
