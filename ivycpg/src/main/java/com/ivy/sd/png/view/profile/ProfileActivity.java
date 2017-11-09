@@ -1780,7 +1780,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     bmodel.productHelper
                             .downloadFiveFilterLevels(MENU_STK_ORD);
                     bmodel.productHelper
-                            .downloadProductsWithFiveLevelFilterSOGO(MENU_STK_ORD);
+                            .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
                 } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                     //to reload product filter if diffrent retailer selected
                     bmodel.productHelper.setmLoadedGlobalProductId(0);
@@ -1788,7 +1788,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 bmodel.configurationMasterHelper
                         .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                 .getSubchannelid());
-                bmodel.productHelper.loadSBDFocusData();
+                if (bmodel.productHelper.isSBDFilterAvaiable())
+                    bmodel.productHelper.loadSBDFocusData();
 
                 if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                     bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
