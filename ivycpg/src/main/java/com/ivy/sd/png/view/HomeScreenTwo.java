@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -4188,9 +4189,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             }
 
             if (holder.config.isDone()) {
-                holder.activity_icon_circle.setColorFilter(Color.argb(255, 255, 255, 255));
+                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(),R.color.white));
             } else {
-                holder.activity_icon_circle.setColorFilter(Color.argb(0, 0, 0, 0));
+                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.black_bg1));
             }
 
             if (position == 0) {

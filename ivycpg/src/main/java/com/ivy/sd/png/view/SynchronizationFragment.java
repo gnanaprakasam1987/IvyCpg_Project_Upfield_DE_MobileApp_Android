@@ -2428,6 +2428,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 }
 
                 Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
+                intent.putExtra("isFromLogin",false);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
             } else {
                 //No distributors, so downloading on demand url without distributor selection.

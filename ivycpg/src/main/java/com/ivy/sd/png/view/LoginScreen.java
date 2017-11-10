@@ -1905,6 +1905,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 }
                 // new InitiateDistributorDownload().execute();
                 Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
+                intent.putExtra("isFromLogin",true);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
             } else {
                 //No distributors, so downloading on demand url without distributor selection.
