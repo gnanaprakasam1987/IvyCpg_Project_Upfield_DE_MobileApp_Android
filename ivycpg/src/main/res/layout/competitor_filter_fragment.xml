@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+    android:background="@color/screen_bg_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_above="@+id/footer"
+        android:layout_alignParentTop="true">
+
+
+        <TextView
+            android:id="@+id/grid_item_text"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/filter_level_height"
+            android:gravity="center_horizontal|center_vertical"
+            tools:text="@string/dummy_txt"
+            android:textColor="@color/filer_level_text_color"
+            android:textSize="@dimen/filter_level_text_size"
+            android:textAllCaps="true"
+            android:layout_weight="2" />
+
+
+        <ListView
+            android:id="@+id/filtergridview"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="@color/WHITE"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/filter_drawer_footer_height"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1dp"
+            android:background="@color/divider_view_color"
+            android:layout_alignParentTop="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="?attr/roundedCustomButtonNormalTransparent"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:adjustViewBounds="true"
+                android:text="Clear"
+                android:textColor="@color/Black"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:adjustViewBounds="true"
+                android:text="@string/apply"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

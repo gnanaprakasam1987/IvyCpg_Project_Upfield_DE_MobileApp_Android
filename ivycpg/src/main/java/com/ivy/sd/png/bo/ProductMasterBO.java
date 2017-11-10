@@ -1782,4 +1782,14 @@ public class ProductMasterBO {
     public void setCompanyId(int companyId) {
         this.companyId = companyId;
     }
+
+    public int getCompParentId() {
+        return compParentId;
+    }
+
+    public void setCompParentId(int compParentId) {
+        this.compParentId = compParentId;
+    }
+
+    private int compParentId;
 }

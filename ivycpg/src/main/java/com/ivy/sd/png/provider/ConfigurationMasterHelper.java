@@ -39,6 +39,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
     public static int GET_GENERALFILTET_TYPE = 1;
+    public static int COMPETITOR_FILTER_TYPE;
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";
     public static String SECRET_KEY = "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";
@@ -181,6 +182,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_STK_ORD_SRP = "ORDB24";
     private static final String CODE_SHOW_STK_ORD_SRP_SEC = "ORDB26";
     private static final String CODE_SHOW_SPL_FILTER = "ORDB27";
+    private static final String CODE_SHOW_COMPETITOR_FILTER = "FUN62";
     private static final String CODE_SHOW_MVP_DRAWER = "MVP01";
     private static final String CODE_LAT = "PROFILE08";
     private static final String CODE_LONG = "PROFILE31";
@@ -587,6 +589,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_D3;
     public boolean SHOW_DA;
     public boolean SHOW_SPL_FILTER;
+    public boolean SHOW_COMPETITOR_FILTER;
     public boolean SHOW_SPL_FLIER_NOT_NEEDED = false;
     public boolean SHOW_MVP_DRAWER;
     public boolean SHOW_LAT;
@@ -1946,6 +1949,9 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) : false;
         ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
+
+        this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
+        ConfigurationMasterHelper.COMPETITOR_FILTER_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) : 1;
 
         this.SHOW_VANGPS_VALIDATION = hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) : false;
         ConfigurationMasterHelper.vanDistance = hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) : 0;
