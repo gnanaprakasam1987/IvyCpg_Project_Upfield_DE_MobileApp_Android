@@ -2468,7 +2468,6 @@ public class ProductHelper {
                     else if (c1.getString(0).equals("CLASS"))
                         mappingId = bmodel.getRetailerMasterBO().getClassid() + "";
 
-
                     moduletypeid = c1.getString(1);
                 }
                 c1.close();
@@ -2712,7 +2711,6 @@ public class ProductHelper {
             if (c1 != null) {
                 while (c1.moveToNext()) {
                     sbdDistAcheived.add(c1.getInt(0));
-
                 }
                 c1.close();
             }
