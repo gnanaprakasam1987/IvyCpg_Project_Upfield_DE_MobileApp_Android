@@ -673,7 +673,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             }
 
             holder.config = configTemp;
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
             Integer i = menuIcons.get(configTemp.getConfigCode());

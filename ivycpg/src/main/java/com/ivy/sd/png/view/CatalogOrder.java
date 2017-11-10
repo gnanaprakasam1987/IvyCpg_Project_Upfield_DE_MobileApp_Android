@@ -68,6 +68,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -484,6 +486,19 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             //Loadmore(0);
             brandIds = null;
 
+        }
+
+        //for  parital order save based on interval
+        if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
+            long timeInterval = bmodel.configurationMasterHelper.tempOrderInterval * 1000;
+            bmodel.orderTimer = new Timer();
+            bmodel.orderTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    bmodel.insertTempOrder();
+                }
+
+            }, 0, timeInterval);
 
         }
 
@@ -1506,9 +1521,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void backButtonClick() {
         try {
+
             if (bmodel.hasOrder()) {
                 showDialog(0);
             } else {
+
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
+
                 bmodel.productHelper.clearOrderTable();
                 if (bmodel.mSelectedModule == 1) {
                     startActivity(new Intent(CatalogOrder.this,
@@ -1556,6 +1576,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                             bmodel.productHelper
                                                     .clearOrderTableAndUpdateSIH();
                                         }
+
+                                        if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                                            bmodel.orderTimer.cancel();
+
                                         bmodel.productHelper.clearOrderTable();
 
                                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
@@ -2298,10 +2322,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 slant_view_bg = (SlantView) v.findViewById(R.id.slant_view_bg);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 

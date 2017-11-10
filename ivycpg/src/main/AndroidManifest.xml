@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1220"
-    android:versionName="122.0.315">
+    android:versionCode="1230"
+    android:versionName="123.0.348">
 
     <supports-screens
         android:anyDensity="true"
@@ -205,7 +205,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -216,7 +215,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -227,7 +225,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -553,6 +550,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.PriceTrackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.PriceTrackCompActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"

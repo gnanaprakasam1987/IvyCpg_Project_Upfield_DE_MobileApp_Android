@@ -76,6 +76,7 @@ public class ProductMasterBO {
     private int deliveredCaseQty;
     private int deliveredPcsQty;
     private int deliveredOuterQty;
+    private int companyId = 0;
 
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
@@ -1774,4 +1775,11 @@ public class ProductMasterBO {
         this.originalSrp = originalSrp;
     }
 
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
 }

@@ -261,9 +261,9 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (activity instanceof BrandDialogInterface) {
-            this.brandInterface = (BrandDialogInterface) activity;
-        }
+            if (activity instanceof BrandDialogInterface) {
+                this.brandInterface = (BrandDialogInterface) activity;
+            }
     }
 
     @SuppressWarnings("unchecked")

@@ -32,10 +32,8 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.lib.existing.HttpRequest;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -141,6 +139,7 @@ SynchronizationHelper {
     public boolean isSihDownloadDone;
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
+    public String dataMissedTable = "";
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -321,7 +320,18 @@ SynchronizationHelper {
                         return fileName.endsWith(".jpg");
                     }
                 });
-                imageSize = files.length;
+
+                File printfiles[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+
+                        return fileName.startsWith("PF");
+                    }
+                });
+
+                if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                    imageSize = files.length + printfiles.length;
+                else
+                    imageSize = files.length;
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -754,15 +764,14 @@ SynchronizationHelper {
                 }
                 allTableName.close();
             }
+
             Cursor allIndexName = db.selectSQL("SELECT name FROM sqlite_master WHERE type == 'index'  and name LIKE 'index%' ");
             if (allIndexName != null) {
                 while (allIndexName.moveToNext()) {
                     String indexName = allIndexName.getString(0);
                     db.executeQ("DROP INDEX IF EXISTS " + indexName);
-
                 }
             }
-
 
             db.closeDB();
 
@@ -936,6 +945,8 @@ SynchronizationHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         Cursor c;
+        String tableName = "";
+        dataMissedTable = "";
         int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
         try {
             c = db.selectSQL("select  count(retailerid) from "
@@ -982,6 +993,17 @@ SynchronizationHelper {
         if (standList > 0 && beatMaster > 0 && hhtCount > 0
                 && retailerCount > 0) {
             return true;
+        } else {
+            if (standList == 0)
+                tableName = tableName + " LovMaster";
+            if (beatMaster == 0)
+                tableName = tableName + " BeatMaster";
+            if (hhtCount == 0)
+                tableName = tableName + " Configuration";
+            if (retailerCount == 0)
+                tableName = tableName + " Retailer";
+
+            dataMissedTable = tableName;
         }
 
         return false;
@@ -2067,6 +2089,7 @@ SynchronizationHelper {
             db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
             db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
 
+
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
 
             Cursor c = db.selectSQL("select pid from temp_pricemaster");
@@ -3052,6 +3075,7 @@ SynchronizationHelper {
      * @return 0 - error , 1 - date and time is correct, 2 - Date time miss match.
      */
     public int getUTCDateTimeNew(String ur) {
+
         String url = DataMembers.SERVER_URL
                 + ur;
         Date from, to;
@@ -3059,10 +3083,32 @@ SynchronizationHelper {
         int flag = 0;
         try {
 
-            HttpRequest httpRequest = new HttpRequest(url);
-            JSONObject jsonObject = httpRequest.preparePost().sendAndReadJSON();
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            Commons.print("UTCDate Response " + jsonObject.toString());
+
+            int responseCode = con.getResponseCode();
+            Commons.print("POST Response Code :: " + responseCode);
+            StringBuilder response = new StringBuilder();
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+
+            } else {
+                Commons.print("POST request not worked");
+            }
+
+
+            JSONObject jsonObject = new JSONObject(response.toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
@@ -3079,8 +3125,6 @@ SynchronizationHelper {
             datefrom = formatter.parse(formatter.format(from));
             dateto = formatter.parse(formatter.format(to));
 
-            Commons.print("Sync Url Success response code>>>>>>>>>>"
-                    + jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16) + " " + datefrom + " " + dateto);
 
             datenow = formatter.parse(jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16));
 
@@ -4555,6 +4599,9 @@ SynchronizationHelper {
             bmodel.downloadChatCredentials();
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
             bmodel.synchronizationHelper.setEncryptType();
+
+        bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/" + DataMembers.PRINT_FILE_PATH + "/");
     }
 
     /**
@@ -4564,11 +4611,11 @@ SynchronizationHelper {
      * @return value
      */
     public NEXT_METHOD checkNextSyncMethod() {
-        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE&&!isDistributorDownloadDone
-                ) {
+        if (!isDistributorDownloadDone
+                && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!isDistributorDownloadDone && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!isDistributorDownloadDone) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone

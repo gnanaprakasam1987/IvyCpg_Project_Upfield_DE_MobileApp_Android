@@ -707,15 +707,15 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                 holder.mProductName.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
                 holder.mQty = (TextView) row.findViewById(R.id.server_qty);
-                holder.mQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.mBalanceQty = (TextView) row.findViewById(R.id.balance);
-                holder.mBalanceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mBalanceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.mDamagedQty = (EditText) row.findViewById(R.id.damaged_qty);
 
                 holder.mrp = (TextView) row.findViewById(R.id.mrp);
-                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.mDamagedQty.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {

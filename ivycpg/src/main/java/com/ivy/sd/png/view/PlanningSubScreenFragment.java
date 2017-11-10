@@ -82,38 +82,38 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         view = inflater.inflate(R.layout.fragment_load_management, container, false);
 
 
-            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
-                setScreenTitle(bmodel.configurationMasterHelper.getLoadplanningsubttitle());
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+            setScreenTitle(bmodel.configurationMasterHelper.getLoadplanningsubttitle());
 
-            }
+        }
 
-            if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                    && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                ((HomeScreenActivity) getActivity()).checkAndRequestPermissionAtRunTime(3);
-            }
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+            ((HomeScreenActivity) getActivity()).checkAndRequestPermissionAtRunTime(3);
+        }
 
-            if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.sessionout_loginagain),
-                        Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
 
-            menuIcons.put(menuOdameter, R.drawable.icon_odameter);
-            menuIcons.put(menuPlanning, R.drawable.icon_order);
-            menuIcons.put(menuStockView, R.drawable.icon_stock);
-            menuIcons.put(menuVanloadStockView, R.drawable.icon_stock);
-            menuIcons.put(menuManualVanload, R.drawable.icon_vanload);
+        menuIcons.put(menuOdameter, R.drawable.icon_odameter);
+        menuIcons.put(menuPlanning, R.drawable.icon_order);
+        menuIcons.put(menuStockView, R.drawable.icon_stock);
+        menuIcons.put(menuVanloadStockView, R.drawable.icon_stock);
+        menuIcons.put(menuManualVanload, R.drawable.icon_vanload);
 
-            Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper.downloadPlanningSubMenu();
-            Commons.print("load management," + String.valueOf(menuDB.size()));
-            for (int i = 0; i < menuDB.size(); i++)
-                Commons.print("menu," + menuDB.get(i).getMenuName());
+        Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper.downloadPlanningSubMenu();
+        Commons.print("load management," + String.valueOf(menuDB.size()));
+        for (int i = 0; i < menuDB.size(); i++)
+            Commons.print("menu," + menuDB.get(i).getMenuName());
 
-            ListView listView = (ListView) view.findViewById(R.id.listView1);
-            listView.setCacheColorHint(0);
-            listView.setAdapter(new MenuBaseAdapter(menuDB));
+        ListView listView = (ListView) view.findViewById(R.id.listView1);
+        listView.setCacheColorHint(0);
+        listView.setAdapter(new MenuBaseAdapter(menuDB));
 
         return view;
     }
@@ -198,7 +198,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     OdaMeterScreen.class);
             odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             odameterintent.putExtra("screentitle", menuItem.getMenuName());
-            odameterintent.putExtra("planingsub",true);
+            odameterintent.putExtra("planingsub", true);
             startActivity(odameterintent);
 
         } else if (menuItem.getConfigCode().equals(menuPlanning)) {
@@ -208,8 +208,8 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
@@ -240,7 +240,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     StockViewActivity.class);
             stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             stockViewIntent.putExtra("screentitle", menuItem.getMenuName());
-            stockViewIntent.putExtra("planingsub",true);
+            stockViewIntent.putExtra("planingsub", true);
             new LoadCurrenStock().execute();
 
         } else if (menuItem.getConfigCode().equals(menuDashDay)) {
@@ -256,7 +256,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     ManualVanLoadActivity.class);
             vanloadintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             vanloadintent.putExtra("screentitle", menuItem.getMenuName());
-            vanloadintent.putExtra("planingsub",true);
+            vanloadintent.putExtra("planingsub", true);
             new DownloadManualVanLoad().execute();
 
         }
@@ -389,7 +389,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                 VanLoadStockApplyActivity.class);
         vanloadstockview.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         vanloadstockview.putExtra("screentitle", menuName);
-        vanloadstockview.putExtra("planingsub",true);
+        vanloadstockview.putExtra("planingsub", true);
         new DownloadStockViewApply().execute();
     }
 
@@ -584,7 +584,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                 holder.menuBTN = (TextView) convertView
                         .findViewById(R.id.list_item_menu_tv_loadmgt);
 
-               convertView.setOnClickListener(new View.OnClickListener() {
+                convertView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
@@ -607,7 +607,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
 
             holder.config = configTemp;
             holder.menuBTN.setText(configTemp.getMenuName());
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             Integer i = menuIcons.get(configTemp.getConfigCode());
             if (i != null)
                 holder.menuIcon.setImageResource(i);

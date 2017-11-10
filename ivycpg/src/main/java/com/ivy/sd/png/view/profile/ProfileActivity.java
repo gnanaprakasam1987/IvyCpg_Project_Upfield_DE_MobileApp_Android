@@ -229,6 +229,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         cancelVisitBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         deviateBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         addPlaneBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
         bundle = new Bundle();
         bundle.putBoolean("fromHomeClick", fromHomeClick);
         bundle.putBoolean("non_visit", non_visit);
@@ -257,7 +258,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
 
-        //addTabLayout();
 
     }
 
@@ -411,6 +411,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 Commons.printException("Error while setting label for InvoiceHist Tab", ex);
             }
         }
+        if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
+            tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
+        }
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -539,6 +542,25 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         retailerObj = bmodel.getRetailerMasterBO();
         new LoadProfileConfigs().execute();
+        Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+        for (ConfigureBO conBo : profileConfig) {
+            if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
+                isMapview = true;
+                retailerLat = retailerObj.getLatitude();
+
+            } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+                isMapview = true;
+                retailerLng = retailerObj.getLongitude();
+            }else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
+                isNonVisitReason = true;
+            }
+        }
+
+        if (!isMapview) {
+            View mapFrag = findViewById(R.id.profile_map);
+            mapFrag.setVisibility(View.GONE);
+            retailerCodeTxt.setVisibility(View.GONE);
+        }
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
@@ -587,7 +609,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         } catch (Exception e) {
             Commons.printException(e);
         }
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         collapsingToolbarLayout.setTitleEnabled(false);
@@ -719,7 +741,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    private Bitmap getBitmapFromVectorDrawable(Context context) {
+    public Bitmap getBitmapFromVectorDrawable(Context context) {
         Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.store_loc);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = (DrawableCompat.wrap(drawable)).mutate();
@@ -1145,8 +1167,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
                 SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-                /*bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");*/
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
                 bnd.putBoolean("isFromHomeScreenTwo", true);
@@ -1170,6 +1192,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     protected void onStart() {
@@ -2064,5 +2091,41 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 break;
         }
 
+    }
+
+    // load profile config and map related data
+    private class LoadProfileConfigs extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+            return "Success";
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+            for (ConfigureBO conBo : profileConfig) {
+                if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLat = retailerObj.getLatitude();
+
+                } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLng = retailerObj.getLongitude();
+                } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
+                    isNonVisitReason = true;
+                }
+            }
+            if (!isMapview) {
+                View mapFrag = findViewById(R.id.profile_map);
+                mapFrag.setVisibility(View.GONE);
+                retailerCodeTxt.setVisibility(View.GONE);
+            }
+        }
     }
 }

@@ -32,9 +32,9 @@ public class CustomPreference extends Preference{
         BusinessModel bmodel = (BusinessModel) getContext().getApplicationContext();
         TextView titleView = (TextView) view.findViewById(android.R.id.title);
         titleView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
-        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         summaryView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 }

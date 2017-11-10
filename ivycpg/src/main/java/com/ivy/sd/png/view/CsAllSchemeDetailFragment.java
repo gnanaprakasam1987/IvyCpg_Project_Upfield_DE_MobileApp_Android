@@ -49,7 +49,7 @@ public class CsAllSchemeDetailFragment extends IvyBaseFragment {
         ll_content = (LinearLayout) rootView.findViewById(R.id.ll_content);
 
         lbl_prod_name = (TextView) rootView.findViewById(R.id.tv_prod_lbl);
-        lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         createView();
 
@@ -88,7 +88,7 @@ public class CsAllSchemeDetailFragment extends IvyBaseFragment {
 
                         cardView = inflater.inflate(R.layout.scheme_child_view, null);
                         TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
-                        tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        tv_groupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         tv_groupName.setText(schemeBo.getGroupName());
                         ll_content.addView(cardView);
 
@@ -101,7 +101,7 @@ public class CsAllSchemeDetailFragment extends IvyBaseFragment {
 
 
                     TextView tv_prod_name = (TextView) productView.findViewById(R.id.tv_productname);
-                    tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                    tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     tv_prod_name.setText(
                             schemeBo.getScheme());
 

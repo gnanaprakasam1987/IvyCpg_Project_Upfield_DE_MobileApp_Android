@@ -65,8 +65,8 @@ public class HistoryFragment extends IvyBaseFragment {
         mavgOrderLines = (TextView) view.findViewById(R.id.avg_lines_val);
         mavgOrderValue = (TextView) view.findViewById(R.id.history_avg_val);
 
-        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mavgOrderLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         mavgOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
@@ -74,26 +74,7 @@ public class HistoryFragment extends IvyBaseFragment {
         orderHistoryList.setNestedScrollingEnabled(false);
         orderHistoryList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-//        orderHistoryListView = (ExpandableListView) view.findViewById(R.id.history_lvwplist);
-//        orderHistoryListView.setCacheColorHint(0);
-//        //   orderHistoryListView.setOnItemClickListener(getActivity());
-//        historyLayout = (LinearLayout) view.findViewById(R.id.history_lhis);
-//        orderHistoryFooterValues = (TableLayout) view.findViewById(R.id.history_history_footer_values);
-
-        // mpastordereddays = (TextView) view.findViewById(R.id.history_orderdays);
         sdf = new SimpleDateFormat("yyyy/MM/dd");
-       /* try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.tv_totalvalue).getTag()) != null)
-                ((TextView) view.findViewById(R.id.tv_totalvalue))
-                        .setText(bmodel.labelsMasterHelper
-                                .applyLabels(view.findViewById(
-                                        R.id.tv_totalvalue)
-                                        .getTag()));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }*/
 
 
         try {
@@ -121,8 +102,6 @@ public class HistoryFragment extends IvyBaseFragment {
         bmodel.profilehelper.getOSAmtandInvoiceCount(
                 bmodel.getRetailerMasterBO().getRetailerID(),
                 bmodel.getRetailerMasterBO().getRetailerCode());
-//        bmodel.profilehelper.downloadOrderHistory();
-//        Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
 
         bmodel.profilehelper.downloadOrderHistory();
         Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentOrderHistory();
@@ -141,22 +120,6 @@ public class HistoryFragment extends IvyBaseFragment {
 
         historyViewAdapter = new HistoryViewAdapter(mylist);
         orderHistoryList.setAdapter(historyViewAdapter);
-//        if (historyLayout != null)
-//            historyLayout
-//                    .setVisibility(View.VISIBLE);
-//
-//        if (orderHistoryFooterValues != null)
-//            orderHistoryFooterValues
-//                    .setVisibility(View.VISIBLE);
-      /*  MyAdapterForHistory mSchedule = new MyAdapterForHistory(mylist);
-        orderHistoryListView.setAdapter(mSchedule);*/
-
-//        HistoryAdapter adapter = new HistoryAdapter(mylist);
-//        orderHistoryListView.setAdapter(adapter);
-//
-//
-//        historyLayout.setVisibility(View.VISIBLE);
-//        orderHistoryFooterValues.setVisibility(View.VISIBLE);
 
         if (!(items.size() > 0))
             ((LinearLayout) view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
@@ -216,6 +179,7 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.del_rep_code_val.setText(projectObj.getRF4());
             holder.totVol.setText("" + projectObj.getVolume());
             holder.deliveryStatus_val.setText(projectObj.getDelieveryStatus());
+
 
             try {
                 Calendar c = Calendar.getInstance();
@@ -360,13 +324,13 @@ public class HistoryFragment extends IvyBaseFragment {
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVol.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.THIN));
 
                 del_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invoice_qty_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 del_rep_code_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                deliveryStatus_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                deliveryStatus_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {

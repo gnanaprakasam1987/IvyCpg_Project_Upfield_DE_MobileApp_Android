@@ -65,7 +65,7 @@ public class ResetPasswordDialog extends Dialog {
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
         lbl_forget_pswd = (TextView) findViewById(R.id.lbl_forget_pswd);
         lbl_login = (TextView) findViewById(R.id.login);
-        lbl_login.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        lbl_login.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_forget_pswd.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         lbl_login.setOnClickListener(new View.OnClickListener() {
 

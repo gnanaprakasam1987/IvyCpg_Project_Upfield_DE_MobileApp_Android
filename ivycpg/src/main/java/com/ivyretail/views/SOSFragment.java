@@ -119,6 +119,10 @@ public class SOSFragment extends IvyBaseFragment implements
     private boolean isFromChild;
     private ArrayList<String> totalImgList = new ArrayList<>();
 
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -291,9 +295,11 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
-
-        updatebrandtext(BRAND, selectedfilterid);
-
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, selectedfilterid);
+        }
         loadReasons();
 
         if (bmodel.salesFundamentalHelper.getmSOSList() != null)
@@ -640,13 +646,13 @@ public class SOSFragment extends IvyBaseFragment implements
             holder.mSOS = items.get(position);
 
             //typeface
-            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvNorm.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
             if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
@@ -824,6 +830,12 @@ public class SOSFragment extends IvyBaseFragment implements
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
 
         mDrawerLayout.closeDrawers();
+
+        this.parentidList = parentidList;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
+
         loadData(parentidList, mSelectedIdByLevelId);
     }
 
@@ -1429,7 +1441,7 @@ public class SOSFragment extends IvyBaseFragment implements
             holder.sosBO = brand;
 
             holder.tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.et.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.et.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tv.setText(brand.getProductName());
             holder.et.setText(brand.getLocations().get(mSelectedLocationIndex).getActual());
 

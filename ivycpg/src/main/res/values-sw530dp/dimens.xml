@@ -28,6 +28,7 @@
 
     <!--Dashboard-->
     <dimen name="kpi_spinner_title_size">16sp</dimen>
+    <dimen name="spinner_layout_height">60dp</dimen>
     <dimen name="value_text_size">18sp</dimen>
     <dimen name="factor_title_size">19sp</dimen>
     <dimen name="total_title_size">28sp</dimen>

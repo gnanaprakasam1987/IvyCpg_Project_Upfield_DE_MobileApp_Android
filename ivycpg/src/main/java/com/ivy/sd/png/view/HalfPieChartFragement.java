@@ -88,7 +88,7 @@ public class HalfPieChartFragement extends Fragment implements OnChartValueSelec
         l.setXEntrySpace(10f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
-        l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         if (skuList.size() > 0)

@@ -157,8 +157,8 @@ public class CS_StockCheckDialog extends Dialog implements View.OnClickListener 
                 holder.reason = (MaterialSpinner) row.findViewById(R.id.batchno);
                 holder.reasonTextView = (TextView) row.findViewById(R.id.batchno1);
 
-                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.reason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.reason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 //  holder.pieceQty.clearFocus();

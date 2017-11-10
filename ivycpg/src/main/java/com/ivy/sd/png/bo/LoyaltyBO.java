@@ -15,6 +15,16 @@ public class LoyaltyBO {
     private int retailerId;
     private String uID;
 
+    public int getPointTypeId() {
+        return pointTypeId;
+    }
+
+    public void setPointTypeId(int pointTypeId) {
+        this.pointTypeId = pointTypeId;
+    }
+
+    private int pointTypeId;
+
 
 
 
@@ -30,6 +40,7 @@ public class LoyaltyBO {
         this.givenPoints = lotyObj.givenPoints;
         this.balancePoints = lotyObj.balancePoints;
         this.uID = lotyObj.uID;
+        this.pointTypeId=lotyObj.getPointTypeId();
     }
 
     public int getRetailerId() {
