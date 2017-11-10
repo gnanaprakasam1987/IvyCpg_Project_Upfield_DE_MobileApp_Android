@@ -2,6 +2,7 @@ package com.ivy.sd.png.view.profile;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -98,6 +100,8 @@ public class ProfileFragment extends Fragment {
     private RetailerMasterBO retailerObj;
     private TransferUtility transferUtility;
 
+    private boolean _hasLoadedOnce = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -109,6 +113,59 @@ public class ProfileFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
+        if (!_hasLoadedOnce) {
+            initializeViews();
+        }
+
+        return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    public void showDeActivateAlert(String msg, final boolean isData) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (isData) {
+                    bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
+                }
+                bmodel.profilehelper.deActivateRetailer(bmodel.getRetailerMasterBO().getRetailerID());
+                btn_Deactivate.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.button_rounded_corner_red, null));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                btn_Deactivate.setChecked(false);
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
+
+    private void initializeViews() {
         storeTxt = (TextView) view.findViewById(R.id.profile_str_name);
         rcodeTxt = (TextView) view.findViewById(R.id.profile_retailer_code);
         addressTxt = (TextView) view.findViewById(R.id.profile_add_onetwo);
@@ -133,14 +190,6 @@ public class ProfileFragment extends Fragment {
         addressTxt3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         cspTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         rContTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        return view;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         boolean is7InchTablet = this.getResources().getConfiguration()
                 .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
@@ -216,48 +265,30 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + phoneNoCall));
-                getActivity().startActivity(callIntent);
-            }
-        });
-
-
-    }
-
-    public void showDeActivateAlert(String msg, final boolean isData) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(msg);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (isData) {
-                    bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
+                int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.CALL_PHONE);
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    getActivity().startActivity(callIntent);
                 }
-                bmodel.profilehelper.deActivateRetailer(bmodel.getRetailerMasterBO().getRetailerID());
-                btn_Deactivate.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.button_rounded_corner_red, null));
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                btn_Deactivate.setChecked(false);
-            }
-        });
-        builder.show();
+        _hasLoadedOnce = true;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
 
 
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+
+                _hasLoadedOnce = true;
+
+            }
+        }
     }
 
 
@@ -288,6 +319,7 @@ public class ProfileFragment extends Fragment {
                         builder.setMessage(R.string.do_you_want_to_activate_retailer);
                         builder.setCancelable(false);
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
@@ -337,7 +369,7 @@ public class ProfileFragment extends Fragment {
     private void outletInfo() {
 
         retailerObj = bmodel.getRetailerMasterBO();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        //bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         profileConfig = new Vector<>();
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
@@ -457,12 +489,13 @@ public class ProfileFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ProfileFragment.RecyclerViewAdapter.ViewHolder holder, int position) {
-            final NewOutletBO projectObj = items.get(position);
+            holder.projectObj = items.get(position);
 //            Log.e("name==",projectObj.getmName());
 //            Log.e("value==",projectObj.getValueText());
-            holder.menuText.setText(projectObj.getmName());
-            holder.valueText.setText(projectObj.getValueText());
-            holder.itemView.setTag(projectObj);
+            holder.menuText.setText(holder.projectObj.getmName());
+            holder.valueText.setText(holder.projectObj.getValueText());
+            holder.itemView.setTag(holder.projectObj);
+            Commons.print("view constructtime " + SDUtil.now(SDUtil.TIME));
         }
 
         @Override
@@ -477,6 +510,7 @@ public class ProfileFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             private TextView menuText, valueText;
+            NewOutletBO projectObj;
 
             public ViewHolder(View itemView) {
                 super(itemView);
