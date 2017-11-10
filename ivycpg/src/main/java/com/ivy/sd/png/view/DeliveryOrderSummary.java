@@ -134,6 +134,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             alertDialog.dismiss();
             Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
             if (!isPartialOrder) {
+                bmodel.mCommonPrintHelper.xmlRead("order", false, mylist, null);
                 Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
