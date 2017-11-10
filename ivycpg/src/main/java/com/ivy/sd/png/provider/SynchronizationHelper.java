@@ -1777,6 +1777,18 @@ SynchronizationHelper {
 
                     context.startService(i);
                     deleteAllRequestQueue();
+                } else {
+                    //mansoor.k for Volley Time out response is updated at last
+                    if (totalListCount == mDownloadUrlCount) {
+                        Intent i = new Intent(context, DownloadService.class);
+                        i.putExtra(SYNXC_STATUS, which);
+                        i.putExtra(VOLLEY_RESPONSE, VOLLEY_SUCCESS_RESPONSE);
+                        i.putExtra("TotalCount", totalListCount);
+                        i.putExtra("UpdateCount", mDownloadUrlCount);
+                        i.putExtra("isFromWhere", isFromWhere);
+                        i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, new ArrayList<String>());
+                        context.startService(i);
+                    }
                 }
             }
         };

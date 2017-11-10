@@ -2092,40 +2092,4 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
     }
-
-    // load profile config and map related data
-    private class LoadProfileConfigs extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... url) {
-
-            bmodel.configurationMasterHelper.downloadProfileModuleConfig();
-            return "Success";
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
-            for (ConfigureBO conBo : profileConfig) {
-                if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
-                    isMapview = true;
-                    retailerLat = retailerObj.getLatitude();
-
-                } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
-                    isMapview = true;
-                    retailerLng = retailerObj.getLongitude();
-                } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
-                    isNonVisitReason = true;
-                }
-            }
-            if (!isMapview) {
-                View mapFrag = findViewById(R.id.profile_map);
-                mapFrag.setVisibility(View.GONE);
-                retailerCodeTxt.setVisibility(View.GONE);
-            }
-        }
-    }
 }
