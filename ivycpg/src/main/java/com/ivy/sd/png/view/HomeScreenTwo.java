@@ -46,6 +46,7 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.AssetTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
@@ -193,6 +194,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     Toast.LENGTH_SHORT).show();
             finish();
         }
+
 
         typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 
@@ -2492,6 +2494,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
                 bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
                 if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
@@ -4427,4 +4431,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             bmodel.productHelper
                     .downloadProductFilter(menuCode);
     }
+
+
 }

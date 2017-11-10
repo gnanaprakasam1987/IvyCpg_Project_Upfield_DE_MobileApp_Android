@@ -479,7 +479,6 @@ public class BusinessModel extends Application {
         planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
-        assetTrackingHelper = AssetTrackingHelper.getInstance(this);
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
         collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);

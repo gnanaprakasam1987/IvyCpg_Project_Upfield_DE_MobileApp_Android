@@ -97,6 +97,7 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
+        mBusinessModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 
