@@ -111,9 +111,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     private void loadeddata() {
 
-        bmodel.assetTrackingHelper.downloadAssetsposm("MENU_ASSET");
+        bmodel.assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
 
-        Vector vposm = bmodel.assetTrackingHelper.getassetposmNames();
+        Vector vposm = bmodel.assetTrackingHelper.getAssetPosmNames();
 
         int siz = vposm.size();
 
@@ -139,11 +139,11 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                        int arg2, long arg3) {
 
                 Commons.print("posmid="
-                        + bmodel.assetTrackingHelper.getassetposmids(masset
+                        + bmodel.assetTrackingHelper.getAssetPosmIds(masset
                         .getSelectedItem().toString()));
                 bmodel.assetTrackingHelper
-                        .downloadAssetbrand(bmodel.assetTrackingHelper
-                                .getassetposmids(masset.getSelectedItem()
+                        .downloadAssetBrand(bmodel.assetTrackingHelper
+                                .getAssetPosmIds(masset.getSelectedItem()
                                         .toString()));
 
                 loadBrandData();
@@ -235,7 +235,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 getActivity(), R.layout.spinner_bluetext_layout);
         massetbrandsadapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        Vector vbrand = bmodel.assetTrackingHelper.getassetbrandNames();
+        Vector vbrand = bmodel.assetTrackingHelper.getAssetBrandNames();
         if (vbrand == null || vbrand.size() < 1) {
             mbrand.setAdapter(null);
             massetbrandsadapter.add(SELECT);
@@ -258,12 +258,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     private void setAddAssetDetails() {
 
-        assetBo.setMposm(bmodel.assetTrackingHelper.getassetposmids(masset
+        assetBo.setMposm(bmodel.assetTrackingHelper.getAssetPosmIds(masset
                 .getSelectedItem().toString()));
 
         if (!mbrand.getSelectedItem().toString()
                 .equals(SELECT))
-            assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(mbrand
+            assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(mbrand
                     .getSelectedItem().toString()));
         else
             assetBo.setMbrand("0");
@@ -272,7 +272,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         assetBo.setMsno(mSNO.getText().toString());
 
-        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
 
@@ -287,12 +287,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                         && !mSNO.getText().toString().equals("")) {
                     if (!bmodel.assetTrackingHelper
-                            .isExistingRetailersno(mSNO.getText()
+                            .isExistingRetailerSno(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
                         bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                         bmodel.assetTrackingHelper
-                                .saveAssetAddandDeletedetails("MENU_ASSET");
+                                .saveAssetAddAndDeleteDetails("MENU_ASSET");
                         Toast.makeText(
                                 getActivity(),
                                 getResources()

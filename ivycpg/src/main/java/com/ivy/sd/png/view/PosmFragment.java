@@ -512,7 +512,7 @@ public class PosmFragment extends IvyBaseFragment implements
       /*  mAssetRemarksList = bmodel.assetTrackingHelper.getAssetRemarksList();
         mAssetRemarksList.add(0, reason);*/
 
-        mPOSMConditionList = bmodel.assetTrackingHelper.getmPOSMconditionList();
+        mPOSMConditionList = bmodel.assetTrackingHelper.getPOSMConditionList();
         mPOSMConditionList.add(0, reason1);
 
         mPOSMReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
@@ -1659,7 +1659,7 @@ public class PosmFragment extends IvyBaseFragment implements
         massetbrandsadapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Vector vbrand = bmodel.assetTrackingHelper.getassetbrandNames();
+        Vector vbrand = bmodel.assetTrackingHelper.getAssetBrandNames();
         if (vbrand == null) {
             mbrand.setAdapter(null);
             massetbrandsadapter.add(SELECT);

@@ -187,13 +187,13 @@ public class MovementAssetDialog extends DialogFragment {
         retailerId=retailerMasterBOs.get(retailerSelected).getMovRetailerId();
 
         assetBo.setMposm(String.valueOf(assetId));
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
+        assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
         assetBo.setMnewinstaldate(todayDate);
         assetBo.setMsno(serialNo);
         assetBo.setMreasonId(reasonId);
         assetBo.setMremarks(remarks);
         assetBo.setmToRetailerId(retailerId);
-        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
     private boolean validateDesc() {

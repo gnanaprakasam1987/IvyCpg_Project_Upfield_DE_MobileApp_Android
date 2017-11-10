@@ -124,7 +124,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		Vector<AssetTrackingBO> items;
 		bmodel.assetTrackingHelper.lodAddRemoveAssets(mModuleName);
 
-		items = bmodel.assetTrackingHelper.getAddremoveassets();
+		items = bmodel.assetTrackingHelper.getAddRemoveAssets();
 		if (items == null) {
 			return;
 		}
@@ -309,7 +309,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
 						mReasonID = lstTemp.get(i).getReason1ID();
 						bmodel.assetTrackingHelper
-								.saveAddandDeletedetails(mposmiddialog,
+								.saveAddAndDeleteDetails(mposmiddialog,
 										msnodialog, msbdid, mbrandid, mReasonID, mModuleName);
 
 						mylist.remove(i);
@@ -318,7 +318,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
 				} else {
 					bmodel.assetTrackingHelper
-							.deletePosmdetails(lstTemp.get(i)
+							.deletePosmDetails(lstTemp.get(i)
 									.getMsno());
 					mylist.remove(i);
 				}

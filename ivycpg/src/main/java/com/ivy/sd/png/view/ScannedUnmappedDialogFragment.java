@@ -140,12 +140,12 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 ConfigurationMasterHelper.outDateFormat);
         remarks = ETDesc.getText().toString().trim();
         assetBo.setMposm(String.valueOf(assetId));
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
+        assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
         assetBo.setMnewinstaldate(todayDate);
         assetBo.setMsno(serialNo);
         assetBo.setMreasonId(reasonId);
         assetBo.setMremarks(remarks);
-        bmodel.assetTrackingHelper.setmAssetTrackingBO(assetBo);
+        bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
 
@@ -186,7 +186,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                     setAddAssetDetails();
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                     bmodel.assetTrackingHelper
-                            .saveAssetAddandDeletedetails("MENU_ASSET");
+                            .saveAssetAddAndDeleteDetails("MENU_ASSET");
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();

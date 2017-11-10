@@ -492,7 +492,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         ReasonMaster reason3 = new ReasonMaster();
         reason3.setConditionID(Integer.toString(0));
         reason3.setReasonDesc("Select Condition");
-        mAssetConditionList = mBusinessModel.assetTrackingHelper.getmAssetconditionList();
+        mAssetConditionList = mBusinessModel.assetTrackingHelper.getAssetConditionList();
         mAssetConditionList.add(0, reason3);
 
         mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
@@ -674,7 +674,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY)
                     holder.availQtyLL.setVisibility(View.GONE);
 
-                if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXEUTED)
+                if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED)
                     holder.execQtyLL.setVisibility(View.VISIBLE);
 
                 holder.audit.setOnClickListener(new OnClickListener() {
@@ -987,7 +987,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.grpTV.setVisibility(View.GONE);
             }
 
-            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXEUTED) {
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED) {
                 holder.execQtyLL.setVisibility(View.GONE);
             }
 
@@ -1344,7 +1344,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
 
 
-        if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXEUTED)
+        if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED)
             view.findViewById(R.id.tv_is_exeuted).setVisibility(View.GONE);
         else {
 
