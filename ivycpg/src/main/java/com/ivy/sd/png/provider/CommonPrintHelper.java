@@ -587,7 +587,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
             value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(total_net_payable, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE_IN_WORDS)) {
-            value = label + getAmountInWords(formatSalesValueInPrint(total_net_payable, precisionCount));
+            value = label + getAmountInWords(formatSalesValueInPrint(total_net_payable, precisionCount).replace(",",""));
         } else if (tag.equalsIgnoreCase("empty_total")) {
             value = alignWithLabel(label, formatValueInPrint(mEmptyTotalValue, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_KEY1)) {
@@ -747,7 +747,7 @@ public class CommonPrintHelper {
                     mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + Double.parseDouble(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getDiscount_order_value(), attr.getmAttributePrecision());
-                    mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + Double.parseDouble(mProductValue);
+                    mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + prod.getDiscount_order_value();
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
                     mProductValue = prod.getRepPieceQty() + (prod.getRepCaseQty() * prod.getCaseSize()) + (prod.getRepOuterQty() * prod.getOutersize()) + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
@@ -758,7 +758,7 @@ public class CommonPrintHelper {
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
                 }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
-                    mProductValue = prod.getDescription();
+                    mProductValue = prod.getDescription()+"";
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -906,7 +906,7 @@ public class CommonPrintHelper {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
                             }
                             else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
-                                mProductValue = prod.getDescription();
+                                mProductValue = prod.getDescription()+"";
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
