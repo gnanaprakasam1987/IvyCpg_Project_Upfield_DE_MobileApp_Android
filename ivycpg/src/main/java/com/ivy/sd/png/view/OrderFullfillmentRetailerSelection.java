@@ -136,7 +136,7 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
                 holder = new ViewHolder();
                 holder.outletNameTextView = (TextView) convertView.findViewById(R.id.outletName_tv);
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

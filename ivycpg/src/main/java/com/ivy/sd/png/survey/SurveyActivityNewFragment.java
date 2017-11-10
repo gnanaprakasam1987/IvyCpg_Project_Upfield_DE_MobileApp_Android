@@ -1681,7 +1681,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                 final RelativeLayout mandatoryView = (RelativeLayout) view.findViewById(R.id.sub_mandatory_view);
                 final SlantView slantView = (SlantView) view.findViewById(R.id.slant_view_bg);
-                tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                 slantView.setColor(Color.WHITE);
                 camBtn.setOnClickListener(new OnClickListener() {
 
