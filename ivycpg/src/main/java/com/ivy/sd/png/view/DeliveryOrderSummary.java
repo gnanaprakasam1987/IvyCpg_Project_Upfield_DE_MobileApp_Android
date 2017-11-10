@@ -120,7 +120,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     bmodel.saveNewInvoice();
                 }
 
-                bmodel.productHelper.clearOrderTable();
+
             } catch (Exception ex) {
                 Commons.printException(ex);
             }
@@ -134,11 +134,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             alertDialog.dismiss();
             Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
             if (!isPartialOrder) {
-                bmodel.mCommonPrintHelper.xmlRead("order", false, mylist, null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null);
+
                 Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
                 i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("isHidePrintBtn",true);
                 startActivity(i);
                 finish();
             } else {
@@ -146,7 +148,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
                 finish();
             }
-
+            bmodel.productHelper.clearOrderTable();
 
         }
 
