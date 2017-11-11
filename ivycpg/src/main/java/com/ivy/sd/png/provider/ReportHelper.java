@@ -3101,7 +3101,7 @@ public class ReportHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,Retailerid,timein,timeout");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
