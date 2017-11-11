@@ -65,7 +65,8 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
             txt_all_user=(TextView) view.findViewById(R.id.tv_user_all);
             txt_all_user.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            lstUsers = (ArrayList) getArguments().getSerializable("users");
+          //  lstUsers = (ArrayList) getArguments().getSerializable("users");
+            lstUsers=getArguments().getParcelableArrayList("users");
 
             MyAdapter adapter=new MyAdapter(lstUsers);
             listView.setAdapter(adapter);
