@@ -111,13 +111,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             try {
                 updateSchemeDetails();
 
-                bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
                     bmodel.saveOrder();
                     bmodel.saveNewInvoice();
                 }
+                bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
                 bmodel.productHelper.clearOrderTable();
             } catch (Exception ex) {

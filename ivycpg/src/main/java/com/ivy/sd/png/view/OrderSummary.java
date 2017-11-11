@@ -267,7 +267,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         btnsaveAndGoInvoice = (Button) findViewById(R.id.saveAndGoInvoice);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
 
-        icAmountSpilitup_lty = (LinearLayout)findViewById(R.id.icAmountSpilitup_lty);
+        icAmountSpilitup_lty = (LinearLayout) findViewById(R.id.icAmountSpilitup_lty);
         icAmountSpilitup = (ImageView) findViewById(R.id.icAmountSpilitup);
 
         getNextDate();
@@ -608,7 +608,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             updateSchemeDetails();
         }
 
-        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             //applying removed tax..
             updateTaxOnProduct();
         }
@@ -707,7 +707,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         args.putDouble("totalOrderValue", totalOrderValue);
                         args.putDouble("cmy_disc", cmyDiscount);
                         args.putDouble("dist_disc", distDiscount);
-                        args.putDouble("scheme_disc",totalSchemeDiscValue);
+                        args.putDouble("scheme_disc", totalSchemeDiscValue);
                         dialogFragment.setArguments(args);
                         dialogFragment.show(getSupportFragmentManager(), "AmtSplitupDialog");
                     }
@@ -719,11 +719,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void updateTaxOnProduct(){
-        for(ProductMasterBO bo:mOrderedProductList){
-            float finalAmount=0;
+    private void updateTaxOnProduct() {
+        for (ProductMasterBO bo : mOrderedProductList) {
+            float finalAmount = 0;
 
-            if(bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())!=null) {
+            if (bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
                 for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
                     if (taxBO.getParentType().equals("0")) {
                         finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
@@ -731,9 +731,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
-            bo.setDiscount_order_value((bo.getDiscount_order_value()+finalAmount));
+            bo.setDiscount_order_value((bo.getDiscount_order_value() + finalAmount));
         }
     }
+
     @Override
     public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
@@ -1498,7 +1499,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                                         StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber);
-
 
 
                                             i = new Intent(OrderSummary.this,

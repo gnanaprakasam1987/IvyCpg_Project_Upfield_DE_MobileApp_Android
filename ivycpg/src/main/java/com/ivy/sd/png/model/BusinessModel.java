@@ -59,11 +59,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
@@ -216,7 +211,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -2294,60 +2288,57 @@ public class BusinessModel extends Application {
     /**
      *
      */
-    public void excludeTaxFromSRP(){
-        try{
-          for(ProductMasterBO productMasterBO:productHelper.getProductMaster()){
+    public void excludeTaxFromSRP() {
+        try {
+            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
 
-              productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
 
-              if (productMasterBO.getOrderedCaseQty() > 0
-                      || productMasterBO.getOrderedPcsQty() > 0
-                      || productMasterBO.getOrderedOuterQty() > 0){
-                  if(productMasterBO.getSrp()>0) {
+                if (productMasterBO.getOrderedCaseQty() > 0
+                        || productMasterBO.getOrderedPcsQty() > 0
+                        || productMasterBO.getOrderedOuterQty() > 0) {
+                    if (productMasterBO.getSrp() > 0) {
 
-                      float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()),2).floatValue();
+                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()), 2).floatValue();
 
-                      if (srpWithoutTax > 0)
-                          productMasterBO.setSrp(srpWithoutTax);
-                      else productMasterBO.setSrp(0);
+                        if (srpWithoutTax > 0)
+                            productMasterBO.setSrp(srpWithoutTax);
+                        else productMasterBO.setSrp(0);
 
-                  }
-              }
+                    }
+                }
 
-          }
-        }
-        catch (Exception ex){
-         Commons.printException(ex);
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
     }
 
-    private float getTaxAmount(String productId){
-        float taxAmount=0;
-        try{
-          ProductMasterBO bo=productHelper.getProductMasterBOById(productId);
-            if(productHelper.getmTaxListByProductId().get(productId)!=null) {
+    private float getTaxAmount(String productId) {
+        float taxAmount = 0;
+        try {
+            ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
+            if (productHelper.getmTaxListByProductId().get(productId) != null) {
                 for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
                     if (taxBO.getParentType().equals("0")) {
                         taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
                     }
                 }
             }
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
-        catch (Exception ex){
-         Commons.printException(ex);
-        }
-      return taxAmount;
+        return taxAmount;
     }
 
-    public void resetSRPvalues(){
+    public void resetSRPvalues() {
         try {
             for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
-                if(productMasterBO.getOriginalSrp()>0) {
+                if (productMasterBO.getOriginalSrp() > 0) {
                     productMasterBO.setSrp(productMasterBO.getOriginalSrp());
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -6380,7 +6371,7 @@ public class BusinessModel extends Application {
                                     + "," + rField3;
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                int pieces = (shelfCase * 10) + shelfPiece;
+                                int pieces = shelfCase + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
                                 values = values + "," + productWeightage;
                                 sum = sum + productWeightage;
@@ -6463,7 +6454,7 @@ public class BusinessModel extends Application {
                                         + "," + rField3;
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    int pieces = (shelfCase * 10) + shelfPiece;
+                                    int pieces = shelfCase + shelfPiece;
                                     productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
                                     values = values + "," + productWeightage;
                                     sum = sum + productWeightage;
@@ -6813,8 +6804,8 @@ public class BusinessModel extends Application {
                         /* No need for preseller */
                         /*if (!configurationMasterHelper.IS_INVOICE) {
                             *//**
-                             * before deleting the order, SIH in productmaster
-                             * should get updated.
+                         * before deleting the order, SIH in productmaster
+                         * should get updated.
                          **//*
                             updateSIHOnDeleteOrder(uid);
                         }*/
@@ -10839,7 +10830,6 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
-
 
 
     public void updateGroupIdForRetailer() {

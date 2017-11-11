@@ -3998,7 +3998,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                             bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
 
                                         bmodel.saveClosingStock();
-
+                                        bmodel.saveModuleCompletion(OrderedFlag);
                                         Toast.makeText(
                                                 StockAndOrder.this,
                                                 getResources().getString(
