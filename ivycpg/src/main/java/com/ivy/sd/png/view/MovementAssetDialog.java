@@ -186,13 +186,13 @@ public class MovementAssetDialog extends DialogFragment {
         String remarks=ETDesc.getText().toString().trim();
         retailerId=retailerMasterBOs.get(retailerSelected).getMovRetailerId();
 
-        assetBo.setMposm(String.valueOf(assetId));
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
-        assetBo.setMnewinstaldate(todayDate);
-        assetBo.setMsno(serialNo);
-        assetBo.setMreasonId(reasonId);
-        assetBo.setMremarks(remarks);
-        assetBo.setmToRetailerId(retailerId);
+        assetBo.setPOSM(String.valueOf(assetId));
+        assetBo.setBrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
+        assetBo.setNewInstallDate(todayDate);
+        assetBo.setSNO(serialNo);
+        assetBo.setReasonId(reasonId);
+        assetBo.setRemarks(remarks);
+        assetBo.setToRetailerId(retailerId);
         bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }

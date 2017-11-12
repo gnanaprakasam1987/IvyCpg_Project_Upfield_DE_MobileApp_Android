@@ -1,40 +1,40 @@
 package com.ivy.sd.png.bo;
 
 public class AssetAddDetailBO {
-	private String mposmid;
+	private String mPOSMId;
 	private String mposmdesc;
-	private String assetbrandid;
-	private String massetbrandname;
+	private String mAssetBrandId;
+	private String mAssetBrandName;
 
-	public String getAssetbrandid() {
-		return assetbrandid;
+	public String getAssetBrandId() {
+		return mAssetBrandId;
 	}
 
-	public void setAssetbrandid(String assetbrandid) {
-		this.assetbrandid = assetbrandid;
+	public void setAssetBrandId(String assetBrandId) {
+		this.mAssetBrandId = assetBrandId;
 	}
 
-	public String getMassetbrandname() {
-		return massetbrandname;
+	public String getAssetBrandName() {
+		return mAssetBrandName;
 	}
 
-	public void setMassetbrandname(String massetbrandname) {
-		this.massetbrandname = massetbrandname;
+	public void setAssetBrandName(String mAssetBrandName) {
+		this.mAssetBrandName = mAssetBrandName;
 	}
 
-	public String getMposmid() {
-		return mposmid;
+	public String getPOSMId() {
+		return mPOSMId;
 	}
 
-	public void setMposmid(String mposmid) {
-		this.mposmid = mposmid;
+	public void setPOSMId(String mPOSMId) {
+		this.mPOSMId = mPOSMId;
 	}
 
-	public String getMposmdesc() {
+	public String getPOSMDescription() {
 		return mposmdesc;
 	}
 
-	public void setMposmdesc(String mposmdesc) {
-		this.mposmdesc = mposmdesc;
+	public void setPOSMDescription(String mPOSMDescription) {
+		this.mposmdesc = mPOSMDescription;
 	}
 }

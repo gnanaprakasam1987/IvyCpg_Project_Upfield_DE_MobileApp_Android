@@ -7,18 +7,17 @@ public class AssetTrackingBO {
     private int competitorQty;
     private int executorQty;
     private String reason1ID;
-    private String remarkID;
     private String reasonDesc;
     private String conditionID = "0";
-    private String minstalldate;
-    private String mservicedate;
-    private String mposm;
-    private String mbrand;
-    private String mnewinstaldate;
-    private String msno,mreasonId,mremarks,mToRetailerId;
-    private String mposmname;
-    private String mflag;
-    private String msbdid;
+    private String mInstallDate;
+    private String mServiceDate;
+    private String mPOSM;
+    private String mBrand;
+    private String mNewInstallDate;
+    private String mSNO, mReasonId, mRemarks,mToRetailerId;
+    private String mPOSMName;
+    private String mFlag;
+    private String mSBDId;
     private String groupLevelName;
     private String mNFCTagId;
     private int groupLevelId;
@@ -26,7 +25,7 @@ public class AssetTrackingBO {
     private String imageName = "";
     private String AssetName;
     private String SerialNo = "0";
-    private int productid;
+    private int mProductId;
     private boolean isSelectedToRemove;
 
     public AssetTrackingBO() {
@@ -39,21 +38,21 @@ public class AssetTrackingBO {
         this.AssetName = assetTrackingBO.getAssetName();
         this.audit = assetTrackingBO.getAudit();
         this.availQty = assetTrackingBO.getAvailQty();
-        this.scanComplete = assetTrackingBO.getscanComplete();
+        this.scanComplete = assetTrackingBO.getScanComplete();
         this.competitorQty = assetTrackingBO.getCompetitorQty();
         this.conditionID = assetTrackingBO.getConditionID();
         this.imageName = assetTrackingBO.getImageName();
         this.imgName = assetTrackingBO.getImgName();
-        this.mbrand = assetTrackingBO.getMbrand();
-        this.minstalldate = assetTrackingBO.getMinstalldate();
-        this.mnewinstaldate = assetTrackingBO.getMnewinstaldate();
-        this.mposm = assetTrackingBO.getMposm();
-        this.msbdid = assetTrackingBO.getMsbdid();
-        this.mservicedate = assetTrackingBO.getMservicedate();
-        this.mposmname = assetTrackingBO.getMposmname();
-        this.mflag = assetTrackingBO.getMflag();
-        this.productid = assetTrackingBO.getProductid();
-        this.msno = assetTrackingBO.getMsno();
+        this.mBrand = assetTrackingBO.getBrand();
+        this.mInstallDate = assetTrackingBO.getInstallDate();
+        this.mNewInstallDate = assetTrackingBO.getNewInstallDate();
+        this.mPOSM = assetTrackingBO.getPOSM();
+        this.mSBDId = assetTrackingBO.getSBDId();
+        this.mServiceDate = assetTrackingBO.getServiceDate();
+        this.mPOSMName = assetTrackingBO.getPOSMName();
+        this.mFlag = assetTrackingBO.getFlag();
+        this.mProductId = assetTrackingBO.getProductId();
+        this.mSNO = assetTrackingBO.getSNO();
         this.reason1ID = assetTrackingBO.getReason1ID();
         this.reasonDesc = assetTrackingBO.getReasonDesc();
         this.groupLevelId = assetTrackingBO.getGroupLevelId();
@@ -103,28 +102,28 @@ public class AssetTrackingBO {
         this.groupLevelName = groupLevelName;
     }
 
-    public String getMsbdid() {
-        return msbdid;
+    public String getSBDId() {
+        return mSBDId;
     }
 
-    public void setMsbdid(String msbdid) {
-        this.msbdid = msbdid;
+    public void setSBDId(String mSBDId) {
+        this.mSBDId = mSBDId;
     }
 
-    public String getMposmname() {
-        return mposmname;
+    public String getPOSMName() {
+        return mPOSMName;
     }
 
-    public void setMposmname(String mposmname) {
-        this.mposmname = mposmname;
+    public void setPOSMName(String mPOSMName) {
+        this.mPOSMName = mPOSMName;
     }
 
-    public String getMflag() {
-        return mflag;
+    public String getFlag() {
+        return mFlag;
     }
 
-    public void setMflag(String mflag) {
-        this.mflag = mflag;
+    public void setFlag(String mFlag) {
+        this.mFlag = mFlag;
     }
 
     public String getConditionID() {
@@ -135,76 +134,76 @@ public class AssetTrackingBO {
         this.conditionID = conditionID;
     }
 
-    public String getMposm() {
-        return mposm;
+    public String getPOSM() {
+        return mPOSM;
     }
 
-    public void setMposm(String mposm) {
-        this.mposm = mposm;
+    public void setPOSM(String mPOSM) {
+        this.mPOSM = mPOSM;
     }
 
-    public String getMbrand() {
-        return mbrand;
+    public void setBrand(String mBrand) {
+        this.mBrand = mBrand;
     }
 
-    public void setMbrand(String mbrand) {
-        this.mbrand = mbrand;
+    public String getBrand() {
+        return mBrand;
     }
 
-    public String getMnewinstaldate() {
-        return mnewinstaldate;
+    public String getNewInstallDate() {
+        return mNewInstallDate;
     }
 
-    public void setMnewinstaldate(String minstaldate) {
-        this.mnewinstaldate = minstaldate;
+    public void setNewInstallDate(String mInstallDate) {
+        this.mNewInstallDate = mInstallDate;
     }
 
-    public String getMsno() {
-        return msno;
+    public String getSNO() {
+        return mSNO;
     }
 
-    public void setMsno(String msno) {
-        this.msno = msno;
+    public void setSNO(String mSNO) {
+        this.mSNO = mSNO;
     }
 
-    public String getMreasonId() {
-        return mreasonId;
+    public String getReasonId() {
+        return mReasonId;
     }
 
-    public void setMreasonId(String mreasonId) {
-        this.mreasonId = mreasonId;
+    public void setReasonId(String mReasonId) {
+        this.mReasonId = mReasonId;
     }
 
-    public String getMremarks() {
-        return mremarks;
+    public String getRemarks() {
+        return mRemarks;
     }
 
-    public void setMremarks(String mremarks) {
-        this.mremarks = mremarks;
+    public void setRemarks(String mRemarks) {
+        this.mRemarks = mRemarks;
     }
 
-    public String getmToRetailerId() {
+    public String getToRetailerId() {
         return mToRetailerId;
     }
 
-    public void setmToRetailerId(String mToRetailerId) {
+    public void setToRetailerId(String mToRetailerId) {
         this.mToRetailerId = mToRetailerId;
     }
 
-    public String getMinstalldate() {
-        return minstalldate;
+    public String getInstallDate() {
+        return mInstallDate;
     }
 
-    public void setMinstalldate(String minstalldate) {
-        this.minstalldate = minstalldate;
+    public void setInstallDate(String mInstallDate) {
+        this.mInstallDate = mInstallDate;
     }
 
-    public String getMservicedate() {
-        return mservicedate;
+    public String getServiceDate() {
+        return mServiceDate;
     }
 
-    public void setMservicedate(String mservicedate) {
-        this.mservicedate = mservicedate;
+    public void setServiceDate(String mServiceDate) {
+        this.mServiceDate = mServiceDate;
     }
 
     private String getReasonDesc() {
@@ -221,14 +220,6 @@ public class AssetTrackingBO {
 
     public void setReason1ID(String reason1id) {
         reason1ID = reason1id;
-    }
-
-    public String getRemarkID() {
-        return remarkID;
-    }
-
-    public void setRemarkID(String remarkID) {
-        this.remarkID = remarkID;
     }
 
     public int getAssetID() {
@@ -270,11 +261,11 @@ public class AssetTrackingBO {
     public void setAvailQty(int availQty) {
         this.availQty = availQty;
     }
-    public int getscanComplete() {
+    public int getScanComplete() {
         return scanComplete;
     }
 
-    public void setscanComplete(int scanComplete) {
+    public void setScanComplete(int scanComplete) {
         this.scanComplete = scanComplete;
     }
     public String getImageName() {
@@ -293,12 +284,12 @@ public class AssetTrackingBO {
         this.audit = audit;
     }
 
-    public int getProductid() {
-        return productid;
+    public int getProductId() {
+        return mProductId;
     }
 
-    public void setProductid(int productid) {
-        this.productid = productid;
+    public void setProductId(int mProductId) {
+        this.mProductId = mProductId;
     }
 
     public boolean isSelectedToRemove() {

@@ -10,28 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AssetHistoryBO;
-import com.ivy.sd.png.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.view.AssetMovementActivity;
-import com.ivy.sd.png.view.MovementAssetDialog;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
  * Created by anish.k on 9/28/2017.
+ *
+ *
  */
 
 public class AssetHistoryFragment extends IvyBaseFragment {
 
-    protected BusinessModel bmodel;
+    protected BusinessModel mBModel;
     protected RecyclerView recyclerView;
     protected RecyclerAdapter recyclerAdapter;
 
@@ -40,8 +37,8 @@ public class AssetHistoryFragment extends IvyBaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
         View view = inflater.inflate(R.layout.fragment_asset_history, container,
                 false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_asset_history);
@@ -57,8 +54,8 @@ public class AssetHistoryFragment extends IvyBaseFragment {
     }
 
     private void loadListData() {
-        bmodel.profilehelper.downloadAssetHistory(bmodel.getRetailerMasterBO().getRetailerID());
-        Vector<AssetHistoryBO> items = bmodel.profilehelper.getAssetHistoryList();
+        mBModel.profilehelper.downloadAssetHistory(mBModel.getRetailerMasterBO().getRetailerID());
+        Vector<AssetHistoryBO> items = mBModel.profilehelper.getAssetHistoryList();
         if(items!=null && items.size()>0)
         {
             recyclerAdapter = new RecyclerAdapter(items);

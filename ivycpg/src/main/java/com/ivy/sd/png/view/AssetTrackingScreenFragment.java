@@ -522,7 +522,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if ("ALL".equals(strBarCodeSearch)) {
                     if ("".equals(mCapturedNFCTag)) {
-                        if ((bid == -1 && "Brand".equals(brandButton)) || bid == assetBO.getProductid()) {
+                        if ((bid == -1 && "Brand".equals(brandButton)) || bid == assetBO.getProductId()) {
                             myList.add(assetBO);
                         }
                     } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -530,7 +530,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         myList.add(assetBO);
                     }
                 } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
-                    assetBO.setscanComplete(1);
+                    assetBO.setScanComplete(1);
                     myList.add(assetBO);
                 } else {
                     if (mAllAssetTrackingList != null) {
@@ -548,7 +548,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                 args.putString("serialNo", strBarCodeSearch);
                                 args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
                                 args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
-                                args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
+                                args.putString("brand", mAllAssetTrackingList.get(i).getBrand());
                                 args.putString("retailerName", mBusinessModel.getRetailerMasterBO().getRetailerName());
                                 scannedUnmappedDialogFragment.setArguments(args);
                                 scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
@@ -856,8 +856,8 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.mServiceDate.setEnabled(false);
                             //  holder.assetBO.setImageName("");
                             // holder.assetBO.setImgName("");
-                            holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
 
@@ -901,17 +901,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             holder.serialNoTV.setText(serialNo);
 
             holder.mInstallDate
-                    .setText((holder.assetBO.getMinstalldate() == null) ? DateUtil
+                    .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMinstalldate());
+                            .getInstallDate());
             holder.mServiceDate
-                    .setText((holder.assetBO.getMservicedate() == null) ? DateUtil
+                    .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMservicedate());
+                            .getServiceDate());
             holder.grpTV.setText(holder.assetBO.getGroupLevelName());
 
             if (holder.assetBO.getAvailQty() > 0) {
@@ -947,8 +947,8 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.mServiceDate.setEnabled(false);
                 holder.assetBO.setImageName("");
                 holder.assetBO.setImgName("");
-                holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
 
@@ -1011,7 +1011,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             }
 
             if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE)
-                if (holder.assetBO.getscanComplete() == 1) {
+                if (holder.assetBO.getScanComplete() == 1) {
                     holder.availQtyRB.setChecked(true);
                     holder.availQtyRB.setEnabled(false);
                 } else {
@@ -1414,23 +1414,23 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
                             Calendar.getInstance().getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
 
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else if ("datePicker2".equals(this.getTag())) {
 
-                if (bo.getMinstalldate() != null
-                        && bo.getMinstalldate().length() > 0) {
+                if (bo.getInstallDate() != null
+                        && bo.getInstallDate().length() > 0) {
                     Date mInstallDate = DateUtil.convertStringToDateObject(
-                            bo.getMinstalldate(), outPutDateFormat);
+                            bo.getInstallDate(), outPutDateFormat);
                     if (mInstallDate != null && selectedDate.getTime() != null
                             && mInstallDate.after(selectedDate.getTime())) {
                         Toast.makeText(getActivity(),
@@ -1440,19 +1440,19 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         Toast.makeText(getActivity(),
                                 R.string.future_date_not_allowed,
                                 Toast.LENGTH_SHORT).show();
-                        bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                                 Calendar.getInstance().getTime(), outPutDateFormat));
                         dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
                                 .getInstance().getTime(), outPutDateFormat));
                     } else {
-                        bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                         dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 } else {
 
-                    bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
@@ -1574,10 +1574,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         for (LevelBO levelBO : mParentIdList) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (levelBO.getProductID() == assetBO.getProductid()) {
+                if (levelBO.getProductID() == assetBO.getProductId()) {
                     if ("ALL".equals(strBarCodeSearch)) {
                         if ("".equals(mCapturedNFCTag)) {
-                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                 myList.add(assetBO);
                             }
                         } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1613,11 +1613,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
             for (LevelBO levelBO : mParentIdList) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (levelBO.getProductID() == assetBO.getProductid()) {
+                    if (levelBO.getProductID() == assetBO.getProductId()) {
                         if ("ALL".equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid())
-                                        && mAttributeProducts.contains(assetBO.getProductid())) {
+                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId())
+                                        && mAttributeProducts.contains(assetBO.getProductId())) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1636,10 +1636,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             } else {
                 for (LevelBO levelBO : mParentIdList) {
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (levelBO.getProductID() == assetBO.getProductid()) {
+                        if (levelBO.getProductID() == assetBO.getProductId()) {
                             if ("ALL".equals(strBarCodeSearch)) {
                                 if ("".equals(mCapturedNFCTag)) {
-                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                         myList.add(assetBO);
                                     }
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1656,10 +1656,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (pid == assetBO.getProductid()) {
+                    if (pid == assetBO.getProductId()) {
                         if ("ALL".equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {

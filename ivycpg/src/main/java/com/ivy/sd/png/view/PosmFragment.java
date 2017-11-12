@@ -541,7 +541,7 @@ public class PosmFragment extends IvyBaseFragment implements
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if ("ALL".equals(strBarCodeSearch)) {
                     if ("".equals(mCapturedNFCTag)) {
-                        if ((bid == -1 && "Brand".equals(brandbutton)) || bid == assetBO.getProductid()) {
+                        if ((bid == -1 && "Brand".equals(brandbutton)) || bid == assetBO.getProductId()) {
                             myList.add(assetBO);
                         }
                     } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -732,8 +732,8 @@ public class PosmFragment extends IvyBaseFragment implements
                                 holder.mservicedate.setEnabled(false);
                                 //  holder.assetBO.setImageName("");
                                 //holder.assetBO.setImgName("");
-                                holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                                holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                                 holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                                 holder.mservicedate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
 
@@ -969,17 +969,17 @@ public class PosmFragment extends IvyBaseFragment implements
             holder.targetTV.setText(strTarget);
 
             holder.minstalldate
-                    .setText((holder.assetBO.getMinstalldate() == null) ? DateUtil
+                    .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMinstalldate());
+                            .getInstallDate());
             holder.mservicedate
-                    .setText((holder.assetBO.getMservicedate() == null) ? DateUtil
+                    .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMservicedate());
+                            .getServiceDate());
             holder.grpTV.setText(holder.assetBO.getGroupLevelName());
 
             //First time when screen apprears
@@ -1008,8 +1008,8 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.mservicedate.setEnabled(false);
                 holder.assetBO.setImageName("");
                 holder.assetBO.setImgName("");
-                holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.mservicedate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
             }
@@ -1599,37 +1599,37 @@ public class PosmFragment extends IvyBaseFragment implements
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
                             Calendar.getInstance().getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
 
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else if ("datePicker2".equals(this.getTag())) {
 
-                if (bo.getMinstalldate() != null
-                        && bo.getMinstalldate().length() > 0) {
+                if (bo.getInstallDate() != null
+                        && bo.getInstallDate().length() > 0) {
                     Date installdate = DateUtil.convertStringToDateObject(
-                            bo.getMinstalldate(), outPutDateFormat);
+                            bo.getInstallDate(), outPutDateFormat);
                     if (installdate != null && selectedDate.getTime() != null
                             && installdate.after(selectedDate.getTime())) {
                         Toast.makeText(getActivity(),
                                 R.string.servicedate_set_after_installdate,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                         dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 } else {
 
-                    bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
@@ -1772,10 +1772,10 @@ public class PosmFragment extends IvyBaseFragment implements
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         for (LevelBO levelBO : mParentIdList) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (levelBO.getProductID() == assetBO.getProductid()) {
+                if (levelBO.getProductID() == assetBO.getProductId()) {
                     if ("ALL".equals(strBarCodeSearch)) {
                         if ("".equals(mCapturedNFCTag)) {
-                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                 myList.add(assetBO);
                             }
                         } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1811,11 +1811,11 @@ public class PosmFragment extends IvyBaseFragment implements
         if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
             for (LevelBO levelBO : mParentIdList) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (levelBO.getProductID() == assetBO.getProductid()) {
+                    if (levelBO.getProductID() == assetBO.getProductId()) {
                         if ("ALL".equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid())
-                                        && mAttributeProducts.contains(assetBO.getProductid())) {
+                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId())
+                                        && mAttributeProducts.contains(assetBO.getProductId())) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1834,10 +1834,10 @@ public class PosmFragment extends IvyBaseFragment implements
             } else {
                 for (LevelBO levelBO : mParentIdList) {
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (levelBO.getProductID() == assetBO.getProductid()) {
+                        if (levelBO.getProductID() == assetBO.getProductId()) {
                             if ("ALL".equals(strBarCodeSearch)) {
                                 if ("".equals(mCapturedNFCTag)) {
-                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                         myList.add(assetBO);
                                     }
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1854,10 +1854,10 @@ public class PosmFragment extends IvyBaseFragment implements
         } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (pid == assetBO.getProductid()) {
+                    if (pid == assetBO.getProductId()) {
                         if ("ALL".equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {

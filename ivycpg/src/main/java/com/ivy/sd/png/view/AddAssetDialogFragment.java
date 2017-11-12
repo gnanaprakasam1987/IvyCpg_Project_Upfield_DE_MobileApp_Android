@@ -258,19 +258,19 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     private void setAddAssetDetails() {
 
-        assetBo.setMposm(bmodel.assetTrackingHelper.getAssetPosmIds(masset
+        assetBo.setPOSM(bmodel.assetTrackingHelper.getAssetPosmIds(masset
                 .getSelectedItem().toString()));
 
         if (!mbrand.getSelectedItem().toString()
                 .equals(SELECT))
-            assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(mbrand
+            assetBo.setBrand(bmodel.assetTrackingHelper.getAssetBrandIds(mbrand
                     .getSelectedItem().toString()));
         else
-            assetBo.setMbrand("0");
+            assetBo.setBrand("0");
 
-        assetBo.setMnewinstaldate(addinstalldate.getText().toString());
+        assetBo.setNewInstallDate(addinstalldate.getText().toString());
 
-        assetBo.setMsno(mSNO.getText().toString());
+        assetBo.setSNO(mSNO.getText().toString());
 
         bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 

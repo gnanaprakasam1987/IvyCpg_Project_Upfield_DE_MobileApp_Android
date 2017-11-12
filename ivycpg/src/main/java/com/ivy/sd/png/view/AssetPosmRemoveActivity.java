@@ -232,19 +232,19 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			}
 			holder.productObj = product;
 			holder.ref = position;
-			holder.tvassetname.setText(holder.productObj.getMposmname());
+			holder.tvassetname.setText(holder.productObj.getPOSMName());
 
-			holder.tvinstall.setText(holder.productObj.getMnewinstaldate());
+			holder.tvinstall.setText(holder.productObj.getNewInstallDate());
 
 			String mSno = getResources().getString(
 					R.string.serial_no)
-					+ ":" + holder.productObj.getMsno();
+					+ ":" + holder.productObj.getSNO();
 			holder.tvsno.setText(mSno);
 
 			TypedArray typearr = AssetPosmRemoveActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 			final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
 			final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorPrimary, 0);
-			if ("Y".equals(holder.productObj.getMflag())) {
+			if ("Y".equals(holder.productObj.getFlag())) {
 				holder.tvassetname.setTextColor(color);
 			} else {
 				holder.tvassetname.setTextColor(secondary_color);
@@ -301,11 +301,11 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		for(int i=0;i<lstTemp.size();i++) {
 			if(lstTemp.get(i).isSelectedToRemove()) {
 
-				if ("N".equals(lstTemp.get(i).getMflag())) {
-					mposmiddialog = lstTemp.get(i).getMposm();
-					msnodialog = lstTemp.get(i).getMsno();
-					msbdid = lstTemp.get(i).getMsbdid();
-					mbrandid = lstTemp.get(i).getMbrand();
+				if ("N".equals(lstTemp.get(i).getFlag())) {
+					mposmiddialog = lstTemp.get(i).getPOSM();
+					msnodialog = lstTemp.get(i).getSNO();
+					msbdid = lstTemp.get(i).getSBDId();
+					mbrandid = lstTemp.get(i).getBrand();
 					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
 						mReasonID = lstTemp.get(i).getReason1ID();
 						bmodel.assetTrackingHelper
@@ -319,7 +319,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 				} else {
 					bmodel.assetTrackingHelper
 							.deletePosmDetails(lstTemp.get(i)
-									.getMsno());
+									.getSNO());
 					mylist.remove(i);
 				}
 				bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);

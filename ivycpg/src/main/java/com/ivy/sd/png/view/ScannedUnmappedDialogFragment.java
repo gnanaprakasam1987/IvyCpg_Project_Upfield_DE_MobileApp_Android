@@ -139,12 +139,12 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         remarks = ETDesc.getText().toString().trim();
-        assetBo.setMposm(String.valueOf(assetId));
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
-        assetBo.setMnewinstaldate(todayDate);
-        assetBo.setMsno(serialNo);
-        assetBo.setMreasonId(reasonId);
-        assetBo.setMremarks(remarks);
+        assetBo.setPOSM(String.valueOf(assetId));
+        assetBo.setBrand(bmodel.assetTrackingHelper.getAssetBrandIds(brand));
+        assetBo.setNewInstallDate(todayDate);
+        assetBo.setSNO(serialNo);
+        assetBo.setReasonId(reasonId);
+        assetBo.setRemarks(remarks);
         bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }

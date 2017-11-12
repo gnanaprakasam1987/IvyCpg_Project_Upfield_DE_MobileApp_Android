@@ -2,6 +2,7 @@ package com.ivy.sd.png.bo;
 
 /**
  * Created by anandasir.v on 8/31/2017.
+ *
  */
 
 public class AssetTrackingBrandBO {
@@ -27,9 +28,6 @@ public class AssetTrackingBrandBO {
         this.brandID = brandID;
     }
 
-    public String getBrandName() {
-        return brandName;
-    }
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;

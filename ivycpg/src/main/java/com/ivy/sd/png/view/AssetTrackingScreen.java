@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
+public class
+AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
         OnEditorActionListener, BrandDialogInterface {
 
     private BusinessModel mBusinessModel;

@@ -1092,7 +1092,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         // All Brands in Total PopUp
         if (bmodel.assetTrackingHelper.getAssetTrackingList() != null) {
             for (AssetTrackingBO assetTrackingBO : bmodel.assetTrackingHelper.getAssetTrackingList()) {
-                if (assetTrackingBO.getProductid() == categoryId) {
+                if (assetTrackingBO.getProductId() == categoryId) {
                     mAssetsForDialog.add(assetTrackingBO);
                 }
             }
@@ -1352,7 +1352,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             holder.location.setSelected(true);
 
             holder.target.setText("Tgt : " + holder.assetTrackingBO.getTarget());
-            holder.date.setText("DOA : " + holder.assetTrackingBO.getMinstalldate() == null ? "" : holder.assetTrackingBO.getMinstalldate());
+            holder.date.setText("DOA : " + holder.assetTrackingBO.getInstallDate() == null ? "" : holder.assetTrackingBO.getInstallDate());
 
 
             return row;

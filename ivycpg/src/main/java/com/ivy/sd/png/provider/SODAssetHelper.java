@@ -2,23 +2,16 @@ package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.SODBO;
-import com.ivy.sd.png.bo.SOSBO;
-import com.ivy.sd.png.bo.SOSKUBO;
-import com.ivy.sd.png.bo.ShelfShareBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivyretail.views.SODDialogFragment;
-import com.ivyretail.views.ShelfShareDialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -497,7 +490,7 @@ public class SODAssetHelper {
                                 + assetTrackingBO.getActual()
                                 + "," + assetTrackingBO.getReasonID() + ","
                                 + assetTrackingBO.getLocationID() + ","
-                                + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + "," + assetTrackingBO.getProductid()
+                                + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + "," + assetTrackingBO.getProductId()
                                 + "," + bmodel.QT(assetTrackingBO.getIsPromo()) + ","
                                 + bmodel.QT(assetTrackingBO.getIsDisplay()) + ","
                                 + assetTrackingBO.getTarget();
@@ -666,7 +659,7 @@ public class SODAssetHelper {
     private void updateSODAsset(int assetID, int productId, int actual, int reasonId, int locationId, String isPromo, String isDisplay) {
 
         for (AssetTrackingBO assetTrackingBO : bmodel.assetTrackingHelper.getAssetTrackingList()) {
-            if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductid() == productId) {
+            if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductId() == productId) {
                 assetTrackingBO.setActual(actual);
                 assetTrackingBO.setReasonID(reasonId);
                 assetTrackingBO.setLocationID(locationId);
