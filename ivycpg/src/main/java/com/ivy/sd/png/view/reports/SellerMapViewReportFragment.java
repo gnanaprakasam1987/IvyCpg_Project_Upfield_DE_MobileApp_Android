@@ -85,7 +85,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     private DrawerLayout mDrawerLayout;
     FrameLayout drawer;
 
-    private ArrayList<OutletReportBO> lstUsers;
     private ArrayList<OutletReportBO>lstReports;
 
     private GoogleMap mMap;
@@ -122,9 +121,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                 getActivity().finish();
             }
 
-
-            if (lstUsers == null)
-                lstUsers = bmodel.reportHelper.downloadUsers();
 
             if (lstReports == null)
                 lstReports = bmodel.reportHelper.downloadOutletReports();
@@ -312,8 +308,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
             SellerListFragment fragment = new SellerListFragment();
             Bundle bundle = new Bundle();
-            //bundle.putSerializable("users", lstUsers);
-            bundle.putParcelableArrayList("users",lstUsers);
+            bundle.putParcelableArrayList("users",bmodel.reportHelper.getLstUsers());
             fragment.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragment, "filter");
@@ -322,7 +317,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         }
         catch (Exception ex){
-
+            Commons.printException(ex);
         }
     }
 
@@ -348,7 +343,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                 ArrayList<Integer> lstLastVisitedRetailerIds = null;
                 if (isAlluser) {
                     lstLastVisitedRetailerIds = new ArrayList<>();
-                        for (OutletReportBO userBo : lstUsers) {
+                        for (OutletReportBO userBo : bmodel.reportHelper.getLstUsers()) {
                             lstLastVisitedRetailerIds.add(bmodel.reportHelper.downloadlastVisitedRetailer(userBo.getUserId()));
                         }
 

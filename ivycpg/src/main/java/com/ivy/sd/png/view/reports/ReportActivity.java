@@ -647,15 +647,22 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         }
         else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
-            transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            bmodel.reportHelper.downloadUsers();
+            if(bmodel.reportHelper.getLstUsers().size()>0) {
+                transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                setScreenTitle(config.getMenuName());
+                bmodel.mSelectedActivityName = config.getMenuName();
+                transaction.addToBackStack(null);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                transaction.commit();
+            }
+            else{
+                Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
+            }
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
+
             transaction.replace(R.id.fragment_content, mSellerPerformReport);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
@@ -663,16 +670,22 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
+
         }
         else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETPERFO_RPT)) {
-            transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet,StandardListMasterConstants.MENU_RETPERFO_RPT);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            bmodel.reportHelper.downloadUsers();
+            if (bmodel.reportHelper.getLstUsers().size() > 0) {
+                transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet, StandardListMasterConstants.MENU_RETPERFO_RPT);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                setScreenTitle(config.getMenuName());
+                bmodel.mSelectedActivityName = config.getMenuName();
+                transaction.addToBackStack(null);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                transaction.commit();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
+            }
         }
         // Commit the transaction
     }

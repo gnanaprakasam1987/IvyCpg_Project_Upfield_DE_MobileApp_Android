@@ -152,17 +152,17 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
 
     private void updateAllUserCheckboxStatus(){
 
-        boolean isAllchecked=true;
+        boolean isAllChecked=true;
         if(lstUsers!=null) {
             for (OutletReportBO bo : lstUsers) {
                 if(!bo.isChecked()){
-                    isAllchecked=false;
+                    isAllChecked=false;
                     break;
                 }
             }
         }
 
-        if(isAllchecked)
+        if(isAllChecked)
             chk_all_user.setChecked(true);
         else  chk_all_user.setChecked(false);
     }
