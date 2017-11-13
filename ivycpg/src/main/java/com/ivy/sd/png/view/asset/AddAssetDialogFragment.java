@@ -59,15 +59,19 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        if(getDialog().getWindow()!=null) {
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+
         setCancelable(false);
+
         View view = inflater.inflate(R.layout.add_asset_dailog, container);
+
         Context context = getActivity();
         mBModel = (BusinessModel) context.getApplicationContext();
 
         mAsset = (Spinner) view.findViewById(R.id.spinner_asset);
         mBrand = (Spinner) view.findViewById(R.id.spinner_brand);
-
         btnAddInstallDate = (Button) view.findViewById(R.id.date_button);
         mSNO = (EditText) view.findViewById(R.id.etxt_sno);
         btnSave = (Button) view.findViewById(R.id.btn_save);
@@ -95,6 +99,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     }
 
+    /**
+     * Preparing screen
+     */
     private void loadData() {
 
         mBModel.assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
@@ -211,7 +218,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         });
     }
 
-    // check from here
+    /**
+     * Load brands
+     */
     private void loadBrandData() {
         ArrayAdapter<CharSequence> mAssetBrandsAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
@@ -238,6 +247,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         this.mBrand.setAdapter(mAssetBrandsAdapter);
     }
 
+    /**
+     * Set values for adding asset
+     */
     private void setAddAssetDetails() {
 
         assetBo.setPOSM(mBModel.assetTrackingHelper.getAssetPosmIds(mAsset
@@ -312,6 +324,10 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         }
     }
 
+    /**
+     * Key pad click event
+     * @param vw Selected View
+     */
     public void numberPressed(View vw) {
         if (edittext == null) {
             mBModel.showAlert(
@@ -334,6 +350,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         }
     }
 
+    /**
+     * Set values to the selected view
+     */
     private void eff() {
         String s = edittext.getText().toString();
         if (!"0".equals(s) && !"0.0".equals(s)) {

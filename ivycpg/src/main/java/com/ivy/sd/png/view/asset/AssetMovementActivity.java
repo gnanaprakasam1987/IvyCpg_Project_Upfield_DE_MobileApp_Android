@@ -82,9 +82,13 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
+    /**
+     * update List with asset movement details
+     * @param standardListBO
+     */
     protected void updateList(StandardListBO standardListBO) {
         mAssetTrackingList = standardListBO.getAssetTrackingList();
-        ArrayList<String> mMovedList = mBModel.getAssetMovementDetails();
+        ArrayList<String> mMovedList = mBModel.assetTrackingHelper.getAssetMovementDetails();
         ArrayList<Integer> toRemovePos=new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {

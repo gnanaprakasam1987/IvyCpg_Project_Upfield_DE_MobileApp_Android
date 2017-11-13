@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,28 +24,28 @@ import java.util.Vector;
 
 public class PosmTrackingScreen extends IvyBaseActivityNoActionBar implements
         OnEditorActionListener, BrandDialogInterface {
-
-    private Toolbar toolbar;
-    private NFCManager nfcManager;
+    BusinessModel mBModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // include List Header
+
         setContentView(R.layout.activity_posmtracking);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        BusinessModel bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if(getSupportActionBar()!=null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         }
 
-        if (bmodel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
-            nfcManager = new NFCManager(PosmTrackingScreen.this);
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+            NFCManager nfcManager = new NFCManager(PosmTrackingScreen.this);
             nfcManager.onActivityCreate();
             nfcManager.setOnTagReadListener(new NFCManager.TagReadListener() {
                 @Override
@@ -68,6 +68,8 @@ public class PosmTrackingScreen extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
+
+        mBModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 
@@ -135,7 +137,6 @@ public class PosmTrackingScreen extends IvyBaseActivityNoActionBar implements
 
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
-        // TODO Auto-generated method stub
         return false;
     }
 

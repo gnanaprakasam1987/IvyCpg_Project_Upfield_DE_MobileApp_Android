@@ -267,7 +267,7 @@
             android:name="com.ivy.sd.png.view.PlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PosmTrackingScreen"
+            android:name="com.ivy.sd.png.view.asset.PosmTrackingScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.survey.SurveyActivityNew"

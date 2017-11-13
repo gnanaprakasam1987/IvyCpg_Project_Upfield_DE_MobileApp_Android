@@ -89,6 +89,10 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		updateList();
 	}
 
+	/**
+	 * To check is asset selected
+	 * @return is Selected
+	 */
     private boolean isAssetSelectedToDelete(){
 
 		for(AssetTrackingBO bo: mList){
@@ -98,6 +102,11 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		}
 		return false;
 	}
+
+	/**
+	 * To check is asset selected with reason
+	 * @return is Selected
+	 */
 	private boolean isAssetSelectedWithReason(){
 
 		for(AssetTrackingBO bo: mList){
@@ -120,6 +129,9 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	}
 
 
+	/**
+	 * Update list and load reasons
+	 */
 	private void updateList() {
 
 		Vector<AssetTrackingBO> items;
@@ -136,10 +148,6 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			mList.add(ret);
 		}
 
-//		ReasonMaster reason1 = new ReasonMaster();
-//		reason1.setReasonID(Integer.toString(0));
-//		reason1.setReasonDesc("Select Reason");
-	//	mAssetReasonList.add(0, reason1);
 		mAssetReasonList=new ArrayList<>();
 		bModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_REMOVE");
 		mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
@@ -148,8 +156,6 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 				R.layout.spinner_bluetext_layout, mAssetReasonList);
 		mAssetReasonSpinAdapter
 				.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-//		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
-//		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		MyAdapter mSchedule = new MyAdapter(mList);
 		mListView.setAdapter(mSchedule);
 
@@ -267,11 +273,13 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
 	}
 
+	/**
+	 * Showing alert dialog
+	 */
 	private void mDialog() {
 
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				this);
-
 
 		alertDialogBuilder
 				.setTitle("Do you want to remove asset?")
@@ -294,6 +302,9 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		bModel.applyAlertDialogTheme(alertDialogBuilder);
 	}
 
+	/**
+	 * Removing asset
+	 */
 	private void removeAsset(){
 
 		String mReasonID,mBrandId;

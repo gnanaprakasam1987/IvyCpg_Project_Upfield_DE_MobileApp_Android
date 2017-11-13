@@ -41,7 +41,7 @@ import com.ivy.sd.png.view.CounterPlanogramActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
-import com.ivy.sd.png.view.PosmTrackingScreen;
+import com.ivy.sd.png.view.asset.PosmTrackingScreen;
 import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;

@@ -54,6 +54,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.asset.AssetTrackingScreen;
+import com.ivy.sd.png.view.asset.PosmTrackingScreen;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
@@ -2533,6 +2534,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
+
+                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
                 bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
                 if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
