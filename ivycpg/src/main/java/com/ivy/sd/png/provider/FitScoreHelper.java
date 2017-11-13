@@ -227,9 +227,10 @@ public class FitScoreHelper {
     public int checkWeightage(String ProductID, int Qty) {
         try {
             for (WeightageBO weightage : getWeightageList()) {
-                if (ProductID.equals(String.valueOf(weightage.getProductID())) && Qty >= weightage.getFromNorm()) {
-                    return weightage.getScore();
-                }
+                if (weightage.getFromNorm() > 0)
+                    if (ProductID.equals(String.valueOf(weightage.getProductID())) && Qty >= weightage.getFromNorm()) {
+                        return weightage.getScore();
+                    }
             }
 
         } catch (Exception e) {

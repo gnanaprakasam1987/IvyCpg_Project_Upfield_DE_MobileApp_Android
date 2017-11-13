@@ -3280,6 +3280,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     FitScoreDashboardActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.putExtra("screentitle", menu.getMenuName());
+            i.putExtra("menuCode",menu.getConfigCode());
             startActivity(i);
             finish();
         } else {
