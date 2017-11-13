@@ -6371,7 +6371,9 @@ public class BusinessModel extends Application {
                                     + "," + rField3;
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                int pieces = shelfCase + shelfPiece;
+                                int pieces = (shelfCase * product.getCaseSize())
+                                        + (shelfOuter * product.getOutersize())
+                                        + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
                                 values = values + "," + productWeightage;
                                 sum = sum + productWeightage;
@@ -6454,7 +6456,9 @@ public class BusinessModel extends Application {
                                         + "," + rField3;
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    int pieces = shelfCase + shelfPiece;
+                                    int pieces = (shelfCase * taggedProduct.getCaseSize())
+                                            + (shelfOuter * taggedProduct.getOutersize())
+                                            + shelfPiece;
                                     productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
                                     values = values + "," + productWeightage;
                                     sum = sum + productWeightage;
