@@ -1046,27 +1046,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
 
-    /**
-     * Showing No asset Alert
-     */
-    private void mDialog1() {
-        AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
-                getActivity());
-        alertDialogBuilder1
-                .setIcon(null)
-                .setCancelable(false)
-                .setTitle(getResources().getString(R.string.no_assets_exists))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                dialog.cancel();
-                            }
-                        });
-
-        mBusinessModel.applyAlertDialogTheme(alertDialogBuilder1);
-    }
-
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
@@ -1275,7 +1254,23 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         if (mBusinessModel.assetTrackingHelper.hasAssetTaken()) {
             new SaveAsset().execute("");
         } else {
-            mDialog1();
+
+            AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                    getActivity());
+            alertDialogBuilder1
+                    .setIcon(null)
+                    .setCancelable(false)
+                    .setTitle(getResources().getString(R.string.no_assets_exists))
+                    .setPositiveButton(getResources().getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            mBusinessModel.applyAlertDialogTheme(alertDialogBuilder1);
+
         }
     }
 
@@ -1523,9 +1518,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         brandButton = mFilterText;
         mDrawerLayout.closeDrawers();
         mCapturedNFCTag = "";
-        //strBarCodeSearch = "ALL";
         mSelectedLastFilterSelection = id;
-        Log.e("Barcode", "updatebrandText");
         updateList(id, mSelectedStandardListBO);
     }
 
