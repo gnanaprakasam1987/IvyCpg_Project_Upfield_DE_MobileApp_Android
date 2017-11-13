@@ -274,7 +274,8 @@ public class FitScoreHelper {
                             Qry +
                             "inner join WeightageHeader C on C.CriteriaID = B.RetailerID " +
                             "inner join WeightageProductDetail D on C.HeaderID = D.HeaderID and D.ProductID = B." + PID + " " +
-                            "inner join HHTModuleWeightage E on E.Module = C.Module where C.CriteriaID = '" + retailerID + "' and E.Module = '" + Module + "'");
+                            "inner join HHTModuleWeightage E on E.Module = C.Module where C.CriteriaID = '" + retailerID + "' and E.Module = '" + Module + "'" +
+                            " AND B.Score>0");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
@@ -330,7 +331,8 @@ public class FitScoreHelper {
                             "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
                             "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
                             "inner join HHTModuleWeightage G on G.Module = F.ListCode WHERE G.Module = '" + Module + "'" +
-                            " AND B.retailerid=" + retailerID);
+                            " AND B.retailerid=" + retailerID +
+                            " AND B.Score>0");
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -372,7 +374,8 @@ public class FitScoreHelper {
                             "inner join AssetDetail B on A.Posmid = B.AssetID " +
                             "inner join AssetHeader C on C.Uid = B.UID " +
                             "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
-                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
+                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'" +
+                            " AND B.Score>0");
 //            Cursor c = db
 //                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
 //                            "inner join AssetDetail B on A.Pid = B.ProductID " +
@@ -409,7 +412,8 @@ public class FitScoreHelper {
             Cursor c = db
                     .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score " +
                             "from productMaster A inner join PromotionDetail B on A.Pid = B.BrandID " +
-                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "'");
+                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "'" +
+                            " AND B.Score>0");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
