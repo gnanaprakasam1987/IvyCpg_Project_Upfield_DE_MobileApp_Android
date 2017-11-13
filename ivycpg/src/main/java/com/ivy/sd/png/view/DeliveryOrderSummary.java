@@ -24,6 +24,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 }
                 bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
-                bmodel.productHelper.clearOrderTable();
+
             } catch (Exception ex) {
                 Commons.printException(ex);
             }
@@ -131,11 +132,23 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             alertDialog.dismiss();
-
-
             Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
-            startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
-            finish();
+            if (!isPartialOrder) {
+                bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null);
+
+                Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
+                i.putExtra("IsFromOrder", true);
+                i.putExtra("IsUpdatePrintCount", true);
+                i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("isHidePrintBtn",true);
+                startActivity(i);
+                finish();
+            } else {
+
+                startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
+                finish();
+            }
+            bmodel.productHelper.clearOrderTable();
 
         }
 
