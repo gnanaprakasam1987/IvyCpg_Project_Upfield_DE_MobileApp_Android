@@ -6375,7 +6375,7 @@ public class BusinessModel extends Application {
                                         + (shelfOuter * product.getOutersize())
                                         + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + productWeightage;
+                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
                                 sum = sum + productWeightage;
                             }
 
@@ -6460,7 +6460,8 @@ public class BusinessModel extends Application {
                                             + (shelfOuter * taggedProduct.getOutersize())
                                             + shelfPiece;
                                     productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
-                                    values = values + "," + productWeightage;
+                                    values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+
                                     sum = sum + productWeightage;
                                 }
 
