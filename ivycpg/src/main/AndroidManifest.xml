@@ -512,7 +512,7 @@
             android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AssetTrackingScreen"
+            android:name="com.ivy.sd.png.view.asset.AssetTrackingScreen"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -523,7 +523,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.AssetPosmRemoveActivity"
+            android:name="com.ivy.sd.png.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
@@ -588,7 +588,7 @@
             android:name="com.ivyretail.views.SODActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SODAssetActivity"
+            android:name="com.ivy.sd.png.view.asset.SODAssetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivyretail.views.SOSKUActivity"
@@ -765,7 +765,7 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AssetMovementActivity"
+            android:name="com.ivy.sd.png.view.asset.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

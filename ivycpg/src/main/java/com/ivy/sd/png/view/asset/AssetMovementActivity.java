@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,14 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.MyDialogCloseListener;
 
 import java.util.ArrayList;
 
-public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements MyDialogCloseListener{
+public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements MyDialogCloseListener {
 
     protected BusinessModel mBModel;
     protected RecyclerView recyclerView;
@@ -110,14 +111,6 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
                 {
                     mAssetTrackingList=assetTrackingList;
                 }
-//                for(int i:toRemovePos)
-//                    mAssetTrackingList.removeAll(toRemovePos);
-
-//                for (int i = 0; i < mAssetTrackingList.size(); i++) {
-//                    if (mMovedList.contains(String.valueOf(mAssetTrackingList.get(i).getAssetID()))) {
-//                        mAssetTrackingList.remove(i);
-//                    }
-//                }
             }
             if(mAssetTrackingList.size()>0) {
                 recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
@@ -131,7 +124,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
             Toast.makeText(AssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
         }
-//        recyclerAdapter.notifyDataSetChanged();
+
     }
 
     @Override

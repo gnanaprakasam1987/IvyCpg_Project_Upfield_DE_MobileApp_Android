@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.sd.png.bo.asset;
 
 /**
  * Created by anish.k on 9/28/2017.

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.sd.png.view.asset;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetHistoryBO;
+import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 

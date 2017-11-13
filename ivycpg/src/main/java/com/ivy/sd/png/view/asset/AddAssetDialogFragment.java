@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -22,12 +22,13 @@ import android.widget.Toast;
 
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -35,17 +36,17 @@ import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 3/28/2017.
+ *
  */
 
 public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
-    Button btnAdd;
-    BusinessModel bmodel;
+    BusinessModel mBModel;
     private static final String SELECT = "-Select-";
-    private Spinner masset;
-    private Spinner mbrand;
+    private Spinner mAsset;
+    private Spinner mBrand;
     private EditText mSNO;
-    private static Button addinstalldate;
+    private static Button btnAddInstallDate;
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -62,36 +63,19 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         setCancelable(false);
         View view = inflater.inflate(R.layout.add_asset_dailog, container);
         Context context = getActivity();
-        bmodel = (BusinessModel) context.getApplicationContext();
+        mBModel = (BusinessModel) context.getApplicationContext();
 
-        masset = (Spinner) view.findViewById(R.id.spinner_asset);
-        mbrand = (Spinner) view.findViewById(R.id.spinner_brand);
+        mAsset = (Spinner) view.findViewById(R.id.spinner_asset);
+        mBrand = (Spinner) view.findViewById(R.id.spinner_brand);
 
-        addinstalldate = (Button) view.findViewById(R.id.date_button);
+        btnAddInstallDate = (Button) view.findViewById(R.id.date_button);
         mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-        // mSNO.setInputType(InputType.TYPE_CLASS_TEXT);
-        //   mSNO.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        // mSNO.setKeyListener(DigitsKeyListener.getInstance(false,true));
-//        mSNO.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                edittext = mSNO;
-//                edittext.setTag(mSNO);
-//                int inType = mSNO.getInputType();
-//                mSNO.setInputType(InputType.TYPE_NULL);
-//                mSNO.onTouchEvent(motionEvent);
-//                mSNO.setInputType(inType);
-//                mSNO.selectAll();
-//                mSNO.requestFocus();
-//                return true;
-//            }
-//        });
         btnSave = (Button) view.findViewById(R.id.btn_save);
         btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
-        loadeddata();
+        loadData();
 
         return view;
     }
@@ -99,51 +83,49 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onStart() {
         super.onStart();
-
-        //
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getDialog().getWindow();
-        lp.copyFrom(window.getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
+        Window window = getDialog().getWindow();
+        if(window!=null) {
+            lp.copyFrom(window.getAttributes());
+            window.setAttributes(lp);
+        }
+
+
     }
 
-    private void loadeddata() {
+    private void loadData() {
 
-        bmodel.assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
+        mBModel.assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
 
-        Vector vposm = bmodel.assetTrackingHelper.getAssetPosmNames();
+        Vector mPOSMList = mBModel.assetTrackingHelper.getAssetPosmNames();
 
-        int siz = vposm.size();
+        int siz = mPOSMList.size();
 
         ArrayAdapter<CharSequence> mAssetSpinAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
         mAssetSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         mAssetSpinAdapter.add(SELECT);
-        Commons.print("mposmsiz==" + vposm.size());
 
         for (int k = 0; k < siz; ++k) {
-            mAssetSpinAdapter.add(vposm.elementAt(k).toString());
+            mAssetSpinAdapter.add(mPOSMList.elementAt(k).toString());
 
         }
 
         Commons.print("mAssetSpinAdapter" + mAssetSpinAdapter + ","
-                + masset);
-        masset.setAdapter(mAssetSpinAdapter);
-        masset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                + mAsset);
+        mAsset.setAdapter(mAssetSpinAdapter);
+        mAsset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
 
-                Commons.print("posmid="
-                        + bmodel.assetTrackingHelper.getAssetPosmIds(masset
-                        .getSelectedItem().toString()));
-                bmodel.assetTrackingHelper
-                        .downloadAssetBrand(bmodel.assetTrackingHelper
-                                .getAssetPosmIds(masset.getSelectedItem()
+                mBModel.assetTrackingHelper
+                        .downloadAssetBrand(mBModel.assetTrackingHelper
+                                .getAssetPosmIds(mAsset.getSelectedItem()
                                         .toString()));
 
                 loadBrandData();
@@ -160,14 +142,14 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 ConfigurationMasterHelper.outDateFormat);
 
 
-        addinstalldate.setText(todayDate);
+        btnAddInstallDate.setText(todayDate);
 
 
-        addinstalldate.setOnClickListener(new View.OnClickListener() {
+        btnAddInstallDate.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 Button b = (Button) v;
-                if (b == addinstalldate) {
+                if (b == btnAddInstallDate) {
 
                     final Calendar c = Calendar.getInstance();
                     mYear = c.get(Calendar.YEAR);
@@ -185,20 +167,20 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                                       int dayOfMonth) {
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
-                                    addinstalldate.setText(DateUtil
+                                    btnAddInstallDate.setText(DateUtil
                                             .convertDateObjectToRequestedFormat(
                                                     selectedDate.getTime(),
                                                     ConfigurationMasterHelper.outDateFormat));
-                                    Calendar currentcal = Calendar
+                                    Calendar mCurrentCalendar = Calendar
                                             .getInstance();
-                                    if (selectedDate.after(currentcal)) {
+                                    if (selectedDate.after(mCurrentCalendar)) {
                                         Toast.makeText(
                                                 getActivity(),
                                                 R.string.future_date_not_allowed,
                                                 Toast.LENGTH_SHORT).show();
-                                        addinstalldate.setText(DateUtil
+                                        btnAddInstallDate.setText(DateUtil
                                                 .convertDateObjectToRequestedFormat(
-                                                        currentcal.getTime(),
+                                                        mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));
 
                                     }
@@ -231,48 +213,48 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     // check from here
     private void loadBrandData() {
-        ArrayAdapter<CharSequence> massetbrandsadapter = new ArrayAdapter<>(
+        ArrayAdapter<CharSequence> mAssetBrandsAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
-        massetbrandsadapter
+        mAssetBrandsAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        Vector vbrand = bmodel.assetTrackingHelper.getAssetBrandNames();
-        if (vbrand == null || vbrand.size() < 1) {
-            mbrand.setAdapter(null);
-            massetbrandsadapter.add(SELECT);
-            mbrand.setAdapter(massetbrandsadapter);
+        Vector mBrand = mBModel.assetTrackingHelper.getAssetBrandNames();
+        if (mBrand == null || mBrand.size() < 1) {
+            this.mBrand.setAdapter(null);
+            mAssetBrandsAdapter.add(SELECT);
+            this.mBrand.setAdapter(mAssetBrandsAdapter);
             return;
         }
-        int vbrandsiz = vbrand.size();
-        if (vbrandsiz == 0)
+        int mBrandSize = mBrand.size();
+        if (mBrandSize == 0)
             return;
 
-        massetbrandsadapter.add(SELECT);
+        mAssetBrandsAdapter.add(SELECT);
 
-        for (int i = 0; i < vbrandsiz; ++i) {
+        for (int i = 0; i < mBrandSize; ++i) {
 
-            massetbrandsadapter.add(vbrand.elementAt(i).toString());
+            mAssetBrandsAdapter.add(mBrand.elementAt(i).toString());
 
         }
-        mbrand.setAdapter(massetbrandsadapter);
+        this.mBrand.setAdapter(mAssetBrandsAdapter);
     }
 
     private void setAddAssetDetails() {
 
-        assetBo.setPOSM(bmodel.assetTrackingHelper.getAssetPosmIds(masset
+        assetBo.setPOSM(mBModel.assetTrackingHelper.getAssetPosmIds(mAsset
                 .getSelectedItem().toString()));
 
-        if (!mbrand.getSelectedItem().toString()
+        if (!mBrand.getSelectedItem().toString()
                 .equals(SELECT))
-            assetBo.setBrand(bmodel.assetTrackingHelper.getAssetBrandIds(mbrand
+            assetBo.setBrand(mBModel.assetTrackingHelper.getAssetBrandIds(mBrand
                     .getSelectedItem().toString()));
         else
             assetBo.setBrand("0");
 
-        assetBo.setNewInstallDate(addinstalldate.getText().toString());
+        assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());
 
         assetBo.setSNO(mSNO.getText().toString());
 
-        bmodel.assetTrackingHelper.setAssetTrackingBO(assetBo);
+        mBModel.assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
 
@@ -282,16 +264,16 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         if (view.getId() == R.id.btn_save) {
 
             try {
-                if (!masset.getSelectedItem().toString()
+                if (!mAsset.getSelectedItem().toString()
                         .equals(SELECT)
 
                         && !mSNO.getText().toString().equals("")) {
-                    if (!bmodel.assetTrackingHelper
+                    if (!mBModel.assetTrackingHelper
                             .isExistingRetailerSno(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
-                        bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                        bmodel.assetTrackingHelper
+                        mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                        mBModel.assetTrackingHelper
                                 .saveAssetAddAndDeleteDetails("MENU_ASSET");
                         Toast.makeText(
                                 getActivity(),
@@ -332,7 +314,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     public void numberPressed(View vw) {
         if (edittext == null) {
-            bmodel.showAlert(
+            mBModel.showAlert(
                     getResources().getString(R.string.please_select_item), 0);
         } else {
             int id = vw.getId();

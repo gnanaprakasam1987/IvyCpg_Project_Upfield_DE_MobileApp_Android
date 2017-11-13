@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -53,7 +53,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -67,6 +67,12 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,73 +87,51 @@ public class
 AssetTrackingScreenFragment extends IvyBaseFragment implements
         OnEditorActionListener, BrandDialogInterface {
 
-    private static final String TAG = "AssetTracking Screen";
-    private BusinessModel mBusinessModel;
 
-    // Drawer Implementation
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
     private ListView listview;
     private static Button dateBtn;
-
-    private static String outPutDateFormat;
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int MOVEMENT_ASSET = 2;
-    private final String moduleName = "AT_";
-    AddAssetDialogFragment dialog;
-    ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
-    private static final String BRAND = "Brand";
-    private String brandButton;
-    private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private static final String GENERAL = "General";
-
-
-    /**
-     * This PATH_NAME used to store Asset photos in sdcard
-     */
-
-    private String photoPath = "";
-
-    private ArrayList<AssetTrackingBO> myList = new ArrayList<>();
-
-    /**
-     * This ArrayList contains downloaded assetTracking records
-     */
-    private ArrayList<AssetTrackingBO> mAssetTrackingList;
-
-    /**
-     * This ArrayList contains downloaded assetReason records
-     */
-    private ArrayList<ReasonMaster> mAssetReasonList;
-
-
-    private ArrayList<ReasonMaster> mAssetConditionList;
-    /**
-     * This ArrayAdapter used to set AssetReason in spinner
-     */
-    private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
-
-
-    private ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
-
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-
-    private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
-    private int mSelectedLastFilterSelection = -1;
-    private StandardListBO mSelectedStandardListBO;
-
-    private String strBarCodeSearch = "ALL";
-    private String mCapturedNFCTag = "";
-    private static final String MENU_ASSET = "MENU_ASSET";
-    private String imageName;
-    private boolean isShowed = false;
     Button btnSave;
     FloatingActionButton btnBarcode;
 
+    private BusinessModel mBusinessModel;
+    ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
+    AddAssetDialogFragment dialog;
+    private StandardListBO mSelectedStandardListBO;
+
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int MOVEMENT_ASSET = 2;
+    private int mSelectedLocationIndex;
+    private int mSelectedLastFilterSelection = -1;
+
+    private final String moduleName = "AT_";
+    private static final String BRAND = "Brand";
+    private static final String GENERAL = "General";
+    private String photoPath = "";
+    private static final String MENU_ASSET = "MENU_ASSET";
+    private String strBarCodeSearch = "ALL";
+    private String mCapturedNFCTag = "";
+    private String imageName;
+    private String filterText;
+    private static final String TAG = "AssetTracking Screen";
+    private String brandButton;
+    private static String outPutDateFormat;
+
+    private boolean isShowed = false;
+
+
+    private ArrayList<AssetTrackingBO> myList ;
+    private ArrayList<AssetTrackingBO> mAssetTrackingList;
+    private ArrayList<ReasonMaster> mAssetReasonList;
+    private ArrayList<ReasonMaster> mAssetConditionList;
+    private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+    private ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
+    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+    private ArrayAdapter<StandardListBO> mLocationAdapter;
     private Vector<LevelBO> parentIdList;
     private ArrayList<Integer> mAttributeProducts;
-    private String filterText;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     @Override
     public void onAttach(Context context) {
@@ -159,8 +143,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.activity_asset_tracking, container,
                 false);
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
@@ -178,7 +164,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             }
         });
         btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
-
         if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE)
             btnBarcode.setVisibility(View.GONE);
 
@@ -204,6 +189,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         });
+
         return view;
     }
 
@@ -223,13 +209,14 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
+
         mBusinessModel = (BusinessModel) getActivity().getApplicationContext();
         mBusinessModel.setContext(getActivity());
+
         if (getView() != null) {
             listview = (ListView) getView().findViewById(R.id.lvwplist);
             listview.setCacheColorHint(0);
         }
-
 
         // set a custom shadow that overlays the main content when the drawer
         // opens
@@ -240,14 +227,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setElevation(0);
-            setScreenTitle(mBusinessModel.mSelectedActivityName);
+            setScreenTitle(mBusinessModel.assetTrackingHelper.mSelectedActivityName);
         }
-
-        //getActivity().supportInvalidateOptionsMenu();
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -300,7 +284,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             loadedItem();
             isShowed = true;
         }
+
         hideAndSeeK();
+
         if (parentIdList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
             updateFromFiveLevelFilter(parentIdList, mSelectedIdByLevelId, mAttributeProducts, filterText);
         } else {
@@ -334,6 +320,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         if (!brandButton.equals(BRAND))
             menu.findItem(R.id.menu_product_filter).setIcon(
                     R.drawable.ic_action_filter_select);
+
         if (mBusinessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
@@ -343,6 +330,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         }
+
         if (!mBusinessModel.assetTrackingHelper.SHOW_REMARKS_ASSET) {
             menu.findItem(R.id.menu_remarks).setVisible(false);
         }
@@ -359,6 +347,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         if (mBusinessModel.configurationMasterHelper.floating_Survey) {
             menu.findItem(R.id.menu_survey).setVisible(true);
         }
+
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
@@ -573,10 +562,13 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Updating List by NFC tag
+     * @param mNFCTag NFC tag
+     */
     public void updateListByNFCTag(String mNFCTag) {
         mCapturedNFCTag = mNFCTag;
         strBarCodeSearch = "ALL";
-        Log.e("Barcode", "updateListByNFCTag");
         updateList(-1, mSelectedStandardListBO);
     }
 
@@ -640,9 +632,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.reason1Spin = (Spinner) row
                         .findViewById(R.id.spin_reason1);
                 holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
-               /* holder.reason2Spin = (Spinner) row
-                        .findViewById(R.id.spin_reason2);
-                holder.reason2Spin.setAdapter(mAssetRemarksSpinAdapter);*/
                 holder.mConditionSpin = (Spinner) row
                         .findViewById(R.id.spin_condition);
                 holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
@@ -854,8 +843,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             holder.mConditionSpin.setSelection(0);
                             holder.mInstallDate.setEnabled(false);
                             holder.mServiceDate.setEnabled(false);
-                            //  holder.assetBO.setImageName("");
-                            // holder.assetBO.setImgName("");
                             holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                             holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -916,7 +903,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
             if (holder.assetBO.getAvailQty() > 0) {
                 holder.reason1Spin.setEnabled(false);
-                // holder.photoBTN.setEnabled(true);
                 if ((holder.assetBO.getImageName() != null)
                         && (!"".equals(holder.assetBO.getImageName()))
                         && (!"null".equals(holder.assetBO.getImageName()))) {
@@ -926,7 +912,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     holder.photoBTN.setEnabled(true);
                     holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                 }
-                //  holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                 holder.reason1Spin.setSelection(0);
                 holder.mConditionSpin.setEnabled(true);
                 holder.mConditionSpin.setSelection(mBusinessModel.assetTrackingHelper
@@ -1024,6 +1009,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Load picture in Image View
+     * @param imageName Image Name
+     * @param imageView Image View to show Image
+     */
     private void setPictureToImageView(String imageName, ImageView imageView) {
         Glide.with(getActivity()).load(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -1032,7 +1022,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 .placeholder(R.drawable.ic_photo_camera_blue_24dp)
                 .error(R.drawable.no_image_available)
                 .override(35, 20)
-//                        .transform(new CircleTransform(getContext()))
                 .transform(mBusinessModel.circleTransform)
                 .into(imageView);
     }
@@ -1057,6 +1046,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
 
+    /**
+     * Showing No asset Alert
+     */
     private void mDialog1() {
         AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
                 getActivity());
@@ -1115,7 +1107,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                                 .deleteImageName(imageNameStarts);
                         mBusinessModel.synchronizationHelper.deleteFiles(photoPath,
                                 imageNameStarts);
-                        //   dialog.dismiss();
+
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -1126,7 +1118,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-//                dialog.dismiss();
+
             }
         });
         commonDialog.show();
@@ -1189,8 +1181,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
                     } else {
                         strBarCodeSearch = result.getContents();
-                        Log.e("Barcode", strBarCodeSearch);
-                        //updateList(-1, mSelectedStandardListBO);
                     }
                 }
             }
@@ -1292,7 +1282,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     /**
      * Method that to show visibility and hided column
      */
-
     private void hideAndSeeK() {
         View view = getView();
         if (view != null && (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_TARGET || !mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY)) {

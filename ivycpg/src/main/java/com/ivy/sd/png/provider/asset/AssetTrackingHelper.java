@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.sd.png.provider.asset;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.AssetAddDetailBO;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -25,6 +26,7 @@ public class AssetTrackingHelper {
     private final BusinessModel mBusinessModel;
     private static AssetTrackingHelper instance = null;
     private AssetTrackingBO mAssetTrackingBO;
+    public String mSelectedActivityName;
 
     /**
      * This ArrayList contains downloaded AssetTracking records

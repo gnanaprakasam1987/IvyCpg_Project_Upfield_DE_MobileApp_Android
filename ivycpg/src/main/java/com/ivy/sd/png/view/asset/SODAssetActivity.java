@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.sd.png.view.asset;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -21,14 +21,14 @@ import java.util.Vector;
 
 public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
-    private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sodasset);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,10 +40,10 @@ public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
             }
         }
 
-        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(this);
+        BusinessModel mBModel = (BusinessModel) this.getApplicationContext();
+        mBModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();

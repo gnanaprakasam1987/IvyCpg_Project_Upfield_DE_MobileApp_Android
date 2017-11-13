@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,25 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
-	private ArrayList<AssetTrackingBO> mylist;
-	private BusinessModel bmodel;
+	private ArrayList<AssetTrackingBO> mList;
+	private BusinessModel bModel;
 	private String mModuleName="";
-	private ListView lvwplist;
-	private Toolbar toolbar;
-	private String mposmiddialog;
-	private String msnodialog;
-	private String msbdid;
-	private String mbrandid,mReasonID;
+	private ListView mListView;
+	private String mPOSMIdDialog;
+	private String mSNODialog;
+	private String mSBDId;
 	protected Button btnDelete;
 	protected ArrayList<ReasonMaster> mAssetReasonList;
 	protected ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
@@ -48,15 +47,15 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.remove_asset_dailog);
-		bmodel = (BusinessModel) getApplicationContext();
-		bmodel.setContext(this);
+		bModel = (BusinessModel) getApplicationContext();
+		bModel.setContext(this);
 
 
-		lvwplist = (ListView) findViewById(R.id.lv_assetlist);
-		lvwplist.setCacheColorHint(0);
+		mListView = (ListView) findViewById(R.id.lv_assetlist);
+		mListView.setCacheColorHint(0);
 
-		toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(mToolbar);
 
 		btnDelete=(Button) findViewById(R.id.btn_delete);
 		btnDelete.setOnClickListener(new View.OnClickListener() {
@@ -78,19 +77,21 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			}
 		});
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowTitleEnabled(false);
-		setScreenTitle(getResources().getString(R.string.removeasset));
+		if(getSupportActionBar()!=null) {
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+			setScreenTitle(getResources().getString(R.string.removeasset));
+		}
 
 		if(getIntent().getExtras()!=null){
 			mModuleName=getIntent().getStringExtra("module");
 		}
-		updatelist();
+		updateList();
 	}
 
     private boolean isAssetSelectedToDelete(){
 
-		for(AssetTrackingBO bo:mylist){
+		for(AssetTrackingBO bo: mList){
 			if(bo.isSelectedToRemove()){
 				return true;
 			}
@@ -99,7 +100,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	}
 	private boolean isAssetSelectedWithReason(){
 
-		for(AssetTrackingBO bo:mylist){
+		for(AssetTrackingBO bo: mList){
 			if(!bo.getReason1ID().equalsIgnoreCase("0")){
 				return true;
 			}
@@ -119,20 +120,20 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	}
 
 
-	private void updatelist() {
+	private void updateList() {
 
 		Vector<AssetTrackingBO> items;
-		bmodel.assetTrackingHelper.lodAddRemoveAssets(mModuleName);
+		bModel.assetTrackingHelper.lodAddRemoveAssets(mModuleName);
 
-		items = bmodel.assetTrackingHelper.getAddRemoveAssets();
+		items = bModel.assetTrackingHelper.getAddRemoveAssets();
 		if (items == null) {
 			return;
 		}
 		int siz = items.size();
-		mylist = new ArrayList<>();
+		mList = new ArrayList<>();
 		for (int i = 0; i < siz; ++i) {
 			AssetTrackingBO ret = items.elementAt(i);
-			mylist.add(ret);
+			mList.add(ret);
 		}
 
 //		ReasonMaster reason1 = new ReasonMaster();
@@ -140,17 +141,17 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 //		reason1.setReasonDesc("Select Reason");
 	//	mAssetReasonList.add(0, reason1);
 		mAssetReasonList=new ArrayList<>();
-		bmodel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_REMOVE");
+		bModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_REMOVE");
 		mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
-		mAssetReasonList.addAll(bmodel.reasonHelper.getAssetReasonsBasedOnType());
+		mAssetReasonList.addAll(bModel.reasonHelper.getAssetReasonsBasedOnType());
 		mAssetReasonSpinAdapter = new ArrayAdapter<>(AssetPosmRemoveActivity.this,
 				R.layout.spinner_bluetext_layout, mAssetReasonList);
 		mAssetReasonSpinAdapter
 				.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 //		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, reasonList);
 //		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		MyAdapter mSchedule = new MyAdapter(mylist);
-		lvwplist.setAdapter(mSchedule);
+		MyAdapter mSchedule = new MyAdapter(mList);
+		mListView.setAdapter(mSchedule);
 
 	}
 
@@ -184,10 +185,10 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 				row = inflater
 						.inflate(R.layout.row_asset_dailog, parent, false);
 				holder = new ViewHolder();
-				holder.tvassetname = (TextView) row
+				holder.tvAssetName = (TextView) row
 						.findViewById(R.id.tv_lt_assetname);
-				holder.tvsno = (TextView) row.findViewById(R.id.tv_lt_sno);
-				holder.tvinstall = (TextView) row
+				holder.tvSNO = (TextView) row.findViewById(R.id.tv_lt_sno);
+				holder.tvInstall = (TextView) row
 						.findViewById(R.id.tv_lt_install);
 				holder.chkRemove=(CheckBox) row.findViewById(R.id.chk);
 				holder.SPRemove=(Spinner)row.findViewById(R.id.sp_remove_reason);
@@ -232,22 +233,22 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			}
 			holder.productObj = product;
 			holder.ref = position;
-			holder.tvassetname.setText(holder.productObj.getPOSMName());
+			holder.tvAssetName.setText(holder.productObj.getPOSMName());
 
-			holder.tvinstall.setText(holder.productObj.getNewInstallDate());
+			holder.tvInstall.setText(holder.productObj.getNewInstallDate());
 
 			String mSno = getResources().getString(
 					R.string.serial_no)
 					+ ":" + holder.productObj.getSNO();
-			holder.tvsno.setText(mSno);
+			holder.tvSNO.setText(mSno);
 
-			TypedArray typearr = AssetPosmRemoveActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-			final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
-			final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorPrimary, 0);
+			TypedArray mTypedArray = AssetPosmRemoveActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+			final int color = mTypedArray.getColor(R.styleable.MyTextView_accentcolor, 0);
+			final int secondary_color = mTypedArray.getColor(R.styleable.MyTextView_textColorPrimary, 0);
 			if ("Y".equals(holder.productObj.getFlag())) {
-				holder.tvassetname.setTextColor(color);
+				holder.tvAssetName.setTextColor(color);
 			} else {
-				holder.tvassetname.setTextColor(secondary_color);
+				holder.tvAssetName.setTextColor(secondary_color);
 			}
 
 			return row;
@@ -257,9 +258,9 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	class ViewHolder {
 
 		AssetTrackingBO productObj;
-		TextView tvassetname;
-		TextView tvsno;
-		TextView tvinstall;
+		TextView tvAssetName;
+		TextView tvSNO;
+		TextView tvInstall;
 		CheckBox chkRemove;
 		Spinner SPRemove;
 		int ref;
@@ -290,43 +291,45 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 							}
 						});
 
-		bmodel.applyAlertDialogTheme(alertDialogBuilder);
+		bModel.applyAlertDialogTheme(alertDialogBuilder);
 	}
 
 	private void removeAsset(){
 
+		String mReasonID,mBrandId;
+
 		ArrayList<AssetTrackingBO> lstTemp=new ArrayList<>();
-		lstTemp.addAll(mylist);
+		lstTemp.addAll(mList);
 
 		for(int i=0;i<lstTemp.size();i++) {
 			if(lstTemp.get(i).isSelectedToRemove()) {
 
 				if ("N".equals(lstTemp.get(i).getFlag())) {
-					mposmiddialog = lstTemp.get(i).getPOSM();
-					msnodialog = lstTemp.get(i).getSNO();
-					msbdid = lstTemp.get(i).getSBDId();
-					mbrandid = lstTemp.get(i).getBrand();
+					mPOSMIdDialog = lstTemp.get(i).getPOSM();
+					mSNODialog = lstTemp.get(i).getSNO();
+					mSBDId = lstTemp.get(i).getSBDId();
+					mBrandId = lstTemp.get(i).getBrand();
 					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
 						mReasonID = lstTemp.get(i).getReason1ID();
-						bmodel.assetTrackingHelper
-								.saveAddAndDeleteDetails(mposmiddialog,
-										msnodialog, msbdid, mbrandid, mReasonID, mModuleName);
+						bModel.assetTrackingHelper
+								.saveAddAndDeleteDetails(mPOSMIdDialog,
+										mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
 
-						mylist.remove(i);
+						mList.remove(i);
 					}
 
 
 				} else {
-					bmodel.assetTrackingHelper
+					bModel.assetTrackingHelper
 							.deletePosmDetails(lstTemp.get(i)
 									.getSNO());
-					mylist.remove(i);
+					mList.remove(i);
 				}
-				bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+				bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
 			}
 		}
 
-		MyAdapter mSchedule = new MyAdapter(mylist);
-		lvwplist.setAdapter(mSchedule);
+		MyAdapter mSchedule = new MyAdapter(mList);
+		mListView.setAdapter(mSchedule);
 	}
 }

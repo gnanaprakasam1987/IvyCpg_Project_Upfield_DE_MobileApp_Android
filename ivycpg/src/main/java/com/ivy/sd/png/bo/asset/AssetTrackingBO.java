@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.sd.png.bo.asset;
 
 public class AssetTrackingBO {
     private int assetID;
