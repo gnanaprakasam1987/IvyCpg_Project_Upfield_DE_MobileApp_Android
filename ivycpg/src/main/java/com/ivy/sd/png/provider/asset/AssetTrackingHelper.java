@@ -165,6 +165,9 @@ public class AssetTrackingHelper {
         return instance;
     }
 
+    /*
+    Download Master Data needed for Asset Screen
+     */
     public void loadDataForAssetPOSM(String mMenuCode) {
         if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
@@ -190,6 +193,9 @@ public class AssetTrackingHelper {
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
+    /**
+     * Load All Asset Screen Specific Configurations
+     */
     private void loadAssetConfigs() {
         try {
             SHOW_ASSET_TARGET = false;
@@ -292,6 +298,9 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Load all POSM related configurations
+     */
     private void loadPOSMConfigs() {
         try {
             SHOW_POSM_TARGET = false;
@@ -394,7 +403,6 @@ public class AssetTrackingHelper {
      *
      * @param moduleName module name
      */
-
     private void downloadAssetMaster(String moduleName) {
         ArrayList<AssetTrackingBO> mAllAssetTrackingList=null;
 
@@ -570,7 +578,6 @@ public class AssetTrackingHelper {
      * @param mRetailerId Retailer ID
      * @param moduleName Module Name
      */
-
     private void loadAssetData(String mRetailerId, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
@@ -650,7 +657,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<AssetTrackingBO>
      */
-
     public ArrayList<AssetTrackingBO> getAssetTrackingList() {
         if (mAssetTrackingList != null) {
             return mAssetTrackingList;
@@ -730,6 +736,10 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Download unique POSM available
+     * @param moduleName
+     */
     public void downloadAssetsPosm(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
@@ -769,6 +779,10 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Get asset Names
+     * @return List of assets
+     */
     public Vector<String> getAssetPosmNames() {
         AssetAddDetailBO brand;
         Vector<String> data = new Vector<>();
@@ -787,6 +801,10 @@ public class AssetTrackingHelper {
         return data;
     }
 
+    /**
+     * Get asset brands
+     * @return
+     */
     public Vector<String> getAssetBrandNames() {
         AssetAddDetailBO brand;
         Vector<String> data = new Vector<>();
@@ -805,6 +823,11 @@ public class AssetTrackingHelper {
         return data;
     }
 
+    /**
+     * Get asset Id for given asset name
+     * @param mAssetPosmName Asset name
+     * @return Asset Id
+     */
     public String getAssetPosmIds(String mAssetPosmName) {
         AssetAddDetailBO brand;
 
@@ -830,6 +853,11 @@ public class AssetTrackingHelper {
         return mAssetPosmName;
     }
 
+    /**
+     * Get Asset brand Id for given Asset Brand Name
+     * @param mAssetBrandName Asset brand name
+     * @return Brand id
+     */
     public String getAssetBrandIds(String mAssetBrandName) {
         AssetAddDetailBO brand;
 
@@ -852,6 +880,10 @@ public class AssetTrackingHelper {
         return mAssetBrandName;
     }
 
+    /**
+     * Download asset brands
+     * @param brandPosm POSM Id
+     */
     public void downloadAssetBrand(String brandPosm) {
 
         AssetAddDetailBO assetBO;
@@ -885,6 +917,11 @@ public class AssetTrackingHelper {
         }
     }
 
+
+    /**
+     * Preparing List to Add or remove assets
+     * @param moduleName
+     */
     public void lodAddRemoveAssets(String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
@@ -1014,7 +1051,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getAssetReasonList() {
         if (mAssetReasonList != null) {
             return mAssetReasonList;
@@ -1027,7 +1063,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getAssetRemarksList() {
         if (mAssetRemarkList != null) {
             return mAssetRemarkList;
@@ -1048,7 +1083,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getPOSMReasonList() {
         if (mPOSMReasonList != null) {
             return mPOSMReasonList;
@@ -1062,7 +1096,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getPOSMConditionList() {
         if (mPOSMConditionList != null) {
             return mPOSMConditionList;
@@ -1137,8 +1170,6 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-
-
             int typeListId = 0;
             String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
             Cursor c1 = db.selectSQL(query1);
@@ -1217,6 +1248,15 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Save added or deleted details
+     * @param posmId POSM Id
+     * @param mSno SNO
+     * @param mSbdId SBD Id
+     * @param mBrandId Brand ID
+     * @param reasonId Reason ID
+     * @param moduleName Module Name
+     */
     public void saveAddAndDeleteDetails(String posmId, String mSno,
                                         String mSbdId, String mBrandId, String reasonId, String moduleName) {
         String type = "";
@@ -1231,8 +1271,6 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-
-
             int typeListId = 0;
             String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
             Cursor c1 = db.selectSQL(query1);
@@ -1262,6 +1300,10 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Delete POSM details
+     * @param mSno SNO
+     */
     public void deletePosmDetails(String mSno) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1279,6 +1321,11 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Checking Serial number availability
+     * @param mSno
+     * @return
+     */
     public boolean isExistingRetailerSno(String mSno) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -1340,6 +1387,10 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Saving asset details
+     * @param moduleName Module Name
+     */
     public void saveAsset(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
@@ -1687,7 +1738,6 @@ public class AssetTrackingHelper {
      * @param serialNo serial Number
      * @param imgName image Name
      */
-
     private void setAssetDetails(int assetID, int qty, String imageName,
                                  String mReasonId, String serialNo,
                                  String conditionId, String installDate, String serviceDate, int audit, int pid, int compQty, int locId, int isExec, String imgName) {
@@ -1739,7 +1789,6 @@ public class AssetTrackingHelper {
      *
      * @return true if asset already taken
      */
-
     public boolean hasAssetTaken() {
         for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();

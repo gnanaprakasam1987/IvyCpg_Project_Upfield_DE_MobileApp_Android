@@ -233,12 +233,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             setScreenTitle(mBusinessModel.assetTrackingHelper.mSelectedActivityName);
         }
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
         ) {
             public void onDrawerClosed(View view) {
                 if (actionBar != null)
@@ -1064,14 +1062,14 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     private void showFileDeleteAlertWithImage(final String mAssetId,
                                               final String imageNameStarts,
                                               final String imageSrc) {
-        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
-                getActivity(), //Context
-                "", //Title
-                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
-                true, //ToDisplayImage
-                getResources().getString(R.string.yes), //Positive Button
-                getResources().getString(R.string.no), //Negative Button
-                false, //MoveToNextActivity
+        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(),
+                getActivity(),
+                "",
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake),
+                true,
+                getResources().getString(R.string.yes),
+                getResources().getString(R.string.no),
+                false,
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
                 new CommonDialog.positiveOnClickListener() {
                     @Override
@@ -1112,7 +1110,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * @param serialNo Serial Number
      * @param imgName Image Name
      */
-
     private void onSaveImageName(int assetID, String serialNo, String imgName) {
 
         String imagePath = "Asset/"
@@ -1169,6 +1166,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Deleting Un used images
+     */
     public void deleteUnusedImages() {
 
         for (AssetTrackingBO temp : myList) {
@@ -1180,6 +1180,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Deleting image files
+     * @param filename
+     */
     private void deleteFiles(String filename) {
         File folder = new File(HomeScreenFragment.photoPath + "/");
 
@@ -1352,6 +1356,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Custom camera call
+     */
     private void captureCustom() {
         final String actionScannerInputPlugin = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
         final String extraParameter = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
@@ -1446,6 +1453,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
 
+    /**
+     * Show location dialog
+     */
     private void showLocation() {
         AlertDialog.Builder builderDialog;
 
@@ -1467,6 +1477,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
 
+    //Product filter click
     private void productFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -1662,6 +1673,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         refreshList();
     }
 
+    /**
+     * Product filter(Five level) click
+     */
     private void FiveFilterFragment() {
         try {
 
