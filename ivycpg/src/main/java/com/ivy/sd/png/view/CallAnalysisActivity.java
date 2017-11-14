@@ -77,6 +77,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private String mModuleName = "MENU_CALL_ANLYS";
     boolean isPhotoTaken = false;
     private String mFeedbackReasonId = "";
+    private String mFeedBackId = "";
 
     private Toolbar toolbar;
     TextView tv_store_status, tv_duration, tv_edt_time_taken, tv_sale;
@@ -1000,6 +1001,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             if (bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !hasActivityDone()) {
                 ReasonMaster reasonMaster = (ReasonMaster) spinnerFeedback.getSelectedItem();
                 mFeedbackReasonId = reasonMaster.getReasonDesc();
+                mFeedBackId = reasonMaster.getReasonID();
 
             }
 
@@ -1321,6 +1323,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
+        } else if (!mFeedBackId.equals("0")) {
+            bmodel.updateIsVisitedFlag();
         }
 
         // Rollback the review plan if review

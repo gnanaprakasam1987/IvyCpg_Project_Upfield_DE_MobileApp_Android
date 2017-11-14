@@ -2370,12 +2370,12 @@ public class BusinessModel extends Application {
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         dailyRep = new DailyReportBO();
-
+        Cursor c = null;
 
         if (!configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
             sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2389,7 +2389,7 @@ public class BusinessModel extends Application {
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
             sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2401,14 +2401,101 @@ public class BusinessModel extends Application {
             }
         }
         sb = new StringBuffer();
-        sb.append("select  sum(mspvalues) from OrderHeader ");
+        sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
         sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        Cursor c = db
+        c = db
                 .selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
 
                 dailyRep.setMspValues(c.getString(0));
+                dailyRep.setNoofOrder(c.getString(1));
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select pieceQty,caseQty,outerQty from OrderDetail OD ");
+        sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setPcsQty(c.getString(0));
+                dailyRep.setCsQty(c.getString(1));
+                dailyRep.setOuQty(c.getString(2));
+
+            }
+            c.close();
+        }
+
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " where isdeviated='Y' and isVisited='Y'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhoc(c.getString(0));
+            }
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and isdeviated='Y'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhocProductive(c.getString(0));
+
+            }
+            c.close();
+        }
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlanned(c.getString(0));
+
+
+            }
+            c.close();
+        }
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where isVisited='Y' and RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedVisit(c.getString(0));
+
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedProductive(c.getString(0));
 
             }
             c.close();

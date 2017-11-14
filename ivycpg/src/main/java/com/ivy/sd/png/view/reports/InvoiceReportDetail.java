@@ -586,7 +586,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 } else if (holder.productBO.getOuUomid() == productBO
                         .getUomID() && holder.productBO.getOuUomid() != 0) {
                     // outer wise free quantity update
-                    holder.outerQty.setText(productBO.getQuantitySelected());
+                    holder.outerQty.setText(productBO.getQuantitySelected() + "");
                     holder.tvwqty.setText(0 + "");
                     holder.tvcaseqty.setText(0 + "");
                 } else {
