@@ -3101,7 +3101,7 @@ public class ReportHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,Retailerid,timein,timeout");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -3138,8 +3138,13 @@ public class ReportHelper {
 
     }
 
-    public ArrayList<OutletReportBO> downloadUsers(){
-        ArrayList<OutletReportBO> lstUsers=new ArrayList<>();
+    public ArrayList<OutletReportBO> getLstUsers() {
+        return lstUsers;
+    }
+
+    private ArrayList<OutletReportBO> lstUsers;
+    public ArrayList downloadUsers(){
+        lstUsers=new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -3155,6 +3160,7 @@ public class ReportHelper {
                     outletReportBO = new OutletReportBO();
                     outletReportBO.setUserId(c.getInt(0));
                     outletReportBO.setUserName(c.getString(1));
+                    outletReportBO.setChecked(true);// to show all user by default
                     lstUsers.add(outletReportBO);
                 }
             }
@@ -3164,8 +3170,8 @@ public class ReportHelper {
         finally {
             db.closeDB();
         }
-
         return lstUsers;
+
     }
 
     public Integer downloadlastVisitedRetailer(int userId){

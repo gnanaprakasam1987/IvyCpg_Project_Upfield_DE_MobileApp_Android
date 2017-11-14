@@ -54,7 +54,6 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
     private DrawerLayout mDrawerLayout;
     FrameLayout drawer;
 
-    private ArrayList<OutletReportBO> lstUsers;
     private ArrayList<OutletReportBO>lstReports;
 
     View cardView;
@@ -91,10 +90,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
     }
 
     private void downloadReportData(){
-        if(lstUsers==null) {
-            lstUsers = bmodel.reportHelper.downloadUsers();
             lstReports = bmodel.reportHelper.downloadOutletReports();
-        }
     }
     @Override
     public void onStart() {
@@ -156,7 +152,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-          for(OutletReportBO bo:lstUsers){
+          for(OutletReportBO bo:bmodel.reportHelper.getLstUsers()){
 
               if(isAllUser||mSelectedUsers.contains(bo.getUserId())) {
 
@@ -378,7 +374,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
             SellerListFragment fragment = new SellerListFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("users", lstUsers);
+            bundle.putParcelableArrayList("users", bmodel.reportHelper.getLstUsers());
             fragment.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragment, "filter");
