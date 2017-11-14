@@ -140,6 +140,7 @@ public class AssetTrackingHelper {
     private static final String MERCH = "MERCH";
     private static final String MENU_ASSET = "MENU_ASSET";
     private static final String MERCH_INIT = "MERCH_INIT";
+    private static final String MENU_POSM="MENU_POSM";
 
    /* public AssetTrackingHelper(){
 
@@ -181,13 +182,16 @@ public class AssetTrackingHelper {
             mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         }
 
+        //update configurations
         if (MENU_ASSET.equalsIgnoreCase(mMenuCode))
             loadAssetConfigs();
-        else if ("MENU_POSM".equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
+        else if (MENU_POSM.equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
             loadPOSMConfigs();
 
+        //download locations
         mBusinessModel.productHelper.downloadInStoreLocations();
 
+        //download filter levels
         mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
         downloadAssetMaster(mMenuCode);
@@ -335,7 +339,7 @@ public class AssetTrackingHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = 'MENU_POSM' AND flag='1'";
+                    + " WHERE menu_type = "+MENU_POSM+" AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -719,9 +723,6 @@ public class AssetTrackingHelper {
                     reasonBO.setReasonID(c.getString(0));
                     reasonBO.setReasonDesc(c.getString(1));
                     reasonBO.setConditionID(c.getString(0));
-                    // if category is AR, Asset reason downloaded and category
-                    // is ARR, Asset remarks downloaded
-                    // from reason master table
 
                     switch (category) {
                         case ASSET_REASON:
@@ -760,7 +761,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = "CMP";
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = "CMN";
 
         AssetAddDetailBO assetBO;
@@ -1179,7 +1180,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1226,7 +1227,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1278,7 +1279,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
 
 
@@ -1411,7 +1412,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
             type = MERCH;
-        } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+        } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
         }
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -1538,7 +1539,7 @@ public class AssetTrackingHelper {
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
-                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
@@ -1654,7 +1655,7 @@ public class AssetTrackingHelper {
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
-                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
@@ -1725,7 +1726,7 @@ public class AssetTrackingHelper {
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 if (MENU_ASSET.equals(moduleName)) {
                     moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
-                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                     moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
                 }
                 assetHeaderValues.append("," );assetHeaderValues.append(moduleWeightAge);
