@@ -4623,8 +4623,8 @@ SynchronizationHelper {
      * @return value
      */
     public NEXT_METHOD checkNextSyncMethod() {
-        if (!isDistributorDownloadDone
-                && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE&&!isDistributorDownloadDone
+                ) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
         } else if (!isDistributorDownloadDone) {
