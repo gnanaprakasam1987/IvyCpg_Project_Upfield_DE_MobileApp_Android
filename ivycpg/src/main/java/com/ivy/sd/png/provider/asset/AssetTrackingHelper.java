@@ -194,8 +194,10 @@ public class AssetTrackingHelper {
         //download filter levels
         mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
+        // Load master records
         downloadAssetMaster(mMenuCode);
 
+        // Load data from transaction
         loadAssetData(mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
