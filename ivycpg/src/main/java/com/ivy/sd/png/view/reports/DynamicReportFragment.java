@@ -2,7 +2,6 @@ package com.ivy.sd.png.view.reports;
 
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +25,7 @@ import com.ivy.sd.png.bo.DynamicReportDetailBO;
 import com.ivy.sd.png.bo.DynamicReportHeaderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.ReportUtil;
 
@@ -113,6 +113,7 @@ public class DynamicReportFragment extends Fragment {
                     setUpReportLayout();
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -171,8 +172,20 @@ public class DynamicReportFragment extends Fragment {
                         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSmall);
                         textView.setBackgroundResource(R.drawable.list_title_bg);
                         textView.setTextColor(Color.WHITE);
-                        textView.setGravity(Gravity.CENTER);
-                        textView.setTypeface(null, Typeface.BOLD);
+
+                        /**
+                         * text alignment should bet set based on columnAlignment value
+                         * Note:
+                         *    given value should be text and should like left,right else part always work center alignment
+                         */
+                        if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("LEFT"))
+                            textView.setGravity(Gravity.LEFT);
+                        else if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("RIGHT"))
+                            textView.setGravity(Gravity.RIGHT);
+                        else
+                            textView.setGravity(Gravity.CENTER);
+
+                        textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
                         textView.setLayoutParams(new LinearLayout.LayoutParams(pixelLength, ViewGroup.LayoutParams.MATCH_PARENT));
                         int padding = (int) getResources().getDimension(R.dimen.list_title_padding);
                         textView.setPadding(padding, padding, padding, padding);
@@ -189,7 +202,19 @@ public class DynamicReportFragment extends Fragment {
                     textViewF.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSmall);
                     textViewF.setLayoutParams(new LinearLayout.LayoutParams(pixelLength, ViewGroup.LayoutParams.MATCH_PARENT));
                     textViewF.setTextColor(Color.BLACK);
-                    textViewF.setGravity(Gravity.CENTER);
+                    textViewF.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    /**
+                     * text alignment should bet set based on columnAlignment value
+                     * Note:
+                     *    given value should be text and should like left,right else part always work center alignment
+                     */
+                    if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("LEFT"))
+                        textViewF.setGravity(Gravity.LEFT);
+                    else if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("RIGHT"))
+                        textViewF.setGravity(Gravity.RIGHT);
+                    else
+                        textViewF.setGravity(Gravity.CENTER);
+
                     SparseArray<String> list = null;
                     String data = null;
                     try {

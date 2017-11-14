@@ -66,6 +66,7 @@ public class DynamicReportHelper {
                     reportHeaderBO.setColumnId(c.getInt(3));
                     reportHeaderBO.setColumnName(c.getString(4));
                     reportHeaderBO.setLength(c.getInt(5));
+                    reportHeaderBO.setColumnAlignment(c.getString(6));
                     dynamicReportHeaderBOs.add(reportHeaderBO);
                 }
             }

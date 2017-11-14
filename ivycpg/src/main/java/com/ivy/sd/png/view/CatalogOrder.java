@@ -16,6 +16,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -45,7 +46,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.carousel.CarouselLayoutManager;
 import com.ivy.carousel.CarouselZoomPostLayoutListener;
-import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -349,7 +349,13 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         } else {
             gridlaymanager = new GridLayoutManager(getApplicationContext(), 1);
         }
-        pdt_recycler_view.setHasFixedSize(true);
+        if (pdt_recycler_view != null) {
+            pdt_recycler_view.setHasFixedSize(false);
+            pdt_recycler_view.setItemViewCacheSize(20);
+            pdt_recycler_view.setDrawingCacheEnabled(true);
+            pdt_recycler_view.setItemAnimator(new DefaultItemAnimator());
+            pdt_recycler_view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        }
         pdt_recycler_view.setLayoutManager(gridlaymanager);
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_down);
@@ -505,6 +511,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     protected void onDestroy() {
         super.onDestroy();
         mBundleRecyclerViewState = null;
+        if (pdt_recycler_view != null) {
+            pdt_recycler_view.setItemAnimator(null);
+            pdt_recycler_view.setAdapter(null);
+            pdt_recycler_view = null;
+        }
     }
 
     @Override
