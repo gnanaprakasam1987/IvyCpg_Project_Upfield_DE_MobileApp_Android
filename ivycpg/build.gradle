@@ -149,4 +149,8 @@ dependencies {
     compile 'me.relex:circleindicator:1.2.2@aar'
     testCompile 'junit:junit:4.12'
     compile 'com.itextpdf:itextg:5.5.10'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }

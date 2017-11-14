@@ -141,9 +141,12 @@ public class AssetTrackingHelper {
     private static final String MENU_ASSET = "MENU_ASSET";
     private static final String MERCH_INIT = "MERCH_INIT";
 
+   /* public AssetTrackingHelper(){
+
+    }*/
     private AssetTrackingHelper(Context context) {
         this.context = context;
-        this.mBusinessModel = (BusinessModel) context;
+        this.mBusinessModel = (BusinessModel) context.getApplicationContext();
     }
 
     private AssetTrackingBO getAssetTrackingBO() {
@@ -208,7 +211,6 @@ public class AssetTrackingHelper {
             SHOW_COMPETITOR_QTY = false;
             SHOW_ASSET_GRP = false;
             SHOW_ASSET_EXECUTED = false;
-
             SHOW_ASSET_BARCODE = false;
             SHOW_ADD_NEW_ASSET = false;
             SHOW_REMOVE_ASSET = false;
@@ -233,38 +235,7 @@ public class AssetTrackingHelper {
                         if (c.getString(1) != null) {
                             String codeSplit[] = c.getString(1).split(",");
                             for (String temp : codeSplit) {
-                                switch (temp) {
-                                    case "TGT":
-                                        SHOW_ASSET_TARGET = true;
-                                        break;
-                                    case "QTY":
-                                        SHOW_ASSET_QTY = true;
-                                        break;
-                                    case "REASON":
-                                        SHOW_ASSET_REASON = true;
-                                        break;
-                                    case "PHOTO":
-                                        SHOW_ASSET_PHOTO = true;
-                                        break;
-                                    case "CONDITION":
-                                        SHOW_ASSET_CONDITION = true;
-                                        break;
-                                    case "AID":
-                                        SHOW_ASSET_INSTALL_DATE = true;
-                                        break;
-                                    case "ASD":
-                                        SHOW_ASSET_SERVICE_DATE = true;
-                                        break;
-                                    case "COMPQTY":
-                                        SHOW_COMPETITOR_QTY = true;
-                                        break;
-                                    case "GRP":
-                                        SHOW_ASSET_GRP = true;
-                                        break;
-                                    case "EXECUTED":
-                                        SHOW_ASSET_EXECUTED = true;
-                                        break;
-                                }
+                                updateAssetColumnConfig(temp);
                             }
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE) && c.getString(1).equalsIgnoreCase("1"))
@@ -298,6 +269,44 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Update Asset Column Configurations
+     * @param temp Configuration Code
+     */
+    private void updateAssetColumnConfig(String temp){
+        switch (temp) {
+            case "TGT":
+                SHOW_ASSET_TARGET = true;
+                break;
+            case "QTY":
+                SHOW_ASSET_QTY = true;
+                break;
+            case "REASON":
+                SHOW_ASSET_REASON = true;
+                break;
+            case "PHOTO":
+                SHOW_ASSET_PHOTO = true;
+                break;
+            case "CONDITION":
+                SHOW_ASSET_CONDITION = true;
+                break;
+            case "AID":
+                SHOW_ASSET_INSTALL_DATE = true;
+                break;
+            case "ASD":
+                SHOW_ASSET_SERVICE_DATE = true;
+                break;
+            case "COMPQTY":
+                SHOW_COMPETITOR_QTY = true;
+                break;
+            case "GRP":
+                SHOW_ASSET_GRP = true;
+                break;
+            case "EXECUTED":
+                SHOW_ASSET_EXECUTED = true;
+                break;
+        }
+    }
     /**
      * Load all POSM related configurations
      */
@@ -336,38 +345,7 @@ public class AssetTrackingHelper {
                         if (c.getString(1) != null) {
                             String codeSplit[] = c.getString(1).split(",");
                             for (String temp : codeSplit) {
-                                switch (temp) {
-                                    case "TGT":
-                                        SHOW_POSM_TARGET = true;
-                                        break;
-                                    case "QTY":
-                                        SHOW_POSM_QTY = true;
-                                        break;
-                                    case "REASON":
-                                        SHOW_POSM_REASON = true;
-                                        break;
-                                    case "PHOTO":
-                                        SHOW_POSM_PHOTO = true;
-                                        break;
-                                    case "CONDITION":
-                                        SHOW_POSM_CONDITION = true;
-                                        break;
-                                    case "AID":
-                                        SHOW_POSM_INSTALL_DATE = true;
-                                        break;
-                                    case "ASD":
-                                        SHOW_POSM_SERVICE_DATE = true;
-                                        break;
-                                    case "COMPQTY":
-                                        SHOW_POSM_COMPETITOR_QTY = true;
-                                        break;
-                                    case "GRP":
-                                        SHOW_POSM_GRP = true;
-                                        break;
-                                    case "EXEUTED":
-                                        SHOW_POSM_EXECUTED = true;
-                                        break;
-                                }
+                                updatePOSMColumnConfig(temp);
                             }
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_POSM_BARCODE))
@@ -398,6 +376,44 @@ public class AssetTrackingHelper {
 
     }
 
+    /**
+     * Update POSM column configurations
+     * @param temp Configuration Code
+     */
+    private void updatePOSMColumnConfig(String temp){
+        switch (temp) {
+            case "TGT":
+                SHOW_POSM_TARGET = true;
+                break;
+            case "QTY":
+                SHOW_POSM_QTY = true;
+                break;
+            case "REASON":
+                SHOW_POSM_REASON = true;
+                break;
+            case "PHOTO":
+                SHOW_POSM_PHOTO = true;
+                break;
+            case "CONDITION":
+                SHOW_POSM_CONDITION = true;
+                break;
+            case "AID":
+                SHOW_POSM_INSTALL_DATE = true;
+                break;
+            case "ASD":
+                SHOW_POSM_SERVICE_DATE = true;
+                break;
+            case "COMPQTY":
+                SHOW_POSM_COMPETITOR_QTY = true;
+                break;
+            case "GRP":
+                SHOW_POSM_GRP = true;
+                break;
+            case "EXEUTED":
+                SHOW_POSM_EXECUTED = true;
+                break;
+        }
+    }
     /**
      * Method that to download Asset Details from SQLite
      *
@@ -738,7 +754,7 @@ public class AssetTrackingHelper {
 
     /**
      * Download unique POSM available
-     * @param moduleName
+     * @param moduleName Module Name
      */
     public void downloadAssetsPosm(String moduleName) {
         String type = "";
@@ -803,7 +819,7 @@ public class AssetTrackingHelper {
 
     /**
      * Get asset brands
-     * @return
+     * @return Vector List of Asset Brands
      */
     public Vector<String> getAssetBrandNames() {
         AssetAddDetailBO brand;
@@ -920,7 +936,7 @@ public class AssetTrackingHelper {
 
     /**
      * Preparing List to Add or remove assets
-     * @param moduleName
+     * @param moduleName Module Name
      */
     public void lodAddRemoveAssets(String moduleName) {
         String type;
@@ -1323,8 +1339,8 @@ public class AssetTrackingHelper {
 
     /**
      * Checking Serial number availability
-     * @param mSno
-     * @return
+     * @param mSno SNO
+     * @return Is Serial Number available
      */
     public boolean isExistingRetailerSno(String mSno) {
         try {
