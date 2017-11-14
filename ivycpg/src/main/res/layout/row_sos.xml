@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
     android:minHeight="40dp"
     android:orientation="vertical">
@@ -139,6 +140,19 @@
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
             android:layout_centerVertical="true" />
+
+        <EditText
+            android:id="@+id/edt_other_remarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/list_item_primary_text_size"
+            android:visibility="visible"
+            tools:text="rg tgerg dfgdfgdf g"
+            android:layout_alignBottom="@+id/btn_photo"
+            android:layout_centerHorizontal="true"
+            android:hint="Remarks" />
 
         <ImageView
             android:id="@+id/btn_photo"

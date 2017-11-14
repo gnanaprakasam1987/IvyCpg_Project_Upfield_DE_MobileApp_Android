@@ -6917,16 +6917,6 @@ public class ProductHelper {
             }
             db.closeDB();
 
-            Vector<ProductMasterBO> tagItems = bmodel.productHelper.getTaggedProducts();
-            if (tagItems != null)
-                for (ProductMasterBO tagBo : tagItems) {
-                    if (tagBo.getOwn() == 0 && bmodel.productHelper.getFilterColor("Filt23") != 0) {
-                        tagBo.setTextColor(bmodel.productHelper.getFilterColor("Filt23"));
-                    } else {
-                        if (tagBo.getOwn() == 0)
-                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
-                    }
-                }
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -8957,6 +8947,17 @@ public class ProductHelper {
             if (!competitorParentIds.equals("")) {
                 getCompetitorFilter(competitorParentIds);
             }
+
+            Vector<ProductMasterBO> tagItems = getTaggedProducts();
+            if (tagItems != null)
+                for (ProductMasterBO tagBo : tagItems) {
+                    if (tagBo.getOwn() == 0 && getFilterColor("Filt23") != 0) {
+                        tagBo.setTextColor(getFilterColor("Filt23"));
+                    } else {
+                        if (tagBo.getOwn() == 0)
+                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
+                    }
+                }
         } catch (Exception e) {
             Commons.printException("downloadTaggedProducts", e);
         }

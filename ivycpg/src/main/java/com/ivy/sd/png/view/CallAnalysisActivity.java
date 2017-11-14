@@ -201,7 +201,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             spinnerAdapter = new ArrayAdapter<ReasonMaster>(this,
                     R.layout.call_analysis_spinner_layout);
-            spinnerAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select_reason_for_no_order)));
+            spinnerAdapter.add(new ReasonMaster(-1 + "", getResources().getString(R.string.select_reason_for_no_order)));
             for (ReasonMaster temp : bmodel.reasonHelper
                     .getNonProductiveReasonMaster())
                 spinnerAdapter.add(temp);
@@ -1009,7 +1009,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             mSelectedReasonId = reason.getReasonID();
             if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
-                if (reason.getReasonID().equals("0")) {
+                if (reason.getReasonID().equals("-1")) {
                     Toast.makeText(
                             this,
                             getResources().getString(
@@ -1289,7 +1289,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
         ReasonMaster temp = (ReasonMaster) spinnerNoOrderReason
                 .getSelectedItem();
-        if (!temp.getReasonID().equals("0")) {
+        if (!temp.getReasonID().equals("-1")) {
 
             // Consider it as a non productive
             NonproductivereasonBO nonproductive = new NonproductivereasonBO();

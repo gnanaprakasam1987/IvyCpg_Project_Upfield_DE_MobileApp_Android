@@ -198,6 +198,10 @@ public class ReasonHelper {
             }
             c.close();
         }
+        reason = new ReasonMaster();
+        reason.setReasonID("0");
+        reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+        getDeviatedReturnMaster().add(reason);
         db.closeDB();
     }
 
@@ -238,6 +242,10 @@ public class ReasonHelper {
             }
             c.close();
         }
+        reason = new ReasonMaster();
+        reason.setReasonID("0");
+        reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+        getNonProductiveReasonMaster().add(reason);
         db.closeDB();
     }
 

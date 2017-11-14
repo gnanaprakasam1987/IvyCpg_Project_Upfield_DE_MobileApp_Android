@@ -365,7 +365,10 @@ public class SOSFragment extends IvyBaseFragment implements
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-
+        ReasonMaster reason = new ReasonMaster();
+        reason.setReasonID("0");
+        reason.setReasonDesc(getResources().getString(R.string.other_reason));
+        reason.setReasonCategory("SOS");
 
         for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
             if ("SOS".equalsIgnoreCase(temp.getReasonCategory())
@@ -376,9 +379,10 @@ public class SOSFragment extends IvyBaseFragment implements
         if (!(spinnerAdapter.getCount() > 0)) {
             ReasonMaster reasonMasterBo = new ReasonMaster();
             reasonMasterBo.setReasonDesc(getActivity().getResources().getString(R.string.select_reason));
-            reasonMasterBo.setReasonID("0");
+            reasonMasterBo.setReasonID("-1");
             spinnerAdapter.add(reasonMasterBo);
         }
+        spinnerAdapter.add(reason);
     }
 
     class ViewHolder {
