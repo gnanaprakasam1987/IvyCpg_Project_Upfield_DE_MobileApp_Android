@@ -1,10 +1,13 @@
 package com.ivy.sd.png.bo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by rajkumar.s on 10/31/2017.
  */
 
-public class OutletReportBO {
+public class OutletReportBO implements Parcelable {
 
     int userId, retailerId, isPlanned = 0, isVisited = 0;
     String userName, retailerName, locationName, Address;
@@ -146,4 +149,37 @@ public class OutletReportBO {
     }
 
     int sequence;
+
+    public OutletReportBO(){
+
+    }
+    protected OutletReportBO(Parcel in) {
+        userName = in.readString();
+        isChecked=in.readByte()!=0;
+
+    }
+
+    public static final Creator<OutletReportBO> CREATOR = new Creator<OutletReportBO>() {
+        @Override
+        public OutletReportBO createFromParcel(Parcel in) {
+            return new OutletReportBO(in);
+        }
+
+        @Override
+        public OutletReportBO[] newArray(int size) {
+            return new OutletReportBO[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(userName);
+        parcel.writeByte((byte) (isChecked ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
 }
