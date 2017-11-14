@@ -2501,6 +2501,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
                 if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
+
                     bmodel.assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -2514,7 +2515,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         in.putExtra("isFromChild", isFromChild);
                     startActivity(in);
                     finish();
+
                 } else {
+
                     dataNotMapped();
                     isCreated = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
@@ -2538,7 +2541,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
                 bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
+
                 if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
+
                     bmodel.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -2552,6 +2557,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         in.putExtra("isFromChild", isFromChild);
                     startActivity(in);
                     finish();
+
                 } else {
                     dataNotMapped();
                     isCreated = false;

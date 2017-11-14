@@ -142,9 +142,6 @@ public class AssetTrackingHelper {
     private static final String MERCH_INIT = "MERCH_INIT";
     private static final String MENU_POSM="MENU_POSM";
 
-   /* public AssetTrackingHelper(){
-
-    }*/
     private AssetTrackingHelper(Context context) {
         this.context = context;
         this.mBusinessModel = (BusinessModel) context.getApplicationContext();

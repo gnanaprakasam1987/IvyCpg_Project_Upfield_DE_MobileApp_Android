@@ -196,7 +196,7 @@ public class CheckModeFragment extends IvyBaseFragment
             public void onClick(View v) {
                 DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                 newFragment.show(getFragmentManager(), "datePicker1");
-                //AssetTrackingScreenFragment.DatePickerFragment newFragment = new AssetTrackingScreenFragment.DatePickerFragment();
+                //AssetTrackingFragment.DatePickerFragment newFragment = new AssetTrackingFragment.DatePickerFragment();
                 //newFragment.show(getFragmentManager(),"datePicker1");
             }
         });

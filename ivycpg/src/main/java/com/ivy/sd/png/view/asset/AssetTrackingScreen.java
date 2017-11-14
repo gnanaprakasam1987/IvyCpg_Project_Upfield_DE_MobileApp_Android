@@ -34,7 +34,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_assettrackingfrag);
+        setContentView(R.layout.activity_asset_tracking);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -55,7 +55,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
                 public void onTagRead(String tagRead) {
                     if (!tagRead.equals("")) {
                         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+                        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                                 .findFragmentById(R.id.asset_tracking_fragment);
                         asf.updateListByNFCTag(tagRead);
                     }
@@ -124,7 +124,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateBrandText(mFilterText, id);
     }
@@ -136,7 +136,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateCancel();
     }
@@ -165,7 +165,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mParentIdList);
     }
@@ -173,7 +173,7 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
