@@ -723,7 +723,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         for (ProductMasterBO bo : mOrderedProductList) {
             float finalAmount = 0;
 
-            if(bmodel.productHelper.getmTaxListByProductId()!=null) {
+            if (bmodel.productHelper.getmTaxListByProductId() != null) {
                 if (bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
                     for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
@@ -1924,7 +1924,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         int i1 = item.getItemId();
         if (i1 == R.id.menu_review) {
             OrderRemarkDialog ordRemarkDialog = new OrderRemarkDialog(
-                    OrderSummary.this, null);
+                    OrderSummary.this, null, false);
             ordRemarkDialog.show();
             return true;
         } else if (i1 == R.id.menu_discount) {

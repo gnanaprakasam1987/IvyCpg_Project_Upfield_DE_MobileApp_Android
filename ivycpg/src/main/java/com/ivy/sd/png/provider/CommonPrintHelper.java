@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.SparseArray;
 
-import com.amazonaws.services.s3.model.transform.Unmarshallers;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -154,8 +153,8 @@ public class CommonPrintHelper {
     private double total_net_payable = 0;
     public int width_image = 100;
     public int height_image = 100;
-    private double mSchemeValueByAmountType=0;
-    private double netSchemeAmount=0;
+    private double mSchemeValueByAmountType = 0;
+    private double netSchemeAmount = 0;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
@@ -414,7 +413,7 @@ public class CommonPrintHelper {
                                     loadProducts(mAttributeList, sb, product_free_product, productList, product_name_single_line);
 
                                 if (scheme_discount.equalsIgnoreCase("YES"))
-                                loadSchemeDiscount(mAttributeList, product_name_single_line, sb);
+                                    loadSchemeDiscount(mAttributeList, product_name_single_line, sb);
                                 else
                                     calculateSchemeAmountDiscountValue();
 
@@ -546,7 +545,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISTRIBUTOR_GST_NUMBER)) {
             value = label + bmodel.userMasterHelper.getUserMasterBO()
                     .getGSTNumber();
-        }else if (tag.equalsIgnoreCase(TAG_RETAILER_NAME)) {
+        } else if (tag.equalsIgnoreCase(TAG_RETAILER_NAME)) {
             value = label + bmodel.getRetailerMasterBO().getRetailerName();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CODE)) {
             value = label + bmodel.getRetailerMasterBO().getRetailerCode();
@@ -564,7 +563,7 @@ public class CommonPrintHelper {
             value = label + bmodel.getRetailerMasterBO().getCredit_invoice_count();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_GST_NUMBER)) {
             value = label + bmodel.getRetailerMasterBO().getGSTNumber();
-        }else if (tag.equalsIgnoreCase(TAG_SELLER_NAME)) {
+        } else if (tag.equalsIgnoreCase(TAG_SELLER_NAME)) {
             value = label + bmodel.userMasterHelper.getUserMasterBO().getUserName();
         } else if (tag.equalsIgnoreCase(TAG_SELLER_ID)) {
             value = label + bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -587,7 +586,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
             value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(total_net_payable, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE_IN_WORDS)) {
-            value = label + getAmountInWords(formatSalesValueInPrint(total_net_payable, precisionCount).replace(",",""));
+            value = label + getAmountInWords(formatSalesValueInPrint(total_net_payable, precisionCount).replace(",", ""));
         } else if (tag.equalsIgnoreCase("empty_total")) {
             value = alignWithLabel(label, formatValueInPrint(mEmptyTotalValue, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_KEY1)) {
@@ -598,12 +597,10 @@ public class CommonPrintHelper {
                 value = label + mKeyValues.get(TAG_KEY2);
         } else if (tag.equalsIgnoreCase(TAG_ORDER_NUMBER)) {
             value = label + bmodel.getOrderid().replaceAll("\'", "");
-        }
-        else if (tag.equalsIgnoreCase(TAG_RETAILER_ROUTE)) {
+        } else if (tag.equalsIgnoreCase(TAG_RETAILER_ROUTE)) {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
-        }
-        else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
-            value = alignWithLabelForSingleLine(label,formatValueInPrint(netSchemeAmount,precisionCount));
+        } else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
+            value = alignWithLabelForSingleLine(label, formatValueInPrint(netSchemeAmount, precisionCount));
         }
 
 
@@ -690,7 +687,6 @@ public class CommonPrintHelper {
         }
 
 
-
         sb.append("\n");
         String mProductValue;
         int mLengthUptoPName;
@@ -744,7 +740,7 @@ public class CommonPrintHelper {
                     mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
-                    mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + Double.parseDouble(mProductValue);
+                    mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getDiscount_order_value(), attr.getmAttributePrecision());
                     mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + prod.getDiscount_order_value();
@@ -757,8 +753,8 @@ public class CommonPrintHelper {
                             + (prod.getOrderedPcsQty()
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
-                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
-                    mProductValue = prod.getDescription()+"";
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
+                    mProductValue = prod.getDescription() + "";
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -904,9 +900,8 @@ public class CommonPrintHelper {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
-                            }
-                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
-                                mProductValue = prod.getDescription()+"";
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
+                                mProductValue = prod.getDescription() + "";
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -976,7 +971,6 @@ public class CommonPrintHelper {
     }
 
 
-
     /**
      * @param prod      - ordered product
      * @param mAttrList - value to be display for free products
@@ -1030,11 +1024,10 @@ public class CommonPrintHelper {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
                                 }
 
-                            }
-                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
-                                mProductValue = formatValueInPrint((schemeProductBO.getLineValue()-schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint((schemeProductBO.getLineValue() - schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             }
@@ -1076,21 +1069,20 @@ public class CommonPrintHelper {
 
     }
 
-    private void calculateSchemeAmountDiscountValue( ) {
+    private void calculateSchemeAmountDiscountValue() {
 
         ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
                 .getAppliedSchemeList();
-        double mBuyProdDiscountedValue=0;
+        double mBuyProdDiscountedValue = 0;
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
 
                     if (schemeBO.isAmountTypeSelected()) {
 
-                        mSchemeValueByAmountType=mSchemeValueByAmountType+schemeBO.getSelectedAmount();
-                        netSchemeAmount+=schemeBO.getSelectedAmount();
-                    }
-                    else if (schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeBO.getSelectedAmount();
+                        netSchemeAmount += schemeBO.getSelectedAmount();
+                    } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
                             ProductMasterBO productBO = bmodel.productHelper
                                     .getProductMasterBOById(buyProd
@@ -1104,14 +1096,14 @@ public class CommonPrintHelper {
                             }
                         }
 
-                        netSchemeAmount+=schemeBO.getSelectedAmount();
+                        netSchemeAmount += schemeBO.getSelectedAmount();
                     }
 
 
                 }
             }
 
-            total_line_value_incl_tax=total_line_value_incl_tax-mSchemeValueByAmountType;
+            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 
@@ -1132,9 +1124,9 @@ public class CommonPrintHelper {
                     if (schemeBO.isAmountTypeSelected()) {
                         schemeName = schemeBO.getProductName();
                         schemeValue = schemeBO.getSelectedAmount();
-                        mSchemeValueByAmountType=mSchemeValueByAmountType+schemeValue;
-                        netSchemeAmount+=schemeValue;
-                    } else if (schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeValue;
+                        netSchemeAmount += schemeValue;
+                    } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         schemeName = schemeBO.getProductName();
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
                             ProductMasterBO productBO = bmodel.productHelper
@@ -1151,11 +1143,11 @@ public class CommonPrintHelper {
 
 
                         schemeValue = mBuyProdDiscountedValue;
-                        netSchemeAmount+=schemeValue;
+                        netSchemeAmount += schemeValue;
                     }
 
 
-                    if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected()||schemeBO.isPriceTypeSeleted()) {
+                    if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
@@ -1201,7 +1193,7 @@ public class CommonPrintHelper {
                 }
             }
 
-            total_line_value_incl_tax=total_line_value_incl_tax-mSchemeValueByAmountType;
+            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 
@@ -1328,7 +1320,7 @@ public class CommonPrintHelper {
 
             SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
             HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
-            HashMap<String, HashSet<String>> freeProductListByGroupId =bmodel.productHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.productHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1349,7 +1341,7 @@ public class CommonPrintHelper {
 
                         //Same tax type with different tax rate may mapped to a product, so getting product list with the use of groupid(taxtype) anf percentage.
                         HashSet<String> taxProductList = productListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
-                        HashSet<String> taxFreeProductList=freeProductListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
+                        HashSet<String> taxFreeProductList = freeProductListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
 
                         double totalTax = 0.0;
                         double totalExcludeValue = 0.0;
@@ -1381,27 +1373,27 @@ public class CommonPrintHelper {
                         if (taxFreeProductList != null) {
                             for (String productid : taxFreeProductList) {// free products
 
-                                    //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
+                                //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
 
-                                    if (bmodel.getmFreeProductTaxListByProductId().get(productid) != null) {
-                                        for (TaxBO productTaxBo : bmodel.getmFreeProductTaxListByProductId().get(productid)) {
+                                if (bmodel.getmFreeProductTaxListByProductId().get(productid) != null) {
+                                    for (TaxBO productTaxBo : bmodel.getmFreeProductTaxListByProductId().get(productid)) {
 
-                                            if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
+                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
-                                                totalTax += productTaxBo.getTotalTaxAmount();
-                                                totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
-                                            }
+                                            totalTax += productTaxBo.getTotalTaxAmount();
+                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
                                         }
                                     }
-
-
                                 }
+
+
+                            }
 
                         }
 
 
                         // preparing string builder to show product level tax in print
-                        if (taxProductList != null||taxFreeProductList!=null) {
+                        if (taxProductList != null || taxFreeProductList != null) {
                             if (totalTax > 0) {
                                 if (!taxDesc.equals(previousTaxDesc)) {
                                     if (taxDesc.length() > 10) {
@@ -1490,7 +1482,7 @@ public class CommonPrintHelper {
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax=Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
 
                     double taxValue;
                     double taxTotal = 0;
@@ -1511,7 +1503,7 @@ public class CommonPrintHelper {
                     }
 
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax=Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
 
                     double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + taxTotal / 100);
 
@@ -1812,8 +1804,8 @@ public class CommonPrintHelper {
         total_net_payable = 0;
         totalPriceOffValue = 0;
         isLogoEnabled = false;
-        mSchemeValueByAmountType=0;
-        netSchemeAmount=0;
+        mSchemeValueByAmountType = 0;
+        netSchemeAmount = 0;
     }
 
     private String formatValueInPrint(double value, int precision) {
@@ -1831,7 +1823,7 @@ public class CommonPrintHelper {
                 bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP);
     }
 
-    private String formatSalesValueInPrint(double value, int precision){
+    private String formatSalesValueInPrint(double value, int precision) {
 
         String formattedValue = "0";
         try {
@@ -1844,10 +1836,10 @@ public class CommonPrintHelper {
 
                     tempVal = value + "";
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
-                    fractionalStr=(fractionalStr.length()>2?fractionalStr.substring(0,2):fractionalStr);
+                    fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
-                    int integerValue=(int)value;
-                    int fractionValue=Integer.parseInt(fractionalStr);
+                    int integerValue = (int) value;
+                    int fractionValue = Integer.parseInt(fractionalStr);
 
                     formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
 
@@ -1872,8 +1864,7 @@ public class CommonPrintHelper {
                         bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP);
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
