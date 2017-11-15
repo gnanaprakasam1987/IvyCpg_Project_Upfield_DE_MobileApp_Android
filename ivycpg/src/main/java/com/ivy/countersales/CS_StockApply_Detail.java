@@ -350,7 +350,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
 
         String mDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");

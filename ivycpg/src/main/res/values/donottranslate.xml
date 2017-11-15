@@ -133,8 +133,6 @@
     <string name="incentivetext">Total Incentive</string>
     <string name="hasannouncer">Has Announcer</string>
 
-    <string name="moveAsset">Move Asset</string>
-
     <!--Delivered Order-->
     <string name="exceeds_orderd_qty">Exceeds ordered quantity </string>
     <string name="are_u_giving_free_products">Deliver free products</string>
@@ -173,4 +171,11 @@
     <string name="total_vol">Total Volume</string>
     <string name="order_history_detail">Order History</string>
     <string name="invoice_history_detail">Invoice History</string>
+
+    <!-- Asset -->
+    <string name="moveAsset">Move Asset</string>
+    <!-- Asset -->
+
+    <string name="cancelled">Cancelled</string>
+
 </resources>

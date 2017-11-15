@@ -401,7 +401,7 @@ public class CheckModeFragment extends IvyBaseFragment
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
         String paidDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {

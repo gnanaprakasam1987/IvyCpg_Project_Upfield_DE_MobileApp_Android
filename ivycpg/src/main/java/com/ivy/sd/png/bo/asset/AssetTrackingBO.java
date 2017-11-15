@@ -14,7 +14,7 @@ public class AssetTrackingBO {
     private String mPOSM;
     private String mBrand;
     private String mNewInstallDate;
-    private String mSNO, mReasonId, mRemarks,mToRetailerId;
+    private String mSNO, mReasonId, mRemarks, mToRetailerId;
     private String mPOSMName;
     private String mFlag;
     private String mSBDId;
@@ -261,6 +261,7 @@ public class AssetTrackingBO {
     public void setAvailQty(int availQty) {
         this.availQty = availQty;
     }
+
     public int getScanComplete() {
         return scanComplete;
     }
@@ -268,6 +269,7 @@ public class AssetTrackingBO {
     public void setScanComplete(int scanComplete) {
         this.scanComplete = scanComplete;
     }
+
     public String getImageName() {
         return imageName;
     }

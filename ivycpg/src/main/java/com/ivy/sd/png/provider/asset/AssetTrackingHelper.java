@@ -22,95 +22,65 @@ import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
+
     private final Context context;
     private final BusinessModel mBusinessModel;
     private static AssetTrackingHelper instance = null;
     private AssetTrackingBO mAssetTrackingBO;
     public String mSelectedActivityName;
 
-    /**
-     * This ArrayList contains downloaded AssetTracking records
-     */
     private ArrayList<AssetTrackingBO> mAssetTrackingList = new ArrayList<>();
-
-    /**
-     * This ArrayList contains downloaded AssetReason records
-     */
     private Vector<AssetTrackingBO> mAddRemoveAssets = null;
-
     private Vector<AssetAddDetailBO> mAssetSpinner = null;
     private Vector<AssetAddDetailBO> mBrandSpinner = null;
-
     private ArrayList<ReasonMaster> mAssetReasonList = new ArrayList<>();
-    /**
-     * This ArrayList contains downloaded AssetRemarks records
-     */
     private ArrayList<ReasonMaster> mAssetRemarkList = new ArrayList<>();
     private ArrayList<ReasonMaster> mAssetConditionList = new ArrayList<>();
-
-    /**
-     * This ArrayList contains download POSM reason,condition and remarks records
-     */
     private ArrayList<ReasonMaster> mPOSMReasonList = new ArrayList<>();
     private ArrayList<ReasonMaster> mPOSMConditionList = new ArrayList<>();
 
-
-    /**
-     * This String used to store captured images asset id
-     */
     public int mSelectedAssetID = 0;
-    /**
-     * This String used to store captured image's image Name
-     */
     public String mSelectedImageName = "";
     public String mSelectedSerial = "";
 
-    //Column Configuration - AT01
+    // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
+    private static final String CODE_ASSET_BARCODE = "AT02";
+    private static final String CODE_ASSET_ADD = "AT03";
+    private static final String CODE_REMOVE_ASSET = "AT04";
+    private static final String CODE_SHOW_ALL = "AT05";
+    private static final String CODE_REMARKS_ASSET = "AT06";
+    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
+    private static final String CODE_MOVE_ASSET = "AT09";
+    private static final String ASSET_REASON = "AR";
+    private static final String ASSET_REMARK = "ARR";
+    private static final String ASSET_CONDITION = "CD";
     public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
     public boolean SHOW_ASSET_CONDITION;
-
     public boolean SHOW_ASSET_INSTALL_DATE;
     public boolean SHOW_ASSET_SERVICE_DATE;
     public boolean SHOW_COMPETITOR_QTY;
     public boolean SHOW_ASSET_GRP;
     public boolean SHOW_ASSET_EXECUTED;
-
-    private static final String CODE_ASSET_BARCODE = "AT02";
     public boolean SHOW_ASSET_BARCODE;
-
-    private static final String CODE_ASSET_ADD = "AT03";
     public boolean SHOW_ADD_NEW_ASSET;
-
-    private static final String CODE_REMOVE_ASSET = "AT04";
     public boolean SHOW_REMOVE_ASSET;
-
-    private static final String CODE_SHOW_ALL = "AT05";
     public boolean SHOW_ASSET_ALL;
-
-    private static final String CODE_REMARKS_ASSET = "AT06";
     public boolean SHOW_REMARKS_ASSET;
-
-    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
     public boolean ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK;
-
-    private static final String CODE_MOVE_ASSET = "AT09";
     public boolean SHOW_MOVE_ASSET;
 
-    /**
-     * Reason Type - Std List Code
-     */
-    private static final String ASSET_REASON = "AR";
-    private static final String ASSET_REMARK = "ARR";
-    private static final String ASSET_CONDITION = "CD";
 
+    //POSM configuration
     private static final String POSM_REASON = "POSMR";
     private static final String POSM_CONDITION = "POSMCD";
-
     private static final String CODE_POSM_COLUMNS = "POSM01";
+    private static final String CODE_POSM_BARCODE = "POSM02";
+    private static final String CODE_SHOW_ALL_POSM = "POSM05";
+    private static final String CODE_SHOW_POSM_REMARKS = "POSM06";
     public boolean SHOW_POSM_TARGET;
     public boolean SHOW_POSM_QTY;
     public boolean SHOW_POSM_REASON;
@@ -121,20 +91,8 @@ public class AssetTrackingHelper {
     public boolean SHOW_POSM_COMPETITOR_QTY;
     public boolean SHOW_POSM_GRP;
     public boolean SHOW_POSM_EXECUTED;
-
-    private static final String CODE_POSM_BARCODE = "POSM02";
     public boolean SHOW_POSM_BARCODE;
-
-    /*private static final String CODE_POSM_ADD = "POSM03";
-    private boolean SHOW_ADD_NEW_POSM;*/
-
-   /* private static final String CODE_REMOVE_POSM = "POSM04";
-    private boolean SHOW_REMOVE_POSM;*/
-
-    private static final String CODE_SHOW_ALL_POSM = "POSM05";
     public boolean SHOW_POSM_ALL;
-
-    private static final String CODE_SHOW_POSM_REMARKS = "POSM06";
     public boolean SHOW_REMARKS_POSM;
 
     private static final String MERCH = "MERCH";

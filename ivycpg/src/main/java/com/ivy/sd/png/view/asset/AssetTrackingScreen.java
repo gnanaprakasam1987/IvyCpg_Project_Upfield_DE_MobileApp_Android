@@ -16,15 +16,17 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
 public class
 AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
-        OnEditorActionListener, BrandDialogInterface {
+        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
 
     private BusinessModel mBusinessModel;
     private NFCManager nfcManager;
@@ -178,4 +180,12 @@ AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
         asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
+    @Override
+    public void updateDate(Date date, String tag) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        AssetTrackingFragment fragment = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
+        fragment.updateDate(date,tag);
+
+    }
 }

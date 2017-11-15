@@ -2,8 +2,6 @@ package com.ivy.sd.png.view.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -22,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,7 +41,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -67,13 +60,13 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -84,26 +77,21 @@ import java.util.List;
 import java.util.Vector;
 
 public class
-AssetTrackingFragment extends IvyBaseFragment implements
-        OnEditorActionListener, BrandDialogInterface {
-
+AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener, BrandDialogInterface,
+        DataPickerDialogFragment.UpdateDateInterface{
 
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
     private ListView listview;
-    private static Button dateBtn;
-    private FloatingActionButton btnBarcode;
+    private Button dateBtn;
 
     private BusinessModel mBusinessModel;
-    private ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
-    private AddAssetDialogFragment dialog;
     private StandardListBO mSelectedStandardListBO;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int MOVEMENT_ASSET = 2;
     private int mSelectedLocationIndex;
     private int mSelectedLastFilterSelection = -1;
-
     private final String moduleName = "AT_";
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
@@ -115,12 +103,13 @@ AssetTrackingFragment extends IvyBaseFragment implements
     private String imageName;
     private String filterText;
     private static final String TAG = "AssetTracking Screen";
+    private static final String TAG_DATE_PICKER_INSTALLED = "date_picker_installed";
+    private static final String TAG_DATE_PICKER_SERVICED = "date_picker_serviced";
     private String brandButton;
     private static String outPutDateFormat;
-
     private boolean isShowed = false;
 
-    private ArrayList<AssetTrackingBO> myList ;
+    private ArrayList<AssetTrackingBO> myList;
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
     private ArrayList<ReasonMaster> mAssetReasonList;
     private ArrayList<ReasonMaster> mAssetConditionList;
@@ -162,7 +151,8 @@ AssetTrackingFragment extends IvyBaseFragment implements
                 nextButtonClick();
             }
         });
-        btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
+
+        FloatingActionButton btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
         if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE)
             btnBarcode.setVisibility(View.GONE);
 
@@ -404,7 +394,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_add) {
 
-            dialog = new AddAssetDialogFragment();
+            AddAssetDialogFragment dialog = new AddAssetDialogFragment();
             dialog.show(getFragmentManager(), MENU_ASSET);
 
             return true;
@@ -449,9 +439,9 @@ AssetTrackingFragment extends IvyBaseFragment implements
      */
     private void loadedItem() {
 
-        String select_reason="Select Reason";
-        String select="Select";
-        String select_condition="Select Condition";
+        String select_reason = "Select Reason";
+        String select = "Select";
+        String select_condition = "Select Condition";
 
         mAssetTrackingList = mBusinessModel.assetTrackingHelper.getAssetTrackingList();
 
@@ -501,6 +491,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
     private void updateList(int bid, StandardListBO standardListBO) {
         int k = 0;
         myList = new ArrayList<>();
+        ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
 
         ArrayList<AssetTrackingBO> mAllAssetTrackingList;
         mAssetTrackingList = standardListBO.getAssetTrackingList();
@@ -570,6 +561,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
     /**
      * Updating List by NFC tag
+     *
      * @param mNFCTag NFC tag
      */
     public void updateListByNFCTag(String mNFCTag) {
@@ -749,9 +741,9 @@ AssetTrackingFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
                         dateBtn = holder.mInstallDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker1");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
                     }
                 });
                 holder.mServiceDate.setOnClickListener(new OnClickListener() {
@@ -760,9 +752,9 @@ AssetTrackingFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
                         dateBtn = holder.mServiceDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker2");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
                     }
                 });
 
@@ -811,7 +803,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
                             }
 
                         } else {
-                            Toast.makeText(getActivity(),getResources().getString(R.string.external_storage_not_available)
+                            Toast.makeText(getActivity(), getResources().getString(R.string.external_storage_not_available)
                                     , Toast.LENGTH_SHORT)
                                     .show();
                             getActivity().finish();
@@ -832,7 +824,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
                             if ((holder.assetBO.getImageName() != null)
                                     && (!holder.assetBO.getImageName().isEmpty())
-                                   ) {
+                                    ) {
                                 holder.photoBTN.setEnabled(true);
                                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                             } else {
@@ -1027,6 +1019,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
     /**
      * Load picture in Image View
+     *
      * @param imageName Image Name
      * @param imageView Image View to show Image
      */
@@ -1069,14 +1062,14 @@ AssetTrackingFragment extends IvyBaseFragment implements
     }
 
 
-
     /**
      * Method to check already image captured or not if Already captured, it
      * will show Alert Dialog In Alert Dialog, if click yes,remove image in
      * sdcard and retake photo. If click No, Alert Dialog dismiss
-     * @param mAssetId AssetId
+     *
+     * @param mAssetId        AssetId
      * @param imageNameStarts imageName
-     * @param imageSrc imagePath
+     * @param imageSrc        imagePath
      */
     private void showFileDeleteAlertWithImage(final String mAssetId,
                                               final String imageNameStarts,
@@ -1123,12 +1116,10 @@ AssetTrackingFragment extends IvyBaseFragment implements
     }
 
 
-
     /**
-     *
-     * @param assetID Asset Id
+     * @param assetID  Asset Id
      * @param serialNo Serial Number
-     * @param imgName Image Name
+     * @param imgName  Image Name
      */
     private void onSaveImageName(int assetID, String serialNo, String imgName) {
 
@@ -1157,7 +1148,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
             if (resultCode == 1) {
 
                 // Photo saved successfully
-                Commons.print(TAG +"," +
+                Commons.print(TAG + "," +
                         "Camera Activity : Successfully Captured.");
                 if (mBusinessModel.assetTrackingHelper.mSelectedAssetID != 0) {
                     onSaveImageName(
@@ -1167,7 +1158,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
                 }
 
             } else {
-                Commons.print(TAG +"," + "Camera Activity : Canceled");
+                Commons.print(TAG + "," + "Camera Activity : Canceled");
             }
         } else if (requestCode == MOVEMENT_ASSET) {
             mBusinessModel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
@@ -1177,7 +1168,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
             if (requestCode == IntentIntegrator.REQUEST_CODE) {
                 if (result != null) {
                     if (result.getContents() == null) {
-                        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                     } else {
                         strBarCodeSearch = result.getContents();
                     }
@@ -1204,6 +1195,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
     /**
      * Deleting image files
+     *
      * @param filename File Name
      */
     private void deleteFiles(String filename) {
@@ -1212,7 +1204,9 @@ AssetTrackingFragment extends IvyBaseFragment implements
         File[] files = folder.listFiles();
         for (File tempFile : files) {
             if (tempFile != null && tempFile.getName().equals(filename)) {
-                tempFile.delete();
+                boolean isDeleted = tempFile.delete();
+                if (isDeleted)
+                    Commons.print("Image Delete," + "Success");
             }
         }
     }
@@ -1220,7 +1214,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
     /**
      * This AsyncTask class is used to save Asset Details in table
      */
-    private  class SaveAsset extends AsyncTask<String, Void, String> {
+    private class SaveAsset extends AsyncTask<String, Void, String> {
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -1343,9 +1337,9 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
 
         try {
-            if (view != null){
-                if(mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.tv_header_assetname).getTag()) != null) {
+            if (view != null) {
+                if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.tv_header_assetname).getTag()) != null) {
                     ((TextView) view.findViewById(R.id.tv_header_assetname))
                             .setText(mBusinessModel.labelsMasterHelper
                                     .applyLabels(view.findViewById(
@@ -1387,6 +1381,7 @@ AssetTrackingFragment extends IvyBaseFragment implements
      * Custom camera call
      */
     private void captureCustom() {
+
         final String actionScannerInputPlugin = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
         final String extraParameter = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
         final String disablePlugin = "DISABLE_PLUGIN";
@@ -1407,75 +1402,6 @@ AssetTrackingFragment extends IvyBaseFragment implements
 
         } catch (Exception e) {
             Commons.printException("" + e);
-        }
-    }
-
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
-
-        @Override
-        @NonNull
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
-            if ("datePicker1".equals(this.getTag())) {
-
-                if (selectedDate.after(Calendar.getInstance())) {
-                    Toast.makeText(getActivity(),
-                            R.string.future_date_not_allowed,
-                            Toast.LENGTH_SHORT).show();
-                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
-                            Calendar.getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
-                            .getInstance().getTime(), outPutDateFormat));
-                } else {
-
-                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                }
-            } else if ("datePicker2".equals(this.getTag())) {
-
-                if (bo.getInstallDate() != null
-                        && bo.getInstallDate().length() > 0) {
-                    Date mInstallDate = DateUtil.convertStringToDateObject(
-                            bo.getInstallDate(), outPutDateFormat);
-                    if (mInstallDate != null && selectedDate.getTime() != null
-                            && mInstallDate.after(selectedDate.getTime())) {
-                        Toast.makeText(getActivity(),
-                                R.string.servicedate_set_after_installdate,
-                                Toast.LENGTH_SHORT).show();
-                    } else if (selectedDate.after(Calendar.getInstance())) {
-                        Toast.makeText(getActivity(),
-                                R.string.future_date_not_allowed,
-                                Toast.LENGTH_SHORT).show();
-                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
-                                Calendar.getInstance().getTime(), outPutDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
-                                .getInstance().getTime(), outPutDateFormat));
-                    } else {
-                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                    }
-                } else {
-
-                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                }
-            }
         }
     }
 
@@ -1740,4 +1666,69 @@ AssetTrackingFragment extends IvyBaseFragment implements
         }
     }
 
+    @Override
+    public void updateDate(Date date, String tag) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
+
+        if (TAG_DATE_PICKER_INSTALLED.equals(tag)) {
+
+            if (selectedDate.after(Calendar.getInstance())) {
+                Toast.makeText(getActivity(),
+                        R.string.future_date_not_allowed,
+                        Toast.LENGTH_SHORT).show();
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        Calendar.getInstance().getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                        .getInstance().getTime(), outPutDateFormat));
+            } else {
+
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+            }
+
+        } else if (TAG_DATE_PICKER_SERVICED.equals(tag)) {
+
+            if (bo.getInstallDate() != null
+                    && bo.getInstallDate().length() > 0) {
+                Date mInstallDate = DateUtil.convertStringToDateObject(
+                        bo.getInstallDate(), outPutDateFormat);
+                if (mInstallDate != null && selectedDate.getTime() != null
+                        && mInstallDate.after(selectedDate.getTime())) {
+                    Toast.makeText(getActivity(),
+                            R.string.servicedate_set_after_installdate,
+                            Toast.LENGTH_SHORT).show();
+                } else if (selectedDate.after(Calendar.getInstance())) {
+                    Toast.makeText(getActivity(),
+                            R.string.future_date_not_allowed,
+                            Toast.LENGTH_SHORT).show();
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                            Calendar.getInstance().getTime(), outPutDateFormat));
+                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                            .getInstance().getTime(), outPutDateFormat));
+                } else {
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(), outPutDateFormat));
+                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(), outPutDateFormat));
+                }
+            } else {
+
+                bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+            }
+        }
+
+    }
 }

@@ -36,30 +36,32 @@ import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 3/28/2017.
- *
  */
 
 public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     BusinessModel mBModel;
+
     private static final String SELECT = "-Select-";
     private Spinner mAsset;
     private Spinner mBrand;
     private EditText mSNO;
     private static Button btnAddInstallDate;
+    EditText edittext;
+
     private int mYear;
     private int mMonth;
     private int mDay;
-    private final AssetTrackingBO assetBo = new AssetTrackingBO();
     Button btnSave, btnCancel;
     private String append = "";
-    EditText edittext;
+
+    private final AssetTrackingBO assetBo = new AssetTrackingBO();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        if(getDialog().getWindow()!=null) {
+        if (getDialog().getWindow() != null) {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         }
 
@@ -91,7 +93,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         Window window = getDialog().getWindow();
-        if(window!=null) {
+        if (window != null) {
             lp.copyFrom(window.getAttributes());
             window.setAttributes(lp);
         }
@@ -326,6 +328,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     /**
      * Key pad click event
+     *
      * @param vw Selected View
      */
     public void numberPressed(View vw) {
