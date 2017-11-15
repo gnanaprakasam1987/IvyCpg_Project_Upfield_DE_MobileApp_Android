@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             if (isPartialOrder)
                 setScreenTitle(getResources().getString(R.string.partial_delivery));
             else
-                setScreenTitle(getResources().getString(R.string.text_invoice));
+                setScreenTitle(getResources().getString(R.string.text_invoice) + "\n" + getResources().getString(R.string.invoice_creation));
 
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,7 +80,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         if (isPartialOrder)
             btnSave.setText(getResources().getString(R.string.partial_delivery));
         else
-            btnSave.setText(getResources().getString(R.string.text_invoice));
+            btnSave.setText(getResources().getString(R.string.text_invoice)
+                    + "\n" + getResources().getString(R.string.invoice_creation));
 
         btnSave.setOnClickListener(this);
 
@@ -134,13 +136,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             alertDialog.dismiss();
             Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
             if (!isPartialOrder) {
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true, mylist, null);
 
                 Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
                 i.putExtra("isHomeBtnEnable", true);
-                i.putExtra("isHidePrintBtn",true);
+                i.putExtra("isHidePrintBtn", true);
                 startActivity(i);
                 finish();
             } else {
@@ -155,6 +157,20 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_deliverydetails, menu);
+
+        menu.findItem(R.id.menu_save).setVisible(false);
+        /** on/off the items based on the configuration **/
+        MenuItem reviewAndPo = menu.findItem(R.id.menu_review);
+        reviewAndPo.setVisible(true);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
@@ -162,6 +178,11 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             startActivity(new Intent(DeliveryOrderSummary.this, DeliveryOrderActivity.class));
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            return true;
+        } else if (i == R.id.menu_review) {
+            OrderRemarkDialog ordRemarkDialog = new OrderRemarkDialog(
+                    DeliveryOrderSummary.this, null, true);
+            ordRemarkDialog.show();
             return true;
         }
 

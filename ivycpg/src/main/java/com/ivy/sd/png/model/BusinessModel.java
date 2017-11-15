@@ -2416,7 +2416,7 @@ public class BusinessModel extends Application {
         }
 
         sb = new StringBuffer();
-        sb.append("select pieceQty,caseQty,outerQty from OrderDetail OD ");
+        sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
         sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
         sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         c = db
