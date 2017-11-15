@@ -267,7 +267,7 @@
             android:name="com.ivy.sd.png.view.PlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.PosmTrackingScreen"
+            android:name="com.ivy.sd.png.view.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.survey.SurveyActivityNew"
@@ -512,7 +512,7 @@
             android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.AssetTrackingScreen"
+            android:name="com.ivy.sd.png.view.asset.AssetTrackingActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">

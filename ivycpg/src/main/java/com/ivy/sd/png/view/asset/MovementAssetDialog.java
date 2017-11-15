@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 /**
  * Created by anish.k on 9/25/2017.
- *
+ * This screen is used to manage asset movement from one retailer to another retailer
  */
 
 public class MovementAssetDialog extends DialogFragment {
@@ -101,7 +101,8 @@ public class MovementAssetDialog extends DialogFragment {
         assetName = getArguments().getString("assetName");
         brand=getArguments().getString("brand");
         assetId=getArguments().getInt("assetId");
-        TVSerialNo.setText(getString(R.string.serial_no) + ": " + serialNo);
+        String mSerialNumber=getString(R.string.serial_no) + ": " + serialNo;
+        TVSerialNo.setText(mSerialNumber);
         TVOutletName.setText(retailerName);
         TVAssetName.setText(assetName);
         initSpinner();
@@ -201,7 +202,6 @@ public class MovementAssetDialog extends DialogFragment {
     }
     private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
-//            TLDesc.setError("Invalid Entry");
             Toast.makeText(mBModel, "Add description", Toast.LENGTH_SHORT).show();
             requestFocus(ETDesc);
             return false;

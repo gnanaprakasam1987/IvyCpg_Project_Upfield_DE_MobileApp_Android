@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,9 +36,6 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	private BusinessModel bModel;
 	private String mModuleName="";
 	private ListView mListView;
-	private String mPOSMIdDialog;
-	private String mSNODialog;
-	private String mSBDId;
 	protected Button btnDelete;
 	protected ArrayList<ReasonMaster> mAssetReasonList;
 	protected ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
@@ -181,7 +179,8 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 			return items.size();
 		}
 
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		@NonNull
+		public View getView(final int position, View convertView,@NonNull ViewGroup parent) {
 
 			final ViewHolder holder;
 			AssetTrackingBO product = items.get(position);
@@ -312,6 +311,9 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		ArrayList<AssetTrackingBO> lstTemp=new ArrayList<>();
 		lstTemp.addAll(mList);
 
+		String mSBDId;
+		String mPOSMIdDialog;
+		String mSNODialog;
 		for(int i=0;i<lstTemp.size();i++) {
 			if(lstTemp.get(i).isSelectedToRemove()) {
 

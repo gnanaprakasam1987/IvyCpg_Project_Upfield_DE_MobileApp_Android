@@ -296,7 +296,7 @@ public class AssetTrackingHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = "+MENU_POSM+" AND flag='1'";
+                    + " WHERE menu_type = '"+MENU_POSM+"' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 

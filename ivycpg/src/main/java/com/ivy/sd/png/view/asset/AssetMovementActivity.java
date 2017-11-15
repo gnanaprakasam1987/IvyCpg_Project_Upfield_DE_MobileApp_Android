@@ -84,7 +84,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
 
     /**
      * update List with asset movement details
-     * @param standardListBO
+     * @param standardListBO Selected Location Object
      */
     protected void updateList(StandardListBO standardListBO) {
         mAssetTrackingList = standardListBO.getAssetTrackingList();

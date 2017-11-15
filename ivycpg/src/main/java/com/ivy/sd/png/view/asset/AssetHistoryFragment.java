@@ -22,7 +22,7 @@ import java.util.Vector;
 
 /**
  * Created by anish.k on 9/28/2017.
- *
+ * This screen shows asset history in profile screen
  *
  */
 

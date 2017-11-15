@@ -15,6 +15,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -83,40 +84,33 @@ import java.util.Vector;
 
 public class SODAssetFragment extends IvyBaseFragment implements
         BrandDialogInterface {
-    // Constants
-    private static final String BRAND = "Brand";
-    // Global Variables
+
     private BusinessModel mBModel;
-    // Drawer Implementation
     private DrawerLayout mDrawerLayout;
-    // Hash map to get selected Category and its Id
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    private int mSelectedFilterId = -1;
+    private Dialog dialog = null;
+    private ViewHolder mSelectedHolder;
+    private EditText mSelectedET;
+    private EditText mParentTotal;
+    private TextView tvSelectedName;
     private ListView mListView;
-    private String brandFilterText = "BRAND";
-    // Reason Adapter
+
+    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private ArrayAdapter<ReasonMaster> assetReasonAdapter;
     private ArrayAdapter<ReasonMaster> assetLocationAdapter;
-    // Photo Image Name
-    private String mImageName;
-    // Dialog to enter brand total values
-    private Dialog dialog = null;
-    // Holder to pass BrandId to dialog
-    private ViewHolder mSelectedHolder;
-    // Get the typed number and set in Edit Text
-    private EditText mSelectedET;
-    private EditText mParentTotal;
-    // List for SOSBo
     private final ArrayList<AssetTrackingBO> mAssetsForDialog = new ArrayList<>();
-    private TextView tvSelectedName;
     private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private boolean isFromChild;
-
     private Vector<LevelBO> mParentIdList;
     private ArrayList<Integer> mAttributeProducts;
+
+    private static final String BRAND = "Brand";
+    private static final String TAG="SOD Tracking";
+    private String brandFilterText = "BRAND";
+    private String mImageName;
+    private int mSelectedFilterId = -1;
+    private int mSelectedLocationIndex;
+    private boolean isFromChild;
     private String mFilterText;
 
     @Override
@@ -137,7 +131,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("SOD Tracking");
+        BusinessModel.getInstance().trackScreenView(TAG);
     }
 
     @Override
@@ -374,8 +368,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
             return items.size();
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView,@NonNull ViewGroup parent) {
             final ViewHolder holder;
             View row = convertView;
             if (row == null) {
@@ -1476,7 +1470,6 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TODO Auto-generated method stub
 
     }
 

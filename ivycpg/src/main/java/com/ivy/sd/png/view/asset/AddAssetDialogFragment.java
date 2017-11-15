@@ -36,6 +36,7 @@ import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 3/28/2017.
+ * This dialog is used to add new asset.
  */
 
 public class AddAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
@@ -46,7 +47,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     private Spinner mAsset;
     private Spinner mBrand;
     private EditText mSNO;
-    private static Button btnAddInstallDate;
+    private Button btnAddInstallDate;
     EditText edittext;
 
     private int mYear;

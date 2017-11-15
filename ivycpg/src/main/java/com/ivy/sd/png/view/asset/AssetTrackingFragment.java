@@ -159,7 +159,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         btnBarcode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AssetTrackingScreen) getActivity()).checkAndRequestPermissionAtRunTime(2);
+                ((AssetTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
                 int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.CAMERA);
                 if (permissionStatus == PackageManager.PERMISSION_GRANTED) {

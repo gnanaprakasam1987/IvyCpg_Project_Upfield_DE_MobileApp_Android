@@ -2,8 +2,6 @@ package com.ivy.sd.png.view.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -40,7 +36,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -56,10 +51,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -70,6 +65,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -86,59 +82,57 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class PosmFragment extends IvyBaseFragment implements
-        OnEditorActionListener, BrandDialogInterface {
+public class PosmTrackingFragment extends IvyBaseFragment implements
+        OnEditorActionListener, BrandDialogInterface,DataPickerDialogFragment.UpdateDateInterface {
 
-    private static final String TAG = "POSM Screen";
+
     private BusinessModel mBModel;
+    private StandardListBO mSelectedStandardListBO;
 
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
     private ListView mListView;
-    private static Button dateBtn;
+    private Button dateBtn;
     private EditText qtyEditText;
+    Button btnSave;
+    FloatingActionButton btnBarcode;
 
+    private static final String TAG = "POSM Screen";
+    private static final String TAG_DATE_PICKER_INSTALLED = "date_picker_installed";
+    private static final String TAG_DATE_PICKER_SERVICED = "date_picker_serviced";
+    private static final String BRAND = "Brand";
+    private static final String GENERAL = "General";
+    private static final String ALL = "ALL";
+    private final String moduleName = "AT_";
+    private String strBarCodeSearch = "ALL";
+    private static final String MENU_POSM = "MENU_POSM";
+    private static final String MENU_POSM_CS="MENU_POSM_CS";
+    private String screenCode = "MENU_POSM";
     private String append = "";
     private static String outPutDateFormat;
     private static final int CAMERA_REQUEST_CODE = 1;
-    private final String moduleName = "AT_";
-
-    private static final String BRAND = "Brand";
-    private static final String GENERAL = "General";
-
-    /**
-     * This PATH_NAME used to store Asset photos in sdcard
-     */
     private String photoPath = "";
+    private int mSelectedLocationIndex;
+    private int mSelectedLastFilterSelection = -1;
+    private String imageName;
+    private boolean isShowed = false;
+    private String mCapturedNFCTag = "";
+    private String mBrandButton;
+    private boolean isFromChild;
+    private String mFilterText;
 
-    private ArrayList<AssetTrackingBO> myList = new ArrayList<>();
+
+    private ArrayList<AssetTrackingBO> myList ;
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
     private ArrayList<ReasonMaster> mPOSMReasonList;
     private ArrayList<ReasonMaster> mPOSMConditionList;
     private ArrayAdapter<ReasonMaster> mPOSMReasonSpinAdapter;
     private ArrayAdapter<ReasonMaster> mPOSMConditionAdapter;
-    private String strBarCodeSearch = "ALL";
-
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
-    private int mSelectedLastFilterSelection = -1;
-    private StandardListBO mSelectedStandardListBO;
-    private String imageName;
-
-    private static final String MENU_POSM = "MENU_POSM";
-    private boolean isShowed = false;
-    Button btnSave;
-    FloatingActionButton btnBarcode;
-    private String screenCode = "MENU_POSM";
-    private String mCapturedNFCTag = "";
-    private String mBrandButton;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private boolean isFromChild;
-
     private Vector<LevelBO> mParentIdLIst;
     private ArrayList<Integer> mAttributeProducts;
-    private String mFilterText;
 
     @Override
     public void onAttach(Context context) {
@@ -150,7 +144,7 @@ public class PosmFragment extends IvyBaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_posm_tracking_frag, container,
+        View view = inflater.inflate(R.layout.fragment_posm_tracking, container,
                 false);
 
         mDrawerLayout = (DrawerLayout) view.findViewById(
@@ -163,7 +157,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
         if (extras != null) {
             screenCode = extras.getString("CurrentActivityCode");
-            screenCode = screenCode != null ? screenCode : "MENU_POSM";
+            screenCode = screenCode != null ? screenCode : MENU_POSM;
         }
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
@@ -184,14 +178,14 @@ public class PosmFragment extends IvyBaseFragment implements
                 @Override
                 public void onClick(View view) {
 
-                    ((PosmTrackingScreen) getActivity()).checkAndRequestPermissionAtRunTime(2);
+                    ((PosmTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
                     int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                             Manifest.permission.CAMERA);
                     if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                         IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
                             @Override
                             protected void startActivityForResult(Intent intent, int code) {
-                                PosmFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                                PosmTrackingFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE);
                             }
                         };
                         integrator.setBeepEnabled(false).initiateScan();
@@ -317,9 +311,7 @@ public class PosmFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        Commons.print("OnResume Called");
-        BusinessModel.getInstance().trackScreenView("POSM Tracking");
-        switchProfile();
+        BusinessModel.getInstance().trackScreenView(TAG);
     }
 
     @Override
@@ -372,7 +364,7 @@ public class PosmFragment extends IvyBaseFragment implements
         }
         menu.findItem(R.id.menu_survey).setVisible(false);
 
-        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION || screenCode.equals("MENU_POSM_CS"))
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION || screenCode.equals(MENU_POSM_CS))
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
             if (mBModel.productHelper.getInStoreLocation().size() < 1)
@@ -400,10 +392,10 @@ public class PosmFragment extends IvyBaseFragment implements
                         .updateTimeStampModuleWise(SDUtil
                                 .now(SDUtil.TIME));
 
-                if (screenCode.equalsIgnoreCase("MENU_POSM_CS")) {
+                if (screenCode.equalsIgnoreCase(MENU_POSM_CS)) {
                     startActivity(new Intent(getActivity(),
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_COUNTER"));
-                } else if (screenCode.equalsIgnoreCase("MENU_POSM")) {
+                } else if (screenCode.equalsIgnoreCase(MENU_POSM)) {
                     if (isFromChild)
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class).
@@ -508,8 +500,8 @@ public class PosmFragment extends IvyBaseFragment implements
 
     /**
      * update POSM list
-     * @param bid
-     * @param standardListBO
+     * @param bid Brand Id
+     * @param standardListBO Selected Location Object
      */
     private void updateList(int bid, StandardListBO standardListBO) {
         myList = new ArrayList<>();
@@ -591,7 +583,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(
-                        R.layout.row_posm, parent, false);
+                        R.layout.row_posm_tracking, parent, false);
 
                 row.setTag(holder);
 
@@ -675,9 +667,8 @@ public class PosmFragment extends IvyBaseFragment implements
 
                                 holder.reason1Spin.setEnabled(false);
                                 holder.reason1Spin.setSelection(0);
-                                if ((holder.assetBO.getImageName() != null)
-                                        && (!"".equals(holder.assetBO.getImageName()))
-                                        && (!"null".equals(holder.assetBO.getImageName()))) {
+                                if (holder.assetBO.getImageName() != null  && !holder.assetBO.getImageName().isEmpty()
+                                        ) {
                                     holder.photoBTN.setEnabled(true);
                                     setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
                                 } else {
@@ -727,20 +718,29 @@ public class PosmFragment extends IvyBaseFragment implements
                 holder.execQtyET.setOnTouchListener(new OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                        qtyEditText = holder.execQtyET;
-                        qtyEditText.setTag(holder.execQtyET);
-                        int inType = holder.execQtyET.getInputType();
-                        holder.execQtyET.setInputType(InputType.TYPE_NULL);
-                        holder.execQtyET.onTouchEvent(motionEvent);
-                        holder.execQtyET.setInputType(inType);
-                        holder.execQtyET.selectAll();
-                        holder.execQtyET.requestFocus();
+                        switch (motionEvent.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                qtyEditText = holder.execQtyET;
+                                qtyEditText.setTag(holder.execQtyET);
+                                int inType = holder.execQtyET.getInputType();
+                                holder.execQtyET.setInputType(InputType.TYPE_NULL);
+                                holder.execQtyET.onTouchEvent(motionEvent);
+                                holder.execQtyET.setInputType(inType);
+                                holder.execQtyET.selectAll();
+                                holder.execQtyET.requestFocus();
+                                view.performClick();
+                                break;
+                            default:
+                                break;
+                        }
 
                         return true;
                     }
 
                 });
+                holder.execQtyET.performClick();
                 holder.compQtyET.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -824,9 +824,9 @@ public class PosmFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
                         dateBtn = holder.mInstallDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker1");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
                     }
                 });
                 holder.mServiceDate.setOnClickListener(new OnClickListener() {
@@ -835,9 +835,9 @@ public class PosmFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
                         dateBtn = holder.mServiceDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker2");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
                     }
                 });
 
@@ -866,7 +866,6 @@ public class PosmFragment extends IvyBaseFragment implements
                                     + holder.assetBO.getAssetID() + "_"
                                     + Commons.now(Commons.DATE);
 
-                            Commons.print(TAG + ",FName Starts :" + mFileNameStarts);
 
                             mBModel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
@@ -882,8 +881,7 @@ public class PosmFragment extends IvyBaseFragment implements
                             }
 
                         } else {
-                            Toast.makeText(getActivity(),
-                                    "SDCard Not Available.", Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(),getResources().getString(R.string.sdcard_is_not_ready_to_capture_img), Toast.LENGTH_SHORT)
                                     .show();
                             getActivity().finish();
                         }
@@ -1014,8 +1012,8 @@ public class PosmFragment extends IvyBaseFragment implements
             }
 
             if ((holder.assetBO.getImageName() != null)
-                    && (!"".equals(holder.assetBO.getImageName()))
-                    && (!"null".equals(holder.assetBO.getImageName()))) {
+                    && (!holder.assetBO.getImageName().isEmpty())
+                    ) {
 
                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
 
@@ -1029,6 +1027,7 @@ public class PosmFragment extends IvyBaseFragment implements
             return row;
         }
     }
+
 
     private void setPictureToImageView(String imageName, ImageView imageView) {
         Glide.with(getActivity()).load(
@@ -1181,7 +1180,7 @@ public class PosmFragment extends IvyBaseFragment implements
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
-                Commons.print("AssetTracking," +
+                Commons.print(TAG+"," +
                         "Camera Activity : Successfully Captured.");
                 if (mBModel.assetTrackingHelper.mSelectedAssetID != 0) {
                     onSaveImageName(
@@ -1189,14 +1188,14 @@ public class PosmFragment extends IvyBaseFragment implements
                             mBModel.assetTrackingHelper.mSelectedImageName);
                 }
             } else {
-                Commons.print("AssetTracking," + "Camera Activity : Canceled");
+                Commons.print(TAG+"," + "Camera Activity : Canceled");
             }
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (result != null) {
                 if (result.getContents() == null) {
-                    Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                 } else {
                     strBarCodeSearch = result.getContents();
                 }
@@ -1229,7 +1228,7 @@ public class PosmFragment extends IvyBaseFragment implements
             if (tempFile != null && tempFile.getName().equals(filename)) {
                 boolean isDeleted = tempFile.delete();
                 if (isDeleted)
-                    Commons.print("Image Delete," + "Success");
+                    Commons.print(TAG+" Image Delete," + "Success");
             }
         }
     }
@@ -1346,7 +1345,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
                 }
             } catch (Exception e) {
-                Commons.printException("" + e);
+                Commons.printException(e.toString());
             }
         }
 
@@ -1363,7 +1362,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
                 }
             } catch (Exception e) {
-                Commons.printException("" + e);
+                Commons.printException(e.toString());
             }
         }
 
@@ -1378,7 +1377,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
             }
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException( e.toString());
         }
         if (view != null && !mBModel.assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
             view.findViewById(R.id.tv_competitor_qty).setVisibility(View.GONE);
@@ -1393,7 +1392,7 @@ public class PosmFragment extends IvyBaseFragment implements
                                             R.id.tv_competitor_qty).getTag()));
                 }
             } catch (Exception e) {
-                Commons.printException("" + e);
+                Commons.printException( e.toString());
             }
         }
 
@@ -1411,7 +1410,7 @@ public class PosmFragment extends IvyBaseFragment implements
 
                 }
             } catch (Exception e) {
-                Commons.printException("" + e);
+                Commons.printException( e.toString());
             }
         }
 
@@ -1424,17 +1423,7 @@ public class PosmFragment extends IvyBaseFragment implements
      * Custom camera call
      */
     private void captureCustom() {
-        final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
-        final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-        final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
         try {
-            Intent i = new Intent();
-            i.setAction(ACTION_SCANNERINPUTPLUGIN);
-            i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
-            getActivity().sendBroadcast(i);
-
-            Thread.sleep(1000);
-
             Intent intent = new Intent(getActivity(),
                     CameraActivity.class);
             intent.putExtra("quality", 40);
@@ -1443,81 +1432,65 @@ public class PosmFragment extends IvyBaseFragment implements
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException( e.toString());
         }
     }
 
-    private void switchProfile() {
-        final String switchToProfile = "com.motorolasolutions.emdk.datawedge.api.ACTION_SWITCHTOPROFILE";
-        final String extraData = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PROFILENAME";
-        Intent i = new Intent();
-        i.setAction(switchToProfile);
-        // add additional info
-        i.putExtra(extraData, "dist_asset");
-        getActivity().sendBroadcast(i);
-    }
 
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
+    @Override
+    public void updateDate(Date date, String tag) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
 
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
-            if ("datePicker1".equals(this.getTag())) {
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
+        if (TAG_DATE_PICKER_INSTALLED.equals(tag)) {
 
-                if (selectedDate.after(Calendar.getInstance())) {
+            if (selectedDate.after(Calendar.getInstance())) {
+                Toast.makeText(getActivity(),
+                        R.string.future_date_not_allowed,
+                        Toast.LENGTH_SHORT).show();
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        Calendar.getInstance().getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                        .getInstance().getTime(), outPutDateFormat));
+            } else {
+
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+            }
+        } else if (TAG_DATE_PICKER_SERVICED.equals(tag)) {
+
+            if (bo.getInstallDate() != null
+                    && bo.getInstallDate().length() > 0) {
+                Date mInstallDate = DateUtil.convertStringToDateObject(
+                        bo.getInstallDate(), outPutDateFormat);
+                if (mInstallDate != null && selectedDate.getTime() != null
+                        && mInstallDate.after(selectedDate.getTime())) {
                     Toast.makeText(getActivity(),
-                            R.string.future_date_not_allowed,
+                            R.string.servicedate_set_after_installdate,
                             Toast.LENGTH_SHORT).show();
-                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
-                            Calendar.getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
-                            .getInstance().getTime(), outPutDateFormat));
                 } else {
-
-                    bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                }
-            } else if ("datePicker2".equals(this.getTag())) {
-
-                if (bo.getInstallDate() != null
-                        && bo.getInstallDate().length() > 0) {
-                    Date mInstallDate = DateUtil.convertStringToDateObject(
-                            bo.getInstallDate(), outPutDateFormat);
-                    if (mInstallDate != null && selectedDate.getTime() != null
-                            && mInstallDate.after(selectedDate.getTime())) {
-                        Toast.makeText(getActivity(),
-                                R.string.servicedate_set_after_installdate,
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                    }
-                } else {
-
                     bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                     dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
+            } else {
+
+                bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
             }
         }
     }
-
 
     /**
      * Product filter click
@@ -1564,7 +1537,7 @@ public class PosmFragment extends IvyBaseFragment implements
             ft.add(R.id.right_drawer, mFragment, "filter");
             ft.commit();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException( e.toString());
         }
     }
 
@@ -1616,8 +1589,8 @@ public class PosmFragment extends IvyBaseFragment implements
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if (levelBO.getProductID() == assetBO.getProductId()) {
 
-                    if ("ALL".equals(strBarCodeSearch)) {
-                        if ("".equals(mCapturedNFCTag)) {
+                    if (ALL.equals(strBarCodeSearch)) {
+                        if (mCapturedNFCTag.isEmpty()) {
                             if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                 myList.add(assetBO);
                             }
@@ -1656,8 +1629,8 @@ public class PosmFragment extends IvyBaseFragment implements
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (levelBO.getProductID() == assetBO.getProductId()) {
 
-                        if ("ALL".equals(strBarCodeSearch)) {
-                            if ("".equals(mCapturedNFCTag)) {
+                        if (ALL.equals(strBarCodeSearch)) {
+                            if (mCapturedNFCTag.isEmpty()) {
                                 if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId())
                                         && mAttributeProducts.contains(assetBO.getProductId())) {
                                     myList.add(assetBO);
@@ -1680,8 +1653,8 @@ public class PosmFragment extends IvyBaseFragment implements
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         if (levelBO.getProductID() == assetBO.getProductId()) {
 
-                            if ("ALL".equals(strBarCodeSearch)) {
-                                if ("".equals(mCapturedNFCTag)) {
+                            if (ALL.equals(strBarCodeSearch)) {
+                                if (mCapturedNFCTag.isEmpty()) {
                                     if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                         myList.add(assetBO);
                                     }
@@ -1701,8 +1674,8 @@ public class PosmFragment extends IvyBaseFragment implements
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (pid == assetBO.getProductId()) {
 
-                        if ("ALL".equals(strBarCodeSearch)) {
-                            if ("".equals(mCapturedNFCTag)) {
+                        if (ALL.equals(strBarCodeSearch)) {
+                            if (mCapturedNFCTag.isEmpty()) {
                                 if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                     myList.add(assetBO);
                                 }
@@ -1770,10 +1743,10 @@ public class PosmFragment extends IvyBaseFragment implements
             FilterFiveFragment<Object> mFragment = new FilterFiveFragment<>();
             mFragment.setArguments(bundle);
 
-            ft.replace(R.id.right_drawer, mFragment, "Fivefilter");
+            ft.replace(R.id.right_drawer, mFragment, "FiveFilter");
             ft.commit();
         } catch (Exception e) {
-            Commons.printException(e + "");
+            Commons.printException(e.toString());
         }
     }
 

@@ -188,7 +188,7 @@ public class SODAssetHelper {
     public void loadSavedTracking(String modName) {
         DBUtil db = null;
         String sql;
-        String uid = "";
+        String uid ;
         String moduleName = modName.replaceAll("MENU_", "");
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -198,9 +198,6 @@ public class SODAssetHelper {
                     + " WHERE RetailerId="
                     + mBModel.getRetailerMasterBO().getRetailerID()
                     + " and (upload='N' OR refid!=0)";
-            /*
-             * + " AND Date = " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-			 */
 
             Cursor headerCursor = db.selectSQL(sql);
             if (headerCursor.getCount() > 0) {
@@ -251,7 +248,8 @@ public class SODAssetHelper {
 
                 sb.append("SELECT AssetID,ProductId,Actual,ReasonID,LocationID,isPromo,isDisplay");
                 sb.append(" From SOD_Assets_Detail ");
-                sb.append(" WHERE Uid=" + mBModel.QT(uid));
+                sb.append(" WHERE Uid=");
+                sb.append(mBModel.QT(uid));
 
                 Cursor assetTrackDetails = db.selectSQL(sb.toString());
 
@@ -318,7 +316,7 @@ public class SODAssetHelper {
     }
 
 
-    public void setSODList(ArrayList<SODBO> mList){
+    private void setSODList(ArrayList<SODBO> mList){
         mSODList=mList;
     }
     public ArrayList<SODBO> getSODList() {
@@ -433,46 +431,46 @@ public class SODAssetHelper {
             }
 
 
-            StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT A1.Pid,A" + loopEnd + ".pid,");
-            sBuffer.append("A" + loopEnd + ".pname ,1 isOwn,");
-            sBuffer.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId FROM ProductMaster A1");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT DISTINCT A1.Pid,A" + loopEnd + ".pid,");
+            stringBuilder.append("A" + loopEnd + ".pname ,1 isOwn,");
+            stringBuilder.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId FROM ProductMaster A1");
 
             for (int i = 2; i <= loopEnd; i++) {
 
                 query = query + " INNER JOIN ProductMaster A" + i + " ON A" + i
                         + ".ParentId = A" + (i - 1) + ".PID";
             }
-            sBuffer.append(query);
+            stringBuilder.append(query);
 
-            sBuffer.append(" LEFT JOIN "
+            stringBuilder.append(" LEFT JOIN "
                     + moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
                     + ".pid = SFN.pid  ");
 
             if (IsRetailer) {
-                sBuffer.append("and SFN.RetailerId =");
-                sBuffer.append(mBModel.getRetailerMasterBO().getRetailerID());
+                stringBuilder.append("and SFN.RetailerId =");
+                stringBuilder.append(mBModel.getRetailerMasterBO().getRetailerID());
             }
             if (IsAccount) {
-                sBuffer.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
+                stringBuilder.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
             }
             if (IsClass) {
-                sBuffer.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
+                stringBuilder.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
             }
 
             if (LocId > 0)
-                sBuffer.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
+                stringBuilder.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
             if (ChId > 0)
-                sBuffer.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
+                stringBuilder.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
 
-            sBuffer.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
-            sBuffer.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+            stringBuilder.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
+            stringBuilder.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
-            sBuffer.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
+            stringBuilder.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
 
             if (moduleName.equals(moduleSODAsset)) {
                 SODBO mSOD;
-                cursor = db.selectSQL(sBuffer.toString());
+                cursor = db.selectSQL(stringBuilder.toString());
                 if (cursor != null) {
                     setSODList(new ArrayList<SODBO>());
                     while (cursor.moveToNext()) {
@@ -492,6 +490,7 @@ public class SODAssetHelper {
             }
             db.closeDB();
         } catch (Exception e) {
+            if(db!=null)
             db.closeDB();
             Commons.printException(moduleName, e);
         }
@@ -500,25 +499,24 @@ public class SODAssetHelper {
     /**
      * Load Competitors
      *
-     * @param moduleName
+     * @param moduleName Module Name
      */
-    public void loadCompetitors(String moduleName) {
-        DBUtil db = null;
-        ArrayList<Integer> lstCompetitiorPids;
+    private void loadCompetitors(String moduleName) {
+        DBUtil db ;
         try {
-            Cursor cursor = null;
+            Cursor cursor ;
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
-            sBuffer.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
-            sBuffer.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
-            sBuffer.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
+            stringBuilder.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
+            stringBuilder.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
+            stringBuilder.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
                     + mBModel.QT(moduleName) + ")");
 
             if (moduleName.equals(moduleSODAsset)) {
 
-                cursor = db.selectSQL(sBuffer.toString());
+                cursor = db.selectSQL(stringBuilder.toString());
                 if (cursor != null) {
 
                     while (cursor.moveToNext()) {
@@ -554,12 +552,11 @@ public class SODAssetHelper {
     /**
      * Save Sales Fundamentals Module wise
      *
-     * @param moduleName
-     * @return
+     * @param moduleName Module Name
+     * @return is Saved
      */
     public boolean saveSalesFundamentalDetails(String moduleName, ArrayList<AssetTrackingBO> assetList) {
         String modName = moduleName.replaceAll("MENU_", "");
-        int count = 1;
         try {
             String refId = "0";
             String headerValues;
@@ -606,7 +603,7 @@ public class SODAssetHelper {
                     + "," + mBModel.QT(refId);
 
             db.insertSQL(modName + "_Tracking_Header", headerColumns,
-                    headerValues.toString());
+                    headerValues);
 
             try {
                 for (SODBO sodBo : getSODList()) {
@@ -625,7 +622,7 @@ public class SODAssetHelper {
                                     + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId() + "," + sodBo.getLocations().get(i).getLocationId();
 
                             db.insertSQL(modName + "_Tracking_Detail",
-                                    detailColumns, detailValues.toString());
+                                    detailColumns, detailValues);
 
                         }
 
@@ -653,7 +650,7 @@ public class SODAssetHelper {
                                 + assetTrackingBO.getTarget();
 
                         db.insertSQL("SOD_Assets_Detail",
-                                assertColumns, assetValues.toString());
+                                assertColumns, assetValues);
 
                     }
                 }

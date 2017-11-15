@@ -53,8 +53,8 @@ import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.asset.AssetTrackingScreen;
-import com.ivy.sd.png.view.asset.PosmTrackingScreen;
+import com.ivy.sd.png.view.asset.AssetTrackingActivity;
+import com.ivy.sd.png.view.asset.PosmTrackingActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
@@ -2509,7 +2509,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
-                            AssetTrackingScreen.class);
+                            AssetTrackingActivity.class);
                     in.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
                         in.putExtra("isFromChild", isFromChild);
@@ -2551,7 +2551,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
-                            PosmTrackingScreen.class);
+                            PosmTrackingActivity.class);
                     in.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
                         in.putExtra("isFromChild", isFromChild);
