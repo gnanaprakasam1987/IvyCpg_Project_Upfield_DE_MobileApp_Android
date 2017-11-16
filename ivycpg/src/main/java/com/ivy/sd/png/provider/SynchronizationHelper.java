@@ -2894,7 +2894,7 @@ SynchronizationHelper {
             db.createDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select url from urldownloadmaster where ");
-            sb.append("mastername='RETAILER' and typecode='GETRET'");
+            sb.append("mastername='RETAILERMASTER' and typecode='GETRET'");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
