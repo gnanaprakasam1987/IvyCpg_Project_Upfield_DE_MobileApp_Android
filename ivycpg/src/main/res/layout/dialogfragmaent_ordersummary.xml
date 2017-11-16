@@ -2,229 +2,279 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/windowBackground">
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/title"
+        style="?attr/customListTitle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Order Summary Dialog"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/dimen_20dp"
-        style="?attr/customListTitle"
-        android:textStyle="normal"
-       />
+        android:background="?attr/primarycolor"
+        android:text="@string/order_summary_dialog"
+        android:textStyle="bold" />
+
     <HorizontalScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/order_summary_dialog_height"
-        android:layout_below="@+id/title"
-        android:layout_marginBottom="@dimen/dimen_20dp"
-        >
+        android:layout_height="match_parent"
+        android:layout_above="@+id/stockcheckroot"
+        android:layout_below="@+id/title">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/list_title_bg_color"
+                android:orientation="horizontal">
 
-        <TextView
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/order_stock_list_product_name_width"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="@string/product_name"
-            android:textStyle="normal"/>
+                <TextView
+                    android:id="@+id/txt_pname"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/order_stock_list_product_name_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/product_name"
+                    android:textStyle="normal" />
 
-        <TextView
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="@string/qty"
-            android:textStyle="normal"
-            />
+                <TextView
+                    android:id="@+id/txt_qty"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/qty"
+                    android:textStyle="normal" />
 
-        <TextView
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="@string/mrp"
-            android:textStyle="normal"
-            />
-        <TextView
-            android:id="@+id/tv_title_price_off"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="@string/priceoff"
-            android:textStyle="normal"
-            android:visibility="gone"
-            />
+                <TextView
+                    android:id="@+id/txt_mrp"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/mrp"
+                    android:textStyle="normal" />
 
-        <TextView
-            android:id="@+id/tv_title_disc1"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Disc1"
-            android:textStyle="normal"
-            android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/tv_title_price_off"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/priceoff"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_title_disc2"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Disc2"
-            android:textStyle="normal"
-            android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/tv_title_disc1"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Disc1"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_title_disc3"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Disc3"
-            android:textStyle="normal"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/tv_title_disc4"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Disc4"
-            android:textStyle="normal"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/tv_title_disc5"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Disc5"
-            android:textStyle="normal"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/tv_title_cash_discount"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Cash Disc"
-            android:textStyle="normal"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/tv_title_tax"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Tax Value"
-            android:textStyle="normal"
-            android:visibility="gone"/>
-        <TextView
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/meter_value_width_large"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:singleLine="true"
-            android:text="Line Value"
-            android:textStyle="normal"/>
+                <TextView
+                    android:id="@+id/tv_title_disc2"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Disc2"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_title_disc3"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Disc3"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_title_disc4"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Disc4"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_title_disc5"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Disc5"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_title_cash_discount"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Cash Disc"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_title_tax"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Tax Value"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txt_line_value"
+                    style="?attr/customListTitle"
+                    android:layout_width="@dimen/meter_value_width_large"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:singleLine="true"
+                    android:text="Line Value"
+                    android:textStyle="normal" />
 
 
-    </LinearLayout>
-        <ListView
-            android:id="@+id/lv_ordersummary_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </LinearLayout>
 
-        </ListView>
+            <ListView
+                android:id="@+id/lv_ordersummary_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/transparent"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true">
+
+            </ListView>
         </LinearLayout>
     </HorizontalScrollView>
-    <LinearLayout
-        android:id="@+id/ll_footer"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:weightSum="9"
-        android:layout_below="@+id/scrollview">
-        <TextView
-
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="TotalQty "/>
-        <TextView
-            android:id="@+id/tv_total_qty"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
-        <TextView
-
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="Total MRP "
-            android:layout_marginLeft="5dp"/>
-        <TextView
-            android:id="@+id/tv_totalmrp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
-
-        <TextView
-
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="Scheme UCP"
-            android:layout_marginLeft="5dp"/>
-        <TextView
-            android:id="@+id/tv_totalschemeucp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
 
 
-    </LinearLayout>
-    <Button
-        android:id="@+id/btn_close"
+    <RelativeLayout
+        android:id="@+id/stockcheckroot"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
+        android:orientation="horizontal">
 
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_40dp"
-        android:layout_gravity="center"
+        <LinearLayout
+            android:id="@+id/ll_qty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/target_top_margin"
+            android:orientation="vertical">
 
-        android:layout_weight="1"
-        android:adjustViewBounds="true"
-        android:gravity="center"
-        android:text="@string/close"
-        android:textStyle="normal"
+            <TextView
+                android:id="@+id/totalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tot_qty"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/greyed_text_size" />
 
-        android:layout_below="@+id/ll_footer"
-      />
+            <TextView
+                android:id="@+id/tv_total_qty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/zero"
+                android:textColor="@color/WHITE"
+                android:textSize="@dimen/footer_lbl_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mrp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/target_top_margin"
+            android:layout_toRightOf="@+id/ll_qty"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lpc_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/total_mrp"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/tv_totalmrp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/zero"
+                android:textColor="@color/WHITE"
+                android:textSize="@dimen/footer_lbl_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_scheme_ucp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/target_top_margin"
+            android:layout_toRightOf="@+id/ll_mrp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_totalqty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scheme_ucp"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/greyed_text_size" />
+
+            <TextView
+                android:id="@+id/tv_totalschemeucp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/zero"
+                android:textColor="@color/WHITE"
+                android:textSize="@dimen/footer_lbl_text_size" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_close"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/close"
+            android:textAllCaps="false" />
+    </RelativeLayout>
 
 
 </RelativeLayout>

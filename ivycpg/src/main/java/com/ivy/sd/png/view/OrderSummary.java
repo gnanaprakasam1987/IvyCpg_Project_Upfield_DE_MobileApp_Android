@@ -1500,8 +1500,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/"+DataMembers.IVYDIST_PATH);
-
+                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
 
 
                                             i = new Intent(OrderSummary.this,
@@ -2095,6 +2094,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             bundle.putSerializable("OrderList", (Serializable) mOrderedProductList);
             dialogFragment.setArguments(bundle);
             dialogFragment.show(fm, "Dialog Fragment");
+            dialogFragment.setCancelable(false);
         } else if (i1 == R.id.menu_serialno) {
             if (isOrderedSerialNoProducts()) {
                 Intent i = new Intent(OrderSummary.this, SerialNoEntryScreen.class);
@@ -2169,7 +2169,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE&&screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
@@ -2552,7 +2552,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                     if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/"+DataMembers.IVYDIST_PATH);
+                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
 
                                     i = new Intent(OrderSummary.this,
                                             CommonPrintPreviewActivity.class);
@@ -2634,8 +2634,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
 
 
-                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber,"/"+DataMembers.PRINT_FILE_PATH);
+                            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                    StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
 
                             Intent i = new Intent(OrderSummary.this,
                                     CommonPrintPreviewActivity.class);

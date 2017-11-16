@@ -1879,9 +1879,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             if (ret.getLocations().get(j).getWHCase() > 0
                                     || ret.getLocations().get(j).getWHOuter() > 0
                                     || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > 0
-                                    || ret.getLocations().get(j).getShelfOuter() > 0
-                                    || ret.getLocations().get(j).getShelfPiece() > 0) {
+                                    || ret.getLocations().get(j).getShelfCase() > -1
+                                    || ret.getLocations().get(j).getShelfOuter() > -1
+                                    || ret.getLocations().get(j).getShelfPiece() > -1) {
 
                                 sbdStockAchieved.add(ret.getSbdGroupName());
                             }
@@ -1890,7 +1890,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 if (ret.getLocations().get(j).getWHCase() > 0
                                         || ret.getLocations().get(j).getWHOuter() > 0
                                         || ret.getLocations().get(j).getWHPiece() > 0
-                                        || ret.getLocations().get(j).getShelfCase() > 0
+                                        || ret.getLocations().get(j).getShelfCase() > -1
                                         || ret.getLocations().get(j)
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
@@ -1906,7 +1906,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 if (ret.getLocations().get(j).getWHCase() > 0
                                         || ret.getLocations().get(j).getWHOuter() > 0
                                         || ret.getLocations().get(j).getWHPiece() > 0
-                                        || ret.getLocations().get(j).getShelfCase() > 0
+                                        || ret.getLocations().get(j).getShelfCase() > -1
                                         || ret.getLocations().get(j)
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
@@ -2213,7 +2213,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }*/
             if (holder.list_view_stock_btn != null) {
-                if (holder.productObj.getLocations().get(0).getShelfPiece() == 0) {
+                if (holder.productObj.getLocations().get(0).getShelfPiece() == -1) {
                     holder.list_view_stock_btn.setText("STOCK");
                 } else {
                     holder.list_view_stock_btn.setText("Stock - " + holder.productObj.getLocations().get(0).getShelfPiece() + "");
