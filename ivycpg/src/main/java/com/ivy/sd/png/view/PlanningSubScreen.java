@@ -164,8 +164,8 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(this,
-                        getResources().getString(R.string.please_redownload),
+                Toast.makeText(this, bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
@@ -605,7 +605,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
             holder.config = configTemp;
             holder.menuBTN.setText(configTemp.getMenuName());
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             Integer i = menuIcons.get(configTemp.getConfigCode());
             if (i != null)
                 holder.menuIcon.setImageResource(i);

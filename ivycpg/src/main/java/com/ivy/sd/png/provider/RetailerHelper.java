@@ -7,6 +7,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMissedVisitBO;
+import com.ivy.sd.png.bo.RtrWiseDeadProductsBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
 import com.ivy.sd.png.commons.SDUtil;
@@ -639,6 +640,45 @@ public class RetailerHelper {
             db.closeDB();
         }
         return color;
+    }
+
+    public ArrayList<RtrWiseDeadProductsBO> getmRtrWiseDeadProductsList() {
+        return mRtrWiseDeadProductsList;
+    }
+
+    public void setmRtrWiseDeadProductsList(ArrayList<RtrWiseDeadProductsBO> mRtrWiseDeadProductsList) {
+        this.mRtrWiseDeadProductsList = mRtrWiseDeadProductsList;
+    }
+
+    private ArrayList<RtrWiseDeadProductsBO> mRtrWiseDeadProductsList;
+
+    /* get retailerwise dead products */
+    public void downloadRetailerWiseDeadPdts(int RetailerId) {
+        mRtrWiseDeadProductsList = new ArrayList<RtrWiseDeadProductsBO>();
+        RtrWiseDeadProductsBO rtrWiseDeadProductsBO;
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM RtrWiseDeadProducts where rid = " + RetailerId);
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    rtrWiseDeadProductsBO = new RtrWiseDeadProductsBO();
+                    rtrWiseDeadProductsBO.setRid(c.getInt(c.getColumnIndex("rid")));
+                    rtrWiseDeadProductsBO.setPid(c.getInt(c.getColumnIndex("pid")));
+                    rtrWiseDeadProductsBO.setFlag(c.getString(c.getColumnIndex("flag")));
+                    mRtrWiseDeadProductsList.add(rtrWiseDeadProductsBO);
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.closeDB();
+        }
     }
 }
 

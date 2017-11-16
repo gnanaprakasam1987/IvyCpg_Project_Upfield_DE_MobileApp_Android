@@ -57,7 +57,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
         sessionOut();
         t_rname= (TextView) view.findViewById(R.id.t_rname);
-        t_rname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        t_rname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         headerLayout = (LinearLayout) view.findViewById(R.id.ll_header);
         spinnerRetailer = (Spinner) view.findViewById(R.id.retailerSpinner);
         lvwplist = (ListView) view.findViewById(R.id.lvwplist);
@@ -145,7 +145,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
         textview[mNumber].setMaxLines(2);
         textview[mNumber].setTextSize(getResources().getDimension(R.dimen.font_small));
 
-        textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (Build.VERSION.SDK_INT < 23) {
             textview[mNumber].setTextAppearance(getActivity(), R.style.TextViewListTitle);
         } else {
@@ -271,7 +271,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
 
             holder.outletreport = items.get(position);
             holder.retailerName.setText(holder.outletreport.getmRetailerName());
-            holder.retailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.retailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
             holder.ll_rowlayout.removeAllViews();

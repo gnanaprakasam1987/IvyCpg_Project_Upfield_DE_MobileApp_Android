@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +75,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         viewInitialization();
 
 
-
         btnOK.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -88,8 +88,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 break;
                             }
                         }
-
-
                     }
                 }
 
@@ -176,12 +174,18 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         if (isFrom != null) {
             switch (isFrom) {
                 case "STK":
+                    if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
+                        bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
                     loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
                     sequence = bmodel.productHelper.getSequenceValues();
                     break;
                 case "SF":
                     loadedFilterValues = bmodel.salesFundamentalHelper.getFiveLevelFilters();
                     sequence = bmodel.salesFundamentalHelper.getSequenceValues();
+                    break;
+                case "SVR":
+                    loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();
+                    sequence = bmodel.reportHelper.getSequencevalues();
                     break;
                 default:
                     loadedFilterValues = bmodel.productHelper.getRetailerModuleFilerContentBySequenct();
@@ -213,7 +217,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         loadedFilterValues.put(newAttributeId, lstAttributes);
 
                     }
-
                 }
             }
         }
@@ -233,7 +236,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
 
         if (!sequence.isEmpty()) {
-
             adapter = new FilterAdapter(sequence);
             filterlistview.setAdapter(adapter);
             mSelectedLevelBO = sequence.get(0);
@@ -271,9 +273,15 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (activity instanceof BrandDialogInterface) {
-            this.brandInterface = (BrandDialogInterface) activity;
+        if (brandInterface == null) {
+            if (activity instanceof BrandDialogInterface) {
+                this.brandInterface = (BrandDialogInterface) activity;
+            }
         }
+    }
+
+    public void setBrandDialogInterface(SalesVolumeReportFragment sellerOrderReportFragment) {
+        this.brandInterface = sellerOrderReportFragment;
     }
 
     public class FilterAdapter extends BaseAdapter {
@@ -453,7 +461,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
             }
 
-
             return finalValuelist;
 
         }
@@ -465,7 +472,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         //   private ImageView filtericons;
         private ImageView selectedfilters;
         private LinearLayout gridItem;
-
     }
 
     @SuppressLint("ResourceAsColor")
@@ -545,7 +551,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 .getProductID(), filteritem.get(position)
                                 .getProductID());
                     }
-
                     updateSelectedID();
                     gridadapter.notifyDataSetChanged();
                     adapter.notifyDataSetChanged();

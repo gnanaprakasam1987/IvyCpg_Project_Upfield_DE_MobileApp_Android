@@ -15,10 +15,12 @@ import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InventoryBO_Proj;
 import com.ivy.sd.png.bo.InvoiceReportBO;
+import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
@@ -30,15 +32,16 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
 import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.TaskReportBo;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.reports.PromotionTrackingReport;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,8 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-
-import static com.ivy.sd.png.asean.view.R.string.pm;
 
 public class ReportHelper {
 
@@ -1331,7 +1332,7 @@ public class ReportHelper {
             for (PaymentBO tempParentBO : parentPaymentList) {
                 if (tempParentBO.getBillNumber().equals(invoiceNo)) {
                     balance = Double.parseDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
-                            - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount),2,0));
+                            - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount), 2, 0));
                     tempParentBO.setBalance(balance);
                     break;
                 }
@@ -2287,7 +2288,7 @@ public class ReportHelper {
             }
 
             if (!"".equals(webViewAuthUrl)) {
-                webViewAuthUrl+="/UserAuthentication/GetDeviceToken";
+                webViewAuthUrl += "/UserAuthentication/GetDeviceToken";
             }
             db.closeDB();
 
@@ -2968,35 +2969,34 @@ public class ReportHelper {
         return reportordbooking;
     }
 
-    public ArrayList<InventoryBO_Proj> downloadInventoryReport(int retailerId,String type) {
-        ArrayList<InventoryBO_Proj> lst=new ArrayList<>();
+    public ArrayList<InventoryBO_Proj> downloadInventoryReport(int retailerId, String type) {
+        ArrayList<InventoryBO_Proj> lst = new ArrayList<>();
         try {
-            bmodel.setRetailerMasterBO(bmodel.getRetailerBoByRetailerID().get(retailerId+""));
-            String focusBrandIds="";
-            if(type.equalsIgnoreCase("Filt11"))
-                focusBrandIds=bmodel.productHelper.getTaggingDetails("FCBND");
-            else if(type.equals("Filt12"))
-                focusBrandIds=bmodel.productHelper.getTaggingDetails("FCBND2");
+            bmodel.setRetailerMasterBO(bmodel.getRetailerBoByRetailerID().get(retailerId + ""));
+            String focusBrandIds = "";
+            if (type.equalsIgnoreCase("Filt11"))
+                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND");
+            else if (type.equals("Filt12"))
+                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND2");
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String s = "select distinct CD.productid,Shelfpqty,Shelfcqty,Shelfoqty,SM.listname,PM.psname from ClosingStockDetail CD inner join ClosingStockHeader CH"
-                    +" ON CD.stockid=CH.stockid LEFT JOIN StandardListMaster SM ON SM.listid=CD.reasonid"
-                    +" LEFT JOIN Productmaster PM ON PM.pid=CD.productid where CH.retailerid="+retailerId +" and CH.date="+bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    +" and CD.productid in("+focusBrandIds+")";
+                    + " ON CD.stockid=CH.stockid LEFT JOIN StandardListMaster SM ON SM.listid=CD.reasonid"
+                    + " LEFT JOIN Productmaster PM ON PM.pid=CD.productid where CH.retailerid=" + retailerId + " and CH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " and CD.productid in(" + focusBrandIds + ")";
 
             Cursor c = db.selectSQL(s);
             if (c != null) {
                 InventoryBO_Proj bo;
                 while (c.moveToNext()) {
-                    bo=new InventoryBO_Proj();
+                    bo = new InventoryBO_Proj();
                     bo.setProductId(c.getString(0));
-                    if(c.getInt(1)>0||c.getInt(2)>0||c.getInt(3)>0){
+                    if (c.getInt(1) > 0 || c.getInt(2) > 0 || c.getInt(3) > 0) {
                         bo.setAvailability("Y");
                         bo.setReasonDesc("");
-                    }
-                    else{
+                    } else {
                         bo.setAvailability("N");
                         bo.setReasonDesc(c.getString(4));
                     }
@@ -3008,11 +3008,397 @@ public class ReportHelper {
                 c.close();
             }
             db.closeDB();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
         return lst;
     }
+
+    /**
+     * Method to retrieve transaction invoice details from invoicedetails table
+     *
+     * @param invoiceno to fetch selected invoiceno from detail table
+     * @return ArryList<ProductmasterBO> retrieve productmasterlist to show in ui
+     */
+    public ArrayList<ProductMasterBO> getReportDetails(String invoiceno) {
+        ArrayList<ProductMasterBO> reportList = new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder();
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalamount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("inner join productmaster PM on ID.productid=PM.pid ");
+        sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
+        sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
+        Cursor c = db.selectSQL(sb.toString());
+        if (c != null) {
+            ProductMasterBO productMasterBO;
+            while (c.moveToNext()) {
+                productMasterBO = new ProductMasterBO();
+                productMasterBO.setProductShortName(c.getString(0));
+                productMasterBO.setProductID(c.getString(1));
+                productMasterBO.setOrderedPcsQty(c.getInt(2));
+                productMasterBO.setOrderedCaseQty(c.getInt(3));
+                productMasterBO.setOrderedOuterQty(c.getInt(4));
+                productMasterBO.setTotalamount(c.getDouble(5));
+                productMasterBO.setBatchNo(c.getString(6));
+                productMasterBO.setWeight(c.getInt(7));
+                productMasterBO.setTotalQty(c.getInt(8));
+                reportList.add(productMasterBO);
+
+            }
+        }
+        c.close();
+        db.closeDB();
+        return reportList;
+    }
+
+    /**
+     * if free product available for selected invoice,this method use to retrieve data from
+     * scheme detail table and display in invoice detai report screen
+     *
+     * @param invoiceno - selected invoice
+     * @return - free product list
+     */
+    public ArrayList<SchemeProductBO> getSchemeProductDetails(String invoiceno) {
+        ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder();
+        sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
+        sb.append("CASE WHEN uomid= PM.dUomid THEN " + bmodel.QT("CASE"));
+        sb.append(" WHEN uomid=PM.dOUomid THEN " + bmodel.QT("OUTER") + " ELSE " + bmodel.QT("PIECE") + " END AS you ");
+        sb.append("from SchemeFreeProductDetail SFP ");
+        sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
+        sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
+        sb.append("where invoiceid=" + bmodel.QT(invoiceno));
+        Cursor c = db.selectSQL(sb.toString());
+        if (c != null) {
+            SchemeProductBO schemeProductBO;
+            while (c.moveToNext()) {
+                schemeProductBO = new SchemeProductBO();
+                schemeProductBO.setProductName(c.getString(0));
+                schemeProductBO.setProductId(c.getString(1));
+                schemeProductBO.setQuantitySelected(c.getInt(2));
+                schemeProductBO.setBatchId(c.getString(3));
+                schemeProductBO.setUomDescription(c.getString(4));
+                freeProductList.add(schemeProductBO);
+
+            }
+        }
+        c.close();
+        db.closeDB();
+        return freeProductList;
+    }
+
+    public ArrayList<OutletReportBO> downloadOutletReports(){
+        ArrayList<OutletReportBO> lst=new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,timein,timeout");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                OutletReportBO outletReportBO;
+                while (c.moveToNext()) {
+                    outletReportBO = new OutletReportBO();
+                    outletReportBO.setUserId(c.getInt(0));
+                    outletReportBO.setUserName(c.getString(1));
+                    outletReportBO.setRetailerId(c.getInt(2));
+                    outletReportBO.setRetailerName(c.getString(3));
+                    outletReportBO.setLocationName(c.getString(4));
+                    outletReportBO.setAddress(c.getString(5));
+                    outletReportBO.setIsPlanned(c.getInt(6));
+                    outletReportBO.setIsVisited(c.getInt(7));
+                    outletReportBO.setTimeIn(c.getString(8));
+                    outletReportBO.setTimeOut(c.getString(9));
+                    outletReportBO.setDuration(c.getString(10));
+                    outletReportBO.setSalesValue(c.getString(11));
+                    outletReportBO.setLatitude(c.getDouble(12));
+                    outletReportBO.setLongitude(c.getDouble(13));
+
+                    lst.add(outletReportBO);
+
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        finally {
+            db.closeDB();
+        }
+        return lst;
+
+    }
+
+    public ArrayList<OutletReportBO> getLstUsers() {
+        return lstUsers;
+    }
+
+    private ArrayList<OutletReportBO> lstUsers;
+    public ArrayList downloadUsers(){
+        lstUsers=new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct UseriD,UserName from OutletPerfomanceReport");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                OutletReportBO outletReportBO;
+                while (c.moveToNext()) {
+                    outletReportBO = new OutletReportBO();
+                    outletReportBO.setUserId(c.getInt(0));
+                    outletReportBO.setUserName(c.getString(1));
+                    outletReportBO.setChecked(true);// to show all user by default
+                    lstUsers.add(outletReportBO);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        finally {
+            db.closeDB();
+        }
+        return lstUsers;
+
+    }
+
+    public Integer downloadlastVisitedRetailer(int userId){
+        int retailerid=0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct Retailerid from OutletPerfomanceReport where userid="+userId+" order by timein,timeout  desc limit 1");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    retailerid=c.getInt(0);
+
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        finally {
+            db.closeDB();
+        }
+        return retailerid;
+
+    }
+
+
+    public boolean isPerformReport() {
+        boolean isAvailable = false;
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select UseriD from OutletPerfomanceReport");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getCount() > 0) {
+                        isAvailable = true;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return isAvailable;
+    }
+
+    public String getPerformRptUrl() {
+        String url = "";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select URL from UrlDownloadMaster where MasterName = 'RPT_RETAILER_PERFORMANCE'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    url = c.getString(0);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return url;
+    }
+
+    public ArrayList<ProductMasterBO> getOrderedProductMaster() {
+        return productMaster;
+    }
+
+    private ArrayList<ProductMasterBO> productMaster = new ArrayList<>();
+    ArrayList<Integer> parentIds = new ArrayList<>();
+    HashMap<Integer, String> parentIdsMap = new HashMap<>();
+
+    public void downloadProductReportsWithFiveLevelFilter() {
+        try {
+            ProductMasterBO product;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+
+            int mFiltrtLevel = 0;
+            int mContentLevel = 0;
+
+
+            String sql = "";
+
+
+            Cursor filterCur = db
+                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
+                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  (Select RField from HhtModuleMaster " +
+                            "where hhtCode = 'RPT03' and flag = 1) " +
+                            "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
+                            "where Sequence = (Select max(Sequence) from ProductLevel))");
+
+            if (filterCur != null) {
+                if (filterCur.moveToNext()) {
+                    mFiltrtLevel = filterCur.getInt(0);
+                    mContentLevel = filterCur.getInt(1);
+                }
+                filterCur.close();
+            }
+
+            int loopEnd = mContentLevel - mFiltrtLevel + 1;
+            sql = "select A"
+                    + loopEnd
+                    + ".pid,A"
+                    + loopEnd
+                    + ".pname,sum(OD.Qty),A1.pid,A"
+                    + loopEnd
+                    + ".psname,A"
+                    + loopEnd
+                    + ".isSalable," +
+                    "A1.pname as brandname,A1.parentid,sum(OD.totalamount) from ProductMaster A1";
+
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
+                        + ".ParentId = A" + (i - 1) + ".PID";
+
+            sql = sql + " left join OrderDetail OD on OD.ProductID = A" + loopEnd + ".pid WHERE A1.PLid IN " +
+                    "(Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1) and "
+                    + " A" + loopEnd + ".pid = OD.ProductId"
+                    + " group by A" + loopEnd + ".pid ORDER BY "
+                    + " A" + loopEnd + ".rowid";
+
+
+            Cursor c = db.selectSQL(sql);
+            productMaster = new ArrayList<>();
+            if (c != null) {
+                while (c.moveToNext()) {
+                    product = new ProductMasterBO();
+                    product.setProductID(c.getString(0));
+                    product.setProductName(c.getString(1));
+                    product.setTotalQty(c.getInt(2));
+                    product.setParentid(c.getInt(3));
+                    product.setProductShortName(c.getString(4));
+                    product.setIsSaleable(c.getInt(5));
+                    product.setBrandname(c.getString(6));
+                    product.setcParentid(c.getInt(7));
+                    product.setTotalamount(Double.parseDouble(c.getString(8)));
+
+                    productMaster.add(product);
+                    parentIds.add(product.getParentid());
+                    parentIdsMap.put(product.getParentid(), product.getProductID());
+
+                }
+                c.close();
+            }
+            db.closeDB();
+            if (parentIds != null && parentIds.size() > 0) {
+                downloadSellerReportFilter();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public HashMap<Integer, Vector<LevelBO>> getMfilterlevelBo() {
+        return mfilterlevelBo;
+    }
+
+    private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo = new HashMap<>();
+
+    public Vector<LevelBO> getSequencevalues() {
+        return sequencevalues;
+    }
+
+    private Vector<LevelBO> sequencevalues;
+    public void downloadSellerReportFilter() {
+        int LevelID = 0;
+        sequencevalues = new Vector<>();
+        try {
+
+            LevelBO levelBo;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+
+            String sql = "select distinct PM.PID,PM.PName," +
+                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1)";
+
+            Cursor c = db.selectSQL(sql);
+            Vector<LevelBO> levelBOVector = new Vector<>();
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (parentIdsMap.containsKey(c.getInt(0))) {
+                        LevelID = c.getInt(3);
+                        levelBo = new LevelBO();
+                        levelBo.setProductID(c.getInt(0));
+                        levelBo.setLevelName(c.getString(1));
+                        levelBo.setParentID(c.getInt(2));
+                        //levelBo.setProductLevel(c.getString(4));
+                        levelBOVector.add(levelBo);
+                        if (sequencevalues.size() == 0) {
+                            levelBo = new LevelBO();
+                            levelBo.setProductID(LevelID);
+                            levelBo.setLevelName(c.getString(4));
+                            levelBo.setParentID(c.getInt(2));
+                            sequencevalues.add(levelBo);
+                        }
+
+                    }
+                }
+                mfilterlevelBo.put(LevelID, levelBOVector);
+                c.close();
+            }
+            db.closeDB();
+            //mfilterlevelBo.put()
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

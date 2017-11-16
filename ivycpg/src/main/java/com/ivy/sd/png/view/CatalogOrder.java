@@ -68,6 +68,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -158,6 +160,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     ArrayList<String> productIdList;
     private FrameLayout drawer;
     private Button nextBtn;
+    private int totalAllQty = 0;
+    private TextView totalQtyTV;
 
 
     @Override
@@ -184,6 +188,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         nextBtn = (Button) findViewById(R.id.btn_next);
+        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
         nextBtn.setOnClickListener(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -490,6 +495,19 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             //Loadmore(0);
             brandIds = null;
 
+        }
+
+        //for  parital order save based on interval
+        if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
+            long timeInterval = bmodel.configurationMasterHelper.tempOrderInterval * 1000;
+            bmodel.orderTimer = new Timer();
+            bmodel.orderTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    bmodel.insertTempOrder();
+                }
+
+            }, 0, timeInterval);
 
         }
 
@@ -1517,9 +1535,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void backButtonClick() {
         try {
+
             if (bmodel.hasOrder()) {
                 showDialog(0);
             } else {
+
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();
+
                 bmodel.productHelper.clearOrderTable();
                 if (bmodel.mSelectedModule == 1) {
                     startActivity(new Intent(CatalogOrder.this,
@@ -1567,6 +1590,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                             bmodel.productHelper
                                                     .clearOrderTableAndUpdateSIH();
                                         }
+
+                                        if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                                            bmodel.orderTimer.cancel();
+
                                         bmodel.productHelper.clearOrderTable();
 
                                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
@@ -1795,6 +1822,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         try {
 
             int lpccount = 0;
+            totalAllQty = 0;
             totalvalue = 0;
             HashSet<String> sbdTarget = new HashSet<>();
             HashSet<String> sbdAcheived = new HashSet<>();
@@ -1823,6 +1851,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     totalvalue += (items.get(i).getOrderedPcsQty() * items.get(i).getSrp())
                                             + (items.get(i).getOrderedCaseQty() * items.get(i).getCsrp())
                                             + items.get(i).getOrderedOuterQty() * items.get(i).getOsrp();
+                                    totalAllQty = totalAllQty + (items.get(i).getOrderedPcsQty() + (items.get(i).getOrderedCaseQty() * items.get(i).getCaseSize()) + (items.get(i).getOrderedOuterQty() * items.get(i).getOutersize()));
                                     //totalvalue = totalvalue + temp;
                                 }
                                 //mylist.add(items.get(i));
@@ -1841,6 +1870,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 + (ret.getOrderedCaseQty() * ret.getCsrp())
                                 + ret.getOrderedOuterQty() * ret.getOsrp();
                         totalvalue = totalvalue + temp;
+                        totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
                     }
                     if (ret.isRPS()) {
                         sbdTarget.add(ret.getSbdGroupName());
@@ -1916,6 +1946,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             lpcText.setText(lpccount + "");
             //totalValueText_brand.setText(bmodel.formatValue(totalvalue) + "");
+            totalQtyTV.setText("" + totalAllQty);
             totalValueText.setText(" " + bmodel.formatValue(totalvalue));
 
             if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
@@ -2309,10 +2340,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 slant_view_bg = (SlantView) v.findViewById(R.id.slant_view_bg);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 

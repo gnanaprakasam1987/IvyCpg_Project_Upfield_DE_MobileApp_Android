@@ -65,7 +65,7 @@ public class OrderTransactionListDialog extends Dialog {
                 dismiss();
             }
         });
-        new_order_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        new_order_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
     }
 
     public interface newOrderOnClickListener {

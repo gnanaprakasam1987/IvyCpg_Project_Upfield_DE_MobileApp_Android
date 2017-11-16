@@ -78,7 +78,7 @@ public class CSCustomerVisited extends IvyBaseFragment {
                 customer_name = (TextView) view.findViewById(R.id.customer_name);
                 customer_name.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 customer_ph_no = (TextView) view.findViewById(R.id.customer_ph_no);
-                customer_ph_no.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                customer_ph_no.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
         }

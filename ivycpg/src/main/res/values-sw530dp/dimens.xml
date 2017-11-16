@@ -28,6 +28,7 @@
 
     <!--Dashboard-->
     <dimen name="kpi_spinner_title_size">16sp</dimen>
+    <dimen name="spinner_layout_height">60dp</dimen>
     <dimen name="value_text_size">18sp</dimen>
     <dimen name="factor_title_size">19sp</dimen>
     <dimen name="total_title_size">28sp</dimen>
@@ -216,6 +217,5 @@
     <!--<dimen name="activation_edittext_text_size">16sp</dimen>
     <dimen name="survey_answer_left">33dp</dimen>
     <dimen name="gallery_card_margin">2dp</dimen>-->
-    <dimen name="spinner_layout_height">60dp</dimen>
 
 </resources>

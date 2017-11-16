@@ -323,12 +323,10 @@ public class UserMasterHelper {
 
             db.executeQ(query);
             db.close();
-
-            if(getUserMasterBO()!=null){
+            if (getUserMasterBO() != null) {
                 getUserMasterBO().setDistributorid(Integer.parseInt(parentId));
                 getUserMasterBO().setBranchId(Integer.parseInt(distid));
             }
-
         } catch (Exception e) {
             Commons.printException("" + e);
             db.close();
