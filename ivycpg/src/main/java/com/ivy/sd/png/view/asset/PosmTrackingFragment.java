@@ -594,7 +594,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.targetTV = (TextView) row
                         .findViewById(R.id.tv_target);
                 holder.availQtyET = (EditText) row
-                        .findViewById(R.id.edit_aviail_qty);
+                        .findViewById(R.id.edit_availability_qty);
                 holder.reason1Spin = (Spinner) row
                         .findViewById(R.id.spin_reason1);
 

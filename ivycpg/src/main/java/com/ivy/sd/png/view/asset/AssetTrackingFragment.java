@@ -1303,13 +1303,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     private void hideAndSeeK() {
 
         View view = getView();
-        if (view != null && (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_TARGET || !mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY)) {
-            view.findViewById(R.id.keypad).setVisibility(View.GONE);
-        }
-        if (view != null && mBusinessModel.assetTrackingHelper.SHOW_COMPETITOR_QTY)
-            view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
-        if (view != null && mBusinessModel.configurationMasterHelper.IS_TEAMLEAD)
-            getView().findViewById(R.id.keypad).setVisibility(View.GONE);
         if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
             view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
         }

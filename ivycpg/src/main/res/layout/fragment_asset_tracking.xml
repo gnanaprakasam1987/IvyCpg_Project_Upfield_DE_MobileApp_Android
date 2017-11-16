@@ -101,29 +101,15 @@
                     android:id="@+id/fab_barcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/ll_keypad"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:elevation="@dimen/floating_btn_elevation"
                     android:src="@drawable/barcode_scan"
                     android:visibility="visible"
                     app:backgroundTint="?attr/primarycolor"
                     app:borderWidth="0dp" />
-
-                <LinearLayout
-                    android:id="@+id/ll_keypad"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="vertical">
-
-                    <include
-                        layout="@layout/keypad"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-                </LinearLayout>
 
             </RelativeLayout>
 
