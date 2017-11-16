@@ -947,16 +947,8 @@ SynchronizationHelper {
         Cursor c;
         String tableName = "";
         dataMissedTable = "";
-        int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
+        int  hhtCount = 0,  standList = 0;
         try {
-            c = db.selectSQL("select  count(retailerid) from "
-                    + DataMembers.tbl_retailerMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    retailerCount = c.getInt(0);
-                }
-                c.close();
-            }
 
             c = db.selectSQL("select  count(hhtCode) from "
                     + DataMembers.tbl_HhtModuleMaster);
@@ -967,14 +959,6 @@ SynchronizationHelper {
                 c.close();
             }
 
-            c = db.selectSQL("select  count(beatid) from "
-                    + DataMembers.tbl_beatMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    beatMaster = c.getInt(0);
-                }
-                c.close();
-            }
 
             c = db.selectSQL("select  count(listid) from "
                     + DataMembers.tbl_StandardListMaster);
@@ -990,18 +974,14 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 && beatMaster > 0 && hhtCount > 0
-                && retailerCount > 0) {
+        if (standList > 0 &&  hhtCount > 0) {
             return true;
         } else {
             if (standList == 0)
                 tableName = tableName + " LovMaster";
-            if (beatMaster == 0)
-                tableName = tableName + " BeatMaster";
             if (hhtCount == 0)
                 tableName = tableName + " Configuration";
-            if (retailerCount == 0)
-                tableName = tableName + " Retailer";
+
 
             dataMissedTable = tableName;
         }
@@ -2933,7 +2913,7 @@ SynchronizationHelper {
             db.createDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select url from urldownloadmaster where ");
-            sb.append("mastername='RETAILER' and typecode='GETRET'");
+            sb.append("mastername='RETAILERMASTER' and typecode='GETRET'");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
