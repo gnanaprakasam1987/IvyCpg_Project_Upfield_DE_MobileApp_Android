@@ -267,7 +267,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         btnsaveAndGoInvoice = (Button) findViewById(R.id.saveAndGoInvoice);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
 
-        icAmountSpilitup_lty = (LinearLayout)findViewById(R.id.icAmountSpilitup_lty);
+        icAmountSpilitup_lty = (LinearLayout) findViewById(R.id.icAmountSpilitup_lty);
         icAmountSpilitup = (ImageView) findViewById(R.id.icAmountSpilitup);
 
         getNextDate();
@@ -608,7 +608,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             updateSchemeDetails();
         }
 
-        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             //applying removed tax..
             updateTaxOnProduct();
         }
@@ -707,7 +707,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         args.putDouble("totalOrderValue", totalOrderValue);
                         args.putDouble("cmy_disc", cmyDiscount);
                         args.putDouble("dist_disc", distDiscount);
-                        args.putDouble("scheme_disc",totalSchemeDiscValue);
+                        args.putDouble("scheme_disc", totalSchemeDiscValue);
                         dialogFragment.setArguments(args);
                         dialogFragment.show(getSupportFragmentManager(), "AmtSplitupDialog");
                     }
@@ -719,21 +719,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void updateTaxOnProduct(){
-        for(ProductMasterBO bo:mOrderedProductList){
-            float finalAmount=0;
+    private void updateTaxOnProduct() {
+        for (ProductMasterBO bo : mOrderedProductList) {
+            float finalAmount = 0;
 
-            if(bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())!=null) {
-                for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
-                    if (taxBO.getParentType().equals("0")) {
-                        finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+            if (bmodel.productHelper.getmTaxListByProductId() != null) {
+                if (bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                        if (taxBO.getParentType().equals("0")) {
+                            finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                        }
                     }
                 }
             }
 
-            bo.setDiscount_order_value((bo.getDiscount_order_value()+finalAmount));
+            bo.setDiscount_order_value((bo.getDiscount_order_value() + finalAmount));
         }
     }
+
     @Override
     public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
@@ -1922,7 +1925,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         int i1 = item.getItemId();
         if (i1 == R.id.menu_review) {
             OrderRemarkDialog ordRemarkDialog = new OrderRemarkDialog(
-                    OrderSummary.this, null);
+                    OrderSummary.this, null, false);
             ordRemarkDialog.show();
             return true;
         } else if (i1 == R.id.menu_discount) {
@@ -2166,7 +2169,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE&&screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
@@ -2251,6 +2254,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE && shortListOrder != null)
                 bmodel.productHelper.setShortProductMaster(shortListOrder);
             fromorder = false;
+
+
+            if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
+                // If GST enabled then, every ordered product should have tax
+                bmodel.showAlert(
+                        getResources()
+                                .getString(
+                                        R.string.tax_not_availble_for_some_product),
+                        0);
+                isClick = false;
+                return;
+            }
 
             if (!isClick) {
                 isClick = true;

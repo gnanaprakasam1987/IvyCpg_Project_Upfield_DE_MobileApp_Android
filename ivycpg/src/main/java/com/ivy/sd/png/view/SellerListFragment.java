@@ -65,7 +65,8 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
             txt_all_user=(TextView) view.findViewById(R.id.tv_user_all);
             txt_all_user.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            lstUsers = (ArrayList) getArguments().getSerializable("users");
+          //  lstUsers = (ArrayList) getArguments().getSerializable("users");
+            lstUsers=getArguments().getParcelableArrayList("users");
 
             MyAdapter adapter=new MyAdapter(lstUsers);
             listView.setAdapter(adapter);
@@ -151,17 +152,17 @@ public class SellerListFragment<E> extends Fragment implements View.OnClickListe
 
     private void updateAllUserCheckboxStatus(){
 
-        boolean isAllchecked=true;
+        boolean isAllChecked=true;
         if(lstUsers!=null) {
             for (OutletReportBO bo : lstUsers) {
                 if(!bo.isChecked()){
-                    isAllchecked=false;
+                    isAllChecked=false;
                     break;
                 }
             }
         }
 
-        if(isAllchecked)
+        if(isAllChecked)
             chk_all_user.setChecked(true);
         else  chk_all_user.setChecked(false);
     }
