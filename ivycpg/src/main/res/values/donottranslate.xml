@@ -176,4 +176,8 @@
     <string name="please_close_the_day_for_current_Distributor">Please close the day for current distributor.</string>
     <string name="please_select_a_Distributor_to_download">Please select a distributor to download.</string>
     <string name="invoice_creation">Creation</string>
+    <string name="total_mrp">Total MRP</string>
+    <string name="scheme_ucp">Scheme UCP</string>
+    <string name="order_summary_dialog">Order Summary Dialog</string>
+    <string name="bill_payment">Bill Payment</string>
 </resources>

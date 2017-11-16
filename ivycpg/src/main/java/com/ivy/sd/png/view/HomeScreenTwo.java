@@ -3922,6 +3922,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             bmodel.configurationMasterHelper.IS_SCHEME_ON = flag;
             bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
+            bmodel.configurationMasterHelper.IS_GST = flag;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG= flag;
+            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
 //            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
