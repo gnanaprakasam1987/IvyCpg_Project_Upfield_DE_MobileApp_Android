@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             if (isPartialOrder)
                 setScreenTitle(getResources().getString(R.string.partial_delivery));
             else
-                setScreenTitle(getResources().getString(R.string.text_invoice));
+                setScreenTitle(getResources().getString(R.string.text_invoice) + "\n" + getResources().getString(R.string.invoice_creation));
 
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,7 +80,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         if (isPartialOrder)
             btnSave.setText(getResources().getString(R.string.partial_delivery));
         else
-            btnSave.setText(getResources().getString(R.string.text_invoice));
+            btnSave.setText(getResources().getString(R.string.text_invoice)
+                    + "\n" + getResources().getString(R.string.invoice_creation));
 
         btnSave.setOnClickListener(this);
 
@@ -118,8 +120,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     bmodel.saveOrder();
                     bmodel.saveNewInvoice();
                 }
-                bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
+
+
+                bmodel.insertDeliveryOrderRecord(isPartialOrder);
 
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -155,6 +159,20 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_deliverydetails, menu);
+
+        menu.findItem(R.id.menu_save).setVisible(false);
+        /** on/off the items based on the configuration **/
+        MenuItem reviewAndPo = menu.findItem(R.id.menu_review);
+        reviewAndPo.setVisible(true);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
@@ -162,6 +180,11 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             startActivity(new Intent(DeliveryOrderSummary.this, DeliveryOrderActivity.class));
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            return true;
+        } else if (i == R.id.menu_review) {
+            OrderRemarkDialog ordRemarkDialog = new OrderRemarkDialog(
+                    DeliveryOrderSummary.this, null, true);
+            ordRemarkDialog.show();
             return true;
         }
 
@@ -247,7 +270,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -262,7 +285,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -277,7 +300,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))

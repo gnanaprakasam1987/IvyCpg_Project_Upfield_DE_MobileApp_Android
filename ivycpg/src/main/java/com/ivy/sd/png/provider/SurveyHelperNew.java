@@ -1739,7 +1739,7 @@ public class SurveyHelperNew {
 //                mAllQuestions.addAll(sBO.getQuestions());
 
                 boolean check = false;
-                String sql1 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
+                String sql1 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
                         + " uid = " + QT(uid) + " and isSubQuest=0";
                 Cursor c = db.selectSQL(sql1);
                 if (c != null) {
@@ -1754,6 +1754,10 @@ public class SurveyHelperNew {
                                     .getInt(0)) {
                                 questionBO.setSelectedAnswerID(c.getInt(1));
                                 questionBO.setSelectedAnswer(c.getString(2));
+                                if (questionBO.getQuestionID() == c.getInt(0))
+                                    questionBO.setQuestScore(questionBO.getQuestScore() + c.getFloat(3));
+                                else
+                                    questionBO.setQuestScore(c.getFloat(3));
                                 check = true;
                                 break;
                             }
@@ -1762,7 +1766,7 @@ public class SurveyHelperNew {
                     c.close();
                 }
                 if (check) {
-                    String sql2 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"
+                    String sql2 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
                             + " uid = " + QT(uid) + " and isSubQuest=1";
 
                     StringBuilder sb1 = new StringBuilder();
@@ -1778,6 +1782,11 @@ public class SurveyHelperNew {
                                     subqBO.setIsSubQuestion(1);
                                     subqBO.setSelectedAnswerID(c1.getInt(1));
                                     subqBO.setSelectedAnswer(c1.getString(2));
+
+                                    if (subqBO.getQuestionID() == c.getInt(0))
+                                        subqBO.setQuestScore(subqBO.getQuestScore() + c.getFloat(3));
+                                    else
+                                        subqBO.setQuestScore(c.getFloat(3));
 
                                     sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
                                     sb1.append(QT(uid));

@@ -105,6 +105,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private boolean isUpdatePrintCount;
     private boolean isHomeBtnEnable;
     private boolean isPrintClicked;
+    private boolean isHidePrintBtn;
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
@@ -159,6 +160,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         if(!bmodel.configurationMasterHelper.IS_SHARE_INVOICE){
             menu.findItem(R.id.menu_share_pdf).setVisible(false);
+        }
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
         }
 
         if(isHidePrintBtn){

@@ -21,13 +21,14 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by rajesh.k on 01-09-2015.
  */
 public class OrderSummaryDialogFragment extends DialogFragment {
-    private ArrayList<ProductMasterBO> mOrderedProductList;
+    private LinkedList<ProductMasterBO> mOrderedProductList;
     private BusinessModel bmodel;
 
     private ListView mListView;
@@ -68,7 +69,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
             }
         });
 
-        mOrderedProductList = (ArrayList<ProductMasterBO>) getArguments().getSerializable("OrderList");
+        mOrderedProductList = (LinkedList<ProductMasterBO>) getArguments().getSerializable("OrderList");
 
 
         mTypeIdList = bmodel.productHelper.getTypeIdList();

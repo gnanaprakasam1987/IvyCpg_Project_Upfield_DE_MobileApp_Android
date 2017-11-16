@@ -37,7 +37,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -75,7 +74,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -947,16 +945,8 @@ SynchronizationHelper {
         Cursor c;
         String tableName = "";
         dataMissedTable = "";
-        int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
+        int hhtCount = 0, beatMaster = 0, standList = 0;
         try {
-            c = db.selectSQL("select  count(retailerid) from "
-                    + DataMembers.tbl_retailerMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    retailerCount = c.getInt(0);
-                }
-                c.close();
-            }
 
             c = db.selectSQL("select  count(hhtCode) from "
                     + DataMembers.tbl_HhtModuleMaster);
@@ -990,8 +980,7 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 && beatMaster > 0 && hhtCount > 0
-                && retailerCount > 0) {
+        if (standList > 0 && beatMaster > 0 && hhtCount > 0) {
             return true;
         } else {
             if (standList == 0)
@@ -1000,8 +989,6 @@ SynchronizationHelper {
                 tableName = tableName + " BeatMaster";
             if (hhtCount == 0)
                 tableName = tableName + " Configuration";
-            if (retailerCount == 0)
-                tableName = tableName + " Retailer";
 
             dataMissedTable = tableName;
         }

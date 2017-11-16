@@ -218,6 +218,7 @@
                             android:id="@+id/ListHeader"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/list_title_height"
+                            android:background="@color/list_title_bg_color"
                             android:orientation="horizontal" >
                         </LinearLayout>
 
