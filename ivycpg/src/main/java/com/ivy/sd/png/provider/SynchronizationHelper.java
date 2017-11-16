@@ -933,7 +933,7 @@ SynchronizationHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         Cursor c;
-        int hhtCount = 0, beatMaster = 0, standList = 0;
+        int hhtCount = 0, standList = 0;
         try {
 
             c = db.selectSQL("select  count(hhtCode) from "
@@ -941,15 +941,6 @@ SynchronizationHelper {
             if (c != null) {
                 if (c.moveToNext()) {
                     hhtCount = c.getInt(0);
-                }
-                c.close();
-            }
-
-            c = db.selectSQL("select  count(beatid) from "
-                    + DataMembers.tbl_beatMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    beatMaster = c.getInt(0);
                 }
                 c.close();
             }
