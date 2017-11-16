@@ -66,7 +66,7 @@ public class SBDReportFragment extends Fragment {
 		mtdactualgptotal = (TextView) view.findViewById(R.id.mtdactualgp);
 		mtdmerchtotal = (TextView) view.findViewById(R.id.mtdmerchgp);
 		mtdgstotal = (TextView) view.findViewById(R.id.mtdgstotal);
-		listview = (ListView) view.findViewById(R.id.lvwplist);
+		listview = (ListView) view.findViewById(R.id.list);
 		listview.setCacheColorHint(0);
 		
 		sbdreport = downloadSBDReport();

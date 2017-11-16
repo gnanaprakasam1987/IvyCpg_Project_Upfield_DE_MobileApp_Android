@@ -75,7 +75,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         labelTxt2 = (TextView) findViewById(R.id.total_linesTitle);
         applybtn = (Button) findViewById(R.id.van_btn_accept);
         rejectbtn = (Button) findViewById(R.id.van_btn_reject);
-        StockApplyListView = (RecyclerView) findViewById(R.id.lvwplist);
+        StockApplyListView = (RecyclerView) findViewById(R.id.list);
         bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
 
         toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));

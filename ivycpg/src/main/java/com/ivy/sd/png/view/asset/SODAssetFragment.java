@@ -147,7 +147,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
         if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.lvwplist);
+            mListView = (ListView) getView().findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 

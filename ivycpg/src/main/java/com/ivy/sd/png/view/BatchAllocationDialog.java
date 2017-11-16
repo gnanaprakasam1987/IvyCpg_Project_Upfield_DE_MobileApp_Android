@@ -89,7 +89,7 @@ public class BatchAllocationDialog extends Dialog {
         TextView mTitle = (TextView) toolbar.findViewById(R.id.tv_toolbar_title);
         mTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        mBatchAllocationLV = (ListView) findViewById(R.id.lvwplist);
+        mBatchAllocationLV = (ListView) findViewById(R.id.list);
 
         mTotalTV = (TextView) findViewById(R.id.totalValue);
         mBtnDone = (Button) findViewById(R.id.btn_done);

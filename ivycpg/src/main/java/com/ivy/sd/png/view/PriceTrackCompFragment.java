@@ -339,7 +339,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
         (view.findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        lv = (ListView) view.findViewById(R.id.lvwplist);
+        lv = (ListView) view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
         rvCompanyList = (RecyclerView) view.findViewById(R.id.rvCompany);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);

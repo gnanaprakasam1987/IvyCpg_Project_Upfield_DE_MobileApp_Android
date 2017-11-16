@@ -203,7 +203,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         mBusinessModel.setContext(getActivity());
 
         if (getView() != null) {
-            listview = (ListView) getView().findViewById(R.id.lvwplist);
+            listview = (ListView) getView().findViewById(R.id.list);
             listview.setCacheColorHint(0);
         }
 
@@ -634,9 +634,9 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                         .findViewById(R.id.spin_condition);
                 holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
                 holder.mInstallDate = (Button) row
-                        .findViewById(R.id.Btn_instal_Date);
+                        .findViewById(R.id.Btn_install_Date);
                 holder.llInstallDate = (LinearLayout) row
-                        .findViewById(R.id.ll_instal_date);
+                        .findViewById(R.id.ll_install_date);
                 holder.mInstallDate.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mServiceDate = (Button) row
                         .findViewById(R.id.Btn_service_Date);
@@ -1339,13 +1339,13 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         try {
             if (view != null) {
                 if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.tv_header_assetname).getTag()) != null) {
-                    ((TextView) view.findViewById(R.id.tv_header_assetname))
+                        R.id.tv_header_asset_name).getTag()) != null) {
+                    ((TextView) view.findViewById(R.id.tv_header_asset_name))
                             .setText(mBusinessModel.labelsMasterHelper
                                     .applyLabels(view.findViewById(
-                                            R.id.tv_header_assetname).getTag()));
+                                            R.id.tv_header_asset_name).getTag()));
                 }
-                ((TextView) view.findViewById(R.id.tv_header_assetname)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
 
         } catch (Exception e) {
@@ -1354,20 +1354,20 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
 
         if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED)
-            view.findViewById(R.id.tv_is_exeuted).setVisibility(View.GONE);
+            view.findViewById(R.id.tv_is_executed).setVisibility(View.GONE);
         else {
 
             try {
                 if (view != null) {
                     if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.tv_is_exeuted).getTag()) != null) {
-                        ((TextView) view.findViewById(R.id.tv_is_exeuted))
+                            R.id.tv_is_executed).getTag()) != null) {
+                        ((TextView) view.findViewById(R.id.tv_is_executed))
                                 .setText(mBusinessModel.labelsMasterHelper
                                         .applyLabels(view.findViewById(
-                                                R.id.tv_is_exeuted).getTag()));
+                                                R.id.tv_is_executed).getTag()));
 
                     }
-                    ((TextView) view.findViewById(R.id.tv_is_exeuted)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {

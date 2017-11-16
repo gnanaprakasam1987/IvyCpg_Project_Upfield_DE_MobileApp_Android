@@ -61,7 +61,7 @@ public class BeginningStockFragment extends Fragment {
             getActivity().finish();
         }
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);

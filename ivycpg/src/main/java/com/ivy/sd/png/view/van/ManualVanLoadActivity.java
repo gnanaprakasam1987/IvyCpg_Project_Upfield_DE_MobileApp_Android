@@ -232,7 +232,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mBtnClear.setOnClickListener(this);
             mEdtSearchproductName.setOnEditorActionListener(this);
 
-            lvwplist = (ListView) findViewById(R.id.lvwplist);
+            lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
             toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));

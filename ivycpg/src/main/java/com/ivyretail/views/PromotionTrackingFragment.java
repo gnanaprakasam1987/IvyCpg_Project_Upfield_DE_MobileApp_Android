@@ -245,7 +245,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
     private void viewInitialization() {
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
 

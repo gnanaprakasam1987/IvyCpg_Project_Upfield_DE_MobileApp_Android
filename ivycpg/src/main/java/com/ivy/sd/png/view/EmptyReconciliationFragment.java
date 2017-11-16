@@ -292,7 +292,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
          (getView().findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        lv = (ListView) getView().findViewById(R.id.lvwplist);
+        lv = (ListView) getView().findViewById(R.id.list);
         lv.setCacheColorHint(0);
 
         onLoadModule();

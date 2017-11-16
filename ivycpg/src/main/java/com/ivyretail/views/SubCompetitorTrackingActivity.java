@@ -136,7 +136,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
     private void initializeView() {
         et_feedback = (EditText) findViewById(R.id.edt_feedback);
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         btnSave = (Button) findViewById(R.id.btn_save);
         lvwplist.setCacheColorHint(0);
 

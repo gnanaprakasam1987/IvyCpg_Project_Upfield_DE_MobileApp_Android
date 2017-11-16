@@ -84,7 +84,7 @@ public class InvoiceReportFragment extends Fragment implements
 
 
         xlsExport = (Button) view.findViewById(R.id.xlsExport);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
         lvwplist.setOnItemClickListener(this);

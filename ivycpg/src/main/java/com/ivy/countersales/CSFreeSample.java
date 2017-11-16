@@ -93,7 +93,7 @@ public class CSFreeSample extends IvyBaseActivityNoActionBar implements BrandDia
 
         mDrawerLayout = (DrawerLayout) findViewById(
                 R.id.drawer_layout);
-        listView = (ListView) findViewById(R.id.lvwplist);
+        listView = (ListView) findViewById(R.id.list);
         txt_total_lines = (TextView) findViewById(R.id.txt_total_lines);
         txt_total_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.tv_total_lines)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

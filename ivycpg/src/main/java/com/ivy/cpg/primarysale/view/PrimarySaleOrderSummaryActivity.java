@@ -81,7 +81,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
         deliveryDate = (Button) findViewById(R.id.deliveryDate);
         valuetv = (TextView) findViewById(R.id.valuetv);
         linestv = (TextView) findViewById(R.id.linestv);
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
 
         saveSummary.setOnClickListener(this);
         editSummary.setOnClickListener(this);

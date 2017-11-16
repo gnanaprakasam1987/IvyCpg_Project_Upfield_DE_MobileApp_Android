@@ -373,7 +373,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         (view.findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        lv = (ListView) view.findViewById(R.id.lvwplist);
+        lv = (ListView) view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
 
         loadReasons();

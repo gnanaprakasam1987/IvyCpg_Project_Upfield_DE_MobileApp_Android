@@ -87,7 +87,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
 
     private void initializeView() {
         try {
-            lvwplist = (ListView) findViewById(R.id.lvwplist);
+            lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
             btnSave = (Button) findViewById(R.id.save_btn);
             btnSave.setOnClickListener(this);

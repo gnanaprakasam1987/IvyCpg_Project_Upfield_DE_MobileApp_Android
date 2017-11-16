@@ -269,7 +269,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             }
         });
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         expandlvwplist = (ExpandableListView) view.findViewById(R.id.expand_lvwplist);

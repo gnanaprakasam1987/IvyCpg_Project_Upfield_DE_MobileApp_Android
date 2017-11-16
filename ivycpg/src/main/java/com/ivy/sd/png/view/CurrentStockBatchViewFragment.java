@@ -161,7 +161,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         bmodel.reportHelper.updateBaseUOM("ORDER", 3);
 
 
-        lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+        lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         /** Load products from product master **/

@@ -225,7 +225,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         ActionBarDrawerToggle mDrawerToggle;
 
         if (getView() != null)
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);

@@ -121,7 +121,7 @@
                         android:text="@string/sih" />
                     </LinearLayout>
                 <ListView
-                    android:id="@+id/lvwplist"
+                    android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="@null"

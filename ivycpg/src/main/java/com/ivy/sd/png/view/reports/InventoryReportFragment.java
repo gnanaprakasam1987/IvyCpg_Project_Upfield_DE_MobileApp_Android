@@ -17,11 +17,9 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InventoryBO_Proj;
-import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -63,7 +61,7 @@ public class InventoryReportFragment extends Fragment {
 
         spnRetailers=(Spinner)view.findViewById(R.id.spn_retailer);
         spnType=(Spinner)view.findViewById(R.id.spn_type);
-        listView=(ListView)view.findViewById(R.id.lvwplist);
+        listView=(ListView)view.findViewById(R.id.list);
 
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
