@@ -45,6 +45,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -140,8 +141,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private Vector<LevelBO> parentidList;
     private ArrayList<Integer> mAttributeProducts;
     private String filtertext;
-    private boolean isSpecialAllSelected = true;
-
+    private Object selectedTabTag;
+    private int x, y;
+    private HorizontalScrollView hscrl_spl_filter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -698,10 +700,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
         if (mylist != null) {
             mylist.clear();
         }
-        /* if five filter is previously selected replace the filtered content */
-        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false && selectedCompetitorId.equals("")) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
-        } else {
+        if (!selectedCompetitorId.equals("")) {
+            mSelectedIdByLevelId = new HashMap<>();
+        }
             Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
             if (filterId != null && !filterId.isEmpty()) {
                 for (ProductMasterBO sku : items) {
@@ -714,7 +715,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
             mDrawerLayout.closeDrawers();
             refreshList();
-        }
+        hscrl_spl_filter.scrollTo(x, y);
+        selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
+
+        getActivity().invalidateOptionsMenu();
 
 
     }
@@ -1574,10 +1578,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (isSpecialAllSelected == true && bmodel.productHelper.getCompetitorFilterList() != null && bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+            if (bmodel.productHelper.getCompetitorFilterList() != null && bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
-            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && !selectedCompetitorId.equals("")) {
+            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null && !bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                 menu.findItem(R.id.menu_competitor_filter).setIcon(
                         R.drawable.ic_action_filter_select);
 
@@ -1726,9 +1730,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
-            if (!selectedCompetitorId.equals("")) {
-                mSelectedIdByLevelId = new HashMap<>();
-            }
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
@@ -1868,7 +1869,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void loadSpecialFilterView(View view) {
-        view.findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
+        hscrl_spl_filter = (HorizontalScrollView) view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter.setVisibility(View.VISIBLE);
         ll_spl_filter = (LinearLayout) view.findViewById(R.id.ll_spl_filter);
         ll_tab_selection = (LinearLayout) view.findViewById(R.id.ll_tab_selection);
         float scale;
@@ -1938,13 +1940,20 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         generalbutton = view.getTag().toString();
                         updatebrandtext(BRAND, -1);
                     }
-                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
+                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                        selectedTabTag = view.getTag();
                         selectTab(view.getTag());
+                    }
                 }
             });
 
 
             ll_spl_filter.addView(tab);
+
+            if (i == 0) {
+                x = tab.getLeft();
+                y = tab.getTop();
+            }
 
             Button tv_selection_identifier = new Button(getActivity());
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
@@ -1990,10 +1999,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }
         }
-        if (tag.toString().equalsIgnoreCase("All")) {
-            isSpecialAllSelected = true;
-        } else {
-            isSpecialAllSelected = false;
+        if (!tag.toString().equalsIgnoreCase("All")) {
+            selectedCompetitorId = "";
         }
         getActivity().supportInvalidateOptionsMenu();
     }
@@ -2023,11 +2030,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }
         }
-
-        if (tag.toString().equalsIgnoreCase("All")) {
-            isSpecialAllSelected = true;
-        } else {
-            isSpecialAllSelected = false;
+        if (!tag.toString().equalsIgnoreCase("All")) {
+            selectedCompetitorId = "";
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -2342,9 +2346,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     getResources().getString(R.string.no_products_exists), 0);
             return;
         }
-        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) && !selectedCompetitorId.equals("")) {
-            updateCompetitorProducts(selectedCompetitorId);
-        } else {
+        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+            selectedCompetitorId = "";
+        }
             mylist = new ArrayList<>();
             //
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {// Only own products
@@ -2464,7 +2468,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
             refreshList();
+        if (selectedTabTag != null) {
+            selectTab(selectedTabTag);
         }
+        //}
+        getActivity().invalidateOptionsMenu();
         mDrawerLayout.closeDrawers();
     }
 
@@ -2635,9 +2643,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (frag != null)
                 ft.detach(frag);
 
-            if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
-                selectedCompetitorId = "";
-            }
 
             // set Fragmentclass Arguments
             CompetitorFilterFragment fragobj = new CompetitorFilterFragment();

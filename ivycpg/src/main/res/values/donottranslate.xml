@@ -178,4 +178,6 @@
 
     <!-- Extra reason type -->
     <string name="other_reason">Others</string>
+    <string name="remark_hint">Remarks</string>
+    <string name="enter_remarks">Kindly provide remarks</string>
 </resources>

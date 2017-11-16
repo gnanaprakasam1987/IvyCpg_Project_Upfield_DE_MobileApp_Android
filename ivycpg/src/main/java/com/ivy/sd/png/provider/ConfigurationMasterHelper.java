@@ -1097,6 +1097,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_BAR_CODE = "ORDB09";
     public boolean IS_BAR_CODE;
+    public boolean IS_QTY_INCREASE;
 
     private static final String CODE_APLLY_BATCH_PRICE_FROM_PRODCUT = "FUN43";
     public boolean IS_APPLY_BATCH_PRICE_FROM_PRODUCT;
@@ -2030,6 +2031,9 @@ public class ConfigurationMasterHelper {
         this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;
         this.IS_LOYALTY_AUTO_PAYOUT = hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) != null ? hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) : false;
         this.IS_BAR_CODE = hashMapHHTModuleConfig.get(CODE_BAR_CODE) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE) : false;
+        if (IS_BAR_CODE && hashMapHHTModuleOrder.get(CODE_BAR_CODE) == 1) {
+            IS_QTY_INCREASE = true;
+        }
         this.IS_SHOW_DISCOUNTS_ORDER_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) : false;
         this.IS_APPLY_BATCH_PRICE_FROM_PRODUCT = hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) != null ? hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) : false;
         this.IS_SHOW_PRINT_LANGUAGE_THAI = hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) : false;

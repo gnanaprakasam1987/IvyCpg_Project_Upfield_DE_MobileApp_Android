@@ -143,16 +143,21 @@
 
         <EditText
             android:id="@+id/edt_other_remarks"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
             android:textColor="@color/Black"
             android:textSize="@dimen/list_item_primary_text_size"
             android:visibility="visible"
             tools:text="rg tgerg dfgdfgdf g"
+            android:hint="@string/remark_hint"
+            android:layout_alignTop="@+id/btn_photo"
+            android:layout_toRightOf="@+id/spnReason"
+
             android:layout_alignBottom="@+id/btn_photo"
-            android:layout_centerHorizontal="true"
-            android:hint="Remarks" />
+            android:layout_toLeftOf="@+id/btn_photo"
+            android:layout_toStartOf="@+id/btn_photo"
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:id="@+id/btn_photo"

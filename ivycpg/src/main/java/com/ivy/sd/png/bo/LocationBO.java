@@ -226,6 +226,16 @@ public class LocationBO {
 		this.reasonId = reasonId;
 	}
 	private int reasonId;
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	private String remarks = "";
 	public String getActual() {
 		return actual;
 	}

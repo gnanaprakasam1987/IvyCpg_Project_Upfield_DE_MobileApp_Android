@@ -596,6 +596,7 @@ public class SalesFundamentalHelper {
                 int locid1 = 0;
                 String tempkey = "";
                 String mKey1 = "";
+                detailColumns += ",remarks";
                 for (SOSBO sosBo : getmSOSList()) {
                     for (int i = 0; i < sosBo.getLocations().size(); i++) {
                         if ((!sosBo.getLocations().get(i).getParentTotal().equals("0")
@@ -610,14 +611,15 @@ public class SalesFundamentalHelper {
                                     + "," + sosBo.getLocations().get(i).getActual()
                                     + "," + sosBo.getLocations().get(i).getPercentage()
                                     + "," + sosBo.getLocations().get(i).getGap()
-                                    + "," + sosBo.getLocations().get(i).getReasonId()
+                                    + "," + (sosBo.getLocations().get(i).getReasonId() == -1 ? 0 : sosBo.getLocations().get(i).getReasonId())
                                     + "," + bmodel.QT(sosBo.getLocations().get(i).getImageName())
                                     + "," + sosBo.getIsOwn()
                                     + "," + sosBo.getParentID()
                                     + "," + sosBo.getLocations().get(i).getAudit()
                                     + "," + sosBo.getMappingId()
                                     + "," + sosBo.getLocations().get(i).getLocationId()
-                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getImgName());
+                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getImgName())
+                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getRemarks());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues.toString());
@@ -1598,6 +1600,9 @@ public class SalesFundamentalHelper {
                 sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,SF.Isdone");
                 if (moduleName.equals("SOS") || moduleName.equals("SOD")) {
                     sb.append(", IFNULL(B.BlockCount,'0'), IFNULL(B.ShelfCount,'0'),IFNULL(B.ShelfLength,'0'), IFNULL(B.ExtraShelf,'0'),SF.Parentid,SF.locid");
+                    if (moduleName.equals("SOS")) {
+                        sb.append(",SF.remarks");
+                    }
                 }
                 sb.append(" , SF.imgName as tempImageName From " + moduleName + "_Tracking_Detail SF");
                 {
@@ -1635,6 +1640,7 @@ public class SalesFundamentalHelper {
                                             msos.getLocations().get(i).setGap(detailCursor.getString(6));
                                             msos.getLocations().get(i).setReasonId(detailCursor.getInt(7));
                                             msos.getLocations().get(i).setImageName(detailCursor.getString(8));
+                                            msos.getLocations().get(i).setRemarks(detailCursor.getString(detailCursor.getColumnIndex("remarks")));
                                             msos.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                             msos.getLocations().get(i).setAudit(detailCursor.getInt(10));
 

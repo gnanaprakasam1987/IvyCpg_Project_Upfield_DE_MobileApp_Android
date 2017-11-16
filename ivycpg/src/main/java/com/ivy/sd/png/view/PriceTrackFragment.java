@@ -232,9 +232,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (frag != null)
                 ft.detach(frag);
 
-            if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
-                selectedCompetitorId = "";
-            }
 
             // set Fragmentclass Arguments
             CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
@@ -504,9 +501,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         if (mylist != null) {
             mylist.clear();
         }
-        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false && selectedCompetitorId.equals("")) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
-        } else {
+
             Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
             if (filterId != null && !filterId.isEmpty()) {
                 for (ProductMasterBO sku : items) {
@@ -520,7 +515,10 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             mDrawerLayout.closeDrawers();
             MyAdapter adapter = new MyAdapter(mylist);
             lv.setAdapter(adapter);
+        if (!selectedCompetitorId.equals("")) {
+            mSelectedIdByLevelId = new HashMap<>();
         }
+        getActivity().invalidateOptionsMenu();
     }
 
     class SaveAsyncTask extends AsyncTask<Void, Integer, Boolean> {
@@ -643,10 +641,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
 
         mylist = new ArrayList<>();
-        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) && !selectedCompetitorId.equals("")) {
-            updateCompetitorProducts(selectedCompetitorId);
-        } else {
-            if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 0) {
+
+        if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 0) {
                 if (mAttributeProducts != null && !parentidList.isEmpty()) {
                     for (LevelBO levelBO : parentidList) {
                         for (ProductMasterBO sku : items) {
@@ -737,6 +733,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
             MyAdapter adapter = new MyAdapter(mylist);
             lv.setAdapter(adapter);
+        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+            selectedCompetitorId = "";
         }
 
 
@@ -1469,9 +1467,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         try {
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
-            if (!selectedCompetitorId.equals("")) {
-                mSelectedIdByLevelId = new HashMap<>();
-            }
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm

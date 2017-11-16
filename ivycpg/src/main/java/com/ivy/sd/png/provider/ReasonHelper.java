@@ -198,10 +198,6 @@ public class ReasonHelper {
             }
             c.close();
         }
-        reason = new ReasonMaster();
-        reason.setReasonID("0");
-        reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
-        getDeviatedReturnMaster().add(reason);
         db.closeDB();
     }
 
@@ -336,7 +332,7 @@ public class ReasonHelper {
     }
 
     private void setDeviateinDB(String retailerid, ReasonMaster reasonMaster,
-                                int beatid) {
+                                int beatid, String remarks) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -349,8 +345,8 @@ public class ReasonHelper {
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
             String values = QT(uid) + "," + retailerid + ","
                     + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
-                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId();
-            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID) values("
+                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + QT(remarks);
+            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID,remarks) values("
                     + values + ")";
 
             db.executeQ(sql);
@@ -362,7 +358,7 @@ public class ReasonHelper {
     }
 
     public void setDeviate(String retailerid, ReasonMaster reasonMaster,
-                           int beatid) {
+                           int beatid, String remarks) {
         RetailerMasterBO retailer;
         int siz = bmodel.retailerMaster.size();
         if (siz == 0)
@@ -374,7 +370,7 @@ public class ReasonHelper {
                     && (retailer.getBeatID() == beatid || beatid == 0)) {
                 retailer.setIsDeviated("Y");
                 bmodel.retailerMaster.setElementAt(retailer, i);
-                setDeviateinDB(retailerid, reasonMaster, beatid);
+                setDeviateinDB(retailerid, reasonMaster, beatid, remarks);
                 return;
             }
         }
