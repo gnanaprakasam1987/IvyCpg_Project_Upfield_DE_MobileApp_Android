@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.maplib.OnInfoWindowElemTouchListener;
@@ -84,7 +85,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     private DrawerLayout mDrawerLayout;
     FrameLayout drawer;
 
-    private ArrayList<OutletReportBO> lstUsers;
     private ArrayList<OutletReportBO>lstReports;
 
     private GoogleMap mMap;
@@ -122,11 +122,10 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
             }
 
 
-            if (lstUsers == null)
-                lstUsers = bmodel.reportHelper.downloadUsers();
-
             if (lstReports == null)
                 lstReports = bmodel.reportHelper.downloadOutletReports();
+
+
         }
         catch (Exception ex){
             Commons.printException(ex);
@@ -152,6 +151,9 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
         try {
             setHasOptionsMenu(true);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowHomeEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
 
             ActionBarDrawerToggle mDrawerToggle;
             drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
@@ -218,7 +220,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         this.infoSalesValue = (TextView) infoWindow.findViewById(R.id.tv_sales_value);
         this.iv_planned = (ImageView) infoWindow.findViewById(R.id.iv_planned);
         this.iv_deviated = (ImageView) infoWindow.findViewById(R.id.iv_deviate);
-        this.infoSequence = (TextView) infoWindow.findViewById(R.id.tv_sequence);
         this.infoSeller = (TextView) infoWindow.findViewById(R.id.tv_seller);
 
         this.infoTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -227,7 +228,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         this.infoTimeIn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         this.infoTimeOut.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         this.infoSalesValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        this.infoSequence.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         this.infoSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         ((TextView) infoWindow.findViewById(R.id.lbl_time_in)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -237,6 +237,13 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMyLocationEnabled(false);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                updateUserSelection(null,true);
+            }
+        });
 
     }
 
@@ -301,7 +308,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
             SellerListFragment fragment = new SellerListFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("users", lstUsers);
+            bundle.putParcelableArrayList("users",bmodel.reportHelper.getLstUsers());
             fragment.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragment, "filter");
@@ -310,116 +317,137 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         }
         catch (Exception ex){
-
+            Commons.printException(ex);
         }
     }
 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAlluser) {
-        LatLng storeLatLng;
-        markerList=new ArrayList<>();
-
         try {
-            if (mMap != null) {
-                mMap.clear();
-            }
-            mDrawerLayout.closeDrawers();
-
-            //If nothing selected then showing default text
-              if (getActionBar() != null) {
-                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
-                    }
-
-            ArrayList<Integer> lstLastVisitedRetailerIds=null;
-            if(isAlluser) {
-                lstLastVisitedRetailerIds = new ArrayList<>();
-                if (lstReports != null) {
-                    for (OutletReportBO userbo : lstUsers) {
-                        lstLastVisitedRetailerIds.add(bmodel.reportHelper.downloadlastVisitedRetailer(userbo.getUserId()));
-                    }
-                }
-            }
 
             if (lstReports != null) {
-                int sequence=0;
-                for (OutletReportBO bo : lstReports) {
-                    if ((isAlluser && lstLastVisitedRetailerIds.contains(bo.getRetailerId()))
-                            || (mSelectedUsers!=null&&mSelectedUsers.contains(bo.getUserId()))) {
 
-                        if (isValidLatLng(bo.getLatitude(), bo.getLongitude())) {
-                            if (bo.getLatitude() != 0 && bo.getLongitude() != 0) {
+                LatLng storeLatLng;
+                markerList = new ArrayList<>();
 
-                                if(!isAlluser){
-                                    sequence+=1;
-                                    bo.setSequence(sequence);
+                if (mMap != null) {
+                    mMap.clear();
+                }
+                mDrawerLayout.closeDrawers();
 
-                                    //update screen title
-                                    if (getActionBar() != null) {
-                                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bo.getUserName());
-                                    }
+                //If nothing selected then showing default text
+                if (getActionBar() != null) {
+                    ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+                }
 
-                                }
-                                else{
-                                    bo.setSequence(0);
+                ArrayList<Integer> lstLastVisitedRetailerIds = null;
+                if (isAlluser) {
+                    lstLastVisitedRetailerIds = new ArrayList<>();
+                        for (OutletReportBO userBo : bmodel.reportHelper.getLstUsers()) {
+                            lstLastVisitedRetailerIds.add(bmodel.reportHelper.downloadlastVisitedRetailer(userBo.getUserId()));
+                        }
 
-                                    //update screen title
-                                    if (getActionBar() != null) {
-                                        ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
-                                    }
+                }
 
-                                }
-
-                                storeLatLng = new LatLng(bo.getLatitude(), bo.getLongitude());
-
-                                MarkerOptions options = new MarkerOptions();
-                                options.position(storeLatLng);// Setting the position of the marker
-                                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person)));
-                                options.title(bo.getRetailerName());
-                                options.snippet(bo.getRetailerId() + "");
-
-                                markerList.add(options);
-
-                                if (mMap != null) {
-                                    mMap.addMarker(options);
-                                }
-
-                            }
+                // get total retailers for selected user to show end marker
+                int totalRetailers = 0;
+                if (!isAlluser) {
+                    for (OutletReportBO bo : lstReports) {
+                        if (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId())) {
+                            totalRetailers += 1;
                         }
                     }
                 }
-            }
 
-            //fit all markers into the screen
-            if (markerList.size() > 0) {
-                if (builder == null) {
-                    builder = new LatLngBounds.Builder();
-                } else {
-                    builder = null;
-                    builder = new LatLngBounds.Builder();
-                }
+                    int sequence = 0;
+                    for (OutletReportBO bo : lstReports) {
+                        if ((isAlluser && lstLastVisitedRetailerIds.contains(bo.getRetailerId()))
+                                || (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId()))) {
 
-                for (int i = 0; i < markerList.size(); i++) {
-                    LatLng latLng = markerList.get(i).getPosition();
-                    double lat = latLng.latitude;
-                    double lng = latLng.longitude;
-                    if (lat != 0.0 && lng != 0.0 ) {
+                            if (isValidLatLng(bo.getLatitude(), bo.getLongitude())) {
+                                if (bo.getLatitude() != 0 && bo.getLongitude() != 0) {
+
+                                    if (!isAlluser) {
+                                        sequence += 1;
+                                        bo.setSequence(sequence);
+
+                                        //update screen title
+                                        if (getActionBar() != null) {
+                                            ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(bo.getUserName());
+                                        }
+
+                                    } else {
+                                        bo.setSequence(0);
+
+                                        //update screen title
+                                        if (getActionBar() != null) {
+                                            ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+                                        }
+
+                                    }
+
+                                    storeLatLng = new LatLng(bo.getLatitude(), bo.getLongitude());
+
+                                    IconGenerator iconFactory = new IconGenerator(getActivity());
+                                    MarkerOptions markerOptions = new MarkerOptions().title(bo.getRetailerName()).
+                                            position(storeLatLng).
+                                            anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
+                                            .snippet(bo.getRetailerId() + "");
+
+                                    if (bo.getSequence() == 1) {
+                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("S")));
+                                    } else if (bo.getSequence() != 0 && bo.getSequence() == totalRetailers) {
+                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("E")));
+                                    } else {
+                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person)));
+                                    }
+                                    markerList.add(markerOptions);
+
+                                    getMap().addMarker(markerOptions);
+
+
+                                }
+                            }
+                        }
+                    }
+
+
+                //fit all markers into the screen
+                if (markerList.size() > 0) {
+                    if (builder == null) {
+                        builder = new LatLngBounds.Builder();
+                    } else {
+                        builder = null;
+                        builder = new LatLngBounds.Builder();
+                    }
+
+                    for (int i = 0; i < markerList.size(); i++) {
+                        LatLng latLng = markerList.get(i).getPosition();
+                        double lat = latLng.latitude;
+                        double lng = latLng.longitude;
+                        if (lat != 0.0 && lng != 0.0) {
                             builder.include(markerList.get(i).getPosition());
 
+                        }
                     }
-                }
-                if (bounds == null) {
-                    bounds = builder.build();
-                } else {
-                    bounds = null;
-                    bounds = builder.build();
+                    if (bounds == null) {
+                        bounds = builder.build();
+                    } else {
+                        bounds = null;
+                        bounds = builder.build();
+                    }
+
+                    if (bounds != null)
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,
+                                100));
                 }
 
-                if (bounds != null)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,
-                            100));
+                if(!isAlluser) {
+                    drawMapRoute();
+                }
+
             }
 
-            drawMapRoute();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -427,6 +455,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
 
     }
+
 
     private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
@@ -468,20 +497,12 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                             iv_planned.setVisibility(View.GONE);
                         }
 
-                        if(bo.getSequence()>0){
-                            infoSequence.setVisibility(View.VISIBLE);
-                            infoSequence.setText("Seq: "+bo.getSequence());
-                        }
-                        else{
-                            infoSequence.setVisibility(View.GONE);
-                        }
-
                         break;
                     }
                 }
             }
             catch (Exception ex){
-             Commons.printException(ex);
+                Commons.printException(ex);
             }
 
             mainLayout.setMarkerWithInfoWindow(marker, infoWindow);
@@ -673,7 +694,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                 }
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(2);
+                lineOptions.width(5);
                 lineOptions.color(Color.RED);
             }
             // Drawing polyline in the Google Map for the i-th route

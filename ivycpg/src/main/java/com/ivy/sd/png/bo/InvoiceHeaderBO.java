@@ -2,116 +2,116 @@ package com.ivy.sd.png.bo;
 
 public class InvoiceHeaderBO {
 
-	private String invoiceNo;
-	private String invoiceDate;
-	private double balance;
-	private double paidAmount;
-	private double invoiceAmount;
-	private double appliedDiscountAmount;
-	private double remainingDiscountAmt;
-	private int linesPerCall;
+    private String invoiceNo;
+    private String invoiceDate;
+    private double balance;
+    private double paidAmount;
+    private double invoiceAmount;
+    private double appliedDiscountAmount;
+    private double remainingDiscountAmt;
+    private int linesPerCall;
 
     /*Collection Reference*/
-    private String contactName;
-    private String contactNo;
-    private String docRefNo;
+    private String contactName = "";
+    private String contactNo = "";
+    private String docRefNo = "";
 
-	//pending invoice
-	String retailerName;
+    //pending invoice
+    String retailerName;
 
-	public boolean isDebitNote() {
-		return isDebitNote;
-	}
+    public boolean isDebitNote() {
+        return isDebitNote;
+    }
 
-	public void setDebitNote(boolean debitNote) {
-		isDebitNote = debitNote;
-	}
+    public void setDebitNote(boolean debitNote) {
+        isDebitNote = debitNote;
+    }
 
-	private boolean isDebitNote;
+    private boolean isDebitNote;
 
-	public String getDueDate() {
-		return dueDate;
-	}
+    public String getDueDate() {
+        return dueDate;
+    }
 
-	public void setDueDate(String dueDate) {
-		this.dueDate = dueDate;
-	}
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
 
-	private String dueDate;
+    private String dueDate;
 
-	public double getAppliedDiscountAmount() {
-		return appliedDiscountAmount;
-	}
+    public double getAppliedDiscountAmount() {
+        return appliedDiscountAmount;
+    }
 
-	public void setAppliedDiscountAmount(double appliedDiscountAmount) {
-		this.appliedDiscountAmount = appliedDiscountAmount;
-	}
+    public void setAppliedDiscountAmount(double appliedDiscountAmount) {
+        this.appliedDiscountAmount = appliedDiscountAmount;
+    }
 
-	public double getRemainingDiscountAmt() {
-		return remainingDiscountAmt;
-	}
+    public double getRemainingDiscountAmt() {
+        return remainingDiscountAmt;
+    }
 
-	public void setRemainingDiscountAmt(double remainingDiscountAmt) {
-		this.remainingDiscountAmt = remainingDiscountAmt;
-	}
+    public void setRemainingDiscountAmt(double remainingDiscountAmt) {
+        this.remainingDiscountAmt = remainingDiscountAmt;
+    }
 
-	public int getLinesPerCall() {
-		return linesPerCall;
-	}
+    public int getLinesPerCall() {
+        return linesPerCall;
+    }
 
-	public void setLinesPerCall(int linesPerCall) {
-		this.linesPerCall = linesPerCall;
-	}
+    public void setLinesPerCall(int linesPerCall) {
+        this.linesPerCall = linesPerCall;
+    }
 
-	private boolean isChkBoxChecked = false;
-	
-	public double getPaidAmount() {
-		return paidAmount;
-	}
+    private boolean isChkBoxChecked = false;
 
-	public void setPaidAmount(double amount) {
-		this.paidAmount = amount;
-	}
+    public double getPaidAmount() {
+        return paidAmount;
+    }
 
-	public double getBalance() {
-		return balance;
-	}
+    public void setPaidAmount(double amount) {
+        this.paidAmount = amount;
+    }
 
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
+    public double getBalance() {
+        return balance;
+    }
 
-	public String getInvoiceNo() {
-		return invoiceNo;
-	}
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
-	public void setInvoiceNo(String invoiceNo) {
-		this.invoiceNo = invoiceNo;
-	}
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
 
-	public String getInvoiceDate() {
-		return invoiceDate;
-	}
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
 
-	public void setInvoiceDate(String invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
 
-	public double getInvoiceAmount() {
-		return invoiceAmount;
-	}
+    public void setInvoiceDate(String invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
 
-	public void setInvoiceAmount(double invoiceAmount) {
-		this.invoiceAmount = invoiceAmount;
-	}
+    public double getInvoiceAmount() {
+        return invoiceAmount;
+    }
 
-	public boolean isChkBoxChecked() {
-		return isChkBoxChecked;
-	}
+    public void setInvoiceAmount(double invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
 
-	public void setChkBoxChecked(boolean isChkBoxChecked) {
-		this.isChkBoxChecked = isChkBoxChecked;
-	}
+    public boolean isChkBoxChecked() {
+        return isChkBoxChecked;
+    }
+
+    public void setChkBoxChecked(boolean isChkBoxChecked) {
+        this.isChkBoxChecked = isChkBoxChecked;
+    }
 
     public String getContactName() {
         return contactName;
@@ -137,11 +137,11 @@ public class InvoiceHeaderBO {
         this.docRefNo = docRefNo;
     }
 
-	public String getRetailerName() {
-		return retailerName;
-	}
+    public String getRetailerName() {
+        return retailerName;
+    }
 
-	public void setRetailerName(String retailerName) {
-		this.retailerName = retailerName;
-	}
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
 }

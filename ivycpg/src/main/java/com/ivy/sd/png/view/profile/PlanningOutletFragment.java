@@ -29,6 +29,7 @@ public class PlanningOutletFragment extends Fragment {
     private ListView planningOutlerListview, productsListView;
     private ArrayList<SKUWiseTargetBO> list;
     private ArrayList<PlanningOutletBO> skulist;
+    private boolean _hasLoadedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +40,11 @@ public class PlanningOutletFragment extends Fragment {
         bmodel.setContext(getActivity());
         view = inflater.inflate(R.layout.day_planning_outlet, container,
                 false);
+
+        return view;
+    }
+
+    private void initializeViews() {
         planningOutlerListview = (ListView) view.findViewById(R.id.planninglv);
         planningOutlerListview.setCacheColorHint(0);
         productsListView = (ListView) view.findViewById(R.id.planninglv1);
@@ -52,7 +58,23 @@ public class PlanningOutletFragment extends Fragment {
         MyAdapterForPlanningOutlet adapter = new MyAdapterForPlanningOutlet(
                 bmodel.profilehelper.downloadPlanningOutletCategory());
         planningOutlerListview.setAdapter(adapter);
-        return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(isFragmentVisible_);
+
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            isFragmentVisible_ = false;
+            if (!isFragmentVisible_ && !_hasLoadedOnce) {
+                //run your async task here since the user has just focused on your fragment
+                initializeViews();
+                _hasLoadedOnce = true;
+
+            }
+        }
     }
 
     PlanningOutletBO pbo;

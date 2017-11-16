@@ -96,7 +96,6 @@ import com.ivy.sd.png.view.asset.AssetHistoryFragment;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -127,7 +126,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private DisplayMetrics displaymetrics;
 
     private int scrollRange = -1;
-    private int mDefaultSupplierSelection;
 
     private double lat = 0.0, lng = 0.0;
     public static double retailerLat = 0, retailerLng = 0;
@@ -136,7 +134,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private String mNFCREasonId = "0";
     private String title;
     private String temp = "";
-    private String moduleName = "RT_";
+    private final String moduleName = "RT_";
     private String photoPath = "";
     private String fnameStarts = "";
     private String imageName = "";
@@ -151,8 +149,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private boolean isClicked;
     private boolean isVisible = false;
     private boolean isLatLong;
-    public static boolean firstlevzoom;
-    public boolean fromHomeClick = false, visitclick = false, isFromPlanning = false;
+    private static boolean firstlevzoom;
+    private boolean fromHomeClick = false, visitclick = false, isFromPlanning = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -163,7 +161,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private Timer timer;
     private LatLng retLatLng, curLatLng;
     private OTPPasswordDialog otpPasswordDialog;
-    android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
+    private android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
 
     private AppBarLayout appbar;
     private Drawable upArrow;
@@ -180,10 +178,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private Button startVisitBtn, cancelVisitBtn, deviateBtn, addPlaneBtn;
     private boolean isNonVisitReason = false;
 
-    UserRetailerTransactionReceiver receiver;
-    private static final String ASSET_HISTORY="Asset History";
-    private String invoice_history_title="",msl_title = "",retailer_kpi_title="",plan_outlet_title=""
-            ,survey_score_title="",order_history_title="",profile_title="";
+    private UserRetailerTransactionReceiver receiver;
+    private static final String ASSET_HISTORY = "Asset History";
+    private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +231,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         deviateBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         addPlaneBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        bundle = new Bundle();
+        bundle.putBoolean("fromHomeClick", fromHomeClick);
+        bundle.putBoolean("non_visit", non_visit);
+        addTabLayout();
         hideVisibleComponents();
 
         try {
@@ -257,10 +258,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             registerReceiver();
         }
 
-        bundle = new Bundle();
-        bundle.putBoolean("fromHomeClick", fromHomeClick);
-        bundle.putBoolean("non_visit", non_visit);
-        addTabLayout();
+
 
     }
 
@@ -309,77 +307,80 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         try {
             if ((bmodel.labelsMasterHelper.applyLabels("profile") != null) &&
                     (bmodel.labelsMasterHelper.applyLabels("profile").length() > 0)) {
-                profile_title=bmodel.labelsMasterHelper.applyLabels("profile");
+                profile_title = bmodel.labelsMasterHelper.applyLabels("profile");
                 tabLayout.addTab(tabLayout.newTab()
                         .setText(profile_title));
-            }else {
-                profile_title="Profile";
+            } else {
+                profile_title = "Profile";
                 tabLayout.addTab(tabLayout.newTab().setText(profile_title));
             }
         } catch (Exception ex) {
-            Commons.printException("Error while setting label for Profile Tab",ex);
+            Commons.printException("Error while setting label for Profile Tab", ex);
         }
         if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
             try {
                 if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("order_history").length() > 0)) {
-                    order_history_title=bmodel.labelsMasterHelper.applyLabels("order_history");
+                    order_history_title = bmodel.labelsMasterHelper.applyLabels("order_history");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(order_history_title));
-                }else {
-                    order_history_title="History";
+                } else {
+                    order_history_title = "History";
                     tabLayout.addTab(tabLayout.newTab().setText(order_history_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for Order History Tab",ex);
+                Commons.printException("Error while setting label for Order History Tab", ex);
             }
         }
-        if (bmodel.configurationMasterHelper.SHOW__QDVP3_SCORE_CARD_TAB &&
-                (bmodel.retailerMasterBO.getRField4() != null)
-                ? (bmodel.retailerMasterBO.getRField4().equals("1")) : false) {
+        if ((bmodel.configurationMasterHelper.SHOW__QDVP3_SCORE_CARD_TAB && (bmodel.retailerMasterBO.getRField4() != null))
+                && (bmodel.retailerMasterBO.getRField4().equals("1"))) {
+            String survey_score_title = "";
             try {
                 if ((bmodel.labelsMasterHelper.applyLabels("survey_score") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("survey_score").length() > 0)) {
-                    survey_score_title=bmodel.labelsMasterHelper.applyLabels("survey_score");
+                    survey_score_title = bmodel.labelsMasterHelper.applyLabels("survey_score");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(survey_score_title));
-                }else {
-                    survey_score_title="Survey Score Card";
+                } else {
+                    survey_score_title = "Survey Score Card";
                     tabLayout.addTab(tabLayout.newTab().setText(survey_score_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for Survey Score Tab",ex);
+                Commons.printException("Error while setting label for Survey Score Tab", ex);
             }
         }
         if (bmodel.configurationMasterHelper.SHOW_OUTLET_PLANNING_TAB) {
             try {
                 if ((bmodel.labelsMasterHelper.applyLabels("plan_outlet") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("plan_outlet").length() > 0)) {
-                    plan_outlet_title=bmodel.labelsMasterHelper.applyLabels("plan_outlet");
+                    plan_outlet_title = bmodel.labelsMasterHelper.applyLabels("plan_outlet");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(plan_outlet_title));
-                }else {
-                    plan_outlet_title="Planning Outlet";
+                } else {
+                    plan_outlet_title = "Planning Outlet";
                     tabLayout.addTab(tabLayout.newTab().setText(plan_outlet_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for Outlet Tab",ex);
+                Commons.printException("Error while setting label for Outlet Tab", ex);
             }
         }
         if (bmodel.configurationMasterHelper.SHOW_LAST_3MONTHS_BILLS) {
             try {
                 if ((bmodel.labelsMasterHelper.applyLabels("retailer_kpi") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("retailer_kpi").length() > 0)) {
-                    retailer_kpi_title=bmodel.labelsMasterHelper.applyLabels("retailer_kpi");
+                    retailer_kpi_title = bmodel.labelsMasterHelper.applyLabels("retailer_kpi");
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(retailer_kpi_title));
-                }else {
-                    retailer_kpi_title="Retailer Kpi";
+                } else {
+                    retailer_kpi_title = "Retailer Kpi";
                     tabLayout.addTab(tabLayout.newTab().setText(retailer_kpi_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for Kpi Tab",ex);
+                Commons.printException("Error while setting label for Kpi Tab", ex);
             }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
+            tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
         }
         if (bmodel.configurationMasterHelper.SHOW_MSL_NOT_SOLD) {
             try {
@@ -393,7 +394,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab().setText(msl_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for Msl Tab",ex);
+                Commons.printException("Error while setting label for Msl Tab", ex);
             }
         }
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
@@ -408,8 +409,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab().setText(invoice_history_title));
                 }
             } catch (Exception ex) {
-                Commons.printException("Error while setting label for InvoiceHist Tab",ex);
+                Commons.printException("Error while setting label for InvoiceHist Tab", ex);
             }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
+            tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
         }
 
         View root = tabLayout.getChildAt(0);
@@ -435,7 +439,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
@@ -538,7 +542,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         retailerObj = bmodel.getRetailerMasterBO();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        new LoadProfileConfigs().execute();
         Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         for (ConfigureBO conBo : profileConfig) {
             if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
@@ -711,7 +715,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 markerList.add(storeLatLng);
                 MarkerOptions options = new MarkerOptions();
                 options.position(storeLatLng);// Setting the position of the marker
-                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(this, R.drawable.store_loc)));
+                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(this)));
 
                 if (mMap != null) {
                     mMap.addMarker(options);
@@ -738,8 +742,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
+    public Bitmap getBitmapFromVectorDrawable(Context context) {
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.store_loc);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = (DrawableCompat.wrap(drawable)).mutate();
         }
@@ -760,7 +764,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      * @param lng
      * @return
      */
-    public boolean isValidLatLng(double lat, double lng) {
+    private boolean isValidLatLng(double lat, double lng) {
         if (lat < -90 || lat > 90) {
             return false;
         } else if (lng < -180 || lng > 180) {
@@ -926,10 +930,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      * A method to download json data from url
      */
     @SuppressLint("LongLogTag")
-    private String downloadUrl(String strUrl) throws IOException {
+    private String downloadUrl(String strUrl) {
         String data = "";
         InputStream iStream;
-        HttpURLConnection urlConnection = null;
+        HttpURLConnection urlConnection;
         try {
             // Creating an http connection to communicate with url
             URL url = new URL(strUrl);
@@ -989,6 +993,42 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             super.onPostExecute(result);
             ParserTask parserTask = new ParserTask();
             parserTask.execute(result);
+        }
+    }
+
+    // load profile config and map related data
+    private class LoadProfileConfigs extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+            return "Success";
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+            for (ConfigureBO conBo : profileConfig) {
+                if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLat = retailerObj.getLatitude();
+
+                } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
+                    isMapview = true;
+                    retailerLng = retailerObj.getLongitude();
+                } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
+                    isNonVisitReason = true;
+                }
+            }
+            if (!isMapview) {
+                View mapFrag = findViewById(R.id.profile_map);
+                mapFrag.setVisibility(View.GONE);
+                retailerCodeTxt.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -1095,7 +1135,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 if (resultCode == ConnectionResult.SUCCESS) {
                     bmodel.requestLocation(this);
                 } else
-                    showDialog(1);
+                    onCreateDialogNew(1).show();
             }
     }
 
@@ -1104,8 +1144,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      */
     public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-        private int mNumOfTabs;
-        private Bundle bundleAdapter;
+        private final int mNumOfTabs;
+        private final Bundle bundleAdapter;
 
         ViewPagerAdapter(FragmentManager fm, int NumOfTabs, Bundle bundleAdapter) {
             super(fm);
@@ -1116,41 +1156,33 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         @Override
         public Fragment getItem(int position) {
 
-            ProfileFragment profileFragment = new ProfileFragment();
-            HistoryFragment historyFragment = new HistoryFragment();
-            InvoiceHistoryFragment invoiceHistoryFragment = new InvoiceHistoryFragment();
-            PlanningOutletFragment planningOutletFragment = new PlanningOutletFragment();
-            planningOutletFragment.setArguments(null);
-            SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-            MSLUnsoldFragment mslUnsoldFragment = new MSLUnsoldFragment();
-            AssetHistoryFragment assetHistoryFragment=new AssetHistoryFragment();
-//            RetailerKpiFragment retailerKpiFragment = new RetailerKpiFragment();
-//            retailerKpiFragment.setArguments(null);
-            bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-            bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "","MONTH");
-            Bundle bnd = new Bundle();
-            bnd.putString("screentitle", "");
-            bnd.putBoolean("isFromHomeScreenTwo", true);
-            bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
-            retailerKpiFragment.setArguments(bnd);
-
-            mslUnsoldFragment.setArguments(null);
-
             String tabName = tabLayout.getTabAt(position).getText().toString();
             if (tabName.equals(profile_title)) {
+                ProfileFragment profileFragment = new ProfileFragment();
                 profileFragment.setArguments(bundleAdapter);
                 //profileFragment.onProfileFragemntListener(ProfileActivity.this);
                 return profileFragment;
             } else if (tabName.equals(order_history_title)) {
-                return historyFragment;
+                return new HistoryFragment();
             } else if (tabName.equals(plan_outlet_title)) {
-                return planningOutletFragment;
+                return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
+                SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                Bundle bnd = new Bundle();
+                bnd.putString("screentitle", "");
+                bnd.putBoolean("isFromHomeScreenTwo", true);
+                bnd.putBoolean("isFromTab", true);
+                bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
+                retailerKpiFragment.setArguments(bnd);
                 return retailerKpiFragment;
             } else if (tabName.equals(msl_title)) {
-                return mslUnsoldFragment;
+                return new MSLUnsoldFragment();
             } else if (tabName.equals(invoice_history_title)) {
-                return invoiceHistoryFragment;
+                return new InvoiceHistoryFragment();
+            } else if (tabName.equals("Asset History")) {
+                return new AssetHistoryFragment();
             }
             return null;
         }
@@ -1193,7 +1225,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    class MyTimerTask extends TimerTask {
+    private class MyTimerTask extends TimerTask {
 
         @Override
         public void run() {
@@ -1266,10 +1298,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
     }
 
-    public void updateCancel() {
+    /*public void updateCancel() {
         setResult(2);
         finish();
-    }
+    }*/
 
     @Override
     public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
@@ -1344,14 +1376,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 showMocLocationAlert();
                 return;
             }
-        }
-        else{
-            if(LocationUtil.isMockLocation){
-               showMocLocationAlert();
+        } else {
+            if (LocationUtil.isMockLocation) {
+                showMocLocationAlert();
                 return;
             }
         }
-
 
 
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_VALID) {
@@ -1424,7 +1454,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     .setTitle(getResources().getString(R.string.select_distributor))
 
                     .setSingleChoiceItems(mSupplierAdapter,
-                            mDefaultSupplierSelection,
+                            0,
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog,
@@ -1452,15 +1482,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
-    private void showMocLocationAlert(){
-        CommonDialog dialog = new CommonDialog(getApplicationContext(),this, "", getResources().getString(R.string.mock_location_enabled), false,
+    private void showMocLocationAlert() {
+        CommonDialog dialog = new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.mock_location_enabled), false,
                 getResources().getString(R.string.log_out), new CommonDialog.positiveOnClickListener() {
-            @Override public void onPositiveButtonClick() {
+            @Override
+            public void onPositiveButtonClick() {
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     ActivityCompat.finishAffinity(ProfileActivity.this);
-                }
-                else{
+                } else {
                     finishAffinity();
                 }
             }
@@ -1468,6 +1498,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         dialog.show();
         dialog.setCancelable(false);
     }
+
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
@@ -1533,7 +1564,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
-    protected Dialog onCreateDialogNew(int id) {
+    private Dialog onCreateDialogNew(int id) {
         switch (id) {
             case 0:
                 return new AlertDialog.Builder(this)
@@ -1611,7 +1642,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
-    public void takePhotoForRetailer() {
+    private void takePhotoForRetailer() {
         temp = SDUtil.now(SDUtil.DATE_TIME_ID);
         bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
 
@@ -1744,13 +1775,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
     }
 
-    public boolean isClicked() {
+    /*public boolean isClicked() {
         return isClicked;
-    }
+    }*/
 
-    public void setClicked(boolean isClicked) {
+    /*public void setClicked(boolean isClicked) {
         this.isClicked = isClicked;
-    }
+    }*/
 
 
     private void showToastMessage(RetailerMasterBO ret, float distance) {
@@ -1781,7 +1812,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     bmodel.productHelper
                             .downloadFiveFilterLevels(MENU_STK_ORD);
                     bmodel.productHelper
-                            .downloadProductsWithFiveLevelFilterSOGO(MENU_STK_ORD);
+                            .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
                 } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                     //to reload product filter if diffrent retailer selected
                     bmodel.productHelper.setmLoadedGlobalProductId(0);
@@ -1789,7 +1820,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 bmodel.configurationMasterHelper
                         .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                 .getSubchannelid());
-                bmodel.productHelper.loadSBDFocusData();
+                if (bmodel.productHelper.isSBDFilterAvaiable())
+                    bmodel.productHelper.loadSBDFocusData();
 
                 if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                     bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
@@ -1888,7 +1920,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
 
             Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
-            i.putExtra("isLocDialog",true);
+            i.putExtra("isLocDialog", true);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             finish();
@@ -1964,19 +1996,17 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     @Override
     public void addReatailerReason() {
         showAlert(getResources().getString(
-                R.string.saved_successfully), 0);
+                R.string.saved_successfully));
 
     }
 
-    private void showAlert(String msg, int id) {
-        final int idd = id;
+    private void showAlert(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                if (idd == 0) {
                     //  updateCancel();
                     if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
                         Intent i = new Intent(ProfileActivity.this, HomeScreenActivity.class);
@@ -1990,7 +2020,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     }
 
                     overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                }
             }
         });
         bmodel.applyAlertDialogTheme(builder);
