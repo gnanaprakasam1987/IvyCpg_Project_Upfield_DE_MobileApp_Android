@@ -817,7 +817,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {
-        /*android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm
@@ -826,12 +826,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         if(fragment!=null)
             fragment.updateUserSelection(mSelectedUsers,isAllUser);
         else if(outlet_perf_fragmnet!=null)
-            outlet_perf_fragmnet.updateUserSelection(mSelectedUsers,isAllUser);*/
+            outlet_perf_fragmnet.updateUserSelection(mSelectedUsers,isAllUser);
     }
 
     @Override
     public void updateClose() {
-        /*android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm
@@ -840,6 +840,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         if(fragment!=null)
             fragment.updateClose();
         else if(outlet_perf_fragmnet!=null)
-            outlet_perf_fragmnet.updateClose();*/
+            outlet_perf_fragmnet.updateClose();
     }
 }

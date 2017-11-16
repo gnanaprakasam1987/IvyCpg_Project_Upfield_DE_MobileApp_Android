@@ -1500,7 +1500,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
+                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/"+DataMembers.IVYDIST_PATH);
+
 
 
                                             i = new Intent(OrderSummary.this,
@@ -2168,7 +2169,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE&&screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
@@ -2253,6 +2254,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE && shortListOrder != null)
                 bmodel.productHelper.setShortProductMaster(shortListOrder);
             fromorder = false;
+
 
             if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
                 // If GST enabled then, every ordered product should have tax
@@ -2550,7 +2552,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                     if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                                         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
+                                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber,"/"+DataMembers.IVYDIST_PATH);
 
                                     i = new Intent(OrderSummary.this,
                                             CommonPrintPreviewActivity.class);
@@ -2632,8 +2634,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
 
 
-                            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                    StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber,"/"+DataMembers.PRINT_FILE_PATH);
 
                             Intent i = new Intent(OrderSummary.this,
                                     CommonPrintPreviewActivity.class);

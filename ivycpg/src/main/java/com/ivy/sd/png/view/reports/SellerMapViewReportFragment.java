@@ -547,7 +547,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         mDrawerLayout.closeDrawers();
 
         if (getActionBar() != null) {
-            ((TextView)getActivity(). findViewById(com.ivy.sd.png.asean.view.R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+            ((TextView)getActivity(). findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
         }
     }
 

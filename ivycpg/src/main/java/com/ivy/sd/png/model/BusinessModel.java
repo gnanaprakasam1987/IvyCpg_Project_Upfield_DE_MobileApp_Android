@@ -11089,6 +11089,7 @@ public class BusinessModel extends Application {
         }
     }
 
+
     public void updateGroupIdForRetailer() {
 
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
