@@ -25,11 +25,6 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/list_header_height"
@@ -45,7 +40,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2.0"
-                            android:gravity="left|center_vertical"
+                            android:gravity="start|center_vertical"
                             android:tag="promotion_name"
                             android:text="@string/promotion_name" />
                         <!--android:layout_weight="1.8"-->
@@ -65,7 +60,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.7"
                             android:tag="promotion_isexecuted"
-                            android:text="Has Announcer" />
+                            android:text="@string/hasannouncer" />
 
                         <TextView
                             android:id="@+id/tvpromoqty"
@@ -91,7 +86,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
                             android:tag="promotion_ratinglevel"
-                            android:text="Executing Rating" />
+                            android:text="@string/exec_rating" />
                         <!--android:layout_weight="1"-->
                         <TextView
                             android:id="@+id/tvphoto"
@@ -102,17 +97,16 @@
                             android:text="@string/photo" />
                     </LinearLayout>
 
-                    <ListView
-                        android:id="@+id/lvwplist"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:cacheColorHint="@null"
-                        android:divider="@android:color/white"
-                        android:dividerHeight="1dp"
-                        android:fitsSystemWindows="true"
-                        android:scrollbarAlwaysDrawHorizontalTrack="true"
-                        android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
-                </LinearLayout>
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -123,12 +117,6 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center"
-                android:orientation="vertical">
 
                 <include
                     layout="@layout/keypad"
@@ -151,7 +139,6 @@
                     android:layout_marginTop="@dimen/activity_margin1"
                     android:text="@string/save"
                     android:textAllCaps="false" />
-            </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
 
