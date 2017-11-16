@@ -110,7 +110,6 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private String PRINT_STATE = "";
     private Toolbar toolbar;
     Bitmap screen;
-    boolean isHidePrintBtn;
 
 
     @Override
