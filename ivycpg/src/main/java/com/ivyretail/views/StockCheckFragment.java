@@ -430,6 +430,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void loadSearchedList() {
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
+            Vector<ProductMasterBO> items = new Vector<>();
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
                 for (ProductMasterBO productBo : getTaggedProducts()) {
                     if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
@@ -443,7 +444,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
                 items = getTaggedProducts();
             }
-            if (items == null) {
+            if (items.isEmpty()) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
                         0);

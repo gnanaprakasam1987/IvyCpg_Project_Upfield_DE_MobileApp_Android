@@ -2095,11 +2095,22 @@ SynchronizationHelper {
             }
 
             db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
-            db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
-            db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
-            db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
-            db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
-            db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
+            db.executeQ("CREATE INDEX index_productlevel ON ProductLevel(LevelId)");
+            db.executeQ("CREATE INDEX index_producttagmaster ON ProductTaggingMaster(TaggingTypelovID)");
+            db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
+            db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
+            db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
+            db.executeQ("CREATE INDEX index_schememaster ON SchemeMaster(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemecritmap ON SchemeCriteriaMapping(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemecountmaster ON SchemeApplyCountMaster(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemebuymaster ON SchemeBuyMaster(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemeattrmap ON SchemeAttributeMapping(GroupID)");
+            db.executeQ("CREATE INDEX index_schemefreeproduct ON SchemeFreeProducts(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+            db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+            db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
+            db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
+            db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");
 
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
@@ -4623,7 +4634,7 @@ SynchronizationHelper {
      * @return value
      */
     public NEXT_METHOD checkNextSyncMethod() {
-        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE&&!isDistributorDownloadDone
+        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE && !isDistributorDownloadDone
                 ) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;

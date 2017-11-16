@@ -147,6 +147,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'me.relex:circleindicator:1.2.2@aar'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
     testCompile 'junit:junit:4.12'
     compile 'com.itextpdf:itextg:5.5.10'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
