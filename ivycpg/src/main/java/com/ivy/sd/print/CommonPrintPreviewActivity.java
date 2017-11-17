@@ -164,6 +164,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
             menu.findItem(R.id.menu_print).setVisible(false);
         }
 
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 

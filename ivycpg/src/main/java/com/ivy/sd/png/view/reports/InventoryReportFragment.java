@@ -165,9 +165,9 @@ public class InventoryReportFragment extends Fragment {
                 holder.tv_availability = (TextView) row.findViewById(R.id.tv_availability);
                 holder.tv_reasonDesc = (TextView) row.findViewById(R.id.tv_reason);
 
-                holder.tv_productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.tv_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tv_reasonDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tv_productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tv_reasonDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 row.setTag(holder);
@@ -178,7 +178,7 @@ public class InventoryReportFragment extends Fragment {
 
 
             holder.tv_productName.setText(inventoryBo.getProductName());
-            holder.tv_productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+            holder.tv_productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             holder.tv_availability.setText(inventoryBo.getAvailability());
             holder.tv_reasonDesc.setText(inventoryBo.getReasonDesc());

@@ -631,23 +631,23 @@ public class CS_StockCheckFragment extends IvyBaseFragment implements
 
                     holder.sih = (TextView) row
                             .findViewById(R.id.stock_check_sih);
-                    holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                     holder.mrp = (TextView) row
                             .findViewById(R.id.stock_check_listview_mrp);
-                    holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                     holder.shelfPcsQty = (EditText) row
                             .findViewById(R.id.stock_and_order_listview_sp_qty);
 
-                    holder.shelfPcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    holder.shelfPcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                     holder.variance = (TextView) row
                             .findViewById(R.id.stock_check_listview_variance);
-                    holder.variance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                    holder.variance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.variance.setPaintFlags(holder.variance.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
                     holder.variance.setOnClickListener(new OnClickListener() {

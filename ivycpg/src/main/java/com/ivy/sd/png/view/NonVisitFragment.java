@@ -118,16 +118,16 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             View view = mWeekRG.getChildAt(i);
             if (view instanceof RadioButton) {
                 RadioButton radioButton = (RadioButton) view;
-                radioButton.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                radioButton.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
         }
 
         TextView tvWeekSelection = (TextView) mview.findViewById(R.id.week_title);
-        tvWeekSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvWeekSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TextView tvDaySelection = (TextView) mview.findViewById(R.id.day_title);
-        tvDaySelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvDaySelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TextView tvBeatSelection = (TextView) mview.findViewById(R.id.beat_title);
-        tvBeatSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvBeatSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         LinearLayout dateLL = (LinearLayout) mview
@@ -975,13 +975,13 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                 holder.icon = (ImageView) convertView.findViewById(R.id.outlet);
                 holder.outletname = (TextView) convertView
                         .findViewById(R.id.outletName_tv);
-                holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.info = (ImageView) convertView
                         .findViewById(R.id.info_iv);
                 holder.visitFrequency = (TextView) convertView
                         .findViewById(R.id.visit_frequency);
                 holder.outletAddress = (TextView) convertView.findViewById(R.id.outlet_address_tv);
-                holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 if (!bmodel.configurationMasterHelper.HAS_PROFILE_BUTTON_IN_RETAILER_LIST)

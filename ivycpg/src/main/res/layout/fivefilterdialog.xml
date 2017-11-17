@@ -2,69 +2,69 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:background="@color/screen_bg_color"
-    >
+    android:clickable="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/filterlistview"
+            android:layout_width="@dimen/filter_level_list_width"
+            android:layout_height="fill_parent"
+            android:background="@color/white_box_border"
+            android:divider="@null" />
+
+        <ListView
+            android:id="@+id/filtergridview"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_above="@+id/footer"
-            android:layout_alignParentTop="true">
+            android:background="@color/WHITE" />
 
-            <ListView
-                android:id="@+id/filterlistview"
-                android:layout_width="@dimen/filter_level_list_width"
-                android:layout_height="fill_parent"
-                android:background="@color/white_box_border"
-                android:divider="@null"/>
-
-            <ListView
-                android:id="@+id/filtergridview"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:background="@color/WHITE" />
-
-        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/filter_drawer_footer_height"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        >
-      <View
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/dimen_1dp"
-          android:background="@color/divider_view_color"
-          android:layout_alignParentTop="true"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-       android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        >
-        <Button
-            android:id="@+id/btn_cancel"
-            style="?attr/roundedCustomButtonNormalTransparent"
-            android:layout_margin="@dimen/dimen_4dp"
-            android:adjustViewBounds="true"
-            android:text="Clear"
-            android:textColor="@color/Black"
-            android:textAllCaps="false"/>
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_ok"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_margin="@dimen/dimen_4dp"
-            android:adjustViewBounds="true"
-            android:text="@string/apply"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/divider_view_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="?attr/roundedCustomButtonNormalTransparent"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:adjustViewBounds="true"
+                android:text="Clear"
+                android:textAllCaps="false"
+                android:textColor="@color/Black" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:adjustViewBounds="true"
+                android:text="@string/apply"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </RelativeLayout>
 

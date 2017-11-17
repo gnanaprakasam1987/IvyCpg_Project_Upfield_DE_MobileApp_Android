@@ -155,6 +155,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     Button btnSave;
     FloatingActionButton btnBarcode;
 
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -308,7 +312,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             isShowed = true;
         }
         hideAndSeeK();
-        updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {
+            updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        }
         //updateList(-1, mSelectedStandardListBO);
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             mSelectedFilterMap.put("General", GENERAL);
@@ -636,7 +644,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_audit);
                 holder.assetNameTV = (TextView) row
                         .findViewById(R.id.tv_asset_name);
-                holder.assetNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.assetNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.reason1Spin = (Spinner) row
                         .findViewById(R.id.spin_reason1);
                 holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
@@ -650,12 +658,12 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         .findViewById(R.id.Btn_instal_Date);
                 holder.ll_instal_date = (LinearLayout) row
                         .findViewById(R.id.ll_instal_date);
-                holder.minstalldate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.minstalldate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mservicedate = (Button) row
                         .findViewById(R.id.Btn_service_Date);
                 holder.ll_service_date = (LinearLayout) row
                         .findViewById(R.id.ll_service_date);
-                holder.mservicedate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.mservicedate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.photoBTN = (ImageView) row
                         .findViewById(R.id.btn_photo);
                 holder.availQtyRB = (CheckBox) row
@@ -666,7 +674,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         .findViewById(R.id.tv_serialNo);
                 holder.serialNoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
-                holder.grpTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.grpTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
                 holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
 
@@ -1671,6 +1679,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
     @Override
     public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+        this.parentidList = parentidList;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
+
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         brandbutton = filtertext;

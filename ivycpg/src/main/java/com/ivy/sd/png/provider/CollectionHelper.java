@@ -1433,6 +1433,7 @@ public class CollectionHelper {
         }
     }
 
+    //used pending invoice report wiht retailerid condition
     public void updateInvoiceDiscountAmount() {
         InvoiceHeaderBO invoiceHeaderBO;
         try {
@@ -1460,6 +1461,7 @@ public class CollectionHelper {
             Commons.printException(e);
         }
     }
+
 
     /**
      * update discount amount in invoice header master
@@ -1717,7 +1719,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
-            sb.append("select BillNumber,IFNULL(ContactName,''),IFNULL(ContactNumber,''),IFNULL(DocRefNo,'') from CollectionDocument ");
+            sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo from CollectionDocument ");
             sb.append("where RetailerID = ");
             sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and upload='N'");

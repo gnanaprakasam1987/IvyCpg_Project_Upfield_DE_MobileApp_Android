@@ -110,15 +110,6 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         return super.onOptionsItemSelected(item);
     }
 
-    private void onBackClicked() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
-        finish();
-        BusinessModel.loadActivity(this,
-                DataMembers.actHomeScreenTwo);
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-    }
-
     private class MyAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -159,13 +150,13 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 ((TextView) row.findViewById(R.id.docRefTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 ((TextView) row.findViewById(R.id.contactNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 ((TextView) row.findViewById(R.id.contactNoTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvInvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.invAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.balanceAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.paidAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.etDocRef.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.etContactName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.etContactNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                holder.tvInvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.invAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.balanceAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.paidAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.etDocRef.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.etContactName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.etContactNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 holder.etDocRef.addTextChangedListener(new TextWatcher() {
@@ -299,8 +290,16 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     Toast.LENGTH_SHORT).show();
             onBackClicked();
 
-
         }
 
+    }
+
+    private void onBackClicked() {
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME));
+        finish();
+        BusinessModel.loadActivity(this,
+                DataMembers.actHomeScreenTwo);
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 }

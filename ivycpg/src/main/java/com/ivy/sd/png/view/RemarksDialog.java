@@ -63,9 +63,9 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         rField1 = (EditText) view.findViewById(R.id.rField1);
         rField2 = (EditText) view.findViewById(R.id.rField2);
         spnRField1 = (Spinner) view.findViewById(R.id.spnrField1);
-        remarks.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        rField1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        rField2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        remarks.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        rField1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        rField2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textInputLayout2 = (LinearLayout) view.findViewById(R.id.editText_layout2);
         textInputLayout3 = (LinearLayout) view.findViewById(R.id.editText_layout3);
         lnrRField1 = (LinearLayout) view.findViewById(R.id.lnrRField1);

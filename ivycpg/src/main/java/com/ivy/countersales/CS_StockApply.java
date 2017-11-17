@@ -201,23 +201,23 @@ public class CS_StockApply extends IvyBaseActivityNoActionBar implements View.On
 
                 stock_receipt_id = (TextView) itemView.findViewById(R.id.stock_receipt_id);
                 stock_receipt_id_label = (TextView) itemView.findViewById(R.id.stock_receipt_id_label);
-                stock_receipt_id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                stock_receipt_id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                stock_receipt_id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                stock_receipt_id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 status = (TextView) itemView.findViewById(R.id.status);
                 status_lebel = (TextView) itemView.findViewById(R.id.status_lebel);
                 status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                status_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                status_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 receipt_date = (TextView) itemView.findViewById(R.id.receipt_date);
                 receipt_date_lebel = (TextView) itemView.findViewById(R.id.receipt_date_lebel);
                 receipt_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                receipt_date_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                receipt_date_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 stock_type = (TextView) itemView.findViewById(R.id.stock_type);
                 stock_type_lebel = (TextView) itemView.findViewById(R.id.stock_type_lebel);
                 stock_type.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                stock_type_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                stock_type_lebel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
         }

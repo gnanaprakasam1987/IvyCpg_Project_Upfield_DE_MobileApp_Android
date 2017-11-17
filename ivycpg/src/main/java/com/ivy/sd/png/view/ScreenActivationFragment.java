@@ -63,7 +63,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
 
         //hideToolBr();
         version = (TextView) view.findViewById(R.id.version);
-        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         version.setText(getResources().getString(R.string.version)
                 + bmodel.getApplicationVersionName());
         activate = (ImageButton) view.findViewById(R.id.activate);
@@ -90,7 +90,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
         indicator.setViewPager(vpPager);
 
         TextView tv_activated = (TextView) view.findViewById(R.id.tv_already_activated);
-        tv_activated.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        tv_activated.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tv_activated.setOnClickListener(new View.OnClickListener() {
 
             @Override

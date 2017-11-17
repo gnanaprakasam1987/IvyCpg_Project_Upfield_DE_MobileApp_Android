@@ -1564,7 +1564,7 @@ public class ProductHelper {
             }
 
             if (mChildLevel > 0)
-                downloadLeastBrandProductMapping((mContentLevel - mFiltrtLevel + 1), mChildLevel, moduleCode);
+                downloadLeastBrandProductMapping((mContentLevel - mFiltrtLevel + 1), mChildLevel,moduleCode);
 
             downloadAttributeProductMapping();
             downloadAttributes();
@@ -6841,7 +6841,7 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor cur = db
-                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid FROM CompetitorProductMaster CP"
+                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID FROM CompetitorProductMaster CP"
                             + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                             + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                             + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
@@ -6864,6 +6864,7 @@ public class ProductHelper {
                     product.setPcUomid(cur.getInt(5));
                     product.setProductCode(cur.getString(6));
                     product.setOwnPID(cur.getString(7));
+                    product.setCompanyId(cur.getInt(8));
 
                     // for level skiping
                     ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
@@ -7838,7 +7839,7 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql1 = "SELECT Distinct  IFNULL(LM.LoyaltyId,0),IFNULL(LM.Description,'Common'),LP.RetailerId,LP.Points FROM LoyaltyPoints LP LEFT JOIN LoyaltyMaster LM ON LM.LoyaltyId = LP.LoyaltyId"
+            String sql1 = "SELECT Distinct  IFNULL(LM.LoyaltyId,0),IFNULL(LM.Description,'Common'),LP.RetailerId,LP.Points,LP.PointsTypeID FROM LoyaltyPoints LP LEFT JOIN LoyaltyMaster LM ON LM.LoyaltyId = LP.LoyaltyId"
                     + " WHERE LP.RetailerId =" + retailerID;
 
             Cursor c = db.selectSQL(sql1);
@@ -7849,6 +7850,7 @@ public class ProductHelper {
                     loyalties.setLoyaltyDescription(c.getString(1));
                     loyalties.setRetailerId(c.getInt(2));
                     loyalties.setGivenPoints(c.getInt(3));
+                    loyalties.setPointTypeId(c.getInt(4));
                     loyaltyproductList.add(loyalties);
                 }
                 if (loyaltyproductList != null && loyaltyproductList.size() > 0) {
@@ -7856,7 +7858,10 @@ public class ProductHelper {
 
                         ArrayList<LoyaltyBenifitsBO> clonedList = new ArrayList<LoyaltyBenifitsBO>(ltyBenifitsList.size());
                         for (LoyaltyBenifitsBO loyaltysBO : ltyBenifitsList) {
-                            clonedList.add(new LoyaltyBenifitsBO(loyaltysBO));
+
+                            if(loyaltyBO.getPointTypeId()==loyaltysBO.getPointTypeId()) {
+                                clonedList.add(new LoyaltyBenifitsBO(loyaltysBO));
+                            }
                         }
 
                         loyaltyBO.setLoyaltyTrackingList(clonedList);
@@ -7914,6 +7919,7 @@ public class ProductHelper {
                     ltyBenifits.setBenifitDescription(c.getString(1));
                     ltyBenifits.setImagePath(c.getString(2));
                     ltyBenifits.setBenifitPoints(c.getInt(3));
+                    ltyBenifits.setPointTypeId(c.getInt(4));
                     getLoyaltBenifitsList().add(ltyBenifits);
                 }
                 c.close();
@@ -8848,6 +8854,7 @@ public class ProductHelper {
 
     }
 
+
     public boolean isSBDFilterAvaiable() {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -8870,6 +8877,7 @@ public class ProductHelper {
         db.closeDB();
         return isAvailable;
     }
+
 
 }
 

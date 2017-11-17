@@ -90,7 +90,7 @@ public class KlgsHalfPieChartFragement extends Fragment implements OnChartValueS
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
         l.setTextSize(12f);
-        l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         if (skuList.size() > 0)

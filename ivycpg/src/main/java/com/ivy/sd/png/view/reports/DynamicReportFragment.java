@@ -185,7 +185,7 @@ public class DynamicReportFragment extends Fragment {
                         else
                             textView.setGravity(Gravity.CENTER);
 
-                        textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+                        textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         textView.setLayoutParams(new LinearLayout.LayoutParams(pixelLength, ViewGroup.LayoutParams.MATCH_PARENT));
                         int padding = (int) getResources().getDimension(R.dimen.list_title_padding);
                         textView.setPadding(padding, padding, padding, padding);

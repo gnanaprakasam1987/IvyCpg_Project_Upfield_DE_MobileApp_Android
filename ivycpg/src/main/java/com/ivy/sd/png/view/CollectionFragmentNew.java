@@ -144,13 +144,13 @@ public class CollectionFragmentNew extends IvyBaseFragment
         });
 
         TextView tosAmtTitle = (TextView) rootView.findViewById(R.id.tv_title_tos_amount);
-        tosAmtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        tosAmtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         TextView pendingBillTitle = (TextView) rootView.findViewById(R.id.tv_title_pending_bills);
-        pendingBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        pendingBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         TextView dueBillTitle = (TextView) rootView.findViewById(R.id.tv_title_due_bill);
-        dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
+        dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         if(bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY){
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);

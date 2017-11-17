@@ -87,9 +87,9 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         payBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         payBtn.setOnClickListener(this);
 
-        mPayableAmtTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        mDiscTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        mBalaceAmtTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        mPayableAmtTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mDiscTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mBalaceAmtTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         mInvioceList = bmodel.getInvoiceHeaderBO();
         mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
@@ -259,7 +259,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         @Override
         public void onBindViewHolder(final PayTypeRecyclerAdapter.MyViewHolder holder, int position) {
 
-            holder.nameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            holder.nameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.nameTV.setText(mPaymentList.get(position).getListName());
 
             if (mPaymentList.get(position).getAmount() > 0) {
@@ -485,7 +485,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(appendString));
             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bmodel.writeToFile(appendString,
-                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""));
+                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""),"/IvyDist/");
             }
             return "";
         }

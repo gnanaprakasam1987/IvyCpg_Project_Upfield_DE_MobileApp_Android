@@ -34,7 +34,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.lib.existing.HttpRequest;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -138,6 +137,7 @@ SynchronizationHelper {
     public boolean isSihDownloadDone;
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
+    public String dataMissedTable = "";
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -318,7 +318,18 @@ SynchronizationHelper {
                         return fileName.endsWith(".jpg");
                     }
                 });
-                imageSize = files.length;
+
+                File printfiles[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+
+                        return fileName.startsWith("PF");
+                    }
+                });
+
+                if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                    imageSize = files.length + printfiles.length;
+                else
+                    imageSize = files.length;
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -751,15 +762,14 @@ SynchronizationHelper {
                 }
                 allTableName.close();
             }
+
             Cursor allIndexName = db.selectSQL("SELECT name FROM sqlite_master WHERE type == 'index'  and name LIKE 'index%' ");
             if (allIndexName != null) {
                 while (allIndexName.moveToNext()) {
                     String indexName = allIndexName.getString(0);
                     db.executeQ("DROP INDEX IF EXISTS " + indexName);
-
                 }
             }
-
 
             db.closeDB();
 
@@ -933,7 +943,9 @@ SynchronizationHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         Cursor c;
-        int hhtCount = 0, standList = 0;
+        String tableName = "";
+        dataMissedTable = "";
+        int  hhtCount = 0,  standList = 0;
         try {
 
             c = db.selectSQL("select  count(hhtCode) from "
@@ -944,6 +956,7 @@ SynchronizationHelper {
                 }
                 c.close();
             }
+
 
             c = db.selectSQL("select  count(listid) from "
                     + DataMembers.tbl_StandardListMaster);
@@ -959,8 +972,16 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 && hhtCount > 0) {
+        if (standList > 0 &&  hhtCount > 0) {
             return true;
+        } else {
+            if (standList == 0)
+                tableName = tableName + " LovMaster";
+            if (hhtCount == 0)
+                tableName = tableName + " Configuration";
+
+
+            dataMissedTable = tableName;
         }
 
         return false;
@@ -1734,6 +1755,18 @@ SynchronizationHelper {
 
                     context.startService(i);
                     deleteAllRequestQueue();
+                } else {
+                    //mansoor.k for Volley Time out response is updated at last
+                    if (totalListCount == mDownloadUrlCount) {
+                        Intent i = new Intent(context, DownloadService.class);
+                        i.putExtra(SYNXC_STATUS, which);
+                        i.putExtra(VOLLEY_RESPONSE, VOLLEY_SUCCESS_RESPONSE);
+                        i.putExtra("TotalCount", totalListCount);
+                        i.putExtra("UpdateCount", mDownloadUrlCount);
+                        i.putExtra("isFromWhere", isFromWhere);
+                        i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, new ArrayList<String>());
+                        context.startService(i);
+                    }
                 }
             }
         };
@@ -2049,6 +2082,7 @@ SynchronizationHelper {
             } catch (Exception e) {
                 Commons.printException(e);
             }
+
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
 
@@ -3039,6 +3073,7 @@ SynchronizationHelper {
      * @return 0 - error , 1 - date and time is correct, 2 - Date time miss match.
      */
     public int getUTCDateTimeNew(String ur) {
+
         String url = DataMembers.SERVER_URL
                 + ur;
         Date from, to;
@@ -3046,10 +3081,32 @@ SynchronizationHelper {
         int flag = 0;
         try {
 
-            HttpRequest httpRequest = new HttpRequest(url);
-            JSONObject jsonObject = httpRequest.preparePost().sendAndReadJSON();
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            Commons.print("UTCDate Response " + jsonObject.toString());
+
+            int responseCode = con.getResponseCode();
+            Commons.print("POST Response Code :: " + responseCode);
+            StringBuilder response = new StringBuilder();
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+
+            } else {
+                Commons.print("POST request not worked");
+            }
+
+
+            JSONObject jsonObject = new JSONObject(response.toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault());
 
             Calendar today = Calendar.getInstance();
@@ -3066,8 +3123,6 @@ SynchronizationHelper {
             datefrom = formatter.parse(formatter.format(from));
             dateto = formatter.parse(formatter.format(to));
 
-            Commons.print("Sync Url Success response code>>>>>>>>>>"
-                    + jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16) + " " + datefrom + " " + dateto);
 
             datenow = formatter.parse(jsonObject.getString("UTCDate").replace("T", "-").substring(0, 16));
 
@@ -4542,6 +4597,9 @@ SynchronizationHelper {
             bmodel.downloadChatCredentials();
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
             bmodel.synchronizationHelper.setEncryptType();
+
+        bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/" + DataMembers.PRINT_FILE_PATH + "/");
     }
 
     /**
@@ -4551,11 +4609,11 @@ SynchronizationHelper {
      * @return value
      */
     public NEXT_METHOD checkNextSyncMethod() {
-        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE && !isDistributorDownloadDone
-                ) {
+        if (!isDistributorDownloadDone
+                && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
-        } else if (!isDistributorDownloadDone && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+        } else if (!isDistributorDownloadDone) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone

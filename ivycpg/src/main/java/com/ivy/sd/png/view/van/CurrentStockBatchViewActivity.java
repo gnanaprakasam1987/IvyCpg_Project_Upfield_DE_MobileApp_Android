@@ -90,9 +90,6 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.stockcheckroot);
-        relativeLayout.setVisibility(View.GONE);
-
         setActionBarTitle(i.getStringExtra("screentitle"));
         hideSpecialFilter();
         hideNextButton();
@@ -267,8 +264,6 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     private void updateTotalSIHValue(ArrayList<LoadManagementBO> mylist) {
-        RelativeLayout rl = (RelativeLayout) findViewById(layout_sih);
-        rl.setVisibility(View.VISIBLE);
 
         TextView totalSihTV = (TextView) findViewById(R.id.tv_sih);
         int totalSih = 0;

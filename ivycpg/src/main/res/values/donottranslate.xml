@@ -152,15 +152,22 @@
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Delivery Date is: </string>
 
+    <string name="share_invoice_using">Share invoice using..</string>
+    <string name="error_in_creating_pdf">Error in creating pdf.</string>
+    <string name="preparing_pdf">Preparing Pdf file</string>
+
     <string name="catalog_images_download">Download Catalog Images</string>
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
+    <string name="downloading_rpt">Downloading Report</string>
 
+    <string name="time_in">Time In</string>
+    <string name="time_out">Time out</string>
+    <string name="sales_value">Sales value</string>
+    <string name="duration">Duration</string>
 
-    <string name="share_invoice_using">Share invoice using..</string>
-    <string name="error_in_creating_pdf">Error in creating pdf.</string>
-    <string name="preparing_pdf">Preparing Pdf file</string>
+    <string name="old_order_volume">Original value</string>
 
     <string name="partial_delivery">Partial Delivery</string>
     <string name="total_vol">Total Volume</string>
@@ -171,4 +178,8 @@
     <string name="invoice_creation">Creation</string>
 
     <string name="reason_duplicated">Reason should not be duplicated.</string>
+    <string name="total_mrp">Total MRP</string>
+    <string name="scheme_ucp">Scheme UCP</string>
+    <string name="order_summary_dialog">Order Summary Dialog</string>
+    <string name="bill_payment">Bill Payment</string>
 </resources>
