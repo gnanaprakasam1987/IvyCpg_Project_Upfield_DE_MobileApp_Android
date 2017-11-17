@@ -197,7 +197,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
         hideSpecialFilter();// hideSpecialFilter
         hideRemarksButton();
         hideShemeButton();
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
@@ -263,7 +263,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
             mSelectedFilterMap.put("Category", "All");
             getActivity().supportInvalidateOptionsMenu();
 
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
     }
 
@@ -581,18 +581,18 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
-        updatebrandtext(BRAND, -1);
+        generalbutton = mFilterText;
+        updateBrandText(BRAND, -1);
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
 
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         productName.setText("");
         items = getProducts();
         if (vanunloadlist == null) {
@@ -623,9 +623,9 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         mylist = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (ProductMasterBO productBO : items) {
                 if (productBO.getIsSaleable() == 1) {
                     if (levelBO.getProductID() == productBO.getParentid()) {
@@ -639,12 +639,12 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO productBO : items) {
                         if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
 
@@ -666,7 +666,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO productBO : items) {
                     if (productBO.getIsSaleable() == 1) {
                         if (levelBO.getProductID() == productBO.getParentid()) {
@@ -687,14 +687,14 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }

@@ -199,7 +199,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        updategeneraltext(GENERAL);
+        updateGeneralText(GENERAL);
         mDrawerLayout.closeDrawer(GravityCompat.END);
         bmodel.mSelectedActivityName = "Sales";
 
@@ -447,7 +447,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             strBarCodeSearch = "ALL";
 
             supportInvalidateOptionsMenu();
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         } else if (vw == saveBtn) {
 
             if (bmodel.configurationMasterHelper.IS_MUST_SELL
@@ -931,7 +931,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
         try {
             mSelectedBrandID = bid;
@@ -940,7 +940,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -978,7 +978,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
 
 
                         if (bid == -1) {
-                            if (filtertext.equals("Brand")) {
+                            if (mFilterText.equals("Brand")) {
                                 if (ret.getSIH() > 0)
                                     if (GENERAL.equalsIgnoreCase(generaltxt) || (!GENERAL.equalsIgnoreCase(generaltxt) && isSpecialFilterAppliedProduct(generaltxt, ret))) {
                                         mylist.add(ret);
@@ -1009,7 +1009,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
             // final list prepared with all filters applied, now applying existing values
             loadExistingValues();
 
-            updateProductCountInTitle(generaltxt, filtertext);
+            updateProductCountInTitle(generaltxt, mFilterText);
 
             refreshList();
 
@@ -1288,8 +1288,8 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
-        generalbutton = filtertext;
+    public void updateGeneralText(String mFilterText) {
+        generalbutton = mFilterText;
 
         //clearing other filters if special filter selected
         if (mSelectedIdByLevelId != null)
@@ -1298,7 +1298,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
         if (mEdt_searchproductName != null)
             mEdt_searchproductName.setText("");
 
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -1307,16 +1307,16 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filter) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         String filtertext = getResources().getString(R.string.product_name);
-        if (!filter.equals(""))
-            filtertext = filter;
+        if (!mFilterText.equals(""))
+            filtertext = mFilterText;
 
         // brandbutton = filtertext;
         fiveFilter_productIDs = new ArrayList<>();
@@ -1326,8 +1326,8 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (mAttributeProducts != null) {
             count = 0;
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
 
@@ -1360,7 +1360,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 count++;
                 for (ProductMasterBO productBO : items) {
 
@@ -1481,12 +1481,12 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 

@@ -197,12 +197,12 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 				// Perform action on click
 				if (buttonName.equals("Brand")) {
 
-					brandInterface.updatebrandtext("Brand", -1);
+					brandInterface.updateBrandText("Brand", -1);
 					mselectedFilterMap.put("Brand", "All");
 					mselectedFilterMap.put("Category", "All");
 				}
 				if (buttonName.equals("General")) {
-					brandInterface.updategeneraltext("General");
+					brandInterface.updateGeneralText("General");
 					mselectedFilterMap.put("General", "All");
 					mselectedFilterMap.put("Brand", "All");
 					mselectedFilterMap.put("Category", "All");
@@ -285,7 +285,7 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 		if (brandintlist.size() > 0) {
 		brandInterface.updateMultiSelectionBrand(listbrandname, brandintlist);
 		}else{
-			brandInterface.updatebrandtext("Brand", -1);
+			brandInterface.updateBrandText("Brand", -1);
 			mselectedFilterMap.put("Brand", "All");
 			mselectedFilterMap.put("Category", "All");
 		}
@@ -301,10 +301,10 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 
 		}
 		if (intlist.size() > 0) {
-			brandInterface.updateMultiSelectionCatogry(intlist);
+			brandInterface.updateMultiSelectionCategory(intlist);
 
 		} else {
-			brandInterface.updatebrandtext("Brand", -1);
+			brandInterface.updateBrandText("Brand", -1);
 			mselectedFilterMap.put("Brand", "All");
 			mselectedFilterMap.put("Category", "All");
 		}
@@ -714,14 +714,14 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 			if (buttonName.equals("Brand")) {
 				System.out.println("onitem" + holder.id);
 				mselectedFilterMap.put("Brand", holder.id + "");
-				brandInterface.updatebrandtext((String) holder.text.getText(),
+				brandInterface.updateBrandText((String) holder.text.getText(),
 						holder.id);
 
 			}
 
 			else if (buttonName.equals("General")) {
 				mselectedFilterMap.put("General", (String) holder.Spe_filt_id);
-				brandInterface.updategeneraltext((String) holder.Spe_filt_id);
+				brandInterface.updateGeneralText((String) holder.Spe_filt_id);
 				mselectedFilterMap.put("Brand", "All");
 				mselectedFilterMap.put("Category", "All");
 
@@ -741,7 +741,7 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 
 			mpre_select_filter = holder.text;
 			/*if (hideBrandFilter)
-				brandInterface.updatebrandtext((String) holder.text.getText(),
+				brandInterface.updateBrandText((String) holder.text.getText(),
 						holder.id);
 			else*/
 				updateBrandFilter(holder.id);

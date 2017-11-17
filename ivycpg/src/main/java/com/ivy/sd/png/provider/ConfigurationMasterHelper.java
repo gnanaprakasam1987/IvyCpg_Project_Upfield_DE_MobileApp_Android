@@ -1516,7 +1516,7 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled6 column value from the hhtmenuMaster table.
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
      *
      * @return boolean true - survey is required.
      */

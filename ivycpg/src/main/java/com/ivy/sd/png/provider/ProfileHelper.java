@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.widget.LinearLayout;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.AssetHistoryBO;
+import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;

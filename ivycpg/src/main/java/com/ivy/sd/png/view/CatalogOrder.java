@@ -45,7 +45,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.carousel.CarouselLayoutManager;
 import com.ivy.carousel.CarouselZoomPostLayoutListener;
-import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -282,10 +281,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (OrderedFlag.equals("FromSummary")) {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                     mSelectedFilterMap.put("General", mOrdered);
-                    updategeneraltext(mOrdered);
+                    updateGeneralText(mOrdered);
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
             } else {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
@@ -293,14 +292,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     String defaultfilter = getDefaultFilter();
                     if (!defaultfilter.equals("")) {
                         mSelectedFilterMap.put("General", defaultfilter);
-                        updategeneraltext(defaultfilter);
+                        updateGeneralText(defaultfilter);
                     } else {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
             }
         } catch (Exception e) {
@@ -427,7 +426,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (spinadapter.getItem(position).getProductID() == 0) {
                     //brandIds=new ArrayList<Integer>();
                     brandIds = null;
-                    updatebrandtext(BRAND, -1);
+                    updateBrandText(BRAND, -1);
 
 
                 } else {
@@ -462,7 +461,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
 
         getMandatoryFilters();
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
             bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
@@ -833,18 +832,18 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
         mSelectedBrandID = bid;
 
@@ -857,7 +856,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -1119,17 +1118,17 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
+        generalbutton = mFilterText;
 
         // clearing fivefilterList
         fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, -1);
-        //updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
+        //updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -1143,7 +1142,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         mylist = new Vector<>();
         Vector<LevelBO> pdtlist = new Vector<>();
         if (brandList != null) {
@@ -1152,7 +1151,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 pdtlist.addAll(bmodel.productHelper.getPdtids());
             }
         } else {
-            pdtlist = parentidList;
+            pdtlist = mParentIdList;
         }
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         for (LevelBO levelBO : pdtlist) {
@@ -1172,12 +1171,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         //String filtertext = getResources().getString(R.string.product_name);
         /*if (!filter.equals(""))
             filtertext = filter;*/
 
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         fiveFilter_productIDs = new ArrayList<>();
 
 
@@ -1186,8 +1185,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (mAttributeProducts != null) {
             count = 0;
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -1228,7 +1227,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
 
             for (ProductMasterBO productBO : items) {
-                for (LevelBO levelBO : parentidList) {
+                for (LevelBO levelBO : mParentIdList) {
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
@@ -2495,7 +2494,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 public void onClick(View v) {
                     //bmodel.productHelper.loadBrands(holder.productObj.getProductID(), "Brand",-1);
                     //brandList=null;
-                    updatefromFiveLevelFilter(bmodel.productHelper.getPdtids());
+                    updateFromFiveLevelFilter(bmodel.productHelper.getPdtids());
                     brand_name.setText(holder.productObj.getLevelName());
                     brandId.clear();
                     brandId.add(holder.productObj.getProductID());

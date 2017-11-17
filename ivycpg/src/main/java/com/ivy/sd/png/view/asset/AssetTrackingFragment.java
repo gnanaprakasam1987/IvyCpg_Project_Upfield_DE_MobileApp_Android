@@ -1,9 +1,7 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -22,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,13 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -67,7 +60,13 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-
+import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,99 +77,64 @@ import java.util.List;
 import java.util.Vector;
 
 public class
-AssetTrackingScreenFragment extends IvyBaseFragment implements
-        OnEditorActionListener, BrandDialogInterface {
+AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener, BrandDialogInterface,
+        DataPickerDialogFragment.UpdateDateInterface{
 
-    private static final String TAG = "AssetTracking Screen";
-    private BusinessModel bmodel;
-
-    // Drawer Implimentation
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
-    private ListView lvwplist;
-    private static Button dateBtn;
+    private ListView listview;
+    private Button dateBtn;
 
-    private String append = "";
-    private static String outPutDateFormat;
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int MOVEMENT_ASSET = 2;
-    private final String moduleName = "AT_";
-    AddAssetDialogFragment dialog;
-    ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
-    private static final String BRAND = "Brand";
-    private String brandbutton;
-    private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private static final String GENERAL = "General";
-
-
-    private final AssetTrackingBO assetBo = new AssetTrackingBO();
-    /**
-     * This PATH_NAME used to store Asset photos in sdcard
-     */
-
-    private String photoPath = "";
-
-    private ArrayList<AssetTrackingBO> myList = new ArrayList<>();
-
-    /**
-     * This ArrayList contains downloaded assettracking records
-     */
-    private ArrayList<AssetTrackingBO> mAssetTrackingList;
-    /**
-     * This ArrayList contains downloaded assettracking records
-     */
-    private ArrayList<AssetTrackingBO> mAllAssetTrackingList;
-    /**
-     * This ArrayList contains downloaded assetreason records
-     */
-    private ArrayList<ReasonMaster> mAssetReasonList;
-    /**
-     * This ArrayList contains downloaded assetremarks records
-     */
-    private ArrayList<ReasonMaster> mAssetRemarksList;
-    private ArrayList<ReasonMaster> mAssetconditionList;
-    /**
-     * This ArrayAdapter used to set AssetReason in spinner
-     */
-    private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
-    /**
-     * This ArrayAdapter used to set AssetRemarks in spinner
-     */
-    private ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
-    private ArrayAdapter<ReasonMaster> mAssetconditionAdapter;
-
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-
-    private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
-    private int mSelectedLastFilterSelection = -1;
+    private BusinessModel mBusinessModel;
     private StandardListBO mSelectedStandardListBO;
 
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int MOVEMENT_ASSET = 2;
+    private int mSelectedLocationIndex;
+    private int mSelectedLastFilterSelection = -1;
+    private final String moduleName = "AT_";
+    private static final String BRAND = "Brand";
+    private static final String GENERAL = "General";
+    private static final String ALL = "ALL";
+    private String photoPath = "";
+    private static final String MENU_ASSET = "MENU_ASSET";
     private String strBarCodeSearch = "ALL";
     private String mCapturedNFCTag = "";
-    private static final String MENU_ASSET = "MENU_ASSET";
     private String imageName;
-    private static final String SELECT = "-Select-";
+    private String filterText;
+    private static final String TAG = "AssetTracking Screen";
+    private static final String TAG_DATE_PICKER_INSTALLED = "date_picker_installed";
+    private static final String TAG_DATE_PICKER_SERVICED = "date_picker_serviced";
+    private String brandButton;
+    private static String outPutDateFormat;
     private boolean isShowed = false;
-    Button btnSave;
-    FloatingActionButton btnBarcode;
 
-    private Vector<LevelBO> parentidList;
+    private ArrayList<AssetTrackingBO> myList;
+    private ArrayList<AssetTrackingBO> mAssetTrackingList;
+    private ArrayList<ReasonMaster> mAssetReasonList;
+    private ArrayList<ReasonMaster> mAssetConditionList;
+    private ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+    private ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
+    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+    private ArrayAdapter<StandardListBO> mLocationAdapter;
+    private Vector<LevelBO> parentIdList;
     private ArrayList<Integer> mAttributeProducts;
-    private String filtertext;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBusinessModel = (BusinessModel) getActivity().getApplicationContext();
+        mBusinessModel.setContext(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_asset_tracking, container,
+
+        View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
                 false);
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
@@ -179,30 +143,30 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         params.width = width;
         drawer.setLayoutParams(params);
 
-        btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button btnSave = (Button) view.findViewById(R.id.btn_save);
+        btnSave.setTypeface(mBusinessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 nextButtonClick();
             }
         });
-        btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
 
-        if (!bmodel.assetTrackingHelper.SHOW_ASSET_BARCODE)
+        FloatingActionButton btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
+        if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE)
             btnBarcode.setVisibility(View.GONE);
 
         btnBarcode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AssetTrackingScreen) getActivity()).checkAndRequestPermissionAtRunTime(2);
+                ((AssetTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
                 int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.CAMERA);
                 if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                     IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
                         @Override
                         protected void startActivityForResult(Intent intent, int code) {
-                            AssetTrackingScreenFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                            AssetTrackingFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
                         }
                     };
                     integrator.setBeepEnabled(false).initiateScan();
@@ -214,6 +178,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         });
+
         return view;
     }
 
@@ -227,22 +192,22 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     public void onResume() {
         super.onResume();
         //GA screen tracking
-        BusinessModel.getInstance().trackScreenView("Asset Tracking");
+        BusinessModel.getInstance().trackScreenView(TAG);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+
+        mBusinessModel = (BusinessModel) getActivity().getApplicationContext();
+        mBusinessModel.setContext(getActivity());
+
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
-            lvwplist.setCacheColorHint(0);
+            listview = (ListView) getView().findViewById(R.id.lvwplist);
+            listview.setCacheColorHint(0);
         }
 
 
-        // set a custom shadow that overlays the main content when the drawer
-        // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -250,25 +215,20 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setElevation(0);
-            setScreenTitle(bmodel.mSelectedActivityName);
+            setScreenTitle(mBusinessModel.assetTrackingHelper.mSelectedActivityName);
         }
 
-        //getActivity().supportInvalidateOptionsMenu();
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
         ) {
             public void onDrawerClosed(View view) {
                 if (actionBar != null)
-                    setScreenTitle(bmodel.mSelectedActivityName);
+                    setScreenTitle(mBusinessModel.mSelectedActivityName);
 
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -285,9 +245,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD && getView() != null) {
-            TextView tvaudit = (TextView) getView().findViewById(R.id.audit);
-            tvaudit.setVisibility(View.VISIBLE);
+        if (mBusinessModel.configurationMasterHelper.IS_TEAMLEAD && getView() != null) {
+            TextView tvAudit = (TextView) getView().findViewById(R.id.audit);
+            tvAudit.setVisibility(View.VISIBLE);
 
         }
 
@@ -297,30 +257,31 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+        for (StandardListBO temp : mBusinessModel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = mBusinessModel.productHelper.getmSelectedGLobalLocationIndex();
         }
         if (mLocationAdapter.getCount() > 0) {
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
         if (!isShowed) {
-            //showLocation();
             loadedItem();
             isShowed = true;
         }
+
         hideAndSeeK();
-        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+
+        if (parentIdList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updateFromFiveLevelFilter(parentIdList, mSelectedIdByLevelId, mAttributeProducts, filterText);
         } else {
-            updatebrandtext(BRAND, mSelectedLastFilterSelection);
+            updateBrandText(BRAND, mSelectedLastFilterSelection);
         }
-        //updateList(-1, mSelectedStandardListBO);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+
+        if (mBusinessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             mSelectedFilterMap.put("General", GENERAL);
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
     }
 
@@ -334,7 +295,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         boolean drawerOpen = false;
-        boolean navDrawerOpen = false;
 
         if (mDrawerLayout != null) {
             drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
@@ -343,10 +303,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_add).setTitle(R.string.addnewasset);
         menu.findItem(R.id.menu_remove).setTitle(R.string.removeasset);
 
-        if (!brandbutton.equals(BRAND))
+        if (!brandButton.equals(BRAND))
             menu.findItem(R.id.menu_product_filter).setIcon(
                     R.drawable.ic_action_filter_select);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+
+        if (mBusinessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -355,42 +316,41 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         }
-        if (!bmodel.assetTrackingHelper.SHOW_REMARKS_ASSET) {
+
+        if (!mBusinessModel.assetTrackingHelper.SHOW_REMARKS_ASSET) {
             menu.findItem(R.id.menu_remarks).setVisible(false);
         }
 
-        if (!bmodel.assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
+        if (!mBusinessModel.assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
             menu.findItem(R.id.menu_add).setVisible(false);
         }
-        if (!bmodel.assetTrackingHelper.SHOW_REMOVE_ASSET) {
+        if (!mBusinessModel.assetTrackingHelper.SHOW_REMOVE_ASSET) {
             menu.findItem(R.id.menu_remove).setVisible(false);
         }
-        if (bmodel.assetTrackingHelper.SHOW_ASSET_ALL) {
+        if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_ALL) {
             menu.findItem(R.id.menu_all).setVisible(true);
         }
-        if (bmodel.configurationMasterHelper.floating_Survey) {
+        if (mBusinessModel.configurationMasterHelper.floating_Survey) {
             menu.findItem(R.id.menu_survey).setVisible(true);
         }
+
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(MENU_ASSET)) {
+        if (mBusinessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBusinessModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        } /*else {
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-            menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        }*/
-        if (!bmodel.assetTrackingHelper.SHOW_MOVE_ASSET) {
+        }
+        if (!mBusinessModel.assetTrackingHelper.SHOW_MOVE_ASSET) {
             menu.findItem(R.id.menu_move).setVisible(false);
         }
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+        if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
         else {
-            if (bmodel.productHelper.getInStoreLocation().size() < 2)
+            if (mBusinessModel.productHelper.getInStoreLocation().size() < 2)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
 
-        if (navDrawerOpen || drawerOpen) {
+        if (drawerOpen) {
             menu.clear();
         }
 
@@ -403,7 +363,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                bmodel.outletTimeStampHelper
+                mBusinessModel.outletTimeStampHelper
                         .updateTimeStampModuleWise(SDUtil
                                 .now(SDUtil.TIME));
                 startActivity(new Intent(getActivity(),
@@ -416,11 +376,10 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
             return true;
         } else if (i == R.id.menu_all) {
-            strBarCodeSearch = "ALL";
+            strBarCodeSearch = ALL;
             if (mCapturedNFCTag != null) {
                 mCapturedNFCTag = "";
             }
-            Log.e("Barcode", "Menu");
             updateList(-1, mSelectedStandardListBO);
             return true;
         } else if (i == R.id.menu_remarks) {
@@ -428,15 +387,15 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     .getSupportFragmentManager().beginTransaction();
             RemarksDialog dialog1 = new RemarksDialog(MENU_ASSET);
             dialog1.setCancelable(false);
-            dialog1.show(ft, "menu_asset");
+            dialog1.show(ft, MENU_ASSET);
             return true;
         } else if (i == R.id.menu_survey) {
             startActivity(new Intent(getActivity(), SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_add) {
 
-            dialog = new AddAssetDialogFragment();
-            dialog.show(getFragmentManager(), "Asset");
+            AddAssetDialogFragment dialog = new AddAssetDialogFragment();
+            dialog.show(getFragmentManager(), MENU_ASSET);
 
             return true;
         } else if (i == R.id.menu_remove) {
@@ -445,7 +404,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             startActivity(intent);
             return true;
         } else if (i == R.id.menu_product_filter) {
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
+            if (mBusinessModel.configurationMasterHelper.IS_UNLINK_FILTERS) {
                 mSelectedFilterMap.put("General", GENERAL);
             }
             productFilterClickedFragment();
@@ -455,7 +414,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             showLocation();
             return true;
         } else if (i == R.id.menu_fivefilter) {
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
+            if (mBusinessModel.configurationMasterHelper.IS_UNLINK_FILTERS) {
                 mSelectedFilterMap.put("General", GENERAL);
             }
             FiveFilterFragment();
@@ -476,69 +435,84 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
     /**
-     * Method that to loaded values and set into arraylist and adapter
+     * Method that to loaded values and set into arrayList and adapter
      */
     private void loadedItem() {
 
-        mAssetTrackingList = bmodel.assetTrackingHelper.getAssetTrackingList();
+        String select_reason = "Select Reason";
+        String select = "Select";
+        String select_condition = "Select Condition";
+
+        mAssetTrackingList = mBusinessModel.assetTrackingHelper.getAssetTrackingList();
 
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc("Select Reason");
-        mAssetReasonList = bmodel.assetTrackingHelper.getAssetReasonList();
+        reason1.setReasonDesc(select_reason);
+        mAssetReasonList = mBusinessModel.assetTrackingHelper.getAssetReasonList();
         mAssetReasonList.add(0, reason1);
 
+        //Load Remarks
+        ArrayList<ReasonMaster> mAssetRemarksList;
+        ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
         ReasonMaster reason2 = new ReasonMaster();
         reason2.setReasonID(Integer.toString(0));
-        reason2.setReasonDesc("Select");
-        mAssetRemarksList = bmodel.assetTrackingHelper.getAssetRemarksList();
+        reason2.setReasonDesc(select);
+        mAssetRemarksList = mBusinessModel.assetTrackingHelper.getAssetRemarksList();
         mAssetRemarksList.add(0, reason2);
-
-        ReasonMaster reason3 = new ReasonMaster();
-        reason3.setConditionID(Integer.toString(0));
-        reason3.setReasonDesc("Select Condition");
-        mAssetconditionList = bmodel.assetTrackingHelper.getmAssetconditionList();
-        mAssetconditionList.add(0, reason3);
-
-        mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetReasonList);
-        mAssetReasonSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         mAssetRemarksSpinAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout,
                 mAssetRemarksList);
         mAssetRemarksSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        //
 
-        mAssetconditionAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetconditionList);
-        mAssetconditionAdapter
+        ReasonMaster reason3 = new ReasonMaster();
+        reason3.setConditionID(Integer.toString(0));
+        reason3.setReasonDesc(select_condition);
+        mAssetConditionList = mBusinessModel.assetTrackingHelper.getAssetConditionList();
+        mAssetConditionList.add(0, reason3);
+
+        mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout, mAssetReasonList);
+        mAssetReasonSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+
+        mAssetConditionAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout, mAssetConditionList);
+        mAssetConditionAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
     }
 
     /**
-     * Method that to refresh item in listview
+     * Method that to refresh item in listView
      */
     private void updateList(int bid, StandardListBO standardListBO) {
         int k = 0;
         myList = new ArrayList<>();
+        ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
+
+        ArrayList<AssetTrackingBO> mAllAssetTrackingList;
         mAssetTrackingList = standardListBO.getAssetTrackingList();
         mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
+
         if (mAssetTrackingList != null) {
+
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if ("ALL".equals(strBarCodeSearch)) {
+                if (ALL.equals(strBarCodeSearch)) {
+
                     if ("".equals(mCapturedNFCTag)) {
-                        if ((bid == -1 && "Brand".equals(brandbutton)) || bid == assetBO.getProductid()) {
+                        if ((bid == -1 && "Brand".equals(brandButton)) || bid == assetBO.getProductId()) {
                             myList.add(assetBO);
                         }
                     } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
                         assetBO.setAvailQty(1);
                         myList.add(assetBO);
                     }
+
                 } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
-                    Log.e("Barcode", "Scanned Added");
-                    assetBO.setscanComplete(1);
+                    assetBO.setScanComplete(1);
                     myList.add(assetBO);
                 } else {
                     if (mAllAssetTrackingList != null) {
@@ -546,24 +520,27 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (bmodel.assetTrackingHelper.SHOW_ASSET_BARCODE) {
+
+            if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE) {
                 if (mAllAssetTrackingList != null) {
+
                     for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
                         if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
-                            if (!bmodel.assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
+
+                            if (!mBusinessModel.assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
                                 scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
                                 Bundle args = new Bundle();
                                 args.putString("serialNo", strBarCodeSearch);
                                 args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
                                 args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
-                                args.putString("brand", mAllAssetTrackingList.get(i).getMbrand());
-                                args.putString("retailerName", bmodel.getRetailerMasterBO().getRetailerName());
+                                args.putString("brand", mAllAssetTrackingList.get(i).getBrand());
+                                args.putString("retailerName", mBusinessModel.getRetailerMasterBO().getRetailerName());
                                 scannedUnmappedDialogFragment.setArguments(args);
                                 scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
                                 k = 1;
                                 break;
                             } else {
-                                Toast.makeText(bmodel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mBusinessModel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
                                 k = 1;
                                 break;
                             }
@@ -572,6 +549,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         }
+
         int size = myList.size();
         refreshList();
         if (size == 0 && k == 0) {
@@ -581,20 +559,24 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
-    public void updateListByNFCTag(String mNFCtag) {
-        mCapturedNFCTag = mNFCtag;
-        strBarCodeSearch = "ALL";
-        Log.e("Barcode", "updateListByNFCTag");
+    /**
+     * Updating List by NFC tag
+     *
+     * @param mNFCTag NFC tag
+     */
+    public void updateListByNFCTag(String mNFCTag) {
+        mCapturedNFCTag = mNFCTag;
+        strBarCodeSearch = ALL;
         updateList(-1, mSelectedStandardListBO);
     }
 
     /**
-     * Method that to refresh item in listview
+     * Method that to refresh item in listView
      */
     private void refreshList() {
 
         MyAdapter adapter = new MyAdapter(myList);
-        lvwplist.setAdapter(adapter);
+        listview.setAdapter(adapter);
         int size = myList.size();
         if (size == 0) {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
@@ -644,26 +626,23 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_audit);
                 holder.assetNameTV = (TextView) row
                         .findViewById(R.id.tv_asset_name);
-                holder.assetNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.assetNameTV.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.reason1Spin = (Spinner) row
                         .findViewById(R.id.spin_reason1);
                 holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
-               /* holder.reason2Spin = (Spinner) row
-                        .findViewById(R.id.spin_reason2);
-                holder.reason2Spin.setAdapter(mAssetRemarksSpinAdapter);*/
-                holder.mconditionSpin = (Spinner) row
+                holder.mConditionSpin = (Spinner) row
                         .findViewById(R.id.spin_condition);
-                holder.mconditionSpin.setAdapter(mAssetconditionAdapter);
-                holder.minstalldate = (Button) row
+                holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
+                holder.mInstallDate = (Button) row
                         .findViewById(R.id.Btn_instal_Date);
-                holder.ll_instal_date = (LinearLayout) row
+                holder.llInstallDate = (LinearLayout) row
                         .findViewById(R.id.ll_instal_date);
-                holder.minstalldate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mservicedate = (Button) row
+                holder.mInstallDate.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.mServiceDate = (Button) row
                         .findViewById(R.id.Btn_service_Date);
                 holder.ll_service_date = (LinearLayout) row
                         .findViewById(R.id.ll_service_date);
-                holder.mservicedate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.mServiceDate.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.photoBTN = (ImageView) row
                         .findViewById(R.id.btn_photo);
                 holder.availQtyRB = (CheckBox) row
@@ -672,17 +651,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                         .findViewById(R.id.ll_avail_qty);
                 holder.serialNoTV = (TextView) row
                         .findViewById(R.id.tv_serialNo);
-                holder.serialNoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.serialNoTV.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
-                holder.grpTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.grpTV.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
                 holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
 
 
-                if (!bmodel.assetTrackingHelper.SHOW_ASSET_QTY)
+                if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY)
                     holder.availQtyLL.setVisibility(View.GONE);
 
-                if (bmodel.assetTrackingHelper.SHOW_ASSET_EXEUTED)
+                if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED)
                     holder.execQtyLL.setVisibility(View.VISIBLE);
 
                 holder.audit.setOnClickListener(new OnClickListener() {
@@ -734,13 +713,13 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
                             }
                         });
-                holder.mconditionSpin
+                holder.mConditionSpin
                         .setOnItemSelectedListener(new OnItemSelectedListener() {
 
                             @Override
                             public void onItemSelected(AdapterView<?> arg0,
                                                        View arg1, int arg2, long arg3) {
-                                ReasonMaster reasonBO = (ReasonMaster) holder.mconditionSpin
+                                ReasonMaster reasonBO = (ReasonMaster) holder.mConditionSpin
                                         .getSelectedItem();
 
                                 holder.assetBO.setConditionID(reasonBO
@@ -756,94 +735,76 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                             }
                         });
 
-                holder.minstalldate.setOnClickListener(new OnClickListener() {
+                holder.mInstallDate.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        dateBtn = holder.minstalldate;
+                        dateBtn = holder.mInstallDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker1");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
                     }
                 });
-                holder.mservicedate.setOnClickListener(new OnClickListener() {
+                holder.mServiceDate.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        dateBtn = holder.mservicedate;
+                        dateBtn = holder.mServiceDate;
                         dateBtn.setTag(holder.assetBO);
-                        DialogFragment newFragment = new DatePickerFragment();
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                         newFragment.show(getActivity()
-                                .getSupportFragmentManager(), "datePicker2");
+                                .getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
                     }
                 });
 
-               /* holder.reason2Spin
-                        .setOnItemSelectedListener(new OnItemSelectedListener() {
-
-                            @Override
-                            public void onItemSelected(AdapterView<?> arg0,
-                                                       View arg1, int arg2, long arg3) {
-                                ReasonMaster reasonBO = (ReasonMaster) holder.reason2Spin
-                                        .getSelectedItem();
-
-                                holder.assetBO.setRemarkID(reasonBO
-                                        .getReasonID());
-
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> arg0) {
-                                // TODO Auto-generated method stub
-
-                            }
-                        });*/
                 holder.photoBTN.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        if (bmodel.synchronizationHelper
+
+                        if (mBusinessModel.synchronizationHelper
                                 .isExternalStorageAvailable()) {
+
                             photoPath = getActivity().getExternalFilesDir(
                                     Environment.DIRECTORY_PICTURES)
                                     + "/" + DataMembers.photoFolderName + "/";
 
                             imageName = moduleName
-                                    + bmodel.getRetailerMasterBO()
+                                    + mBusinessModel.getRetailerMasterBO()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.assetBO.getAssetID() + "_"
                                     + holder.assetBO.getSerialNo() + "_"
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            String fnameStarts = moduleName
-                                    + bmodel.getRetailerMasterBO()
+                            String fileNameStarts = moduleName
+                                    + mBusinessModel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + mSelectedStandardListBO.getListID() + "_" + holder.assetBO.getAssetID() + "_"
                                     + holder.assetBO.getSerialNo() + "_"
                                     + Commons.now(Commons.DATE);
-                            Commons.print(TAG + ",FName Starts :" + fnameStarts);
-                            bmodel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
-                                    .getAssetID();
-                            bmodel.assetTrackingHelper.mSelectedImageName = imageName;
-                            bmodel.assetTrackingHelper.mSelectedSerial = holder.assetBO.getSerialNo();
-                            boolean nFilesThere = bmodel.checkForNFilesInFolder(photoPath, 1,
-                                    fnameStarts);
 
+                            Commons.print(TAG + ",FName Starts :" + fileNameStarts);
+
+                            mBusinessModel.assetTrackingHelper.mSelectedAssetID = holder.assetBO
+                                    .getAssetID();
+                            mBusinessModel.assetTrackingHelper.mSelectedImageName = imageName;
+                            mBusinessModel.assetTrackingHelper.mSelectedSerial = holder.assetBO.getSerialNo();
+
+                            boolean nFilesThere = mBusinessModel.checkForNFilesInFolder(photoPath, 1,
+                                    fileNameStarts);
                             if (nFilesThere) {
-//                                showFileDeleteAlert(holder.assetBO.getAssetID()
-//                                        + "", fnameStarts);
                                 showFileDeleteAlertWithImage(holder.assetBO.getAssetID()
-                                        + "", fnameStarts, holder.assetBO.getImgName());
+                                        + "", fileNameStarts, holder.assetBO.getImgName());
                             } else {
                                 captureCustom();
                                 holder.photoBTN.requestFocus();
                             }
 
                         } else {
-                            Toast.makeText(getActivity(),
-                                    "SDCard Not Available.", Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), getResources().getString(R.string.external_storage_not_available)
+                                    , Toast.LENGTH_SHORT)
                                     .show();
                             getActivity().finish();
                         }
@@ -856,40 +817,41 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
 
                         if (holder.assetBO.getAvailQty() == 0) {
+
                             holder.availQtyRB.setChecked(true);
                             holder.assetBO.setAvailQty(1);
-
                             holder.reason1Spin.setEnabled(false);
+
                             if ((holder.assetBO.getImageName() != null)
-                                    && (!"".equals(holder.assetBO.getImageName()))
-                                    && (!"null".equals(holder.assetBO.getImageName()))) {
+                                    && (!holder.assetBO.getImageName().isEmpty())
+                                    ) {
                                 holder.photoBTN.setEnabled(true);
                                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                             } else {
                                 holder.photoBTN.setEnabled(true);
                                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                             }
+
                             holder.reason1Spin.setSelection(0);
-                            holder.mconditionSpin.setEnabled(true);
-                            holder.mconditionSpin.setSelection(0);
-                            holder.minstalldate.setEnabled(true);
-                            holder.mservicedate.setEnabled(true);
+                            holder.mConditionSpin.setEnabled(true);
+                            holder.mConditionSpin.setSelection(0);
+                            holder.mInstallDate.setEnabled(true);
+                            holder.mServiceDate.setEnabled(true);
                         } else {
+
                             holder.availQtyRB.setChecked(false);
                             holder.assetBO.setAvailQty(0);
                             holder.reason1Spin.setEnabled(true);
                             holder.photoBTN.setEnabled(false);
                             holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
-                            holder.mconditionSpin.setEnabled(false);
-                            holder.mconditionSpin.setSelection(0);
-                            holder.minstalldate.setEnabled(false);
-                            holder.mservicedate.setEnabled(false);
-                            //  holder.assetBO.setImageName("");
-                            // holder.assetBO.setImgName("");
-                            holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.mservicedate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.mConditionSpin.setEnabled(false);
+                            holder.mConditionSpin.setSelection(0);
+                            holder.mInstallDate.setEnabled(false);
+                            holder.mServiceDate.setEnabled(false);
+                            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
 
                         }
 
@@ -900,6 +862,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
                     @Override
                     public void onClick(View v) {
+
                         if (holder.assetBO.getExecutorQty() == 0) {
                             holder.execQtyRB.setChecked(true);
                             holder.assetBO.setExecutorQty(1);
@@ -913,84 +876,80 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             } else {
                 holder = (ViewHolder) row.getTag();
             }
+
             holder.assetBO = items.get(position);
+
             if (holder.assetBO.getAudit() == 2)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
             else if (holder.assetBO.getAudit() == 1)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
             else if (holder.assetBO.getAudit() == 0)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
+
             holder.assetNameTV.setText(holder.assetBO.getAssetName());
-            holder.reason1Spin.setSelection(bmodel.assetTrackingHelper
+            holder.reason1Spin.setSelection(mBusinessModel.assetTrackingHelper
                     .getItemIndex(holder.assetBO.getReason1ID(),
                             mAssetReasonList));
 
-
-            /*holder.reason2Spin.setSelection(bmodel.assetTrackingHelper
-                    .getItemIndex(holder.assetBO.getRemarkID(),
-                            mAssetRemarksList));*/
-
-
             String serialNo = getResources().getString(R.string.serial_no)
-                    + ":" + holder.assetBO.getSerialNo() + "";
+                    + ":" + holder.assetBO.getSerialNo();
             holder.serialNoTV.setText(serialNo);
 
-            holder.minstalldate
-                    .setText((holder.assetBO.getMinstalldate() == null) ? DateUtil
+            holder.mInstallDate
+                    .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMinstalldate());
-            holder.mservicedate
-                    .setText((holder.assetBO.getMservicedate() == null) ? DateUtil
+                            .getInstallDate());
+            holder.mServiceDate
+                    .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
-                            .getMservicedate());
+                            .getServiceDate());
             holder.grpTV.setText(holder.assetBO.getGroupLevelName());
 
             if (holder.assetBO.getAvailQty() > 0) {
+
                 holder.reason1Spin.setEnabled(false);
-                // holder.photoBTN.setEnabled(true);
                 if ((holder.assetBO.getImageName() != null)
-                        && (!"".equals(holder.assetBO.getImageName()))
-                        && (!"null".equals(holder.assetBO.getImageName()))) {
+                        && (!holder.assetBO.getImageName().isEmpty())
+                        ) {
                     holder.photoBTN.setEnabled(true);
                     setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                 } else {
                     holder.photoBTN.setEnabled(true);
                     holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                 }
-                //  holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+
                 holder.reason1Spin.setSelection(0);
-                holder.mconditionSpin.setEnabled(true);
-                holder.mconditionSpin.setSelection(bmodel.assetTrackingHelper
+                holder.mConditionSpin.setEnabled(true);
+                holder.mConditionSpin.setSelection(mBusinessModel.assetTrackingHelper
                         .getConditionItemIndex(holder.assetBO.getConditionID(),
-                                mAssetconditionList));
-
-                holder.minstalldate.setEnabled(true);
-                holder.mservicedate.setEnabled(true);
-
+                                mAssetConditionList));
+                holder.mInstallDate.setEnabled(true);
+                holder.mServiceDate.setEnabled(true);
 
             } else {
+
                 holder.reason1Spin.setEnabled(true);
                 holder.photoBTN.setEnabled(false);
                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
-                holder.mconditionSpin.setEnabled(false);
-                holder.mconditionSpin.setSelection(0);
-                holder.minstalldate.setEnabled(false);
-                holder.mservicedate.setEnabled(false);
+                holder.mConditionSpin.setEnabled(false);
+                holder.mConditionSpin.setSelection(0);
+                holder.mInstallDate.setEnabled(false);
+                holder.mServiceDate.setEnabled(false);
                 holder.assetBO.setImageName("");
                 holder.assetBO.setImgName("");
-                holder.assetBO.setMinstalldate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.assetBO.setMservicedate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.minstalldate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.mservicedate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
 
             }
 
-            if (bmodel.assetTrackingHelper.ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK) {
-                if ("".equals(holder.assetBO.getNFCTagId()))
+            if (mBusinessModel.assetTrackingHelper.ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK) {
+                if (holder.assetBO.getNFCTagId().isEmpty())
                     holder.availQtyRB.setEnabled(true);
                 else
                     holder.availQtyRB.setEnabled(false);
@@ -999,48 +958,38 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
             }
 
 
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_REASON) {
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_REASON) {
                 holder.reason1Spin.setVisibility(View.GONE);
             }
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_CONDITION) {
-                holder.mconditionSpin.setVisibility(View.GONE);
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_CONDITION) {
+                holder.mConditionSpin.setVisibility(View.GONE);
             }
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_INSTALL_DATE) {
-                holder.minstalldate.setVisibility(View.GONE);
-                holder.ll_instal_date.setVisibility(View.GONE);
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_INSTALL_DATE) {
+                holder.mInstallDate.setVisibility(View.GONE);
+                holder.llInstallDate.setVisibility(View.GONE);
             }
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_SERVICE_DATE) {
-                holder.mservicedate.setVisibility(View.GONE);
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_SERVICE_DATE) {
+                holder.mServiceDate.setVisibility(View.GONE);
                 holder.ll_service_date.setVisibility(View.GONE);
             }
 
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
                 holder.photoBTN.setVisibility(View.GONE);
             }
 
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_GRP) {
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_GRP) {
                 holder.grpTV.setVisibility(View.GONE);
             }
 
-            if (!bmodel.assetTrackingHelper.SHOW_ASSET_EXEUTED) {
+            if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED) {
                 holder.execQtyLL.setVisibility(View.GONE);
             }
 
-
             if ((holder.assetBO.getImageName() != null)
-                    && (!"".equals(holder.assetBO.getImageName()))
-                    && (!"null".equals(holder.assetBO.getImageName()))) {
+                    && (!holder.assetBO.getImageName().isEmpty())
+                    ) {
                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
-                /*Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity()).load(
-                        getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                + "/" + DataMembers.photoFolderName + "/" + holder.assetBO.getImgName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.photoBTN) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        holder.photoBTN.setImageDrawable(new BitmapDrawable(getResources(), bmodel.getCircularBitmapFrom(resource)));
-                        Commons.print("Photo draw " + holder.photoBTN.getVisibility() + ", " + holder.photoBTN.getDrawable() + ", " + bmodel.getCircularBitmapFrom(resource));
-                    }
-                });*/
+
             } else {
                 if (!holder.photoBTN.isEnabled())
                     holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera_grey_24dp));
@@ -1054,8 +1003,8 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 holder.availQtyRB.setChecked(false);
             }
 
-            if (bmodel.assetTrackingHelper.SHOW_ASSET_BARCODE)
-                if (holder.assetBO.getscanComplete() == 1) {
+            if (mBusinessModel.assetTrackingHelper.SHOW_ASSET_BARCODE)
+                if (holder.assetBO.getScanComplete() == 1) {
                     holder.availQtyRB.setChecked(true);
                     holder.availQtyRB.setEnabled(false);
                 } else {
@@ -1068,7 +1017,14 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Load picture in Image View
+     *
+     * @param imageName Image Name
+     * @param imageView Image View to show Image
+     */
     private void setPictureToImageView(String imageName, ImageView imageView) {
+
         Glide.with(getActivity()).load(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                         + "/" + DataMembers.photoFolderName + "/" + imageName)
@@ -1076,8 +1032,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 .placeholder(R.drawable.ic_photo_camera_blue_24dp)
                 .error(R.drawable.no_image_available)
                 .override(35, 20)
-//                        .transform(new CircleTransform(getContext()))
-                .transform(bmodel.circleTransform)
+                .transform(mBusinessModel.circleTransform)
                 .into(imageView);
     }
 
@@ -1086,12 +1041,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         TextView assetNameTV;
         TextView serialNoTV;
         Spinner reason1Spin;
-        Spinner reason2Spin;
-        Spinner mconditionSpin;
+        Spinner mConditionSpin;
         ImageView photoBTN;
-        Button minstalldate;
-        LinearLayout ll_instal_date;
-        Button mservicedate;
+        Button mInstallDate;
+        LinearLayout llInstallDate;
+        Button mServiceDate;
         LinearLayout ll_service_date;
         CheckBox availQtyRB;
         LinearLayout availQtyLL;
@@ -1101,24 +1055,6 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         LinearLayout execQtyLL;
     }
 
-
-    private void mDialog1() {
-        AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
-                getActivity());
-        alertDialogBuilder1
-                .setIcon(null)
-                .setCancelable(false)
-                .setTitle(getResources().getString(R.string.no_assets_exists))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                dialog.cancel();
-                            }
-                        });
-
-        bmodel.applyAlertDialogTheme(alertDialogBuilder1);
-    }
 
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
@@ -1131,35 +1067,37 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
      * will show Alert Dialog In Alert Dialog, if click yes,remove image in
      * sdcard and retake photo. If click No, Alert Dialog dismiss
      *
-     * @param bbid
-     * @param imageNameStarts
+     * @param mAssetId        AssetId
+     * @param imageNameStarts imageName
+     * @param imageSrc        imagePath
      */
-    private void showFileDeleteAlertWithImage(final String bbid,
+    private void showFileDeleteAlertWithImage(final String mAssetId,
                                               final String imageNameStarts,
                                               final String imageSrc) {
-        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
-                getActivity(), //Context
-                "", //Title
-                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
-                true, //ToDisplayImage
-                getResources().getString(R.string.yes), //Positive Button
-                getResources().getString(R.string.no), //Negative Button
-                false, //MoveToNextActivity
+
+        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(),
+                getActivity(),
+                "",
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake),
+                true,
+                getResources().getString(R.string.yes),
+                getResources().getString(R.string.no),
+                false,
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
                 new CommonDialog.positiveOnClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (bbid.equals(Integer.toString(assetBO.getAssetID()))) {
+                            if (mAssetId.equals(Integer.toString(assetBO.getAssetID()))) {
                                 assetBO.setImageName("");
                             }
                         }
-                        bmodel.assetTrackingHelper
+                        mBusinessModel.assetTrackingHelper
                                 .deleteImageName(imageNameStarts);
-                        bmodel.synchronizationHelper.deleteFiles(photoPath,
+                        mBusinessModel.synchronizationHelper.deleteFiles(photoPath,
                                 imageNameStarts);
-                        //   dialog.dismiss();
+
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -1170,73 +1108,25 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-//                dialog.dismiss();
+
             }
         });
         commonDialog.show();
         commonDialog.setCancelable(false);
     }
 
-    private void showFileDeleteAlert(final String bbid,
-                                     final String imageNameStarts) {
-
-        AlertDialog.Builder builderDialog = new AlertDialog.Builder(
-                getActivity());
-        builderDialog.setTitle("");
-        builderDialog.setMessage(getResources().getString(R.string.word_already)
-                + " "
-                + getResources().getString(
-                R.string.word_photocaptured_delete_retake));
-
-        builderDialog.setPositiveButton(getResources().
-                        getString(R.string.yes),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (bbid.equals(Integer.toString(assetBO.getAssetID()))) {
-                                assetBO.setImageName("");
-                                assetBO.setImgName("");
-                            }
-                        }
-                        bmodel.assetTrackingHelper
-                                .deleteImageName(imageNameStarts);
-                        bmodel.synchronizationHelper.deleteFiles(photoPath,
-                                imageNameStarts);
-                        dialog.dismiss();
-                        Intent intent = new Intent(getActivity(),
-                                CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = photoPath + "/" + imageName;
-                        intent.putExtra("path", path);
-                        startActivityForResult(intent, CAMERA_REQUEST_CODE);
-                    }
-                });
-
-        builderDialog.setNegativeButton(getResources().getString(R.string.no),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderDialog.setCancelable(false);
-        bmodel.applyAlertDialogTheme(builderDialog);
-    }
 
     /**
-     * Method to set captured image name in AssetTrackingBO
-     *
-     * @param assetID
-     * @param imgName
+     * @param assetID  Asset Id
+     * @param serialNo Serial Number
+     * @param imgName  Image Name
      */
-
-    private void onsaveImageName(int assetID, String serialNo, String imgName) {
+    private void onSaveImageName(int assetID, String serialNo, String imgName) {
 
         String imagePath = "Asset/"
-                + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                + mBusinessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
-                + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
+                + mBusinessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
 
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
             if (assetID == assetBO.getAssetID() &&
@@ -1246,6 +1136,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 break;
             }
         }
+
         refreshList();
     }
 
@@ -1255,31 +1146,31 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
+
                 // Photo saved successfully
-                Commons.print("AssetTracking," +
+                Commons.print(TAG + "," +
                         "Camera Activity : Successfully Captured.");
-                if (bmodel.assetTrackingHelper.mSelectedAssetID != 0) {
-                    onsaveImageName(
-                            bmodel.assetTrackingHelper.mSelectedAssetID,
-                            bmodel.assetTrackingHelper.mSelectedSerial,
-                            bmodel.assetTrackingHelper.mSelectedImageName);
+                if (mBusinessModel.assetTrackingHelper.mSelectedAssetID != 0) {
+                    onSaveImageName(
+                            mBusinessModel.assetTrackingHelper.mSelectedAssetID,
+                            mBusinessModel.assetTrackingHelper.mSelectedSerial,
+                            mBusinessModel.assetTrackingHelper.mSelectedImageName);
                 }
+
             } else {
-                Commons.print("AssetTracking," + "Camera Activity : Canceled");
+                Commons.print(TAG + "," + "Camera Activity : Canceled");
             }
         } else if (requestCode == MOVEMENT_ASSET) {
-            bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+            mBusinessModel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (requestCode == IntentIntegrator.REQUEST_CODE) {
                 if (result != null) {
                     if (result.getContents() == null) {
-                        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                     } else {
                         strBarCodeSearch = result.getContents();
-                        Log.e("Barcode", strBarCodeSearch);
-                        //updateList(-1, mSelectedStandardListBO);
                     }
                 }
             }
@@ -1289,38 +1180,45 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Deleting Un used images
+     */
     public void deleteUnusedImages() {
 
         for (AssetTrackingBO temp : myList) {
             if (temp.getAvailQty() == 0 && !"".equals(temp.getImgName())) {
                 String fileName = temp.getImgName();
-                Commons.print("Image Delete," + "Coming In");
                 deleteFiles(fileName);
             }
         }
     }
 
+    /**
+     * Deleting image files
+     *
+     * @param filename File Name
+     */
     private void deleteFiles(String filename) {
-        File folder = new File(HomeScreenFragment.photoPath + "/");
 
+        File folder = new File(HomeScreenFragment.photoPath + "/");
         File[] files = folder.listFiles();
         for (File tempFile : files) {
             if (tempFile != null && tempFile.getName().equals(filename)) {
                 boolean isDeleted = tempFile.delete();
                 if (isDeleted)
-                    Commons.print("Image Delete," + "Sucess");
+                    Commons.print("Image Delete," + "Success");
             }
         }
     }
 
     /**
-     * This AsynTask class is used to save Asset Details in table
+     * This AsyncTask class is used to save Asset Details in table
      */
     private class SaveAsset extends AsyncTask<String, Void, String> {
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            mBusinessModel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -1328,17 +1226,19 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
         @Override
         protected String doInBackground(String... params) {
+
             deleteUnusedImages();
-            bmodel.assetTrackingHelper.saveAsset(MENU_ASSET);
-            bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+            mBusinessModel.assetTrackingHelper.saveAsset(MENU_ASSET);
+            mBusinessModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
             return "";
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+
             alertDialog.dismiss();
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+            mBusinessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
 
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
@@ -1351,7 +1251,7 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
                     Bundle extras = getActivity().getIntent().getExtras();
                     if (extras != null) {
-                        intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("IsMoveNextActivity", mBusinessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                         intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                     }
 
@@ -1370,45 +1270,66 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
     /**
-     * Method to call saveAsset funticon while click nextButton in action bar
+     * Method to call saveAsset function while click nextButton in action bar
      */
     private void nextButtonClick() {
-        if (bmodel.assetTrackingHelper.hasAssetTaken()) {
+
+        if (mBusinessModel.assetTrackingHelper.hasAssetTaken()) {
             new SaveAsset().execute("");
         } else {
-            mDialog1();
+
+            AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                    getActivity());
+            alertDialogBuilder1
+                    .setIcon(null)
+                    .setCancelable(false)
+                    .setTitle(getResources().getString(R.string.no_assets_exists))
+                    .setPositiveButton(getResources().getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            mBusinessModel.applyAlertDialogTheme(alertDialogBuilder1);
+
         }
     }
 
     /**
      * Method that to show visibility and hided column
      */
-
     private void hideAndSeeK() {
+
         View view = getView();
-        if (view != null && (!bmodel.assetTrackingHelper.SHOW_ASSET_TARGET || !bmodel.assetTrackingHelper.SHOW_ASSET_QTY)) {
+        if (view != null && (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_TARGET || !mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY)) {
             view.findViewById(R.id.keypad).setVisibility(View.GONE);
         }
-        if (view != null && bmodel.assetTrackingHelper.SHOW_COMPETITOR_QTY)
+        if (view != null && mBusinessModel.assetTrackingHelper.SHOW_COMPETITOR_QTY)
             view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
-        if (view != null && bmodel.configurationMasterHelper.IS_TEAMLEAD)
+        if (view != null && mBusinessModel.configurationMasterHelper.IS_TEAMLEAD)
             getView().findViewById(R.id.keypad).setVisibility(View.GONE);
-        if (view != null && !bmodel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
+        if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_PHOTO) {
             view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
         }
-        if (!bmodel.assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
+
+        if (!mBusinessModel.assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
             view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
         } else {
             try {
-                if (view != null && bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.tv_isAvail).getTag()) != null) {
-                    ((TextView) view.findViewById(R.id.tv_isAvail))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(
-                                            R.id.tv_isAvail).getTag()));
+                if (view != null) {
+                    if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.tv_isAvail).getTag()) != null) {
+                        ((TextView) view.findViewById(R.id.tv_isAvail))
+                                .setText(mBusinessModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.tv_isAvail).getTag()));
 
+                    }
+                    ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
-                ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
@@ -1416,34 +1337,39 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
 
         try {
-            if (view != null && bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.tv_header_assetname).getTag()) != null) {
-                ((TextView) view.findViewById(R.id.tv_header_assetname))
-                        .setText(bmodel.labelsMasterHelper
-                                .applyLabels(view.findViewById(
-                                        R.id.tv_header_assetname).getTag()));
-
+            if (view != null) {
+                if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.tv_header_assetname).getTag()) != null) {
+                    ((TextView) view.findViewById(R.id.tv_header_assetname))
+                            .setText(mBusinessModel.labelsMasterHelper
+                                    .applyLabels(view.findViewById(
+                                            R.id.tv_header_assetname).getTag()));
+                }
+                ((TextView) view.findViewById(R.id.tv_header_assetname)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
-            ((TextView) view.findViewById(R.id.tv_header_assetname)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
 
 
-        if (view != null && !bmodel.assetTrackingHelper.SHOW_ASSET_EXEUTED)
+        if (view != null && !mBusinessModel.assetTrackingHelper.SHOW_ASSET_EXECUTED)
             view.findViewById(R.id.tv_is_exeuted).setVisibility(View.GONE);
         else {
 
             try {
-                if (view != null && bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.tv_is_exeuted).getTag()) != null) {
-                    ((TextView) view.findViewById(R.id.tv_is_exeuted))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(
-                                            R.id.tv_is_exeuted).getTag()));
+                if (view != null) {
+                    if (mBusinessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.tv_is_exeuted).getTag()) != null) {
+                        ((TextView) view.findViewById(R.id.tv_is_exeuted))
+                                .setText(mBusinessModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.tv_is_exeuted).getTag()));
 
+                    }
+                    ((TextView) view.findViewById(R.id.tv_is_exeuted)).setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
-                ((TextView) view.findViewById(R.id.tv_is_exeuted)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
@@ -1451,7 +1377,11 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Custom camera call
+     */
     private void captureCustom() {
+
         final String actionScannerInputPlugin = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
         final String extraParameter = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
         final String disablePlugin = "DISABLE_PLUGIN";
@@ -1475,86 +1405,20 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         }
     }
 
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
 
-        @Override
-        @NonNull
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
-            if ("datePicker1".equals(this.getTag())) {
-
-                if (selectedDate.after(Calendar.getInstance())) {
-                    Toast.makeText(getActivity(),
-                            R.string.future_date_not_allowed,
-                            Toast.LENGTH_SHORT).show();
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
-                            Calendar.getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
-                            .getInstance().getTime(), outPutDateFormat));
-                } else {
-
-                    bo.setMinstalldate(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                }
-            } else if ("datePicker2".equals(this.getTag())) {
-
-                if (bo.getMinstalldate() != null
-                        && bo.getMinstalldate().length() > 0) {
-                    Date installdate = DateUtil.convertStringToDateObject(
-                            bo.getMinstalldate(), outPutDateFormat);
-                    if (installdate != null && selectedDate.getTime() != null
-                            && installdate.after(selectedDate.getTime())) {
-                        Toast.makeText(getActivity(),
-                                R.string.servicedate_set_after_installdate,
-                                Toast.LENGTH_SHORT).show();
-                    } else if (selectedDate.after(Calendar.getInstance())) {
-                        Toast.makeText(getActivity(),
-                                R.string.future_date_not_allowed,
-                                Toast.LENGTH_SHORT).show();
-                        bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
-                                Calendar.getInstance().getTime(), outPutDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
-                                .getInstance().getTime(), outPutDateFormat));
-                    } else {
-                        bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                                selectedDate.getTime(), outPutDateFormat));
-                    }
-                } else {
-
-                    bo.setMservicedate(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            selectedDate.getTime(), outPutDateFormat));
-                }
-            }
-        }
-    }
-
-
+    /**
+     * Show location dialog
+     */
     private void showLocation() {
-        AlertDialog.Builder builderDialog;
 
+        AlertDialog.Builder builderDialog;
         builderDialog = new AlertDialog.Builder(getActivity());
         builderDialog.setTitle(null);
         builderDialog.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        strBarCodeSearch = "ALL";
+                        strBarCodeSearch = ALL;
                         mSelectedLocationIndex = item;
                         mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
                         dialog.dismiss();
@@ -1562,10 +1426,13 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 });
 
-        bmodel.applyAlertDialogTheme(builderDialog);
+        mBusinessModel.applyAlertDialogTheme(builderDialog);
     }
 
 
+    /**
+     * Product filter click
+     */
     private void productFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -1580,46 +1447,44 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", "Brand");
-            bundle.putString("filterHeader", bmodel.productHelper
+            bundle.putString("filterHeader", mBusinessModel.productHelper
                     .getRetailerModuleChildLevelBO().get(0).getProductLevel());
             bundle.putString("isFrom", "Survey");
             bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
+                    mBusinessModel.productHelper.getRetailerModuleChildLevelBO());
 
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleParentLeveBO()
+            if (mBusinessModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBusinessModel.productHelper.getRetailerModuleParentLeveBO()
                     .size() > 0) {
 
                 bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
+                bundle.putString("pfilterHeader", mBusinessModel.productHelper
                         .getRetailerModuleParentLeveBO().get(0)
                         .getPl_productLevel());
 
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
+                mBusinessModel.productHelper.setPlevelMaster(mBusinessModel.productHelper
                         .getRetailerModuleParentLeveBO());
             } else {
                 bundle.putBoolean("isFormBrand", false);
             }
 
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
+            // set FragmentClass Arguments
+            FilterFragment mFragment = new FilterFragment(mSelectedFilterMap);
+            mFragment.setArguments(bundle);
+            ft.add(R.id.right_drawer, mFragment, "filter");
             ft.commit();
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
-        brandbutton = filtertext;
+    public void updateBrandText(String mFilterText, int id) {
+        brandButton = mFilterText;
         mDrawerLayout.closeDrawers();
         mCapturedNFCTag = "";
-        //strBarCodeSearch = "ALL";
         mSelectedLastFilterSelection = id;
-        Log.e("Barcode", "updatebrandText");
         updateList(id, mSelectedStandardListBO);
     }
 
@@ -1629,21 +1494,21 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, mSelectedLastFilterSelection);
+        updateBrandText(BRAND, mSelectedLastFilterSelection);
     }
 
     @Override
@@ -1652,15 +1517,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (levelBO.getProductID() == assetBO.getProductid()) {
-                    if ("ALL".equals(strBarCodeSearch)) {
+                if (levelBO.getProductID() == assetBO.getProductId()) {
+
+                    if (ALL.equals(strBarCodeSearch)) {
                         if ("".equals(mCapturedNFCTag)) {
-                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                            if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                 myList.add(assetBO);
                             }
                         } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1673,34 +1540,36 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 }
             }
         }
+
         mDrawerLayout.closeDrawers();
         refreshList();
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        this.parentidList = parentidList;
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        this.parentIdList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filterText = mFilterText;
 
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
-        brandbutton = filtertext;
+        brandButton = mFilterText;
         if (mAssetTrackingList == null) {
-            bmodel.showAlert(
+            mBusinessModel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
             return;
         }
 
-        if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-            for (LevelBO levelBO : parentidList) {
+        if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+            for (LevelBO levelBO : mParentIdList) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (levelBO.getProductID() == assetBO.getProductid()) {
-                        if ("ALL".equals(strBarCodeSearch)) {
+                    if (levelBO.getProductID() == assetBO.getProductId()) {
+
+                        if (ALL.equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid())
-                                        && mAttributeProducts.contains(assetBO.getProductid())) {
+                                if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId())
+                                        && mAttributeProducts.contains(assetBO.getProductId())) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1713,16 +1582,17 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-            if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+        } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
+            if (mSelectedIdByLevelId.size() == 0 || mBusinessModel.isMapEmpty(mSelectedIdByLevelId)) {
                 myList.addAll(mAssetTrackingList);
             } else {
-                for (LevelBO levelBO : parentidList) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (levelBO.getProductID() == assetBO.getProductid()) {
-                            if ("ALL".equals(strBarCodeSearch)) {
+                        if (levelBO.getProductID() == assetBO.getProductId()) {
+
+                            if (ALL.equals(strBarCodeSearch)) {
                                 if ("".equals(mCapturedNFCTag)) {
-                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                    if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                         myList.add(assetBO);
                                     }
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1736,13 +1606,14 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+        } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (pid == assetBO.getProductid()) {
-                        if ("ALL".equals(strBarCodeSearch)) {
+                    if (pid == assetBO.getProductId()) {
+
+                        if (ALL.equals(strBarCodeSearch)) {
                             if ("".equals(mCapturedNFCTag)) {
-                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductid()) {
+                                if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
                                     myList.add(assetBO);
                                 }
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1763,6 +1634,9 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
         refreshList();
     }
 
+    /**
+     * Product filter(Five level) click
+     */
     private void FiveFilterFragment() {
         try {
 
@@ -1777,18 +1651,84 @@ AssetTrackingScreenFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
+                    mBusinessModel.configurationMasterHelper.getGenFilter());
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
             bundle.putString("isFrom", "asset");
-            // set Fragmentclass Arguments
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
-            fragobj.setArguments(bundle);
 
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            // set FragmentClass Arguments
+            FilterFiveFragment<Object> mFragment = new FilterFiveFragment<>();
+            mFragment.setArguments(bundle);
+
+            ft.replace(R.id.right_drawer, mFragment, "Fivefilter");
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e + "");
         }
     }
 
+    @Override
+    public void updateDate(Date date, String tag) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        AssetTrackingBO bo = (AssetTrackingBO) dateBtn.getTag();
+
+        if (TAG_DATE_PICKER_INSTALLED.equals(tag)) {
+
+            if (selectedDate.after(Calendar.getInstance())) {
+                Toast.makeText(getActivity(),
+                        R.string.future_date_not_allowed,
+                        Toast.LENGTH_SHORT).show();
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        Calendar.getInstance().getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                        .getInstance().getTime(), outPutDateFormat));
+            } else {
+
+                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+            }
+
+        } else if (TAG_DATE_PICKER_SERVICED.equals(tag)) {
+
+            if (bo.getInstallDate() != null
+                    && bo.getInstallDate().length() > 0) {
+                Date mInstallDate = DateUtil.convertStringToDateObject(
+                        bo.getInstallDate(), outPutDateFormat);
+                if (mInstallDate != null && selectedDate.getTime() != null
+                        && mInstallDate.after(selectedDate.getTime())) {
+                    Toast.makeText(getActivity(),
+                            R.string.servicedate_set_after_installdate,
+                            Toast.LENGTH_SHORT).show();
+                } else if (selectedDate.after(Calendar.getInstance())) {
+                    Toast.makeText(getActivity(),
+                            R.string.future_date_not_allowed,
+                            Toast.LENGTH_SHORT).show();
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                            Calendar.getInstance().getTime(), outPutDateFormat));
+                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                            .getInstance().getTime(), outPutDateFormat));
+                } else {
+                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(), outPutDateFormat));
+                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(), outPutDateFormat));
+                }
+            } else {
+
+                bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), outPutDateFormat));
+            }
+        }
+
+    }
 }

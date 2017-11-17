@@ -418,14 +418,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     mSelectedFilterMap.put("General", mOrdered);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
-                        updategeneraltext(mOrdered);
+                        updateGeneralText(mOrdered);
                         selectTab(mOrdered);
                     } else {
-                        updategeneraltext(mOrdered);
+                        updateGeneralText(mOrdered);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
 
                 mBtnGuidedSelling.setVisibility(View.GONE);
@@ -443,10 +443,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mSelectedFilterMap.put("General", defaultfilter);
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                                 loadSpecialFilterView();
-                                updategeneraltext(defaultfilter);
+                                updateGeneralText(defaultfilter);
                                 selectTab(defaultfilter);
                             } else {
-                                updategeneraltext(defaultfilter);
+                                updateGeneralText(defaultfilter);
                             }
 
 
@@ -454,10 +454,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mSelectedFilterMap.put("General", GENERAL);
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                                 loadSpecialFilterView();
-                                updategeneraltext(GENERAL);
+                                updateGeneralText(GENERAL);
                                 selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                             } else {
-                                updategeneraltext(GENERAL);
+                                updateGeneralText(GENERAL);
                             }
 
 
@@ -468,7 +468,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     } else {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 }
             }
@@ -549,14 +549,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                             selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
 
                     } else {
 
                         mSelectedFilterMap.put("General", bo.getFilterCode());
-                        updategeneraltext(bo.getFilterCode());
+                        updateGeneralText(bo.getFilterCode());
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                             selectTab(bo.getFilterCode());
 
@@ -577,21 +577,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     mSelectedFilterMap.put("General", GENERAL);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                         selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                     } else {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
 
             }
         } else {
 
             mSelectedFilterMap.put("General", GENERAL);
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
 
     }
@@ -4408,9 +4408,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
-        mSelectedFiltertext = filtertext;
+        mSelectedFiltertext = mFilterText;
 
         Commons.print("Stock and order  :," + " update brand text called :"
                 + productList.size()
@@ -4421,7 +4421,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -4487,7 +4487,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             updateOrderedCount();
-            if (GENERAL.equalsIgnoreCase(generaltxt) && BRAND.equals(filtertext)) {
+            if (GENERAL.equalsIgnoreCase(generaltxt) && BRAND.equals(mFilterText)) {
                 String strPname = getResources().getString(
                         R.string.product_name)
                         + " (" + mylist.size() + ")";
@@ -4511,7 +4511,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         setScreenTitle(totalOrdCount + "/" + strPname);
                 }
             } else {
-                String strPname = filtertext + " (" + mylist.size() + ")";
+                String strPname = mFilterText + " (" + mylist.size() + ")";
                 pnametitle.setText(strPname);
 
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
@@ -4652,9 +4652,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
+        generalbutton = mFilterText;
 
         // clearing fivefilterList
         fiveFilter_productIDs = null;
@@ -4719,7 +4719,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         else
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
 
     }
 
@@ -4983,7 +4983,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         mSelectedLocationIndex = item;
                         bmodel.productHelper.setmSelectedLocationIndex(item);
                         dialog.dismiss();
-                        updatebrandtext(mSelectedFiltertext, mSelectedBrandID);
+                        updateBrandText(mSelectedFiltertext, mSelectedBrandID);
                     }
                 });
 
@@ -5212,7 +5212,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     " scanned barcode value :" + strBarCodeSearch,
                     Toast.LENGTH_SHORT).show();
 
-            updatebrandtext(BRAND, -1);
+            updateBrandText(BRAND, -1);
             strBarCodeSearch = "ALL";
         }
     }
@@ -5233,7 +5233,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> a, List<Integer> b) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -5260,8 +5260,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             && ret.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (!b.isEmpty()) {
-                                if (b.contains(ret.getParentid()) || (b.contains(-1))) {
+                            if (!mFilterId.isEmpty()) {
+                                if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
                                     if (generaltxt.equals(GENERAL))//No special filters selected
                                     {
                                         mylist.add(ret);
@@ -5310,7 +5310,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -5336,10 +5336,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             && ret.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (mcatgory != null) {
-                                if (!mcatgory.isEmpty()) {
-                                    if (mcatgory.contains(ret.getcParentid())
-                                            || (mcatgory.contains(-1))) {
+                            if (mCategory != null) {
+                                if (!mCategory.isEmpty()) {
+                                    if (mCategory.contains(ret.getcParentid())
+                                            || (mCategory.contains(-1))) {
 
                                         if (generaltxt.equals(GENERAL))//No special filters selected
                                         {
@@ -5496,16 +5496,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filter) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         String filtertext = getResources().getString(R.string.product_name);
-        if (!filter.equals("")) {
-            filtertext = filter;
-            mSelectedFiltertext = filter;
+        if (!mFilterText.equals("")) {
+            filtertext = mFilterText;
+            mSelectedFiltertext = mFilterText;
         } else
             mSelectedFiltertext = BRAND;
 
@@ -5517,8 +5517,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         Vector<ProductMasterBO> items = productList;
         if (mAttributeProducts != null) {
             count = 0;
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -5567,7 +5567,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 count++;
                 for (ProductMasterBO productBO : items) {
 
@@ -5793,10 +5793,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     } else {
                         generalbutton = view.getTag().toString();
-                        updatebrandtext(BRAND, -1);
+                        updateBrandText(BRAND, -1);
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                         selectTab(view.getTag());
@@ -5812,7 +5812,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tv_selection_identifier.setBackgroundColor(color);
             /*if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
-                updategeneraltext(GENERAL);
+                updateGeneralText(GENERAL);
             } else {
                 tv_selection_identifier.setVisibility(View.GONE);
             }*/
@@ -6019,7 +6019,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     }
                                 }
                             }
-                            updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
+                            updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
                             return;
                         } else
                             finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
@@ -6027,7 +6027,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     } else
                         finalParentList = updateProductLoad(sequence.size());
 
-                    updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, levelBO.getLevelName());
+                    updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, levelBO.getLevelName());
                 }
             });
 

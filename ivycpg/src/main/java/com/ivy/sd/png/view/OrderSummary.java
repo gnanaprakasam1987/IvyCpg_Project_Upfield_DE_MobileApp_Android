@@ -771,10 +771,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
 
         AdvancePaymentDialogFragment paymentDialogFragment = (AdvancePaymentDialogFragment) getSupportFragmentManager().findFragmentByTag("Advance Payment");
-        paymentDialogFragment.updateDate(date);
+        paymentDialogFragment.updateDate(date,"" );
 
     }
 
@@ -2166,7 +2166,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE&&screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 

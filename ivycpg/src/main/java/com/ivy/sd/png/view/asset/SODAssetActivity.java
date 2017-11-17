@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.sd.png.view.asset;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -21,29 +21,27 @@ import java.util.Vector;
 
 public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
-    private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sodasset);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getSupportActionBar().setElevation(0);
             }
         }
 
-        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(this);
+        BusinessModel mBModel = (BusinessModel) this.getApplicationContext();
+        mBModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -79,14 +77,14 @@ public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SODAssetFragment sod = (SODAssetFragment) fm.findFragmentById(R.id.sod_assetfragment);
-        sod.updatebrandtext(filtertext, id);
+        sod.updateBrandText(mFilterText, id);
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
     }
 
     @Override
@@ -102,27 +100,26 @@ public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
-        // TODO Auto-generated method stub
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SODAssetFragment fragment = (SODAssetFragment) fm
                 .findFragmentById(R.id.sod_assetfragment);
-        fragment.updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        fragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

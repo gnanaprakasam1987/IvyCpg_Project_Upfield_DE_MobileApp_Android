@@ -196,7 +196,7 @@ public class CheckModeFragment extends IvyBaseFragment
             public void onClick(View v) {
                 DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                 newFragment.show(getFragmentManager(), "datePicker1");
-                //AssetTrackingScreenFragment.DatePickerFragment newFragment = new AssetTrackingScreenFragment.DatePickerFragment();
+                //AssetTrackingFragment.DatePickerFragment newFragment = new AssetTrackingFragment.DatePickerFragment();
                 //newFragment.show(getFragmentManager(),"datePicker1");
             }
         });
@@ -401,7 +401,7 @@ public class CheckModeFragment extends IvyBaseFragment
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
         String paidDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {

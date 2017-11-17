@@ -1434,7 +1434,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         // TODO Auto-generated method stub
 
         // bmodel.orderSplitHelper.setCurrently_selected_brand_id_from_filter(id);
@@ -1451,7 +1451,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // TODO Auto-generated method stub
 
     }
@@ -1495,26 +1495,26 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 }
