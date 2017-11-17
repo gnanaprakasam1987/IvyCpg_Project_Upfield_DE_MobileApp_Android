@@ -121,7 +121,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     bmodel.saveNewInvoice();
                 }
                 bmodel.insertDeliveryOrderRecord(isPartialOrder);
-
+                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
 
             } catch (Exception ex) {
                 Commons.printException(ex);

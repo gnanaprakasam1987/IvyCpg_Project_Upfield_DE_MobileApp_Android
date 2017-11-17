@@ -1106,7 +1106,9 @@ public class SchemeDetailsMasterHelper {
 
                 int maximumQuantity = schemeProductBO.getQuantityMaximum();
 
-                if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING))) {//bmodel.configurationMasterHelper.SCHEME_APPLY_REM) {
+                if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null
+                        &&  (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
+                              ||schemeBO.getProcessType().equals(PROCESS_TYPE_MTS)))) {
 
 					/* scheme type is Quantity Value */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -4584,7 +4586,7 @@ public class SchemeDetailsMasterHelper {
     public void clearOffInvoiceSchemeList() {
         mOffInvoiceAppliedSchemeList = new ArrayList<>();
 
-        for (Iterator<SchemeBO> iterator = mApplySchemeList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<SchemeBO> iterator = getAppliedSchemeList().iterator(); iterator.hasNext(); ) {
             SchemeBO schemeBO = iterator.next();
             if (schemeBO.getIsOnInvoice() == 0) {
                 if (schemeBO.isSihAvailableForFreeProducts()) {
