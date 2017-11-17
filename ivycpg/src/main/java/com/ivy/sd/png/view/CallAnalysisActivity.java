@@ -77,6 +77,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private String mModuleName = "MENU_CALL_ANLYS";
     boolean isPhotoTaken = false;
     private String mFeedbackReasonId = "";
+    private String mFeedBackId = "";
 
     private Toolbar toolbar;
     TextView tv_store_status, tv_duration, tv_edt_time_taken, tv_sale;
@@ -399,8 +400,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     holder.seekBar.setMax((int) Double.parseDouble(configlist.get(position).getKpiTarget()));
 
 
-                    holder.tv_achieved_value.setText(configlist.get(position).getKpiAchieved());
-                    holder.tv_target_value.setText("/" + configlist.get(position).getKpiTarget());
+                    holder.tv_achieved_value.setText(bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiAchieved())));
+                    holder.tv_target_value.setText("/" + bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiTarget())));
 
                     if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) > 0) {
                         int ach = (int) Double.parseDouble(configlist.get(position).getKpiAchieved());
@@ -443,8 +444,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
                         holder.seekBar_right.setEnabled(false);
 
-                        holder.tv_achieved_value_right.setText(configlist_second.get(position).getKpiAchieved());
-                        holder.tv_target_value_right.setText("/" + configlist_second.get(position).getKpiTarget());
+                        holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
+                        holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
 
                         if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
                             int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
@@ -633,8 +634,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             .equalsIgnoreCase("CallA12"))
                         salestarget = callanalysismenu.get(i).getMandatory();
 
-                    con.setKpiTarget(bmodel.formatValue(day_obj));
-                    con.setKpiAchieved(bmodel.formatValue(day_act));
+                    con.setKpiTarget(day_obj + "");
+                    con.setKpiAchieved(day_act + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode()
                         .equalsIgnoreCase("CallA1")) {
@@ -650,8 +651,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + bmodel.formatValue(day_obj) + " , "
                             + bmodel.formatPercent(salesPercentValue) + " %");
 
-                    con.setKpiTarget(bmodel.formatValue(day_obj));
-                    con.setKpiAchieved(bmodel.formatValue(day_act));
+                    con.setKpiTarget(day_obj + "");
+                    con.setKpiAchieved(day_act + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode()
                         .equalsIgnoreCase("CallA5")) {
@@ -760,8 +761,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + bmodel.formatValue(mtd_obj) + " , "
                             + bmodel.formatPercent(per));
 
-                    con.setKpiTarget(bmodel.formatValue(mtd_obj) + "");
-                    con.setKpiAchieved(bmodel.formatValue(mtd_actul) + "");
+                    con.setKpiTarget(mtd_obj + "");
+                    con.setKpiAchieved(mtd_actul + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode()
                         .equalsIgnoreCase("CallA16")) {
@@ -1000,6 +1001,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             if (bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !hasActivityDone()) {
                 ReasonMaster reasonMaster = (ReasonMaster) spinnerFeedback.getSelectedItem();
                 mFeedbackReasonId = reasonMaster.getReasonDesc();
+                mFeedBackId = reasonMaster.getReasonID();
 
             }
 
@@ -1321,6 +1323,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
+        } else if (!mFeedBackId.equals("0")) {
+            bmodel.updateIsVisitedFlag();
         }
 
         // Rollback the review plan if review

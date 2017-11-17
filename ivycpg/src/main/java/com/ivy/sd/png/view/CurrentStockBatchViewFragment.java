@@ -154,8 +154,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
         viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
 
-        RelativeLayout relativeLayout = (RelativeLayout) getView().findViewById(R.id.stockcheckroot);
-        relativeLayout.setVisibility(View.GONE);
 
 
         bmodel.reportHelper.updateBaseUOM("ORDER", 3);

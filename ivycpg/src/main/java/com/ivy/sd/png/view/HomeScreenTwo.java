@@ -3263,6 +3263,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bnd.putString("screentitle", menu.getMenuName());
                     bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
                     bnd.putBoolean("isFromHomeScreenTwo", true);
+                    bnd.putString("menuCode",menu.getConfigCode());
                     i.putExtras(bnd);
 //                    i.putExtra("screentitle", menu.getMenuName());
 //                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
@@ -3301,6 +3302,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 i.putExtra("screentitle", menu.getMenuName());
                 i.putExtra("isFromHomeScreenTwo", true);
+                i.putExtra("menuCode",menu.getConfigCode());
                 i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3364,6 +3366,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     FitScoreDashboardActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.putExtra("screentitle", menu.getMenuName());
+            i.putExtra("menuCode",menu.getConfigCode());
             startActivity(i);
             finish();
         } else {
@@ -3934,6 +3937,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             bmodel.configurationMasterHelper.IS_SCHEME_ON = flag;
             bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
+            bmodel.configurationMasterHelper.IS_GST = flag;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG= flag;
+            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
 //            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;

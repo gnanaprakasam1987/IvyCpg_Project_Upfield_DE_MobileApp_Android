@@ -1181,7 +1181,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     }
                                 }
                                 if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                                    String strScore = mCurrentQuestionBO.getQuestScore() + "/"
+                                    String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
+                                            ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
                                             + mCurrentQuestionBO.getQuestWeight();
                                     qScore.setText(strScore);
 
@@ -1197,7 +1198,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 mRadioGroup.addView(linLayoutRad);
             }
             if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                String strScore = mCurrentQuestionBO.getQuestScore() + "/"
+                String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
+                        ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
                         + mCurrentQuestionBO.getQuestWeight();
                 qScore.setText(strScore);
                 questionsListView.invalidateViews();
@@ -1380,7 +1382,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
 
                             if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                                String strScore = mCurrentQuestionBO.getQuestScore() + "/"
+                                String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
+                                        ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
                                         + mCurrentQuestionBO.getQuestWeight();
                                 qScore.setText(strScore);
                                 //questionsListView.invalidateViews();
@@ -1398,7 +1401,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         });
 
         if (mCurrentQuestionBO.equals(qScore.getTag())) {
-            String strScore = mCurrentQuestionBO.getQuestScore() + "/"
+            String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
+                    ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
                     + mCurrentQuestionBO.getQuestWeight();
             qScore.setText(strScore);
             questionsListView.invalidateViews();
@@ -1534,7 +1538,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         }
                     }
                     if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                        String strScore = String.valueOf(finalScore) + "/"
+                        String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
+                                ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
                                 + mCurrentQuestionBO.getQuestWeight();
                         qScore.setText(strScore);
                         questionsListView.invalidateViews();
@@ -1547,7 +1552,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             });
 
             if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                String strScore = String.valueOf(finalScore) + "/"
+                String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
+                        ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
                         + mCurrentQuestionBO.getQuestWeight();
                 qScore.setText(strScore);
                 questionsListView.invalidateViews();

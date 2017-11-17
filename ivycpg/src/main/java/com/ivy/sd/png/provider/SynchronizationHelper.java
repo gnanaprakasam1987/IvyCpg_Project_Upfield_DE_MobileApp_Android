@@ -37,7 +37,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -75,7 +74,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -947,16 +945,8 @@ SynchronizationHelper {
         Cursor c;
         String tableName = "";
         dataMissedTable = "";
-        int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
+        int  hhtCount = 0,  standList = 0;
         try {
-            c = db.selectSQL("select  count(retailerid) from "
-                    + DataMembers.tbl_retailerMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    retailerCount = c.getInt(0);
-                }
-                c.close();
-            }
 
             c = db.selectSQL("select  count(hhtCode) from "
                     + DataMembers.tbl_HhtModuleMaster);
@@ -967,14 +957,6 @@ SynchronizationHelper {
                 c.close();
             }
 
-            c = db.selectSQL("select  count(beatid) from "
-                    + DataMembers.tbl_beatMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    beatMaster = c.getInt(0);
-                }
-                c.close();
-            }
 
             c = db.selectSQL("select  count(listid) from "
                     + DataMembers.tbl_StandardListMaster);
@@ -990,18 +972,14 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 && beatMaster > 0 && hhtCount > 0
-                && retailerCount > 0) {
+        if (standList > 0 &&  hhtCount > 0) {
             return true;
         } else {
             if (standList == 0)
                 tableName = tableName + " LovMaster";
-            if (beatMaster == 0)
-                tableName = tableName + " BeatMaster";
             if (hhtCount == 0)
                 tableName = tableName + " Configuration";
-            if (retailerCount == 0)
-                tableName = tableName + " Retailer";
+
 
             dataMissedTable = tableName;
         }
@@ -2094,12 +2072,16 @@ SynchronizationHelper {
                 db.deleteSQL("temp_productuommaster", null, true);
             }
 
-            db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
-            db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
-            db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
-            db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
-            db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
-            db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
+            try {
+                db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
+                db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
+                db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
+                db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
+                db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
+                db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
@@ -2119,7 +2101,11 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_pricemaster", null, true);
             }
-            db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
+            try {
+                db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
         } else if (tableName.equalsIgnoreCase("temp_product_priceMaster")) {
             if (IsDataAvailableInTable("temp_product_priceMaster")) {
@@ -2933,7 +2919,7 @@ SynchronizationHelper {
             db.createDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select url from urldownloadmaster where ");
-            sb.append("mastername='RETAILER' and typecode='GETRET'");
+            sb.append("mastername='RETAILERMASTER' and typecode='GETRET'");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {

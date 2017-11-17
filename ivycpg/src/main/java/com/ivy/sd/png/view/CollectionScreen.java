@@ -92,12 +92,15 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
             tabLayout.removeAllTabs();
 
         billPaymentTab = tabLayout.newTab();
-        billPaymentTab.setText("Bill Payment");
+        if (bmodel.labelsMasterHelper.applyLabels("collection_title") != null)
+            billPaymentTab.setText(bmodel.labelsMasterHelper.applyLabels("collection_title"));
+        else
+            billPaymentTab.setText(getResources().getString(R.string.bill_payment));
         tabLayout.addTab(billPaymentTab);
 
         if (bmodel.configurationMasterHelper.SHOW_ADVANCE_PAYMENT) {
             advancePaymentTab = tabLayout.newTab();
-            advancePaymentTab.setText("Advance Payment");
+            advancePaymentTab.setText(getResources().getString(R.string.advance_payment));
             tabLayout.addTab(advancePaymentTab);
         }
 
