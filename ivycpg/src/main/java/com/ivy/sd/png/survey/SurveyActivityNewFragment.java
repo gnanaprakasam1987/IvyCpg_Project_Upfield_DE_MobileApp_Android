@@ -1687,7 +1687,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                 final RelativeLayout mandatoryView = (RelativeLayout) view.findViewById(R.id.sub_mandatory_view);
                 final SlantView slantView = (SlantView) view.findViewById(R.id.slant_view_bg);
-                tv_counter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 slantView.setColor(Color.WHITE);
                 camBtn.setOnClickListener(new OnClickListener() {
 
@@ -2334,7 +2333,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         bmodel.mSurveyHelperNew.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
         onLoadQuestion(bmodel.mSurveyHelperNew.mSelectedSurvey,
@@ -2488,20 +2487,20 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // TODO Auto-generated method stub
 
     }
@@ -2525,24 +2524,24 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }*/
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         loadQuestionFromFiveLevelFilter(
                 bmodel.mSurveyHelperNew.mSelectedSurvey,
 
-                parentidList);
+                mParentIdList);
 
         mDrawerLayout.closeDrawers();
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         loadQuestionFromFiveLevelFilter(
                 bmodel.mSurveyHelperNew.mSelectedSurvey,
 
-                parentidList);
+                mParentIdList);
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        this.mFinalParentIdList = parentidList;
+        this.mFinalParentIdList = mParentIdList;
 
         mDrawerLayout.closeDrawers();
 

@@ -774,10 +774,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
 
         AdvancePaymentDialogFragment paymentDialogFragment = (AdvancePaymentDialogFragment) getSupportFragmentManager().findFragmentByTag("Advance Payment");
-        paymentDialogFragment.updateDate(date);
+        paymentDialogFragment.updateDate(date,"" );
 
     }
 

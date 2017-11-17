@@ -167,10 +167,10 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
         AdvancePaymentDialogFragment paymentDialogFragment = (AdvancePaymentDialogFragment) mSelectedFragment;
         if (paymentDialogFragment != null) {
-            paymentDialogFragment.updateDate(date);
+            paymentDialogFragment.updateDate(date,"" );
         }
     }
 

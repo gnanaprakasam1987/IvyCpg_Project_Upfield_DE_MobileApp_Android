@@ -193,7 +193,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
 
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        /*updatebrandtext(BRAND, -1);
+        /*updateBrandText(BRAND, -1);
         productFilterClickedFragment();*/
         new LoadAsyncTask(-1).execute();
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -641,16 +641,16 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int pid) {
+    public void updateBrandText(String mFilterText, int pid) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
         new LoadAsyncTask(pid).execute();
@@ -659,7 +659,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
 
     }
@@ -676,7 +676,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         // TODO Auto-generated method stub
         Log.v("", "Data");
 
@@ -685,16 +685,16 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         // TODO Auto-generated method stub
         Log.v("", "Data");
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         mDrawerLayout.closeDrawers();
 
-        if (parentidList != null) {
-            if (parentidList.size() > 0) {
-                new LoadAsyncTask(parentidList).execute();
+        if (mParentIdList != null) {
+            if (mParentIdList.size() > 0) {
+                new LoadAsyncTask(mParentIdList).execute();
             } else {
                 new LoadAsyncTask(-1).execute();
             }

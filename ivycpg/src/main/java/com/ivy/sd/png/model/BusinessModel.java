@@ -100,7 +100,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.AssetTrackingHelper;
+import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -148,7 +148,7 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SODAssetHelper;
+import com.ivy.sd.png.provider.asset.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
@@ -475,7 +475,6 @@ public class BusinessModel extends Application {
         planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
-        assetTrackingHelper = AssetTrackingHelper.getInstance(this);
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
         collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
@@ -1457,21 +1456,6 @@ public class BusinessModel extends Application {
         return retailerMasterData;
     }
 
-    /**
-     * Method to check the movement Asset in sql table
-     */
-    public ArrayList<String> getAssetMovementDetails() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        ArrayList<String> retailerMovedData = new ArrayList<>();
-        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
-        if (c != null)
-            while (c.moveToNext()) {
-                retailerMovedData.add(c.getString(0));
-            }
-        return retailerMovedData;
-    }
 
     public void downloadRetailerMaster() {
         try {

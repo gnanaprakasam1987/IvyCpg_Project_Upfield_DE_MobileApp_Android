@@ -182,10 +182,10 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
         CheckModeFragment checkModeFragment = (CheckModeFragment) mFragmentList.get(selectedPosition);
         if (checkModeFragment != null)
-            checkModeFragment.updateDate(date);
+            checkModeFragment.updateDate(date, "");
     }
 
     @Override

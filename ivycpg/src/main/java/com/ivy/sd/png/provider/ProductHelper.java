@@ -4207,7 +4207,7 @@ public class ProductHelper {
             if (inStoreLocation.size() > 0)
                 return;
 
-            inStoreLocation = new Vector<StandardListBO>();
+            inStoreLocation = new Vector<>();
             StandardListBO locations;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

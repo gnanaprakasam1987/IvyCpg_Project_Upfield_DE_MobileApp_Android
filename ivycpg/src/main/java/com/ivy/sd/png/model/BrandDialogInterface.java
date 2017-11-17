@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.Vector;
 
 public interface BrandDialogInterface {
-	void updateMultiSelectionBrand(List<String> filtername,List<Integer> filterid); 
-	void updateMultiSelectionCatogry(List<Integer> mcatgory);
-	void updatebrandtext(String filtertext, int id);
+	void updateMultiSelectionBrand(List<String> mFilterName,List<Integer> mFilterId);
+	void updateMultiSelectionCategory(List<Integer> mCategory);
+	void updateBrandText(String mFilterText, int id);
 
-	void updategeneraltext(String filtertext);
+	void updateGeneralText(String mFilterText);
 
 	void updateCancel();
 
 	void loadStartVisit();
 	
-	void updatefromFiveLevelFilter(Vector<LevelBO> parentidList);
+	void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList);
 
-	void updatefromFiveLevelFilter(Vector<LevelBO> parentidList,HashMap<Integer, Integer> mSelectedIdByLevelId,ArrayList<Integer> mAttributeProducts,String filtertext );
+	void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText );
 }
