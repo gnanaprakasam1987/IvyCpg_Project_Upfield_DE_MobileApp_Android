@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.view.MyDialogCloseListener;
 
 import java.util.ArrayList;
@@ -88,7 +89,9 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
      */
     protected void updateList(StandardListBO standardListBO) {
         mAssetTrackingList = standardListBO.getAssetTrackingList();
-        ArrayList<String> mMovedList = mBModel.assetTrackingHelper.getAssetMovementDetails();
+        AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
+        ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails();
         ArrayList<Integer> toRemovePos=new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {

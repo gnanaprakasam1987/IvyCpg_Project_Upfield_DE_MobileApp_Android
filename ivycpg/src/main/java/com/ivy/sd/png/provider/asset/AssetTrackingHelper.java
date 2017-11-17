@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.interactor.AssetInteractor;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
-public class AssetTrackingHelper {
+public class AssetTrackingHelper implements AssetInteractor.HelperCall {
 
     private final Context context;
     private final BusinessModel mBusinessModel;
@@ -1800,5 +1801,15 @@ public class AssetTrackingHelper {
                 retailerMovedData.add(c.getString(0));
             }
         return retailerMovedData;
+    }
+
+    @Override
+    public void loadMasters(String mMenuCode) {
+        loadDataForAssetPOSM(mMenuCode);
+    }
+
+    @Override
+    public void saveAsset() {
+
     }
 }

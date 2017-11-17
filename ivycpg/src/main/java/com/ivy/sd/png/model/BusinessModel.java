@@ -105,7 +105,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -311,7 +310,6 @@ public class BusinessModel extends Application {
     public RemarksHelper remarksHelper;
     public PlanogramMasterHelper planogramMasterHelper;
     public ReasonHelper reasonHelper;
-    public AssetTrackingHelper assetTrackingHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
     public VanUnLoadModuleHelper vanunloadmodulehelper;
@@ -9564,6 +9562,7 @@ public class BusinessModel extends Application {
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
     }
 
+    @Deprecated
     public void customProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
 
         try {

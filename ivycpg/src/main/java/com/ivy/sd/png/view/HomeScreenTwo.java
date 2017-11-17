@@ -2498,13 +2498,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
-                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadMasters(MENU_ASSET);
 
-                if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
+                if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
-                    bmodel.assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
+                    assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -2540,11 +2540,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
-                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
 
-                if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
+                if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
                     bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -3023,9 +3023,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)

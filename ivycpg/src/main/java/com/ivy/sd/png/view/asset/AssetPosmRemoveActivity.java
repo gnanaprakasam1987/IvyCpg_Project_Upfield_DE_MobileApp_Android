@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	protected Button btnDelete;
 	protected ArrayList<ReasonMaster> mAssetReasonList;
 	protected ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+	AssetTrackingHelper assetTrackingHelper ;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 		setContentView(R.layout.remove_asset_dailog);
 		bModel = (BusinessModel) getApplicationContext();
 		bModel.setContext(this);
+		assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
 
 		mListView = (ListView) findViewById(R.id.lv_assetlist);
@@ -133,9 +136,9 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	private void updateList() {
 
 		Vector<AssetTrackingBO> items;
-		bModel.assetTrackingHelper.lodAddRemoveAssets(mModuleName);
+		assetTrackingHelper.lodAddRemoveAssets(mModuleName);
 
-		items = bModel.assetTrackingHelper.getAddRemoveAssets();
+		items = assetTrackingHelper.getAddRemoveAssets();
 		if (items == null) {
 			return;
 		}
@@ -324,7 +327,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 					mBrandId = lstTemp.get(i).getBrand();
 					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
 						mReasonID = lstTemp.get(i).getReason1ID();
-						bModel.assetTrackingHelper
+						assetTrackingHelper
 								.saveAddAndDeleteDetails(mPOSMIdDialog,
 										mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
 
@@ -333,7 +336,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
 
 				} else {
-					bModel.assetTrackingHelper
+					assetTrackingHelper
 							.deletePosmDetails(lstTemp.get(i)
 									.getSNO());
 					mList.remove(i);

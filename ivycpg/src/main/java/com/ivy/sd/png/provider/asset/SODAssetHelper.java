@@ -327,7 +327,9 @@ public class SODAssetHelper {
 
     private void updateSODAsset(int assetID, int productId, int actual, int reasonId, int locationId, String isPromo, String isDisplay) {
 
-        for (AssetTrackingBO assetTrackingBO : mBModel.assetTrackingHelper.getAssetTrackingList()) {
+        AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(mContext);
+
+        for (AssetTrackingBO assetTrackingBO : assetTrackingHelper.getAssetTrackingList()) {
             if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductId() == productId) {
                 assetTrackingBO.setActual(actual);
                 assetTrackingBO.setReasonID(reasonId);

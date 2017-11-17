@@ -70,8 +70,6 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
-
-        mBModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 
