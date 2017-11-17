@@ -7,7 +7,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.PromotionBO;
-import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -17,14 +16,12 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import static com.ivy.lib.Utils.QT;
 
 public class PromotionHelper {
 
-    private List<SchemeBO> mSchemePromotion;
     private final Context context;
     private final BusinessModel bmodel;
     private static PromotionHelper instance = null;
@@ -38,7 +35,8 @@ public class PromotionHelper {
 
     private PromotionHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        bmodel = (BusinessModel) context.getApplicationContext();
+
     }
 
     public static PromotionHelper getInstance(Context context) {
@@ -123,98 +121,9 @@ public class PromotionHelper {
         }
     }
 
-    public List<SchemeBO> getmSchemePromotion() {
-        return mSchemePromotion;
-    }
 
-    /**
-     * This method is used to get the next available up scheme. Designed by
-     * Vinoth.R for a demo.
-     *
-     * @param schemeId
-     * @param type
-     * @param channelId
-     * @param subChannelId
-     * @param productID
-     * @param quantity
-     */
-    public void loadSchemePromotion(String schemeId, String type,
-                                    String channelId, String subChannelId, String productID,
-                                    int quantity) {
-        if (mSchemePromotion == null) {
-            mSchemePromotion = new ArrayList<>();
-        } else {
-            mSchemePromotion.clear();
-        }
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuilder sb = new StringBuilder("");
-        if ("ANY".equalsIgnoreCase(type)) {
 
-            Cursor c = db
-                    .selectSQL("SELECT ProductID, BuyQty FROM SchemeBuyMaster WHERE SchemeID = '"
-                            + schemeId + "'");
-            if (c != null && c.getCount() > 0) {
 
-                sb.append(" AND BD.ProductID IN (");
-                while (c.moveToNext()) {
-                    sb.append("'");
-                    sb.append(c.getString(0));
-                    sb.append("'");
-                    sb.append(",");
-                }
-                sb.delete(sb.length() - 1, sb.length());
-                sb.append(") ");
-                sb.append("AND TYPE = 'ANY' ");
-                c.close();
-            }
-
-        } else {
-            sb = new StringBuilder(" AND BD.ProductID = '" + productID
-                    + "' AND TYPE = 'ONLY' ");
-        }
-
-        Cursor c = db
-                .selectSQL("SELECT SM.SchemeID, SM.Description, SM.Type, SM.ShortName, SM.ChannelID, SM.SubChannelID, "
-                        + "BD.ProductID, PM.PName, BD.BuyQty, FD.FreeQty, FD.MaxQty, FD.Rate, FD.MaxRate FROM SchemeMaster SM "
-                        + "INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID  INNER JOIN ProductMaster PM ON BD.ProductID = PM.PID "
-                        + "INNER JOIN SchemeFreeMaster FD ON FD.FreeProductID = BD.ProductID AND FD.SchemeID = BD.SchemeID WHERE SM.ChannelID = '"
-                        + channelId
-                        + "' AND "
-                        + "SM.SubChannelID = '"
-                        + subChannelId
-                        + "'"
-                        + sb
-                        + "AND BD.BuyQty > "
-                        + quantity
-                        + " ORDER BY SM.SchemeID, BD.ProductID ASC, BD.BuyQty DESC");
-
-        if (c != null && c.getCount() > 0) {
-            SchemeBO schemeBO = new SchemeBO();
-
-            while (c.moveToNext()) {
-                schemeBO.setSchemeId(c.getString(0));
-                schemeBO.setSchemeDescription(c.getString(1));
-                schemeBO.setType(c.getString(2));
-                if (c.getString(3) != null) {
-                    schemeBO.setSchemeDescription(c.getString(3));
-                }
-                schemeBO.setChannelId(c.getString(4));
-                schemeBO.setSubChannelId(c.getString(5));
-                schemeBO.setSchemeParentName(c.getString(7));
-                schemeBO.setSelectedQuantity(c.getInt(8)); // Buy Qty
-                schemeBO.setActualQuantity(c.getInt(9)); // Min Qty
-                schemeBO.setMaximumQuantity(c.getInt(10)); // Max Qty
-                schemeBO.setActualPrice(c.getInt(11)); // Min Disc Rate
-                schemeBO.setMaximumPrice(c.getInt(12)); // Max Disc Rate
-                mSchemePromotion.add(schemeBO);
-            }
-            c.close();
-        }
-        db.closeDB();
-
-    }
     // Promotion Tracking for Retail Module Part
 
     /**
@@ -270,7 +179,7 @@ public class PromotionHelper {
                         + " INNER JOIN PromotionMapping PMM on PMM.PromoId = PPM.PromoId  INNER JOIN PromotionMaster PM on PM.HId=PMM.HId "
                         + " WHERE P1.PLID IN (SELECT ProductFilter1 FROM ConfigActivityFilter WHERE ActivityCode='MENU_PROMO'"
                         + ")" + " AND  "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " between PM.StartDate and PM.EndDate";
 
                 Cursor c = db.selectSQL(query);
@@ -305,7 +214,7 @@ public class PromotionHelper {
                         + " INNER JOIN PromotionMaster PM on PM.HId=PMM.HId"
                         + " WHERE P.PLID IN (SELECT ProductFilter1 FROM ConfigActivityFilter WHERE ActivityCode='MENU_PROMO')"
                         + " AND "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + "  between PM.StartDate and PM.EndDate ORDER BY P.PID";
 
                 Cursor c = db.selectSQL(query);
@@ -437,7 +346,7 @@ public class PromotionHelper {
 
             c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname"
                     + "  from PromotionMapping PM"
-                    + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +
+                    + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +
                     " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId" +
                     " left join standardlistmaster SLM on SLM.listid=PPm.PromoTypeLovId " + query);
 
@@ -492,33 +401,33 @@ public class PromotionHelper {
 
             Cursor cursor = db
                     .selectSQL("select Uid from PromotionHeader  Where RetailerId="
-                            + bmodel.QT(bmodel.retailerMasterBO.getRetailerID())
+                            + QT(bmodel.getRetailerMasterBO().getRetailerID())
                             + " and Date= "
-                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                             + " and upload='N'");
 
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL("PromotionHeader",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + QT(cursor.getString(0)), false);
                 db.deleteSQL("PromotionDetail",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + QT(cursor.getString(0)), false);
                 uid = cursor.getString(0);
             }
             cursor.close();
 
             int moduleWeightage = 0;
-            double productWeightage = 0, sum = 0;
+            double productWeightage, sum = 0;
 
-            sbuffer.append(bmodel.QT(uid));
+            sbuffer.append(QT(uid));
             sbuffer.append(",");
-            sbuffer.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sbuffer.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             sbuffer.append(",");
-            sbuffer.append(bmodel.retailerMasterBO.getRetailerID());
+            sbuffer.append(bmodel.getRetailerMasterBO().getRetailerID());
             sbuffer.append(",");
-            sbuffer.append(bmodel.QT(bmodel.getNote()));
+            sbuffer.append(QT(bmodel.getNote()));
             sbuffer.append(",");
-            sbuffer.append(bmodel.retailerMasterBO.getDistributorId());
+            sbuffer.append(bmodel.getRetailerMasterBO().getDistributorId());
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 headerColumns = headerColumns + ",Weightage,Score";
@@ -541,19 +450,19 @@ public class PromotionHelper {
                     for (PromotionBO promotion : promotionList) {
 
                         if (promotion.getIsExecuted() == 1 || !"0".equals(promotion.getReasonID()) || (promotion.getRatingId() != null && !"0".equals(promotion.getRatingId()))) {
-                            String sbDetails = bmodel.QT(uid) +
+                            String sbDetails = QT(uid) +
                                     "," + promotion.getPromoId() +
                                     "," + promotion.getProductId() +
                                     "," + promotion.getIsExecuted() +
                                     "," + bmodel.getRetailerMasterBO().getRetailerID() +
-                                    "," + bmodel.QT(promotion.getImagePath()) +
+                                    "," + QT(promotion.getImagePath()) +
                                     "," + promotion.getReasonID() +
-                                    "," + bmodel.QT(promotion.getFlag()) +
+                                    "," + QT(promotion.getFlag()) +
                                     "," + promotion.getMappingId() +
                                     "," + standardListBO.getListID() +
                                     "," + promotion.getRatingId() +
                                     "," + promotion.getPromoQty() +
-                                    "," + bmodel.QT(promotion.getImageName()) +
+                                    "," + QT(promotion.getImageName()) +
                                     "," + promotion.getHasAnnouncer();
 
                             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -597,7 +506,7 @@ public class PromotionHelper {
             String sql = "SELECT Uid,Remark FROM PromotionHeader WHERE RetailerId = "
                     + bmodel.getRetailerMasterBO().getRetailerID()
                     + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " and upload='N'";
 
             Cursor cursor = db.selectSQL(sql);
@@ -613,7 +522,7 @@ public class PromotionHelper {
             cursor.close();
 
             String sql1 = "SELECT PromotionId, IsExecuted,imgName,reasonid,brandid,locid,ExecRatingLovId,promoqty,HasAnnouncer FROM PromotionDetail WHERE Uid="
-                    + bmodel.QT(uid) + " and Upload ='N' and Flag = 'S'";
+                    + QT(uid) + " and Upload ='N' and Flag = 'S'";
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
 
@@ -661,7 +570,7 @@ public class PromotionHelper {
             sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer FROM PromotionDetail pd"
                     + " inner join PromotionProductMapping  pm on pm.PromoId = pd.PromotionId"
                     + " WHERE Uid="
-                    + bmodel.QT(uid)
+                    + QT(uid)
                     + " and Upload ='N' and Flag = 'I'";
 
             orderDetailCursor = db.selectSQL(sql1);
@@ -753,8 +662,8 @@ public class PromotionHelper {
     /**
      * Save Image in Objects
      *
-     * @param mPromoID
-     * @param imgName
+     * @param mPromoID promotion id
+     * @param imgName image name
      */
     public void onsaveImageName(String locid, int mPromoID, String imgName, String imagePath) {
         try {
@@ -785,7 +694,7 @@ public class PromotionHelper {
     /**
      * Validation to check data is entered or not
      *
-     * @return
+     * @return true if there is nay data to save
      */
     public boolean hasPromoData() {
         for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {

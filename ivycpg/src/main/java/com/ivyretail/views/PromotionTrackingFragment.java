@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -60,6 +61,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -74,26 +76,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import static com.ivy.sd.png.asean.view.R.id.tvannouncer;
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements
         BrandDialogInterface {
 
-    private static final String MENU_CODE = "MENU_PROMO";
+    //private static final String MENU_CODE = "MENU_PROMO";
     private BusinessModel bmodel;
+    private PromotionHelper promotionHelper;
     // Drawer Implementation
     private DrawerLayout mDrawerLayout;
     private static final String BRAND = "Brand";
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    private int mselectedfilterid = -1;
+    //private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+    private int selected_filter_id = -1;
     private ArrayList<PromotionBO> promoList;
-    private ListView lvwplist;
+    private ListView listView;
     private String brandFilterText = "BRAND";
-    private final int mImageCount = 1;
+    //private final int mImageCount = 1;
     private String mImageName;
     private String promoName;
     private String mImagePath;
-    private TextView tvdesc;
+    private TextView tv_desc;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private ArrayAdapter<StandardListBO> mRatingAdapter;
     private MyAdapter mSchedule;
@@ -119,9 +121,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     private EditText QUANTITY;
     private String append = "";
     private boolean isFromChild;
-    private Vector<LevelBO> parentidList;
+    private Vector<LevelBO> parent_id_List;
     private ArrayList<Integer> mAttributeProducts;
-    private String filtertext;
+    private String filter_text;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,8 +151,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
+        promotionHelper = PromotionHelper.getInstance(getContext());
         bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        //bmodel.setContext(getActivity());
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -204,10 +207,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         loadReason();
-        bmodel.promotionHelper.downloadPromotionRating();
-        ArrayList<StandardListBO> ratingList = bmodel.promotionHelper.getmRatingList();
+        promotionHelper.downloadPromotionRating();
+        ArrayList<StandardListBO> ratingList = promotionHelper.getmRatingList();
         if (ratingList != null) {
-            mRatingAdapter = new ArrayAdapter<StandardListBO>(getActivity(),
+            mRatingAdapter = new ArrayAdapter<>(getActivity(),
                     R.layout.spinner_bluetext_layout);
             mRatingAdapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -225,10 +228,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
-        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        if (parent_id_List != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updatefromFiveLevelFilter(parent_id_List, mSelectedIdByLevelId, mAttributeProducts, filter_text);
         } else {
-            updatebrandtext(BRAND, mselectedfilterid);
+            updatebrandtext(BRAND, selected_filter_id);
         }
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
@@ -245,57 +248,57 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
     private void viewInitialization() {
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
-            lvwplist.setCacheColorHint(0);
+            listView = (ListView) getView().findViewById(R.id.lvwplist);
+            listView.setCacheColorHint(0);
         }
 
-        tvdesc = (TextView) getView().findViewById(R.id.tvdesc);
-        tvdesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvExecuted = (TextView) getView().findViewById(R.id.tvexecuted);
+        tv_desc = (TextView) getView().findViewById(R.id.tvDesc);
+        tv_desc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TextView tvExecuted = (TextView) getView().findViewById(R.id.tvExecuted);
         tvExecuted.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvpromoqty = (TextView) getView().findViewById(R.id.tvpromoqty);
-        tvpromoqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvreason = (TextView) getView().findViewById(R.id.tvreason);
-        tvreason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TextView tvPromoQty = (TextView) getView().findViewById(R.id.tvPromoQty);
+        tvPromoQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TextView tv_reason = (TextView) getView().findViewById(R.id.tvReason);
+        tv_reason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView tv_executing_rating = (TextView) getView().findViewById(R.id.tv_executing_rating);
         tv_executing_rating.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         card_keyboard = (CardView) getView().findViewById(R.id.card_keyboard);
 
-        if (!bmodel.promotionHelper.SHOW_PROMO_PHOTO) {
-            getView().findViewById(R.id.tvphoto).setVisibility(View.GONE);
+        if (!promotionHelper.SHOW_PROMO_PHOTO) {
+            getView().findViewById(R.id.tvPhoto).setVisibility(View.GONE);
 
         } else {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
-                        R.id.tvphoto).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvphoto))
+                        R.id.tvPhoto).getTag()) != null) {
+                    ((TextView) getView().findViewById(R.id.tvPhoto))
                             .setText(bmodel.labelsMasterHelper
                                     .applyLabels(getView().findViewById(
-                                            R.id.tvphoto).getTag()));
+                                            R.id.tvPhoto).getTag()));
 
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
         }
-        if (!bmodel.promotionHelper.SHOW_PROMO_REASON) {
-            getView().findViewById(R.id.tvreason).setVisibility(View.GONE);
+        if (!promotionHelper.SHOW_PROMO_REASON) {
+            getView().findViewById(R.id.tvReason).setVisibility(View.GONE);
 
         } else {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
-                        R.id.tvreason).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvreason))
+                        R.id.tvReason).getTag()) != null) {
+                    ((TextView) getView().findViewById(R.id.tvReason))
                             .setText(bmodel.labelsMasterHelper
                                     .applyLabels(getView().findViewById(
-                                            R.id.tvreason).getTag()));
+                                            R.id.tvReason).getTag()));
 
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
         }
-        if (!bmodel.promotionHelper.SHOW_PROMO_RATING) {
+        if (!promotionHelper.SHOW_PROMO_RATING) {
             getView().findViewById(R.id.tv_executing_rating).setVisibility(View.GONE);
 
         } else {
@@ -329,27 +332,27 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 Commons.printException("" + e);
             }
         }*/
-        if (!bmodel.promotionHelper.SHOW_PROMO_QTY) {
-            getView().findViewById(R.id.tvpromoqty).setVisibility(View.GONE);
+        if (!promotionHelper.SHOW_PROMO_QTY) {
+            getView().findViewById(R.id.tvPromoQty).setVisibility(View.GONE);
 
         } else {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
-                        R.id.tvpromoqty).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvpromoqty))
+                        R.id.tvPromoQty).getTag()) != null) {
+                    ((TextView) getView().findViewById(R.id.tvPromoQty))
                             .setText(bmodel.labelsMasterHelper
                                     .applyLabels(getView().findViewById(
-                                            R.id.tvpromoqty).getTag()));
+                                            R.id.tvPromoQty).getTag()));
 
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
         }
-        if(bmodel.promotionHelper.SHOW_PROMO_ANNOUNCER){
-            getView().findViewById(tvannouncer).setVisibility(View.VISIBLE);
+        if (promotionHelper.SHOW_PROMO_ANNOUNCER) {
+            getView().findViewById(R.id.tvAnnouncer).setVisibility(View.VISIBLE);
         }else{
-            getView().findViewById(tvannouncer).setVisibility(View.GONE);
+            getView().findViewById(R.id.tvAnnouncer).setVisibility(View.GONE);
         }
         Button btn_save = (Button) getView().findViewById(R.id.btn_save);
         btn_save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -371,16 +374,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             if (resultCode == 1) {
                 // Photo saved successfully
                 Commons.print(bmodel.mSelectedActivityName
-                        + "Camers Activity : Sucessfully Captured.");
-                if (bmodel.promotionHelper.mSelectedPromoID != 0) {
-                    bmodel.promotionHelper
+                        + "Camera Activity : Successfully Captured.");
+                if (promotionHelper.mSelectedPromoID != 0) {
+                    promotionHelper
                             .onsaveImageName(mSelectedStandardListBO.getListID(),
-                                    bmodel.promotionHelper.mSelectedPromoID,
+                                    promotionHelper.mSelectedPromoID,
                                     mImageName, mImagePath);
                 }
             } else {
                 Commons.print(bmodel.mSelectedActivityName
-                        + "Camers Activity : Canceled");
+                        + "Camera Activity : Canceled");
             }
         }
     }
@@ -388,7 +391,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     /**
      * Load selected reason name in the Screen
      *
-     * @param reasonId
+     * @param reasonId reason id for which the index need to be get
      * @return position of the reason id
      */
     private int getReasonIndex(String reasonId) {
@@ -398,7 +401,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             return 0;
         for (int i = 0; i < len; ++i) {
             ReasonMaster s = spinnerAdapter.getItem(i);
-            if (s.getReasonID().equals(reasonId))
+            if (s != null && s.getReasonID().equals(reasonId))
                 return i;
         }
         return -1;
@@ -412,7 +415,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             }
             for (int i = 0; i < len; i++) {
                 StandardListBO standardListBO = mRatingAdapter.getItem(i);
-                if (standardListBO.getListID().equals(id)) {
+                if (standardListBO != null && standardListBO.getListID().equals(id)) {
                     return i;
                 }
             }
@@ -423,23 +426,22 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
     class ViewHolder {
         PromotionBO mPromotionMasterBO;
-        TextView tvpromoName;
-        EditText etDisplay;
+        TextView tv_promoName;
         EditText etPromoQty;
         CheckBox rbExecuted;
         CheckBox rbAnnounced;
         ImageView btnPhoto;
         Spinner reasonSpin;
         Spinner ratingSpin;
-        TextView tvgroupName;
+        TextView tvGroupName;
     }
 
     private class MyAdapter extends ArrayAdapter<PromotionBO> {
         private final ArrayList<PromotionBO> items;
 
-        public MyAdapter(ArrayList<PromotionBO> mylist) {
-            super(getActivity(), R.layout.row_promo, mylist);
-            this.items = mylist;
+        public MyAdapter(ArrayList<PromotionBO> myList) {
+            super(getActivity(), R.layout.row_promo, myList);
+            this.items = myList;
         }
 
         public PromotionBO getItem(int position) {
@@ -454,8 +456,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             return items.size();
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             View row = convertView;
             if (row == null) {
@@ -465,20 +468,20 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                         .getBaseContext());
                 row = inflater.inflate(R.layout.row_promo, parent, false);
 
-                holder.tvpromoName = (TextView) row
+                holder.tv_promoName = (TextView) row
                         .findViewById(R.id.tvPromoName);
-                holder.tvpromoName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_promoName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.rbExecuted = (CheckBox) row
                         .findViewById(R.id.executed_CB);
                 holder.rbAnnounced = (CheckBox) row
                         .findViewById(R.id.announced_CB);
 
-                holder.etPromoQty = (EditText) row.findViewById(R.id.et_promoqty);
+                holder.etPromoQty = (EditText) row.findViewById(R.id.et_promo_qty);
                 holder.etPromoQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.btnPhoto = (ImageView) row
                         .findViewById(R.id.btn_photo);
-                holder.tvgroupName = (TextView) row.findViewById(R.id.tv_group_name);
+                holder.tvGroupName = (TextView) row.findViewById(R.id.tv_group_name);
 
                 holder.reasonSpin = (Spinner) row
                         .findViewById(R.id.spin_reason);
@@ -488,7 +491,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 if (mRatingAdapter != null)
                     holder.ratingSpin.setAdapter(mRatingAdapter);
 
-                if (!bmodel.promotionHelper.SHOW_PROMO_TYPE) {
+                if (!promotionHelper.SHOW_PROMO_TYPE) {
                     row.findViewById(R.id.tv_group_name_header).setVisibility(View.GONE);
 
                 } else {
@@ -506,36 +509,36 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                         Commons.printException("" + e);
                     }
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_PHOTO) {
+                if (promotionHelper.SHOW_PROMO_PHOTO) {
                     holder.btnPhoto.setVisibility(View.VISIBLE);
 
                 } else {
                     holder.btnPhoto.setVisibility(View.GONE);
 
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_REASON) {
+                if (promotionHelper.SHOW_PROMO_REASON) {
                     holder.reasonSpin.setVisibility(View.VISIBLE);
                 } else {
                     holder.reasonSpin.setVisibility(View.GONE);
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_TYPE) {
-                    holder.tvgroupName.setVisibility(View.VISIBLE);
+                if (promotionHelper.SHOW_PROMO_TYPE) {
+                    holder.tvGroupName.setVisibility(View.VISIBLE);
                 } else {
-                    holder.tvgroupName.setVisibility(View.GONE);
+                    holder.tvGroupName.setVisibility(View.GONE);
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_RATING) {
+                if (promotionHelper.SHOW_PROMO_RATING) {
                     holder.ratingSpin.setVisibility(View.VISIBLE);
                 } else {
                     holder.ratingSpin.setVisibility(View.GONE);
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_QTY) {
+                if (promotionHelper.SHOW_PROMO_QTY) {
                     holder.etPromoQty.setVisibility(View.VISIBLE);
                     card_keyboard.setVisibility(View.VISIBLE);
                 } else {
                     holder.etPromoQty.setVisibility(View.GONE);
                     card_keyboard.setVisibility(View.GONE);
                 }
-                if (bmodel.promotionHelper.SHOW_PROMO_ANNOUNCER) {
+                if (promotionHelper.SHOW_PROMO_ANNOUNCER) {
                     holder.rbAnnounced.setVisibility(View.VISIBLE);
                 } else {
                     holder.rbAnnounced.setVisibility(View.GONE);
@@ -623,9 +626,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (!"".equals(s.toString())) {
-                            int scqty = SDUtil.convertToInt(holder.etPromoQty
+                            int scQty = SDUtil.convertToInt(holder.etPromoQty
                                     .getText().toString());
-                            holder.mPromotionMasterBO.setPromoQty(scqty);
+                            holder.mPromotionMasterBO.setPromoQty(scQty);
                         }
 
 
@@ -663,9 +666,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                                     .replace("/", "") + "/"
                                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + mImageName;
 
-                            bmodel.promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO
+                            promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO
                                     .getPromoId();
-                            String fnameStarts = "PT_"
+                            String fNameStarts = "PT_"
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.mPromotionMasterBO.getPromoId()
@@ -673,12 +676,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
                             boolean nFilesThere = bmodel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath, mImageCount,
-                                            fnameStarts);
+                                            HomeScreenFragment.photoPath, 1,
+                                            fNameStarts);
                             if (nFilesThere) {
                                 showFileDeleteAlert(
                                         holder.mPromotionMasterBO.getPromoId()
-                                                + "", fnameStarts);
+                                                + "", fNameStarts);
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
@@ -709,7 +712,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
             holder.mPromotionMasterBO = items.get(position);
 
-            holder.tvpromoName
+            holder.tv_promoName
                     .setText(holder.mPromotionMasterBO.getPromoName());
             if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
                 holder.rbExecuted.setChecked(true);
@@ -758,28 +761,28 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 holder.etPromoQty.setEnabled(false);
             }
 
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
+            TypedArray typeArr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            int color = typeArr.getColor(R.styleable.MyTextView_accentcolor, 0);
 
             if ("I".equals(holder.mPromotionMasterBO.getFlag()))
-                holder.tvpromoName.setTextColor(color);
+                holder.tv_promoName.setTextColor(color);
             else
-                holder.tvpromoName.setTextColor(ContextCompat.getColor(getActivity(),
+                holder.tv_promoName.setTextColor(ContextCompat.getColor(getActivity(),
                         R.color.list_item_text_primary_color));
             holder.reasonSpin
                     .setSelection(getReasonIndex(holder.mPromotionMasterBO
                             .getReasonID()));
             holder.ratingSpin.setSelection(getRatingIndex(holder.mPromotionMasterBO.getRatingId()));
             String promo_groupName = " : " + holder.mPromotionMasterBO.getGroupName();
-            holder.tvgroupName.setText(promo_groupName);
-            holder.tvgroupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvGroupName.setText(promo_groupName);
+            holder.tvGroupName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             String promoQty = holder.mPromotionMasterBO.getPromoQty() + "";
             holder.etPromoQty.setText(promoQty);
 
             if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
+                row.setBackgroundColor(typeArr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
             } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
+                row.setBackgroundColor(typeArr.getColor(R.styleable.MyTextView_listcolor, 0));
             }
 
             return row;
@@ -790,7 +793,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
      * Populate list with specific reason type of the module.
      */
     private void loadReason() {
-        spinnerAdapter = new ArrayAdapter<ReasonMaster>(getActivity(),
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -810,7 +813,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
     private void loadPromoData(int productID) {
 
-        bmodel.promotionHelper.downloadAllPromotionMaster();
+        promotionHelper.downloadAllPromotionMaster();
 
         PromotionBO promotionMaster = new PromotionBO();
         promotionMaster.setPromoId(0);
@@ -823,7 +826,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPromoSpinAdapter.add(promotionMaster);
 
-        for (PromotionBO temp : bmodel.promotionHelper.getmPromotionList()) {
+        for (PromotionBO temp : promotionHelper.getmPromotionList()) {
 
             Commons.print("PromoID>>>>," + "" + temp.getProductId() + " Incoming id "
                     + productID);
@@ -835,9 +838,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         }
 
         Commons.print("All promo list size>>," + ""
-                + bmodel.promotionHelper.getmAllPromotionList().size());
+                + promotionHelper.getmAllPromotionList().size());
 
-        for (PromotionBO temp : bmodel.promotionHelper.getmAllPromotionList()) {
+        for (PromotionBO temp : promotionHelper.getmAllPromotionList()) {
             if (!vExcludedPromo.contains(temp.getPromoId()))
                 mPromoSpinAdapter.add(temp);
 
@@ -866,7 +869,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     /**
      * Method to save Asset Details in sql table
      */
-    private void savePromoAddandDeletedetails() {
+    private void savePromoAddAndDeleteDetails() {
         PromotionBO promotionMaster = new PromotionBO();
         promotionMaster.setPromoId(promo);
         promotionMaster.setIsExecuted(1);
@@ -874,7 +877,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         promotionMaster.setPromoName(promoName);
         promotionMaster.setFlag("I");
 
-        bmodel.promotionHelper.getmPromotionList().add(promotionMaster);
+        promotionHelper.getmPromotionList().add(promotionMaster);
 
     }
 
@@ -889,14 +892,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_promo_dailog);
-
-        dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.setCancelable(false);
-        dialog.getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
         mPromo = (Spinner) dialog.findViewById(R.id.spinner_promo);
 
         mProduct = (Spinner) dialog.findViewById(R.id.spinner_brand);
@@ -912,8 +917,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                                 && !mProduct.getSelectedItem().toString()
                                 .equals(SELECT)) {
 
-                            savePromoAddandDeletedetails();
-                            updatebrandtext("Brand", -1);
+                            savePromoAddAndDeleteDetails();
+                            updatebrandtext(BRAND, -1);
                             dialog.dismiss();
                             dialog = null;
 
@@ -940,9 +945,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
     private void loadBrandData() {
 
-        ArrayAdapter<ChildLevelBo> mpromoProductadapter = new ArrayAdapter<>(
+        ArrayAdapter<ChildLevelBo> mPromoProductAdapter = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_spinner_item);
-        mpromoProductadapter
+        mPromoProductAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         ChildLevelBo mChildLevelBo = new ChildLevelBo();
@@ -951,13 +956,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         mChildLevelBo.setPlevelName(SELECT);
         mChildLevelBo.setProductLevel("");
 
-        mpromoProductadapter.add(mChildLevelBo);
+        mPromoProductAdapter.add(mChildLevelBo);
 
-        for (ChildLevelBo temp : bmodel.promotionHelper.getmChildLevelBo()) {
-            mpromoProductadapter.add(temp);
+        for (ChildLevelBo temp : promotionHelper.getmChildLevelBo()) {
+            mPromoProductAdapter.add(temp);
         }
 
-        mProduct.setAdapter(mpromoProductadapter);
+        mProduct.setAdapter(mPromoProductAdapter);
 
         mProduct.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -999,7 +1004,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             // If the nav drawer is open, hide action items related to the
             // content view
             boolean drawerOpen = false;
-            boolean navDrawerOpen = false;
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
@@ -1012,7 +1016,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
             menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(MENU_CODE)) {
+            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_PROMO)) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }/* else {
             if (isFilter) {
@@ -1038,7 +1042,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 if (bmodel.productHelper.getInStoreLocation().size() < 2)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }
-            if (drawerOpen || navDrawerOpen)
+            if (drawerOpen)
                 menu.clear();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1086,9 +1090,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_remarks) {
             android.support.v4.app.FragmentManager ft = getActivity()
                     .getSupportFragmentManager();
-            RemarksDialog remarksDialog = new RemarksDialog(MENU_CODE);
+            RemarksDialog remarksDialog = new RemarksDialog(HomeScreenTwo.MENU_PROMO);
             remarksDialog.setCancelable(false);
-            remarksDialog.show(ft, MENU_CODE);
+            remarksDialog.show(ft, HomeScreenTwo.MENU_PROMO);
             return true;
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
@@ -1115,30 +1119,30 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putString("filterName", BRAND);
             // Child level filter Name
-            bundle.putString("filterHeader", bmodel.promotionHelper
+            bundle.putString("filterHeader", promotionHelper
                     .getmChildLevelBo().get(0).getProductLevel());
             // Child level content to filter fragment class
             bundle.putSerializable("serilizeContent",
-                    bmodel.promotionHelper.getmChildLevelBo());
+                    promotionHelper.getmChildLevelBo());
             bundle.putString("isFrom", "Promo");
             // Parent level filter
-            if (bmodel.promotionHelper.getmParentLevelBo() != null
-                    && bmodel.promotionHelper.getmParentLevelBo().size() > 0) {
+            if (promotionHelper.getmParentLevelBo() != null
+                    && promotionHelper.getmParentLevelBo().size() > 0) {
                 bundle.putBoolean("isFormBrand", true);
                 // Parent level filter header name
-                bundle.putString("pfilterHeader", bmodel.promotionHelper
+                bundle.putString("pfilterHeader", promotionHelper
                         .getmParentLevelBo().get(0).getPl_productLevel());
                 // Parent Level Filter Content
-                bmodel.productHelper.setPlevelMaster(bmodel.promotionHelper
+                bmodel.productHelper.setPlevelMaster(promotionHelper
                         .getmParentLevelBo());
             } else {
                 bundle.putBoolean("isFormBrand", false);
 
             }
             // set Fragment class Arguments
-            FilterFragment<?> fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
+            FilterFragment<?> fragObj = new FilterFragment(new HashMap<>());
+            fragObj.setArguments(bundle);
+            ft.add(R.id.right_drawer, fragObj, "filter");
             ft.commit();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1163,10 +1167,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                     bmodel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "Promo");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-            // set Fragmentclass Arguments
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            // set FragmentClass Arguments
+            FilterFiveFragment<Object> fragObj = new FilterFiveFragment<>();
+            fragObj.setArguments(bundle);
+            ft.replace(R.id.right_drawer, fragObj, "Fivefilter");
             ft.commit();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1175,18 +1179,18 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int mPid) {
+    public void updatebrandtext(String filter_text, int mPid) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
             // Change the Brand button Name
-            brandFilterText = filtertext;
-            mselectedfilterid = mPid;
+            brandFilterText = filter_text;
+            selected_filter_id = mPid;
             if (mPid == -1)
-                tvdesc.setText(getResources()
+                tv_desc.setText(getResources()
                         .getString(R.string.promotion_name));
             else
-                tvdesc.setText(brandFilterText); // set Selected Brand Name
+                tv_desc.setText(brandFilterText); // set Selected Brand Name
 
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
@@ -1197,14 +1201,14 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             }
 
             promoList = new ArrayList<>();
-            // Iterate the List and the items to the Listholder
+            // Iterate the List and the items to the ListHolder
             for (PromotionBO temp : items) {
                 if (temp.getProductId() == mPid || mPid == -1)
                     promoList.add(temp);
             }
             // set the list values to the adapter
             mSchedule = new MyAdapter(promoList);
-            lvwplist.setAdapter(mSchedule);
+            listView.setAdapter(mSchedule);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -1217,7 +1221,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     private void savePromotionData() {
         try {
             // Check Promotion data is or not
-            if (bmodel.promotionHelper.hasPromoData())
+            if (promotionHelper.hasPromoData())
                 new SavePromotionData().execute();
             else
                 bmodel.showAlert(
@@ -1228,15 +1232,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         }
     }
 
-    class SavePromotionData extends AsyncTask<String, Integer, Boolean> {
+    private class SavePromotionData extends AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
 
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.promotionHelper.savePromotionDetails();
-                bmodel.promotionHelper.deleteUnusedImages();
+                promotionHelper.savePromotionDetails();
+                promotionHelper.deleteUnusedImages();
                 bmodel.updateIsVisitedFlag();
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PROMO);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -1251,7 +1255,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            bmodel.customProgressDialog(alertDialog, builder, getContext(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1293,24 +1297,25 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
         }
     }
 
-    private void showFileDeleteAlert(final String bbid,
+    private void showFileDeleteAlert(final String bBid,
                                      final String imageNameStarts) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setMessage(getResources().getString(R.string.word_already)
-                + mImageCount
+                //+ mImageCount
+                + "1"
                 + getResources().getString(
                 R.string.word_photocaptured_delete_retake));
 
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<PromotionBO> items = bmodel.promotionHelper
+                        ArrayList<PromotionBO> items = promotionHelper
                                 .getmPromotionList();
                         for (int i = 0; i < items.size(); i++) {
                             PromotionBO promoBO = items.get(i);
-                            if (promoBO.getPromoId() == Integer.parseInt(bbid)) {
+                            if (promoBO.getPromoId() == Integer.parseInt(bBid)) {
                                 promoBO.setImageName("");
                             }
                         }
@@ -1339,7 +1344,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updategeneraltext(String filter_text) {
     }
 
     @Override
@@ -1353,16 +1358,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCatogry(List<Integer> mCategory) {
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> filterName,
+                                          List<Integer> filterId) {
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updatefromFiveLevelFilter(Vector<LevelBO> parent_id_List) {
         try {
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
@@ -1373,7 +1378,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             }
             promoList = new ArrayList<>();
 
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : parent_id_List) {
                 for (PromotionBO promoBO : items) {
                     if (levelBO.getProductID() == promoBO.getProductId()) {
                         promoList.add(promoBO);
@@ -1383,19 +1388,19 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             }
             // set the list values to the adapter
             mSchedule = new MyAdapter(promoList);
-            lvwplist.setAdapter(mSchedule);
+            listView.setAdapter(mSchedule);
         } catch (Exception e) {
             Commons.printException(e);
         }
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updatefromFiveLevelFilter(Vector<LevelBO> parent_id_List, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filter_text) {
         try {
-            this.parentidList = parentidList;
+            this.parent_id_List = parent_id_List;
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
             this.mAttributeProducts = mAttributeProducts;
-            this.filtertext = filtertext;
+            this.filter_text = filter_text;
             ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
             if (items == null) {
                 bmodel.showAlert(
@@ -1406,8 +1411,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             promoList = new ArrayList<>();
 
             if (mAttributeProducts != null) {
-                if (!parentidList.isEmpty()) {
-                    for (LevelBO levelBO : parentidList) {
+                if (!parent_id_List.isEmpty()) {
+                    for (LevelBO levelBO : parent_id_List) {
                         for (PromotionBO productBO : items) {
                             if (levelBO.getProductID() == productBO.getProductId()
                                     && mAttributeProducts.contains(productBO.getProductId())) {
@@ -1430,7 +1435,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                 if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
                     promoList.addAll(items);
                 } else {
-                    for (LevelBO levelBO : parentidList) {
+                    for (LevelBO levelBO : parent_id_List) {
                         for (PromotionBO promoBO : items) {
                             if (levelBO.getProductID() == promoBO.getProductId()) {
                                 promoList.add(promoBO);
@@ -1443,7 +1448,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
             // set the list values to the adapter
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
             mSchedule = new MyAdapter(promoList);
-            lvwplist.setAdapter(mSchedule);
+            listView.setAdapter(mSchedule);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -1460,7 +1465,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
                         mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
-                        updatebrandtext("", mselectedfilterid);
+                        updatebrandtext("", selected_filter_id);
                         dialog.dismiss();
 
                     }
@@ -1524,5 +1529,4 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements
 //
 //        return bitmap;
 //    }
-
 }

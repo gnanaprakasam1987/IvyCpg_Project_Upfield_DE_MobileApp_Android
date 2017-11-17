@@ -57,22 +57,22 @@ public class NextSlabSchemeDialog extends Dialog {
 
 		@Override
 		public int getCount() {
-			return bmodel.promotionHelper.getmSchemePromotion()
-					.size();
+            return bmodel.schemeDetailsMasterHelper.getmSchemePromotion()
+                    .size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return bmodel.promotionHelper.getmSchemePromotion().get(
-					position);
+            return bmodel.schemeDetailsMasterHelper.getmSchemePromotion().get(
+                    position);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			final ViewHolder holder;
-			SchemeBO schemeBO = bmodel.promotionHelper
-					.getmSchemePromotion().get(position);
+            SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper
+                    .getmSchemePromotion().get(position);
 			View row = convertView;
 			if (row == null) {
 				LayoutInflater inflater = getLayoutInflater();

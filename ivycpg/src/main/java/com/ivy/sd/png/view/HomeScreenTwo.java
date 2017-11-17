@@ -48,6 +48,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -2844,9 +2845,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-
-                bmodel.promotionHelper.loadDataForPromotion(menu.getConfigCode());
-                if (bmodel.promotionHelper.getmPromotionList().size() > 0) {
+                PromotionHelper promotionHelper = PromotionHelper.getInstance(this);
+                promotionHelper.loadDataForPromotion(menu.getConfigCode());
+                if (promotionHelper.getmPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),

@@ -34,7 +34,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 			getSupportActionBar().setDisplayShowHomeEnabled(true);
 		}
 		BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-		bmodel.setContext(this);
+		//bmodel.setContext(this);
 		overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 		if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
 			Toast.makeText(this,

@@ -59,11 +59,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
@@ -145,7 +140,6 @@ import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
-import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
@@ -216,7 +210,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -316,7 +309,7 @@ public class BusinessModel extends Application {
     public CollectionHelper collectionHelper;
     public VanUnLoadModuleHelper vanunloadmodulehelper;
     public NewOutletHelper newOutletHelper;
-    public PromotionHelper promotionHelper;
+    //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
@@ -502,7 +495,7 @@ public class BusinessModel extends Application {
         vanunloadmodulehelper = VanUnLoadModuleHelper.getInstance(this);
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        promotionHelper = PromotionHelper.getInstance(this);
+        //promotionHelper = PromotionHelper.getInstance(this);
         salesFundamentalHelper = SalesFundamentalHelper.getInstance(this);
         sodAssetHelper = SODAssetHelper.getInstance(this);
 
@@ -9580,19 +9573,20 @@ public class BusinessModel extends Application {
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
     }
 
-    public void customProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
+    @Deprecated
+    public void customProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Context ctx, String message) {
 
         try {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) ctx.findViewById(R.id.layout_root));
-
-            TextView title = (TextView) layout.findViewById(R.id.title);
+            //LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+//                    (ViewGroup) ctx.findViewById(R.id.layout_root));
+            View view = View.inflate(ctx, R.layout.custom_alert_dialog, null);
+            TextView title = (TextView) view.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv = (TextView) view.findViewById(R.id.text);
             messagetv.setText(message);
 
-            builder.setView(layout);
+            builder.setView(view);
             builder.setCancelable(false);
 
         } catch (Exception e) {
