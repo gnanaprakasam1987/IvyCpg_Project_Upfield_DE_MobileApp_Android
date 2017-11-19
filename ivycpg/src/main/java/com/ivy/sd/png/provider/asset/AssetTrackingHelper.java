@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
-public class AssetTrackingHelper implements AssetInteractor.HelperCall {
+public class AssetTrackingHelper implements AssetInteractor.userActionListener {
 
     private final Context context;
     private final BusinessModel mBusinessModel;
-    private static AssetTrackingHelper instance = null;
     private AssetTrackingBO mAssetTrackingBO;
     public String mSelectedActivityName;
 
@@ -119,10 +118,7 @@ public class AssetTrackingHelper implements AssetInteractor.HelperCall {
     }
 
     public static AssetTrackingHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new AssetTrackingHelper(context);
-        }
-        return instance;
+        return new AssetTrackingHelper(context);
     }
 
     /*
@@ -1809,7 +1805,8 @@ public class AssetTrackingHelper implements AssetInteractor.HelperCall {
     }
 
     @Override
-    public void saveAsset() {
+    public void save(String mModuleCode) {
+        saveAsset(mModuleCode);
 
     }
 }

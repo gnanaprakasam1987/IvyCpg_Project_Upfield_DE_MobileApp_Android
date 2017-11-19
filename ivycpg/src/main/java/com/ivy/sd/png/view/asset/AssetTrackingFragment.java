@@ -263,6 +263,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
         for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
+
         if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
         }
@@ -1232,7 +1233,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         protected String doInBackground(String... params) {
 
             deleteUnusedImages();
-            assetTrackingHelper.saveAsset(MENU_ASSET);
+            assetTrackingHelper.save(MENU_ASSET);
             mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
             return "";
         }

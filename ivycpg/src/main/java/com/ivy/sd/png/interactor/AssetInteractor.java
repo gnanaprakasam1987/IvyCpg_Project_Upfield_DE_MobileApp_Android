@@ -6,8 +6,8 @@ package com.ivy.sd.png.interactor;
 
 public interface AssetInteractor {
 
-     interface HelperCall{
-      void saveAsset();
+     interface userActionListener {
+      void save(String mModuleCode);
       void loadMasters(String mMenuCode);
     }
 }
