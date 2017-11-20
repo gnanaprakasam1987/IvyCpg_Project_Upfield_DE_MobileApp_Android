@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.asset;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +28,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
+import com.ivy.sd.png.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;

@@ -1,17 +1,18 @@
-package com.ivy.sd.png.provider.asset;
+package com.ivy.sd.png.asset;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.widget.ArrayAdapter;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.interactor.AssetInteractor;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -1799,6 +1800,7 @@ public class AssetTrackingHelper implements AssetInteractor.userActionListener {
         return retailerMovedData;
     }
 
+
     @Override
     public void loadMasters(String mMenuCode) {
         loadDataForAssetPOSM(mMenuCode);
@@ -1807,6 +1809,29 @@ public class AssetTrackingHelper implements AssetInteractor.userActionListener {
     @Override
     public void save(String mModuleCode) {
         saveAsset(mModuleCode);
+
+    }
+
+    @Override
+    public void loadReasonAdapter() {
+
+        String select_reason = "Select Reason";
+        ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+            ReasonMaster reason1 = new ReasonMaster();
+            reason1.setReasonID(Integer.toString(0));
+            reason1.setReasonDesc(select_reason);
+            mAssetReasonList = getAssetReasonList();
+            mAssetReasonList.add(0, reason1);
+
+            mAssetReasonSpinAdapter = new ArrayAdapter<>(context,
+                    R.layout.spinner_bluetext_layout, mAssetReasonList);
+            mAssetReasonSpinAdapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+    }
+
+    @Override
+    public void loadConditionAdapter() {
 
     }
 }

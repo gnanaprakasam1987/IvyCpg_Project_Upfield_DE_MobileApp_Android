@@ -35,14 +35,14 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
+import com.ivy.sd.png.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CounterPlanogramActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
-import com.ivy.sd.png.view.asset.PosmTrackingActivity;
+import com.ivy.sd.png.asset.PosmTrackingActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;

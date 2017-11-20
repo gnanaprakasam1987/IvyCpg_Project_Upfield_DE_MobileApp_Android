@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.asset;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -26,7 +26,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
+import com.ivy.sd.png.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;

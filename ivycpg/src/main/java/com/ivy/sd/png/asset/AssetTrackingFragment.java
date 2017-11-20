@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -55,7 +55,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -68,6 +67,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -258,6 +258,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
 
+        // prepare location adapter
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
@@ -270,9 +271,11 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         if (mLocationAdapter.getCount() > 0) {
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
+        //
+
 
         if (!isShowed) {
-            loadedItem();
+            prepareAdapters();
             isShowed = true;
         }
 
@@ -442,51 +445,31 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     /**
      * Method that to loaded values and set into arrayList and adapter
      */
-    private void loadedItem() {
+    private void prepareAdapters() {
 
-        String select_reason = "Select Reason";
-        String select = "Select";
+
         String select_condition = "Select Condition";
 
         mAssetTrackingList = assetTrackingHelper.getAssetTrackingList();
 
-        ReasonMaster reason1 = new ReasonMaster();
-        reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc(select_reason);
-        mAssetReasonList = assetTrackingHelper.getAssetReasonList();
-        mAssetReasonList.add(0, reason1);
+        if(assetTrackingHelper.SHOW_ASSET_REASON) {
+            assetTrackingHelper.loadReasonAdapter();
+        }
 
-        //Load Remarks
-        ArrayList<ReasonMaster> mAssetRemarksList;
-        ArrayAdapter<ReasonMaster> mAssetRemarksSpinAdapter;
-        ReasonMaster reason2 = new ReasonMaster();
-        reason2.setReasonID(Integer.toString(0));
-        reason2.setReasonDesc(select);
-        mAssetRemarksList = assetTrackingHelper.getAssetRemarksList();
-        mAssetRemarksList.add(0, reason2);
-        mAssetRemarksSpinAdapter = new ArrayAdapter<>(
-                getActivity(), R.layout.spinner_bluetext_layout,
-                mAssetRemarksList);
-        mAssetRemarksSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
         //
+        if(assetTrackingHelper.SHOW_ASSET_CONDITION) {
+            ReasonMaster reason3 = new ReasonMaster();
+            reason3.setConditionID(Integer.toString(0));
+            reason3.setReasonDesc(select_condition);
+            mAssetConditionList = assetTrackingHelper.getAssetConditionList();
+            mAssetConditionList.add(0, reason3);
 
-        ReasonMaster reason3 = new ReasonMaster();
-        reason3.setConditionID(Integer.toString(0));
-        reason3.setReasonDesc(select_condition);
-        mAssetConditionList = assetTrackingHelper.getAssetConditionList();
-        mAssetConditionList.add(0, reason3);
-
-        mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetReasonList);
-        mAssetReasonSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-
-
-        mAssetConditionAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.spinner_bluetext_layout, mAssetConditionList);
-        mAssetConditionAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            mAssetConditionAdapter = new ArrayAdapter<>(getActivity(),
+                    R.layout.spinner_bluetext_layout, mAssetConditionList);
+            mAssetConditionAdapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        }
 
     }
 
@@ -1380,16 +1363,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
      */
     private void captureCustom() {
 
-        final String actionScannerInputPlugin = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
-        final String extraParameter = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-        final String disablePlugin = "DISABLE_PLUGIN";
         try {
-            Intent i = new Intent();
-            i.setAction(actionScannerInputPlugin);
-            i.putExtra(extraParameter, disablePlugin);
-            getActivity().sendBroadcast(i);
-
-            Thread.sleep(1000);
 
             Intent intent = new Intent(getActivity(),
                     CameraActivity.class);

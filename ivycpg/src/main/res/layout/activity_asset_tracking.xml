@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/asset_tracking_fragment"
-        android:name="com.ivy.sd.png.view.asset.AssetTrackingFragment"
+        android:name="com.ivy.sd.png.asset.AssetTrackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

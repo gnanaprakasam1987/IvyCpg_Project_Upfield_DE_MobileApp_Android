@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.asset;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

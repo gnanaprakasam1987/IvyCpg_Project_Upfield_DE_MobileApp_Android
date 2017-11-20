@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.asset;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -25,7 +25,6 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;

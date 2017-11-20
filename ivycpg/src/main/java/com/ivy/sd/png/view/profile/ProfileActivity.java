@@ -91,7 +91,7 @@ import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.UserDialogue;
-import com.ivy.sd.png.view.asset.AssetHistoryFragment;
+import com.ivy.sd.png.view.AssetHistoryFragment;
 
 import org.json.JSONObject;
 

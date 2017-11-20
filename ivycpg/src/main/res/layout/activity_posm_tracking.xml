@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/posm_tracking"
-        android:name="com.ivy.sd.png.view.asset.PosmTrackingFragment"
+        android:name="com.ivy.sd.png.asset.PosmTrackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />
