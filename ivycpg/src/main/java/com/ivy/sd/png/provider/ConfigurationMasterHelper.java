@@ -1211,6 +1211,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHARE_INVOICE = "ORDB68";
     public boolean IS_SHARE_INVOICE;
 
+    public int MVPTheme = 0;
+    public String fontSize = "";
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -4551,7 +4554,7 @@ public class ConfigurationMasterHelper {
     }
 
     public int getMVPTheme() {
-        int MVPTheme = R.style.MVPTheme_Blue;
+        MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 
@@ -4772,7 +4775,7 @@ public class ConfigurationMasterHelper {
     }
 
     public String getFontSize() {
-        String fontSize = "Small";
+        fontSize = "Small";
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 

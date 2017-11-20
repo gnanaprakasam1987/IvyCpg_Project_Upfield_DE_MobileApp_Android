@@ -46,11 +46,16 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
         bmodel.setContext(this);
 
         try {
-            int theme = bmodel.configurationMasterHelper.getMVPTheme();
-            super.setTheme(theme);
-
-            String font = bmodel.configurationMasterHelper.getFontSize();
-            setFontStyle(font);
+            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
+            } else {
+                super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
+            }
+            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
+                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
+            } else {
+                setFontStyle(bmodel.configurationMasterHelper.fontSize);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

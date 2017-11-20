@@ -570,7 +570,7 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"

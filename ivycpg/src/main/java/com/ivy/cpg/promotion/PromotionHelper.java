@@ -1,12 +1,9 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.promotion;
 
 import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ChildLevelBo;
-import com.ivy.sd.png.bo.ParentLevelBo;
-import com.ivy.sd.png.bo.PromotionBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -16,7 +13,6 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -25,12 +21,8 @@ public class PromotionHelper {
     private final Context context;
     private final BusinessModel bmodel;
     private static PromotionHelper instance = null;
-    // Retail Modules Part
     public int mSelectedPromoID = 0;
-    private Vector<ParentLevelBo> mParentLevelBo;
-    private Vector<ChildLevelBo> mChildLevelBo;
     private ArrayList<PromotionBO> mPromotionList;
-    private ArrayList<PromotionBO> mAllPromotionList;
     private ArrayList<StandardListBO> mRatingList;
 
     private PromotionHelper(Context context) {
@@ -46,15 +38,16 @@ public class PromotionHelper {
         return instance;
     }
 
+    /* load data for promotion */
     public void loadDataForPromotion(String mMenuCode) {
         loadPromotionConfigs();
 
-        bmodel.productHelper.downloadInStoreLocations();
+        if (bmodel.productHelper.getInStoreLocation().size() == 0) {
+            bmodel.productHelper.downloadInStoreLocations();
+        }
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
-        else
-            downloadlFilterDataForPromotion();
 
         loadData(mMenuCode);
         loadPromoEntered();
@@ -67,6 +60,7 @@ public class PromotionHelper {
     public boolean SHOW_PROMO_QTY;
     public boolean SHOW_PROMO_ANNOUNCER;
 
+    /* Load promotion related configs */
     private void loadPromotionConfigs() {
         try {
             SHOW_PROMO_TYPE = false;
@@ -122,157 +116,7 @@ public class PromotionHelper {
     }
 
 
-
-
-    // Promotion Tracking for Retail Module Part
-
-    /**
-     * Download the parent level filter and child level filter content
-     */
-    private void downloadlFilterDataForPromotion() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        int temp = -1;
-        ParentLevelBo parentLevelBo;
-        ChildLevelBo childLevelBo;
-        db.openDataBase();
-        int parentLevel = 0;
-        int childLevel = 0;
-        String parentlevelName = "";
-        String childLevelName = "";
-        int levelGap;
-        try {
-            Cursor level = db
-                    .selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL2.Sequence,0),"
-                            + " PL1.LevelName, PL2.LevelName FROM ConfigActivityFilter CF"
-                            + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
-                            + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter2"
-                            + " WHERE CF.ActivityCode = 'MENU_PROMO'");
-
-            if (level != null) {
-                if (level.moveToNext()) {
-                    parentLevel = level.getInt(0);
-                    childLevel = level.getInt(1);
-                    parentlevelName = level.getString(2);
-                    childLevelName = level.getString(3);
-                }
-                level.close();
-            }
-
-            levelGap = (childLevel - parentLevel) + 1;
-
-            String query;
-            if (parentLevel != 0 && childLevel != 0) {
-
-                query = "SELECT DISTINCT P1.pid  PF_Pid, P1.Pname PF_Pname, P"
-                        + levelGap + ".pid,P" + levelGap
-                        + ".pname FROM ProductMaster P1";
-
-                for (int j = 2; j <= levelGap; j++) {
-                    query = query + " inner join ProductMaster P" + j + " on P"
-                            + j + ".parentid =P" + (j - 1) + ".pid";
-                }
-                query = query
-
-                        + " INNER JOIN PromotionProductMapping PPM on PPM.pid =P"
-                        + levelGap
-                        + ".pid"
-                        + " INNER JOIN PromotionMapping PMM on PMM.PromoId = PPM.PromoId  INNER JOIN PromotionMaster PM on PM.HId=PMM.HId "
-                        + " WHERE P1.PLID IN (SELECT ProductFilter1 FROM ConfigActivityFilter WHERE ActivityCode='MENU_PROMO'"
-                        + ")" + " AND  "
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                        + " between PM.StartDate and PM.EndDate";
-
-                Cursor c = db.selectSQL(query);
-                if (c != null) {
-                    setmParentLevelBo(new Vector<ParentLevelBo>());
-                    setmChildLevelBo(new Vector<ChildLevelBo>());
-                    while (c.moveToNext()) {
-                        int parentid = c.getInt(0);
-                        if (temp != parentid) {
-                            parentLevelBo = new ParentLevelBo();
-                            parentLevelBo.setPl_productid(c.getInt(0));
-                            parentLevelBo.setPl_levelName(c.getString(1));
-                            parentLevelBo.setPl_productLevel(parentlevelName);
-                            getmParentLevelBo().add(parentLevelBo);
-                            temp = parentid;
-                        }
-                        childLevelBo = new ChildLevelBo();
-                        childLevelBo.setParentid(c.getInt(0));
-                        childLevelBo.setProductid(c.getInt(2));
-                        childLevelBo.setPlevelName(c.getString(3));
-                        childLevelBo.setProductLevel(childLevelName);
-                        getmChildLevelBo().add(childLevelBo);
-                    }
-
-                    c.close();
-                }
-                db.closeDB();
-            } else if (parentLevel != 0) {
-                query = "select Distinct P.ParentId,P.PID,P.PName from ProductMaster P "
-                        + " INNER JOIN PromotionProductMapping PPM on PPM.pid = P.pid"
-                        + " INNER JOIN PromotionMapping PMM on PMM.PromoId = PPM.PromoId"
-                        + " INNER JOIN PromotionMaster PM on PM.HId=PMM.HId"
-                        + " WHERE P.PLID IN (SELECT ProductFilter1 FROM ConfigActivityFilter WHERE ActivityCode='MENU_PROMO')"
-                        + " AND "
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                        + "  between PM.StartDate and PM.EndDate ORDER BY P.PID";
-
-                Cursor c = db.selectSQL(query);
-                if (c != null) {
-                    setmChildLevelBo(new Vector<ChildLevelBo>());
-                    while (c.moveToNext()) {
-                        childLevelBo = new ChildLevelBo();
-                        childLevelBo.setParentid(c.getInt(0));
-                        childLevelBo.setProductid(c.getInt(1));
-                        childLevelBo.setPlevelName(c.getString(2));
-                        childLevelBo.setProductLevel(parentlevelName);
-
-                        getmChildLevelBo().add(childLevelBo);
-                    }
-                    c.close();
-                }
-                db.closeDB();
-            }// end of else
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
-    }
-
-    /**
-     * Download Promotion Data
-     */
-    public void downloadAllPromotionMaster() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            PromotionBO promotionMaster;
-            db.openDataBase();
-            Cursor c;
-            c = db.selectSQL("select PM.PromoId,PM.PId,PM. PromoName"
-                    + "  from PromotionProductMapping PM");
-
-            if (c != null) {
-                setmAllPromotionList(new ArrayList<PromotionBO>());
-
-                while (c.moveToNext()) {
-                    promotionMaster = new PromotionBO();
-                    promotionMaster.setPromoId(c.getInt(0));
-                    promotionMaster.setProductId(c.getInt(1));
-                    promotionMaster.setPromoName(c.getString(2));
-
-                    getmAllPromotionList().add(promotionMaster);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException("" + e);
-        }
-    }
-
+    /* get promotion level from ConfigActivityFilter to load the data */
     private void loadData(String mMenuCode) {
         try {
             switch (bmodel.productHelper.getRetailerlevel(mMenuCode)) {
@@ -309,36 +153,43 @@ public class PromotionHelper {
     }
 
     /**
-     * Download Promotion Data
+     * Download Promotion Data based on the menu level from configActivityFilter
+     *
+     * isAccount - Retailer Account level
+     * isRetailer - Exact Retailer id
+     * isClass - Retailer Class Level
+     * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
+     * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
+     *
      */
-    private void downloadPromotionMaster(boolean isaccount, boolean isretailer, boolean isclass, int locid, int chid) {
+    private void downloadPromotionMaster(boolean isAccount, boolean isRetailer, boolean isClass, int locationId, int channelId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
             String query = "";
-            if (isaccount && chid > 0) {
+            if (isAccount && channelId > 0) {
                 query = " where PM.AccId=" + bmodel.getRetailerMasterBO().getAccountid();
                 query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
 
-            } else if (isaccount)
+            } else if (isAccount)
                 query = " where PM.AccId=" + bmodel.getRetailerMasterBO().getAccountid();
-            else if (isretailer)
+            else if (isRetailer)
                 query = " where PM.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID();
 
-            else if (isclass && chid > 0) {
+            else if (isClass && channelId > 0) {
                 query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
                 query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (isclass)
+            } else if (isClass)
                 query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
 
-            else if (locid > 0 && chid > 0) {
+            else if (locationId > 0 && channelId > 0) {
                 query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
                 query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (locid > 0)
+            } else if (locationId > 0)
                 query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-            else if (chid > 0)
+            else if (channelId > 0)
                 query = " where  (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
 
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -352,7 +203,7 @@ public class PromotionHelper {
 
 
             if (c != null) {
-                setmPromotionList(new ArrayList<PromotionBO>());
+                mPromotionList = new ArrayList<>();
                 while (c.moveToNext()) {
                     promotionMaster = new PromotionBO();
                     promotionMaster.setPromoId(c.getInt(0));
@@ -360,7 +211,7 @@ public class PromotionHelper {
                     promotionMaster.setPromoName(c.getString(2));
                     promotionMaster.setMappingId(c.getInt(3));
                     promotionMaster.setGroupName(c.getString(4));
-                    getmPromotionList().add(promotionMaster);
+                    getPromotionList().add(promotionMaster);
                 }
 
                 if (mPromotionList != null) {
@@ -539,7 +390,7 @@ public class PromotionHelper {
                         int promoQty = orderDetailCursor.getInt(7);
                         int isAnnounced = orderDetailCursor.getInt(8);
 
-                        setPromocheckDetails(promotionID, isExecuted, isAnnounced, imgName,
+                        setPromoCheckDetails(promotionID, isExecuted, isAnnounced, imgName,
                                 reasonID, brandID, locid, execRatingLovid, promoQty);
                     }
                     orderDetailCursor.close();
@@ -558,7 +409,7 @@ public class PromotionHelper {
                                 int execRatingLovid = orderDetailCursor.getInt(4);
                                 int promoQty = orderDetailCursor.getInt(5);
 
-                                setLastVisitPromocheckDetails(promotionID, isExecuted,
+                                setLastVisitPromoCheckDetails(promotionID, isExecuted,
                                         reasonID, locid, execRatingLovid, promoQty);
                             }
                             orderDetailCursor.close();
@@ -591,7 +442,7 @@ public class PromotionHelper {
                     promotionMaster.setRatingId(orderDetailCursor.getString(6));
                     promotionMaster.setHasAnnouncer(orderDetailCursor.getInt(7));
 
-                    getmPromotionList().add(promotionMaster);
+                    getPromotionList().add(promotionMaster);
 
                 }
                 orderDetailCursor.close();
@@ -605,11 +456,11 @@ public class PromotionHelper {
     }
 
     // set the value in the PromotionMasterBo
-    private void setPromocheckDetails(int promotionID, int isExecuted, int isAnnounced,
-                                      String imgName, String reasonid, int brandID, int locid, int executeLovId, int promoQty) {
+    private void setPromoCheckDetails(int promotionID, int isExecuted, int isAnnounced,
+                                      String imgName, String reasonId, int brandID, int locationId, int executeLovId, int promoQty) {
 
         for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-            if (standardListBO.getListID().equals(Integer.toString(locid))) {
+            if (standardListBO.getListID().equals(Integer.toString(locationId))) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
                     for (PromotionBO promo : promotionList) {
@@ -618,7 +469,7 @@ public class PromotionHelper {
                             promo.setIsExecuted(isExecuted);
                             promo.setHasAnnouncer(isAnnounced);
                             promo.setImageName(imgName);
-                            promo.setReasonID(reasonid);
+                            promo.setReasonID(reasonId);
                             promo.setRatingId(Integer.toString(executeLovId));
                             promo.setPromoQty(promoQty);
                             break;
@@ -633,18 +484,18 @@ public class PromotionHelper {
     }
 
     // set the Last tran value in the PromotionMasterBo
-    private void setLastVisitPromocheckDetails(int promotionID, int isExecuted,
-                                               String reasonid, int locid, int executeLovId, int promoQty) {
+    private void setLastVisitPromoCheckDetails(int promotionID, int isExecuted,
+                                               String reasonId, int locationId, int executeLovId, int promoQty) {
 
         for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-            if (standardListBO.getListID().equals(Integer.toString(locid))) {
+            if (standardListBO.getListID().equals(Integer.toString(locationId))) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
                     for (PromotionBO promo : promotionList) {
                         if (promo.getPromoId() == promotionID) {
                             promo.setIsExecuted(isExecuted);
                             promo.setImageName("");
-                            promo.setReasonID(reasonid);
+                            promo.setReasonID(reasonId);
                             promo.setRatingId(Integer.toString(executeLovId));
                             promo.setPromoQty(promoQty);
                             break;
@@ -665,10 +516,10 @@ public class PromotionHelper {
      * @param mPromoID promotion id
      * @param imgName image name
      */
-    public void onsaveImageName(String locid, int mPromoID, String imgName, String imagePath) {
+    public void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath) {
         try {
             for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-                if (locid.equals(standardListBO.getListID())) {
+                if (locationId.equals(standardListBO.getListID())) {
                     ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
 
                     if (promotionList != null) {
@@ -710,9 +561,10 @@ public class PromotionHelper {
         return false;
     }
 
+    /* get list of unused images and loop through it to delete */
     public void deleteUnusedImages() {
 
-        for (PromotionBO temp : getmPromotionList()) {
+        for (PromotionBO temp : getPromotionList()) {
             if (temp.getIsExecuted() == 0 && !"".equals(temp.getImageName())) {
                 String fileName = temp.getImageName();
                 Commons.print("Image Delete," + "Coming In");
@@ -721,6 +573,7 @@ public class PromotionHelper {
         }
     }
 
+    /* Delete unused images from storage */
     private void deleteFiles(String filename) {
         File folder = new File(HomeScreenFragment.photoPath + "/");
 
@@ -734,6 +587,7 @@ public class PromotionHelper {
         }
     }
 
+    /* get promotion rating list from StandardListMaster */
     public void downloadPromotionRating() {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -757,49 +611,20 @@ public class PromotionHelper {
                 standardListBO.setListName("-Select ");
                 mRatingList.add(0, standardListBO);
             }
+            c.close();
+            db.closeDB();
 
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
-    public ArrayList<StandardListBO> getmRatingList() {
+    public ArrayList<StandardListBO> getRatingList() {
         return mRatingList;
     }
 
-
-    public ArrayList<PromotionBO> getmPromotionList() {
+    public ArrayList<PromotionBO> getPromotionList() {
         return mPromotionList;
-    }
-
-    private void setmPromotionList(ArrayList<PromotionBO> mPromotionList) {
-        this.mPromotionList = mPromotionList;
-    }
-
-    public ArrayList<PromotionBO> getmAllPromotionList() {
-        return mAllPromotionList;
-    }
-
-    private void setmAllPromotionList(ArrayList<PromotionBO> mAllPromotionList) {
-        this.mAllPromotionList = mAllPromotionList;
-    }
-
-    public Vector<ParentLevelBo> getmParentLevelBo() {
-        return mParentLevelBo;
-    }
-
-    private void setmParentLevelBo(Vector<ParentLevelBo> mParentLevelBo) {
-        this.mParentLevelBo = mParentLevelBo;
-    }
-
-    public Vector<ChildLevelBo> getmChildLevelBo() {
-        return mChildLevelBo;
-    }
-
-    private void setmChildLevelBo(Vector<ChildLevelBo> mChildLevelBo) {
-        this.mChildLevelBo = mChildLevelBo;
     }
 
 }

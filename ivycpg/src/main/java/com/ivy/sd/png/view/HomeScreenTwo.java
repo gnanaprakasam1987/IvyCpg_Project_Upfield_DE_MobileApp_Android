@@ -36,6 +36,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.promotion.PromotionHelper;
+import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -48,7 +50,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -60,7 +61,6 @@ import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivyretail.views.CombinedStockFragmentActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
-import com.ivyretail.views.PromotionTrackingActivity;
 import com.ivyretail.views.SODActivity;
 import com.ivyretail.views.SODAssetActivity;
 import com.ivyretail.views.SOSActivity;
@@ -2847,7 +2847,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
                 PromotionHelper promotionHelper = PromotionHelper.getInstance(this);
                 promotionHelper.loadDataForPromotion(menu.getConfigCode());
-                if (promotionHelper.getmPromotionList().size() > 0) {
+                if (promotionHelper.getPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
