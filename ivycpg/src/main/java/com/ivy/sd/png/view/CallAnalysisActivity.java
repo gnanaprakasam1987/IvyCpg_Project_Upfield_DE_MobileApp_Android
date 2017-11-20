@@ -1447,7 +1447,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     public void loadCollectionReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(bmodel.getActivity(), DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -1471,7 +1471,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private void loadFeedbackReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(bmodel.getActivity(), DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.FEEDBACK_TYPE));
@@ -1492,7 +1492,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
     public boolean hasInvoice() {
         try {
-            DBUtil db = new DBUtil(bmodel.getActivity(), DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("select InvoiceNo from "

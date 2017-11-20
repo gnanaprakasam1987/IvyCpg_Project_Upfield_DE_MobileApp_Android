@@ -431,7 +431,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.delete));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.delete));
             alertDialog = builder.create();
             alertDialog.show();
         }

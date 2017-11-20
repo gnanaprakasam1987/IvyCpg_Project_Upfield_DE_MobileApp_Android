@@ -2262,7 +2262,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getActivity().getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getActivity().getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2367,7 +2367,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.savingquestionanswers));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.savingquestionanswers));
             alertDialog = builder.create();
             alertDialog.show();
 

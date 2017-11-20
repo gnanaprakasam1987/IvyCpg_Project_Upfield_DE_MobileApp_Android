@@ -218,7 +218,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading_data));
+        customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading_data));
         alertDialog = builder.create();
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
@@ -1456,7 +1456,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

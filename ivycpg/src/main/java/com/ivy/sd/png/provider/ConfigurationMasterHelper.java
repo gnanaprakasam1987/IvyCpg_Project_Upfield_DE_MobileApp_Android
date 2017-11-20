@@ -4283,7 +4283,6 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     con = new ConfigureBO();
                     con.setConfigCode(c.getString(0));
-
                     con.setMenuName(c.getString(1));
                     con.setMenuNumber(c.getString(2));
                     con.setHasLink(c.getInt(3));

@@ -131,7 +131,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         mainLayout = (LinearLayout) rootView.findViewById(R.id.schemeDialogwidget);
         linearlpramsSub3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearWidgetSchemeReport = new LinearLayout(bmodel.getActivity());
+        linearWidgetSchemeReport = new LinearLayout(getActivity());
         linearWidgetSchemeReport.setLayoutParams(linearlpramsSub3);
         linearWidgetSchemeReport
                 .setBackgroundColor(Color.parseColor("#9CE7F9"));
@@ -1693,8 +1693,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private TextView getNameTv() {
-        final TextView verticalSeperator6 = new TextView(
-                bmodel.getActivity());
+        final TextView verticalSeperator6 = new TextView(getActivity());
 
         verticalSeperator6
                 .setGravity(Gravity.CENTER_VERTICAL

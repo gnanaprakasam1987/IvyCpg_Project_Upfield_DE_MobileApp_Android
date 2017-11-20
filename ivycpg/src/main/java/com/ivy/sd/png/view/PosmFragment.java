@@ -1379,7 +1379,7 @@ public class PosmFragment extends IvyBaseFragment implements
     private class SaveAsset extends AsyncTask<String, Void, String> {
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

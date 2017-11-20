@@ -99,7 +99,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(DeliveryOrderSummary.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, DeliveryOrderSummary.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, DeliveryOrderSummary.this, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

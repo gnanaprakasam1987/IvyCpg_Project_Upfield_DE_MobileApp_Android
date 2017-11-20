@@ -1339,7 +1339,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
-                            bmodel.setActivity(OrderNewOutlet.this);
 
                             bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
@@ -1353,7 +1352,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             startActivity(intent);
 
                         } else {
-                            bmodel.setActivity(OrderNewOutlet.this);
 
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
@@ -1804,7 +1802,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
-                    bmodel.setActivity(OrderNewOutlet.this);
                     if (dialog == null) {
                         dialog = new MustSellReasonDialog(
                                 OrderNewOutlet.this, false,
@@ -3115,7 +3112,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OrderNewOutlet.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderNewOutlet.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, OrderNewOutlet.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

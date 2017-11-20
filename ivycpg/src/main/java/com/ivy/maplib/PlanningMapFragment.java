@@ -61,6 +61,7 @@ import com.ivy.sd.png.bo.VisitConfiguration;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 
 import org.json.JSONArray;
@@ -145,6 +146,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private boolean isRoute = false;
     private String durationStr;
     private ImageView crossLine;
+    private TextView messagetv;
 
 
     public static int getPixelsFromDp(Context context, float dp) {
@@ -1217,7 +1219,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
             super.onPreExecute();
 
             builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Fetching route, Please wait...");
+            customProgressDialog(builder);
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -1579,6 +1581,26 @@ public class PlanningMapFragment extends SupportMapFragment implements
             }
         }
         return false;
+    }
+
+    private void customProgressDialog(AlertDialog.Builder builder) {
+
+        try {
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) getActivity().findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText("Fetching route, Please wait...");
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 //    private boolean isSurveyDone(String menucode, String rid) {

@@ -947,31 +947,13 @@ SynchronizationHelper {
         Cursor c;
         String tableName = "";
         dataMissedTable = "";
-        int retailerCount = 0, hhtCount = 0, beatMaster = 0, standList = 0;
+        int hhtCount = 0, standList = 0;
         try {
-            c = db.selectSQL("select  count(retailerid) from "
-                    + DataMembers.tbl_retailerMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    retailerCount = c.getInt(0);
-                }
-                c.close();
-            }
-
             c = db.selectSQL("select  count(hhtCode) from "
                     + DataMembers.tbl_HhtModuleMaster);
             if (c != null) {
                 if (c.moveToNext()) {
                     hhtCount = c.getInt(0);
-                }
-                c.close();
-            }
-
-            c = db.selectSQL("select  count(beatid) from "
-                    + DataMembers.tbl_beatMaster);
-            if (c != null) {
-                if (c.moveToNext()) {
-                    beatMaster = c.getInt(0);
                 }
                 c.close();
             }
@@ -990,18 +972,13 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 && beatMaster > 0 && hhtCount > 0
-                && retailerCount > 0) {
+        if (standList > 0 && hhtCount > 0) {
             return true;
         } else {
             if (standList == 0)
                 tableName = tableName + " LovMaster";
-            if (beatMaster == 0)
-                tableName = tableName + " BeatMaster";
             if (hhtCount == 0)
                 tableName = tableName + " Configuration";
-            if (retailerCount == 0)
-                tableName = tableName + " Retailer";
 
             dataMissedTable = tableName;
         }
@@ -2093,24 +2070,27 @@ SynchronizationHelper {
                 db.deleteSQL("temp_productmaster", null, true);
                 db.deleteSQL("temp_productuommaster", null, true);
             }
-
-            db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
-            db.executeQ("CREATE INDEX index_productlevel ON ProductLevel(LevelId)");
-            db.executeQ("CREATE INDEX index_producttagmaster ON ProductTaggingMaster(TaggingTypelovID)");
-            db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
-            db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
-            db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
-            db.executeQ("CREATE INDEX index_schememaster ON SchemeMaster(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemecritmap ON SchemeCriteriaMapping(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemecountmaster ON SchemeApplyCountMaster(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemebuymaster ON SchemeBuyMaster(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemeattrmap ON SchemeAttributeMapping(GroupID)");
-            db.executeQ("CREATE INDEX index_schemefreeproduct ON SchemeFreeProducts(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
-            db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
-            db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
-            db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
-            db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");
+            try {
+                db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
+                db.executeQ("CREATE INDEX index_productlevel ON ProductLevel(LevelId)");
+                db.executeQ("CREATE INDEX index_producttagmaster ON ProductTaggingMaster(TaggingTypelovID)");
+                db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
+                db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
+                db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
+                db.executeQ("CREATE INDEX index_schememaster ON SchemeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemecritmap ON SchemeCriteriaMapping(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemecountmaster ON SchemeApplyCountMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemebuymaster ON SchemeBuyMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemeattrmap ON SchemeAttributeMapping(GroupID)");
+                db.executeQ("CREATE INDEX index_schemefreeproduct ON SchemeFreeProducts(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
+                db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
+                db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
@@ -2130,7 +2110,11 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_pricemaster", null, true);
             }
-            db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
+            try {
+                db.executeQ("CREATE INDEX index_pricemaster ON pricemaster(pid,scid)");
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
         } else if (tableName.equalsIgnoreCase("temp_product_priceMaster")) {
             if (IsDataAvailableInTable("temp_product_priceMaster")) {
@@ -2944,7 +2928,7 @@ SynchronizationHelper {
             db.createDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select url from urldownloadmaster where ");
-            sb.append("mastername='RETAILER' and typecode='GETRET'");
+            sb.append("mastername='RETAILERMASTER' and typecode='GETRET'");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {

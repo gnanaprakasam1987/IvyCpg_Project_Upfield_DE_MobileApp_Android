@@ -346,7 +346,7 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
 
             builder = new AlertDialog.Builder(PrimarySaleHomeScreenActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, PrimarySaleHomeScreenActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, PrimarySaleHomeScreenActivity.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -415,7 +415,7 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
 
             builder = new AlertDialog.Builder(PrimarySaleHomeScreenActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, PrimarySaleHomeScreenActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, PrimarySaleHomeScreenActivity.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

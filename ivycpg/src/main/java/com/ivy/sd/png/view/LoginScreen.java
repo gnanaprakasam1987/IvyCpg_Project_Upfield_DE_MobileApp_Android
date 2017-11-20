@@ -450,7 +450,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             new DownloadUTCTime().execute();
                         } else {
                             builder = new AlertDialog.Builder(LoginScreen.this);
-                            bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.loading_data));
+                            customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.loading_data));
                             alertDialog = builder.create();
                             alertDialog.show();
                             //handle password lock in off line based on reached maximum_attempt_count compare with mPasswordLockCountPref count
@@ -463,7 +463,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         }
                     } else {
                         builder = new AlertDialog.Builder(LoginScreen.this);
-                        bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.auth_and_downloading_masters));
+                        customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.auth_and_downloading_masters));
                         alertDialog = builder.create();
                         alertDialog.show();
 
@@ -581,7 +581,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     }
                     break;
                 case DataMembers.NOTIFY_UPDATE:
-                    bmodel.setMessageInProgressDialog(alertDialog, builder, LoginScreen.this, msg.obj.toString());
+                    setMessageInProgressDialog(builder, LoginScreen.this, msg.obj.toString());
                     break;
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
                     alertDialog.dismiss();
@@ -1051,9 +1051,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     }
                     new UpdateFinish().execute();
                 } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
-                        bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                        updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
                         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -1068,9 +1068,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
-                        bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                        updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
                         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -1087,9 +1087,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
-                        bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                        updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
                         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -1235,7 +1235,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoginScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.checking_new_version));
+            customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.checking_new_version));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1582,7 +1582,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(LoginScreen.this);
 
-                    bmodel.customProgressDialog(alertDialog, builder, LoginScreen.this, getResources().getString(R.string.loading));
+                    customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.loading));
                     alertDialog = builder.create();
                     alertDialog.show();
                 }

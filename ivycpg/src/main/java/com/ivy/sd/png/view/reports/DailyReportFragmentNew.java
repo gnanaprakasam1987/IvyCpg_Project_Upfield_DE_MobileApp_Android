@@ -162,7 +162,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }).start();
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Printing....");
+            customProgressDialog(builder, getActivity(), "Printing....");
             alertDialog = builder.create();
             alertDialog.show();
 

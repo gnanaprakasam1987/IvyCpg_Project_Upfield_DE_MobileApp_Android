@@ -361,7 +361,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.JExcelHelper;
@@ -27,7 +28,7 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class PreviousDayOrderReportFragment extends Fragment implements
+public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
         OnClickListener, OnItemClickListener {
 
     private TextView totalOrderValue, averageLines, mavg_pre_post, totalLines;
@@ -287,7 +288,7 @@ public class PreviousDayOrderReportFragment extends Fragment implements
             super.onPreExecute();
 
             builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Exporting orders...");
+            customProgressDialog(builder, getActivity(), "Exporting orders...");
             alertDialog = builder.create();
             alertDialog.show();
         }

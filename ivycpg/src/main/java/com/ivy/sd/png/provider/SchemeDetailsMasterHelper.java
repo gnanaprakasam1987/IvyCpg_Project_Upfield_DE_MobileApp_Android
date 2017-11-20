@@ -1953,8 +1953,8 @@ public class SchemeDetailsMasterHelper {
         if (tempCount > 0) {
             return tempCount;
         } else {
-			/*
-			 * Now we are apply range wise scheme.so maximum buy qty only using
+            /*
+             * Now we are apply range wise scheme.so maximum buy qty only using
 			 * for computation to how many times scheme achived. but minimum buy
 			 * qty used to apply scheme or not.
 			 */
@@ -2651,7 +2651,7 @@ public class SchemeDetailsMasterHelper {
      * <p>
      * Method to save all applied scheme details in SQLite
      */
-    public void insertScemeDetails(String orderID, DBUtil db,String flag) {
+    public void insertScemeDetails(String orderID, DBUtil db, String flag) {
         if (mApplySchemeList != null) {
 
             for (SchemeBO schemeBO : mApplySchemeList) {
@@ -2660,11 +2660,11 @@ public class SchemeDetailsMasterHelper {
                         || schemeBO.isPriceTypeSeleted()
                         || schemeBO.isDiscountPrecentSelected()
                         || schemeBO.isQuantityTypeSelected()) {
-                    insertSchemeBuyProductDetails(schemeBO, db, orderID,flag);
+                    insertSchemeBuyProductDetails(schemeBO, db, orderID, flag);
                 }
 
                 if (schemeBO.isQuantityTypeSelected()) {
-                    insertFreeProductDetails(schemeBO, db, orderID,flag);
+                    insertFreeProductDetails(schemeBO, db, orderID, flag);
                 }
 
             }
@@ -2680,7 +2680,7 @@ public class SchemeDetailsMasterHelper {
      * table
      */
     private void insertSchemeBuyProductDetails(SchemeBO schemeBO, DBUtil db,
-                                               String orderID,String flag) {
+                                               String orderID, String flag) {
         String schemeDetailColumn = "OrderID,SchemeID,ProductID,SchemeType,Value,parentid,Retailerid,distributorid,upload,Amount";
 
         if (isFromCounterSale) {
@@ -2848,7 +2848,7 @@ public class SchemeDetailsMasterHelper {
      * schemefreeproductdetail table
      */
     private void insertFreeProductDetails(SchemeBO schemeBO, DBUtil db,
-                                          String orderID,String flag) {
+                                          String orderID, String flag) {
         String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount";
 
         if (isFromCounterSale) {
@@ -2873,11 +2873,11 @@ public class SchemeDetailsMasterHelper {
                             } else {
                                 insertFreeproductWithoutbatch(schemeBO, db,
                                         orderID, freeProductBO,
-                                        freeDetailColumn,flag);
+                                        freeDetailColumn, flag);
                             }
                         } else {
                             insertFreeproductWithoutbatch(schemeBO, db,
-                                    orderID, freeProductBO, freeDetailColumn,flag);
+                                    orderID, freeProductBO, freeDetailColumn, flag);
 
                         }
                     }
@@ -2899,7 +2899,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void insertFreeproductWithoutbatch(SchemeBO schemeBO, DBUtil db,
                                                String orderID, SchemeProductBO freeProductBO,
-                                               String freeDetailColumn,String flag) {
+                                               String freeDetailColumn, String flag) {
 
         ProductMasterBO productBO = bmodel.getProductbyId(freeProductBO
                 .getProductId());
@@ -3993,6 +3993,9 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
+            //str string is ends with ','
+            if (str.endsWith(","))
+                str = str.substring(0, str.length() - 1);
         }
         return str;
     }

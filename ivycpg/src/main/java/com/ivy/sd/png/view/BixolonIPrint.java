@@ -514,7 +514,7 @@ public class BixolonIPrint extends Bixolon {
                     if (bmodel.configurationMasterHelper.IS_INVOICE) {
                         builder = new AlertDialog.Builder(BixolonIPrint.this);
 
-                        bmodel.customProgressDialog(alertDialog, builder, BixolonIPrint.this, getResources().getString(
+                        customProgressDialog(builder, BixolonIPrint.this, getResources().getString(
                                 R.string.saving_invoice));
                         alertDialog = builder.create();
                         alertDialog.show();
@@ -526,7 +526,7 @@ public class BixolonIPrint extends Bixolon {
                     } else {
                         builder = new AlertDialog.Builder(BixolonIPrint.this);
 
-                        bmodel.customProgressDialog(alertDialog, builder, BixolonIPrint.this, getResources().getString(
+                        customProgressDialog(builder, BixolonIPrint.this, getResources().getString(
                                 R.string.saving_new_order));
                         alertDialog = builder.create();
                         alertDialog.show();

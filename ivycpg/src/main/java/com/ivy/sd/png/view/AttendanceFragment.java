@@ -483,7 +483,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         protected void onPreExecute() {
 
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(mAlertDialog, mBuilder, getActivity(), getResources().getString(R.string.uploading_data));
+            customProgressDialog(mBuilder, getActivity(), getResources().getString(R.string.uploading_data));
             mAlertDialog = mBuilder.create();
             mAlertDialog.show();
 

@@ -1220,8 +1220,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                bmodel.setActivity(getActivity());
-
                                 bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                                 bmodel.productHelper.setPdname(holder.pname);
                                 bmodel.productHelper.setProdId(holder.productId);
@@ -1234,8 +1232,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 startActivity(intent);
 
                             } else {
-                                bmodel.setActivity(getActivity());
-
                                 bmodel.productHelper.setPdname(holder.pname);
                                 bmodel.productHelper.setProdId(holder.productId);
                                 bmodel.productHelper.setProductObj(holder.productObj);
@@ -1746,7 +1742,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void loadSchemeDialog() {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        bmodel.setActivity(getActivity());
         SchemeDialog sc = new SchemeDialog(getActivity(), null, "",
                 "", null, 0, 0);
 
@@ -2062,7 +2057,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

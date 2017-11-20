@@ -966,7 +966,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

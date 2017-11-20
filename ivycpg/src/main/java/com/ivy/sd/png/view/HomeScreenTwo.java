@@ -70,6 +70,7 @@ import com.ivyretail.views.StockCheckFragmentActivity;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -1748,6 +1749,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
+
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
@@ -3373,6 +3375,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     }
 
     private void loadRequiredMethodsForStockAndOrder(String configCode, String menuName) {
+
         if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
             bmodel.collectionHelper.downloadDiscountSlab();
         }
@@ -3381,10 +3384,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         bmodel.productHelper.loadRetailerWiseProductWisePurchased();
         bmodel.productHelper
                 .loadRetailerWiseProductWiseP4StockAndOrderQty();
+
         bmodel.configurationMasterHelper
                 .downloadProductDetailsList();
+
         bmodel.collectionHelper.downloadBankDetails();
         bmodel.collectionHelper.downloadBranchDetails();
+
         if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
             /** Load Initiative **/
             bmodel.productHelper.loadInitiativeProducts();
@@ -3414,7 +3420,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         // apply bill wise payterm discount
         bmodel.productHelper.downloadBillwisePaytermDiscount();
 
-
         bmodel.productHelper.downloadInStoreLocations();
 
         if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
@@ -3424,8 +3429,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
         // }
 
-        if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
+        if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
+            bmodel.collectionHelper.downloadBankDetails();
+            bmodel.collectionHelper.downloadBranchDetails();
             bmodel.collectionHelper.loadCreditNote();
+        }
 
         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
 
@@ -3973,10 +3981,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         private View itemView;
 
         public ActivityAdapter(Vector<ConfigureBO> mActivityList) {
-
             this.mActivityList = mActivityList;
-
-
         }
 
         @Override
@@ -4189,7 +4194,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             }
 
             if (holder.config.isDone()) {
-                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(),R.color.white));
+                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.white));
             } else {
                 holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.black_bg1));
             }

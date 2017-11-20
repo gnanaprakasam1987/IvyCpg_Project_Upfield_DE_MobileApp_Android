@@ -8117,7 +8117,6 @@ public class BusinessModel extends Application {
             mFileName, TransferUtility tm) {
         try {
 
-
             final File mFile = new File(mFileLocation, "/" + mFileName);
 
             String mBucketName;
@@ -8146,7 +8145,6 @@ public class BusinessModel extends Application {
                                     (DataMembers.NOTIFY_FILE_UPLOADED__COMPLETED_IN_AMAZON,
                                             "File uploaded Successfully", handler);
                         }
-
 
                     } else if (transferState == TransferState.FAILED) {
                         if (!isErrorOccured) {
@@ -8204,15 +8202,6 @@ public class BusinessModel extends Application {
             }
         }
     }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
         try {
@@ -9578,40 +9567,6 @@ public class BusinessModel extends Application {
        /* ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button1)).setBackgroundResource(R.drawable.tab_selection);
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button2)).setBackgroundResource(R.drawable.tab_selection);
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
-    }
-
-    public void customProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
-
-        try {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) ctx.findViewById(R.id.layout_root));
-
-            TextView title = (TextView) layout.findViewById(R.id.title);
-            title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
-            messagetv.setText(message);
-
-            builder.setView(layout);
-            builder.setCancelable(false);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    public void updaterProgressMsg(String msg) {
-        messagetv.setText(msg);
-    }
-
-    public void setMessageInProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
-        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                (ViewGroup) ctx.findViewById(R.id.layout_root));
-        TextView messagetv = (TextView) layout.findViewById(R.id.text);
-        messagetv.setText(message);
-        builder.setView(layout);
-        builder.setCancelable(false);
     }
 
     public void setWeeknoFoNewRetailer() {

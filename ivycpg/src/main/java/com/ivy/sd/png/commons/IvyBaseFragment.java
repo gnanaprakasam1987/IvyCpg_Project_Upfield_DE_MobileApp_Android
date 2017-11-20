@@ -1,5 +1,8 @@
 package com.ivy.sd.png.commons;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -9,12 +12,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.Locale;
 
@@ -23,6 +31,7 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
 
     TextView mScreenTitleTV;
     BusinessModel bmodel;
+    TextView messagetv;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -94,5 +103,40 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     }
 
     public void onBackPressed() {
+    }
+
+
+    public void customProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
+
+        try {
+            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) ctx.findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void updaterProgressMsg(String msg) {
+        messagetv.setText(msg);
+    }
+
+    public void setMessageInProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
+        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                (ViewGroup) ctx.findViewById(R.id.layout_root));
+        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        messagetv.setText(message);
+        builder.setView(layout);
+        builder.setCancelable(false);
     }
 }

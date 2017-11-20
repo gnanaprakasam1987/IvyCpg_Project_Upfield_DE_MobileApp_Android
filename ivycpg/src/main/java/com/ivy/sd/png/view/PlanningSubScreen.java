@@ -414,7 +414,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(PlanningSubScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, PlanningSubScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, PlanningSubScreen.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -479,7 +479,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(PlanningSubScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, PlanningSubScreen.this, getResources().getString(R.string.loading_data));
+            customProgressDialog(builder, PlanningSubScreen.this, getResources().getString(R.string.loading_data));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -526,7 +526,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(PlanningSubScreen.this);
-            bmodel.customProgressDialog(alertDialog, builder, PlanningSubScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, PlanningSubScreen.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
