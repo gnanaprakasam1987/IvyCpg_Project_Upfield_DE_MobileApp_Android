@@ -241,7 +241,7 @@ public class SBDMerchandisingFragment extends IvyBaseFragment {
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving_merchandising));
+            customProgressDialog(builder, getResources().getString(R.string.saving_merchandising));
             alertDialog = builder.create();
             alertDialog.show();
         }

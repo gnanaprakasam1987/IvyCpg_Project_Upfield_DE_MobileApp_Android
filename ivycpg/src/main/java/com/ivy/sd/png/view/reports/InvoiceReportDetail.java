@@ -820,7 +820,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
 
 //
                                             build = new AlertDialog.Builder(InvoiceReportDetail.this);
-                                            customProgressDialog(build, InvoiceReportDetail.this, "Printing....");
+                                            customProgressDialog(build,  "Printing....");
                                             alertDialog = build.create();
                                             alertDialog.show();
                                         }
@@ -856,7 +856,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
                                 }).start();
 
                                 build = new AlertDialog.Builder(InvoiceReportDetail.this);
-                                customProgressDialog(build, InvoiceReportDetail.this, "Printing....");
+                                customProgressDialog(build,  "Printing....");
                                 alertDialog = build.create();
                                 alertDialog.show();
                                 // Do something useful withe the position of the selected radio button
@@ -1014,7 +1014,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
             // Shows Progress Bar Dialog and then call doInBackground method
             builder = new AlertDialog.Builder(InvoiceReportDetail.this);
 
-            customProgressDialog(builder, InvoiceReportDetail.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

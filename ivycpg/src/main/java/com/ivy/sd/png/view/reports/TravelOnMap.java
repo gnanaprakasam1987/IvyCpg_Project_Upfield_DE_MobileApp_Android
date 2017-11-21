@@ -230,7 +230,7 @@ public class TravelOnMap extends IvyBaseFragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), "Fetching route, Please wait...");
+            customProgressDialog(builder,  "Fetching route, Please wait...");
             alertDialog = builder.create();
             alertDialog.show();
 

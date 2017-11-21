@@ -764,7 +764,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 					true, false);*/
             builder = new AlertDialog.Builder(ReportActivity.this);
 
-            customProgressDialog(builder, ReportActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -229,7 +229,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     DataMembers.SD, "Exporting orders...", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), "Exporting orders...");
+            customProgressDialog(builder, "Exporting orders...");
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -534,7 +534,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
