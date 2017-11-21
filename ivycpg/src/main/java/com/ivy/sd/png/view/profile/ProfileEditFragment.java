@@ -236,8 +236,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
             @Override
             public void onClick(View v) {
                 try {
-                    if (validateEditProfile())
+                    if (validateEditProfile()) {
+
+                        if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                            if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                                Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
+
                         new SaveEditAsyncTask().execute();
+                    }
 
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -2752,6 +2761,21 @@ public class ProfileEditFragment extends IvyBaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
+
+                if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                    lat = LocationUtil.latitude + "";
+                    longitude = LocationUtil.longitude + "";
+
+                    if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                        Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                    } else {
+                        profileConfig.add(new ConfigureBO("PROFILE08", "Latitude", lat, 0, 0, 0));
+                        profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
+                        Toast.makeText(getActivity(), "Location captured successfully.", Toast.LENGTH_LONG).show();
+                    }
+
+
+                }
 
                 Uri uri = bmodel.profilehelper
                         .getUriFromFile(HomeScreenFragment.photoPath + "/" + imageFileName);

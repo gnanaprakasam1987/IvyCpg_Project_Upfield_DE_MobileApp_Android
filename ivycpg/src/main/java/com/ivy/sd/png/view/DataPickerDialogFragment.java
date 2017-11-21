@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
 public class DataPickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private UpdateDateInterface updateDateInterface;
     public interface UpdateDateInterface {
-        void updateDate(Date date);
+        void updateDate(Date date, String tag);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         Calendar selectedDate = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-        updateDateInterface.updateDate(selectedDate.getTime());
+        updateDateInterface.updateDate(selectedDate.getTime(),this.getTag());
     }
 }

@@ -172,12 +172,12 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
             public void onClick(View v) {
                 // Perform action on click
                 if (BRAND.equals(buttonName)) {
-                    brandInterface.updatebrandtext(BRAND, -1);
+                    brandInterface.updateBrandText(BRAND, -1);
                     mselectedFilterMap.put(BRAND, "All");
                     mselectedFilterMap.put(CATEGORY, "All");
                 }
                 if (GENERAL.equals(buttonName)) {
-                    brandInterface.updategeneraltext(GENERAL);
+                    brandInterface.updateGeneralText(GENERAL);
                     mselectedFilterMap.put(GENERAL, "All");
                     mselectedFilterMap.put(BRAND, "All");
                     mselectedFilterMap.put(CATEGORY, "All");
@@ -545,11 +545,11 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
                 // Brand or Spl filter
                 if (buttonName.equals(BRAND)) {
                     mselectedFilterMap.put(BRAND, Integer.toString(holder.id));
-                    brandInterface.updatebrandtext((String) holder.text.getText(),
+                    brandInterface.updateBrandText((String) holder.text.getText(),
                             holder.id);
                 } else if (GENERAL.equals(buttonName)) {
                     mselectedFilterMap.put(GENERAL, holder.speFiltID);
-                    brandInterface.updategeneraltext(holder.speFiltID);
+                    brandInterface.updateGeneralText(holder.speFiltID);
                     mselectedFilterMap.put(BRAND, "All");
                     mselectedFilterMap.put(CATEGORY, "All");
 

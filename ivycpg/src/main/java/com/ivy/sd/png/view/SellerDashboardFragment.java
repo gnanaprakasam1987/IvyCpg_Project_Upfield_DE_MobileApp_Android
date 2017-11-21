@@ -131,6 +131,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     int avgSellingPrice;
     int avgBillValue;
     boolean isFromHomeScreenTwo = false;
+    private String menuCode = "";
     //boolean isSemiCircleChartRequired = false;
     Bundle bundle;
     private boolean _hasLoadedOnce = false;
@@ -155,6 +156,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         boolean isFromTab = false;
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
+            menuCode = bundle.getString("menuCode");
             isFromTab = bundle.getBoolean("isFromTab", false);
         }
 
@@ -826,9 +828,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (isFromHomeScreenTwo)//update time stamp if previous screen is homescreentwo
+            if (isFromHomeScreenTwo) {//update time stamp if previous screen is homescreentwo
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
+                bmodel.saveModuleCompletion(menuCode);
+            }
             getActivity().finish();
             return true;
         } else if (i == R.id.menu_next) {

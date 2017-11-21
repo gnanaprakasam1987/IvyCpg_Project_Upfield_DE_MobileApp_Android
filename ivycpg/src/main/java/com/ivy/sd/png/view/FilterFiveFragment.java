@@ -123,7 +123,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                             }
 
                         }
-                        brandInterface.updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
+                        brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
                         return;
                     } else
                         finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
@@ -132,7 +132,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 } else
                     finalParentList = updateProductLoad(sequence.size());
 
-                brandInterface.updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
+                brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
                 brandInterface.updateCancel();
 
             }

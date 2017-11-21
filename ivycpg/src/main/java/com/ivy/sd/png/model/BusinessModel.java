@@ -59,11 +59,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
@@ -105,7 +100,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.AssetTrackingHelper;
+import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -153,7 +148,7 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SODAssetHelper;
+import com.ivy.sd.png.provider.asset.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
@@ -216,7 +211,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -481,7 +475,6 @@ public class BusinessModel extends Application {
         planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
-        assetTrackingHelper = AssetTrackingHelper.getInstance(this);
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
         collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
@@ -1463,21 +1456,6 @@ public class BusinessModel extends Application {
         return retailerMasterData;
     }
 
-    /**
-     * Method to check the movement Asset in sql table
-     */
-    public ArrayList<String> getAssetMovementDetails() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        ArrayList<String> retailerMovedData = new ArrayList<>();
-        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
-        if (c != null)
-            while (c.moveToNext()) {
-                retailerMovedData.add(c.getString(0));
-            }
-        return retailerMovedData;
-    }
 
     public void downloadRetailerMaster() {
         try {
@@ -2464,12 +2442,12 @@ public class BusinessModel extends Application {
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         dailyRep = new DailyReportBO();
-
+        Cursor c = null;
 
         if (!configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
             sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2483,7 +2461,7 @@ public class BusinessModel extends Application {
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
             sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2495,14 +2473,101 @@ public class BusinessModel extends Application {
             }
         }
         sb = new StringBuffer();
-        sb.append("select  sum(mspvalues) from OrderHeader ");
+        sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
         sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        Cursor c = db
+        c = db
                 .selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
 
                 dailyRep.setMspValues(c.getString(0));
+                dailyRep.setNoofOrder(c.getString(1));
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
+        sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setPcsQty(c.getString(0));
+                dailyRep.setCsQty(c.getString(1));
+                dailyRep.setOuQty(c.getString(2));
+
+            }
+            c.close();
+        }
+
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " where isdeviated='Y' and isVisited='Y'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhoc(c.getString(0));
+            }
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and isdeviated='Y'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhocProductive(c.getString(0));
+
+            }
+            c.close();
+        }
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlanned(c.getString(0));
+
+
+            }
+            c.close();
+        }
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where isVisited='Y' and RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedVisit(c.getString(0));
+
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedProductive(c.getString(0));
 
             }
             c.close();
@@ -6500,9 +6565,11 @@ public class BusinessModel extends Application {
                                     + "," + rField3;
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                int pieces = (shelfCase * 10) + shelfPiece;
+                                int pieces = (shelfCase * product.getCaseSize())
+                                        + (shelfOuter * product.getOutersize())
+                                        + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + productWeightage;
+                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
                                 sum = sum + productWeightage;
                             }
 
@@ -6583,9 +6650,12 @@ public class BusinessModel extends Application {
                                         + "," + rField3;
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    int pieces = (shelfCase * 10) + shelfPiece;
+                                    int pieces = (shelfCase * taggedProduct.getCaseSize())
+                                            + (shelfOuter * taggedProduct.getOutersize())
+                                            + shelfPiece;
                                     productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
-                                    values = values + "," + productWeightage;
+                                    values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+
                                     sum = sum + productWeightage;
                                 }
 
@@ -6942,8 +7012,8 @@ public class BusinessModel extends Application {
                         * SIH ll get updated while saving invoice */
                         /*if (!configurationMasterHelper.IS_INVOICE) {
                             *//**
-                             * before deleting the order, SIH in productmaster
-                             * should get updated.
+                         * before deleting the order, SIH in productmaster
+                         * should get updated.
                          **//*
                             updateSIHOnDeleteOrder(uid);
                         }*/

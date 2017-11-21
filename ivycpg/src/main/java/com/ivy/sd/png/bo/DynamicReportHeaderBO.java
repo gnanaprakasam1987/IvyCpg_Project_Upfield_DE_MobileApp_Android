@@ -11,6 +11,7 @@ public class DynamicReportHeaderBO {
     private int length;
     private int reportId;
     private int columnId;
+    private String columnAlignment;
 
     public String getMenuCode() {
         return menuCode;
@@ -58,5 +59,13 @@ public class DynamicReportHeaderBO {
 
     public void setReportType(String reportType) {
         this.reportType = reportType;
+    }
+
+    public String getColumnAlignment() {
+        return columnAlignment;
+    }
+
+    public void setColumnAlignment(String columnAlignment) {
+        this.columnAlignment = columnAlignment;
     }
 }

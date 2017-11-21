@@ -296,9 +296,9 @@ public class SOSFragment extends IvyBaseFragment implements
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
         if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
         } else {
-            updatebrandtext(BRAND, selectedfilterid);
+            updateBrandText(BRAND, selectedfilterid);
         }
         loadReasons();
 
@@ -827,16 +827,16 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
 
-        this.parentidList = parentidList;
+        this.parentidList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
 
-        loadData(parentidList, mSelectedIdByLevelId);
+        loadData(mParentIdList, mSelectedIdByLevelId);
     }
 
     @Override
@@ -949,15 +949,15 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandFilterText = filtertext;
+            brandFilterText = mFilterText;
             selectedfilterid = id;
-            tvSelectedName.setText(filtertext);
+            tvSelectedName.setText(mFilterText);
 
             ArrayList<SOSBO> items = bmodel.salesFundamentalHelper
                     .getmSOSList();
@@ -1205,7 +1205,7 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -1551,20 +1551,20 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         // TODO Auto-generated method stub
 
     }
@@ -1580,7 +1580,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
                         dialog.dismiss();
-                        updatebrandtext(BRAND, selectedfilterid);
+                        updateBrandText(BRAND, selectedfilterid);
                     }
                 });
 

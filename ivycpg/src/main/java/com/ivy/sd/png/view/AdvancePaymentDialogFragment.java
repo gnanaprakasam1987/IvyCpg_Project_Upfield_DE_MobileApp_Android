@@ -215,7 +215,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
             String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            updateDate(new Date(todayDate));
+            updateDate(new Date(todayDate),"" );
         }
 
     }
@@ -531,7 +531,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
         String paidDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         try {
@@ -580,7 +580,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
             String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            updateDate(new Date(todayDate));
+            updateDate(new Date(todayDate), "");
         }
 
     }

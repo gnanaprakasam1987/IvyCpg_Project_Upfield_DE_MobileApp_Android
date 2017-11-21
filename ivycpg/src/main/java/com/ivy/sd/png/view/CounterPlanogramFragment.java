@@ -520,7 +520,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
 	 * 
 	 * int siz = items.size(); for (int i = 0; i < siz; ++i) { ChildLevelBo ret
 	 * = (ChildLevelBo) items.elementAt(i); filter_Heading =
-	 * ret.getProductLevel(); filterId = ret.getProductid(); break; } }
+	 * ret.getProductLevel(); filterId = ret.getProductId(); break; } }
 	 */
 
     public void searchAndUpdateImage() {

@@ -37,7 +37,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -75,7 +74,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -4618,8 +4616,8 @@ SynchronizationHelper {
      * @return value
      */
     public NEXT_METHOD checkNextSyncMethod() {
-        if (bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE && !isDistributorDownloadDone
-                ) {
+        if (!isDistributorDownloadDone
+                && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
             isDistributorDownloadDone = true;
             return NEXT_METHOD.DISTRIBUTOR_DOWNLOAD;
         } else if (!isDistributorDownloadDone) {

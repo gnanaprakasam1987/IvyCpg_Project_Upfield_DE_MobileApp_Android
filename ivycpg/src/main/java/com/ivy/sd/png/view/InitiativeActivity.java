@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,9 +32,10 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     private BusinessModel bmodel;
     private Vector<InitiativeHeaderBO> initiativeHeaderBOVector;
     private Button initiativeButton[];
-    private boolean isClicked;
+    private boolean isClicked=false;
     private String screenCode = "MENU_STK_ORD";
     private Toolbar toolbar;
+    private Button btn_next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +72,17 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
         // Used to hide the app logo icon from actionbar
         // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
+        btn_next = (Button) findViewById(R.id.btn_next);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-        ((Button) findViewById(R.id.btn_next)).setOnClickListener(new OnClickListener() {
+
+        btn_next.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isClicked) {
-                    isClicked = true;
                     if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                         Intent i = new Intent(InitiativeActivity.this,
                                 DigitalContentDisplay.class);
@@ -100,9 +99,10 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                     }
                     overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                     finish();
-                }
+
             }
         });
+
         // Download the list of Initiatives.
         initiativeHeaderBOVector = bmodel.initiativeHelper
                 .getInitiativeHeaderBOVector();
@@ -196,57 +196,6 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    public void onBack(View v) {
-        // Intent returnIntent = new Intent();
-        // setResult(RESULT_CANCELED, returnIntent);
-        // finish();
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent intent = new Intent(InitiativeActivity.this,
-                    SchemeApply.class);
-            intent.putExtra("ScreenCode", screenCode);
-            startActivity(intent);
-        } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
-            Intent init = new Intent(InitiativeActivity.this,
-                    OrderDiscount.class);
-            startActivity(init);
-//            finish();
-        } else {
-
-            Intent intent;
-            if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
-                intent = new Intent(InitiativeActivity.this, CatalogOrder.class);
-            } else {
-                intent = new Intent(InitiativeActivity.this, StockAndOrder.class);
-            }
-            intent.putExtra("OrderFlag", "Nothing");
-            intent.putExtra("ScreenCode", screenCode);
-            startActivity(intent);
-        }
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-        finish();
-
-    }
-
-    public void onSave(View v) {
-
-        if (!isClicked) {
-            isClicked = true;
-            if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
-                Intent i = new Intent(InitiativeActivity.this,
-                        DigitalContentDisplay.class);
-                i.putExtra("FromInit", "Initiative");
-                startActivity(i);
-                finish();
-            } else {
-                Intent i = new Intent(InitiativeActivity.this,
-                        OrderSummary.class);
-                startActivity(i);
-                finish();
-            }
-
-        }
-    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {

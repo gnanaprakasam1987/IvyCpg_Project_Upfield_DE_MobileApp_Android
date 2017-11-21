@@ -196,7 +196,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         hideLocationButton();
         sih_apply = true;
         supportInvalidateOptionsMenu();
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
 
 
 
@@ -211,7 +211,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
 
 
     public void loadProductList(){
-       updategeneraltext(GENERAL);
+       updateGeneralText(GENERAL);
     }
 
     @Override
@@ -238,11 +238,11 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
         mDrawerLayout.closeDrawers();
 
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         productName.setText("");
         if (vanunloadlist == null) {
             bmodel.showAlert(
@@ -361,10 +361,10 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
         filterlist = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (LoadManagementBO productBO : vanunloadlist) {
                 if (levelBO.getProductID() == productBO.getParentid()) {
                     filterlist.add(productBO);
@@ -380,12 +380,12 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : vanunloadlist) {
                         if (levelBO.getProductID() == productBO.getParentid()) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
@@ -405,8 +405,8 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                 }
             }
         } else {
-            if (parentidList.size() > 0 && !filtertext.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : vanunloadlist) {
                         if (levelBO.getProductID() == productBO.getParentid()) {
                             filterlist.add(productBO);

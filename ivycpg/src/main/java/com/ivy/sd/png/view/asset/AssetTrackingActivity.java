@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.asset;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,46 +16,48 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
-        OnEditorActionListener, BrandDialogInterface {
+public class
+AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
+        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
 
-    private BusinessModel bmodel;
+    private BusinessModel mBusinessModel;
     private NFCManager nfcManager;
-    private Toolbar toolbar;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_assettrackingfrag);
+        setContentView(R.layout.activity_asset_tracking);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        mBusinessModel = (BusinessModel) getApplicationContext();
+        mBusinessModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        if (bmodel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
-            nfcManager = new NFCManager(AssetTrackingScreen.this);
+        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+            nfcManager = new NFCManager(AssetTrackingActivity.this);
             nfcManager.onActivityCreate();
             nfcManager.setOnTagReadListener(new NFCManager.TagReadListener() {
                 @Override
                 public void onTagRead(String tagRead) {
                     if (!tagRead.equals("")) {
                         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+                        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                                 .findFragmentById(R.id.asset_tracking_fragment);
                         asf.updateListByNFCTag(tagRead);
                     }
@@ -67,9 +69,9 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     @Override
     protected void onResume() {
         super.onResume();
-        bmodel.useNetworkProvidedValues();
+        mBusinessModel.useNetworkProvidedValues();
 
-        if (bmodel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
             nfcManager.onActivityResume();
         }
 
@@ -79,7 +81,7 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     protected void onPause() {
         super.onPause();
 
-        if (bmodel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
             nfcManager.onActivityPause();
         }
 
@@ -87,7 +89,7 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (bmodel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
             nfcManager.onActivityNewIntent(intent);
         }
     }
@@ -98,6 +100,7 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
+        mBusinessModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 
@@ -121,21 +124,21 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
 
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
-        asf.updatebrandtext(filtertext, id);
+        asf.updateBrandText(mFilterText, id);
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
     }
 
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateCancel();
     }
@@ -146,13 +149,13 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
@@ -162,19 +165,27 @@ public class AssetTrackingScreen extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
-        asf.updatefromFiveLevelFilter(parentidList);
+        asf.updateFromFiveLevelFilter(mParentIdList);
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingScreenFragment asf = (AssetTrackingScreenFragment) fm
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
-        asf.updatefromFiveLevelFilter(parentidList,mSelectedIdByLevelId,mAttributeProducts,filtertext);
+        asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
+    @Override
+    public void updateDate(Date date, String tag) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        AssetTrackingFragment fragment = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
+        fragment.updateDate(date,tag);
+
+    }
 }

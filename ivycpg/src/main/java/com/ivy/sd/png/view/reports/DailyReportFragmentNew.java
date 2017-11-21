@@ -370,7 +370,50 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 con.setMenuNumber(SDUtil.format((bmodel.getFITscoreForAllRetailers() / bmodel.getTotalCallsForTheDay()), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT23")) {
 
-                con.setMenuNumber(bmodel.getGreenFITscoreRetailersCount() + "/"+ bmodel.getTotalCallsForTheDay());
+                con.setMenuNumber(bmodel.getGreenFITscoreRetailersCount() + "/" + bmodel.getTotalCallsForTheDay());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT24")) {
+
+                con.setMenuNumber(outlet.getNoofOrder() + "");
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT25")) {
+
+                try {
+
+                    StringBuffer sb = null;
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                        if (bmodel.labelsMasterHelper
+                                .applyLabels("item_piece") != null)
+                            sb.append(outlet.getPcsQty() + " " + bmodel.labelsMasterHelper
+                                    .applyLabels("item_piece") + " ");
+                    }
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                        if (bmodel.labelsMasterHelper
+                                .applyLabels("item_case") != null)
+                            sb.append(con.getMenuNumber() + " " + outlet.getCsQty() + " "
+                                    + bmodel.labelsMasterHelper
+                                    .applyLabels("item_case") + " ");
+                    }
+                    if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                        if (bmodel.labelsMasterHelper
+                                .applyLabels("item_outer") != null)
+                            sb.append(con.getMenuNumber() + " " + outlet.getOuQty() + " "
+                                    + bmodel.labelsMasterHelper
+                                    .applyLabels("item_outer") + " ");
+                    }
+
+                    con.setMenuNumber(sb + "");
+                } catch (Exception e) {
+
+                }
+
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT26")) {
+
+                con.setMenuNumber(outlet.getTotPlannedVisit() + "/" + outlet.getTotPlanned());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT27")) {
+
+                con.setMenuNumber(outlet.getTotPlannedProductive() + "/" + outlet.getTotPlanned());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT28")) {
+
+                con.setMenuNumber(outlet.getTotAdhocProductive() + "/" + outlet.getTotAdhoc());
             }
         }
 
@@ -737,7 +780,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 						sb.append("^FO20,60^B3,,40^FDAA001^FS\\&");
 						sb.append("^FO20,180^AF^SNSERIAL NUMBER 00000000111,1,Y^FS");
 						sb.append("^PQ10^XZ");*/
-			/*	sb.append("^XA^LRN^CI0^XZ");
+            /*	sb.append("^XA^LRN^CI0^XZ");
 				sb.append("^XA^CWZ,E:TT0003M_.FNT^FS^XZ");
 				sb.append("^XA");
 				sb.append("^FO10,50^CI28^AZN,50,50^FDZebra Technologies^FS");

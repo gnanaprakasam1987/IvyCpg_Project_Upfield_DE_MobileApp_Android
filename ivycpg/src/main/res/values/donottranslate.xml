@@ -133,8 +133,6 @@
     <string name="incentivetext">Total Incentive</string>
     <string name="hasannouncer">Has Announcer</string>
 
-    <string name="moveAsset">Move Asset</string>
-
     <!--Delivered Order-->
     <string name="exceeds_orderd_qty">Exceeds ordered quantity </string>
     <string name="are_u_giving_free_products">Deliver free products</string>
@@ -175,4 +173,18 @@
     <string name="invoice_history_detail">Invoice History</string>
     <string name="please_close_the_day_for_current_Distributor">Please close the day for current distributor.</string>
     <string name="please_select_a_Distributor_to_download">Please select a distributor to download.</string>
+    <string name="invoice_creation">Creation</string>
+
+    <string name="reason_duplicated">Reason should not be duplicated.</string>
+    <string name="total_mrp">Total MRP</string>
+    <string name="scheme_ucp">Scheme UCP</string>
+    <string name="order_summary_dialog">Order Summary Dialog</string>
+    <string name="bill_payment">Bill Payment</string>
+
+    <!-- Asset -->
+    <string name="moveAsset">Move Asset</string>
+    <!-- Asset -->
+
+    <string name="cancelled">Cancelled</string>
+
 </resources>

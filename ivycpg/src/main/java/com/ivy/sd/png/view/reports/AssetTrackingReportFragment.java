@@ -12,8 +12,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBrandBO;
-import com.ivy.sd.png.bo.AssetTrackingReportBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 /**
  * Created by anandasir.v on 8/31/2017.
+ * 
  */
 
 public class AssetTrackingReportFragment extends Fragment {

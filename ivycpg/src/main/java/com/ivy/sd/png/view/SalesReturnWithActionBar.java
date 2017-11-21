@@ -119,7 +119,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         hideSpecialFilter();
         hideLocationButton();
 
-        updatebrandtext(BRAND_STRING, -1);
+        updateBrandText(BRAND_STRING, -1);
 
         if (bmodel.productHelper.getChildLevelBo() != null) {
             // Check weather Object are still exist or not.
@@ -490,14 +490,14 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -521,7 +521,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
                 if (bid == -1) {
-                    if (BRAND_STRING.equals(filtertext) || (bid == ret.getParentid())) {
+                    if (BRAND_STRING.equals(mFilterText) || (bid == ret.getParentid())) {
                         int count = 0;
                         for (SalesReturnReasonBO bo : ret.getSalesReturnReasonList()) {
 
@@ -611,7 +611,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                         }
                     } else {
                         if (bid == -1 && ret.getIsSaleable() == 1) {
-                            if (filtertext.equals(BRAND_STRING)) {
+                            if (mFilterText.equals(BRAND_STRING)) {
                                 mylist.add(ret);
                             }
                         } else if (bid == ret.getParentid() && ret.getIsSaleable() == 1) {
@@ -650,13 +650,13 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         if (mAttributeProducts != null) {
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO productBO : items) {
                         if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
@@ -678,7 +678,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO productBO : items) {
                     if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
                         mylist.add(productBO);
