@@ -2125,7 +2125,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 					true, false);*/
             builder = new AlertDialog.Builder(CrownReturnActivity.this);
 
-            customProgressDialog(builder, CrownReturnActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

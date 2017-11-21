@@ -729,7 +729,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
             builder = new AlertDialog.Builder(InvoicePrintZebra.this);
 
-            customProgressDialog(builder, InvoicePrintZebra.this, "Printing...");
+            customProgressDialog(builder, "Printing...");
             alertDialog = builder.create();
             alertDialog.show();
         }

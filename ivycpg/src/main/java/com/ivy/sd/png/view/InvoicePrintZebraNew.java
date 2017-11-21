@@ -539,7 +539,7 @@ public class InvoicePrintZebraNew extends Zebra {
 										R.string.saving_invoice), true, false);*/
                         builder = new AlertDialog.Builder(InvoicePrintZebraNew.this);
 
-                        customProgressDialog(builder, InvoicePrintZebraNew.this, getResources().getString(R.string.saving_invoice));
+                        customProgressDialog(builder, getResources().getString(R.string.saving_invoice));
                         alertDialog = builder.create();
                         alertDialog.show();
                     } else {
@@ -551,7 +551,7 @@ public class InvoicePrintZebraNew extends Zebra {
 										true, false);*/
                         builder = new AlertDialog.Builder(InvoicePrintZebraNew.this);
 
-                        customProgressDialog(builder, InvoicePrintZebraNew.this, getResources().getString(R.string.saving_new_order));
+                        customProgressDialog(builder, getResources().getString(R.string.saving_new_order));
                         alertDialog = builder.create();
                         alertDialog.show();
                     }

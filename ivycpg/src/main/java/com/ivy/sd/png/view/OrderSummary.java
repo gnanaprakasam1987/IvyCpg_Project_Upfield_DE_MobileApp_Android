@@ -1316,7 +1316,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         bmodel.synchronizationHelper.deleteFiles(
                                                 PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
-                                        customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build,getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
                                         // clear scheme free products
@@ -1342,7 +1342,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(OrderSummary.this);
 
-                                        customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
                                         // clear scheme free products
@@ -1421,7 +1421,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             builder10 = new AlertDialog.Builder(OrderSummary.this);
 
-                                            customProgressDialog(builder10, OrderSummary.this, "Printing....");
+                                            customProgressDialog(builder10, "Printing....");
                                             alertDialog = builder10.create();
                                             alertDialog.show();
                                         } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
@@ -1622,7 +1622,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         bmodel.synchronizationHelper.deleteFiles(
                                                 PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
-                                        customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
                                         new MyThread(OrderSummary.this,
@@ -1757,7 +1757,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             builder10 = new AlertDialog.Builder(OrderSummary.this);
 
-                                            customProgressDialog(builder10, OrderSummary.this, "Printing....");
+                                            customProgressDialog(builder10, "Printing....");
                                             alertDialog = builder10.create();
                                             alertDialog.show();
                                         }
@@ -1800,7 +1800,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                 builder10 = new AlertDialog.Builder(OrderSummary.this);
 
-                                customProgressDialog(builder10, OrderSummary.this, "Printing....");
+                                customProgressDialog(builder10, "Printing....");
                                 alertDialog = builder10.create();
                                 alertDialog.show();
                                 // Do something useful withe the position of the selected radio button
@@ -1838,7 +1838,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             builder10 = new AlertDialog.Builder(OrderSummary.this);
 
-                                            customProgressDialog(builder10, OrderSummary.this, "Printing....");
+                                            customProgressDialog(builder10,"Printing....");
                                             alertDialog = builder10.create();
                                             alertDialog.show();
                                         }
@@ -1978,7 +1978,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                    customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.saving_new_order));
+                    customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                     alertDialog = build.create();
                     alertDialog.show();
 
@@ -2210,7 +2210,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                         build = new AlertDialog.Builder(OrderSummary.this);
 
-                        customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.saving_new_order));
+                        customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                         alertDialog = build.create();
                         alertDialog.show();
                         if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
@@ -2379,13 +2379,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 if (bmodel.configurationMasterHelper.IS_INVOICE) {
                                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                                    customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.saving_invoice));
+                                    customProgressDialog(build, getResources().getString(R.string.saving_invoice));
                                     alertDialog = build.create();
                                     alertDialog.show();
                                 } else {
                                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                                    customProgressDialog(build, OrderSummary.this, getResources().getString(R.string.saving_new_order));
+                                    customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                                     alertDialog = build.create();
                                     alertDialog.show();
                                 }
@@ -3203,7 +3203,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             super.onPreExecute();
             builder = new AlertDialog.Builder(OrderSummary.this);
 
-            customProgressDialog(builder, OrderSummary.this, "Printing");
+            customProgressDialog(builder, "Printing");
             alertDialog = builder.create();
             alertDialog.show();
         }

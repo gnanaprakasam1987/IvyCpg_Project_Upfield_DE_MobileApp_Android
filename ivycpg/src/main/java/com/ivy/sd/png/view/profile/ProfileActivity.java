@@ -1887,7 +1887,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ProfileActivity.this);
-            customProgressDialog(builder, ProfileActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1945,7 +1945,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ProfileActivity.this);
-            customProgressDialog(builder, ProfileActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
