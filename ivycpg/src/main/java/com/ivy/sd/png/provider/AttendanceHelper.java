@@ -320,7 +320,7 @@ public class AttendanceHelper {
     public String getReasonName(String id) {
         try {
 
-            DBUtil db = new DBUtil(bmodel.getActivity(), DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListName FROM StandardListMaster"

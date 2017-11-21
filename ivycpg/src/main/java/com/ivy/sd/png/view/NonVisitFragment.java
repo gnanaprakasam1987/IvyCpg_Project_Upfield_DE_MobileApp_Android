@@ -255,9 +255,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                     if (bmodel.getRetailerMaster().get(i)
                                             .getRetailerName().toLowerCase()
                                             .contains(filter.toLowerCase()) ||
-                                            bmodel.getRetailerMaster().get(i)
-                                                    .getRetailerCode().toLowerCase()
-                                                    .contains(filter.toLowerCase())) {
+                                            ((bmodel.getRetailerMaster().get(i)
+                                                    .getRetailerCode() != null) ?
+                                                    bmodel.getRetailerMaster().get(i)
+                                                            .getRetailerCode().toLowerCase()
+                                                            .contains(filter.toLowerCase()) : false)) {
                                         retailer.add(bmodel.getRetailerMaster().get(i));
                                     }
                                 } else {
@@ -267,10 +269,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                             if (filter != null) {
                                 if (bmodel.getRetailerMaster().get(i)
                                         .getRetailerName().toLowerCase()
-                                        .contains(filter.toLowerCase()) ||
+                                        .contains(filter.toLowerCase()) || ((bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode() != null) ?
                                         bmodel.getRetailerMaster().get(i)
                                                 .getRetailerCode().toLowerCase()
-                                                .contains(filter.toLowerCase())) {
+                                                .contains(filter.toLowerCase()) : false)) {
                                     retailer.add(bmodel.getRetailerMaster().get(i));
                                 }
                             } else {
@@ -296,9 +299,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                         if (bmodel.getRetailerMaster().get(i)
                                                 .getRetailerName().toLowerCase()
                                                 .contains(filter.toLowerCase()) ||
-                                                bmodel.getRetailerMaster().get(i)
-                                                        .getRetailerCode().toLowerCase()
-                                                        .contains(filter.toLowerCase())) {
+                                                ((bmodel.getRetailerMaster().get(i)
+                                                        .getRetailerCode() != null) ?
+                                                        bmodel.getRetailerMaster().get(i)
+                                                                .getRetailerCode().toLowerCase()
+                                                                .contains(filter.toLowerCase()) : false)) {
                                             retailer.add(bmodel.getRetailerMaster()
                                                     .get(i));
                                         }
@@ -314,9 +319,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                     if (bmodel.getRetailerMaster().get(i)
                                             .getRetailerName().toLowerCase()
                                             .contains(filter.toLowerCase()) ||
-                                            bmodel.getRetailerMaster().get(i)
-                                                    .getRetailerCode().toLowerCase()
-                                                    .contains(filter.toLowerCase())) {
+                                            ((bmodel.getRetailerMaster().get(i)
+                                                    .getRetailerCode() != null) ?
+                                                    bmodel.getRetailerMaster().get(i)
+                                                            .getRetailerCode().toLowerCase()
+                                                            .contains(filter.toLowerCase()) : false)) {
                                         retailer.add(bmodel.getRetailerMaster()
                                                 .get(i));
                                     }
@@ -860,13 +867,13 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         // TO DO Auto-generated method stub
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // TO DO Auto-generated method stub
 
     }
@@ -884,14 +891,14 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TO DO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TO DO Auto-generated method stub
 
     }
@@ -911,14 +918,14 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         // TO DO Auto-generated method stub
 
     }
 
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         // TO DO Auto-generated method stub
     }
@@ -1019,7 +1026,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                 .equals(MENU_PLANNING))
                                 || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION)) {
 
-                            retailerObj = retailer
+                            retailerObj = (RetailerMasterBO) items
                                     .get(holder.ref);
                             bmodel.setRetailerMasterBO(retailerObj);
 

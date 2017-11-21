@@ -105,6 +105,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private boolean isUpdatePrintCount;
     private boolean isHomeBtnEnable;
     private boolean isPrintClicked;
+    private boolean isHidePrintBtn;
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
@@ -133,6 +134,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         isUpdatePrintCount = getIntent().getExtras().getBoolean("IsUpdatePrintCount", false);
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
+        isHidePrintBtn=getIntent().getExtras().getBoolean("isHidePrintBtn", false);
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -157,6 +159,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         if(!bmodel.configurationMasterHelper.IS_SHARE_INVOICE){
             menu.findItem(R.id.menu_share_pdf).setVisible(false);
+        }
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
+        }
+
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -236,7 +245,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             super.onPreExecute();
             builder = new AlertDialog.Builder(CommonPrintPreviewActivity.this);
-            bmodel.customProgressDialog(alertDialog, builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
+            customProgressDialog(builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
             alertDialog = builder.create();
             alertDialog.show();
         }

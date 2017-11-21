@@ -437,6 +437,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";
     public boolean IS_CATALOG_IMG_DOWNLOAD;
 
+    private static final String CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = "FUN57";
+    public boolean IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE;
+
+
     private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
     public boolean IS_TEMP_ORDER_SAVE;
 
@@ -1519,7 +1523,7 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled6 column value from the hhtmenuMaster table.
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
      *
      * @return boolean true - survey is required.
      */
@@ -1902,6 +1906,7 @@ public class ConfigurationMasterHelper {
         }
         this.IS_APPLY_DISCOUNT_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) : false;
         this.IS_APPLY_TAX_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_TAX) != null ? hashMapHHTModuleConfig.get(CODE_SR_TAX) : false;
+        this.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : false;
 
         if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) != null) {
             if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) == 1)
@@ -4286,7 +4291,6 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     con = new ConfigureBO();
                     con.setConfigCode(c.getString(0));
-
                     con.setMenuName(c.getString(1));
                     con.setMenuNumber(c.getString(2));
                     con.setHasLink(c.getInt(3));

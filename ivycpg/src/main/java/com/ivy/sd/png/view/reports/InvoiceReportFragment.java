@@ -26,6 +26,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -35,7 +36,7 @@ import com.ivy.sd.png.util.DateUtil;
 
 import java.util.Vector;
 
-public class InvoiceReportFragment extends Fragment implements
+public class InvoiceReportFragment extends IvyBaseFragment implements
         OnClickListener, OnItemClickListener {
     private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,totalqtyTV,outid,invoicenotitle,totalvaluetitle,lbl_total_qty,lbl_avg_lines;
     private ListView lvwplist;
@@ -228,7 +229,7 @@ public class InvoiceReportFragment extends Fragment implements
                     DataMembers.SD, "Exporting orders...", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Exporting orders...");
+            customProgressDialog(builder, getActivity(), "Exporting orders...");
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -533,7 +534,7 @@ public class InvoiceReportFragment extends Fragment implements
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

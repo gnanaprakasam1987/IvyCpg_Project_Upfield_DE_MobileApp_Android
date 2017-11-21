@@ -41,7 +41,7 @@ import com.ivy.sd.png.view.CounterPlanogramActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
-import com.ivy.sd.png.view.PosmTrackingScreen;
+import com.ivy.sd.png.view.asset.PosmTrackingActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
@@ -540,7 +540,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                         SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
                 Intent i = new Intent(getActivity(),
-                        PosmTrackingScreen.class);
+                        PosmTrackingActivity.class);
                 i.putExtra("CurrentActivityCode", menu.getConfigCode());
                 i.putExtra("FromInit", "DigiCS");
                 i.putExtra("screentitle", menu.getMenuName());
@@ -754,7 +754,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -937,7 +937,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

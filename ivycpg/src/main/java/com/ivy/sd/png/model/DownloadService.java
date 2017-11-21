@@ -155,8 +155,15 @@ public class DownloadService extends IntentService {
                         for (int i = 0; i < tablelist.size(); i++) {
                             tablename = tablelist.get(i);
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablename);
-                            String errorLoginCode = jsonLoginObject
-                                    .getString(SynchronizationHelper.ERROR_CODE);
+                            String errorLoginCode = null;
+                            try {
+                                errorLoginCode = jsonLoginObject
+                                        .getString(SynchronizationHelper.ERROR_CODE);
+                            } catch (Exception e) {
+                                errorLoginCode = null;
+                                Commons.printException(e);
+                            }
+
                             final long startTime = System.nanoTime();
                             if (errorLoginCode != null) {
                                 if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
@@ -172,7 +179,7 @@ public class DownloadService extends IntentService {
                             long endTime = (System.nanoTime() - startTime) / 1000000;
                             bmodel.synchronizationHelper.mTableList.put(tablename, endTime + "");
 
-                            Commons.print("Download service," + "total Count: " + totalListCount+ " update Count: " + updateCount);
+                            Commons.print("Download service," + "total Count: " + totalListCount + " update Count: " + updateCount);
                         }
                         if (totalListCount == updateCount) {
                             bmodel.synchronizationHelper.getURLResponse();
@@ -197,7 +204,7 @@ public class DownloadService extends IntentService {
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT);
                             insertBundle.putString(SynchronizationHelper.ERROR_CODE,
-                                            SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE);
+                                    SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE);
                             insertBundle.putSerializable("isFromWhere", isFromWhere);
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
@@ -207,7 +214,7 @@ public class DownloadService extends IntentService {
                             downloadInsertIntent.putExtras(insertBundle);
                             sendBroadcast(downloadInsertIntent);
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         downloadInsertIntent = new Intent();
                         Bundle insertBundle = new Bundle();
                         insertBundle.putString(SynchronizationHelper.ERROR_CODE,
@@ -254,8 +261,8 @@ public class DownloadService extends IntentService {
                             if (errorLoginCode != null) {
                                 if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
 
-                                        bmodel.synchronizationHelper
-                                                .parseJSONAndInsert(jsonLoginObject, false);
+                                    bmodel.synchronizationHelper
+                                            .parseJSONAndInsert(jsonLoginObject, false);
 
                                 }
                             }
@@ -355,7 +362,7 @@ public class DownloadService extends IntentService {
                             if (errorLoginCode != null) {
                                 if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                                     bmodel.synchronizationHelper
-                                                .parseJSONAndInsert(jsonLoginObject, false);
+                                            .parseJSONAndInsert(jsonLoginObject, false);
 
                                 }
                             }
@@ -446,8 +453,8 @@ public class DownloadService extends IntentService {
                 if (response == SynchronizationHelper.VOLLEY_SUCCESS_RESPONSE) {
                     ArrayList<String> tablelist = intent.getStringArrayListExtra(SynchronizationHelper.JSON_OBJECT_TABLE_LIST);
 //					String jsoninsertString=bmodel.synchronizationHelper.getJsonResponseFromTableName(tableName);
-					/*String jsoninsertString = intent
-							.getStringExtra(SynchronizationHelper.JSON_OBJECT);*/
+                    /*String jsoninsertString = intent
+                            .getStringExtra(SynchronizationHelper.JSON_OBJECT);*/
                     try {
                         for (int i = 0; i < tablelist.size(); i++) {
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
@@ -528,8 +535,8 @@ public class DownloadService extends IntentService {
                 if (response == SynchronizationHelper.VOLLEY_SUCCESS_RESPONSE) {
                     ArrayList<String> tablelist = intent.getStringArrayListExtra(SynchronizationHelper.JSON_OBJECT_TABLE_LIST);
 //					String jsoninsertString=bmodel.synchronizationHelper.getJsonResponseFromTableName(tableName);
-					/*String jsoninsertString = intent
-							.getStringExtra(SynchronizationHelper.JSON_OBJECT);*/
+                    /*String jsoninsertString = intent
+                            .getStringExtra(SynchronizationHelper.JSON_OBJECT);*/
                     try {
                         for (int i = 0; i < tablelist.size(); i++) {
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablelist.get(i));
@@ -700,7 +707,7 @@ public class DownloadService extends IntentService {
                             if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                                 if (tablelist.get(i).equalsIgnoreCase("RetailerMaster"))
                                     bmodel.synchronizationHelper.downloadRetailerByLocOrUser(jsonObject);
-                                if(tablelist.get(i).equalsIgnoreCase("RetailerBeatMapping"))
+                                if (tablelist.get(i).equalsIgnoreCase("RetailerBeatMapping"))
                                     bmodel.synchronizationHelper.downloadRetailerBeats(jsonObject);
 
 //
@@ -764,11 +771,11 @@ public class DownloadService extends IntentService {
                         if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() == bmodel.synchronizationHelper.getRetailerwiseTotalIterateCount())
                             bmodel.synchronizationHelper.downloadMasterUrlFromDBRetailerWise();
                     }
-                    final ArrayList<String> urlList=bmodel.synchronizationHelper.getUrlList();
-                    if(urlList.size()==0){
-                    bmodel.synchronizationHelper
-                            .updateProductAndRetailerMaster();
-                    bmodel.synchronizationHelper.loadMethodsNew();
+                    final ArrayList<String> urlList = bmodel.synchronizationHelper.getUrlList();
+                    if (urlList.size() == 0) {
+                        bmodel.synchronizationHelper
+                                .updateProductAndRetailerMaster();
+                        bmodel.synchronizationHelper.loadMethodsNew();
                     }
 
                     dataDownloadIntent = new Intent();
@@ -1069,33 +1076,31 @@ public class DownloadService extends IntentService {
                     }
 
 
-
                     if (isFromWhere == SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION) {
                         bmodel.synchronizationHelper
                                 .updatetempTablesWithRetailerMaster();
                         loadRetailerDependentMethod();
-                    }else if(isFromWhere==SynchronizationHelper.FROM_SCREEN.NEW_RETAILER){
+                    } else if (isFromWhere == SynchronizationHelper.FROM_SCREEN.NEW_RETAILER) {
                         bmodel.synchronizationHelper.updatetempTablesWithRetailerMaster();
                         bmodel.downloadRetailerMaster();
                     } else {
-                            if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE)
-                                bmodel.configurationMasterHelper.isDistributorWiseDownload();
+                        if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE)
+                            bmodel.configurationMasterHelper.isDistributorWiseDownload();
 
                         if (bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
-                                isAlreadyLastVisitConfigLoaded = true;
-                            } else {
-                                isAlreadyLastVisitConfigLoaded = bmodel.configurationMasterHelper.downloadConfigForLoadLastVisit();
-                            }
+                            isAlreadyLastVisitConfigLoaded = true;
+                        } else {
+                            isAlreadyLastVisitConfigLoaded = bmodel.configurationMasterHelper.downloadConfigForLoadLastVisit();
+                        }
 
-                            if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE && ((isFromWhere == SynchronizationHelper.FROM_SCREEN.LOGIN && !isAlreadyLastVisitConfigLoaded) || isFromWhere == SynchronizationHelper.FROM_SCREEN.SYNC)) {
-                                final long startTime = System.nanoTime();
-                                bmodel.synchronizationHelper
-                                        .updateProductAndRetailerMaster();
-                                bmodel.synchronizationHelper.loadMethodsNew();
-                                long endTime = (System.nanoTime() - startTime) / 1000000;
-                                bmodel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");
-                            }
-
+                        if (!bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE && ((isFromWhere == SynchronizationHelper.FROM_SCREEN.LOGIN && !isAlreadyLastVisitConfigLoaded) || isFromWhere == SynchronizationHelper.FROM_SCREEN.SYNC)) {
+                            final long startTime = System.nanoTime();
+                            bmodel.synchronizationHelper
+                                    .updateProductAndRetailerMaster();
+                            bmodel.synchronizationHelper.loadMethodsNew();
+                            long endTime = (System.nanoTime() - startTime) / 1000000;
+                            bmodel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");
+                        }
 
 
                     }
@@ -1133,14 +1138,12 @@ public class DownloadService extends IntentService {
                 break;
 
 
-
             default:
                 break;
 
         }
 
     }
-
 
 
     private void loadRetailerDependentMethod() {

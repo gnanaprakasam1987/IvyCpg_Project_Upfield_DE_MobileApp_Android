@@ -372,7 +372,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(VanLoadStockApplyActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, VanLoadStockApplyActivity.this, "Applying Vanload Stock ");
+            customProgressDialog(builder, VanLoadStockApplyActivity.this, "Applying Vanload Stock ");
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -423,7 +423,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(VanLoadStockApplyActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, VanLoadStockApplyActivity.this, "Applying Vanload Stock ");
+            customProgressDialog(builder, VanLoadStockApplyActivity.this, "Applying Vanload Stock ");
             alertDialog = builder.create();
             alertDialog.show();
         }

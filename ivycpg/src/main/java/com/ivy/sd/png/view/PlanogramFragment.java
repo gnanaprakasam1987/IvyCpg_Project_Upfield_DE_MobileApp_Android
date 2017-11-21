@@ -146,7 +146,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
         locSelectionId = Integer.parseInt(bmodel.productHelper
                 .getInStoreLocation().get(0).getListID());
         if (savedInstanceState != null) {
-            updatebrandtext(BRAND,
+            updateBrandText(BRAND,
                     savedInstanceState.getInt("id"));
             filterId = savedInstanceState.getInt("id");
             filter_Heading = savedInstanceState.getString("filterName");
@@ -257,18 +257,18 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
             if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM) {
                 if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-                    updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+                    updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
                 } else {
-                    updatebrandtext(BRAND, 0);
+                    updateBrandText(BRAND, 0);
                 }
             } else {
 
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
                     mSelectedFilterMap.put("General", GENERAL);
                     if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-                        updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+                        updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
                     } else {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 } else {
                     if (bmodel.mSFSelectedFilter == -1)
@@ -281,7 +281,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
                     mSelectedFilterMap.put("Brand",
                             String.valueOf(bmodel.mSFSelectedFilter));
-                    updatebrandtext(BRAND, bmodel.mSFSelectedFilter);
+                    updateBrandText(BRAND, bmodel.mSFSelectedFilter);
                     productFilterClickedFragment();
                 }
 
@@ -452,14 +452,14 @@ public class PlanogramFragment extends IvyBaseFragment implements
     }*/
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         try {
 
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             filterId = bid;
 
@@ -471,10 +471,10 @@ public class PlanogramFragment extends IvyBaseFragment implements
             for (final PlanogramBO planogramBO : items) {
                 if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM
                         && planogramBO.getLocationID() == locSelectionId) {
-                    if (bid == planogramBO.getPid() || (bid == 0 && "Brand".equals(filtertext)))
+                    if (bid == planogramBO.getPid() || (bid == 0 && "Brand".equals(mFilterText)))
                         vPlanogram.add(planogramBO);
                 } else if (locSelectionId == -1) {
-                    if (bid == planogramBO.getPid() || (bid == -1 && "Brand".equals(filtertext)))
+                    if (bid == planogramBO.getPid() || (bid == -1 && "Brand".equals(mFilterText)))
                         vPlanogram.add(planogramBO);
                 }
             }
@@ -486,11 +486,11 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
 
     @Override
-    public void updategeneraltext(String filtertext) {
-        generalbutton = filtertext;
+    public void updateGeneralText(String mFilterText) {
+        generalbutton = mFilterText;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
-        updatebrandtext(BRAND, bmodel.mSFSelectedFilter);
+        updateBrandText(BRAND, bmodel.mSFSelectedFilter);
     }
 
     @Override
@@ -755,7 +755,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -897,7 +897,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
                                     + locationName);
                         }
                         dialog.dismiss();
-                        updatebrandtext(BRAND, 0);
+                        updateBrandText(BRAND, 0);
 
                     }
                 });
@@ -1286,12 +1286,12 @@ public class PlanogramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
 
         vPlanogram = new Vector<>();
 
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (PlanogramBO planogramBO : items) {
                 if (levelBO.getProductID() == planogramBO.getPid()) {
                     if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM && planogramBO.getLocationID() == locSelectionId) {
@@ -1309,12 +1309,12 @@ public class PlanogramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
-        this.parentidList = parentidList;
+        this.parentidList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
         vPlanogram = new Vector<>();
         if (items == null) {
             bmodel.showAlert(
@@ -1322,8 +1322,8 @@ public class PlanogramFragment extends IvyBaseFragment implements
             return;
         }
 
-        if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-            for (LevelBO levelBO : parentidList) {
+        if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+            for (LevelBO levelBO : mParentIdList) {
                 for (PlanogramBO planogramBO : items) {
                     if (levelBO.getProductID() == planogramBO.getPid()) {
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM && planogramBO.getLocationID() == locSelectionId) {
@@ -1338,8 +1338,8 @@ public class PlanogramFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-            for (LevelBO levelBO : parentidList) {
+        } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
+            for (LevelBO levelBO : mParentIdList) {
                 for (PlanogramBO planogramBO : items) {
                     if (levelBO.getProductID() == planogramBO.getPid()) {
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM && planogramBO.getLocationID() == locSelectionId) {
@@ -1352,7 +1352,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+        } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (PlanogramBO planogramBO : items) {
                     if (pid == planogramBO.getPid()) {
@@ -1407,13 +1407,13 @@ public class PlanogramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 }

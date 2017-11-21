@@ -129,7 +129,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
 
             builder = new AlertDialog.Builder(WebViewPlanActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, WebViewPlanActivity.this, getResources().getString(R.string.Authenticating));
+            customProgressDialog(builder, WebViewPlanActivity.this, getResources().getString(R.string.Authenticating));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -79,11 +79,11 @@ public class FilterDialogue<E> extends Dialog implements OnClickListener,
 			public void onClick(View v) {
 				// Perform action on click
 				if (buttonName.equals("Brand")) {
-					bdinterface.updatebrandtext("Brand", -1);
+					bdinterface.updateBrandText("Brand", -1);
 					FilterDialogue.this.dismiss();
 				}
 				if (buttonName.equals("General")) {
-					bdinterface.updategeneraltext("General");
+					bdinterface.updateGeneralText("General");
 					FilterDialogue.this.dismiss();
 				}
 
@@ -260,13 +260,13 @@ public class FilterDialogue<E> extends Dialog implements OnClickListener,
 
 			if (buttonName.equals("Brand")) {
 
-				brandInterface.updatebrandtext((String) holder.text.getText(), holder.id);
+				brandInterface.updateBrandText((String) holder.text.getText(), holder.id);
 				FilterDialogue.this.dismiss();
 			}
 
 			else if (buttonName.equals("General")) {
 
-				brandInterface.updategeneraltext((String) holder.text.getText());
+				brandInterface.updateGeneralText((String) holder.text.getText());
 				FilterDialogue.this.dismiss();
 			}
 		} else {

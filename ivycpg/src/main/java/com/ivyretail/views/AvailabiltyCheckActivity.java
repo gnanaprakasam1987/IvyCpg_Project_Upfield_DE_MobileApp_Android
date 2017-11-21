@@ -1345,7 +1345,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(AvailabiltyCheckActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, AvailabiltyCheckActivity.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, AvailabiltyCheckActivity.this, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

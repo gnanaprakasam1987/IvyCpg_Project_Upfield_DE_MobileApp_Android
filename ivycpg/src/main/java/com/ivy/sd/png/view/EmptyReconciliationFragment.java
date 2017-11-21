@@ -379,7 +379,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
                     true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -607,18 +607,18 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         strBarCodeSearch = "ALL";
         bmodel.mPriceTrackingHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
@@ -626,7 +626,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -642,11 +642,11 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId,ArrayList<Integer>mAttributeProducts,String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
 
     }
 

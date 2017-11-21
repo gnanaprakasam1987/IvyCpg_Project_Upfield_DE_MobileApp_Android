@@ -79,6 +79,7 @@ public class DashboardFragment extends IvyBaseFragment {
     private static final String TGT_MONTH_TAG = "target_month";
     private static final String TGT_YEAR_TAG = "target_year";
     private boolean isFromPlanning = false;
+    private String menuCode = "";
 
     private View view;
     boolean isFromHomeScreenTwo = false;
@@ -114,6 +115,7 @@ public class DashboardFragment extends IvyBaseFragment {
             if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
                 isFromHomeScreenTwo = true;
             }
+            menuCode = getActivity().getIntent().getStringExtra("menuCode");
         }
 
         setUpActionBar();
@@ -292,6 +294,7 @@ public class DashboardFragment extends IvyBaseFragment {
             if (isFromHomeScreenTwo) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
+                bmodel.saveModuleCompletion(menuCode);
                 getActivity().finish();
             } else {
                 Intent j = new Intent(getActivity(), HomeScreenActivity.class);

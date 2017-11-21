@@ -1147,7 +1147,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder, getResources().getString(R.string.saving));
+            //customProgressDialog(builder, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1188,5 +1189,237 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         }
     }
+
+    private void showFileDeleteAlert(final String bbid,
+                                     final String imageNameStarts) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(R.string.word_already)
+                + mImageCount
+                + getResources().getString(
+                R.string.word_photocaptured_delete_retake));
+
+        builder.setPositiveButton(getResources().getString(R.string.yes),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArrayList<PromotionBO> items = bmodel.promotionHelper
+                                .getmPromotionList();
+                        for (int i = 0; i < items.size(); i++) {
+                            PromotionBO promoBO = items.get(i);
+                            if (promoBO.getPromoId() == Integer.parseInt(bbid)) {
+                                promoBO.setImageName("");
+                            }
+                        }
+                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                imageNameStarts);
+                        dialog.dismiss();
+                        Intent intent = new Intent(getActivity(),
+                                CameraActivity.class);
+                        intent.putExtra("quality", 40);
+                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent,
+                                bmodel.CAMERA_REQUEST_CODE);
+                    }
+                });
+
+        builder.setNegativeButton(getResources().getString(R.string.no),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setCancelable(false);
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
+    @Override
+    public void updateGeneralText(String mFilterText) {
+    }
+
+    @Override
+    public void updateCancel() {
+        // Close the drawer
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void loadStartVisit() {
+    }
+
+    @Override
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
+    }
+
+    @Override
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+        try {
+            ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
+            if (items == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.no_products_exists),
+                        0);
+                return;
+            }
+            promoList = new ArrayList<>();
+
+            for (LevelBO levelBO : mParentIdList) {
+                for (PromotionBO promoBO : items) {
+                    if (levelBO.getProductID() == promoBO.getProductId()) {
+                        promoList.add(promoBO);
+                    }
+
+                }
+            }
+            // set the list values to the adapter
+            mSchedule = new MyAdapter(promoList);
+            lvwplist.setAdapter(mSchedule);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        try {
+            this.parentidList = mParentIdList;
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+            this.mAttributeProducts = mAttributeProducts;
+            this.filtertext = mFilterText;
+            ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
+            if (items == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.no_products_exists),
+                        0);
+                return;
+            }
+            promoList = new ArrayList<>();
+
+            if (mAttributeProducts != null) {
+                if (!mParentIdList.isEmpty()) {
+                    for (LevelBO levelBO : mParentIdList) {
+                        for (PromotionBO productBO : items) {
+                            if (levelBO.getProductID() == productBO.getProductId()
+                                    && mAttributeProducts.contains(productBO.getProductId())) {
+                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                promoList.add(productBO);
+                            }
+                        }
+                    }
+                } else {
+                    for (int pid : mAttributeProducts) {
+                        for (PromotionBO promoBO : items) {
+
+                            if (pid == promoBO.getProductId()) {
+                                promoList.add(promoBO);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (mSelectedIdByLevelId.size() == 0 || bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+                    promoList.addAll(items);
+                } else {
+                    for (LevelBO levelBO : mParentIdList) {
+                        for (PromotionBO promoBO : items) {
+                            if (levelBO.getProductID() == promoBO.getProductId()) {
+                                promoList.add(promoBO);
+                            }
+
+                        }
+                    }
+                }
+            }
+            // set the list values to the adapter
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+            mSchedule = new MyAdapter(promoList);
+            lvwplist.setAdapter(mSchedule);
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void showLocation() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedLocationIndex = item;
+                        mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
+                        updateBrandText("", mselectedfilterid);
+                        dialog.dismiss();
+
+                    }
+                });
+
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
+    public void numberPressed(View vw) {
+        if (QUANTITY == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
+        } else {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+                String s = QUANTITY.getText().toString();
+                if (!(s.length() == 0)) {
+                    s = s.substring(0, s.length() - 1);
+                    if (s.length() == 0) {
+                        s = "";
+                    }
+                }
+                QUANTITY.setText(s);
+            } else {
+                if (getView() != null) {
+                    Button ed = (Button) getView().findViewById(vw.getId());
+                    append = ed.getText().toString();
+                }
+                eff();
+            }
+        }
+    }
+
+    private void eff() {
+        String s = QUANTITY.getText().toString();
+        if (!"0".equals(s) && !"0.0".equals(s)) {
+            String strQuantity = QUANTITY.getText() + append;
+            QUANTITY.setText(strQuantity);
+        } else
+            QUANTITY.setText(append);
+    }
+
+//    private Bitmap getCircularBitmapFrom(Bitmap source) {
+//        if (source == null || source.isRecycled()) {
+//            return null;
+//        }
+//        float radius = source.getWidth() > source.getHeight() ? ((float) source
+//                .getHeight()) / 2f : ((float) source.getWidth()) / 2f;
+//        Bitmap bitmap = Bitmap.createBitmap(source.getWidth(),
+//                source.getHeight(), Bitmap.Config.ARGB_8888);
+//
+//        Paint paint = new Paint();
+//        BitmapShader shader = new BitmapShader(source, Shader.TileMode.CLAMP,
+//                Shader.TileMode.CLAMP);
+//        paint.setShader(shader);
+//        paint.setAntiAlias(true);
+//
+//        Canvas canvas = new Canvas(bitmap);
+//        canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2,
+//                radius, paint);
+//
+//        return bitmap;
+//    }
 
 }

@@ -96,7 +96,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(StockProposalScreen.this);
 
-        bmodel.customProgressDialog(alertDialog, builder, StockProposalScreen.this, getResources().getString(R.string.loading_data));
+        customProgressDialog(builder, StockProposalScreen.this, getResources().getString(R.string.loading_data));
         alertDialog = builder.create();
         mDrawerToggle = new ActionBarDrawerToggle(StockProposalScreen.this,
                 mDrawerLayout, /* DrawerLayout object */
@@ -275,7 +275,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         hideShemeButton();
         hideLocationButton();
         supportInvalidateOptionsMenu();
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
         if (bmodel.configurationMasterHelper.SHOW_SO_APPLY)
             so_apply = true;
         if (bmodel.configurationMasterHelper.SHOW_STD_QTY_APPLY)
@@ -291,13 +291,13 @@ public class StockProposalScreen extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
         // Close the drawer
         mDrawerLayout.closeDrawers();
 
         // Change the Brand button Name
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
 
         // Consider generalbutton text if it is dependent filter.
         String generaltxt = generalbutton;
@@ -369,14 +369,14 @@ public class StockProposalScreen extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        Commons.print("selected filter " + parentidList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + filtertext);
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         mylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : stockPropVector) {
                         if (productBO.getIssalable() == 1) {
                             if (levelBO.getProductID() == productBO.getParentid()) {
@@ -401,8 +401,8 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                 }
             }
         } else {
-            if (parentidList.size() > 0 && !filtertext.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : stockPropVector) {
                         Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
                         if (productBO.getIssalable() == 1) {
@@ -415,14 +415,14 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                 }
 
             } else {
-                updategeneraltext(GENERAL);
+                updateGeneralText(GENERAL);
             }
         }
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         mDrawerLayout.closeDrawers();
-        if (!filtertext.equalsIgnoreCase("")) {
+        if (!mFilterText.equalsIgnoreCase("")) {
             refreshList();
             updateValue();
         }
@@ -661,10 +661,10 @@ public class StockProposalScreen extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
-        updatebrandtext(BRAND, -1);
+        generalbutton = mFilterText;
+        updateBrandText(BRAND, -1);
     }
 
     private void generalFilterClickedFragment() {
@@ -2149,7 +2149,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
 
             builder = new AlertDialog.Builder(StockProposalScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, StockProposalScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, StockProposalScreen.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

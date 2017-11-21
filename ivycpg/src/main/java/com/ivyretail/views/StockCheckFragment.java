@@ -155,10 +155,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     mSelectedFilterMap.put("General", defaultfilter);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView(view);
-                        updategeneraltext(defaultfilter);
+                        updateGeneralText(defaultfilter);
                         selectTab(view, defaultfilter);
                     } else {
-                        updategeneraltext(defaultfilter);
+                        updateGeneralText(defaultfilter);
                     }
 
 
@@ -166,17 +166,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     mSelectedFilterMap.put("General", GENERAL);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView(view);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                         selectTab(view, bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                     } else {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
 
 
                 }
             } else {
                 mSelectedFilterMap.put("General", GENERAL);
-                updategeneraltext(GENERAL);
+                updateGeneralText(GENERAL);
             }
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -430,6 +430,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void loadSearchedList() {
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
+            Vector<ProductMasterBO> items = new Vector<>();
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
                 for (ProductMasterBO productBo : getTaggedProducts()) {
                     if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
@@ -443,7 +444,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
                 items = getTaggedProducts();
             }
-            if (items == null) {
+            if (items.isEmpty()) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
                         0);
@@ -532,14 +533,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -563,7 +564,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(filtertext))) {
+                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
@@ -581,7 +582,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(filtertext))) {
+                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
@@ -599,7 +600,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(filtertext))) {
+                        if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
                             if (sku.getIsSaleable() == 1) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
@@ -668,14 +669,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
         fiveFilter_productIDs = null;
-        generalbutton = filtertext;
+        generalbutton = mFilterText;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -1219,8 +1220,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                bmodel.setActivity(getActivity());
-
                                 bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                                 bmodel.productHelper.setPdname(holder.pname);
                                 bmodel.productHelper.setProdId(holder.productId);
@@ -1233,8 +1232,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 startActivity(intent);
 
                             } else {
-                                bmodel.setActivity(getActivity());
-
                                 bmodel.productHelper.setPdname(holder.pname);
                                 bmodel.productHelper.setProdId(holder.productId);
                                 bmodel.productHelper.setProductObj(holder.productObj);
@@ -1745,7 +1742,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void loadSchemeDialog() {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        bmodel.setActivity(getActivity());
         SchemeDialog sc = new SchemeDialog(getActivity(), null, "",
                 "", null, 0, 0);
 
@@ -1884,10 +1880,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 public void onClick(View view) {
 
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     } else {
                         generalbutton = view.getTag().toString();
-                        updatebrandtext(BRAND, -1);
+                        updateBrandText(BRAND, -1);
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                         selectTab(view.getTag());
@@ -1903,7 +1899,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             tv_selection_identifier.setBackgroundColor(color);
             if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
-                updategeneraltext(GENERAL);
+                updateGeneralText(GENERAL);
             } else {
                 tv_selection_identifier.setVisibility(View.GONE);
             }
@@ -2061,7 +2057,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2139,13 +2135,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
@@ -2229,13 +2225,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     }
 
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         items = getTaggedProducts();
 
         mylist = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
@@ -2244,7 +2240,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
@@ -2254,7 +2250,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if (sku.getIsSaleable() == 1)
@@ -2268,10 +2264,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -2281,8 +2277,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mylist = new ArrayList<>();
         //
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {// Only own products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
@@ -2293,8 +2289,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-                for (LevelBO levelBO : parentidList) {
+            } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
@@ -2303,7 +2299,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+            } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == Integer.parseInt(sku.getProductID())) {
@@ -2315,8 +2311,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
@@ -2327,8 +2323,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-                for (LevelBO levelBO : parentidList) {
+            } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
@@ -2337,7 +2333,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+            } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == Integer.parseInt(sku.getProductID())) {
@@ -2349,8 +2345,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1)
@@ -2361,8 +2357,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {// product filter alone selected
+            } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {// product filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1)
@@ -2371,7 +2367,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     }
                 }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {
+            } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (pid == Integer.parseInt(sku.getProductID())) {

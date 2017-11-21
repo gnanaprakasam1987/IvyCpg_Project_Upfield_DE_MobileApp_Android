@@ -637,7 +637,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(NonFieldFragment.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, NonFieldFragment.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, NonFieldFragment.this, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

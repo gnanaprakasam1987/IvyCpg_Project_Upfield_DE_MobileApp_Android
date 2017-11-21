@@ -33,6 +33,7 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
-public class AdhocPlanningFragment extends Fragment {
+public class AdhocPlanningFragment extends IvyBaseFragment {
 
 
     View view;
@@ -429,9 +430,9 @@ public class AdhocPlanningFragment extends Fragment {
                         case SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE:
                             int updateTableCount = bundle.getInt("updateCount");
                             int totalTableCount = bundle.getInt("totalCount");
-                            bmodel.updaterProgressMsg(String.format(getResources().getString(R.string.table_downloaded), updateTableCount));
+                            updaterProgressMsg(String.format(getResources().getString(R.string.table_downloaded), updateTableCount));
                             if (totalTableCount == (updateTableCount + 1)) {
-                                bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                                updaterProgressMsg(getResources().getString(R.string.updating_tables));
                             }
                             break;
                         default:
@@ -659,7 +660,7 @@ public class AdhocPlanningFragment extends Fragment {
             super.onPreExecute();
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -694,7 +695,7 @@ public class AdhocPlanningFragment extends Fragment {
             super.onPreExecute();
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

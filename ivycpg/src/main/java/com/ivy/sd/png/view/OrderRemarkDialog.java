@@ -36,8 +36,9 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
     public String mdate_selected;
     private Context con;
     private OrderRemarksClickListener mRmarkListner;
+    private boolean isFrmDelivery = false;
 
-    public OrderRemarkDialog(Context context, OrderRemarksClickListener rmkListner) {
+    public OrderRemarkDialog(Context context, OrderRemarksClickListener rmkListner, boolean isFromDelivery) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_order_remarks);
@@ -50,6 +51,7 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
         bmodel = (BusinessModel) context.getApplicationContext();
         con = context;
         mRmarkListner = rmkListner;
+        isFrmDelivery = isFromDelivery;
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -68,23 +70,35 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                                         .getTag()));
             ((TextView) findViewById(R.id.textView5)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+            if (isFrmDelivery) {
+                findViewById(R.id.po_lty).setVisibility(View.GONE);
+                mEdtPO.setVisibility(View.GONE);
+                mBtnDate.setVisibility(View.GONE);
+            } else {
+                mEdtPO.setVisibility(View.VISIBLE);
+                mBtnDate.setVisibility(View.VISIBLE);
+            }
+
 
         } catch (Exception e) {
             Commons.printException(e);
         }
 
-        getNextDate();
-        if (bmodel.isEdit()) {
-            mBtnDate.setText(Utils.formatDateAsUserRequired(bmodel
-                    .getDeliveryDate(bmodel.getRetailerMasterBO()
-                            .getRetailerID()), "yyyy/MM/dd", "MM/dd/yyyy"));
-        } else {
-            mBtnDate.setText(mnextDate + "");
+        if (!isFrmDelivery) {
+            getNextDate();
+            if (bmodel.isEdit()) {
+                mBtnDate.setText(Utils.formatDateAsUserRequired(bmodel
+                        .getDeliveryDate(bmodel.getRetailerMasterBO()
+                                .getRetailerID()), "yyyy/MM/dd", "MM/dd/yyyy"));
+            } else {
+                mBtnDate.setText(mnextDate + "");
+            }
+            mEdtPO.setText(bmodel.getOrderHeaderBO().getPO());
         }
-        mEdtPO.setText(bmodel.getOrderHeaderBO().getPO());
         mEdtRemark.setText(bmodel.getOrderHeaderBO().getRemark());
         mBtnDate.setOnClickListener(this);
         mBtnClose.setOnClickListener(this);
+
 
     }
 
@@ -143,15 +157,22 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
         if (v == mBtnDate) {
             onCreateDialog().show();
         } else if (v == mBtnClose) {
-            bmodel.getOrderHeaderBO().setPO(mEdtPO.getText().toString());
-            bmodel.getOrderHeaderBO().setRemark(mEdtRemark.getText().toString());
-            bmodel.getOrderHeaderBO().setDeliveryDate(Utils.formatDateAsUserRequired(
-                    mBtnDate.getText().toString(), "MM/dd/yyyy",
-                    "yyyy/MM/dd"));
+            if (isFrmDelivery) {
+                bmodel.getOrderHeaderBO().setRemark(mEdtRemark.getText().toString());
+                bmodel.setOrderHeaderNote(mEdtRemark.getText().toString());
+                mEdtRemark.setText("");
+
+            } else {
+                bmodel.getOrderHeaderBO().setPO(mEdtPO.getText().toString());
+                bmodel.getOrderHeaderBO().setRemark(mEdtRemark.getText().toString());
+                bmodel.getOrderHeaderBO().setDeliveryDate(Utils.formatDateAsUserRequired(
+                        mBtnDate.getText().toString(), "MM/dd/yyyy",
+                        "yyyy/MM/dd"));
 //			mRmarkListner.onRemarkClicked();
-            bmodel.setOrderHeaderNote(mEdtRemark.getText().toString());
-            mEdtPO.setText("");
-            mEdtRemark.setText("");
+                bmodel.setOrderHeaderNote(mEdtRemark.getText().toString());
+                mEdtPO.setText("");
+                mEdtRemark.setText("");
+            }
             dismiss();
         }
 

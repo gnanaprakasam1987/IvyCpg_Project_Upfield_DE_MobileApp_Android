@@ -350,7 +350,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateDate(Date date) {
+    public void updateDate(Date date, String tag) {
 
         String mDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
@@ -920,7 +920,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(CS_StockApply_Detail.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CS_StockApply_Detail.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, CS_StockApply_Detail.this, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -964,22 +964,22 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         Vector<CS_StockApplyProductBO> items;
         if (isManualLoad) {
@@ -1009,8 +1009,8 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
 
         if (mAttributeProducts != null) {
             count = 0;
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (CS_StockApplyProductBO productBO : items) {
 
@@ -1082,7 +1082,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 count++;
                 for (CS_StockApplyProductBO productBO : items) {
 
@@ -1117,7 +1117,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
                 }
             }
         }
-        if (!isManualLoad && filtertext.equals("") && myListTemp.size() <= 0) {
+        if (!isManualLoad && mFilterText.equals("") && myListTemp.size() <= 0) {
             myListTemp = bmodel.CS_StockApplyHelper.getCounterStockHeaderDetails().get(mReceiptId);
         }
         mDrawerLayout.closeDrawers();
@@ -1131,12 +1131,12 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 

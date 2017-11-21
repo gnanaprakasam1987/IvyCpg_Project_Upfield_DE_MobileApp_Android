@@ -864,12 +864,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
 
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -891,13 +891,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
@@ -914,7 +914,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
@@ -1067,8 +1067,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        // To Do updatefromFiveLevelFilter
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        // To Do updateFromFiveLevelFilter
 
     }
 

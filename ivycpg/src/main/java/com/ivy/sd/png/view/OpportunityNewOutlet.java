@@ -48,7 +48,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,7 +57,6 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
@@ -352,10 +350,10 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                         mSelectedFilterMap.put("General", defaultfilter);
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                             loadSpecialFilterView();
-                            updategeneraltext(defaultfilter);
+                            updateGeneralText(defaultfilter);
                             selectTab(defaultfilter);
                         } else {
-                            updategeneraltext(defaultfilter);
+                            updateGeneralText(defaultfilter);
                         }
 
 
@@ -363,16 +361,16 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                         mSelectedFilterMap.put("General", GENERAL);
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                             loadSpecialFilterView();
-                            updategeneraltext(GENERAL);
+                            updateGeneralText(GENERAL);
                             selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                         } else {
-                            updategeneraltext(GENERAL);
+                            updateGeneralText(GENERAL);
                         }
                     }
 
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
             }
 
@@ -493,14 +491,14 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
                     if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                             selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
 
                     } else {
 
                         mSelectedFilterMap.put("General", bo.getFilterCode());
-                        updategeneraltext(bo.getFilterCode());
+                        updateGeneralText(bo.getFilterCode());
                         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                             selectTab(bo.getFilterCode());
 
@@ -521,21 +519,21 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                     mSelectedFilterMap.put("General", GENERAL);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                         selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                     } else {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
 
             }
         } else {
 
             mSelectedFilterMap.put("General", GENERAL);
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
 
     }
@@ -1780,9 +1778,9 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
-        mSelectedFiltertext = filtertext;
+        mSelectedFiltertext = mFilterText;
 
         Commons.print("Stock and order  :," + " update brand text called :"
                 + getTaggedProducts().size()
@@ -1793,7 +1791,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -1986,16 +1984,16 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
+        generalbutton = mFilterText;
 
         // clearing fivefilterList
         fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -2232,7 +2230,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                         mSelectedLocationIndex = item;
                         bmodel.productHelper.setmSelectedLocationIndex(item);
                         dialog.dismiss();
-                        updatebrandtext(mSelectedFiltertext, mSelectedBrandID);
+                        updateBrandText(mSelectedFiltertext, mSelectedBrandID);
                     }
                 });
 
@@ -2462,7 +2460,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                     " scanned barcode value :" + strBarCodeSearch,
                     Toast.LENGTH_SHORT).show();
 
-            updatebrandtext(BRAND, -1);
+            updateBrandText(BRAND, -1);
             strBarCodeSearch = "ALL";
         }
     }
@@ -2483,7 +2481,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> a, List<Integer> b) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -2510,8 +2508,8 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                             && ret.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (!b.isEmpty()) {
-                                if (b.contains(ret.getParentid()) || (b.contains(-1))) {
+                            if (!mFilterId.isEmpty()) {
+                                if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
                                     if (generaltxt.equals(GENERAL))//No special filters selected
                                     {
                                         mylist.add(ret);
@@ -2541,7 +2539,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -2567,10 +2565,10 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                             && ret.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (mcatgory != null) {
-                                if (!mcatgory.isEmpty()) {
-                                    if (mcatgory.contains(ret.getcParentid())
-                                            || (mcatgory.contains(-1))) {
+                            if (mCategory != null) {
+                                if (!mCategory.isEmpty()) {
+                                    if (mCategory.contains(ret.getcParentid())
+                                            || (mCategory.contains(-1))) {
 
                                         if (generaltxt.equals(GENERAL))//No special filters selected
                                         {
@@ -2660,7 +2658,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OpportunityNewOutlet.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OpportunityNewOutlet.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, OpportunityNewOutlet.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2707,15 +2705,15 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filter) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         String filtertext = getResources().getString(R.string.product_name);
-        if (!filter.equals(""))
-            filtertext = filter;
+        if (!mFilterText.equals(""))
+            filtertext = mFilterText;
 
         brandbutton = filtertext;
         fiveFilter_productIDs = new ArrayList<>();
@@ -2725,8 +2723,8 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         Vector<ProductMasterBO> items = getTaggedProducts();
         if (mAttributeProducts != null) {
             count = 0;
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -2775,7 +2773,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 count++;
                 for (ProductMasterBO productBO : items) {
 
@@ -2944,10 +2942,10 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
 
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     } else {
                         generalbutton = view.getTag().toString();
-                        updatebrandtext(BRAND, -1);
+                        updateBrandText(BRAND, -1);
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                         selectTab(view.getTag());
@@ -2963,7 +2961,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
             tv_selection_identifier.setBackgroundColor(color);
             /*if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
-                updategeneraltext(GENERAL);
+                updateGeneralText(GENERAL);
             } else {
                 tv_selection_identifier.setVisibility(View.GONE);
             }*/
