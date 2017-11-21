@@ -22,13 +22,14 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class DistOrderReportFragment extends Fragment implements OnClickListener,
+public class DistOrderReportFragment extends IvyBaseFragment implements OnClickListener,
 		OnItemClickListener {
 
 	private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
@@ -329,7 +330,7 @@ public class DistOrderReportFragment extends Fragment implements OnClickListener
 					DataMembers.SD, "Exporting orders...", true, false);*/
 			builder = new AlertDialog.Builder(getActivity());
 
-			bmodel.customProgressDialog(alertDialog, builder, getActivity(),"Exporting orders...");
+			customProgressDialog(builder, getActivity(),"Exporting orders...");
 			alertDialog = builder.create();
 			alertDialog.show();
 		}

@@ -18,12 +18,13 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.Vector;
 
-public class BeginningStockFragment extends Fragment {
+public class BeginningStockFragment extends IvyBaseFragment {
 
     private ListView lvwplist;
     private BusinessModel bmodel;
@@ -205,7 +206,7 @@ public class BeginningStockFragment extends Fragment {
 					DataMembers.SD, "Loading", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -1611,8 +1611,6 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
                                                 Toast.LENGTH_SHORT).show();
                                         return true;
                                     }
-                                    bmodel.setActivity(CSsale.this);
-
                                     bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                                     bmodel.productHelper.setPdname(counterBo.getProductName());
                                     bmodel.productHelper.setProdId(counterBo.getProductID());

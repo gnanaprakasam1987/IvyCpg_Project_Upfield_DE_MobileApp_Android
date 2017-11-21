@@ -245,7 +245,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             super.onPreExecute();
             builder = new AlertDialog.Builder(CommonPrintPreviewActivity.this);
-            bmodel.customProgressDialog(alertDialog, builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
+            customProgressDialog(builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
             alertDialog = builder.create();
             alertDialog.show();
         }

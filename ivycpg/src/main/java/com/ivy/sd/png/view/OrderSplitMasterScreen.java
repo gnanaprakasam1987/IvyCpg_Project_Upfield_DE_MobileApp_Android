@@ -180,7 +180,7 @@ public class OrderSplitMasterScreen extends IvyBaseActivityNoActionBar {
                     DataMembers.SD, "Loading", true, false);*/
             builder = new AlertDialog.Builder(OrderSplitMasterScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderSplitMasterScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, OrderSplitMasterScreen.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -460,7 +460,7 @@ public class OrderSplitMasterScreen extends IvyBaseActivityNoActionBar {
 					true, false);*/
             builder = new AlertDialog.Builder(OrderSplitMasterScreen.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderSplitMasterScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, OrderSplitMasterScreen.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 

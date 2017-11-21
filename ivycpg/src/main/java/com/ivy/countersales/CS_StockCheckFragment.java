@@ -1142,7 +1142,6 @@ public class CS_StockCheckFragment extends IvyBaseFragment implements
     private void loadSchemeDialog() {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        bmodel.setActivity(getActivity());
         SchemeDialog sc = new SchemeDialog(getActivity(), null, "",
                 "", null, 0, 0);
 
@@ -1183,7 +1182,7 @@ public class CS_StockCheckFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

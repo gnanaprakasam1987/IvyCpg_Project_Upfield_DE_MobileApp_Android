@@ -1688,7 +1688,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
-                    bmodel.setActivity(CatalogOrder.this);
                     if (dialog == null) {
                         dialog = new MustSellReasonDialog(
                                 CatalogOrder.this, false,
@@ -2152,7 +2151,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     true, false);*/
             builder = new AlertDialog.Builder(CatalogOrder.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CatalogOrder.this, getResources().getString(R.string.loading));
+            customProgressDialog( builder, CatalogOrder.this, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 

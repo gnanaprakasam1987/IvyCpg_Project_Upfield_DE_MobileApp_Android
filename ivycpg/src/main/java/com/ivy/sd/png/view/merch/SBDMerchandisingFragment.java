@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SBDMerchandisingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -29,7 +30,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.Vector;
 
-public class SBDMerchandisingFragment extends Fragment {
+public class SBDMerchandisingFragment extends IvyBaseFragment {
     private TypedArray typearr;
     View view;
     private BusinessModel bmodel;
@@ -240,7 +241,7 @@ public class SBDMerchandisingFragment extends Fragment {
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving_merchandising));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving_merchandising));
             alertDialog = builder.create();
             alertDialog.show();
         }

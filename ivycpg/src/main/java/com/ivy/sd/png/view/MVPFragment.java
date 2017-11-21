@@ -339,7 +339,7 @@ public class MVPFragment extends IvyBaseFragment {
         @Override
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
             super.onPreExecute();

@@ -24,10 +24,11 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
-public class TaskCreationFragment extends Fragment {
+public class TaskCreationFragment extends IvyBaseFragment {
 
     private EditText taskView;
     private EditText taskTitle;
@@ -144,7 +145,7 @@ public class TaskCreationFragment extends Fragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving_new_task));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving_new_task));
             alertDialog = builder.create();
             alertDialog.show();
         }

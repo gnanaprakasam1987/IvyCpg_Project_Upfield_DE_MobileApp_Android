@@ -326,7 +326,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
         isClicked = true;
         builder = new AlertDialog.Builder(ReAllocationActivity.this);
 
-        bmodel.customProgressDialog(alertDialog, builder, ReAllocationActivity.this, getResources().getString(R.string.uploading_data));
+        customProgressDialog(builder, ReAllocationActivity.this, getResources().getString(R.string.uploading_data));
         alertDialog = builder.create();
         alertDialog.show();
         bmodel.teamLeadermasterHelper.saveReAllocation(mPresentIDList, mPresentTaskListByMerchandiserID);

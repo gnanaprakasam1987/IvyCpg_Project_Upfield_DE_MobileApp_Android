@@ -1,6 +1,9 @@
 package com.ivy.sd.png.commons;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -9,6 +12,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -20,6 +26,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +40,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     private BusinessModel bmodel;
     private NFCManager nfcManager;
     private HashMap<String, String> listPermissionsNeededGroupName;
+    TextView messagetv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +118,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
     }
+
     public String getScreenTitle() {
         return mScreenTitleTV.getText().toString();
     }
@@ -213,4 +222,39 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             getTheme().applyStyle(R.style.FontStyle_Small, true);
         }
     }
+
+    public void customProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
+
+        try {
+            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) ctx.findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void updaterProgressMsg(String msg) {
+        messagetv.setText(msg);
+    }
+
+    public void setMessageInProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
+        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                (ViewGroup) ctx.findViewById(R.id.layout_root));
+        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        messagetv.setText(message);
+        builder.setView(layout);
+        builder.setCancelable(false);
+    }
+
 }

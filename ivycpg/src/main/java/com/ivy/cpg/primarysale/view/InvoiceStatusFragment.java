@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.ivy.cpg.primarysale.bo.DistInvoiceDetailsBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -32,7 +34,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 22-09-2015.
  */
-public class InvoiceStatusFragment extends Fragment {
+public class InvoiceStatusFragment extends IvyBaseFragment {
 
     //private ArrayList<DistInvoiceDetailsBO> statusSelectedInv = new ArrayList<>();
     private BusinessModel bmodel;
@@ -237,7 +239,7 @@ public class InvoiceStatusFragment extends Fragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

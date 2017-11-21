@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.OnInfoWindowElemTouchListener;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -52,7 +53,7 @@ import java.util.Vector;
 /**
  * Created by maheswaran.m on 16-10-2015.
  */
-public class TravelOnMap extends Fragment {
+public class TravelOnMap extends IvyBaseFragment {
 
     private SupportMapFragment fragment;
     private GoogleMap map;
@@ -229,7 +230,7 @@ public class TravelOnMap extends Fragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Fetching route, Please wait...");
+            customProgressDialog(builder, getActivity(), "Fetching route, Please wait...");
             alertDialog = builder.create();
             alertDialog.show();
 

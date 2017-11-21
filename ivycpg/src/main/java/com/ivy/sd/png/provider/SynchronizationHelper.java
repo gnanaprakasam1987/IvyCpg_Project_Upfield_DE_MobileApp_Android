@@ -945,9 +945,8 @@ SynchronizationHelper {
         Cursor c;
         String tableName = "";
         dataMissedTable = "";
-        int  hhtCount = 0,  standList = 0;
+        int hhtCount = 0, standList = 0;
         try {
-
             c = db.selectSQL("select  count(hhtCode) from "
                     + DataMembers.tbl_HhtModuleMaster);
             if (c != null) {
@@ -956,7 +955,6 @@ SynchronizationHelper {
                 }
                 c.close();
             }
-
 
             c = db.selectSQL("select  count(listid) from "
                     + DataMembers.tbl_StandardListMaster);
@@ -972,14 +970,13 @@ SynchronizationHelper {
 
         db.closeDB();
 
-        if (standList > 0 &&  hhtCount > 0) {
+        if (standList > 0 && hhtCount > 0) {
             return true;
         } else {
             if (standList == 0)
                 tableName = tableName + " LovMaster";
             if (hhtCount == 0)
                 tableName = tableName + " Configuration";
-
 
             dataMissedTable = tableName;
         }
@@ -2071,14 +2068,24 @@ SynchronizationHelper {
                 db.deleteSQL("temp_productmaster", null, true);
                 db.deleteSQL("temp_productuommaster", null, true);
             }
-
             try {
                 db.executeQ("CREATE INDEX index_productmaster ON ProductMaster(pid,PLid,ParentId)");
-                db.executeQ("CREATE INDEX index_productLevel ON ProductLevel(LevelId)");
-                db.executeQ("CREATE INDEX index_productTagMaster ON ProductTaggingMaster(TaggingTypelovID)");
-                db.executeQ("CREATE INDEX index_productTagGrpMaster ON ProductTaggingGroupMapping(Groupid)");
-                db.executeQ("CREATE INDEX index_productTaggingMap ON ProductTaggingCriteriaMapping(locid)");
-                db.executeQ("CREATE INDEX index_productMasterPid ON ProductMaster(ParentId)");
+                db.executeQ("CREATE INDEX index_productlevel ON ProductLevel(LevelId)");
+                db.executeQ("CREATE INDEX index_producttagmaster ON ProductTaggingMaster(TaggingTypelovID)");
+                db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
+                db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
+                db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
+                db.executeQ("CREATE INDEX index_schememaster ON SchemeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemecritmap ON SchemeCriteriaMapping(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemecountmaster ON SchemeApplyCountMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemebuymaster ON SchemeBuyMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemeattrmap ON SchemeAttributeMapping(GroupID)");
+                db.executeQ("CREATE INDEX index_schemefreeproduct ON SchemeFreeProducts(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
+                db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
+                db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
+                db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");
             } catch (Exception e) {
                 Commons.printException(e);
             }

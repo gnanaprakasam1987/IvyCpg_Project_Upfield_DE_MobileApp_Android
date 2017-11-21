@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
@@ -73,6 +74,7 @@ import com.ivyretail.views.StockCheckFragmentActivity;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -1752,6 +1754,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
+
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
@@ -3391,78 +3394,93 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
     }
 
     private void loadRequiredMethodsForStockAndOrder(String configCode, String menuName) {
-        if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-            bmodel.collectionHelper.downloadDiscountSlab();
-        }
-
-        //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
-        bmodel.productHelper.loadRetailerWiseProductWisePurchased();
-        bmodel.productHelper
-                .loadRetailerWiseProductWiseP4StockAndOrderQty();
-        bmodel.configurationMasterHelper
-                .downloadProductDetailsList();
-        bmodel.collectionHelper.downloadBankDetails();
-        bmodel.collectionHelper.downloadBranchDetails();
-        if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-            /** Load Initiative **/
-            bmodel.productHelper.loadInitiativeProducts();
-            bmodel.initiativeHelper.downloadInitiativeHeader(bmodel
-                    .getRetailerMasterBO().getSubchannelid());
-            /** Load Order History **/
-            bmodel.initiativeHelper.loadLocalOrdersQty(bmodel
-                    .getRetailerMasterBO().getRetailerID());
-        }
-
-        /** Load SO Norm **/
-        if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
-            bmodel.productHelper
-                    .loadRetailerWiseInventoryOrderQty();
-        }
-
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
-            bmodel.productHelper.updateProductColorAndSequance();
-
-        /** Settign color **/
-        bmodel.configurationMasterHelper.downloadFilterList();
-        bmodel.productHelper.updateProductColor();
-        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.downloadBillwiseDiscount();
-            bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
-        }
-        // apply bill wise payterm discount
-        bmodel.productHelper.downloadBillwisePaytermDiscount();
-
-
-        bmodel.productHelper.downloadInStoreLocations();
-
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
-            bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
-
-        //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
-        bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
-        // }
-
-        if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-            bmodel.collectionHelper.loadCreditNote();
-
-        bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
-
-        if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
-            bmodel.downloadGuidedSelling();
-        }
-
-
-        if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-            bmodel.downloadCurrencyConfig();
-        }
-
+        new LoadAsyncTask().execute();
         // Reset the Configuration if Directly goes from
         // HomeScreenTwo
         bmodel.mSelectedModule = -1;
-
         OrderSummary.mActivityCode = configCode;
         bmodel.mSelectedActivityName = menuName;
     }
+
+    class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
+                    bmodel.collectionHelper.downloadDiscountSlab();
+                }
+
+                //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
+                bmodel.productHelper.loadRetailerWiseProductWisePurchased();
+                bmodel.productHelper
+                        .loadRetailerWiseProductWiseP4StockAndOrderQty();
+
+                bmodel.configurationMasterHelper
+                        .downloadProductDetailsList();
+
+                if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                    /** Load Initiative **/
+                    bmodel.productHelper.loadInitiativeProducts();
+                    bmodel.initiativeHelper.downloadInitiativeHeader(bmodel
+                            .getRetailerMasterBO().getSubchannelid());
+                    /** Load Order History **/
+                    bmodel.initiativeHelper.loadLocalOrdersQty(bmodel
+                            .getRetailerMasterBO().getRetailerID());
+                }
+
+                /** Load SO Norm **/
+                if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
+                    bmodel.productHelper
+                            .loadRetailerWiseInventoryOrderQty();
+                }
+
+                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
+                    bmodel.productHelper.updateProductColorAndSequance();
+
+                /** Settign color **/
+                bmodel.configurationMasterHelper.downloadFilterList();
+                bmodel.productHelper.updateProductColor();
+                if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+                    bmodel.productHelper.downloadBillwiseDiscount();
+                    bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
+                }
+                // apply bill wise payterm discount
+                bmodel.productHelper.downloadBillwisePaytermDiscount();
+
+                bmodel.productHelper.downloadInStoreLocations();
+
+                if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
+                    bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
+
+                //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
+                // }
+
+                if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
+                    bmodel.collectionHelper.downloadBankDetails();
+                    bmodel.collectionHelper.downloadBranchDetails();
+                    bmodel.collectionHelper.loadCreditNote();
+                }
+
+                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
+
+                if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
+                    bmodel.downloadGuidedSelling();
+                }
+
+
+                if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
+                    bmodel.downloadCurrencyConfig();
+                }
+
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+        }
+    }
+
 
     public void loadstockorderscreen(String menu) {
         {
@@ -3994,10 +4012,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         private View itemView;
 
         public ActivityAdapter(Vector<ConfigureBO> mActivityList) {
-
             this.mActivityList = mActivityList;
-
-
         }
 
         @Override
@@ -4210,7 +4225,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             }
 
             if (holder.config.isDone()) {
-                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(),R.color.white));
+                holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.white));
             } else {
                 holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.black_bg1));
             }

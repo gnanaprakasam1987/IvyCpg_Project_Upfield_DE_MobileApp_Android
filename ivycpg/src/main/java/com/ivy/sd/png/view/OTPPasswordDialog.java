@@ -2,13 +2,16 @@ package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,6 +45,7 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
     private int flag = 0;
     private Spinner reason;
     private ArrayAdapter<SpinnerBO> reasonAdapter;
+    private TextView messagetv;
 
     public OTPPasswordDialog(FragmentActivity activity, BusinessModel bmodel,
                              OnDismissListener otpPasswordDismissListener,
@@ -107,7 +111,7 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
 		pd.setIndeterminate(true);
 		pd.setCancelable(false);*/
 
-        bmodel.customProgressDialog(alertDialog, builder, activityCtxt, activityCtxt.getResources().getString(R.string.loading));
+        customProgressDialog(builder);
         alertDialog = builder.create();
 
     }
@@ -320,5 +324,23 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
         }
     }
 
+    private void customProgressDialog(AlertDialog.Builder builder) {
 
+        try {
+            LayoutInflater inflater = (LayoutInflater) activityCtxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) activityCtxt.findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText(getOwnerActivity().getResources().getString(R.string.loading));
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 }

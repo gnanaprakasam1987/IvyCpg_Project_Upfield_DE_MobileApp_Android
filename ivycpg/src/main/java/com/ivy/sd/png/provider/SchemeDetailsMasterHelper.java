@@ -110,12 +110,12 @@ public class SchemeDetailsMasterHelper {
 
             // download attributes for a current retailer
             //downloadRetailerAttributes();
-            downloadValidSchemeGroups(db);
-            downloadSchemeParentDetails(db);
-            downloadBuySchemeDetails(db);
-            updateFreeProducts(db);
-            downloadFreeGroupName(db);
-            updateFreeproductStocks();
+            downloadValidSchemeGroups(db);      //  loading scheme groups based on retailer attributres
+            downloadSchemeParentDetails(db);    //  for loading highest slab parentids
+            downloadBuySchemeDetails(db);       //  load buy product list
+            updateFreeProducts(db);             //  update free product
+            downloadFreeGroupName(db);          //  get grp name - map
+            updateFreeproductStocks();          //  set sih of free product map from productmaster
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
                 downloadParentIdListByProduct(db);
                 downloadProductIdListByParentId(db);
@@ -4034,6 +4034,9 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
+            //str string is ends with ','
+            if (str.endsWith(","))
+                str = str.substring(0, str.length() - 1);
         }
         return str;
     }

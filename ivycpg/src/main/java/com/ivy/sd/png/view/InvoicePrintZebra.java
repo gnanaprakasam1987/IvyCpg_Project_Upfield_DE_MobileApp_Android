@@ -27,6 +27,7 @@ import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyActivity;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -45,7 +46,7 @@ import com.zebra.android.printer.ZebraPrinterLanguageUnknownException;
 import java.util.Formatter;
 import java.util.Vector;
 
-public class InvoicePrintZebra extends MyActivity implements OnClickListener {
+public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnClickListener {
     private static final String TAG = "InvoicePrint";
     private final String MSG_BLUETOOTH_NOT_ENABLED = "Bluetooth not enabled.";
     private final String MSG_PRINTER_NOT_CONNECTED = "Printer not connected";
@@ -728,7 +729,7 @@ public class InvoicePrintZebra extends MyActivity implements OnClickListener {
 
             builder = new AlertDialog.Builder(InvoicePrintZebra.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, InvoicePrintZebra.this, "Printing...");
+            customProgressDialog(builder, InvoicePrintZebra.this, "Printing...");
             alertDialog = builder.create();
             alertDialog.show();
         }

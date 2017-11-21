@@ -167,7 +167,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                             bmodel.configurationMasterHelper.outDateFormat));
                     build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
 
-                    bmodel.customProgressDialog(alertDialog, build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.saving_new_order));
+                    customProgressDialog(build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.saving_new_order));
                     alertDialog = build.create();
                     alertDialog.show();
 
@@ -380,7 +380,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                                         int whichButton) {
 
                                         build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
-                                        bmodel.customProgressDialog(alertDialog, build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
 
@@ -404,7 +404,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
 
-                                        bmodel.customProgressDialog(alertDialog, build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
 
@@ -451,7 +451,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                                         int whichButton) {
 
                                         build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
-                                        bmodel.customProgressDialog(alertDialog, build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, PrimarySaleOrderSummaryActivity.this, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
                                         new MyThread(PrimarySaleOrderSummaryActivity.this,
