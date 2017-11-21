@@ -5627,7 +5627,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             getProductBySequence();
 
         mSchedule = new MyAdapter(mylist);
-
         lvwplist.setAdapter(mSchedule);
         strBarCodeSearch = "ALL";
         updateValue();
