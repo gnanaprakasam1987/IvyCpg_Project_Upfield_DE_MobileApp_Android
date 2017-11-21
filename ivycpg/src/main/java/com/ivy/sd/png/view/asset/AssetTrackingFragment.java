@@ -1218,7 +1218,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder,getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

@@ -145,7 +145,7 @@ public class TaskCreationFragment extends IvyBaseFragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving_new_task));
+            customProgressDialog(builder,  getResources().getString(R.string.saving_new_task));
             alertDialog = builder.create();
             alertDialog.show();
         }

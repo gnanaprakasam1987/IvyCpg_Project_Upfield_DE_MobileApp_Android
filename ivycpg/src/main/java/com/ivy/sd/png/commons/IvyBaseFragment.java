@@ -106,12 +106,12 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     }
 
 
-    public void customProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
 
         try {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) ctx.findViewById(R.id.layout_root));
+                    (ViewGroup) getActivity().findViewById(R.id.layout_root));
 
             TextView title = (TextView) layout.findViewById(R.id.title);
             title.setText(DataMembers.SD);
@@ -128,15 +128,5 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
 
     public void updaterProgressMsg(String msg) {
         messagetv.setText(msg);
-    }
-
-    public void setMessageInProgressDialog(AlertDialog.Builder builder, Activity ctx, String message) {
-        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                (ViewGroup) ctx.findViewById(R.id.layout_root));
-        TextView messagetv = (TextView) layout.findViewById(R.id.text);
-        messagetv.setText(message);
-        builder.setView(layout);
-        builder.setCancelable(false);
     }
 }

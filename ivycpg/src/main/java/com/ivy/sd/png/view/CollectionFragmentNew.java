@@ -328,7 +328,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
     public void print(int printCount) {
         mSelectedPrintCount = printCount;
         build = new AlertDialog.Builder(getActivity());
-        customProgressDialog(build, getActivity(), "Printing....");
+        customProgressDialog(build, "Printing....");
         alertDialog = build.create();
 
         alertDialog.show();

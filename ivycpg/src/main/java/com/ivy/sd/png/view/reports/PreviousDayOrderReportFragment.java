@@ -288,7 +288,7 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
             super.onPreExecute();
 
             builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder, getActivity(), "Exporting orders...");
+            customProgressDialog(builder, "Exporting orders...");
             alertDialog = builder.create();
             alertDialog.show();
         }

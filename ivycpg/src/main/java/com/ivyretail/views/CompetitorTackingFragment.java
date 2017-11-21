@@ -298,7 +298,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder,  getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

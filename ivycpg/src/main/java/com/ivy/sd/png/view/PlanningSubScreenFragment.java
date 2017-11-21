@@ -401,7 +401,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading_data));
+            customProgressDialog(builder, getResources().getString(R.string.loading_data));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -454,7 +454,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -491,7 +491,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
