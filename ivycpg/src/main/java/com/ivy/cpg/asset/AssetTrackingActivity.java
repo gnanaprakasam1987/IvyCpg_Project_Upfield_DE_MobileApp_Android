@@ -1,4 +1,4 @@
-package com.ivy.sd.png.asset;
+package com.ivy.cpg.asset;
 
 import android.content.Intent;
 import android.os.Bundle;

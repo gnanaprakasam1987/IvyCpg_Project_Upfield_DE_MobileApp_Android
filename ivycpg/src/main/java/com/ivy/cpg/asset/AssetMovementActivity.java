@@ -1,4 +1,4 @@
-package com.ivy.sd.png.asset;
+package com.ivy.cpg.asset;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
