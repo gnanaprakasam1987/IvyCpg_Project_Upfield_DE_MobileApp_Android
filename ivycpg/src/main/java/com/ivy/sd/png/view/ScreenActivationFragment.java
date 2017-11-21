@@ -217,7 +217,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getActivity(), getResources().getString(R.string.please_wait_some_time));
+            customProgressDialog(builder,  getResources().getString(R.string.please_wait_some_time));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -3107,7 +3107,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OrderNewOutlet.this);
 
-            customProgressDialog(builder, OrderNewOutlet.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

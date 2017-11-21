@@ -200,7 +200,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
             super.onPreExecute();
             builder = new AlertDialog.Builder(TLAttendanceActivity.this);
 
-            customProgressDialog(builder, TLAttendanceActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

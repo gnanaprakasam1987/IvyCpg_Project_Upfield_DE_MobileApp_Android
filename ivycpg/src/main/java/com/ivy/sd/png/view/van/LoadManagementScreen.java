@@ -701,7 +701,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoadManagementScreen.this);
 
-            customProgressDialog(builder, LoadManagementScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -761,7 +761,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoadManagementScreen.this);
 
-            customProgressDialog(builder, LoadManagementScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -803,7 +803,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoadManagementScreen.this);
 
-            customProgressDialog(builder, LoadManagementScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -840,7 +840,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoadManagementScreen.this);
 
-            customProgressDialog(builder, LoadManagementScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -894,7 +894,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoadManagementScreen.this);
 
-            customProgressDialog(builder, LoadManagementScreen.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

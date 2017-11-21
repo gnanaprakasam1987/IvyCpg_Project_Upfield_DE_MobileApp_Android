@@ -28,11 +28,13 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -450,7 +452,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             new DownloadUTCTime().execute();
                         } else {
                             builder = new AlertDialog.Builder(LoginScreen.this);
-                            customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.loading_data));
+                            customProgressDialog(builder, getResources().getString(R.string.loading_data));
                             alertDialog = builder.create();
                             alertDialog.show();
                             //handle password lock in off line based on reached maximum_attempt_count compare with mPasswordLockCountPref count
@@ -463,7 +465,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         }
                     } else {
                         builder = new AlertDialog.Builder(LoginScreen.this);
-                        customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.auth_and_downloading_masters));
+                        customProgressDialog(builder, getResources().getString(R.string.auth_and_downloading_masters));
                         alertDialog = builder.create();
                         alertDialog.show();
 
@@ -581,7 +583,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     }
                     break;
                 case DataMembers.NOTIFY_UPDATE:
-                    setMessageInProgressDialog(builder, LoginScreen.this, msg.obj.toString());
+                    setMessageInProgressDialog(builder, msg.obj.toString());
                     break;
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
                     alertDialog.dismiss();
@@ -1235,7 +1237,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoginScreen.this);
 
-            customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.checking_new_version));
+            customProgressDialog(builder,getResources().getString(R.string.checking_new_version));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1582,7 +1584,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(LoginScreen.this);
 
-                    customProgressDialog(builder, LoginScreen.this, getResources().getString(R.string.loading));
+                    customProgressDialog(builder, getResources().getString(R.string.loading));
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -1905,7 +1907,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 }
                 // new InitiateDistributorDownload().execute();
                 Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
-                intent.putExtra("isFromLogin",true);
+                intent.putExtra("isFromLogin", true);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
             } else {
                 //No distributors, so downloading on demand url without distributor selection.
@@ -2039,7 +2041,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             downloaderThread.start();
 
         }
+    }
 
+    private void setMessageInProgressDialog(AlertDialog.Builder builder, String message) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                (ViewGroup) findViewById(R.id.layout_root));
+        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        messagetv.setText(message);
+        builder.setView(layout);
+        builder.setCancelable(false);
     }
 
 }

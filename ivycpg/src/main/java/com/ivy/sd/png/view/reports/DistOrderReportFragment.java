@@ -330,7 +330,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 					DataMembers.SD, "Exporting orders...", true, false);*/
 			builder = new AlertDialog.Builder(getActivity());
 
-			customProgressDialog(builder, getActivity(),"Exporting orders...");
+			customProgressDialog(builder, "Exporting orders...");
 			alertDialog = builder.create();
 			alertDialog.show();
 		}

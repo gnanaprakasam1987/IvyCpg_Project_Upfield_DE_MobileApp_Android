@@ -2658,7 +2658,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OpportunityNewOutlet.this);
 
-            customProgressDialog(builder, OpportunityNewOutlet.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder,  getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

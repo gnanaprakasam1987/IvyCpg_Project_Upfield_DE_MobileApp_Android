@@ -1245,7 +1245,7 @@ public class TargetPlanActivity extends IvyBaseActivityNoActionBar implements
                     true, false);*/
             builder = new AlertDialog.Builder(TargetPlanActivity.this);
 
-            customProgressDialog(builder, TargetPlanActivity.this, getResources().getString(R.string.saving_target_plan));
+            customProgressDialog(builder, getResources().getString(R.string.saving_target_plan));
             alertDialog = builder.create();
             alertDialog.show();
         }

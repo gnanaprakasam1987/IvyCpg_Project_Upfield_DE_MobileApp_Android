@@ -497,7 +497,7 @@ public class NewOutletEdit extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(NewOutletEdit.this);
-            customProgressDialog(builder, NewOutletEdit.this, getResources().getString(R.string.deleting));
+            customProgressDialog(builder, getResources().getString(R.string.deleting));
             alertDialog = builder.create();
             alertDialog.show();
         }

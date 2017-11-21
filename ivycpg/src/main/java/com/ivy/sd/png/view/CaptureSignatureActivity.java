@@ -409,7 +409,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             super.onPreExecute();
             builder = new AlertDialog.Builder(CaptureSignatureActivity.this);
 
-            customProgressDialog(builder, CaptureSignatureActivity.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 /*            pd = ProgressDialog.show(CaptureSignatureActivity.this, DataMembers.SD,
