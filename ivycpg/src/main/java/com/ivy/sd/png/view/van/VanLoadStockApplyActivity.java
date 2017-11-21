@@ -372,7 +372,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(VanLoadStockApplyActivity.this);
 
-            customProgressDialog(builder,  "Applying Vanload Stock ");
+            customProgressDialog(builder, "Applying Vanload Stock ");
             alertDialog = builder.create();
             alertDialog.show();
         }

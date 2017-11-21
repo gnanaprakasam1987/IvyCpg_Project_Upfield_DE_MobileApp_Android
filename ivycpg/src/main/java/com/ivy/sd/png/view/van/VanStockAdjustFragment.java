@@ -838,7 +838,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

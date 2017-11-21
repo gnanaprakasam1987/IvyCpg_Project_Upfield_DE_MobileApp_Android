@@ -101,7 +101,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 
 	@Override
 	public void updateMultiSelectionBrand(List<String> mFilterName,
-			List<Integer> mFilterId) {
+										  List<Integer> mFilterId) {
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
-		asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
+		asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 	}
 
 	public void numberPressed(View vw) {

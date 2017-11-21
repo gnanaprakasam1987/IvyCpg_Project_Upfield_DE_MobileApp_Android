@@ -790,7 +790,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 					true, false);*/
             builder = new AlertDialog.Builder(PhotoCaptureActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

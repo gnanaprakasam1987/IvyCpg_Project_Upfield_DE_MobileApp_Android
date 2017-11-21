@@ -404,7 +404,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
 
-                                        customProgressDialog(build,getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
 

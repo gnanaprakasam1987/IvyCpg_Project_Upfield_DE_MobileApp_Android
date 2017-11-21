@@ -19,11 +19,11 @@ public class PromotionBO {
 	private int promoQty;
 	private  int MappingId;
 
-	public PromotionBO(){
+	PromotionBO() {
 
 	}
 
-	public PromotionBO(PromotionBO promotionBO){
+	PromotionBO(PromotionBO promotionBO) {
 		this.promoId=promotionBO.getPromoId();
 		this.productId=promotionBO.getProductId();
 		this.promoName=promotionBO.getPromoName();
@@ -47,11 +47,11 @@ public class PromotionBO {
 	}
 
 
-	public int getPromoQty() {
+	int getPromoQty() {
 		return promoQty;
 	}
 
-	public void setPromoQty(int promoQty) {
+	void setPromoQty(int promoQty) {
 		this.promoQty = promoQty;
 	}
 
@@ -59,7 +59,7 @@ public class PromotionBO {
 		return ratingDec;
 	}
 
-	public void setRatingDec(String ratingDec) {
+	void setRatingDec(String ratingDec) {
 		this.ratingDec = ratingDec;
 	}
 
@@ -71,27 +71,27 @@ public class PromotionBO {
 		this.groupName = groupName;
 	}
 
-	public String getRatingId() {
+	String getRatingId() {
 		return ratingId;
 	}
 
-	public void setRatingId(String ratingId) {
+	void setRatingId(String ratingId) {
 		this.ratingId = ratingId;
 	}
 
-	public int getPromoId() {
+	int getPromoId() {
 		return promoId;
 	}
 
-	public void setPromoId(int promoId) {
+	void setPromoId(int promoId) {
 		this.promoId = promoId;
 	}
 
-	public String getPromoName() {
+	String getPromoName() {
 		return promoName;
 	}
 
-	public void setPromoName(String promoName) {
+	void setPromoName(String promoName) {
 		this.promoName = promoName;
 	}
 
@@ -103,20 +103,20 @@ public class PromotionBO {
 		this.imageName = imageName;
 	}
 
-	public int getIsExecuted() {
+	int getIsExecuted() {
 		return isExecuted;
 	}
 
 
-	public void setIsExecuted(int isExecuted) {
+	void setIsExecuted(int isExecuted) {
 		this.isExecuted = isExecuted;
 	}
 
-	public int getHasAnnouncer() {
+	int getHasAnnouncer() {
 		return HasAnnouncer;
 	}
 
-	public void setHasAnnouncer(int hasAnnouncer) {
+	void setHasAnnouncer(int hasAnnouncer) {
 		HasAnnouncer = hasAnnouncer;
 	}
 
@@ -158,11 +158,11 @@ public class PromotionBO {
 		Flag = flag;
 	}
 
-	public int getMappingId() {
+	int getMappingId() {
 		return MappingId;
 	}
 
-	public void setMappingId(int mappingId) {
+	void setMappingId(int mappingId) {
 		MappingId = mappingId;
 	}
 	

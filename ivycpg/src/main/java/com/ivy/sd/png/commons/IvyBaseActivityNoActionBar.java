@@ -1,7 +1,6 @@
 package com.ivy.sd.png.commons;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;

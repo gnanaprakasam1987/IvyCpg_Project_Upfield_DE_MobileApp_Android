@@ -96,7 +96,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(StockProposalScreen.this);
 
-        customProgressDialog(builder,  getResources().getString(R.string.loading_data));
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
         alertDialog = builder.create();
         mDrawerToggle = new ActionBarDrawerToggle(StockProposalScreen.this,
                 mDrawerLayout, /* DrawerLayout object */
@@ -2149,7 +2149,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
 
             builder = new AlertDialog.Builder(StockProposalScreen.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

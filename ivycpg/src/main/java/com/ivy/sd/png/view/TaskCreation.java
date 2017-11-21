@@ -336,7 +336,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
             builder = new AlertDialog.Builder(TaskCreation.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving_new_task));
+            customProgressDialog(builder, getResources().getString(R.string.saving_new_task));
             alertDialog = builder.create();
             alertDialog.show();
         }

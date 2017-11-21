@@ -1316,7 +1316,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         bmodel.synchronizationHelper.deleteFiles(
                                                 PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
-                                        customProgressDialog(build,getResources().getString(R.string.deleting_order));
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
                                         // clear scheme free products
@@ -1838,7 +1838,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                             builder10 = new AlertDialog.Builder(OrderSummary.this);
 
-                                            customProgressDialog(builder10,"Printing....");
+                                            customProgressDialog(builder10, "Printing....");
                                             alertDialog = builder10.create();
                                             alertDialog.show();
                                         }

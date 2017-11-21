@@ -3,7 +3,6 @@ package com.ivy.sd.png.view.reports;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;

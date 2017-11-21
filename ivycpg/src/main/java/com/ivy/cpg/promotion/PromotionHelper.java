@@ -19,15 +19,21 @@ import static com.ivy.lib.Utils.QT;
 public class PromotionHelper {
 
     private final Context context;
-    private final BusinessModel bmodel;
+    private final BusinessModel businessModel;
     private static PromotionHelper instance = null;
-    public int mSelectedPromoID = 0;
+    int mSelectedPromoID = 0;
     private ArrayList<PromotionBO> mPromotionList;
     private ArrayList<StandardListBO> mRatingList;
+    boolean SHOW_PROMO_TYPE;
+    boolean SHOW_PROMO_RATING;
+    boolean SHOW_PROMO_REASON;
+    boolean SHOW_PROMO_PHOTO;
+    boolean SHOW_PROMO_QTY;
+    boolean SHOW_PROMO_ANNOUNCER;
 
     private PromotionHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context.getApplicationContext();
+        businessModel = (BusinessModel) context.getApplicationContext();
 
     }
 
@@ -42,23 +48,17 @@ public class PromotionHelper {
     public void loadDataForPromotion(String mMenuCode) {
         loadPromotionConfigs();
 
-        if (bmodel.productHelper.getInStoreLocation().size() == 0) {
-            bmodel.productHelper.downloadInStoreLocations();
+        if (businessModel.productHelper.getInStoreLocation().size() == 0) {
+            businessModel.productHelper.downloadInStoreLocations();
         }
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+            businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
         loadData(mMenuCode);
         loadPromoEntered();
     }
 
-    public boolean SHOW_PROMO_TYPE;
-    public boolean SHOW_PROMO_RATING;
-    public boolean SHOW_PROMO_REASON;
-    public boolean SHOW_PROMO_PHOTO;
-    public boolean SHOW_PROMO_QTY;
-    public boolean SHOW_PROMO_ANNOUNCER;
 
     /* Load promotion related configs */
     private void loadPromotionConfigs() {
@@ -119,7 +119,7 @@ public class PromotionHelper {
     /* get promotion level from ConfigActivityFilter to load the data */
     private void loadData(String mMenuCode) {
         try {
-            switch (bmodel.productHelper.getRetailerlevel(mMenuCode)) {
+            switch (businessModel.productHelper.getRetailerlevel(mMenuCode)) {
                 case 1:
                     downloadPromotionMaster(true, false, false, 0, 0);
                     break;
@@ -130,19 +130,19 @@ public class PromotionHelper {
                     downloadPromotionMaster(false, false, true, 0, 0);
                     break;
                 case 4:
-                    downloadPromotionMaster(false, false, false, bmodel.productHelper.locid, 0);
+                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, 0);
                     break;
                 case 5:
-                    downloadPromotionMaster(false, false, false, 0, bmodel.productHelper.chid);
+                    downloadPromotionMaster(false, false, false, 0, businessModel.productHelper.chid);
                     break;
                 case 6:
-                    downloadPromotionMaster(false, false, false, bmodel.productHelper.locid, bmodel.productHelper.chid);
+                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, businessModel.productHelper.chid);
                     break;
                 case 7:
-                    downloadPromotionMaster(false, false, true, 0, bmodel.productHelper.chid);
+                    downloadPromotionMaster(false, false, true, 0, businessModel.productHelper.chid);
                     break;
                 case 8:
-                    downloadPromotionMaster(true, false, false, 0, bmodel.productHelper.chid);
+                    downloadPromotionMaster(true, false, false, 0, businessModel.productHelper.chid);
                     break;
                 case -1:
                     break;
@@ -170,30 +170,30 @@ public class PromotionHelper {
             Cursor c;
             String query = "";
             if (isAccount && channelId > 0) {
-                query = " where PM.AccId=" + bmodel.getRetailerMasterBO().getAccountid();
-                query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
+                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
+                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
 
             } else if (isAccount)
-                query = " where PM.AccId=" + bmodel.getRetailerMasterBO().getAccountid();
+                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
             else if (isRetailer)
-                query = " where PM.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID();
+                query = " where PM.retailerid=" + businessModel.getRetailerMasterBO().getRetailerID();
 
             else if (isClass && channelId > 0) {
-                query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
-                query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
+                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
+                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
             } else if (isClass)
-                query = " where PM.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
+                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
 
             else if (locationId > 0 && channelId > 0) {
-                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-                query = query + " and (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
+                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
+                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
             } else if (locationId > 0)
-                query = " where  (PM.LocId=" + bmodel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
+                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
             else if (channelId > 0)
-                query = " where  (PM.ChId=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "))";
+                query = " where  (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                query = query + "and PPM.PId = " + bmodel.productHelper.getmSelectedGlobalProductId();
+            if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
 
             c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname"
                     + "  from PromotionMapping PM"
@@ -215,7 +215,7 @@ public class PromotionHelper {
                 }
 
                 if (mPromotionList != null) {
-                    for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                    for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
 
                         ArrayList<PromotionBO> clonedList = new ArrayList<>(mPromotionList.size());
                         for (PromotionBO promotionBO : mPromotionList) {
@@ -240,19 +240,19 @@ public class PromotionHelper {
      *
      * @return True or False
      */
-    public boolean savePromotionDetails() {
+    void savePromotionDetails() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         StringBuilder sbuffer = new StringBuilder();
         String headerColumns = "UiD,Date,RetailerId,Remark,distributorid";
         String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer";
         try {
             db.openDataBase();
-            String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+            String uid = businessModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
                     .now(SDUtil.DATE_TIME_ID);
 
             Cursor cursor = db
                     .selectSQL("select Uid from PromotionHeader  Where RetailerId="
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID())
+                            + QT(businessModel.getRetailerMasterBO().getRetailerID())
                             + " and Date= "
                             + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                             + " and upload='N'");
@@ -274,15 +274,15 @@ public class PromotionHelper {
             sbuffer.append(",");
             sbuffer.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             sbuffer.append(",");
-            sbuffer.append(bmodel.getRetailerMasterBO().getRetailerID());
+            sbuffer.append(businessModel.getRetailerMasterBO().getRetailerID());
             sbuffer.append(",");
-            sbuffer.append(QT(bmodel.getNote()));
+            sbuffer.append(QT(businessModel.getNote()));
             sbuffer.append(",");
-            sbuffer.append(bmodel.getRetailerMasterBO().getDistributorId());
+            sbuffer.append(businessModel.getRetailerMasterBO().getDistributorId());
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 headerColumns = headerColumns + ",Weightage,Score";
-                moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PROMO);
+                moduleWeightage = businessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PROMO);
                 sbuffer.append(",");
                 sbuffer.append(moduleWeightage);
                 sbuffer.append(",0");
@@ -290,11 +290,11 @@ public class PromotionHelper {
 
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 detailColumns = detailColumns + ",Score";
             }
 
-            for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+            for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
                     productWeightage = (double) 100 / (double) promotionList.size();
@@ -305,7 +305,7 @@ public class PromotionHelper {
                                     "," + promotion.getPromoId() +
                                     "," + promotion.getProductId() +
                                     "," + promotion.getIsExecuted() +
-                                    "," + bmodel.getRetailerMasterBO().getRetailerID() +
+                                    "," + businessModel.getRetailerMasterBO().getRetailerID() +
                                     "," + QT(promotion.getImagePath()) +
                                     "," + promotion.getReasonID() +
                                     "," + QT(promotion.getFlag()) +
@@ -316,7 +316,7 @@ public class PromotionHelper {
                                     "," + QT(promotion.getImageName()) +
                                     "," + promotion.getHasAnnouncer();
 
-                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 sbDetails = sbDetails + "," + productWeightage;
                                 sum = sum + productWeightage;
                             }
@@ -328,21 +328,19 @@ public class PromotionHelper {
                 }
             }
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
                 double achieved = ( (sum / (double)100) * moduleWeightage);
                 db.updateSQL("Update PromotionHeader set Score = " + achieved + " where UID = " + QT(uid) + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                        " and RetailerID = " + QT(businessModel.getRetailerMasterBO().getRetailerID()));
             }
 
             db.closeDB();
         } catch (Exception e) {
             db.closeDB();
             Commons.printException("Saving Promo Check exception", e);
-            return false;
         }
 
-        return true;
     }
 
     /**
@@ -353,9 +351,9 @@ public class PromotionHelper {
         try {
             db.openDataBase();
             String uid = "";
-            bmodel.setNote("");
+            businessModel.setNote("");
             String sql = "SELECT Uid,Remark FROM PromotionHeader WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + businessModel.getRetailerMasterBO().getRetailerID()
                     + " AND Date = "
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " and upload='N'";
@@ -365,7 +363,7 @@ public class PromotionHelper {
             if (cursor != null) {
                 if (cursor.moveToNext()) {
                     uid = cursor.getString(0);
-                    bmodel.setNote(cursor.getString(1));
+                    businessModel.setNote(cursor.getString(1));
                 }
             } else
                 return;
@@ -396,9 +394,9 @@ public class PromotionHelper {
                     orderDetailCursor.close();
                 } else {
                     // Loading Last visit transaction data
-                    if (bmodel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN) {
+                    if (businessModel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN) {
                         sql1 = "SELECT PromotionId, IsExecuted,reasonid,locid,ExecRatingLovId,promoqty FROM LastVisitPromotion WHERE retailerId="
-                                + bmodel.getRetailerMasterBO().getRetailerID() + " and Flag = 'S'";
+                                + businessModel.getRetailerMasterBO().getRetailerID() + " and Flag = 'S'";
                         orderDetailCursor = db.selectSQL(sql1);
                         if (orderDetailCursor != null) {
                             while (orderDetailCursor.moveToNext()) {
@@ -428,7 +426,8 @@ public class PromotionHelper {
 
             if (orderDetailCursor != null) {
                 while (orderDetailCursor.moveToNext()) {
-                    PromotionBO promotionMaster = new PromotionBO();
+                    PromotionBO promotionMaster;
+                    promotionMaster = new PromotionBO();
                     promotionMaster.setPromoId(orderDetailCursor.getInt(0));
                     promotionMaster.setIsExecuted(orderDetailCursor.getInt(1));
                     promotionMaster
@@ -459,7 +458,7 @@ public class PromotionHelper {
     private void setPromoCheckDetails(int promotionID, int isExecuted, int isAnnounced,
                                       String imgName, String reasonId, int brandID, int locationId, int executeLovId, int promoQty) {
 
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+        for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
             if (standardListBO.getListID().equals(Integer.toString(locationId))) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
@@ -487,7 +486,7 @@ public class PromotionHelper {
     private void setLastVisitPromoCheckDetails(int promotionID, int isExecuted,
                                                String reasonId, int locationId, int executeLovId, int promoQty) {
 
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+        for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
             if (standardListBO.getListID().equals(Integer.toString(locationId))) {
                 ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
                 if (promotionList != null) {
@@ -516,9 +515,9 @@ public class PromotionHelper {
      * @param mPromoID promotion id
      * @param imgName image name
      */
-    public void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath) {
+    void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath) {
         try {
-            for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+            for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
                 if (locationId.equals(standardListBO.getListID())) {
                     ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
 
@@ -547,8 +546,8 @@ public class PromotionHelper {
      *
      * @return true if there is nay data to save
      */
-    public boolean hasPromoData() {
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+    boolean hasPromoData() {
+        for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
 
             ArrayList<PromotionBO> promotionList = standardListBO.getPromotionTrackingList();
             if (promotionList != null) {
@@ -562,7 +561,7 @@ public class PromotionHelper {
     }
 
     /* get list of unused images and loop through it to delete */
-    public void deleteUnusedImages() {
+    void deleteUnusedImages() {
 
         for (PromotionBO temp : getPromotionList()) {
             if (temp.getIsExecuted() == 0 && !"".equals(temp.getImageName())) {
@@ -582,13 +581,13 @@ public class PromotionHelper {
             if (tempFile != null && tempFile.getName().equals(filename)) {
                 boolean isDeleted = tempFile.delete();
                 if (isDeleted)
-                    Commons.print("Image Delete," + "Sucess");
+                    Commons.print("Image Delete," + "Success");
             }
         }
     }
 
     /* get promotion rating list from StandardListMaster */
-    public void downloadPromotionRating() {
+    void downloadPromotionRating() {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -619,7 +618,7 @@ public class PromotionHelper {
         }
     }
 
-    public ArrayList<StandardListBO> getRatingList() {
+    ArrayList<StandardListBO> getRatingList() {
         return mRatingList;
     }
 

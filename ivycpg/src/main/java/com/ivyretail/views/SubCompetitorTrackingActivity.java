@@ -803,7 +803,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 					true, false);*/
             builder = new AlertDialog.Builder(SubCompetitorTrackingActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

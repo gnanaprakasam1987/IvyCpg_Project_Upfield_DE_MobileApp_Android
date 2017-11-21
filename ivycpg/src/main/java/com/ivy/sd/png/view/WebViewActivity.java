@@ -117,7 +117,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
             builder = new AlertDialog.Builder(WebViewActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.Authenticating));
+            customProgressDialog(builder, getResources().getString(R.string.Authenticating));
             alertDialog = builder.create();
             alertDialog.show();
         }

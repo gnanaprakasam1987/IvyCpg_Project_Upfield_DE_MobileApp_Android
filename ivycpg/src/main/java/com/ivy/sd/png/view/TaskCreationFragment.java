@@ -3,7 +3,6 @@ package com.ivy.sd.png.view;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -145,7 +144,7 @@ public class TaskCreationFragment extends IvyBaseFragment {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving_new_task));
+            customProgressDialog(builder, getResources().getString(R.string.saving_new_task));
             alertDialog = builder.create();
             alertDialog.show();
         }
