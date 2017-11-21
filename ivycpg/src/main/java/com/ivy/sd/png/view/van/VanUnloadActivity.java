@@ -818,7 +818,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(VanUnloadActivity.this);
 
-            customProgressDialog(builder,getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

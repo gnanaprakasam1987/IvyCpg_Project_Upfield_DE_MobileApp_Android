@@ -84,7 +84,6 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -5445,7 +5444,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(StockAndOrder.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

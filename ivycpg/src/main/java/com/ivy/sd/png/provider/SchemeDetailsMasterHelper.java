@@ -4728,6 +4728,101 @@ public class SchemeDetailsMasterHelper {
     }
 
 
+    /**
+     * This method is used to get the next available up scheme. Designed by
+     * Vinoth.R for a demo.
+     *
+     * @param schemeId     schemeid
+     * @param type         type
+     * @param channelId    channel id
+     * @param subChannelId subchannel id
+     * @param productID    product id
+     * @param quantity     quantity
+     */
+    public void loadSchemePromotion(String schemeId, String type,
+                                    String channelId, String subChannelId, String productID,
+                                    int quantity) {
+        if (mSchemePromotion == null) {
+            mSchemePromotion = new ArrayList<>();
+        } else {
+            mSchemePromotion.clear();
+        }
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder("");
+        if ("ANY".equalsIgnoreCase(type)) {
+
+            Cursor c = db
+                    .selectSQL("SELECT ProductID, BuyQty FROM SchemeBuyMaster WHERE SchemeID = '"
+                            + schemeId + "'");
+            if (c != null && c.getCount() > 0) {
+
+                sb.append(" AND BD.ProductID IN (");
+                while (c.moveToNext()) {
+                    sb.append("'");
+                    sb.append(c.getString(0));
+                    sb.append("'");
+                    sb.append(",");
+                }
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append(") ");
+                sb.append("AND TYPE = 'ANY' ");
+                c.close();
+            }
+
+        } else {
+            sb = new StringBuilder(" AND BD.ProductID = '" + productID
+                    + "' AND TYPE = 'ONLY' ");
+        }
+
+        Cursor c = db
+                .selectSQL("SELECT SM.SchemeID, SM.Description, SM.Type, SM.ShortName, SM.ChannelID, SM.SubChannelID, "
+                        + "BD.ProductID, PM.PName, BD.BuyQty, FD.FreeQty, FD.MaxQty, FD.Rate, FD.MaxRate FROM SchemeMaster SM "
+                        + "INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID  INNER JOIN ProductMaster PM ON BD.ProductID = PM.PID "
+                        + "INNER JOIN SchemeFreeMaster FD ON FD.FreeProductID = BD.ProductID AND FD.SchemeID = BD.SchemeID WHERE SM.ChannelID = '"
+                        + channelId
+                        + "' AND "
+                        + "SM.SubChannelID = '"
+                        + subChannelId
+                        + "'"
+                        + sb
+                        + "AND BD.BuyQty > "
+                        + quantity
+                        + " ORDER BY SM.SchemeID, BD.ProductID ASC, BD.BuyQty DESC");
+
+        if (c != null && c.getCount() > 0) {
+            SchemeBO schemeBO = new SchemeBO();
+
+            while (c.moveToNext()) {
+                schemeBO.setSchemeId(c.getString(0));
+                schemeBO.setSchemeDescription(c.getString(1));
+                schemeBO.setType(c.getString(2));
+                if (c.getString(3) != null) {
+                    schemeBO.setSchemeDescription(c.getString(3));
+                }
+                schemeBO.setChannelId(c.getString(4));
+                schemeBO.setSubChannelId(c.getString(5));
+                schemeBO.setSchemeParentName(c.getString(7));
+                schemeBO.setSelectedQuantity(c.getInt(8)); // Buy Qty
+                schemeBO.setActualQuantity(c.getInt(9)); // Min Qty
+                schemeBO.setMaximumQuantity(c.getInt(10)); // Max Qty
+                schemeBO.setActualPrice(c.getInt(11)); // Min Disc Rate
+                schemeBO.setMaximumPrice(c.getInt(12)); // Max Disc Rate
+                mSchemePromotion.add(schemeBO);
+            }
+            c.close();
+        }
+        db.closeDB();
+
+    }
+
+    public List<SchemeBO> getmSchemePromotion() {
+        return mSchemePromotion;
+    }
+
+    private List<SchemeBO> mSchemePromotion;
+
 }
 
 

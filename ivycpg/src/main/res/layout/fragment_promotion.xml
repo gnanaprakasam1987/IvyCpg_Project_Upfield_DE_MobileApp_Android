@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -25,11 +26,6 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/list_header_height"
@@ -40,17 +36,17 @@
                         android:paddingRight="@dimen/list_padding_left_n_right">
                         <!--android:weightSum="6"-->
                         <TextView
-                            android:id="@+id/tvdesc"
+                            android:id="@+id/tvDesc"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2.0"
-                            android:gravity="left|center_vertical"
+                            android:gravity="start|center_vertical"
                             android:tag="promotion_name"
                             android:text="@string/promotion_name" />
                         <!--android:layout_weight="1.8"-->
                         <TextView
-                            android:id="@+id/tvexecuted"
+                            android:id="@+id/tvExecuted"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -59,16 +55,16 @@
                             android:text="@string/isexecuted" />
 
                         <TextView
-                            android:id="@+id/tvannouncer"
+                            android:id="@+id/tvAnnouncer"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.7"
                             android:tag="promotion_isexecuted"
-                            android:text="Has Announcer" />
+                            android:text="@string/hasannouncer" />
 
                         <TextView
-                            android:id="@+id/tvpromoqty"
+                            android:id="@+id/tvPromoQty"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -77,7 +73,7 @@
                             android:text="@string/qty" />
 
                         <TextView
-                            android:id="@+id/tvreason"
+                            android:id="@+id/tvReason"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -91,10 +87,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
                             android:tag="promotion_ratinglevel"
-                            android:text="Executing Rating" />
+                            android:text="@string/exec_rating" />
                         <!--android:layout_weight="1"-->
                         <TextView
-                            android:id="@+id/tvphoto"
+                            android:id="@+id/tvPhoto"
                             style="?attr/customListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -102,17 +98,16 @@
                             android:text="@string/photo" />
                     </LinearLayout>
 
-                    <ListView
-                        android:id="@+id/lvwplist"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:cacheColorHint="@null"
-                        android:divider="@android:color/white"
-                        android:dividerHeight="1dp"
-                        android:fitsSystemWindows="true"
-                        android:scrollbarAlwaysDrawHorizontalTrack="true"
-                        android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
-                </LinearLayout>
+                <ListView
+                    android:id="@+id/lvwplist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@null"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="1dp"
+                    android:fitsSystemWindows="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -123,12 +118,6 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center"
-                android:orientation="vertical">
 
                 <include
                     layout="@layout/keypad"
@@ -140,9 +129,12 @@
                     android:layout_marginRight="@dimen/list_padding_left_n_right" />
 
                 <View
+                    android:id="@+id/keypad_view"
+                    android:layout_below="@+id/card_keyboard"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/activity_divider_height"
-                    android:background="@color/divider_view_color" />
+                    android:background="@color/divider_view_color"
+                    tools:ignore="UnknownIdInLayout" />
 
                 <Button
                     android:id="@+id/btn_save"
@@ -150,8 +142,9 @@
                     android:layout_marginBottom="@dimen/activity_margin1"
                     android:layout_marginTop="@dimen/activity_margin1"
                     android:text="@string/save"
-                    android:textAllCaps="false" />
-            </LinearLayout>
+                    android:textAllCaps="false"
+                    android:layout_below="@+id/keypad_view"
+                    android:layout_centerHorizontal="true" />
         </RelativeLayout>
     </RelativeLayout>
 

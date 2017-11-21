@@ -418,15 +418,15 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     @Override
                     public void onClick(View v) {
 
-                        bmodel.promotionHelper.loadSchemePromotion(
+                        bmodel.schemeDetailsMasterHelper.loadSchemePromotion(
                                 holder.schemeBO.getSchemeId(),
                                 holder.schemeBO.getType(),
                                 holder.schemeBO.getChannelId(),
                                 holder.schemeBO.getSubChannelId(),
                                 holder.productBO.getProductID(),
                                 holder.schemeBO.getQuantity());
-                        if (bmodel.promotionHelper.getmSchemePromotion() != null
-                                && bmodel.promotionHelper.getmSchemePromotion()
+                        if (bmodel.schemeDetailsMasterHelper.getmSchemePromotion() != null
+                                && bmodel.schemeDetailsMasterHelper.getmSchemePromotion()
                                 .size() > 0) {
                             if (mSchemePromDialog == null) {
                                 mSchemePromDialog = new NextSlabSchemeDialog(

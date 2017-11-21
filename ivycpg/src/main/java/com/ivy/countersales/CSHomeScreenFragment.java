@@ -754,7 +754,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -937,7 +937,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

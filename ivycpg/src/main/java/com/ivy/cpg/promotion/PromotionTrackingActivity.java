@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.promotion;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -34,7 +34,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 			getSupportActionBar().setDisplayShowHomeEnabled(true);
 		}
 		BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-		bmodel.setContext(this);
+		//bmodel.setContext(this);
 		overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 		if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
 			Toast.makeText(this,
@@ -101,7 +101,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 
 	@Override
 	public void updateMultiSelectionBrand(List<String> mFilterName,
-			List<Integer> mFilterId) {
+										  List<Integer> mFilterId) {
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
-		asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
+		asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 	}
 
 	public void numberPressed(View vw) {

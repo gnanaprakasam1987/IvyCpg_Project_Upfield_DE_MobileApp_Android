@@ -1237,7 +1237,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(LoginScreen.this);
 
-            customProgressDialog(builder,getResources().getString(R.string.checking_new_version));
+            customProgressDialog(builder, getResources().getString(R.string.checking_new_version));
             alertDialog = builder.create();
             alertDialog.show();
         }

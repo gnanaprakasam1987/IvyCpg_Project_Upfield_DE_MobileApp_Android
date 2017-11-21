@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +39,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class AdhocPlanningFragment extends IvyBaseFragment {
@@ -660,7 +658,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
             super.onPreExecute();
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 

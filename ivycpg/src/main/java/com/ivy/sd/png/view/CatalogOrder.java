@@ -2151,7 +2151,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     true, false);*/
             builder = new AlertDialog.Builder(CatalogOrder.this);
 
-            customProgressDialog( builder, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 

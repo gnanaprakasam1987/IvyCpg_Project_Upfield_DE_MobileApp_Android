@@ -1,9 +1,7 @@
 package com.ivy.sd.png.commons;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,9 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -55,10 +51,16 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         try {
-            int theme = bmodel.configurationMasterHelper.getMVPTheme();
-            super.setTheme(theme);
-            String font = bmodel.configurationMasterHelper.getFontSize();
-            setFontStyle(font);
+            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
+            } else {
+                super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
+            }
+            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
+                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
+            } else {
+                setFontStyle(bmodel.configurationMasterHelper.fontSize);
+            }
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -226,16 +228,14 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     public void customProgressDialog(AlertDialog.Builder builder, String message) {
 
         try {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) findViewById(R.id.layout_root));
+            View view = View.inflate(this, R.layout.custom_alert_dialog, null);
 
-            TextView title = (TextView) layout.findViewById(R.id.title);
+            TextView title = (TextView) view.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv = (TextView) view.findViewById(R.id.text);
             messagetv.setText(message);
 
-            builder.setView(layout);
+            builder.setView(view);
             builder.setCancelable(false);
 
         } catch (Exception e) {

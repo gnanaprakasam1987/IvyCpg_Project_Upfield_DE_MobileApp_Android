@@ -858,7 +858,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     mSelectedPrintCount = position;
                     builder10 = new AlertDialog.Builder(getActivity());
-                    customProgressDialog(builder10,  "Printing....");
+                    customProgressDialog(builder10, "Printing....");
                     alertDialog = builder10.create();
                     alertDialog.show();
                     getDialog().dismiss();

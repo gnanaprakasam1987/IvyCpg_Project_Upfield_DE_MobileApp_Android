@@ -87,7 +87,7 @@ public class ProductHelper {
     private ArrayList<TaxBO> mTaxProdList = new ArrayList<TaxBO>();
     private ArrayList<TaxTempBO> mTaxSumProdList = new ArrayList<TaxTempBO>();
     public String mHomeScreenThreeActivityName = "";
-    private Vector<StandardListBO> inStoreLocation = new Vector<StandardListBO>();
+    private Vector<StandardListBO> inStoreLocation = new Vector<>();
     private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
     private Vector<LoyaltyBO> loyaltyproductList = new Vector<LoyaltyBO>();
 
