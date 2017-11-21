@@ -1,7 +1,6 @@
 package com.ivy.sd.png.commons;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -11,9 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -108,16 +105,14 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     public void customProgressDialog(AlertDialog.Builder builder, String message) {
 
         try {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) getActivity().findViewById(R.id.layout_root));
+            View view = View.inflate(getActivity(), R.layout.custom_alert_dialog, null);
 
-            TextView title = (TextView) layout.findViewById(R.id.title);
+            TextView title = (TextView) view.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv = (TextView) view.findViewById(R.id.text);
             messagetv.setText(message);
 
-            builder.setView(layout);
+            builder.setView(view);
             builder.setCancelable(false);
 
         } catch (Exception e) {
