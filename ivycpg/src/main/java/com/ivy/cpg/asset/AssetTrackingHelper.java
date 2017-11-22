@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.widget.ArrayAdapter;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -43,7 +41,6 @@ public class AssetTrackingHelper {
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
-    public String mSelectedSerial = "";
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -1044,17 +1041,6 @@ public class AssetTrackingHelper {
         return new ArrayList<>();
     }
 
-    /**
-     * Method return reason remarks arrayList
-     *
-     * @return ArrayList<ReasonMaster>
-     */
-    public ArrayList<ReasonMaster> getAssetRemarksList() {
-        if (mAssetRemarkList != null) {
-            return mAssetRemarkList;
-        }
-        return new ArrayList<>();
-    }
 
     public ArrayList<ReasonMaster> getAssetConditionList() {
         if (mAssetConditionList != null) {
@@ -1109,24 +1095,6 @@ public class AssetTrackingHelper {
         return -1;
     }
 
-    /**
-     * Method return the correct position to selected conditionId
-     *
-     * @param conditionId Condition Id
-     * @param reasonList  reason List
-     * @return integer Index
-     */
-    public int getConditionItemIndex(String conditionId, ArrayList<ReasonMaster> reasonList) {
-        int size = reasonList.size();
-
-        for (int i = 0; i < size; i++) {
-            ReasonMaster reasonBO = reasonList.get(i);
-            if (reasonBO.getConditionID().equals(conditionId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     /**
      * Method to delete imageName in sql table

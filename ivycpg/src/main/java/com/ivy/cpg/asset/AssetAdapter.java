@@ -61,6 +61,10 @@ public class AssetAdapter extends BaseAdapter {
     String photoPath;
     String imageName;
     private static final int CAMERA_REQUEST_CODE = 1;
+    ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
+    ArrayList<ReasonMaster> mAssetReasonList;
+    ArrayList<ReasonMaster> mAssetConditionList;
+    ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
 
 
     public AssetAdapter(Context context, BusinessModel mBModel,AssetPresenterImpl mAssetPresenter,Fragment mFragment
@@ -73,6 +77,31 @@ public class AssetAdapter extends BaseAdapter {
         this.outPutDateFormat = mBModel.configurationMasterHelper.outDateFormat;
         this.mAssetPresenter=mAssetPresenter;
         this.mFragment=mFragment;
+
+        String select_reason = "Select Reason";
+        ReasonMaster reason1 = new ReasonMaster();
+        reason1.setReasonID(Integer.toString(0));
+        reason1.setReasonDesc(select_reason);
+        mAssetReasonList = mAssetPresenter.getAssetReasonList();
+        mAssetReasonList.add(0, reason1);
+
+        mAssetReasonSpinAdapter = new ArrayAdapter<>(mContext,
+                R.layout.spinner_bluetext_layout, mAssetReasonList);
+        mAssetReasonSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        String select_condition = "Select Condition";
+        ReasonMaster reason3 = new ReasonMaster();
+        reason3.setConditionID(Integer.toString(0));
+        reason3.setReasonDesc(select_condition);
+        mAssetConditionList = assetTrackingHelper.getAssetConditionList();
+        mAssetConditionList.add(0, reason3);
+
+        mAssetConditionAdapter = new ArrayAdapter<>(mContext,
+                R.layout.spinner_bluetext_layout, mAssetConditionList);
+        mAssetConditionAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
     }
 
     @Override
@@ -138,42 +167,8 @@ public class AssetAdapter extends BaseAdapter {
             holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
             holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
 
-
-            if(assetTrackingHelper.SHOW_ASSET_REASON) {
-                String select_reason = "Select Reason";
-                ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
-                ArrayList<ReasonMaster> mAssetReasonList;
-
-                ReasonMaster reason1 = new ReasonMaster();
-                reason1.setReasonID(Integer.toString(0));
-                reason1.setReasonDesc(select_reason);
-                mAssetReasonList = mAssetPresenter.getAssetReasonList();
-                mAssetReasonList.add(0, reason1);
-
-                mAssetReasonSpinAdapter = new ArrayAdapter<>(mContext,
-                        R.layout.spinner_bluetext_layout, mAssetReasonList);
-                mAssetReasonSpinAdapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
-            }
-
-            if(assetTrackingHelper.SHOW_ASSET_CONDITION) {
-                String select_condition = "Select Condition";
-                ArrayList<ReasonMaster> mAssetConditionList;
-                ArrayAdapter<ReasonMaster> mAssetConditionAdapter;
-
-                ReasonMaster reason3 = new ReasonMaster();
-                reason3.setConditionID(Integer.toString(0));
-                reason3.setReasonDesc(select_condition);
-                mAssetConditionList = assetTrackingHelper.getAssetConditionList();
-                mAssetConditionList.add(0, reason3);
-
-                mAssetConditionAdapter = new ArrayAdapter<>(mContext,
-                        R.layout.spinner_bluetext_layout, mAssetConditionList);
-                mAssetConditionAdapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
-            }
+            holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
+            holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
 
             if (!assetTrackingHelper.SHOW_ASSET_QTY)
                 holder.availQtyLL.setVisibility(View.GONE);

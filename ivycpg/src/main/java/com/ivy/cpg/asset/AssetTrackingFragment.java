@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -26,22 +24,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
-import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -50,7 +43,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -70,24 +62,23 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
     private ListView listview;
-
-    private BusinessModel mBModel;
+    private ActionBar actionBar;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int MOVEMENT_ASSET = 2;
     private int mSelectedLocationIndex;
     private static final String ALL = "ALL";
     private static final String MENU_ASSET = "MENU_ASSET";
-    private String strBarCodeSearch = "ALL";
     private static final String TAG = "AssetTracking Screen";
 
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
 
-    AssetTrackingHelper assetTrackingHelper ;
-    AssetPresenterImpl assetPresenter;
-    AssetAdapter adapter;
-    ActionBar actionBar;
+    private AssetTrackingHelper assetTrackingHelper ;
+    private AssetPresenterImpl assetPresenter;
+    private AssetAdapter adapter;
+    private BusinessModel mBModel;
+
 
     @Override
     public void onAttach(Context context) {
@@ -106,13 +97,13 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
                 false);
 
-
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setElevation(0);
             setScreenTitle(assetTrackingHelper.mSelectedActivityName);
         }
+
         initializeViews(view);
         assetPresenter.initialLoad();
 
@@ -224,6 +215,78 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
     }
 
+    /**
+     * Method that to show visibility and hided column
+     */
+    private void hideAndSeeK() {
+
+        View view = getView();
+        if (view != null && !assetTrackingHelper.SHOW_ASSET_PHOTO) {
+            view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
+        }
+
+        if (!assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
+            view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
+        } else {
+            try {
+                if (view != null) {
+                    if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.tv_isAvail).getTag()) != null) {
+                        ((TextView) view.findViewById(R.id.tv_isAvail))
+                                .setText(mBModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.tv_isAvail).getTag()));
+
+                    }
+                    ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                }
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        }
+
+        try {
+            if (view != null) {
+                if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.tv_header_asset_name).getTag()) != null) {
+                    ((TextView) view.findViewById(R.id.tv_header_asset_name))
+                            .setText(mBModel.labelsMasterHelper
+                                    .applyLabels(view.findViewById(
+                                            R.id.tv_header_asset_name).getTag()));
+                }
+                ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+
+        if (view != null && !assetTrackingHelper.SHOW_ASSET_EXECUTED)
+            view.findViewById(R.id.tv_is_executed).setVisibility(View.GONE);
+        else {
+
+            try {
+                if (view != null) {
+                    if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.tv_is_executed).getTag()) != null) {
+                        ((TextView) view.findViewById(R.id.tv_is_executed))
+                                .setText(mBModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.tv_is_executed).getTag()));
+
+                    }
+                    ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                }
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        }
+
+    }
+
 
     @Override
     public void updateInitialLoad(Vector<StandardListBO> mList) {
@@ -329,7 +392,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
             return true;
         } else if (i == R.id.menu_all) {
-            strBarCodeSearch = ALL;
+            assetPresenter.setBarcode(ALL);
             assetPresenter.updateList();
             return true;
         } else if (i == R.id.menu_remarks) {
@@ -380,34 +443,19 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
 
     @Override
-    public void updateAssets(ArrayList<AssetTrackingBO> mList,ArrayList<AssetTrackingBO> mAllAssetTrackingList) {
+    public void updateAssets(ArrayList<AssetTrackingBO> mList,boolean isUnMapped,Bundle mBundle) {
         int k = 0;
         ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
+
         if (assetTrackingHelper.SHOW_ASSET_BARCODE) {
-            if (mAllAssetTrackingList != null) {
-
-                for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
-                    if (strBarCodeSearch.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
-
-                        if (!assetTrackingHelper.isExistingAssetInRetailer(strBarCodeSearch)) {
-                            scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
-                            Bundle args = new Bundle();
-                            args.putString("serialNo", strBarCodeSearch);
-                            args.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
-                            args.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
-                            args.putString("brand", mAllAssetTrackingList.get(i).getBrand());
-                            args.putString("retailerName", mBModel.getRetailerMasterBO().getRetailerName());
-                            scannedUnmappedDialogFragment.setArguments(args);
-                            scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
-                            k = 1;
-                            break;
-                        } else {
-                            Toast.makeText(mBModel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
-                            k = 1;
-                            break;
-                        }
-                    }
-                }
+            if (isUnMapped) {
+                scannedUnmappedDialogFragment = new ScannedUnmappedDialogFragment();
+                scannedUnmappedDialogFragment.setArguments(mBundle);
+                scannedUnmappedDialogFragment.show(getFragmentManager(), "Asset");
+                k = 1;
+            } else {
+                Toast.makeText(mBModel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
+                k = 1;
             }
         }
 
@@ -428,7 +476,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
      */
     public void updateListByNFCTag(String mNFCTag) {
         assetPresenter.setNFCTag(mNFCTag);
-        strBarCodeSearch = ALL;
+        assetPresenter.setBarcode(ALL);
         assetPresenter.updateList();
     }
 
@@ -463,7 +511,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                     if (result.getContents() == null) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                     } else {
-                        strBarCodeSearch = result.getContents();
+                        assetPresenter.setBarcode(result.getContents());
                     }
                 }
             }
@@ -476,7 +524,12 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     @Override
     public void isDataExistToSave(boolean isExist) {
         if(isExist){
-            new SaveAsset().execute("");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            mBModel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+            assetPresenter.save(MENU_ASSET);
         }
         else{
             AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
@@ -497,133 +550,37 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         }
     }
 
-    /**
-     * This AsyncTask class is used to save Asset Details in table
-     */
-    private class SaveAsset extends AsyncTask<String, Void, String> {
-        protected void onPreExecute() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            mBModel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            assetPresenter.save(MENU_ASSET);
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
+    @Override
+    public void cancelProgressDialog() {
+        assetPresenter.updateTimeStamp();
+        if(alertDialog!=null){
             alertDialog.dismiss();
-           assetPresenter.updateTimeStamp();
-
-            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                        "", getResources().getString(R.string.saved_successfully),
-                    false, getActivity().getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-                        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-
-                        Bundle extras = getActivity().getIntent().getExtras();
-                        if (extras != null) {
-                            intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
-                        }
-
-                        startActivity(intent);
-                        getActivity().finish();
-
-                    }
-                }, new CommonDialog.negativeOnClickListener() {
-                    @Override
-                    public void onNegativeButtonClick() {
-                    }
-            }).show();
-
         }
 
+        new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                "", getResources().getString(R.string.saved_successfully),
+                false, getActivity().getResources().getString(R.string.ok),
+                null, new CommonDialog.positiveOnClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                Bundle extras = getActivity().getIntent().getExtras();
+                if (extras != null) {
+                    intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                }
+
+                startActivity(intent);
+                getActivity().finish();
+
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+            }
+        }).show();
     }
-
-
-    /**
-     * Method that to show visibility and hided column
-     */
-    private void hideAndSeeK() {
-
-        View view = getView();
-        if (view != null && !assetTrackingHelper.SHOW_ASSET_PHOTO) {
-            view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
-        }
-
-        if (!assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
-            view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
-        } else {
-            try {
-                if (view != null) {
-                    if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.tv_isAvail).getTag()) != null) {
-                        ((TextView) view.findViewById(R.id.tv_isAvail))
-                                .setText(mBModel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(
-                                                R.id.tv_isAvail).getTag()));
-
-                    }
-                    ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                }
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        }
-
-        try {
-            if (view != null) {
-                if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.tv_header_asset_name).getTag()) != null) {
-                    ((TextView) view.findViewById(R.id.tv_header_asset_name))
-                            .setText(mBModel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(
-                                            R.id.tv_header_asset_name).getTag()));
-                }
-                ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            }
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-
-        if (view != null && !assetTrackingHelper.SHOW_ASSET_EXECUTED)
-            view.findViewById(R.id.tv_is_executed).setVisibility(View.GONE);
-        else {
-
-            try {
-                if (view != null) {
-                    if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.tv_is_executed).getTag()) != null) {
-                        ((TextView) view.findViewById(R.id.tv_is_executed))
-                                .setText(mBModel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(
-                                                R.id.tv_is_executed).getTag()));
-
-                    }
-                    ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                }
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        }
-
-    }
-
 
     /**
      * Show location dialog
@@ -637,7 +594,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        strBarCodeSearch = ALL;
+                        assetPresenter.setBarcode(ALL);
                         mSelectedLocationIndex = item;
                         dialog.dismiss();
                         assetPresenter.updateLocationIndex(item);

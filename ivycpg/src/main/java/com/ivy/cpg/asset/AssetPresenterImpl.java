@@ -1,13 +1,21 @@
 package com.ivy.cpg.asset;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,9 +61,27 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void save(String mModuleCode) {
-        deleteUnUsedImages();
-        mAssetTrackingHelper.saveAsset(mModuleCode);
-        mBModel.saveModuleCompletion(mModuleCode);
+     new SaveAssetAsync().execute(mModuleCode);
+    }
+
+    private class SaveAssetAsync extends AsyncTask<String, Void, String> {
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            deleteUnUsedImages();
+            mAssetTrackingHelper.saveAsset(params[0]);
+            mBModel.saveModuleCompletion(params[0]);
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            mAssetView.cancelProgressDialog();
+        }
 
     }
 
@@ -69,7 +95,12 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         mAssetView.updateInitialLoad(mBModel.productHelper.getInStoreLocation());
     }
 
-   /* @Override
+    @Override
+    public void setBarcode(String mBarcode) {
+        mCapturedBarcode=mBarcode;
+    }
+
+    /* @Override
     public void getCurrentLocation(Integer mIndex) {
         mSelectedLocationIndex=mIndex;
         mAssetView.updateCurrentLocation(mBModel.productHelper.getInStoreLocation().get(mIndex));
@@ -158,7 +189,35 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
             }
         }
 
-        mAssetView.updateAssets(mAssetList,mAllAssetTrackingList);
+        Bundle bundle=null ;
+        boolean isUnmapped=false;
+        if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
+            if (mAllAssetTrackingList != null) {
+                  bundle= new Bundle();
+                for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
+                    if (mCapturedBarcode.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
+
+                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mCapturedBarcode)) {
+                            isUnmapped=true;
+                            bundle.putString("serialNo", mCapturedBarcode);
+                            bundle.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
+                            bundle.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
+                            bundle.putString("brand", mAllAssetTrackingList.get(i).getBrand());
+                            bundle.putString("retailerName", mBModel.getRetailerMasterBO().getRetailerName());
+
+                            break;
+                        } else {
+                            isUnmapped=false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        mAssetView.updateAssets(mAssetList,isUnmapped,bundle);
     }
 
     @Override
@@ -233,9 +292,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         mAssetView.updateFiveFilteredList(mAssetList);
     }
 
-    @Override
-    public void getList() {
-    }
+
 
     @Override
     public void updateImageName() {
