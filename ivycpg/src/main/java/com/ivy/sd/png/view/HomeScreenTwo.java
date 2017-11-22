@@ -37,7 +37,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.asset.AssetPresenterImpl;
+import com.ivy.cpg.asset.AssetTrackingActivity;
+import com.ivy.cpg.asset.AssetTrackingHelper;
+import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.lib.existing.DBUtil;
@@ -51,15 +53,12 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.asset.AssetTrackingActivity;
-import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
@@ -70,12 +69,11 @@ import com.ivyretail.views.SODActivity;
 import com.ivyretail.views.SOSActivity;
 import com.ivyretail.views.SOSActivity_Proj;
 import com.ivyretail.views.SOSKUActivity;
-import com.ivyretail.views.StockCheckFragmentActivity;
+import com.ivyretail.views.StockCheckActivity;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -1527,7 +1525,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             intent.putExtra("isFromChild", isFromChild);
                     } else {
                         intent = new Intent(HomeScreenTwo.this,
-                                StockCheckFragmentActivity.class);
+                                StockCheckActivity.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                         if (isFromChild)
                             intent.putExtra("isFromChild", isFromChild);

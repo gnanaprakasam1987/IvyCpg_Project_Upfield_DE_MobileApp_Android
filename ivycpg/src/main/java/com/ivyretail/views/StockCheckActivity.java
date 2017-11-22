@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class StockCheckFragmentActivity extends IvyBaseActivityNoActionBar implements
+public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
-    BusinessModel bmodel;
+    private BusinessModel bmodel;
     private Toolbar toolbar;
 
     @Override
@@ -35,15 +35,13 @@ public class StockCheckFragmentActivity extends IvyBaseActivityNoActionBar imple
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-           // getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
-        // getSupportActionBar().setTitle(bmodel.mSelectedActivityName);
-
 
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
+
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),

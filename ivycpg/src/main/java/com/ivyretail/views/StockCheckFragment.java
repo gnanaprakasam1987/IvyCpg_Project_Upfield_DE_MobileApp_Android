@@ -91,24 +91,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
     private static final String BRAND = "Brand";
-    // For Special Filter
     private static final String GENERAL = "General";
     private String strBarCodeSearch = "ALL";
-
-    // Global variables
-    // Drawer Implementation
     private DrawerLayout mDrawerLayout;
     private ListView lvwplist;
     private EditText QUANTITY;
     private EditText mEdt_searchproductName;
     private String append = "";
     private BusinessModel bmodel;
-    // HashMap used to set Selected Filter name and ID
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    // Get SKUBO Total List
     private ArrayList<ProductMasterBO> mylist;
     private Vector<ProductMasterBO> items;
-    // Adapter used for Load Reason
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
 
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
@@ -221,10 +214,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             getActionBar().setElevation(0);
         }
 
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
         ) {
             public void onDrawerClosed(View view) {
                 if (getActionBar() != null) {
@@ -282,7 +275,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-        loadReason(); // Initialize Adapter and Load Reason
+        loadReason();
 
 
         mSearchTypeArray = new ArrayList<>();
@@ -304,7 +297,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void hideAndSeek() {
         try {
-            // On/off the stock related text box
 
 
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC) {
@@ -451,7 +443,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 return;
             }
             int siz = items.size();
-            Commons.print("siz" + siz);
             mylist = new ArrayList<>();
             String mSelectedFilter = bmodel.getProductFilter();
             for (int i = 0; i < siz; ++i) {
@@ -536,13 +527,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         try {
-            // Close the drawer
             mDrawerLayout.closeDrawers();
-
-            // Change the Brand button Name
             brandbutton = mFilterText;
-
-            // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
 
 
@@ -670,7 +656,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        // set the spl filter name on the button for display
         fiveFilter_productIDs = null;
         generalbutton = mFilterText;
         if (mSelectedIdByLevelId != null)
@@ -681,7 +666,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void updateCancel() {
-        // Close Drawer
         mDrawerLayout.closeDrawers();
     }
 
@@ -755,7 +739,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.facingQty = (EditText) row
                             .findViewById(R.id.stock_check_listview_fc_qty);
 
-                    // On/off the stock related text box
                     if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                         holder.psq.setVisibility(View.VISIBLE);
                     } else {
@@ -902,7 +885,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.productObj.setReasonID(reString
                                             .getReasonID());
 
-                                    Commons.print("Reason ID>>>>>>>>>>>>>," + "" + holder.productObj.getReasonID());
                                 }
 
                                 public void onNothingSelected(
@@ -1193,7 +1175,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
-                            //mEdt_searchproductName.setText("");
 
                             if (viewFlipper.getDisplayedChild() != 0) {
                                 viewFlipper.showPrevious();
@@ -1450,7 +1431,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_actionbar_with_filter, menu);
     }
 
@@ -1460,8 +1440,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        // Change color if Filter is selected
         try {
             if (!generalbutton.equals(GENERAL))
                 menu.findItem(R.id.menu_spl_filter).setIcon(
@@ -1522,10 +1500,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
                 menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-            } /*else {
-                menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-                menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            }*/
+            }
 
             if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -1617,7 +1592,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.CAMERA);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                //new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
                 IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
                     @Override
                     protected void startActivityForResult(Intent intent, int code) {
@@ -1690,7 +1664,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     bmodel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-            // set Fragmentclass Arguments
+
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
             fragobj.setArguments(bundle);
 
@@ -1725,7 +1699,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         Intent i = new Intent();
         i.setAction(switchToProfile);
-        // add additional info
         i.putExtra(extraData, "dist_sc");
         getActivity().sendBroadcast(i);
     }
@@ -1745,7 +1718,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         SchemeDialog sc = new SchemeDialog(getActivity(), null, "",
                 "", null, 0, 0);
 
-        //sc.show();
+
         FragmentManager fm = getActivity().getSupportFragmentManager();
         sc.show(fm, "");
     }
@@ -1807,11 +1780,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             });
         }
         bmodel.applyAlertDialogTheme(alertDialogBuilder1);
-        //AlertDialog alertDialog1 = alertDialogBuilder1.create();
-      /*  TextView textView = (TextView) alertDialog1.findViewById(android.R.id.message);
-        Typeface face=Typeface.createFromAsset(getActivity().getAssets(),"fonts/Roboto-Light.ttf");
-        textView.setTypeface(face);*/
-        //  alertDialog1.show();
     }
 
     private void loadSpecialFilterView(View view) {
@@ -1857,10 +1825,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         });
 
         for (int i = 0; i < bmodel.configurationMasterHelper.getGenFilter().size(); i++) {
-//        for (int i = 0; i < 2; i++) {
             ConfigureBO config = bmodel.configurationMasterHelper.getGenFilter().get(i);
-          /*  ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                    (getResources().getDimensionPixelSize(getResources().getDimension(R.dimen.special_filter_item_width)*scale+0.5f)), ViewGroup.LayoutParams.WRAP_CONTENT);*/
 
             TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
@@ -2008,7 +1973,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 bundle.putString("isFrom", "STK");
             }
 
-            // set Fragmentclass Arguments
             FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "filter");
@@ -2063,7 +2027,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
 
         protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -2185,7 +2148,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public void onResume() {
         super.onResume();
 
-        //GA screen tracking
         BusinessModel.getInstance().trackScreenView("Stock Check");
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
