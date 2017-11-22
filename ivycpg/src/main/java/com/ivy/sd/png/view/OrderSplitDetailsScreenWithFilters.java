@@ -404,7 +404,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
                     "Loading", true, false);*/
             builder1 = new AlertDialog.Builder(OrderSplitDetailsScreenWithFilters.this);
 
-            bmodel.customProgressDialog(alertDialog1, builder1, OrderSplitDetailsScreenWithFilters.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder1, getResources().getString(R.string.loading));
             alertDialog1 = builder1.create();
             alertDialog1.show();
         }
@@ -1133,7 +1133,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
                     "Loading..", true, false);*/
             builder = new AlertDialog.Builder(OrderSplitDetailsScreenWithFilters.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderSplitDetailsScreenWithFilters.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1222,7 +1222,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
         if (alertDialog == null) {
             builder = new AlertDialog.Builder(OrderSplitDetailsScreenWithFilters.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderSplitDetailsScreenWithFilters.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1367,7 +1367,7 @@ public class OrderSplitDetailsScreenWithFilters extends IvyBaseActivityNoActionB
                     "Saving..", true, false);*/
             builder = new AlertDialog.Builder(OrderSplitDetailsScreenWithFilters.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OrderSplitDetailsScreenWithFilters.this, "Saving..");
+            customProgressDialog(builder, "Saving..");
             alertDialog = builder.create();
             alertDialog.show();
 

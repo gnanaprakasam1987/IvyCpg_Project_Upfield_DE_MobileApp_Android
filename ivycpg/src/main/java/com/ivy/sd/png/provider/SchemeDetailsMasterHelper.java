@@ -110,12 +110,12 @@ public class SchemeDetailsMasterHelper {
 
             // download attributes for a current retailer
             //downloadRetailerAttributes();
-            downloadValidSchemeGroups(db);
-            downloadSchemeParentDetails(db);
-            downloadBuySchemeDetails(db);
-            updateFreeProducts(db);
-            downloadFreeGroupName(db);
-            updateFreeproductStocks();
+            downloadValidSchemeGroups(db);      //  loading scheme groups based on retailer attributres
+            downloadSchemeParentDetails(db);    //  for loading highest slab parentids
+            downloadBuySchemeDetails(db);       //  load buy product list
+            updateFreeProducts(db);             //  update free product
+            downloadFreeGroupName(db);          //  get grp name - map
+            updateFreeproductStocks();          //  set sih of free product map from productmaster
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
                 downloadParentIdListByProduct(db);
                 downloadProductIdListByParentId(db);
@@ -1106,7 +1106,9 @@ public class SchemeDetailsMasterHelper {
 
                 int maximumQuantity = schemeProductBO.getQuantityMaximum();
 
-                if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING))) {//bmodel.configurationMasterHelper.SCHEME_APPLY_REM) {
+                if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null
+                        &&  (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
+                              ||schemeBO.getProcessType().equals(PROCESS_TYPE_MTS)))) {
 
 					/* scheme type is Quantity Value */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -1757,7 +1759,13 @@ public class SchemeDetailsMasterHelper {
 
                         }
 
-                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (quantity - balanceQty));
+
+                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productMasterBO.getProductID())) {
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (int) (quantity - balanceQty));
+                        } else {
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productMasterBO.getProductID()) + ((int) (quantity - balanceQty))));
+                        }
 
                         if (balanceQty >= schemeProductBO.getBuyQty()) {
                             count = count + 1;
@@ -1925,7 +1933,13 @@ public class SchemeDetailsMasterHelper {
 
                         }
 
-                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentId + productMasterBO.getProductID()), (int) (quantity - balanceValue));
+                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentId + productMasterBO.getProductID())) {
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentId + productMasterBO.getProductID()), (int) (quantity - balanceValue));
+                        } else {
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentId + productMasterBO.getProductID()),
+                                    (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentId + productMasterBO.getProductID()) + ((int) (quantity - balanceValue))));
+                        }
 
                         if (schemeProductBO.getBuyQty() > 0) {
                             count = count + (int) balanceValue
@@ -1953,8 +1967,8 @@ public class SchemeDetailsMasterHelper {
         if (tempCount > 0) {
             return tempCount;
         } else {
-			/*
-			 * Now we are apply range wise scheme.so maximum buy qty only using
+            /*
+             * Now we are apply range wise scheme.so maximum buy qty only using
 			 * for computation to how many times scheme achived. but minimum buy
 			 * qty used to apply scheme or not.
 			 */
@@ -2026,7 +2040,7 @@ public class SchemeDetailsMasterHelper {
                             }
                         }
                     }
-					/* scheme accumulation ends */
+                    /* scheme accumulation ends */
 
                     totalQty = totalQty + quantity;
 
@@ -2064,8 +2078,8 @@ public class SchemeDetailsMasterHelper {
                 if (count > selectedtoBuyQty) {
                     balanceCount = count % (int) selectedtoBuyQty;
                     count = count / (int) selectedtoBuyQty;
-				/*
-				 * Now we are apply range wise scheme.so maximum qty only using
+                /*
+                 * Now we are apply range wise scheme.so maximum qty only using
 				 * for computation to how many times scheme achived
 				 */
                     if (balanceCount >= selectedFromBuyQty) {
@@ -2098,9 +2112,22 @@ public class SchemeDetailsMasterHelper {
 
                                 if (tempToQty >= qty) {
                                     tempToQty -= qty;
-                                    mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), qty);
+                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), qty);
+                                    } else {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + qty));
+                                    }
+
                                 } else {
-                                    mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                    } else {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) tempToQty)));
+                                    }
                                     break;
                                 }
 
@@ -2211,7 +2238,7 @@ public class SchemeDetailsMasterHelper {
                             }
                         }
                     }
-					/* scheme accumulation ends */
+                    /* scheme accumulation ends */
 
                     if (quantity > 0) {
 
@@ -2261,9 +2288,23 @@ public class SchemeDetailsMasterHelper {
 
                                 if (tempToQty >= totVal) {
                                     tempToQty -= totVal;
-                                    mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) totVal);
+
+                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) totVal);
+                                    } else {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) totVal)));
+                                    }
+
                                 } else {
-                                    mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                    } else {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) tempToQty)));
+                                    }
                                     break;
                                 }
 
@@ -2285,8 +2326,8 @@ public class SchemeDetailsMasterHelper {
                 if (count != 0) {
                     return count;
                 } else {
-					/*
-					 * Now we are apply range wise scheme.so maximum qty only
+                    /*
+                     * Now we are apply range wise scheme.so maximum qty only
 					 * using for computation to how many times scheme achived
 					 */
                     return 1;
@@ -2384,7 +2425,7 @@ public class SchemeDetailsMasterHelper {
 
             }
           /*  mSchemeHistoryValueListByschemeid=new HashMap<>();
-			final String locationIds=getLocationIdsForScheme();
+            final String locationIds=getLocationIdsForScheme();
 			final String channelIds=getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid());
 
 			StringBuffer sb=new StringBuffer();
@@ -2651,7 +2692,7 @@ public class SchemeDetailsMasterHelper {
      * <p>
      * Method to save all applied scheme details in SQLite
      */
-    public void insertScemeDetails(String orderID, DBUtil db,String flag) {
+    public void insertScemeDetails(String orderID, DBUtil db, String flag) {
         if (mApplySchemeList != null) {
 
             for (SchemeBO schemeBO : mApplySchemeList) {
@@ -2660,11 +2701,11 @@ public class SchemeDetailsMasterHelper {
                         || schemeBO.isPriceTypeSeleted()
                         || schemeBO.isDiscountPrecentSelected()
                         || schemeBO.isQuantityTypeSelected()) {
-                    insertSchemeBuyProductDetails(schemeBO, db, orderID,flag);
+                    insertSchemeBuyProductDetails(schemeBO, db, orderID, flag);
                 }
 
                 if (schemeBO.isQuantityTypeSelected()) {
-                    insertFreeProductDetails(schemeBO, db, orderID,flag);
+                    insertFreeProductDetails(schemeBO, db, orderID, flag);
                 }
 
             }
@@ -2680,7 +2721,7 @@ public class SchemeDetailsMasterHelper {
      * table
      */
     private void insertSchemeBuyProductDetails(SchemeBO schemeBO, DBUtil db,
-                                               String orderID,String flag) {
+                                               String orderID, String flag) {
         String schemeDetailColumn = "OrderID,SchemeID,ProductID,SchemeType,Value,parentid,Retailerid,distributorid,upload,Amount";
 
         if (isFromCounterSale) {
@@ -2848,7 +2889,7 @@ public class SchemeDetailsMasterHelper {
      * schemefreeproductdetail table
      */
     private void insertFreeProductDetails(SchemeBO schemeBO, DBUtil db,
-                                          String orderID,String flag) {
+                                          String orderID, String flag) {
         String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount";
 
         if (isFromCounterSale) {
@@ -2873,11 +2914,11 @@ public class SchemeDetailsMasterHelper {
                             } else {
                                 insertFreeproductWithoutbatch(schemeBO, db,
                                         orderID, freeProductBO,
-                                        freeDetailColumn,flag);
+                                        freeDetailColumn, flag);
                             }
                         } else {
                             insertFreeproductWithoutbatch(schemeBO, db,
-                                    orderID, freeProductBO, freeDetailColumn,flag);
+                                    orderID, freeProductBO, freeDetailColumn, flag);
 
                         }
                     }
@@ -2899,7 +2940,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void insertFreeproductWithoutbatch(SchemeBO schemeBO, DBUtil db,
                                                String orderID, SchemeProductBO freeProductBO,
-                                               String freeDetailColumn,String flag) {
+                                               String freeDetailColumn, String flag) {
 
         ProductMasterBO productBO = bmodel.getProductbyId(freeProductBO
                 .getProductId());
@@ -3516,8 +3557,8 @@ public class SchemeDetailsMasterHelper {
     private void updateSchemeCountApply(int parentID, String schemeid, DBUtil db) {
 
         StringBuffer sb = new StringBuffer();
-	/*	sb.append("update schememaster set count=count-1 where parentid="+parentID+" and count!=-1 and (");
-		sb.append("schememaster.RetailerId="+bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+    /*	sb.append("update schememaster set count=count-1 where parentid="+parentID+" and count!=-1 and (");
+        sb.append("schememaster.RetailerId="+bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
 		sb.append(" OR schememaster.Chid="+bmodel.getRetailerMasterBO().getSubchannelid());
 		sb.append(" OR schememaster.ChId in("+ getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid())+")");
 		sb.append("OR schememaster.LocId in("+getLocationIdsForScheme()+"))");*/
@@ -3993,6 +4034,9 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
+            //str string is ends with ','
+            if (str.endsWith(","))
+                str = str.substring(0, str.length() - 1);
         }
         return str;
     }
@@ -4227,7 +4271,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 	/*public void downloadRetailerAttributes(){
-		try {
+        try {
 			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
 					DataMembers.DB_PATH);
 
@@ -4545,7 +4589,7 @@ public class SchemeDetailsMasterHelper {
     public void clearOffInvoiceSchemeList() {
         mOffInvoiceAppliedSchemeList = new ArrayList<>();
 
-        for (Iterator<SchemeBO> iterator = mApplySchemeList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<SchemeBO> iterator = getAppliedSchemeList().iterator(); iterator.hasNext(); ) {
             SchemeBO schemeBO = iterator.next();
             if (schemeBO.getIsOnInvoice() == 0) {
                 if (schemeBO.isSihAvailableForFreeProducts()) {
@@ -4683,6 +4727,101 @@ public class SchemeDetailsMasterHelper {
         return schemeFreePrdList;
     }
 
+
+    /**
+     * This method is used to get the next available up scheme. Designed by
+     * Vinoth.R for a demo.
+     *
+     * @param schemeId     schemeid
+     * @param type         type
+     * @param channelId    channel id
+     * @param subChannelId subchannel id
+     * @param productID    product id
+     * @param quantity     quantity
+     */
+    public void loadSchemePromotion(String schemeId, String type,
+                                    String channelId, String subChannelId, String productID,
+                                    int quantity) {
+        if (mSchemePromotion == null) {
+            mSchemePromotion = new ArrayList<>();
+        } else {
+            mSchemePromotion.clear();
+        }
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuilder sb = new StringBuilder("");
+        if ("ANY".equalsIgnoreCase(type)) {
+
+            Cursor c = db
+                    .selectSQL("SELECT ProductID, BuyQty FROM SchemeBuyMaster WHERE SchemeID = '"
+                            + schemeId + "'");
+            if (c != null && c.getCount() > 0) {
+
+                sb.append(" AND BD.ProductID IN (");
+                while (c.moveToNext()) {
+                    sb.append("'");
+                    sb.append(c.getString(0));
+                    sb.append("'");
+                    sb.append(",");
+                }
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append(") ");
+                sb.append("AND TYPE = 'ANY' ");
+                c.close();
+            }
+
+        } else {
+            sb = new StringBuilder(" AND BD.ProductID = '" + productID
+                    + "' AND TYPE = 'ONLY' ");
+        }
+
+        Cursor c = db
+                .selectSQL("SELECT SM.SchemeID, SM.Description, SM.Type, SM.ShortName, SM.ChannelID, SM.SubChannelID, "
+                        + "BD.ProductID, PM.PName, BD.BuyQty, FD.FreeQty, FD.MaxQty, FD.Rate, FD.MaxRate FROM SchemeMaster SM "
+                        + "INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID  INNER JOIN ProductMaster PM ON BD.ProductID = PM.PID "
+                        + "INNER JOIN SchemeFreeMaster FD ON FD.FreeProductID = BD.ProductID AND FD.SchemeID = BD.SchemeID WHERE SM.ChannelID = '"
+                        + channelId
+                        + "' AND "
+                        + "SM.SubChannelID = '"
+                        + subChannelId
+                        + "'"
+                        + sb
+                        + "AND BD.BuyQty > "
+                        + quantity
+                        + " ORDER BY SM.SchemeID, BD.ProductID ASC, BD.BuyQty DESC");
+
+        if (c != null && c.getCount() > 0) {
+            SchemeBO schemeBO = new SchemeBO();
+
+            while (c.moveToNext()) {
+                schemeBO.setSchemeId(c.getString(0));
+                schemeBO.setSchemeDescription(c.getString(1));
+                schemeBO.setType(c.getString(2));
+                if (c.getString(3) != null) {
+                    schemeBO.setSchemeDescription(c.getString(3));
+                }
+                schemeBO.setChannelId(c.getString(4));
+                schemeBO.setSubChannelId(c.getString(5));
+                schemeBO.setSchemeParentName(c.getString(7));
+                schemeBO.setSelectedQuantity(c.getInt(8)); // Buy Qty
+                schemeBO.setActualQuantity(c.getInt(9)); // Min Qty
+                schemeBO.setMaximumQuantity(c.getInt(10)); // Max Qty
+                schemeBO.setActualPrice(c.getInt(11)); // Min Disc Rate
+                schemeBO.setMaximumPrice(c.getInt(12)); // Max Disc Rate
+                mSchemePromotion.add(schemeBO);
+            }
+            c.close();
+        }
+        db.closeDB();
+
+    }
+
+    public List<SchemeBO> getmSchemePromotion() {
+        return mSchemePromotion;
+    }
+
+    private List<SchemeBO> mSchemePromotion;
 
 }
 

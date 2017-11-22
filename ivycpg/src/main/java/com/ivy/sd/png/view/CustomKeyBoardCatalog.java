@@ -259,7 +259,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                 calculateSONew();
                 pdtBO.getLocations()
                         .get(0).setShelfPiece(Integer.parseInt(value));
-                if (value.equals("0") || value.equals("0.0")) {
+                if (value.equals("-1") || value.equals("0.0")) {
                     orderBtn.setText("STOCK");
                 } else {
                     orderBtn.setText("Stock - " + value + "");

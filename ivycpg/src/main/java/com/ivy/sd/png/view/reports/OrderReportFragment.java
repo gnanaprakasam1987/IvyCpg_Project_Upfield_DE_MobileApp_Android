@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -55,7 +55,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-public class OrderReportFragment extends Fragment implements OnClickListener,
+public class OrderReportFragment extends IvyBaseFragment implements OnClickListener,
         OnItemClickListener {
 
     private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
@@ -539,7 +539,7 @@ public class OrderReportFragment extends Fragment implements OnClickListener,
             super.onPreExecute();
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.exporting_orders));
+            customProgressDialog(builder, getResources().getString(R.string.exporting_orders));
             alertDialog = builder.create();
             alertDialog.show();
         }

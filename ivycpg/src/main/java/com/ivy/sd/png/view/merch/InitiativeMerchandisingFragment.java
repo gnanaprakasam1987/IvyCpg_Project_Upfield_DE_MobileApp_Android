@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +19,14 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SBDMerchandisingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.Vector;
 
-public class InitiativeMerchandisingFragment extends Fragment {
+public class InitiativeMerchandisingFragment extends IvyBaseFragment {
     private TypedArray typearr;
     private LinearLayout main;
     private BusinessModel bmodel;
@@ -262,7 +262,7 @@ public class InitiativeMerchandisingFragment extends Fragment {
                     true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(),getResources().getString(R.string.saving_init_merchandising));
+            customProgressDialog(builder, getResources().getString(R.string.saving_init_merchandising));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1230"
-    android:versionName="123.0.348">
+    android:versionName="123.0.483">
 
     <supports-screens
         android:anyDensity="true"
@@ -570,7 +570,7 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"

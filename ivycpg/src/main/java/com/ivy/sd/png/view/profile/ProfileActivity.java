@@ -259,7 +259,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
 
-
     }
 
     /**
@@ -552,7 +551,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
                 isMapview = true;
                 retailerLng = retailerObj.getLongitude();
-            }else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
+            } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
                 isNonVisitReason = true;
             }
         }
@@ -565,24 +564,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
-        if (fromHomeClick) {
-            bottomView.setVisibility(View.GONE);
-            linearLayout.setVisibility(View.GONE);
-        } else if (visitclick) {
-            deviateBtn.setVisibility(View.GONE);
-            if (isNonVisitReason)
-                cancelVisitBtn.setVisibility(View.VISIBLE);
-            startVisitBtn.setVisibility(View.VISIBLE);
-        } else if (non_visit) {
-            deviateBtn.setVisibility(View.VISIBLE);
-            cancelVisitBtn.setVisibility(View.GONE);
-            startVisitBtn.setVisibility(View.GONE);
-        } else if (isFromPlanning) {
-            addPlaneBtn.setVisibility(View.VISIBLE);
-            deviateBtn.setVisibility(View.GONE);
-            cancelVisitBtn.setVisibility(View.GONE);
-            startVisitBtn.setVisibility(View.GONE);
-        }
         bmodel.isModuleDone();
         Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                 .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
@@ -1028,6 +1009,26 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 View mapFrag = findViewById(R.id.profile_map);
                 mapFrag.setVisibility(View.GONE);
                 retailerCodeTxt.setVisibility(View.GONE);
+            }
+
+
+            if (fromHomeClick) {
+                bottomView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
+            } else if (visitclick) {
+                deviateBtn.setVisibility(View.GONE);
+                if (isNonVisitReason)
+                    cancelVisitBtn.setVisibility(View.VISIBLE);
+                startVisitBtn.setVisibility(View.VISIBLE);
+            } else if (non_visit) {
+                deviateBtn.setVisibility(View.VISIBLE);
+                cancelVisitBtn.setVisibility(View.GONE);
+                startVisitBtn.setVisibility(View.GONE);
+            } else if (isFromPlanning) {
+                addPlaneBtn.setVisibility(View.VISIBLE);
+                deviateBtn.setVisibility(View.GONE);
+                cancelVisitBtn.setVisibility(View.GONE);
+                startVisitBtn.setVisibility(View.GONE);
             }
         }
     }
@@ -1886,7 +1887,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ProfileActivity.this);
-            bmodel.customProgressDialog(alertDialog, builder, ProfileActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1944,7 +1945,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ProfileActivity.this);
-            bmodel.customProgressDialog(alertDialog, builder, ProfileActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2007,19 +2008,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                    //  updateCancel();
-                    if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
-                        Intent i = new Intent(ProfileActivity.this, HomeScreenActivity.class);
-                        i.putExtra("menuCode", "MENU_VISIT");
-                        startActivity(i);
-                        finish();
-                    } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
-                        Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
+                //  updateCancel();
+                if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
+                    Intent i = new Intent(ProfileActivity.this, HomeScreenActivity.class);
+                    i.putExtra("menuCode", "MENU_VISIT");
+                    startActivity(i);
+                    finish();
+                } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
+                    Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    startActivity(i);
+                    finish();
+                }
 
-                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         });
         bmodel.applyAlertDialogTheme(builder);

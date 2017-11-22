@@ -296,7 +296,7 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(getActivity());
 
-                    bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading_data));
+                    customProgressDialog(builder, getResources().getString(R.string.loading_data));
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -315,7 +315,7 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(getActivity());
 
-                    bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading_data));
+                    customProgressDialog(builder, getResources().getString(R.string.loading_data));
                     alertDialog = builder.create();
                     alertDialog.show();
                     lastPosition = beatPosition;

@@ -1345,7 +1345,6 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             }
-                            bmodel.setActivity(CrownReturnActivity.this);
 
                             bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
@@ -1360,8 +1359,6 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
                         } else {
-                            bmodel.setActivity(CrownReturnActivity.this);
-
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -2128,7 +2125,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 					true, false);*/
             builder = new AlertDialog.Builder(CrownReturnActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CrownReturnActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

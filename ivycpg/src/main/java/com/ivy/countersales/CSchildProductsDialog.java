@@ -401,7 +401,6 @@ public class CSchildProductsDialog extends Dialog {
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                bmodel.setActivity((Activity) mContext);
 
                                 bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                                 bmodel.productHelper.setPdname(counterBo.getProductName());

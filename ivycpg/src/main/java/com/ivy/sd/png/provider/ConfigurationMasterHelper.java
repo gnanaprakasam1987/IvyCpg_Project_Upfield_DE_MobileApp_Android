@@ -437,6 +437,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CATALOG_PRD_IMAGES = "AMAZONPRDIMG";
     public boolean IS_CATALOG_IMG_DOWNLOAD;
 
+    private static final String CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = "FUN57";
+    public boolean IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE;
+
+
     private static final String CODE_TEMP_ORDER_DETAILS = "FUN60";
     public boolean IS_TEMP_ORDER_SAVE;
 
@@ -1211,6 +1215,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHARE_INVOICE = "ORDB68";
     public boolean IS_SHARE_INVOICE;
 
+    public int MVPTheme = 0;
+    public String fontSize = "";
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -1899,6 +1906,7 @@ public class ConfigurationMasterHelper {
         }
         this.IS_APPLY_DISCOUNT_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) : false;
         this.IS_APPLY_TAX_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_TAX) != null ? hashMapHHTModuleConfig.get(CODE_SR_TAX) : false;
+        this.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : false;
 
         if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) != null) {
             if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) == 1)
@@ -4283,7 +4291,6 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     con = new ConfigureBO();
                     con.setConfigCode(c.getString(0));
-
                     con.setMenuName(c.getString(1));
                     con.setMenuNumber(c.getString(2));
                     con.setHasLink(c.getInt(3));
@@ -4551,7 +4558,7 @@ public class ConfigurationMasterHelper {
     }
 
     public int getMVPTheme() {
-        int MVPTheme = R.style.MVPTheme_Blue;
+        MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 
@@ -4772,7 +4779,7 @@ public class ConfigurationMasterHelper {
     }
 
     public String getFontSize() {
-        String fontSize = "Small";
+        fontSize = "Small";
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 

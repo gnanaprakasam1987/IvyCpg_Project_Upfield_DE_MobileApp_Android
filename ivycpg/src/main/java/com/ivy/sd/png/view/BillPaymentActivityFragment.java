@@ -469,7 +469,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         protected void onPreExecute() {
             super.onPreExecute();
             build = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, build, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(build, getResources().getString(R.string.saving));
             alertDialog = build.create();
             alertDialog.show();
         }

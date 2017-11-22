@@ -656,7 +656,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_UPDATE:
                     builder = new AlertDialog.Builder(getActivity());
-                    bmodel.setMessageInProgressDialog(alertDialog, builder, getActivity(), msg.obj.toString());
+                    setMessageInProgressDialog(builder, msg.obj.toString());
                     alertDialog.show();
                     String s = tvwstatus.getText() + DataMembers.CR1
                             + msg.obj;
@@ -820,7 +820,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                 R.string.data_upload_completed_sucessfully);
                         tvwstatus.setText(s1);
                         builder = new AlertDialog.Builder(getActivity());
-                        bmodel.setMessageInProgressDialog(alertDialog, builder, getActivity(), getResources().getString(
+                        setMessageInProgressDialog(builder, getResources().getString(
                                 R.string.image_uploading));
                         alertDialog.show();
                         if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
@@ -1607,7 +1607,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.checking_new_version));
+            customProgressDialog(builder, getResources().getString(R.string.checking_new_version));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1682,7 +1682,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         if (bmodel.mAttendanceHelper.checkMenuInOut())
             bmodel.mAttendanceHelper.updateAttendaceDetailInTime();
         builder = new AlertDialog.Builder(getActivity());
-        bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.uploading_data));
+        customProgressDialog(builder, getResources().getString(R.string.uploading_data));
 
         alertDialog = builder.create();
         alertDialog.show();
@@ -1945,9 +1945,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
 
-                    bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
-                        bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                        updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
                         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -1975,9 +1975,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
 
-                    bmodel.updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
-                        bmodel.updaterProgressMsg(getResources().getString(R.string.updating_tables));
+                        updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
                         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -2208,7 +2208,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             try {
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(getActivity());
-                    bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+                    customProgressDialog(builder, getResources().getString(R.string.loading));
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -2466,5 +2466,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         isClicked = false;
     }
 
+    private void setMessageInProgressDialog(AlertDialog.Builder builder, String message) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                (ViewGroup) getActivity().findViewById(R.id.layout_root));
+        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        messagetv.setText(message);
+        builder.setView(layout);
+        builder.setCancelable(false);
+    }
 
 }

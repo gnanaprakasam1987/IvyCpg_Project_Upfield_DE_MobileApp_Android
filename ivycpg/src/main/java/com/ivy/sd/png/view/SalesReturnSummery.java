@@ -550,7 +550,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(SalesReturnSummery.this);
-            bmodel.customProgressDialog(alertDialog, builder, SalesReturnSummery.this, getResources().getString(R.string.saving_sales_return));
+            customProgressDialog(builder, getResources().getString(R.string.saving_sales_return));
             alertDialog = builder.create();
             alertDialog.show();
         }

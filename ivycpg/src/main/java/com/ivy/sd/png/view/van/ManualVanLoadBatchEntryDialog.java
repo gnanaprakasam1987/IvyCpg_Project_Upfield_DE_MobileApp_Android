@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,6 +27,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.Calendar;
@@ -41,6 +45,7 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
     private Activity activity;
     private EditText batch_no;
     private FragmentManager fragmentManager;
+    private TextView messagetv;
 
     ManualVanLoadBatchEntryDialog(Activity activity,
                                   LoadManagementBO productBO, OnDismissListener addBatch,
@@ -200,7 +205,7 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(activity);
-            bmodel.customProgressDialog(alertDialog, builder, activity, activity.getResources().getString(R.string.loading));
+            customProgressDialog(builder);
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -232,5 +237,25 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
 
         }
 
+    }
+
+    private void customProgressDialog(AlertDialog.Builder builder) {
+
+        try {
+            LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) activity.findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText(activity.getResources().getString(R.string.loading));
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 }

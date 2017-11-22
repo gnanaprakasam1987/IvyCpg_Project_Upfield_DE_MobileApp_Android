@@ -711,7 +711,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     public void print(int printCount) {
         mSelectedPrintCount = printCount;
         build = new AlertDialog.Builder(getActivity());
-        bmodel.customProgressDialog(alertDialog, build, getActivity(), "Printing....");
+        customProgressDialog(build, "Printing....");
         alertDialog = build.create();
 
         alertDialog.show();

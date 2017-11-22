@@ -531,7 +531,8 @@ public class NewOutletHelper {
 
                     }
 
-                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE08") && configBO.getModule_Order() == 1) {
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE08")
+                        && (configBO.getModule_Order() == 1||bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
                     if (!configBO.getMenuNumber().equals("0.0")) {
                         if ((bmodel.getRetailerMasterBO().getLatitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
@@ -545,7 +546,8 @@ public class NewOutletHelper {
                         }
                     }
 
-                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE31") && configBO.getModule_Order() == 1) {
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE31")
+                        && (configBO.getModule_Order() == 1 ||bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
                     if (!configBO.getMenuNumber().equals("0.0")) {
                         if ((bmodel.getRetailerMasterBO().getLongitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());

@@ -396,7 +396,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Printing....");
+                customProgressDialog(builder, "Printing....");
                 alertDialog = builder.create();
                 alertDialog.show();
 
@@ -918,7 +918,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Applying Vanload Stock ");
+            customProgressDialog(builder, "Applying Vanload Stock ");
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -966,7 +966,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Applying Vanload Stock ");
+            customProgressDialog(builder, "Applying Vanload Stock ");
             alertDialog = builder.create();
             alertDialog.show();
         }

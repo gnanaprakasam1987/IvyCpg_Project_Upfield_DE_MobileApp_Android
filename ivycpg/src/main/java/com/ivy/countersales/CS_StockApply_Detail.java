@@ -920,7 +920,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(CS_StockApply_Detail.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CS_StockApply_Detail.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

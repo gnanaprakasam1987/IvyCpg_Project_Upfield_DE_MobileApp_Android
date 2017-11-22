@@ -1,6 +1,7 @@
 package com.ivy.sd.png.commons;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     private BusinessModel bmodel;
     private NFCManager nfcManager;
     private HashMap<String, String> listPermissionsNeededGroupName;
+    TextView messagetv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +51,16 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         try {
-            int theme = bmodel.configurationMasterHelper.getMVPTheme();
-            super.setTheme(theme);
-            String font = bmodel.configurationMasterHelper.getFontSize();
-            setFontStyle(font);
+            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
+            } else {
+                super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
+            }
+            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
+                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
+            } else {
+                setFontStyle(bmodel.configurationMasterHelper.fontSize);
+            }
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -110,6 +120,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
     }
+
     public String getScreenTitle() {
         return mScreenTitleTV.getText().toString();
     }
@@ -213,4 +224,28 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             getTheme().applyStyle(R.style.FontStyle_Small, true);
         }
     }
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(this, R.layout.custom_alert_dialog, null);
+
+            TextView title = (TextView) view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void updaterProgressMsg(String msg) {
+        messagetv.setText(msg);
+    }
+
+
 }

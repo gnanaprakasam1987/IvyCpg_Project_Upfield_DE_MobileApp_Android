@@ -16,6 +16,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -159,6 +160,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     ArrayList<String> productIdList;
     private FrameLayout drawer;
     private Button nextBtn;
+    private int totalAllQty = 0;
+    private TextView totalQtyTV;
 
 
     @Override
@@ -185,6 +188,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         nextBtn = (Button) findViewById(R.id.btn_next);
+        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
         nextBtn.setOnClickListener(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -350,7 +354,13 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         } else {
             gridlaymanager = new GridLayoutManager(getApplicationContext(), 1);
         }
-        pdt_recycler_view.setHasFixedSize(true);
+        if (pdt_recycler_view != null) {
+            pdt_recycler_view.setHasFixedSize(false);
+            pdt_recycler_view.setItemViewCacheSize(20);
+            pdt_recycler_view.setDrawingCacheEnabled(true);
+            pdt_recycler_view.setItemAnimator(new DefaultItemAnimator());
+            pdt_recycler_view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        }
         pdt_recycler_view.setLayoutManager(gridlaymanager);
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_down);
@@ -519,6 +529,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     protected void onDestroy() {
         super.onDestroy();
         mBundleRecyclerViewState = null;
+        if (pdt_recycler_view != null) {
+            pdt_recycler_view.setItemAnimator(null);
+            pdt_recycler_view.setAdapter(null);
+            pdt_recycler_view = null;
+        }
     }
 
     @Override
@@ -1673,7 +1688,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
-                    bmodel.setActivity(CatalogOrder.this);
                     if (dialog == null) {
                         dialog = new MustSellReasonDialog(
                                 CatalogOrder.this, false,
@@ -1807,6 +1821,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         try {
 
             int lpccount = 0;
+            totalAllQty = 0;
             totalvalue = 0;
             HashSet<String> sbdTarget = new HashSet<>();
             HashSet<String> sbdAcheived = new HashSet<>();
@@ -1835,6 +1850,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     totalvalue += (items.get(i).getOrderedPcsQty() * items.get(i).getSrp())
                                             + (items.get(i).getOrderedCaseQty() * items.get(i).getCsrp())
                                             + items.get(i).getOrderedOuterQty() * items.get(i).getOsrp();
+                                    totalAllQty = totalAllQty + (items.get(i).getOrderedPcsQty() + (items.get(i).getOrderedCaseQty() * items.get(i).getCaseSize()) + (items.get(i).getOrderedOuterQty() * items.get(i).getOutersize()));
                                     //totalvalue = totalvalue + temp;
                                 }
                                 //mylist.add(items.get(i));
@@ -1853,6 +1869,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 + (ret.getOrderedCaseQty() * ret.getCsrp())
                                 + ret.getOrderedOuterQty() * ret.getOsrp();
                         totalvalue = totalvalue + temp;
+                        totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
                     }
                     if (ret.isRPS()) {
                         sbdTarget.add(ret.getSbdGroupName());
@@ -1861,9 +1878,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             if (ret.getLocations().get(j).getWHCase() > 0
                                     || ret.getLocations().get(j).getWHOuter() > 0
                                     || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > 0
-                                    || ret.getLocations().get(j).getShelfOuter() > 0
-                                    || ret.getLocations().get(j).getShelfPiece() > 0) {
+                                    || ret.getLocations().get(j).getShelfCase() > -1
+                                    || ret.getLocations().get(j).getShelfOuter() > -1
+                                    || ret.getLocations().get(j).getShelfPiece() > -1) {
 
                                 sbdStockAchieved.add(ret.getSbdGroupName());
                             }
@@ -1872,7 +1889,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 if (ret.getLocations().get(j).getWHCase() > 0
                                         || ret.getLocations().get(j).getWHOuter() > 0
                                         || ret.getLocations().get(j).getWHPiece() > 0
-                                        || ret.getLocations().get(j).getShelfCase() > 0
+                                        || ret.getLocations().get(j).getShelfCase() > -1
                                         || ret.getLocations().get(j)
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
@@ -1888,7 +1905,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 if (ret.getLocations().get(j).getWHCase() > 0
                                         || ret.getLocations().get(j).getWHOuter() > 0
                                         || ret.getLocations().get(j).getWHPiece() > 0
-                                        || ret.getLocations().get(j).getShelfCase() > 0
+                                        || ret.getLocations().get(j).getShelfCase() > -1
                                         || ret.getLocations().get(j)
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
@@ -1928,6 +1945,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             lpcText.setText(lpccount + "");
             //totalValueText_brand.setText(bmodel.formatValue(totalvalue) + "");
+            totalQtyTV.setText("" + totalAllQty);
             totalValueText.setText(" " + bmodel.formatValue(totalvalue));
 
             if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
@@ -2133,7 +2151,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     true, false);*/
             builder = new AlertDialog.Builder(CatalogOrder.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CatalogOrder.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -2194,7 +2212,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }*/
             if (holder.list_view_stock_btn != null) {
-                if (holder.productObj.getLocations().get(0).getShelfPiece() == 0) {
+                if (holder.productObj.getLocations().get(0).getShelfPiece() == -1) {
                     holder.list_view_stock_btn.setText("STOCK");
                 } else {
                     holder.list_view_stock_btn.setText("Stock - " + holder.productObj.getLocations().get(0).getShelfPiece() + "");

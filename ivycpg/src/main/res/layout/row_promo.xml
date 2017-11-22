@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderScreenListRow"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -22,6 +23,8 @@
             style="?attr/customListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="@dimen/column_padding"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="@dimen/column_padding"
             android:ellipsize="marquee"
@@ -39,6 +42,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
                 android:tag="promotion_type"
                 android:text="@string/group_name" />
 
@@ -66,11 +72,12 @@
         android:gravity="center" />
 
     <EditText
-        android:id="@+id/et_promoqty"
+        android:id="@+id/et_promo_qty"
         style="@style/EditText_ListItem"
         android:layout_width="0dp"
         android:layout_gravity="center"
         android:layout_marginRight="@dimen/column_padding"
+        android:layout_marginEnd="@dimen/column_padding"
         android:layout_weight="0.5"
         android:gravity="center"
         android:inputType="number"
@@ -82,22 +89,26 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/column_padding"
+        android:layout_marginEnd="@dimen/column_padding"
         android:layout_weight="1.3"
         android:background="@android:color/transparent"
         android:gravity="center"
         android:overlapAnchor="false"
-        android:text="@string/reason" />
+        android:text="@string/reason"
+        tools:ignore="UnusedAttribute" />
 
     <Spinner
         android:id="@+id/spin_rating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/column_padding"
+        android:layout_marginEnd="@dimen/column_padding"
         android:layout_weight="1.3"
         android:background="@android:color/transparent"
         android:gravity="center"
         android:overlapAnchor="false"
-        android:text="@string/reason" />
+        android:text="@string/reason"
+        tools:ignore="UnusedAttribute" />
     <!--android:layout_weight="1"-->
 
     <ImageView
@@ -106,7 +117,9 @@
         android:layout_height="@dimen/icon"
         android:layout_gravity="center"
         android:layout_marginRight="@dimen/column_padding"
+        android:layout_marginEnd="@dimen/column_padding"
         android:layout_weight="0.7"
         android:gravity="center"
-        android:src="@drawable/ic_photo_camera_blue_24dp" />
+        android:src="@drawable/ic_photo_camera_blue_24dp"
+        android:contentDescription="@string/photo" />
 </LinearLayout>

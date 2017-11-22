@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -326,7 +325,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
         isClicked = true;
         builder = new AlertDialog.Builder(ReAllocationActivity.this);
 
-        bmodel.customProgressDialog(alertDialog, builder, ReAllocationActivity.this, getResources().getString(R.string.uploading_data));
+        customProgressDialog(builder, getResources().getString(R.string.uploading_data));
         alertDialog = builder.create();
         alertDialog.show();
         bmodel.teamLeadermasterHelper.saveReAllocation(mPresentIDList, mPresentTaskListByMerchandiserID);

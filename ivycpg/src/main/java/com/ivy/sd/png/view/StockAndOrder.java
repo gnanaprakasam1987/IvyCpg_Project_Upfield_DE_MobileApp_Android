@@ -221,7 +221,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
-    boolean isFromHomeScreen=false;
+    boolean isFromHomeScreen = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -250,7 +250,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD1);
                 tempRField2 = extras.getString(TEMP_RFIELD2) == null ? ""
                         : extras.getString(TEMP_RFIELD2);
-                isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
+                isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -270,7 +270,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
-            isFromHomeScreen=extras.getBoolean(FROM_HOME_SCREEN,false);
+            isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -366,7 +366,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        if(!isFromHomeScreen&&bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+        if (!isFromHomeScreen && bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.resetSRPvalues();
         }
 
@@ -565,7 +565,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
 
                     setCurrentFlag(bo);
-
 
                     isAllDone = false;
 
@@ -3060,7 +3059,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
-                            bmodel.setActivity(StockAndOrder.this);
 
                             bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
@@ -3074,8 +3072,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             startActivity(intent);
 
                         } else {
-                            bmodel.setActivity(StockAndOrder.this);
-
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -3238,93 +3234,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             //set SIH value
             if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
-                    if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                        if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sihCase.setText("0");
+                if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                            && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                            && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                        if (holder.productObj.getSIH() == 0) {
+                            holder.sihCase.setText("0");
+                            holder.sihOuter.setText("0");
+                            holder.sih.setText("0");
+                        } else if (holder.productObj.getCaseSize() == 0) {
+                            holder.sihCase.setText("0");
+                            if (holder.productObj.getOutersize() == 0) {
                                 holder.sihOuter.setText("0");
-                                holder.sih.setText("0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                holder.sihCase.setText("0");
-                                if (holder.productObj.getOutersize() == 0) {
-                                    holder.sihOuter.setText("0");
-                                    String strSIh = holder.productObj.getSIH() + "";
-                                    holder.sih.setText(strSIh);
-                                } else {
-                                    String strSihOuter = holder.productObj.getSIH()
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter.setText(strSihOuter);
-                                    String strSih = holder.productObj.getSIH()
-                                            % holder.productObj.getOutersize() + "";
-                                    holder.sih.setText(strSih);
-                                }
-                            } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(strSihCase);
-                                if (holder.productObj.getOutersize() > 0
-                                        && (holder.productObj.getSIH() % holder.productObj
-                                        .getCaseSize()) >= holder.productObj
-                                        .getOutersize()) {
-                                    String strSihOuter = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter
-                                            .setText(strSihOuter);
-                                    String strSih = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            % holder.productObj.getOutersize() + "";
-                                    holder.sih
-                                            .setText(strSih);
-                                } else {
-                                    holder.sihOuter.setText("0");
-                                    String strSih = holder.productObj.getSIH()
-                                            % holder.productObj.getCaseSize() + "";
-                                    holder.sih.setText(strSih);
-                                }
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sihCase.setText("0");
-                                holder.sihOuter.setText("0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                holder.sihCase.setText("0");
-                                if (holder.productObj.getOutersize() == 0)
-                                    holder.sihOuter.setText("0");
-                                else {
-                                    String strSihOuter = holder.productObj.getSIH()
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter.setText(strSihOuter);
-                                }
-                            } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(strSihCase);
-                                if (holder.productObj.getOutersize() > 0
-                                        && (holder.productObj.getSIH() % holder.productObj
-                                        .getCaseSize()) >= holder.productObj
-                                        .getOutersize()) {
-                                    String strSihOuter = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter
-                                            .setText(strSihOuter);
-                                } else {
-                                    holder.sihOuter.setText("0");
-                                }
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sih.setText("0");
-                                holder.sihOuter.setText("0");
-                            } else if (holder.productObj.getOutersize() == 0) {
-                                String strSih = holder.productObj.getSIH() + "";
-                                holder.sih.setText(strSih);
-                                holder.sihOuter.setText("0");
+                                String strSIh = holder.productObj.getSIH() + "";
+                                holder.sih.setText(strSIh);
                             } else {
                                 String strSihOuter = holder.productObj.getSIH()
                                         / holder.productObj.getOutersize() + "";
@@ -3333,51 +3256,124 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                         % holder.productObj.getOutersize() + "";
                                 holder.sih.setText(strSih);
                             }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sih.setText("0");
-                                holder.sihCase.setText("0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                String strsih = holder.productObj.getSIH() + "";
-                                holder.sih.setText(strsih);
-                                holder.sihCase.setText("0");
+                        } else {
+                            String strSihCase = holder.productObj.getSIH()
+                                    / holder.productObj.getCaseSize() + "";
+                            holder.sihCase.setText(strSihCase);
+                            if (holder.productObj.getOutersize() > 0
+                                    && (holder.productObj.getSIH() % holder.productObj
+                                    .getCaseSize()) >= holder.productObj
+                                    .getOutersize()) {
+                                String strSihOuter = (holder.productObj.getSIH() % holder.productObj
+                                        .getCaseSize())
+                                        / holder.productObj.getOutersize() + "";
+                                holder.sihOuter
+                                        .setText(strSihOuter);
+                                String strSih = (holder.productObj.getSIH() % holder.productObj
+                                        .getCaseSize())
+                                        % holder.productObj.getOutersize() + "";
+                                holder.sih
+                                        .setText(strSih);
                             } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(strSihCase);
+                                holder.sihOuter.setText("0");
                                 String strSih = holder.productObj.getSIH()
                                         % holder.productObj.getCaseSize() + "";
                                 holder.sih.setText(strSih);
                             }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                            if (holder.productObj.getSIH() == 0)
-                                holder.sihCase.setText("0");
-                            else if (holder.productObj.getCaseSize() == 0)
-                                holder.sihCase.setText("0");
-                            else {
-                                String strSih = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(strSih);
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                            if (holder.productObj.getSIH() == 0)
-                                holder.sihOuter.setText("0");
-                            else if (holder.productObj.getOutersize() == 0)
+                        }
+                    } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                            && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                        if (holder.productObj.getSIH() == 0) {
+                            holder.sihCase.setText("0");
+                            holder.sihOuter.setText("0");
+                        } else if (holder.productObj.getCaseSize() == 0) {
+                            holder.sihCase.setText("0");
+                            if (holder.productObj.getOutersize() == 0)
                                 holder.sihOuter.setText("0");
                             else {
                                 String strSihOuter = holder.productObj.getSIH()
                                         / holder.productObj.getOutersize() + "";
                                 holder.sihOuter.setText(strSihOuter);
                             }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                        } else {
+                            String strSihCase = holder.productObj.getSIH()
+                                    / holder.productObj.getCaseSize() + "";
+                            holder.sihCase.setText(strSihCase);
+                            if (holder.productObj.getOutersize() > 0
+                                    && (holder.productObj.getSIH() % holder.productObj
+                                    .getCaseSize()) >= holder.productObj
+                                    .getOutersize()) {
+                                String strSihOuter = (holder.productObj.getSIH() % holder.productObj
+                                        .getCaseSize())
+                                        / holder.productObj.getOutersize() + "";
+                                holder.sihOuter
+                                        .setText(strSihOuter);
+                            } else {
+                                holder.sihOuter.setText("0");
+                            }
+                        }
+                    } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                            && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                        if (holder.productObj.getSIH() == 0) {
+                            holder.sih.setText("0");
+                            holder.sihOuter.setText("0");
+                        } else if (holder.productObj.getOutersize() == 0) {
                             String strSih = holder.productObj.getSIH() + "";
                             holder.sih.setText(strSih);
+                            holder.sihOuter.setText("0");
+                        } else {
+                            String strSihOuter = holder.productObj.getSIH()
+                                    / holder.productObj.getOutersize() + "";
+                            holder.sihOuter.setText(strSihOuter);
+                            String strSih = holder.productObj.getSIH()
+                                    % holder.productObj.getOutersize() + "";
+                            holder.sih.setText(strSih);
                         }
-                    } else {
+                    } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                            && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                        if (holder.productObj.getSIH() == 0) {
+                            holder.sih.setText("0");
+                            holder.sihCase.setText("0");
+                        } else if (holder.productObj.getCaseSize() == 0) {
+                            String strsih = holder.productObj.getSIH() + "";
+                            holder.sih.setText(strsih);
+                            holder.sihCase.setText("0");
+                        } else {
+                            String strSihCase = holder.productObj.getSIH()
+                                    / holder.productObj.getCaseSize() + "";
+                            holder.sihCase.setText(strSihCase);
+                            String strSih = holder.productObj.getSIH()
+                                    % holder.productObj.getCaseSize() + "";
+                            holder.sih.setText(strSih);
+                        }
+                    } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                        if (holder.productObj.getSIH() == 0)
+                            holder.sihCase.setText("0");
+                        else if (holder.productObj.getCaseSize() == 0)
+                            holder.sihCase.setText("0");
+                        else {
+                            String strSih = holder.productObj.getSIH()
+                                    / holder.productObj.getCaseSize() + "";
+                            holder.sihCase.setText(strSih);
+                        }
+                    } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                        if (holder.productObj.getSIH() == 0)
+                            holder.sihOuter.setText("0");
+                        else if (holder.productObj.getOutersize() == 0)
+                            holder.sihOuter.setText("0");
+                        else {
+                            String strSihOuter = holder.productObj.getSIH()
+                                    / holder.productObj.getOutersize() + "";
+                            holder.sihOuter.setText(strSihOuter);
+                        }
+                    } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                         String strSih = holder.productObj.getSIH() + "";
                         holder.sih.setText(strSih);
                     }
+                } else {
+                    String strSih = holder.productObj.getSIH() + "";
+                    holder.sih.setText(strSih);
+                }
 
             }
 
@@ -3876,7 +3872,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
-                    bmodel.setActivity(StockAndOrder.this);
                     if (dialog == null) {
                         dialog = new MustSellReasonDialog(
                                 StockAndOrder.this, false,
@@ -3925,7 +3920,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .now(SDUtil.TIME));
 
 
-        if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.excludeTaxFromSRP();
         }
 
@@ -4070,7 +4065,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                             bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
 
                                         bmodel.saveClosingStock();
-
+                                        bmodel.saveModuleCompletion(OrderedFlag);
                                         Toast.makeText(
                                                 StockAndOrder.this,
                                                 getResources().getString(
@@ -5450,7 +5445,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(StockAndOrder.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, StockAndOrder.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -5633,7 +5628,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             getProductBySequence();
 
         mSchedule = new MyAdapter(mylist);
-
         lvwplist.setAdapter(mSchedule);
         strBarCodeSearch = "ALL";
         updateValue();
@@ -5698,6 +5692,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             filterAdapter.notifyDataSetChanged();
         }
     }
+
+    class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+
+
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+        }
+    }
+
 
     private void updateData(ProductMasterBO productBO) {
         int qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
@@ -5868,20 +5877,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     hs.add(productMasterBO.getProductID());
                 }
             }
-        }
-
-        for (ProductMasterBO productMasterBO : items) {
             if (productMasterBO.isRPS() && productMasterBO.isSBDAcheived())
                 hs.add(productMasterBO.getProductID());
-
-        }
-
-        for (ProductMasterBO productMasterBO : items) {
             if (productMasterBO.getIsInitiativeProduct() == 1)
                 hs.add(productMasterBO.getProductID());
-        }
-
-        for (ProductMasterBO productMasterBO : items) {
             if (productMasterBO.isPromo())
                 hs.add(productMasterBO.getProductID());
         }
