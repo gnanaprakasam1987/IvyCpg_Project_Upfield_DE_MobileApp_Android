@@ -5445,7 +5445,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(StockAndOrder.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -5498,6 +5498,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        // 22.11.2017 mansoor.k mFilterText length == 0 then no filter selected so no need to loop parent ids loop
         String filtertext = getResources().getString(R.string.product_name);
         if (!mFilterText.equals("")) {
             filtertext = mFilterText;
@@ -5514,8 +5515,34 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (mAttributeProducts != null) {
             count = 0;
             if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    count++;
+                if (mFilterText.length() > 0) {
+                    for (LevelBO levelBO : mParentIdList) {
+                        count++;
+                        for (ProductMasterBO productBO : items) {
+                            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                    && productBO.getSIH() > 0)
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
+                                    (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+
+                                if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+
+                                    if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                        if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+
+                                            if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                                continue;
+                                            mylist.add(productBO);
+                                            fiveFilter_productIDs.add(productBO.getProductID());
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                } else {
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                                 || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
@@ -5525,7 +5552,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                if (productBO.getIsSaleable() == 1) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                     if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
 
@@ -5563,8 +5590,35 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                count++;
+            if (mFilterText.length() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
+                    count++;
+                    for (ProductMasterBO productBO : items) {
+
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.configurationMasterHelper.IS_INVOICE
+                                && productBO.getSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    && productBO.getIndicativeOrder_oc() > 0)) {
+                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                        continue;
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
                 for (ProductMasterBO productBO : items) {
 
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -5581,13 +5635,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                 && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
-                                if (levelBO.getProductID() == productBO.getParentid()) {
-                                    //  filtertext = levelBO.getLevelName();
-                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
-                                        continue;
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                    continue;
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
                     }
