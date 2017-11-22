@@ -73,6 +73,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -395,7 +396,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
@@ -5493,7 +5494,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
-    }
+
+
+        }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {

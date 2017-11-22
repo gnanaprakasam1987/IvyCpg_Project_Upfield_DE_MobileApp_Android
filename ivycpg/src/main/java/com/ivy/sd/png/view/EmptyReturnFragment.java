@@ -183,7 +183,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
 
-        lv = (ListView) getView().findViewById(R.id.lvwplist);
+        lv = (ListView) getView().findViewById(R.id.list);
         lv.setCacheColorHint(0);
 
         onLoadModule();

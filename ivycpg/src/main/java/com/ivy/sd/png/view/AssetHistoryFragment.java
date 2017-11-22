@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

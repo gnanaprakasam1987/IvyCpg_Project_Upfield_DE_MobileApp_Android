@@ -53,7 +53,7 @@ public class AttendanceReport extends Fragment {
         monthSpinner = (Spinner) view.findViewById(R.id.monthSpinner);
         tvTotalDays = (TextView) view.findViewById(R.id.tvTotalDays);
         tvActualDays = (TextView) view.findViewById(R.id.tvActualDays);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         if (bmodel.reportHelper.getAttendanceMonth().size() > 1) {

@@ -278,7 +278,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         ((LinearLayout) findViewById(R.id.ll_totqty)).setVisibility(View.GONE);//ll_totqty is not used, hence made invisible

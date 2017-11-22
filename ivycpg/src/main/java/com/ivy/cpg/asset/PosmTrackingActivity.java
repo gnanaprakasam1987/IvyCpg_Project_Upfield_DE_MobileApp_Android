@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.cpg.asset;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -70,8 +70,6 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
-
-        mBModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 

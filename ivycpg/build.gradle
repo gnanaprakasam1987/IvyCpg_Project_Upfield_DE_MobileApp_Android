@@ -22,7 +22,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
 
     useLibrary 'org.apache.http.legacy'
 
@@ -81,7 +81,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
-        devRelease {
+        devrelease {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
             minifyEnabled true
             shrinkResources true
@@ -125,9 +125,7 @@ dependencies {
     compile files('libs/baidumapapi_search_v3_6_1.jar')
     compile files('libs/aws-android-sdk-core-2.2.9.jar')
     compile files('libs/aws-android-sdk-s3-2.2.9.jar')
-    debugCompile project(path: ':ivylibrary', configuration: 'debug')
-    releaseCompile project(path: ':ivylibrary', configuration: 'release')
-    devReleaseCompile project(path: ':ivylibrary', configuration: 'devrelease')
+    implementation project(':ivylibrary')
     compile files('libs/jbcrypt-0.3.jar')
     compile files('libs/AEM_SCRYBE_SEP_2014.jar')
     compile files('libs/activation.jar')

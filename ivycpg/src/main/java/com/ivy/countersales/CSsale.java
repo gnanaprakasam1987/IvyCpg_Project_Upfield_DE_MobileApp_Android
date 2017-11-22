@@ -163,7 +163,7 @@ public class CSsale extends IvyBaseActivityNoActionBar implements BrandDialogInt
         mDrawerLayout = (DrawerLayout) findViewById(
                 R.id.drawer_layout);
         pnametitle = (TextView) findViewById(R.id.tv_prodname_title);
-        listView = (ListView) findViewById(R.id.lvwplist);
+        listView = (ListView) findViewById(R.id.list);
         txt_total_lines = (TextView) findViewById(R.id.txt_total_lines);
         txt_total_values = (TextView) findViewById(R.id.txt_total_values);
         txt_total_values.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

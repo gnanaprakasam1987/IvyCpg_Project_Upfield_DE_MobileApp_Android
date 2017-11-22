@@ -52,7 +52,7 @@ public class VolumeReportFragment extends Fragment {
 		ap3mtotal = (TextView) view.findViewById(R.id.ap3mtotal);
 		vtargettotal = (TextView) view.findViewById(R.id.vtargettotal);
 		vacturaltotal = (TextView) view.findViewById(R.id.vactualtotal);
-		listview = (ListView) view.findViewById(R.id.lvwplist);
+		listview = (ListView) view.findViewById(R.id.list);
 		listview.setCacheColorHint(0);
 		volumereport = downloadVolumeReport();
 		Collections.sort(volumereport,

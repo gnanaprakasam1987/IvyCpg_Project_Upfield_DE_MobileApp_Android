@@ -222,7 +222,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
     private void viewInitialization() {
         if (getView() != null) {
-            listView = (ListView) getView().findViewById(R.id.lvwplist);
+            listView = (ListView) getView().findViewById(R.id.list);
             listView.setCacheColorHint(0);
         }
 

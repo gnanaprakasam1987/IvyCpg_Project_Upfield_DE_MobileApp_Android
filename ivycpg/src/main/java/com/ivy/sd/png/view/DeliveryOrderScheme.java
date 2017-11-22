@@ -64,7 +64,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
         }
 
         chk_isScheme = (CheckBox) findViewById(R.id.chk_isScheme);
-        listView = (ListView) findViewById(R.id.lvwplist);
+        listView = (ListView) findViewById(R.id.list);
         btnSave = (Button) findViewById(R.id.btn_next);
         btnSave.setOnClickListener(this);
 

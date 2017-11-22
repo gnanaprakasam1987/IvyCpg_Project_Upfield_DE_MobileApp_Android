@@ -322,7 +322,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         /* Calculate the SBD Dist Acheivement value */

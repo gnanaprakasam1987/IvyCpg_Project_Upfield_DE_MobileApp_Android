@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.cpg.asset;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ public class
 AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
         OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
 
-    private BusinessModel mBusinessModel;
+    private BusinessModel mBModel;
     private NFCManager nfcManager;
 
 
@@ -42,14 +42,14 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
         setSupportActionBar(toolbar);
 
-        mBusinessModel = (BusinessModel) getApplicationContext();
-        mBusinessModel.setContext(this);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
             nfcManager = new NFCManager(AssetTrackingActivity.this);
             nfcManager.onActivityCreate();
             nfcManager.setOnTagReadListener(new NFCManager.TagReadListener() {
@@ -69,9 +69,9 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
     @Override
     protected void onResume() {
         super.onResume();
-        mBusinessModel.useNetworkProvidedValues();
+        mBModel.useNetworkProvidedValues();
 
-        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
             nfcManager.onActivityResume();
         }
 
@@ -81,7 +81,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
     protected void onPause() {
         super.onPause();
 
-        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
             nfcManager.onActivityPause();
         }
 
@@ -89,7 +89,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (mBusinessModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
             nfcManager.onActivityNewIntent(intent);
         }
     }
@@ -100,7 +100,6 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     protected void onDestroy() {
         super.onDestroy();
-        mBusinessModel.assetTrackingHelper=null;
         unbindDrawables(findViewById(R.id.root));
     }
 

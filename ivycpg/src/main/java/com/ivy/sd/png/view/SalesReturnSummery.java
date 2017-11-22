@@ -76,7 +76,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
 
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
 

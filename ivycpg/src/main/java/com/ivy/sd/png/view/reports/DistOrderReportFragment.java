@@ -64,7 +64,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		mlpc = (TextView) view.findViewById(R.id.lpc);
 		totalLines = (TextView) view.findViewById(R.id.txttotallines);
 		xlsExport = (Button) view.findViewById(R.id.xlsExport);
-		lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
 		xlsExport.setOnClickListener(this);
 		lvwplist.setOnItemClickListener(this);

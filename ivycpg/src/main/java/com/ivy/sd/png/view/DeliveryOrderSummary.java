@@ -75,7 +75,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        listView = (ListView) findViewById(R.id.lvwplist);
+        listView = (ListView) findViewById(R.id.list);
         btnSave = (Button) findViewById(R.id.btn_next);
         if (isPartialOrder)
             btnSave.setText(getResources().getString(R.string.partial_delivery));

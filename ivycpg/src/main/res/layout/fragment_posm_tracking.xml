@@ -47,12 +47,12 @@
                         android:visibility="gone" />
 
                     <TextView
-                        android:id="@+id/tv_header_assetname"
+                        android:id="@+id/tv_header_asset_name"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:tag="posm_name"
                         android:text="@string/posm_name" />
                     <!-- <TextView
@@ -83,13 +83,13 @@
                         android:text="@string/actual" />
 
                     <TextView
-                        android:id="@+id/tv_exeuted_qty"
+                        android:id="@+id/tv_executed_qty"
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.2"
                         android:tag="exeqty"
-                        android:text="Exeuted Qty" />
+                        android:text="@string/executed_qty" />
 
                     <TextView
                         android:id="@+id/tv_competitor_qty"
@@ -98,13 +98,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.2"
                         android:tag="posm_compqty"
-                        android:text="Comp Qty" />
+                        android:text="@string/competitor_qty" />
 
 
                 </LinearLayout>
 
                 <ListView
-                    android:id="@+id/lvwplist"
+                    android:id="@+id/list"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/ll_keypad"

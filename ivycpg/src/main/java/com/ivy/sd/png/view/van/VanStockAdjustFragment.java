@@ -144,7 +144,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
         inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         view.findViewById(R.id.totalValue).setVisibility(View.GONE);
         view.findViewById(R.id.lcp).setVisibility(View.GONE);

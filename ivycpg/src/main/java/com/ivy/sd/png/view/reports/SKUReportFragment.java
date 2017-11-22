@@ -67,7 +67,7 @@ public class SKUReportFragment extends IvyBaseFragment {
 		}
 
 		spinnerbrand = (Spinner) view.findViewById(R.id.brandSpinner);
-		lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
 
 		return view;

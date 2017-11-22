@@ -71,7 +71,7 @@ public class OrderTakenTimeReport extends Fragment {
         tv_value_total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tv_lines_total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         mylist = new ArrayList<OrderTakenTimeBO>();
         return view;
     }

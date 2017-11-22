@@ -157,7 +157,7 @@ public class SOSFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
 

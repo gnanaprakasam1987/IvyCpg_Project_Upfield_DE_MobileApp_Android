@@ -1,9 +1,10 @@
-package com.ivy.sd.png.provider.asset;
+package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.SODBO;
@@ -327,7 +328,9 @@ public class SODAssetHelper {
 
     private void updateSODAsset(int assetID, int productId, int actual, int reasonId, int locationId, String isPromo, String isDisplay) {
 
-        for (AssetTrackingBO assetTrackingBO : mBModel.assetTrackingHelper.getAssetTrackingList()) {
+        AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(mContext);
+
+        for (AssetTrackingBO assetTrackingBO : assetTrackingHelper.getAssetTrackingList()) {
             if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductId() == productId) {
                 assetTrackingBO.setActual(actual);
                 assetTrackingBO.setReasonID(reasonId);

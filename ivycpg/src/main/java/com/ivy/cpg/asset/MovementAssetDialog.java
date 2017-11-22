@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.cpg.asset;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
@@ -51,6 +52,7 @@ public class MovementAssetDialog extends DialogFragment {
     protected String serialNo,reasonId,retailerId,assetName,brand,retailerName;
     protected Integer retailerSelected=-1,assetId;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
+    AssetTrackingHelper assetTrackingHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(getDialog().getWindow()!=null) {
@@ -61,6 +63,9 @@ public class MovementAssetDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Context context = getActivity();
         mBModel = (BusinessModel) context.getApplicationContext();
+
+        assetTrackingHelper = AssetTrackingHelper.getInstance(context);
+
         return view;
     }
 
@@ -168,9 +173,10 @@ public class MovementAssetDialog extends DialogFragment {
         if (validateDesc())
             if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
                 if (SpReason.getSelectedItemPosition() != 0) {
+
                     setAddAssetDetails();
                     mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                    mBModel.assetTrackingHelper
+                    assetTrackingHelper
                             .saveAssetMovementDetails("MENU_ASSET");
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
@@ -191,13 +197,13 @@ public class MovementAssetDialog extends DialogFragment {
         retailerId=retailerMasterBOs.get(retailerSelected).getMovRetailerId();
 
         assetBo.setPOSM(String.valueOf(assetId));
-        assetBo.setBrand(mBModel.assetTrackingHelper.getAssetBrandIds(brand));
+        assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(brand));
         assetBo.setNewInstallDate(todayDate);
         assetBo.setSNO(serialNo);
         assetBo.setReasonId(reasonId);
         assetBo.setRemarks(remarks);
         assetBo.setToRetailerId(retailerId);
-        mBModel.assetTrackingHelper.setAssetTrackingBO(assetBo);
+        assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
     private boolean validateDesc() {

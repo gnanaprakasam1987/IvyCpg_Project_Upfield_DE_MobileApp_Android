@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.cpg.asset;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -57,7 +57,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     private String append = "";
 
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
-
+    AssetTrackingHelper assetTrackingHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,6 +72,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         Context context = getActivity();
         mBModel = (BusinessModel) context.getApplicationContext();
+        assetTrackingHelper = AssetTrackingHelper.getInstance(context);
 
         mAsset = (Spinner) view.findViewById(R.id.spinner_asset);
         mBrand = (Spinner) view.findViewById(R.id.spinner_brand);
@@ -107,9 +108,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
      */
     private void loadData() {
 
-        mBModel.assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
+        assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
 
-        Vector mPOSMList = mBModel.assetTrackingHelper.getAssetPosmNames();
+        Vector mPOSMList = assetTrackingHelper.getAssetPosmNames();
 
         int siz = mPOSMList.size();
 
@@ -133,8 +134,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
 
-                mBModel.assetTrackingHelper
-                        .downloadAssetBrand(mBModel.assetTrackingHelper
+                assetTrackingHelper
+                        .downloadAssetBrand(assetTrackingHelper
                                 .getAssetPosmIds(mAsset.getSelectedItem()
                                         .toString()));
 
@@ -229,7 +230,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 getActivity(), R.layout.spinner_bluetext_layout);
         mAssetBrandsAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        Vector mBrand = mBModel.assetTrackingHelper.getAssetBrandNames();
+        Vector mBrand = assetTrackingHelper.getAssetBrandNames();
         if (mBrand == null || mBrand.size() < 1) {
             this.mBrand.setAdapter(null);
             mAssetBrandsAdapter.add(SELECT);
@@ -255,12 +256,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
      */
     private void setAddAssetDetails() {
 
-        assetBo.setPOSM(mBModel.assetTrackingHelper.getAssetPosmIds(mAsset
+        assetBo.setPOSM(assetTrackingHelper.getAssetPosmIds(mAsset
                 .getSelectedItem().toString()));
 
         if (!mBrand.getSelectedItem().toString()
                 .equals(SELECT))
-            assetBo.setBrand(mBModel.assetTrackingHelper.getAssetBrandIds(mBrand
+            assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
                     .getSelectedItem().toString()));
         else
             assetBo.setBrand("0");
@@ -269,7 +270,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         assetBo.setSNO(mSNO.getText().toString());
 
-        mBModel.assetTrackingHelper.setAssetTrackingBO(assetBo);
+        assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
 
@@ -283,12 +284,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                         .equals(SELECT)
 
                         && !mSNO.getText().toString().equals("")) {
-                    if (!mBModel.assetTrackingHelper
+                    if (!assetTrackingHelper
                             .isExistingRetailerSno(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
                         mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                        mBModel.assetTrackingHelper
+                        assetTrackingHelper
                                 .saveAssetAddAndDeleteDetails("MENU_ASSET");
                         Toast.makeText(
                                 getActivity(),
