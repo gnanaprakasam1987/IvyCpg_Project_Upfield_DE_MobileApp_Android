@@ -1442,10 +1442,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
 
                 bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
-
-                /** Download location to load in the filter. **/
                 bmodel.productHelper.downloadInStoreLocations();
-
 
                 if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR)
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);

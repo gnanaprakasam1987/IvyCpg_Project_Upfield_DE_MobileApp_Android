@@ -2,7 +2,6 @@ package com.ivyretail.views;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -86,6 +85,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener {
 
@@ -93,12 +94,16 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
     private String strBarCodeSearch = "ALL";
+    private String append = "";
+
     private DrawerLayout mDrawerLayout;
-    private ListView lvwplist;
+    private ListView listview;
     private EditText QUANTITY;
     private EditText mEdt_searchproductName;
-    private String append = "";
+
+
     private BusinessModel bmodel;
+
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayList<ProductMasterBO> mylist;
     private Vector<ProductMasterBO> items;
@@ -126,25 +131,27 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private ArrayList<String> fiveFilter_productIDs;
     private int mSelectedBrandID = 0;
     private boolean isFromChild;
+    Button mBtnFilterPopup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_stockcheck,
                 container, false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
-                R.id.drawer_layout);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvwplist = (ListView) view.findViewById(R.id.list);
-        lvwplist.setCacheColorHint(0);
+        initializeViews(view);
 
         try {
             isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+
             if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+
                 String defaultfilter = getDefaultFilter();
                 if (!"".equals(defaultfilter)) {
+
                     mSelectedFilterMap.put("General", defaultfilter);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView(view);
@@ -189,17 +196,34 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(bmodel.mSelectedActivityName);
+            getActionBar().setElevation(0);
+        }
 
+
+        prepareAdapters();
+        hideAndSeek();
+        hideShemeButton();
+        updateFooter();
+
+    }
+
+    private void initializeViews(View view) {
+
+
+        listview = (ListView) view.findViewById(R.id.list);
+        listview.setCacheColorHint(0);
+
+        mDrawerLayout = (DrawerLayout) view.findViewById(
+                R.id.drawer_layout);
+        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
         ActionBarDrawerToggle mDrawerToggle;
-
-
-        drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
-
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
-
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
@@ -207,12 +231,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(bmodel.mSelectedActivityName);
-            getActionBar().setElevation(0);
-        }
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
                 mDrawerLayout,
@@ -235,62 +253,63 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 getActivity().supportInvalidateOptionsMenu();
             }
         };
+        mDrawerLayout.closeDrawer(GravityCompat.END);
 
         inputManager = (InputMethodManager) getActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+                INPUT_METHOD_SERVICE);
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
-        productName = (TextView) getView().findViewById(R.id.productName);
+        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+        productName = (TextView) view.findViewById(R.id.productName);
         productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-
-        mEdt_searchproductName = (EditText) getView().findViewById(
+        mEdt_searchproductName = (EditText) view.findViewById(
                 R.id.edt_searchproductName);
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtn_Search = (Button) getView().findViewById(R.id.btn_search);
+        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear = (Button) getView().findViewById(R.id.btn_clear);
+        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
 
-        tv_total_stockCheckedProducts = (TextView) getView().findViewById(R.id.tv_stockCheckedProductscount);
-        tv_total_products = (TextView) getView().findViewById(R.id.tv_productsCount);
+        tv_total_stockCheckedProducts = (TextView) view.findViewById(R.id.tv_stockCheckedProductscount);
+        tv_total_products = (TextView) view.findViewById(R.id.tv_productsCount);
 
         tv_total_stockCheckedProducts.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         tv_total_products.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
 
-        btn_save = (Button) getView().findViewById(R.id.btn_save);
+        btn_save = (Button) view.findViewById(R.id.btn_save);
         btn_save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btn_save.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mLocationAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_singlechoice);
+        mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                getActivity().supportInvalidateOptionsMenu();
 
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
-        }
+                if (s.length() >= 3 || s.length() == 0) {
+                    loadSearchedList();
+                }
 
-        loadReason();
+            }
 
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
 
-        mSearchTypeArray = new ArrayList<>();
-        mSearchTypeArray.add("Product Name");
-        mSearchTypeArray.add("GCAS Code");
-        mSearchTypeArray.add("BarCode");
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
 
-        searchText();
-        hideAndSeek();
-        hideShemeButton();
-        updateFooter();
-        mDrawerLayout.closeDrawer(GravityCompat.END);
+            }
+        });
+
+        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+
     }
-
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
@@ -391,37 +410,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
     }
 
-    private void searchText() {
-        try {
-            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {
-                    getActivity().supportInvalidateOptionsMenu();
-                    if (s.length() >= 3 || s.length() == 0) {
-                        loadSearchedList();
-                    }
-
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-
-                }
-            });
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
-    }
-
     private void loadSearchedList() {
         ProductMasterBO ret;
+
         if (mEdt_searchproductName.getText().length() >= 3) {
+
             Vector<ProductMasterBO> items = new Vector<>();
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
                 for (ProductMasterBO productBo : getTaggedProducts()) {
@@ -436,6 +429,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
                 items = getTaggedProducts();
             }
+
             if (items.isEmpty()) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -443,8 +437,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 return;
             }
             int siz = items.size();
+
             mylist = new ArrayList<>();
             String mSelectedFilter = bmodel.getProductFilter();
+
             for (int i = 0; i < siz; ++i) {
                 ret = items.elementAt(i);
 
@@ -488,8 +484,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         else if (applyProductAndSpecialFilter(ret))
                             mylist.add(ret);
                 }
+
             }
+
             refreshList();
+
         } else if (mEdt_searchproductName.getText().length() == 0) {
             loadProductList();
         } else {
@@ -500,7 +499,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void refreshList() {
         MyAdapter mSchedule = new MyAdapter(mylist);
-        lvwplist.setAdapter(mSchedule);
+        listview.setAdapter(mSchedule);
     }
 
     private Vector<ProductMasterBO> getTaggedProducts() {
@@ -510,8 +509,24 @@ public class StockCheckFragment extends IvyBaseFragment implements
     /**
      * Populate list with specific reason type of the module.
      */
-    private void loadReason() {
-        spinnerAdapter = new ArrayAdapter<ReasonMaster>(getActivity(),
+    private void prepareAdapters() {
+
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add("Product Name");
+        mSearchTypeArray.add("GCAS Code");
+        mSearchTypeArray.add("BarCode");
+
+        //location
+        mLocationAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.select_dialog_singlechoice);
+        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+            mLocationAdapter.add(temp);
+        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        }
+
+        //reasons
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -528,10 +543,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mSelectedBrandID = bid;
         try {
             mDrawerLayout.closeDrawers();
+
             brandbutton = mFilterText;
             String generaltxt = generalbutton;
 
-
+            mylist = new ArrayList<>();
             items = getTaggedProducts();
             if (items == null) {
                 bmodel.showAlert(
@@ -539,12 +555,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         0);
                 return;
             }
-            int siz = items.size();
-            Commons.print("siz" + siz);
-            mylist = new ArrayList<>();
-            mylist.clear();
+
 
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
+
                 for (ProductMasterBO sku : items) {
                     if (sku.getBarCode().equals(strBarCodeSearch)
                             || sku.getCasebarcode().equals(strBarCodeSearch)
@@ -2120,11 +2134,45 @@ public class StockCheckFragment extends IvyBaseFragment implements
             loadProductList();
 
             try {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             } catch (Exception e) {
                 Commons.printException(e);
             }
+        } else if (vw == mBtnFilterPopup) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                    getActivity(),
+                    android.R.layout.select_dialog_singlechoice,
+                    mSearchTypeArray);
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+                    });
+            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
+                    .getProductFilter());
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+
+                    });
+            builderSingle.setPositiveButton(
+                    getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                        }
+                    });
+            bmodel.applyAlertDialogTheme(builderSingle);
+
         } else if (vw == btn_save) {
             onNextButtonClick();
         }
@@ -2135,7 +2183,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         if (arg1 == EditorInfo.IME_ACTION_DONE) {
             if (arg0.getText().length() > 0) {
                 getActivity().supportInvalidateOptionsMenu();
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mEdt_searchproductName.getWindowToken(), 0);
             }
             loadSearchedList();
