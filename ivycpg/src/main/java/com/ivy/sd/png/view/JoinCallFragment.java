@@ -53,12 +53,13 @@ public class JoinCallFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
 
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setIcon(null);
             actionBar.setElevation(0);
+            actionBar.setDisplayShowTitleEnabled(false);
             //  actionBar.setStackedBackgroundDrawable((new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.toolbar_ret_bg))));
         }
 
@@ -74,6 +75,12 @@ public class JoinCallFragment extends IvyBaseFragment {
         setHasOptionsMenu(true);*/
 
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override

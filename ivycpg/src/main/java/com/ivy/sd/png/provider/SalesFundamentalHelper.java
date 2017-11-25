@@ -274,7 +274,7 @@ public class SalesFundamentalHelper {
                     filterCur.close();
                 }
 
-                if (mParentLevel == 0)
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                     loopEnd = mContentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
                 else
                     loopEnd = mContentLevel - mParentLevel + 1;
@@ -282,6 +282,8 @@ public class SalesFundamentalHelper {
                 if (!mSFModuleSequence.isEmpty())
                     mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
                 else
+                    mFirstLevel = mContentLevel;
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                     mFirstLevel = bmodel.configurationMasterHelper.globalSeqId;
 
             } else {
@@ -327,11 +329,12 @@ public class SalesFundamentalHelper {
             }
             sBuffer.append(query);
 
-            if (bmodel.configurationMasterHelper.IS_SF_NORM_CHECK)
-            {       sBuffer.append(" INNER JOIN ");
-            }else {
+            if (bmodel.configurationMasterHelper.IS_SF_NORM_CHECK) {
+                sBuffer.append(" INNER JOIN ");
+            } else {
                 sBuffer.append(" LEFT JOIN ");
-            }               sBuffer.append( moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
+            }
+            sBuffer.append(moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
                     + ".pid = SFN.pid  ");
 
             if (IsRetailer) {

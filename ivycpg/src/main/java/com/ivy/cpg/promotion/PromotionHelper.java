@@ -154,13 +154,12 @@ public class PromotionHelper {
 
     /**
      * Download Promotion Data based on the menu level from configActivityFilter
-     *
+     * <p>
      * isAccount - Retailer Account level
      * isRetailer - Exact Retailer id
      * isClass - Retailer Class Level
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
-     *
      */
     private void downloadPromotionMaster(boolean isAccount, boolean isRetailer, boolean isClass, int locationId, int channelId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -329,7 +328,7 @@ public class PromotionHelper {
             }
 
             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( (sum / (double)100) * moduleWeightage);
+                double achieved = ((sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update PromotionHeader set Score = " + achieved + " where UID = " + QT(uid) + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(businessModel.getRetailerMasterBO().getRetailerID()));
@@ -513,7 +512,7 @@ public class PromotionHelper {
      * Save Image in Objects
      *
      * @param mPromoID promotion id
-     * @param imgName image name
+     * @param imgName  image name
      */
     void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath) {
         try {
@@ -623,6 +622,8 @@ public class PromotionHelper {
     }
 
     public ArrayList<PromotionBO> getPromotionList() {
+        if (mPromotionList == null)
+            return new ArrayList<PromotionBO>();
         return mPromotionList;
     }
 

@@ -1421,9 +1421,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
      */
     private boolean isValidateSchemePriceEntered(SchemeBO schemeBO) {
 
-        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 0, 2))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 0, 2))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) > 0)) {
+        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
             /*
              * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
 			 * 0) || (priceEntered > schemeBO.getActualPrice())) {
