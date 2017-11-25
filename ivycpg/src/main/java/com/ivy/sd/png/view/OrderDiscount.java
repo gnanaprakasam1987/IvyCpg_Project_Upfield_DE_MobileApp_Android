@@ -92,7 +92,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             }
         });
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         // On/Off order case and pcs

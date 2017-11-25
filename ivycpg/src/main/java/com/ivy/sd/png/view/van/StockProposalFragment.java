@@ -218,7 +218,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        customProgressDialog(builder,  getResources().getString(R.string.loading_data));
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
         alertDialog = builder.create();
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
@@ -269,7 +269,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             }
         });
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         expandlvwplist = (ExpandableListView) view.findViewById(R.id.expand_lvwplist);
@@ -1456,7 +1456,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -68,7 +68,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
 
         }
 
-        mCollectionLV = (ListView) findViewById(R.id.lvwplist);
+        mCollectionLV = (ListView) findViewById(R.id.list);
         btnSave = (Button) findViewById(R.id.btn_save);
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 

@@ -232,7 +232,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mBtnClear.setOnClickListener(this);
             mEdtSearchproductName.setOnEditorActionListener(this);
 
-            lvwplist = (ListView) findViewById(R.id.lvwplist);
+            lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
             toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -1395,7 +1395,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -1455,7 +1455,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1497,7 +1497,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

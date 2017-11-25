@@ -147,7 +147,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         };
 
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
         tvSelectedFilter = (TextView) getView().findViewById(R.id.sku);

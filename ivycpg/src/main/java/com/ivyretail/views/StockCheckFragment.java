@@ -144,7 +144,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         try {
@@ -2057,7 +2057,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

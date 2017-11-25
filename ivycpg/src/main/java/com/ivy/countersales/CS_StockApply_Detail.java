@@ -215,7 +215,7 @@ public class CS_StockApply_Detail extends IvyBaseActivityNoActionBar implements 
         }
 
         MyAdapter mSchedule = new MyAdapter(myList);
-        lv = (ListView) findViewById(R.id.lvwplist);
+        lv = (ListView) findViewById(R.id.list);
         lv.setCacheColorHint(0);
         lv.setAdapter(mSchedule);
         searchText();

@@ -183,8 +183,11 @@
 
     <!-- Asset -->
     <string name="moveAsset">Move Asset</string>
+    <string name="executed_qty">Executed Qty</string>
+    <string name="competitor_qty">Comp Qty</string>
     <!-- Asset -->
 
     <string name="cancelled">Cancelled</string>
 
+    <string name="exec_rating">Executing Rating</string>
 </resources>

@@ -87,7 +87,7 @@ public class CurrentStockView extends Fragment {
 			}
 		});
 
-		lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
 
 		Vector<ChildLevelBo> items = new Vector<ChildLevelBo>();

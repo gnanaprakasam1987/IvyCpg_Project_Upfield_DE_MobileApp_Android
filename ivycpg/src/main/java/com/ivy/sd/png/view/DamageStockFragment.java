@@ -79,7 +79,7 @@ public class DamageStockFragment extends Fragment {
         if (salesReturnHelper.getDamagedSalesReport() == null)
             return;
         productName = (TextView) tempView.findViewById(R.id.productName);
-        lvwplist = (ListView) tempView.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) tempView.findViewById(R.id.list);
         reasonSpinner = (MaterialSpinner) tempView.findViewById(R.id.reasonSpinner);
 
         productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

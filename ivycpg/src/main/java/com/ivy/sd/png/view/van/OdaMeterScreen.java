@@ -826,7 +826,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OdaMeterScreen.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -862,7 +862,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(OdaMeterScreen.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

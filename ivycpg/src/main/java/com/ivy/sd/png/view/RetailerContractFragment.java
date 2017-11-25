@@ -37,7 +37,7 @@ public class RetailerContractFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvContract = (ListView) view.findViewById(R.id.lvwplist);
+        lvContract = (ListView) view.findViewById(R.id.list);
 
         return view;
     }

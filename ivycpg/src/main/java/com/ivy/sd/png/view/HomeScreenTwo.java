@@ -37,6 +37,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.asset.AssetPresenterImpl;
+import com.ivy.cpg.promotion.PromotionHelper;
+import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -48,24 +51,22 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.asset.AssetTrackingActivity;
-import com.ivy.sd.png.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.asset.AssetTrackingActivity;
+import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivyretail.views.CombinedStockFragmentActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
-import com.ivyretail.views.PromotionTrackingActivity;
 import com.ivyretail.views.SODActivity;
-import com.ivy.sd.png.view.asset.SODAssetActivity;
 import com.ivyretail.views.SOSActivity;
 import com.ivyretail.views.SOSActivity_Proj;
 import com.ivyretail.views.SOSKUActivity;
@@ -2501,13 +2502,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
-                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
-                if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
-
-                    bmodel.assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
+                    assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -2543,11 +2543,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
-                bmodel.assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
 
-                if (bmodel.assetTrackingHelper.getAssetTrackingList().size() > 0) {
+                if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
                     bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -2862,9 +2862,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-
-                bmodel.promotionHelper.loadDataForPromotion(menu.getConfigCode());
-                if (bmodel.promotionHelper.getmPromotionList().size() > 0) {
+                PromotionHelper promotionHelper = PromotionHelper.getInstance(this);
+                promotionHelper.loadDataForPromotion(menu.getConfigCode());
+                if (promotionHelper.getPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3026,9 +3026,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)

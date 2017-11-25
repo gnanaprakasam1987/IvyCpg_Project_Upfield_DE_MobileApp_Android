@@ -93,7 +93,7 @@ public class RetailerKPISKUActivity extends IvyBaseActivityNoActionBar implement
             Commons.printException(e);
         }
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         setSupportActionBar(toolbar);
 

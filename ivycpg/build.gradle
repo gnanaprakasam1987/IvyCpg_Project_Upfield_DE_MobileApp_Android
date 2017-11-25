@@ -125,9 +125,6 @@ dependencies {
     compile files('libs/baidumapapi_search_v3_6_1.jar')
     compile files('libs/aws-android-sdk-core-2.2.9.jar')
     compile files('libs/aws-android-sdk-s3-2.2.9.jar')
-    /*debugCompile project(path: ':ivylibrary', configuration: 'debug')
-    releaseCompile project(path: ':ivylibrary', configuration: 'release')
-    devReleaseCompile project(path: ':ivylibrary', configuration: 'devrelease')*/
     implementation project(':ivylibrary')
     compile files('libs/jbcrypt-0.3.jar')
     compile files('libs/AEM_SCRYBE_SEP_2014.jar')

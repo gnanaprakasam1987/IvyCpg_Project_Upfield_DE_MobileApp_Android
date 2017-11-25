@@ -86,7 +86,7 @@ public class ReturnProductDialog extends Dialog {
     private void initializeView() {
         try {
             btnSave = (Button) findViewById(R.id.save_btn);
-            lvwplist = (ListView) findViewById(R.id.lvwplist);
+            lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
             ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

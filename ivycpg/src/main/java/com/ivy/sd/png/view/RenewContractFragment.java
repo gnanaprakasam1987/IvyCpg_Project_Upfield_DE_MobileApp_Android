@@ -41,7 +41,7 @@ public class RenewContractFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvContract = (ListView) view.findViewById(R.id.lvwplist);
+        lvContract = (ListView) view.findViewById(R.id.list);
         tvDelete = (TextView) view.findViewById(R.id.audit);
         tvDelete.setText("Delete");
 

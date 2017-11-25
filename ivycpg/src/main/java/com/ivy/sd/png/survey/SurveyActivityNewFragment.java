@@ -2267,7 +2267,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getActivity().getResources().getString(R.string.loading));
+            customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

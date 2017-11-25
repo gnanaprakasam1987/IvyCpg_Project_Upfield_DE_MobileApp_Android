@@ -103,7 +103,7 @@ public class ReturnFragment extends IvyBaseFragment {
         mSelectedET = null;
         btnSave = (Button) view.findViewById(R.id.btn_save);
         tvAddreason = (TextView) view.findViewById(R.id.tvAddreason);
-        returnList = (ListView) view.findViewById(R.id.lvwplist);
+        returnList = (ListView) view.findViewById(R.id.list);
         returnList.setCacheColorHint(0);
 
 

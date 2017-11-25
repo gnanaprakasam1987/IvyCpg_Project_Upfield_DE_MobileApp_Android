@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,7 +61,7 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
         mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
         totalLines = (TextView) view.findViewById(R.id.txttotallines);
         xlsExport = (Button) view.findViewById(R.id.xlsExport);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
         lvwplist.setOnItemClickListener(this);

@@ -601,7 +601,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
             super.onPreExecute();
             builder = new AlertDialog.Builder(SerialNoEntryScreen.this);
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

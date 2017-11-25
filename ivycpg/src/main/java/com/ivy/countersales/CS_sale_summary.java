@@ -109,7 +109,7 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
             btnSave.setVisibility(View.VISIBLE);
         }
 
-        listview = (ListView) findViewById(R.id.lvwplist);
+        listview = (ListView) findViewById(R.id.list);
         mExpListView = (ExpandableListView) findViewById(R.id.elv);
 
         try {

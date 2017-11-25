@@ -157,7 +157,7 @@ public class SOSFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
 
@@ -1046,7 +1046,7 @@ public class SOSFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder,  getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -121,7 +121,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         }
         Spinner spinnerVanload = (Spinner) view
                 .findViewById(R.id.vanloadSpinner);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);

@@ -2208,7 +2208,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             try {
                 if (alertDialog != null) {
                     builder = new AlertDialog.Builder(getActivity());
-                    customProgressDialog(builder,  getResources().getString(R.string.loading));
+                    customProgressDialog(builder, getResources().getString(R.string.loading));
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -2465,6 +2465,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         bmodel.showAlert(getResources().getString(R.string.please_redownload_data), 5003);
         isClicked = false;
     }
+
     private void setMessageInProgressDialog(AlertDialog.Builder builder, String message) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_alert_dialog,

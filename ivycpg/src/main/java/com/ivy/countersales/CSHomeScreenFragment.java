@@ -35,13 +35,14 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CounterPlanogramActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
-import com.ivy.sd.png.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
@@ -531,7 +532,9 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                bmodel.assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM_CS);
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
+
+                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM_CS);
 
                 bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -754,7 +757,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -937,7 +940,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         protected void onPreExecute() {
             super.onPreExecute();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder,  getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider.asset;
+package com.ivy.cpg.asset;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,9 +23,9 @@ import java.util.Vector;
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
 
+    private static AssetTrackingHelper instance=null;
     private final Context context;
     private final BusinessModel mBusinessModel;
-    private static AssetTrackingHelper instance = null;
     private AssetTrackingBO mAssetTrackingBO;
     public String mSelectedActivityName;
 
@@ -41,7 +41,6 @@ public class AssetTrackingHelper {
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
-    public String mSelectedSerial = "";
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -98,7 +97,7 @@ public class AssetTrackingHelper {
     private static final String MERCH = "MERCH";
     private static final String MENU_ASSET = "MENU_ASSET";
     private static final String MERCH_INIT = "MERCH_INIT";
-    private static final String MENU_POSM="MENU_POSM";
+    private static final String MENU_POSM = "MENU_POSM";
 
     private AssetTrackingHelper(Context context) {
         this.context = context;
@@ -118,10 +117,10 @@ public class AssetTrackingHelper {
     }
 
     public static AssetTrackingHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new AssetTrackingHelper(context);
-        }
-        return instance;
+        if(instance==null)
+            instance=new AssetTrackingHelper(context);
+
+         return instance;
     }
 
     /*
@@ -232,9 +231,10 @@ public class AssetTrackingHelper {
 
     /**
      * Update Asset Column Configurations
+     *
      * @param temp Configuration Code
      */
-    private void updateAssetColumnConfig(String temp){
+    private void updateAssetColumnConfig(String temp) {
         switch (temp) {
             case "TGT":
                 SHOW_ASSET_TARGET = true;
@@ -268,6 +268,7 @@ public class AssetTrackingHelper {
                 break;
         }
     }
+
     /**
      * Load all POSM related configurations
      */
@@ -285,8 +286,8 @@ public class AssetTrackingHelper {
             SHOW_POSM_EXECUTED = false;
 
             SHOW_POSM_BARCODE = false;
-           // SHOW_ADD_NEW_POSM = false;
-           // SHOW_REMOVE_POSM = false;
+            // SHOW_ADD_NEW_POSM = false;
+            // SHOW_REMOVE_POSM = false;
             SHOW_POSM_ALL = false;
             SHOW_REMARKS_POSM = false;
 
@@ -296,7 +297,7 @@ public class AssetTrackingHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = '"+MENU_POSM+"' AND flag='1'";
+                    + " WHERE menu_type = '" + MENU_POSM + "' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -325,7 +326,6 @@ public class AssetTrackingHelper {
             db.closeDB();
 
 
-
         } catch (Exception e) {
             Commons.printException("loadPOSMConfigs " + e);
         }
@@ -339,9 +339,10 @@ public class AssetTrackingHelper {
 
     /**
      * Update POSM column configurations
+     *
      * @param temp Configuration Code
      */
-    private void updatePOSMColumnConfig(String temp){
+    private void updatePOSMColumnConfig(String temp) {
         switch (temp) {
             case "TGT":
                 SHOW_POSM_TARGET = true;
@@ -375,13 +376,14 @@ public class AssetTrackingHelper {
                 break;
         }
     }
+
     /**
      * Method that to download Asset Details from SQLite
      *
      * @param moduleName module name
      */
     private void downloadAssetMaster(String moduleName) {
-        ArrayList<AssetTrackingBO> mAllAssetTrackingList=null;
+        ArrayList<AssetTrackingBO> mAllAssetTrackingList = null;
 
         String type;
         if (MENU_ASSET.equals(moduleName))
@@ -497,7 +499,7 @@ public class AssetTrackingHelper {
                 }
             }
             if (c1.getCount() > 0) {
-                mAllAssetTrackingList=new ArrayList<>();
+                mAllAssetTrackingList = new ArrayList<>();
                 while (c1.moveToNext()) {
                     assetTrackingBO = new AssetTrackingBO();
                     assetTrackingBO.setAssetID(c1.getInt(0));
@@ -553,7 +555,7 @@ public class AssetTrackingHelper {
      * Method that to get loaded data from SQLite table
      *
      * @param mRetailerId Retailer ID
-     * @param moduleName Module Name
+     * @param moduleName  Module Name
      */
     private void loadAssetData(String mRetailerId, String moduleName) {
         String type;
@@ -712,6 +714,7 @@ public class AssetTrackingHelper {
 
     /**
      * Download unique POSM available
+     *
      * @param moduleName Module Name
      */
     public void downloadAssetsPosm(String moduleName) {
@@ -755,6 +758,7 @@ public class AssetTrackingHelper {
 
     /**
      * Get asset Names
+     *
      * @return List of assets
      */
     public Vector<String> getAssetPosmNames() {
@@ -777,6 +781,7 @@ public class AssetTrackingHelper {
 
     /**
      * Get asset brands
+     *
      * @return Vector List of Asset Brands
      */
     public Vector<String> getAssetBrandNames() {
@@ -799,6 +804,7 @@ public class AssetTrackingHelper {
 
     /**
      * Get asset Id for given asset name
+     *
      * @param mAssetPosmName Asset name
      * @return Asset Id
      */
@@ -829,6 +835,7 @@ public class AssetTrackingHelper {
 
     /**
      * Get Asset brand Id for given Asset Brand Name
+     *
      * @param mAssetBrandName Asset brand name
      * @return Brand id
      */
@@ -856,6 +863,7 @@ public class AssetTrackingHelper {
 
     /**
      * Download asset brands
+     *
      * @param brandPosm POSM Id
      */
     public void downloadAssetBrand(String brandPosm) {
@@ -894,6 +902,7 @@ public class AssetTrackingHelper {
 
     /**
      * Preparing List to Add or remove assets
+     *
      * @param moduleName Module Name
      */
     public void lodAddRemoveAssets(String moduleName) {
@@ -1032,17 +1041,6 @@ public class AssetTrackingHelper {
         return new ArrayList<>();
     }
 
-    /**
-     * Method return reason remarks arrayList
-     *
-     * @return ArrayList<ReasonMaster>
-     */
-    public ArrayList<ReasonMaster> getAssetRemarksList() {
-        if (mAssetRemarkList != null) {
-            return mAssetRemarkList;
-        }
-        return new ArrayList<>();
-    }
 
     public ArrayList<ReasonMaster> getAssetConditionList() {
         if (mAssetConditionList != null) {
@@ -1081,7 +1079,7 @@ public class AssetTrackingHelper {
     /**
      * Method return the correct position to selected ReasonId
      *
-     * @param reasonId ReasonId
+     * @param reasonId   ReasonId
      * @param reasonList Reason List
      * @return integer
      */
@@ -1097,24 +1095,6 @@ public class AssetTrackingHelper {
         return -1;
     }
 
-    /**
-     * Method return the correct position to selected conditionId
-     *
-     * @param conditionId Condition Id
-     * @param reasonList reason List
-     * @return integer Index
-     */
-    public int getConditionItemIndex(String conditionId, ArrayList<ReasonMaster> reasonList) {
-        int size = reasonList.size();
-
-        for (int i = 0; i < size; i++) {
-            ReasonMaster reasonBO = reasonList.get(i);
-            if (reasonBO.getConditionID().equals(conditionId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     /**
      * Method to delete imageName in sql table
@@ -1224,11 +1204,12 @@ public class AssetTrackingHelper {
 
     /**
      * Save added or deleted details
-     * @param posmId POSM Id
-     * @param mSno SNO
-     * @param mSbdId SBD Id
-     * @param mBrandId Brand ID
-     * @param reasonId Reason ID
+     *
+     * @param posmId     POSM Id
+     * @param mSno       SNO
+     * @param mSbdId     SBD Id
+     * @param mBrandId   Brand ID
+     * @param reasonId   Reason ID
      * @param moduleName Module Name
      */
     public void saveAddAndDeleteDetails(String posmId, String mSno,
@@ -1276,6 +1257,7 @@ public class AssetTrackingHelper {
 
     /**
      * Delete POSM details
+     *
      * @param mSno SNO
      */
     public void deletePosmDetails(String mSno) {
@@ -1297,6 +1279,7 @@ public class AssetTrackingHelper {
 
     /**
      * Checking Serial number availability
+     *
      * @param mSno SNO
      * @return Is Serial Number available
      */
@@ -1363,6 +1346,7 @@ public class AssetTrackingHelper {
 
     /**
      * Saving asset details
+     *
      * @param moduleName Module Name
      */
     public void saveAsset(String moduleName) {
@@ -1404,7 +1388,7 @@ public class AssetTrackingHelper {
 
 
             int moduleWeightAge = 0;
-            double productWeightAge , sum = 0;
+            double productWeightAge, sum = 0;
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
@@ -1686,9 +1670,11 @@ public class AssetTrackingHelper {
                 } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                     moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
                 }
-                assetHeaderValues.append("," );assetHeaderValues.append(moduleWeightAge);
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(moduleWeightAge);
                 double achieved = ((sum / (double) 100) * moduleWeightAge);
-                assetHeaderValues.append("," );assetHeaderValues.append(achieved);
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(achieved);
             }
 
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
@@ -1705,12 +1691,12 @@ public class AssetTrackingHelper {
     /**
      * Ordered asset record set to AssetTrackingBO object
      *
-     * @param assetID Asset Id
-     * @param qty Qty
+     * @param assetID   Asset Id
+     * @param qty       Qty
      * @param imageName image Name
      * @param mReasonId reason Id
-     * @param serialNo serial Number
-     * @param imgName image Name
+     * @param serialNo  serial Number
+     * @param imgName   image Name
      */
     private void setAssetDetails(int assetID, int qty, String imageName,
                                  String mReasonId, String serialNo,
@@ -1801,4 +1787,7 @@ public class AssetTrackingHelper {
             }
         return retailerMovedData;
     }
+
 }
+
+

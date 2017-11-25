@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -58,23 +58,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
-import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,6 +108,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
     private int mSelectedLocationIndex;
     private boolean isFromChild;
     private String mFilterText;
+    AssetTrackingHelper assetTrackingHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,6 +137,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
+        assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
+
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -147,7 +146,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
         if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.lvwplist);
+            mListView = (ListView) getView().findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 
@@ -1054,8 +1053,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
         mAssetsForDialog.clear();
         // All Brands in Total PopUp
-        if (mBModel.assetTrackingHelper.getAssetTrackingList() != null) {
-            for (AssetTrackingBO assetTrackingBO : mBModel.assetTrackingHelper.getAssetTrackingList()) {
+        if (assetTrackingHelper.getAssetTrackingList() != null) {
+            for (AssetTrackingBO assetTrackingBO : assetTrackingHelper.getAssetTrackingList()) {
                 if (assetTrackingBO.getProductId() == categoryId) {
                     mAssetsForDialog.add(assetTrackingBO);
                 }

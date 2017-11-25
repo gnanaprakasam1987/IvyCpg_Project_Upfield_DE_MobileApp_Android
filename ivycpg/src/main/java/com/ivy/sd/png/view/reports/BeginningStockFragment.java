@@ -3,7 +3,6 @@ package com.ivy.sd.png.view.reports;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -62,7 +61,7 @@ public class BeginningStockFragment extends IvyBaseFragment {
             getActivity().finish();
         }
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);

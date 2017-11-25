@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -104,7 +103,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         } else {
             xlsExport.setText(getResources().getString(R.string.export));
         }
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
 

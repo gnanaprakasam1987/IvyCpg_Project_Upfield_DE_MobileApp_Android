@@ -56,7 +56,7 @@ public class StoreWiseDiscountDialog extends Dialog implements OnClickListener {
                 R.layout.dialog_store_wise_discount, null);
         setContentView(ll);
         setCancelable(true);
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         bmodel = (BusinessModel) context.getApplicationContext();
         discountll = (LinearLayout) findViewById(R.id.discountlayout);
         ok = (Button) findViewById(R.id.btn_ok);

@@ -239,7 +239,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             }
         });
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         expandlvwplist = (ExpandableListView) findViewById(R.id.expand_lvwplist);

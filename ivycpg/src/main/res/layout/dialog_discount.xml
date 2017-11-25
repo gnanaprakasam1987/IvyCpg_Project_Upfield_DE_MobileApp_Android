@@ -268,7 +268,7 @@
                             android:layout_alignParentBottom="true" />
 
                         <ListView
-                            android:id="@+id/lvwplist"
+                            android:id="@+id/list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_above="@+id/keypad"

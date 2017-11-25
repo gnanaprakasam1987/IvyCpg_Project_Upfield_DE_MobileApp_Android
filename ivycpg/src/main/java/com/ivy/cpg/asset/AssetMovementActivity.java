@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.asset;
+package com.ivy.cpg.asset;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -88,7 +88,9 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
      */
     protected void updateList(StandardListBO standardListBO) {
         mAssetTrackingList = standardListBO.getAssetTrackingList();
-        ArrayList<String> mMovedList = mBModel.assetTrackingHelper.getAssetMovementDetails();
+        AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+
+        ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails();
         ArrayList<Integer> toRemovePos=new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {

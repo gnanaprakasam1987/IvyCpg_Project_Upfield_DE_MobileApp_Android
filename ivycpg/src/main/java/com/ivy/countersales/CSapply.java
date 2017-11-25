@@ -148,7 +148,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
         lvwplist = (FullLengthListView)
 
-                findViewById(R.id.lvwplist);
+                findViewById(R.id.list);
 
         edt_result.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         edt_hour.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

@@ -267,7 +267,7 @@
             android:name="com.ivy.sd.png.view.PlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.PosmTrackingActivity"
+            android:name="com.ivy.cpg.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.survey.SurveyActivityNew"
@@ -512,7 +512,7 @@
             android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.AssetTrackingActivity"
+            android:name="com.ivy.cpg.asset.AssetTrackingActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -523,7 +523,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.asset.AssetPosmRemoveActivity"
+            android:name="com.ivy.cpg.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
@@ -570,7 +570,7 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"
@@ -588,7 +588,7 @@
             android:name="com.ivyretail.views.SODActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.SODAssetActivity"
+            android:name="com.ivy.sd.png.view.SODAssetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivyretail.views.SOSKUActivity"
@@ -765,7 +765,7 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.asset.AssetMovementActivity"
+            android:name="com.ivy.cpg.asset.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

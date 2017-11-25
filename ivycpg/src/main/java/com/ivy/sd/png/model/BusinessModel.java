@@ -100,7 +100,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.asset.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -140,7 +139,6 @@ import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
-import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
@@ -148,7 +146,7 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.asset.SODAssetHelper;
+import com.ivy.sd.png.provider.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
@@ -305,12 +303,11 @@ public class BusinessModel extends Application {
     public RemarksHelper remarksHelper;
     public PlanogramMasterHelper planogramMasterHelper;
     public ReasonHelper reasonHelper;
-    public AssetTrackingHelper assetTrackingHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
     public VanUnLoadModuleHelper vanunloadmodulehelper;
     public NewOutletHelper newOutletHelper;
-    public PromotionHelper promotionHelper;
+    //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
@@ -495,7 +492,7 @@ public class BusinessModel extends Application {
         vanunloadmodulehelper = VanUnLoadModuleHelper.getInstance(this);
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        promotionHelper = PromotionHelper.getInstance(this);
+        //promotionHelper = PromotionHelper.getInstance(this);
         salesFundamentalHelper = SalesFundamentalHelper.getInstance(this);
         sodAssetHelper = SODAssetHelper.getInstance(this);
 

@@ -60,7 +60,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
         t_rname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         headerLayout = (LinearLayout) view.findViewById(R.id.ll_header);
         spinnerRetailer = (Spinner) view.findViewById(R.id.retailerSpinner);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         downloadReportData();
         hideAndShow();
