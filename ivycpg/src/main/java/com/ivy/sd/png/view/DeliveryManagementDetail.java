@@ -744,7 +744,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             super.onPreExecute();
             build = new AlertDialog.Builder(DeliveryManagementDetail.this);
 
-            bmodel.customProgressDialog(alertDialog, build, DeliveryManagementDetail.this, getResources().getString(R.string.saving));
+            customProgressDialog(build, getResources().getString(R.string.saving));
             alertDialog = build.create();
             alertDialog.show();
         }
@@ -858,7 +858,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     mSelectedPrintCount = position;
                     builder10 = new AlertDialog.Builder(getActivity());
-                    bmodel.customProgressDialog(alertDialog, builder10, getActivity(), "Printing....");
+                    customProgressDialog(builder10, "Printing....");
                     alertDialog = builder10.create();
                     alertDialog.show();
                     getDialog().dismiss();

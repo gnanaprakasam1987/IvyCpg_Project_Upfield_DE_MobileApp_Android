@@ -3,7 +3,6 @@ package com.ivy.sd.png.view.reports;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,12 +17,13 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.Vector;
 
-public class BeginningStockFragment extends Fragment {
+public class BeginningStockFragment extends IvyBaseFragment {
 
     private ListView lvwplist;
     private BusinessModel bmodel;
@@ -61,7 +61,7 @@ public class BeginningStockFragment extends Fragment {
             getActivity().finish();
         }
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);
@@ -205,7 +205,7 @@ public class BeginningStockFragment extends Fragment {
 					DataMembers.SD, "Loading", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

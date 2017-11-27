@@ -559,7 +559,7 @@ public class OTRNewRequest extends IvyBaseActivityNoActionBar implements OnClick
 
             builder = new AlertDialog.Builder(OTRNewRequest.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, OTRNewRequest.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

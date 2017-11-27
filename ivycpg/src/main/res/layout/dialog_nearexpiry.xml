@@ -63,7 +63,7 @@
         android:background="@color/divider_view_color" />
 
     <ListView
-        android:id="@+id/lvwplist"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:cacheColorHint="@null"

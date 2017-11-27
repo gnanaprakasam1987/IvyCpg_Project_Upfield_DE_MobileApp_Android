@@ -520,7 +520,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
 	 * 
 	 * int siz = items.size(); for (int i = 0; i < siz; ++i) { ChildLevelBo ret
 	 * = (ChildLevelBo) items.elementAt(i); filter_Heading =
-	 * ret.getProductLevel(); filterId = ret.getProductid(); break; } }
+	 * ret.getProductLevel(); filterId = ret.getProductId(); break; } }
 	 */
 
     public void searchAndUpdateImage() {
@@ -698,7 +698,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                     true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 

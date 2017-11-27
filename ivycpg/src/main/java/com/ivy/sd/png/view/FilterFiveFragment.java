@@ -98,8 +98,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
                     if (isAttributeFilterSelected()) {
                         //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
-                        if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                            finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                        if (filterText.length() > 0) {
+                            if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
+                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                            }
                         }
 
                         ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
@@ -123,16 +125,18 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                             }
 
                         }
-                        brandInterface.updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
+                        brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
                         return;
-                    } else
-                        finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+                    } else {
+                        if (filterText.length() > 0)
+                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+                    }
+                } else {
+                    if (filterText.length() > 0)
+                        finalParentList = updateProductLoad(sequence.size());
+                }
 
-
-                } else
-                    finalParentList = updateProductLoad(sequence.size());
-
-                brandInterface.updatefromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
+                brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
                 brandInterface.updateCancel();
 
             }

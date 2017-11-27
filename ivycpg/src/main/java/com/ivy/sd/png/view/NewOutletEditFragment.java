@@ -414,7 +414,7 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.deleting));
+            customProgressDialog(builder, getResources().getString(R.string.deleting));
             alertDialog = builder.create();
             alertDialog.show();
         }

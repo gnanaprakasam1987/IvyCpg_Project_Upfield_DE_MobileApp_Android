@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,10 +40,8 @@ import com.bixolon.printer.BixolonPrinter;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -105,6 +102,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private boolean isUpdatePrintCount;
     private boolean isHomeBtnEnable;
     private boolean isPrintClicked;
+    private boolean isHidePrintBtn;
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
@@ -133,6 +131,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         isUpdatePrintCount = getIntent().getExtras().getBoolean("IsUpdatePrintCount", false);
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
+        isHidePrintBtn=getIntent().getExtras().getBoolean("isHidePrintBtn", false);
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -157,6 +156,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         if(!bmodel.configurationMasterHelper.IS_SHARE_INVOICE){
             menu.findItem(R.id.menu_share_pdf).setVisible(false);
+        }
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
+        }
+
+        if(isHidePrintBtn){
+            menu.findItem(R.id.menu_print).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -236,7 +242,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             super.onPreExecute();
             builder = new AlertDialog.Builder(CommonPrintPreviewActivity.this);
-            bmodel.customProgressDialog(alertDialog, builder, CommonPrintPreviewActivity.this, getResources().getString(R.string.preparing_pdf));
+            customProgressDialog(builder, getResources().getString(R.string.preparing_pdf));
             alertDialog = builder.create();
             alertDialog.show();
         }

@@ -147,7 +147,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         };
 
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
         tvSelectedFilter = (TextView) getView().findViewById(R.id.sku);
@@ -225,8 +225,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mSelectedFilterMap.put("Brand",
                 String.valueOf(bmodel.mSFSelectedFilter));
-        updategeneraltext(GENERAL);
-        updatebrandtext(BRAND, bmodel.mSFSelectedFilter);
+        updateGeneralText(GENERAL);
+        updateBrandText(BRAND, bmodel.mSFSelectedFilter);
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
         else
@@ -690,7 +690,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -739,7 +739,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
     }
 
-    public void updatebrandtext(String filtertext, int mBid) {
+    public void updateBrandText(String mFilterText, int mBid) {
         try {
 
             // Close the drawer
@@ -772,13 +772,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             }
 
             String strFilterTxt;
-            if (generaltxt.equals(GENERAL) && filtertext.equals(BRAND)) {
+            if (generaltxt.equals(GENERAL) && mFilterText.equals(BRAND)) {
                 strFilterTxt = getResources().getString(
                         R.string.product_name)
                         + "(" + myList.size() + ")";
                 tvSelectedFilter.setText(strFilterTxt);
             } else {
-                strFilterTxt = filtertext + "(" + myList.size() + ")";
+                strFilterTxt = mFilterText + "(" + myList.size() + ")";
                 tvSelectedFilter
                         .setText(strFilterTxt);
             }
@@ -852,9 +852,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
 
-    public void updategeneraltext(String filtertext) {
-        generalFilterText = filtertext;
-        updatebrandtext(BRAND, -1);
+    public void updateGeneralText(String mFilterText) {
+        generalFilterText = mFilterText;
+        updateBrandText(BRAND, -1);
     }
 
     public void updateCancel() {
@@ -893,13 +893,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
@@ -909,13 +909,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
-        updatebrandtext(parentidList, mSelectedIdByLevelId, mAttributeProducts);
+        updatebrandtext(mParentIdList, mSelectedIdByLevelId, mAttributeProducts);
     }
 
 

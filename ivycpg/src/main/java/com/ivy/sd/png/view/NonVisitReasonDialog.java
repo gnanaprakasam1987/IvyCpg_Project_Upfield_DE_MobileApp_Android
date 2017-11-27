@@ -28,6 +28,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.Vector;
 
@@ -39,6 +40,7 @@ public class NonVisitReasonDialog extends Dialog implements OnClickListener {
     private Vector<NonproductivereasonBO> nonProductiveRetailers;
     public Activity c;
     private TypedArray typearr;
+    private TextView messagetv;
 
     public NonVisitReasonDialog(Context context,
                                 Vector<NonproductivereasonBO> retailersDC) {
@@ -210,7 +212,7 @@ public class NonVisitReasonDialog extends Dialog implements OnClickListener {
 
             builder = new AlertDialog.Builder(mContext);
 
-            bmodel.customProgressDialog(alertDialog, builder, c, c.getResources().getString(R.string.loading));
+            customProgressDialog(builder);
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -254,6 +256,26 @@ public class NonVisitReasonDialog extends Dialog implements OnClickListener {
                         Toast.LENGTH_SHORT).show();
             }
             alertDialog.dismiss();
+        }
+    }
+
+    private void customProgressDialog(AlertDialog.Builder builder) {
+
+        try {
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                    (ViewGroup) getOwnerActivity().findViewById(R.id.layout_root));
+
+            TextView title = (TextView) layout.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv.setText(getOwnerActivity().getResources().getString(R.string.loading));
+
+            builder.setView(layout);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
         }
     }
 

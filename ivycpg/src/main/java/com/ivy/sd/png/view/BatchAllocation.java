@@ -102,7 +102,7 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
         mBtnNext = (Button) findViewById(R.id.btn_next);
         mBtnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         ((LinearLayout) findViewById(R.id.ll_value)).setVisibility(View.GONE);

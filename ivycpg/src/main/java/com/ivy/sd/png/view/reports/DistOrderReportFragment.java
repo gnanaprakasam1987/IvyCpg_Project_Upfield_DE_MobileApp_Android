@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,13 +21,14 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class DistOrderReportFragment extends Fragment implements OnClickListener,
+public class DistOrderReportFragment extends IvyBaseFragment implements OnClickListener,
 		OnItemClickListener {
 
 	private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
@@ -64,7 +64,7 @@ public class DistOrderReportFragment extends Fragment implements OnClickListener
 		mlpc = (TextView) view.findViewById(R.id.lpc);
 		totalLines = (TextView) view.findViewById(R.id.txttotallines);
 		xlsExport = (Button) view.findViewById(R.id.xlsExport);
-		lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
 		xlsExport.setOnClickListener(this);
 		lvwplist.setOnItemClickListener(this);
@@ -329,9 +329,9 @@ public class DistOrderReportFragment extends Fragment implements OnClickListener
 					DataMembers.SD, "Exporting orders...", true, false);*/
 			builder = new AlertDialog.Builder(getActivity());
 
-			bmodel.customProgressDialog(alertDialog, builder, getActivity(),"Exporting orders...");
-			alertDialog = builder.create();
-			alertDialog.show();
+            customProgressDialog(builder, "Exporting orders...");
+            alertDialog = builder.create();
+            alertDialog.show();
 		}
 
 		@Override

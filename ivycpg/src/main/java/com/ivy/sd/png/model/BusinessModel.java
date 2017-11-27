@@ -100,7 +100,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.AssetTrackingHelper;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -140,7 +139,6 @@ import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
-import com.ivy.sd.png.provider.PromotionHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
@@ -305,12 +303,11 @@ public class BusinessModel extends Application {
     public RemarksHelper remarksHelper;
     public PlanogramMasterHelper planogramMasterHelper;
     public ReasonHelper reasonHelper;
-    public AssetTrackingHelper assetTrackingHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
     public VanUnLoadModuleHelper vanunloadmodulehelper;
     public NewOutletHelper newOutletHelper;
-    public PromotionHelper promotionHelper;
+    //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
@@ -475,7 +472,6 @@ public class BusinessModel extends Application {
         planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
-        assetTrackingHelper = AssetTrackingHelper.getInstance(this);
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
         collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
@@ -496,7 +492,7 @@ public class BusinessModel extends Application {
         vanunloadmodulehelper = VanUnLoadModuleHelper.getInstance(this);
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        promotionHelper = PromotionHelper.getInstance(this);
+        //promotionHelper = PromotionHelper.getInstance(this);
         salesFundamentalHelper = SalesFundamentalHelper.getInstance(this);
         sodAssetHelper = SODAssetHelper.getInstance(this);
 
@@ -1457,21 +1453,6 @@ public class BusinessModel extends Application {
         return retailerMasterData;
     }
 
-    /**
-     * Method to check the movement Asset in sql table
-     */
-    public ArrayList<String> getAssetMovementDetails() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        ArrayList<String> retailerMovedData = new ArrayList<>();
-        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
-        if (c != null)
-            while (c.moveToNext()) {
-                retailerMovedData.add(c.getString(0));
-            }
-        return retailerMovedData;
-    }
 
     public void downloadRetailerMaster() {
         try {
@@ -2458,12 +2439,12 @@ public class BusinessModel extends Application {
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         dailyRep = new DailyReportBO();
-
+        Cursor c = null;
 
         if (!configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
             sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2477,7 +2458,7 @@ public class BusinessModel extends Application {
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
             sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            Cursor c = db
+            c = db
                     .selectSQL(sb.toString());
             if (c != null) {
                 if (c.moveToNext()) {
@@ -2489,14 +2470,101 @@ public class BusinessModel extends Application {
             }
         }
         sb = new StringBuffer();
-        sb.append("select  sum(mspvalues) from OrderHeader ");
+        sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
         sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        Cursor c = db
+        c = db
                 .selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
 
                 dailyRep.setMspValues(c.getString(0));
+                dailyRep.setNoofOrder(c.getString(1));
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
+        sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setPcsQty(c.getString(0));
+                dailyRep.setCsQty(c.getString(1));
+                dailyRep.setOuQty(c.getString(2));
+
+            }
+            c.close();
+        }
+
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " where isdeviated='Y' and isVisited='Y'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhoc(c.getString(0));
+            }
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and isdeviated='Y'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhocProductive(c.getString(0));
+
+            }
+            c.close();
+        }
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlanned(c.getString(0));
+
+
+            }
+            c.close();
+        }
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + "where isVisited='Y' and RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedVisit(c.getString(0));
+
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedProductive(c.getString(0));
 
             }
             c.close();
@@ -6494,9 +6562,11 @@ public class BusinessModel extends Application {
                                     + "," + rField3;
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                int pieces = (shelfCase * 10) + shelfPiece;
+                                int pieces = (shelfCase * product.getCaseSize())
+                                        + (shelfOuter * product.getOutersize())
+                                        + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + productWeightage;
+                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
                                 sum = sum + productWeightage;
                             }
 
@@ -6577,9 +6647,12 @@ public class BusinessModel extends Application {
                                         + "," + rField3;
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    int pieces = (shelfCase * 10) + shelfPiece;
+                                    int pieces = (shelfCase * taggedProduct.getCaseSize())
+                                            + (shelfOuter * taggedProduct.getOutersize())
+                                            + shelfPiece;
                                     productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
-                                    values = values + "," + productWeightage;
+                                    values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+
                                     sum = sum + productWeightage;
                                 }
 
@@ -6936,8 +7009,8 @@ public class BusinessModel extends Application {
                         * SIH ll get updated while saving invoice */
                         /*if (!configurationMasterHelper.IS_INVOICE) {
                             *//**
-                             * before deleting the order, SIH in productmaster
-                             * should get updated.
+                         * before deleting the order, SIH in productmaster
+                         * should get updated.
                          **//*
                             updateSIHOnDeleteOrder(uid);
                         }*/
@@ -8111,7 +8184,6 @@ public class BusinessModel extends Application {
             mFileName, TransferUtility tm) {
         try {
 
-
             final File mFile = new File(mFileLocation, "/" + mFileName);
 
             String mBucketName;
@@ -8140,7 +8212,6 @@ public class BusinessModel extends Application {
                                     (DataMembers.NOTIFY_FILE_UPLOADED__COMPLETED_IN_AMAZON,
                                             "File uploaded Successfully", handler);
                         }
-
 
                     } else if (transferState == TransferState.FAILED) {
                         if (!isErrorOccured) {
@@ -8198,15 +8269,6 @@ public class BusinessModel extends Application {
             }
         }
     }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
         try {
@@ -9572,40 +9634,6 @@ public class BusinessModel extends Application {
        /* ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button1)).setBackgroundResource(R.drawable.tab_selection);
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button2)).setBackgroundResource(R.drawable.tab_selection);
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
-    }
-
-    public void customProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
-
-        try {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) ctx.findViewById(R.id.layout_root));
-
-            TextView title = (TextView) layout.findViewById(R.id.title);
-            title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
-            messagetv.setText(message);
-
-            builder.setView(layout);
-            builder.setCancelable(false);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    public void updaterProgressMsg(String msg) {
-        messagetv.setText(msg);
-    }
-
-    public void setMessageInProgressDialog(AlertDialog alertDialog, AlertDialog.Builder builder, Activity ctx, String message) {
-        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                (ViewGroup) ctx.findViewById(R.id.layout_root));
-        TextView messagetv = (TextView) layout.findViewById(R.id.text);
-        messagetv.setText(message);
-        builder.setView(layout);
-        builder.setCancelable(false);
     }
 
     public void setWeeknoFoNewRetailer() {

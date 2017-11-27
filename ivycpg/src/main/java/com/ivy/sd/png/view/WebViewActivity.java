@@ -46,11 +46,16 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
         bmodel.setContext(this);
 
         try {
-            int theme = bmodel.configurationMasterHelper.getMVPTheme();
-            super.setTheme(theme);
-
-            String font = bmodel.configurationMasterHelper.getFontSize();
-            setFontStyle(font);
+            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
+            } else {
+                super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
+            }
+            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
+                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
+            } else {
+                setFontStyle(bmodel.configurationMasterHelper.fontSize);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +117,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
             builder = new AlertDialog.Builder(WebViewActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, WebViewActivity.this, getResources().getString(R.string.Authenticating));
+            customProgressDialog(builder, getResources().getString(R.string.Authenticating));
             alertDialog = builder.create();
             alertDialog.show();
         }

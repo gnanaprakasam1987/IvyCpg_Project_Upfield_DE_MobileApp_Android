@@ -101,7 +101,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
         btn_ok.setOnClickListener(this);
         getActivity().setFinishOnTouchOutside(false);
-        ListView list = (ListView) view.findViewById(R.id.lvwplist);
+        ListView list = (ListView) view.findViewById(R.id.list);
         ExpiryAdapter adapter = new ExpiryAdapter();
         list.setAdapter(adapter);
 

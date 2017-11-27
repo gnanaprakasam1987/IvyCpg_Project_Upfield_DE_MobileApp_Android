@@ -201,10 +201,10 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
             if (OrderedFlag.equals("FromSummary")) {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                     mSelectedFilterMap.put("General", mOrdered);
-                    updategeneraltext(mOrdered);
+                    updateGeneralText(mOrdered);
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
             } else {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
@@ -212,14 +212,14 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                     String defaultfilter = getDefaultFilter();
                     if (!defaultfilter.equals("")) {
                         mSelectedFilterMap.put("General", defaultfilter);
-                        updategeneraltext(defaultfilter);
+                        updateGeneralText(defaultfilter);
                     } else {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updategeneraltext(GENERAL);
+                        updateGeneralText(GENERAL);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updategeneraltext(GENERAL);
+                    updateGeneralText(GENERAL);
                 }
             }
         } catch (Exception e) {
@@ -252,7 +252,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
         } catch (Exception e) {
             Commons.printException(e);
         }
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
 
     }
 
@@ -278,7 +278,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         ((LinearLayout) findViewById(R.id.ll_totqty)).setVisibility(View.GONE);//ll_totqty is not used, hence made invisible
@@ -717,26 +717,26 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
         mSelectedBrandID = bid;
-        mSelectedFiltertext = filtertext;
+        mSelectedFiltertext = mFilterText;
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
             // Clear the productName
@@ -821,7 +821,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
 
-            if (generaltxt.equals(GENERAL) && filtertext.equals(BRAND))
+            if (generaltxt.equals(GENERAL) && mFilterText.equals(BRAND))
                 pnametitle.setText(getResources().getString(
                         R.string.product_name)
                         + "(" + mylist.size() + ")");
@@ -830,7 +830,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                         + mylist.size() + ")");
 
             } else
-                pnametitle.setText(filtertext + "(" + mylist.size() + ")");
+                pnametitle.setText(mFilterText + "(" + mylist.size() + ")");
 
             // set the new list to listview
 
@@ -1345,7 +1345,6 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             }
-                            bmodel.setActivity(CrownReturnActivity.this);
 
                             bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
@@ -1360,8 +1359,6 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
                         } else {
-                            bmodel.setActivity(CrownReturnActivity.this);
-
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -1847,9 +1844,9 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
-        generalbutton = filtertext;
-        updatebrandtext(BRAND, -1);
+    public void updateGeneralText(String mFilterText) {
+        generalbutton = mFilterText;
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -2076,7 +2073,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                 Commons.printException(e);
             }
             supportInvalidateOptionsMenu();
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
     }
 
@@ -2128,7 +2125,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 					true, false);*/
             builder = new AlertDialog.Builder(CrownReturnActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, CrownReturnActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2202,12 +2199,12 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 

@@ -167,7 +167,7 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(SOS_Summary_Proj.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, SOS_Summary_Proj.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

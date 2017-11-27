@@ -132,7 +132,7 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
         }
 
 
-        ListView lvwplist = (ListView) findViewById(R.id.lvwplist);
+        ListView lvwplist = (ListView) findViewById(R.id.list);
         headerText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         addLoadBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 

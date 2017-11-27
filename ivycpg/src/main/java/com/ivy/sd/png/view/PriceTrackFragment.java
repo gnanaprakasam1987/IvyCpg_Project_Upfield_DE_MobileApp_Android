@@ -418,7 +418,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         (view.findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        lv = (ListView) view.findViewById(R.id.lvwplist);
+        lv = (ListView) view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
 
         loadReasons();
@@ -546,7 +546,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -1411,25 +1411,25 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         bmodel.mPriceTrackingHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
         onLoadModule();
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -1445,14 +1445,14 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
         mDrawerLayout.closeDrawers();
-        onLoadModule(parentidList);
+        onLoadModule(mParentIdList);
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
         this.parentidList = parentidList;

@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -81,14 +82,12 @@ public class SOSFragment extends IvyBaseFragment implements
         BrandDialogInterface {
     // Constants
     private static final String BRAND = "Brand";
-    // Hash map to get selected Category and its Id
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    // List for SOSBo
-    private final List<SOSBO> mCategoryForDialog = new ArrayList<>();
     // Global Variables
     private BusinessModel bmodel;
     // Drawer Implementation
     private DrawerLayout mDrawerLayout;
+    // Hash map to get selected Category and its Id
+    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private int selectedfilterid = -1;
     private ListView lvwplist;
     private String brandFilterText = "BRAND";
@@ -103,6 +102,9 @@ public class SOSFragment extends IvyBaseFragment implements
     // Get the typed number and set in Edit Text
     private EditText mSelectedET;
     private EditText mParentTotal;
+    // List for SOSBo
+    private final List<SOSBO> mCategoryForDialog = new ArrayList<>();
+
     private TextView tvSelectedName;
     // private TextView tvTotalNorm;
     //private TextView tvTotal;
@@ -120,7 +122,6 @@ public class SOSFragment extends IvyBaseFragment implements
     private Vector<LevelBO> parentidList;
     private ArrayList<Integer> mAttributeProducts;
     private String filtertext;
-    private StringBuilder sb = new StringBuilder();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,7 +157,7 @@ public class SOSFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+            lvwplist = (ListView) getView().findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
 
@@ -295,9 +296,9 @@ public class SOSFragment extends IvyBaseFragment implements
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
         if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
         } else {
-            updatebrandtext(BRAND, selectedfilterid);
+            updateBrandText(BRAND, selectedfilterid);
         }
         loadReasons();
 
@@ -364,19 +365,12 @@ public class SOSFragment extends IvyBaseFragment implements
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        ReasonMaster reason = new ReasonMaster();
-        reason.setReasonID("-1");
-        reason.setReasonDesc(getResources().getString(R.string.other_reason));
-        reason.setReasonCategory("SOS");
+
 
         for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
             if ("SOS".equalsIgnoreCase(temp.getReasonCategory())
-                    || "NONE".equalsIgnoreCase(temp.getReasonCategory())) {
-                /*if (temp.getReasonCategory().equals("NONE")) {
-                    temp.setReasonID("-1");
-                }*/
+                    || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
                 spinnerAdapter.add(temp);
-            }
         }
 
         if (!(spinnerAdapter.getCount() > 0)) {
@@ -385,7 +379,358 @@ public class SOSFragment extends IvyBaseFragment implements
             reasonMasterBo.setReasonID("0");
             spinnerAdapter.add(reasonMasterBo);
         }
-        spinnerAdapter.add(reason);
+    }
+
+    class ViewHolder {
+        SOSBO mSOS;
+        TextView tvBrandName;
+        TextView tvNorm;
+        TextView tvTarget;
+        TextView tvActual;
+        TextView tvPercentage;
+        TextView tvGap;
+        EditText etTotal;
+        Spinner spnReason;
+        ImageButton audit;
+        ImageView btnPhoto;
+    }
+
+    private class MyAdapter extends ArrayAdapter<SOSBO> {
+        private final List<SOSBO> items;
+
+        public MyAdapter(List<SOSBO> mylist) {
+            super(getActivity(), R.layout.row_sos, mylist);
+            this.items = mylist;
+        }
+
+        public SOSBO getItem(int position) {
+            return items.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ViewHolder holder;
+            View row = convertView;
+            if (row == null) {
+
+                holder = new ViewHolder();
+
+                LayoutInflater inflater = LayoutInflater.from(getActivity()
+                        .getBaseContext());
+                row = inflater.inflate(R.layout.row_sos, parent, false);
+
+                holder.audit = (ImageButton) row
+                        .findViewById(R.id.btn_audit);
+                holder.tvBrandName = (TextView) row
+                        .findViewById(R.id.tvBrandName);
+                holder.tvNorm = (TextView) row
+                        .findViewById(R.id.tvNorm);
+
+                holder.tvTarget = (TextView) row
+                        .findViewById(R.id.tvTarget);
+                holder.tvActual = (TextView) row
+                        .findViewById(R.id.tvActual);
+                holder.tvPercentage = (TextView) row
+                        .findViewById(R.id.tvPercentage);
+                holder.tvGap = (TextView) row.findViewById(R.id.tvGap);
+                holder.btnPhoto = (ImageView) row
+                        .findViewById(R.id.btn_photo);
+                holder.spnReason = (Spinner) row
+                        .findViewById(R.id.spnReason);
+
+                holder.etTotal = (EditText) row
+                        .findViewById(R.id.etTotal);
+
+                holder.audit = (ImageButton) row
+                        .findViewById(R.id.btn_audit);
+
+                holder.etTotal.setTag(holder);
+
+
+                holder.audit.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+
+                        if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2) {
+
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(1);
+                            holder.audit
+                                    .setImageResource(R.drawable.ic_audit_yes);
+
+                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1) {
+
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(0);
+                            holder.audit
+                                    .setImageResource(R.drawable.ic_audit_no);
+
+                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0) {
+
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(2);
+                            holder.audit
+                                    .setImageResource(R.drawable.ic_audit_none);
+                        }
+
+                    }
+                });
+
+                holder.etTotal.setFocusable(false);
+                // setting no of charcters from congifuration
+               /* InputFilter[] FilterArray = new InputFilter[1];
+                FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
+                holder.etTotal.setFilters(FilterArray);*/
+
+                holder.etTotal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (bmodel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
+                            if (dialog != null && !dialog.isShowing()) {
+                                dialog.cancel();
+                                dialog = null;
+                            }
+                            // Open dialog
+                            if (dialog == null) {
+                                mSelectedHolder = (ViewHolder) v.getTag();
+                                getTotalValue(mSelectedHolder.mSOS
+                                        .getParentID());
+                            }
+                        } else if (dialogFragment == null) {
+                            mSelectedHolder = (ViewHolder) v.getTag();
+                            Bundle bundle = new Bundle();
+
+                            bundle.putInt("parent_id",
+                                    mSelectedHolder.mSOS.getParentID());
+
+                            bundle.putInt("parent_type_id",
+                                    0);
+                            bundle.putInt("product_id",
+                                    mSelectedHolder.mSOS.getProductID());
+                            bundle.putInt("flag", ShelfShareHelper.SOS);
+                            bundle.putInt("selectedlocation", mSelectedLocationIndex);
+                            dialogFragment = new ShelfShareDialogFragment();
+                            dialogFragment.setArguments(bundle);
+                            dialogFragment
+                                    .setStyle(
+                                            DialogFragment.STYLE_NO_TITLE,
+                                            android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+                            dialogFragment.setCancelable(false);
+                            dialogFragment
+                                    .setOnShelfShareListener(new ShelfShareCallBackListener() {
+
+                                        @Override
+                                        public void SOSBOCallBackListener(
+                                                List<SOSBO> sosBOList) {
+                                            Logs.debug("SOSFragment",
+                                                    "SOSBOCallBackListener");
+                                            mCategoryForDialog.clear();
+                                            mCategoryForDialog
+                                                    .addAll(sosBOList);
+                                            dialogFragment.dismiss();
+                                            dialogFragment = null;
+                                            calculateTotalValues();
+                                            lvwplist.invalidateViews();
+                                        }
+
+                                        @Override
+                                        public void SODDOCallBackListener(List<SODBO> sosBOList) {
+
+                                        }
+
+                                        @Override
+                                        public void handleDialogClose() {
+                                            dialogFragment.dismiss();
+                                            dialogFragment = null;
+                                        }
+                                    });
+                            dialogFragment.show(getChildFragmentManager(),
+                                    "Shelf Share");
+                        }
+
+                    }
+
+                });
+
+                holder.spnReason.setAdapter(spinnerAdapter);
+                holder.spnReason
+                        .setOnItemSelectedListener(new OnItemSelectedListener() {
+                            public void onItemSelected(AdapterView<?> parent,
+                                                       View view, int position, long id) {
+
+                                ReasonMaster reString = (ReasonMaster) holder.spnReason
+                                        .getSelectedItem();
+
+                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
+                                        .convertToInt(reString.getReasonID()));
+
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
+
+                holder.btnPhoto.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (bmodel.isExternalStorageAvailable()) {
+                            mImageName = "SOS_"
+                                    + bmodel.getRetailerMasterBO()
+                                    .getRetailerID() + "_"
+                                    + holder.mSOS.getProductID() + "_"
+                                    + Commons.now(Commons.DATE_TIME)
+                                    + "_img.jpg";
+
+                            bmodel.salesFundamentalHelper.mSelectedBrandID = holder.mSOS
+                                    .getProductID();
+                            String fnameStarts = "SOS_"
+                                    + bmodel.getRetailerMasterBO()
+                                    .getRetailerID() + "_"
+                                    + holder.mSOS.getProductID() + "_"
+                                    + Commons.now(Commons.DATE);
+
+                            boolean nFilesThere = bmodel
+                                    .checkForNFilesInFolder(
+                                            HomeScreenFragment.photoPath,
+                                            bmodel.mImageCount, fnameStarts);
+                            if (nFilesThere) {
+
+                                // showFileDeleteAlert(fnameStarts);
+                                showFileDeleteAlertWithImage(fnameStarts, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
+                            } else {
+                                Intent intent = new Intent(getActivity(),
+                                        CameraActivity.class);
+                                intent.putExtra("quality", 40);
+                                String path = HomeScreenFragment.photoPath + "/"
+                                        + mImageName;
+                                intent.putExtra("path", path);
+                                startActivityForResult(intent,
+                                        bmodel.CAMERA_REQUEST_CODE);
+                                holder.btnPhoto.requestFocus();
+                            }
+
+                        } else {
+                            Toast.makeText(
+                                    getActivity(),
+                                    R.string.sdcard_is_not_ready_to_capture_img,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+                if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
+                    holder.audit.setVisibility(View.VISIBLE);
+
+                    holder.spnReason.setEnabled(false);
+                    holder.spnReason.setClickable(false);
+                    holder.btnPhoto.setEnabled(false);
+                    holder.btnPhoto.setClickable(false);
+                    holder.etTotal.setEnabled(false);
+                    holder.etTotal.setEnabled(false);
+                }
+
+                row.setTag(holder);
+
+            } else {
+                holder = (ViewHolder) row.getTag();
+            }
+
+            holder.mSOS = items.get(position);
+
+            //typeface
+            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvNorm.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+
+            if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
+                holder.audit.setImageResource(R.drawable.ic_audit_none);
+            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1)
+                holder.audit.setImageResource(R.drawable.ic_audit_yes);
+            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0)
+                holder.audit.setImageResource(R.drawable.ic_audit_no);
+
+            holder.tvBrandName.setText(holder.mSOS.getProductName());
+            String strNorm = holder.mSOS.getNorm() + "";
+            holder.tvNorm.setText(strNorm);
+
+            if ("0.0".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
+                holder.etTotal.setText("0");
+            } else {
+                holder.etTotal.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal());
+            }
+            holder.tvActual.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getActual());
+            holder.tvTarget.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget());
+            holder.tvPercentage.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage());
+            holder.tvGap.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap());
+
+            if (Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
+                holder.tvGap.setTextColor(Color.RED);
+            else if (Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) > 0)
+                holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
+            else
+                holder.tvGap.setTextColor(Color.BLACK);
+
+            holder.spnReason.setSelection(getReasonIndex(holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                    .getReasonId() + ""));
+            holder.spnReason.setSelected(true);
+
+            if ((holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName() != null)
+                    && (!"".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))
+                    && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
+
+                Glide.with(getActivity())
+                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .asBitmap()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_photo_camera)
+                        .transform(bmodel.circleTransform)
+                        .into(new BitmapImageViewTarget(holder.btnPhoto));
+
+            } else {
+                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera));
+            }
+            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            if (position % 2 == 0) {
+                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
+            } else {
+                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
+            }
+            return row;
+        }
+
+        /**
+         * Get the selected reason id, iterate and get position and set in the
+         * spinner item
+         *
+         * @param reasonId
+         * @return
+         */
+        private int getReasonIndex(String reasonId) {
+            if (spinnerAdapter.getCount() == 0)
+                return 0;
+            int len = spinnerAdapter.getCount();
+            if (len == 0)
+                return 0;
+            for (int i = 0; i < len; ++i) {
+                ReasonMaster s = spinnerAdapter.getItem(i);
+                if (s.getReasonID().equals(reasonId))
+                    return i;
+            }
+            return -1;
+        }
     }
 
     @Override
@@ -482,16 +827,16 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
 
-        this.parentidList = parentidList;
+        this.parentidList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
 
-        loadData(parentidList, mSelectedIdByLevelId);
+        loadData(mParentIdList, mSelectedIdByLevelId);
     }
 
     @Override
@@ -604,15 +949,15 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandFilterText = filtertext;
+            brandFilterText = mFilterText;
             selectedfilterid = id;
-            tvSelectedName.setText(filtertext);
+            tvSelectedName.setText(mFilterText);
 
             ArrayList<SOSBO> items = bmodel.salesFundamentalHelper
                     .getmSOSList();
@@ -662,6 +1007,7 @@ public class SOSFragment extends IvyBaseFragment implements
         lvwplist.setAdapter(mSchedule);
     }
 
+
     private void saveSOS() {
         try {
             if (bmodel.salesFundamentalHelper
@@ -675,6 +1021,71 @@ public class SOSFragment extends IvyBaseFragment implements
             Commons.printException("" + e);
         }
     }
+
+    class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                bmodel.salesFundamentalHelper
+                        .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
+                bmodel.updateIsVisitedFlag();
+                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return Boolean.FALSE;
+            }
+
+        }
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.saving));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            alertDialog.dismiss();
+            if (result == Boolean.TRUE) {
+                totalImgList.clear();
+                new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                        "", getResources().getString(R.string.saved_successfully),
+                        false, getActivity().getResources().getString(R.string.ok),
+                        null, new CommonDialog.positiveOnClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                        Bundle extras = getActivity().getIntent().getExtras();
+                        if (extras != null) {
+                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                        }
+
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+                    @Override
+                    public void onNegativeButtonClick() {
+                    }
+                }).show();
+            }
+        }
+    }
+
 
     private void showeAlert() {
 
@@ -717,6 +1128,7 @@ public class SOSFragment extends IvyBaseFragment implements
         builder.setCancelable(false);
         bmodel.applyAlertDialogTheme(builder);
     }
+
 
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
                                               final String imageSrc) {
@@ -793,7 +1205,7 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -936,542 +1348,6 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     /**
-     * Add Actual Values and Update the Total
-     */
-    private void updateTotal() {
-        float tot = 0;
-        if (!mCategoryForDialog.isEmpty()) {
-            for (int i = 0; i < mCategoryForDialog.size(); i++) {
-
-                SOSBO sosBO = mCategoryForDialog.get(i);
-                tot = tot + SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getActual());
-            }
-            String strTotal = tot + "";
-            mParentTotal.setText(strTotal);
-
-        }
-    }
-
-    private void eff(int val) {
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-            String s = mSelectedET.getText().toString();
-            sb.append(s);
-            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
-                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-
-                    mSelectedET.setText(String.valueOf(val));
-                } else {
-                    String strVal = mSelectedET.getText()
-                            + String.valueOf(val);
-                    mSelectedET.setText(strVal);
-                }
-            } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void showLocation() {
-        AlertDialog.Builder builder;
-
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(null);
-        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        mSelectedLocationIndex = item;
-                        dialog.dismiss();
-                        updatebrandtext(BRAND, selectedfilterid);
-                    }
-                });
-
-        bmodel.applyAlertDialogTheme(builder);
-    }
-
-    class ViewHolder {
-        SOSBO mSOS;
-        TextView tvBrandName;
-        TextView tvNorm;
-        TextView tvTarget;
-        TextView tvActual;
-        TextView tvPercentage;
-        TextView tvGap;
-        EditText etTotal;
-        Spinner spnReason;
-        ImageButton audit;
-        ImageView btnPhoto;
-        EditText edt_other_remarks;
-        int selectedReason = -1;
-        String changedReason = "";
-    }
-
-    private class MyAdapter extends ArrayAdapter<SOSBO> {
-        private final List<SOSBO> items;
-
-        public MyAdapter(List<SOSBO> mylist) {
-            super(getActivity(), R.layout.row_sos, mylist);
-            this.items = mylist;
-        }
-
-        public SOSBO getItem(int position) {
-            return items.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
-        }
-
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
-            View row = convertView;
-            if (row == null) {
-
-                holder = new ViewHolder();
-
-                LayoutInflater inflater = LayoutInflater.from(getActivity()
-                        .getBaseContext());
-                row = inflater.inflate(R.layout.row_sos, parent, false);
-
-                holder.audit = (ImageButton) row
-                        .findViewById(R.id.btn_audit);
-                holder.tvBrandName = (TextView) row
-                        .findViewById(R.id.tvBrandName);
-                holder.tvNorm = (TextView) row
-                        .findViewById(R.id.tvNorm);
-
-                holder.tvTarget = (TextView) row
-                        .findViewById(R.id.tvTarget);
-                holder.tvActual = (TextView) row
-                        .findViewById(R.id.tvActual);
-                holder.tvPercentage = (TextView) row
-                        .findViewById(R.id.tvPercentage);
-                holder.tvGap = (TextView) row.findViewById(R.id.tvGap);
-                holder.btnPhoto = (ImageView) row
-                        .findViewById(R.id.btn_photo);
-                holder.spnReason = (Spinner) row
-                        .findViewById(R.id.spnReason);
-
-                holder.edt_other_remarks = (EditText) row.findViewById(R.id.edt_other_remarks);
-
-                holder.etTotal = (EditText) row
-                        .findViewById(R.id.etTotal);
-
-                holder.audit = (ImageButton) row
-                        .findViewById(R.id.btn_audit);
-
-                holder.etTotal.setTag(holder);
-
-
-                holder.audit.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-
-                        if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2) {
-
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(1);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_yes);
-
-                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1) {
-
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(0);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_no);
-
-                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0) {
-
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(2);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_none);
-                        }
-
-                    }
-                });
-
-                holder.etTotal.setFocusable(false);
-                // setting no of charcters from congifuration
-               /* InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
-                holder.etTotal.setFilters(FilterArray);*/
-
-                holder.etTotal.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (bmodel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
-                            if (dialog != null && !dialog.isShowing()) {
-                                dialog.cancel();
-                                dialog = null;
-                            }
-                            // Open dialog
-                            if (dialog == null) {
-                                mSelectedHolder = (ViewHolder) v.getTag();
-                                getTotalValue(mSelectedHolder.mSOS
-                                        .getParentID());
-                            }
-                        } else if (dialogFragment == null) {
-                            mSelectedHolder = (ViewHolder) v.getTag();
-                            Bundle bundle = new Bundle();
-
-                            bundle.putInt("parent_id",
-                                    mSelectedHolder.mSOS.getParentID());
-
-                            bundle.putInt("parent_type_id",
-                                    0);
-                            bundle.putInt("product_id",
-                                    mSelectedHolder.mSOS.getProductID());
-                            bundle.putInt("flag", ShelfShareHelper.SOS);
-                            bundle.putInt("selectedlocation", mSelectedLocationIndex);
-                            dialogFragment = new ShelfShareDialogFragment();
-                            dialogFragment.setArguments(bundle);
-                            dialogFragment
-                                    .setStyle(
-                                            DialogFragment.STYLE_NO_TITLE,
-                                            android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-                            dialogFragment.setCancelable(false);
-                            dialogFragment
-                                    .setOnShelfShareListener(new ShelfShareCallBackListener() {
-
-                                        @Override
-                                        public void SOSBOCallBackListener(
-                                                List<SOSBO> sosBOList) {
-                                            Logs.debug("SOSFragment",
-                                                    "SOSBOCallBackListener");
-                                            mCategoryForDialog.clear();
-                                            mCategoryForDialog
-                                                    .addAll(sosBOList);
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                            calculateTotalValues();
-                                            lvwplist.invalidateViews();
-                                        }
-
-                                        @Override
-                                        public void SODDOCallBackListener(List<SODBO> sosBOList) {
-
-                                        }
-
-                                        @Override
-                                        public void handleDialogClose() {
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                        }
-                                    });
-                            dialogFragment.show(getChildFragmentManager(),
-                                    "Shelf Share");
-                        }
-
-                    }
-
-                });
-
-
-                //holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks(holder.edt_other_remarks.getText().toString());
-
-                holder.edt_other_remarks.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks(s.toString());
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                });
-
-                holder.btnPhoto.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (bmodel.isExternalStorageAvailable()) {
-                            mImageName = "SOS_"
-                                    + bmodel.getRetailerMasterBO()
-                                    .getRetailerID() + "_"
-                                    + holder.mSOS.getProductID() + "_"
-                                    + Commons.now(Commons.DATE_TIME)
-                                    + "_img.jpg";
-
-                            bmodel.salesFundamentalHelper.mSelectedBrandID = holder.mSOS
-                                    .getProductID();
-                            String fnameStarts = "SOS_"
-                                    + bmodel.getRetailerMasterBO()
-                                    .getRetailerID() + "_"
-                                    + holder.mSOS.getProductID() + "_"
-                                    + Commons.now(Commons.DATE);
-
-                            boolean nFilesThere = bmodel
-                                    .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
-                                            bmodel.mImageCount, fnameStarts);
-                            if (nFilesThere) {
-
-                                // showFileDeleteAlert(fnameStarts);
-                                showFileDeleteAlertWithImage(fnameStarts, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
-                            } else {
-                                Intent intent = new Intent(getActivity(),
-                                        CameraActivity.class);
-                                intent.putExtra("quality", 40);
-                                String path = HomeScreenFragment.photoPath + "/"
-                                        + mImageName;
-                                intent.putExtra("path", path);
-                                startActivityForResult(intent,
-                                        bmodel.CAMERA_REQUEST_CODE);
-                                holder.btnPhoto.requestFocus();
-                            }
-
-                        } else {
-                            Toast.makeText(
-                                    getActivity(),
-                                    R.string.sdcard_is_not_ready_to_capture_img,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-
-                if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
-                    holder.audit.setVisibility(View.VISIBLE);
-
-                    holder.spnReason.setEnabled(false);
-                    holder.spnReason.setClickable(false);
-                    holder.btnPhoto.setEnabled(false);
-                    holder.btnPhoto.setClickable(false);
-                    holder.etTotal.setEnabled(false);
-                    holder.etTotal.setEnabled(false);
-                }
-
-                row.setTag(holder);
-
-            } else {
-                holder = (ViewHolder) row.getTag();
-            }
-
-            holder.mSOS = items.get(position);
-
-            //typeface
-            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvNorm.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-
-            if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
-                holder.audit.setImageResource(R.drawable.ic_audit_none);
-            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1)
-                holder.audit.setImageResource(R.drawable.ic_audit_yes);
-            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0)
-                holder.audit.setImageResource(R.drawable.ic_audit_no);
-
-            holder.tvBrandName.setText(holder.mSOS.getProductName());
-            String strNorm = holder.mSOS.getNorm() + "";
-            holder.tvNorm.setText(strNorm);
-
-            if ("0.0".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
-                holder.etTotal.setText("0");
-            } else {
-                holder.etTotal.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal());
-            }
-            holder.tvActual.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getActual());
-            holder.tvTarget.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget());
-            holder.tvPercentage.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage());
-            holder.tvGap.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap());
-
-            if (Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
-                holder.tvGap.setTextColor(Color.RED);
-            else if (Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) > 0)
-                holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
-            else
-                holder.tvGap.setTextColor(Color.BLACK);
-
-
-            holder.spnReason.setAdapter(spinnerAdapter);
-            holder.spnReason
-                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        public void onItemSelected(AdapterView<?> parent,
-                                                   View view, int position, long id) {
-
-                            ReasonMaster reString = (ReasonMaster) holder.spnReason
-                                    .getSelectedItem();
-
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
-                                    .convertToInt(reString.getReasonID()));
-                            if (reString.getReasonID().equals("-1")) {
-                                holder.edt_other_remarks.setVisibility(View.VISIBLE);
-                                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
-                            } else {
-                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
-                                holder.edt_other_remarks.setVisibility(View.GONE);
-
-                            }
-                            //holder.changedReason = reString.getReasonID();
-
-                        }
-
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-
-            if (!holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks().equals("")) {
-                holder.spnReason.setSelection(getReasonIndex("-1"));
-            } else {
-                holder.spnReason.setSelection(getReasonIndex(holder.mSOS.getLocations().get(mSelectedLocationIndex)
-                        .getReasonId() + ""));
-            }
-            holder.spnReason.setSelected(true);
-            if (((ReasonMaster) holder.spnReason.getSelectedItem()).getReasonID().equals("-1")) {
-                holder.edt_other_remarks.setVisibility(View.VISIBLE);
-                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
-
-            } else {
-                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
-                holder.edt_other_remarks.setVisibility(View.GONE);
-            }
-
-            if ((holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName() != null)
-                    && (!"".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))
-                    && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
-
-                Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
-                        .asBitmap()
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_photo_camera)
-                        .transform(bmodel.circleTransform)
-                        .into(new BitmapImageViewTarget(holder.btnPhoto));
-
-            } else {
-                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera));
-            }
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }
-            return row;
-        }
-
-        /**
-         * Get the selected reason id, iterate and get position and set in the
-         * spinner item
-         *
-         * @param reasonId
-         * @return
-         */
-        private int getReasonIndex(String reasonId) {
-            if (spinnerAdapter.getCount() == 0)
-                return 0;
-            int len = spinnerAdapter.getCount();
-            if (len == 0)
-                return 0;
-            for (int i = 0; i < len; ++i) {
-                ReasonMaster s = spinnerAdapter.getItem(i);
-                if (s.getReasonID().equals(reasonId))
-                    return i;
-            }
-            return -1;
-        }
-    }
-
-    class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                bmodel.salesFundamentalHelper
-                        .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
-                bmodel.updateIsVisitedFlag();
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            alertDialog.dismiss();
-            if (result == Boolean.TRUE) {
-                totalImgList.clear();
-                new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                        "", getResources().getString(R.string.saved_successfully),
-                        false, getActivity().getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-                        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-
-                        Bundle extras = getActivity().getIntent().getExtras();
-                        if (extras != null) {
-                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
-                        }
-
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                }, new CommonDialog.negativeOnClickListener() {
-                    @Override
-                    public void onNegativeButtonClick() {
-                    }
-                }).show();
-            }
-        }
-    }
-
-    /**
      * List of Products with Actual Edit Text
      */
     private class TotalDialogAdapter extends BaseAdapter {
@@ -1580,6 +1456,44 @@ public class SOSFragment extends IvyBaseFragment implements
         EditText et;
     }
 
+    /**
+     * Add Actual Values and Update the Total
+     */
+    private void updateTotal() {
+        float tot = 0;
+        if (!mCategoryForDialog.isEmpty()) {
+            for (int i = 0; i < mCategoryForDialog.size(); i++) {
+
+                SOSBO sosBO = mCategoryForDialog.get(i);
+                tot = tot + SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getActual());
+            }
+            String strTotal = tot + "";
+            mParentTotal.setText(strTotal);
+
+        }
+    }
+
+    private StringBuilder sb = new StringBuilder();
+
+    private void eff(int val) {
+        if (mSelectedET != null && mSelectedET.getText() != null) {
+            String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText()
+                            + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private class MyClickListener implements OnClickListener {
 
         @Override
@@ -1634,6 +1548,43 @@ public class SOSFragment extends IvyBaseFragment implements
             }
 
         }
+    }
+
+    @Override
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void showLocation() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedLocationIndex = item;
+                        dialog.dismiss();
+                        updateBrandText(BRAND, selectedfilterid);
+                    }
+                });
+
+        bmodel.applyAlertDialogTheme(builder);
     }
 
 //    private Bitmap getCircularBitmapFrom(Bitmap source) {

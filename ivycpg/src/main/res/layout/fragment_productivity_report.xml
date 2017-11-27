@@ -68,7 +68,7 @@
                 android:layout_weight="0.9">
 
                 <ListView
-                    android:id="@+id/lvwplist"
+                    android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cacheColorHint="@null"

@@ -74,8 +74,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
     private int selectItem = 0;
 
     TextView total_weightage_bottom, total_score_bottom;
-    String screenTitle = "", title = "";
-
+    String screenTitle = "", title = "", menuCode = "";
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_fitscore_dashboard, container, false);
@@ -88,6 +87,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
         fm = getActivity().getSupportFragmentManager();
         if (getActivity().getIntent().getExtras() != null) {
             screenTitle = getActivity().getIntent().getExtras().getString("screentitle");
+            menuCode = getActivity().getIntent().getExtras().getString("menuCode");
         }
         setHasOptionsMenu(true);
         if (!bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -170,21 +170,21 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -222,6 +222,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
     private void backClick() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
+        bmodel.saveModuleCompletion(menuCode);
         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);//HomeScreenTwo.class);
         startActivity(intent);
         getActivity().finish();
@@ -255,12 +256,12 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 

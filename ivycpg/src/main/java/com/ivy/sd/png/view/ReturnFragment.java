@@ -103,7 +103,7 @@ public class ReturnFragment extends IvyBaseFragment {
         mSelectedET = null;
         btnSave = (Button) view.findViewById(R.id.btn_save);
         tvAddreason = (TextView) view.findViewById(R.id.tvAddreason);
-        returnList = (ListView) view.findViewById(R.id.lvwplist);
+        returnList = (ListView) view.findViewById(R.id.list);
         returnList.setCacheColorHint(0);
 
 
@@ -153,14 +153,22 @@ public class ReturnFragment extends IvyBaseFragment {
             public void onClick(View view) {
                 if (!isReasonAvailable()) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
-                } else {
+                    return;
+                }
+
+                if(isReasonDuplicated()){
+                    Toast.makeText(getActivity(),
+                            R.string.reason_duplicated,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                     removeEmptyRow();
                     Intent intent = new Intent();
                     intent.putExtra("position", holderPosition);
                     intent.putExtra("top", holderTop);
                     getActivity().setResult(RESULT_OK, intent);
                     getActivity().finish();
-                }
+
 
             }
         });
@@ -168,6 +176,22 @@ public class ReturnFragment extends IvyBaseFragment {
 
     }
 
+    private boolean isReasonDuplicated() {
+        ArrayList<String> mSelectedReasonIds = new ArrayList<>();
+        for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
+            if (sb.getReasonID() != null && !sb.getReasonID().equals("0")) {
+
+                if (mSelectedReasonIds.contains(sb.getReasonID())) {
+                    return true;
+                } else {
+                    mSelectedReasonIds.add(sb.getReasonID());
+                }
+            }
+        }
+        return false;
+
+
+    }
     private boolean isReasonAvailable() {
         for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
             if (sb.getReasonID().equals("0") && (sb.getCaseQty() > 0 || sb.getPieceQty() > 0 || sb.getOuterQty() > 0))

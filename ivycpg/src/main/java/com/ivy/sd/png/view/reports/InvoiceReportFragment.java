@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +25,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -35,7 +35,7 @@ import com.ivy.sd.png.util.DateUtil;
 
 import java.util.Vector;
 
-public class InvoiceReportFragment extends Fragment implements
+public class InvoiceReportFragment extends IvyBaseFragment implements
         OnClickListener, OnItemClickListener {
     private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,totalqtyTV,outid,invoicenotitle,totalvaluetitle,lbl_total_qty,lbl_avg_lines;
     private ListView lvwplist;
@@ -84,7 +84,7 @@ public class InvoiceReportFragment extends Fragment implements
 
 
         xlsExport = (Button) view.findViewById(R.id.xlsExport);
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
         lvwplist.setOnItemClickListener(this);
@@ -228,7 +228,7 @@ public class InvoiceReportFragment extends Fragment implements
                     DataMembers.SD, "Exporting orders...", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), "Exporting orders...");
+            customProgressDialog(builder, "Exporting orders...");
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -533,7 +533,7 @@ public class InvoiceReportFragment extends Fragment implements
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

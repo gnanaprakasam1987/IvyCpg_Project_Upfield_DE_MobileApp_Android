@@ -207,7 +207,6 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         }
 
 
-
         loadReason(); // Initialize Adapter and Load Reason
 
     }
@@ -256,13 +255,12 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 }
 
 
-            }else
-                {
-                    ((TextView) findViewById(R.id.tv_avg_qty_value)).setText(mProductMasterBO.getQty_klgs()+"");
-                    ((TextView) findViewById(R.id.tv_avg_rfield1_value)).setText(mProductMasterBO.getRfield1_klgs()+"");
-                    ((TextView) findViewById(R.id.tv_avg_rfield2_value)).setText(mProductMasterBO.getRfield2_klgs()+"");
-                    ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs()+"");
-                }
+            } else {
+                ((TextView) findViewById(R.id.tv_avg_qty_value)).setText(mProductMasterBO.getQty_klgs() + "");
+                ((TextView) findViewById(R.id.tv_avg_rfield1_value)).setText(mProductMasterBO.getRfield1_klgs() + "");
+                ((TextView) findViewById(R.id.tv_avg_rfield2_value)).setText(mProductMasterBO.getRfield2_klgs() + "");
+                ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs() + "");
+            }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
                     && !bmodel.configurationMasterHelper.SHOW_STOCK_CB)
                 ((RelativeLayout) findViewById(R.id.availability_lty)).setVisibility(View.GONE);
@@ -711,8 +709,6 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     });
 
 
-
-
             /**  MRP price Check**/
 
 
@@ -1110,7 +1106,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   finish();
+                    finish();
                 }
             });
 
@@ -1345,7 +1341,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(AvailabiltyCheckActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, AvailabiltyCheckActivity.this, getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

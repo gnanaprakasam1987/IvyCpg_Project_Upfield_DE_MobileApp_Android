@@ -35,7 +35,7 @@ public class DeliveryStockReport extends android.support.v4.app.Fragment impleme
             bmodel = (BusinessModel) getActivity().getApplicationContext();
             bmodel.setContext(getActivity());
 
-            listView = (ListView) view.findViewById(R.id.lvwplist);
+            listView = (ListView) view.findViewById(R.id.list);
 
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(

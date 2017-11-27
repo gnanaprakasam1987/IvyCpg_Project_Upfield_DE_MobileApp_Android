@@ -2,23 +2,17 @@ package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.cpg.asset.AssetTrackingHelper;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.SODBO;
-import com.ivy.sd.png.bo.SOSBO;
-import com.ivy.sd.png.bo.SOSKUBO;
-import com.ivy.sd.png.bo.ShelfShareBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivyretail.views.SODDialogFragment;
-import com.ivyretail.views.ShelfShareDialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +20,16 @@ import java.util.Vector;
 
 public class SODAssetHelper {
     private Context mContext;
-    private BusinessModel bmodel;
+    private BusinessModel mBModel;
     private static SODAssetHelper instance = null;
     private ArrayList<SODBO> mSODList;
     public int mSelectedBrandID = 0;
     private String moduleSODAsset = "MENU_SOD_ASSET";
 
 
-    protected SODAssetHelper(Context context) {
+    private SODAssetHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.mBModel = (BusinessModel) context;
     }
 
     public static SODAssetHelper getInstance(Context context) {
@@ -45,20 +39,10 @@ public class SODAssetHelper {
         return instance;
     }
 
-    private Vector<LevelBO> mSFModuleSequence;
     private Vector<LevelBO> mFilterLevel;
     private HashMap<Integer, Vector<LevelBO>> mFilterLevelBo;
-
-    public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
-        return mFilterLevelBo;
-    }
-
-    public Vector<LevelBO> getSequenceValues() {
-        return mSFModuleSequence;
-    }
-
+    private Vector<LevelBO> mSFModuleSequence;
     public void downloadSFFiveLevelFilter(String moduleName) {
-
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
@@ -105,11 +89,11 @@ public class SODAssetHelper {
         }
     }
 
-    public void loadParentFilter(int mProductLevelId) {
+    private void loadParentFilter(int mProductLevelId) {
 
         String query;
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mProductLevelId - bmodel.productHelper.getmSelectedGLobalLevelID() + 1;
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+            int filterGap = mProductLevelId - mBModel.productHelper.getmSelectedGLobalLevelID() + 1;
 
             query = "SELECT DISTINCT PM" + filterGap + ".PID, PM" + filterGap + ".PName FROM ProductMaster PM1 ";
 
@@ -117,7 +101,7 @@ public class SODAssetHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID() + " and PM1.PID =" + bmodel.productHelper.getmSelectedGlobalProductId();
+            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " and PM1.PID =" + mBModel.productHelper.getmSelectedGlobalProductId();
 
         } else {
             query = "SELECT DISTINCT PM1.PID, PM1.PName FROM ProductMaster PM1"
@@ -146,13 +130,13 @@ public class SODAssetHelper {
         }
     }
 
-    public void loadChildFilter(int mChildLevel, int mParentLevel,
+    private void loadChildFilter(int mChildLevel, int mParentLevel,
                                 int mProductLevelId, int mParentLevelId) {
 
         String query;
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mChildLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
-            int PM1Level = mParentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+            int filterGap = mChildLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
+            int PM1Level = mParentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
 
             query = "SELECT DISTINCT PM" + PM1Level + ".PID, PM" + filterGap + ".PID,  PM"
                     + filterGap + ".PName FROM ProductMaster PM1 ";
@@ -161,7 +145,7 @@ public class SODAssetHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID() + " AND PM1.PID = " + bmodel.productHelper.getmSelectedGlobalProductId();
+            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " AND PM1.PID = " + mBModel.productHelper.getmSelectedGlobalProductId();
 
         } else {
 
@@ -201,356 +185,33 @@ public class SODAssetHelper {
         }
     }
 
-    public void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
-        DBUtil db = null;
-        try {
-            Cursor cursor = null;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            int mParentLevel = 0;
-            int mChildLevel = 0;
-            int mContentLevel = 0;
-            int mParentLevelId = 0, mChildLevelId = 0;
-            int mFirstLevel;
-            int loopEnd = 0;
-            String query = "";
-
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-
-                if (mSFModuleSequence != null) {
-                    if (mSFModuleSequence.size() > 0) {
-                        mChildLevel = mSFModuleSequence.size();
-                    }
-                }
-
-                if (mChildLevel == 0)
-                    mChildLevel = 1;
-
-                Cursor filterCur = db
-                        .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
-                                + " FROM ConfigActivityFilter CF"
-                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
-                                + mChildLevel
-                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                                + " WHERE CF.ActivityCode = "
-                                + bmodel.QT(moduleName));
-
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mParentLevel = filterCur.getInt(0);
-                        mContentLevel = filterCur.getInt(1);
-                    }
-                    filterCur.close();
-                }
-
-                if (mParentLevel == 0)
-                    loopEnd = mContentLevel;
-                else
-                    loopEnd = mContentLevel - mParentLevel + 1;
-
-                if (!mSFModuleSequence.isEmpty())
-                    mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
-                else
-                    mFirstLevel = mChildLevel;
-
-            } else {
-                Cursor filterCur = db
-                        .selectSQL("SELECT  IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0), PL1.LevelId, PL2.LevelId"
-                                + " FROM ConfigActivityFilter CF"
-                                + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
-                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter2"
-                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                                + " WHERE CF.ActivityCode = "
-                                + bmodel.QT(moduleName));
-
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mParentLevel = filterCur.getInt(0);
-                        mChildLevel = filterCur.getInt(1);
-                        mContentLevel = filterCur.getInt(2);
-                        mParentLevelId = filterCur.getInt(3);
-                        mChildLevelId = filterCur.getInt(4);
-                    }
-                    filterCur.close();
-                }
-
-                if (mChildLevel > 0) {
-                    loopEnd = mContentLevel - mChildLevel + 1;
-                    mFirstLevel = mChildLevelId;
-                } else {
-                    loopEnd = mContentLevel - mParentLevel + 1;
-                    mFirstLevel = mParentLevelId;
-                }
-            }
-
-
-            StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT A1.Pid,A" + loopEnd + ".pid,");
-            sBuffer.append("A" + loopEnd + ".pname ,1 isOwn,");
-            sBuffer.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId FROM ProductMaster A1");
-
-            for (int i = 2; i <= loopEnd; i++) {
-
-                query = query + " INNER JOIN ProductMaster A" + i + " ON A" + i
-                        + ".ParentId = A" + (i - 1) + ".PID";
-            }
-            sBuffer.append(query);
-
-            sBuffer.append(" LEFT JOIN "
-                    + moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
-                    + ".pid = SFN.pid  ");
-
-            if (IsRetailer) {
-                sBuffer.append("and SFN.RetailerId =");
-                sBuffer.append(bmodel.getRetailerMasterBO().getRetailerID());
-            }
-            if (IsAccount) {
-                sBuffer.append(" and SFN.AccId=" + bmodel.getRetailerMasterBO().getAccountid());
-            }
-            if (IsClass) {
-                sBuffer.append(" and SFN.ClassId=" + bmodel.getRetailerMasterBO().getClassid());
-            }
-
-            if (LocId > 0)
-                sBuffer.append(" and SFN.LocId=" + bmodel.productHelper.getMappingLocationId(LocId, bmodel.getRetailerMasterBO().getLocationId()));
-            if (ChId > 0)
-                sBuffer.append(" and SFN.ChId=" + bmodel.productHelper.getMappingChannelId(ChId, bmodel.getRetailerMasterBO().getSubchannelid()));
-
-            sBuffer.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
-            sBuffer.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " BETWEEN SF.StartDate AND SF.EndDate");
-            sBuffer.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
-
-            if (moduleName.equals(moduleSODAsset)) {
-                SODBO mSOD;
-                cursor = db.selectSQL(sBuffer.toString());
-                if (cursor != null) {
-                    setmSODList(new ArrayList<SODBO>());
-                    while (cursor.moveToNext()) {
-                        mSOD = new SODBO();
-                        mSOD.setParentID(cursor.getInt(0));
-                        mSOD.setProductID(cursor.getInt(1));
-                        mSOD.setProductName(cursor.getString(2));
-                        mSOD.setIsOwn(cursor.getInt(3));
-                        mSOD.setNorm(cursor.getFloat(4));
-                        mSOD.setMappingId(cursor.getInt(5));
-                        mSOD.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
-                        getmSODList().add(mSOD);
-                    }
-                    cursor.close();
-                }
-                loadCompetitors(moduleSODAsset);
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException(moduleName, e);
-        }
-    }
-
-    /**
-     * Load Competitors
-     *
-     * @param moduleName
-     */
-    public void loadCompetitors(String moduleName) {
-        DBUtil db = null;
-        ArrayList<Integer> lstCompetitiorPids;
-        try {
-            Cursor cursor = null;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
-            sBuffer.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
-            sBuffer.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
-            sBuffer.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
-                    + bmodel.QT(moduleName) + ")");
-
-            if (moduleName.equals(moduleSODAsset)) {
-
-                cursor = db.selectSQL(sBuffer.toString());
-                if (cursor != null) {
-
-                    while (cursor.moveToNext()) {
-                        for (SODBO prodBO : getmSODList()) {
-
-                            if (prodBO.getProductID() == cursor.getInt(0)) {
-
-                                SODBO comLevel = new SODBO();
-                                comLevel.setParentID(prodBO.getParentID());
-                                comLevel.setProductID(cursor.getInt(1));
-                                comLevel.setProductName(cursor.getString(2));
-                                comLevel.setIsOwn(cursor.getInt(3));
-                                comLevel.setNorm(cursor.getInt(4));
-
-                                getmSODList().add(comLevel);
-                                break;
-                            }
-
-                        }
-                    }
-                    cursor.close();
-                }
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * Save Sales Fundamentals Module wise
-     *
-     * @param moduleName
-     * @return
-     */
-    public boolean saveSalesFundamentalDetails(String moduleName, ArrayList<AssetTrackingBO> assetList) {
-        String modName = moduleName.replaceAll("MENU_", "");
-        int count = 1;
-        try {
-            String refId = "0";
-            String headerValues;
-            String detailValues;
-            String assetValues;
-            String headerColumns = "Uid,RetailerId,Date,Remark,refid";
-            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,Isdone,MappingId,LocId";
-            String assertColumns = "Uid,AssetID,Actual,ReasonID,LocationID,Retailerid,ProductId,isPromo,isDisplay,Target";
-
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String uid = (bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
-                    .now(SDUtil.DATE_TIME_ID));
-
-            String query = "select Uid,refid from " + modName
-                    + "_Tracking_Header  where RetailerId="
-                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerID());
-            query += " and (upload='N' OR refid!=0)";
-
-            Cursor cursor = db.selectSQL(query);
-
-            if (cursor.getCount() > 0) {
-                cursor.moveToNext();
-                db.deleteSQL(modName + "_Tracking_Header",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
-                db.deleteSQL(modName + "_Tracking_Detail",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
-                db.deleteSQL("SOD_Assets_Detail",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
-
-                refId = cursor.getString(1);
-                // uid = cursor.getString(0);
-            }
-            cursor.close();
-            // Inserting Header in Tables
-
-            headerValues = bmodel.QT(uid)
-                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + "," + bmodel.QT(bmodel.getNote())
-                    + "," + bmodel.QT(refId);
-
-            db.insertSQL(modName + "_Tracking_Header", headerColumns,
-                    headerValues.toString());
-
-            try {
-                for (SODBO sodBo : getmSODList()) {
-                    for (int i = 0; i < sodBo.getLocations().size(); i++) {
-                        if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
-                                && !sodBo.getLocations().get(i).getParentTotal().equals("0.0") || sodBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = bmodel.QT(uid) + ","
-                                    + sodBo.getProductID() + ","
-                                    + bmodel.getRetailerMasterBO().getRetailerID()
-                                    + "," + sodBo.getNorm() + ","
-                                    + sodBo.getLocations().get(i).getParentTotal() + ","
-                                    + sodBo.getLocations().get(i).getTarget() + "," + sodBo.getLocations().get(i).getActual()
-                                    + "," + sodBo.getLocations().get(i).getPercentage() + ","
-                                    + sodBo.getLocations().get(i).getGap() + "," + sodBo.getLocations().get(i).getReasonId()
-                                    + "," + bmodel.QT(sodBo.getLocations().get(i).getImageName()) + ","
-                                    + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId() + "," + sodBo.getLocations().get(i).getLocationId();
-
-                            db.insertSQL(modName + "_Tracking_Detail",
-                                    detailColumns, detailValues.toString());
-
-                        }
-
-                    }
-
-                }
-            } catch (Exception e) {
-                Commons.printException("SOD Assettrack Details Insert" + e);
-            }
-
-            try {
-                for (AssetTrackingBO assetTrackingBO : assetList) {
-                    if (assetTrackingBO.getActual() > 0
-                            || assetTrackingBO.getReasonID() > 0 || assetTrackingBO.getLocationID() > 0
-                            || !assetTrackingBO.getIsPromo().equals("N") || !assetTrackingBO.getIsDisplay().equals("N")) {
-
-                        assetValues = bmodel.QT(uid) + ","
-                                + assetTrackingBO.getAssetID() + ","
-                                + assetTrackingBO.getActual()
-                                + "," + assetTrackingBO.getReasonID() + ","
-                                + assetTrackingBO.getLocationID() + ","
-                                + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + "," + assetTrackingBO.getProductid()
-                                + "," + bmodel.QT(assetTrackingBO.getIsPromo()) + ","
-                                + bmodel.QT(assetTrackingBO.getIsDisplay()) + ","
-                                + assetTrackingBO.getTarget();
-
-                        db.insertSQL("SOD_Assets_Detail",
-                                assertColumns, assetValues.toString());
-
-                    }
-                }
-            } catch (Exception e) {
-                Commons.printException("SOD_Assets_Detail" + e);
-            }
-
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            return false;
-        }
-        return true;
-    }
-
 
     public void loadSavedTracking(String modName) {
         DBUtil db = null;
         String sql;
-        String uid = "";
+        String uid ;
         String moduleName = modName.replaceAll("MENU_", "");
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            bmodel.setNote("");
+            mBModel.setNote("");
             sql = "SELECT Uid,Remark FROM " + moduleName + "_Tracking_Header"
                     + " WHERE RetailerId="
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + mBModel.getRetailerMasterBO().getRetailerID()
                     + " and (upload='N' OR refid!=0)";
-            /*
-             * + " AND Date = " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-			 */
 
             Cursor headerCursor = db.selectSQL(sql);
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 uid = headerCursor.getString(0);
                 // Set Remark in Object
-                bmodel.setNote(headerCursor.getString(1));
+                mBModel.setNote(headerCursor.getString(1));
 
                 StringBuffer sb = new StringBuffer();
 
                 sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,SF.Isdone,SF.Parentid,SF.locid");
                 sb.append(" From " + moduleName + "_Tracking_Detail SF");
-                sb.append(" WHERE SF.Uid=" + bmodel.QT(uid));
+                sb.append(" WHERE SF.Uid=" + mBModel.QT(uid));
 
                 Cursor detailCursor = db.selectSQL(sb.toString());
 
@@ -558,7 +219,7 @@ public class SODAssetHelper {
 
                     while (detailCursor.moveToNext()) {
                         if (modName.equalsIgnoreCase(moduleSODAsset)) {
-                            for (SODBO msod : getmSODList()) {
+                            for (SODBO msod : getSODList()) {
                                 if (msod.getProductID() == detailCursor
                                         .getInt(0)) {
                                     for (int i = 0; i < msod.getLocations().size(); i++) {
@@ -588,7 +249,8 @@ public class SODAssetHelper {
 
                 sb.append("SELECT AssetID,ProductId,Actual,ReasonID,LocationID,isPromo,isDisplay");
                 sb.append(" From SOD_Assets_Detail ");
-                sb.append(" WHERE Uid=" + bmodel.QT(uid));
+                sb.append(" WHERE Uid=");
+                sb.append(mBModel.QT(uid));
 
                 Cursor assetTrackDetails = db.selectSQL(sb.toString());
 
@@ -603,7 +265,9 @@ public class SODAssetHelper {
             headerCursor.close();
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if(db!=null) {
+                db.closeDB();
+            }
             Commons.printException("loadSavedTracking" + modName + e);
         }
     }
@@ -611,17 +275,17 @@ public class SODAssetHelper {
     /**
      * set Image Name in Each Objects
      *
-     * @param mBrandID
-     * @param imgName
+     * @param mBrandID Brand ID
+     * @param imgName image Name
      */
 
-    public void onsaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
+    public void onSaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
         try {
             if (moduleName.equals(HomeScreenTwo.MENU_SOD_ASSET)) {
-                for (int i = 0; i < getmSODList().size(); ++i) {
-                    SODBO sod = getmSODList().get(i);
+                for (int i = 0; i < getSODList().size(); ++i) {
+                    SODBO sod = getSODList().get(i);
                     if (sod.getProductID() == mBrandID) {
-                        getmSODList().get(i).getLocations().get(locationIndex).setImageName(imgName);
+                        getSODList().get(i).getLocations().get(locationIndex).setImageName(imgName);
                         break;
 
                     }
@@ -635,13 +299,13 @@ public class SODAssetHelper {
     /**
      * Check Whether the Module is Tracked or Not, Based on ParentTotal
      *
-     * @param module
-     * @return
+     * @param module Module Name
+     * @return Availability
      */
     public boolean hasData(String module) {
 
         if (module.equalsIgnoreCase(moduleSODAsset)) {
-            for (SODBO levelbo : getmSODList()) {
+            for (SODBO levelbo : getSODList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
                     if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
@@ -653,20 +317,21 @@ public class SODAssetHelper {
     }
 
 
-    public ArrayList<SODBO> getmSODList() {
-        if (mSODList == null)
-            return new ArrayList<SODBO>();
-        return mSODList;
+    private void setSODList(ArrayList<SODBO> mList){
+        mSODList=mList;
     }
-
-    public void setmSODList(ArrayList<SODBO> mSODList) {
-        this.mSODList = mSODList;
+    public ArrayList<SODBO> getSODList() {
+        if (mSODList == null)
+            return new ArrayList<>();
+        return mSODList;
     }
 
     private void updateSODAsset(int assetID, int productId, int actual, int reasonId, int locationId, String isPromo, String isDisplay) {
 
-        for (AssetTrackingBO assetTrackingBO : bmodel.assetTrackingHelper.getAssetTrackingList()) {
-            if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductid() == productId) {
+        AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(mContext);
+
+        for (AssetTrackingBO assetTrackingBO : assetTrackingHelper.getAssetTrackingList()) {
+            if (assetTrackingBO.getAssetID() == assetID && assetTrackingBO.getProductId() == productId) {
                 assetTrackingBO.setActual(actual);
                 assetTrackingBO.setReasonID(reasonId);
                 assetTrackingBO.setLocationID(locationId);
@@ -677,4 +342,333 @@ public class SODAssetHelper {
 
     }
 
+    /**
+     * Download SOD Assets
+     * @param moduleName Module Name
+     * @param IsAccount Is Account Wise filter
+     * @param IsRetailer Is Retailer Wise filter
+     * @param IsClass Is Class wise filter
+     * @param LocId Is Location wise  filter
+     * @param ChId Is Channel wise filter
+     */
+    public void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
+        DBUtil db = null;
+        try {
+            Cursor cursor;
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            int mParentLevel = 0;
+            int mChildLevel = 0;
+            int mContentLevel = 0;
+            int mParentLevelId = 0, mChildLevelId = 0;
+            int mFirstLevel;
+            int loopEnd ;
+            String query = "";
+
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+
+                if (mSFModuleSequence != null) {
+                    if (mSFModuleSequence.size() > 0) {
+                        mChildLevel = mSFModuleSequence.size();
+                    }
+                }
+
+                if (mChildLevel == 0)
+                    mChildLevel = 1;
+
+                Cursor filterCur = db
+                        .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
+                                + " FROM ConfigActivityFilter CF"
+                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
+                                + mChildLevel
+                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
+                                + " WHERE CF.ActivityCode = "
+                                + mBModel.QT(moduleName));
+
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mParentLevel = filterCur.getInt(0);
+                        mContentLevel = filterCur.getInt(1);
+                    }
+                    filterCur.close();
+                }
+
+                if (mParentLevel == 0)
+                    loopEnd = mContentLevel;
+                else
+                    loopEnd = mContentLevel - mParentLevel + 1;
+
+                if (!mSFModuleSequence.isEmpty())
+                    mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
+                else
+                    mFirstLevel = mChildLevel;
+
+            } else {
+                Cursor filterCur = db
+                        .selectSQL("SELECT  IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0), PL1.LevelId, PL2.LevelId"
+                                + " FROM ConfigActivityFilter CF"
+                                + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
+                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter2"
+                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
+                                + " WHERE CF.ActivityCode = "
+                                + mBModel.QT(moduleName));
+
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mParentLevel = filterCur.getInt(0);
+                        mChildLevel = filterCur.getInt(1);
+                        mContentLevel = filterCur.getInt(2);
+                        mParentLevelId = filterCur.getInt(3);
+                        mChildLevelId = filterCur.getInt(4);
+                    }
+                    filterCur.close();
+                }
+
+                if (mChildLevel > 0) {
+                    loopEnd = mContentLevel - mChildLevel + 1;
+                    mFirstLevel = mChildLevelId;
+                } else {
+                    loopEnd = mContentLevel - mParentLevel + 1;
+                    mFirstLevel = mParentLevelId;
+                }
+            }
+
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT DISTINCT A1.Pid,A" + loopEnd + ".pid,");
+            stringBuilder.append("A" + loopEnd + ".pname ,1 isOwn,");
+            stringBuilder.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId FROM ProductMaster A1");
+
+            for (int i = 2; i <= loopEnd; i++) {
+
+                query = query + " INNER JOIN ProductMaster A" + i + " ON A" + i
+                        + ".ParentId = A" + (i - 1) + ".PID";
+            }
+            stringBuilder.append(query);
+
+            stringBuilder.append(" LEFT JOIN "
+                    + moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
+                    + ".pid = SFN.pid  ");
+
+            if (IsRetailer) {
+                stringBuilder.append("and SFN.RetailerId =");
+                stringBuilder.append(mBModel.getRetailerMasterBO().getRetailerID());
+            }
+            if (IsAccount) {
+                stringBuilder.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
+            }
+            if (IsClass) {
+                stringBuilder.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
+            }
+
+            if (LocId > 0)
+                stringBuilder.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
+            if (ChId > 0)
+                stringBuilder.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
+
+            stringBuilder.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
+            stringBuilder.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " BETWEEN SF.StartDate AND SF.EndDate");
+            stringBuilder.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
+
+            if (moduleName.equals(moduleSODAsset)) {
+                SODBO mSOD;
+                cursor = db.selectSQL(stringBuilder.toString());
+                if (cursor != null) {
+                    setSODList(new ArrayList<SODBO>());
+                    while (cursor.moveToNext()) {
+                        mSOD = new SODBO();
+                        mSOD.setParentID(cursor.getInt(0));
+                        mSOD.setProductID(cursor.getInt(1));
+                        mSOD.setProductName(cursor.getString(2));
+                        mSOD.setIsOwn(cursor.getInt(3));
+                        mSOD.setNorm(cursor.getFloat(4));
+                        mSOD.setMappingId(cursor.getInt(5));
+                        mSOD.setLocations(mBModel.productHelper.cloneLocationList(mBModel.productHelper.locations));
+                        getSODList().add(mSOD);
+                    }
+                    cursor.close();
+                }
+                loadCompetitors(moduleSODAsset);
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            if(db!=null)
+            db.closeDB();
+            Commons.printException(moduleName, e);
+        }
+    }
+
+    /**
+     * Load Competitors
+     *
+     * @param moduleName Module Name
+     */
+    private void loadCompetitors(String moduleName) {
+        DBUtil db ;
+        try {
+            Cursor cursor ;
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
+            stringBuilder.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
+            stringBuilder.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
+            stringBuilder.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
+                    + mBModel.QT(moduleName) + ")");
+
+            if (moduleName.equals(moduleSODAsset)) {
+
+                cursor = db.selectSQL(stringBuilder.toString());
+                if (cursor != null) {
+
+                    while (cursor.moveToNext()) {
+                        for (SODBO prodBO : getSODList()) {
+
+                            if (prodBO.getProductID() == cursor.getInt(0)) {
+
+                                SODBO comLevel = new SODBO();
+                                comLevel.setParentID(prodBO.getParentID());
+                                comLevel.setProductID(cursor.getInt(1));
+                                comLevel.setProductName(cursor.getString(2));
+                                comLevel.setIsOwn(cursor.getInt(3));
+                                comLevel.setNorm(cursor.getInt(4));
+
+                                getSODList().add(comLevel);
+                                break;
+                            }
+
+                        }
+                    }
+                    cursor.close();
+                }
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
+    /**
+     * Save Sales Fundamentals Module wise
+     *
+     * @param moduleName Module Name
+     * @return is Saved
+     */
+    public boolean saveSalesFundamentalDetails(String moduleName, ArrayList<AssetTrackingBO> assetList) {
+        String modName = moduleName.replaceAll("MENU_", "");
+        try {
+            String refId = "0";
+            String headerValues;
+            String detailValues;
+            String assetValues;
+            String headerColumns = "Uid,RetailerId,Date,Remark,refid";
+            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,Isdone,MappingId,LocId";
+            String assertColumns = "Uid,AssetID,Actual,ReasonID,LocationID,Retailerid,ProductId,isPromo,isDisplay,Target";
+
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+                    .now(SDUtil.DATE_TIME_ID));
+
+            String query = "select Uid,refid from " + modName
+                    + "_Tracking_Header  where RetailerId="
+                    + mBModel.QT(mBModel.retailerMasterBO.getRetailerID());
+            query += " and (upload='N' OR refid!=0)";
+
+            Cursor cursor = db.selectSQL(query);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToNext();
+                db.deleteSQL(modName + "_Tracking_Header",
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
+                db.deleteSQL(modName + "_Tracking_Detail",
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
+                db.deleteSQL("SOD_Assets_Detail",
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
+
+                refId = cursor.getString(1);
+                // uid = cursor.getString(0);
+            }
+            cursor.close();
+            // Inserting Header in Tables
+
+            headerValues = mBModel.QT(uid)
+                    + "," + mBModel.getRetailerMasterBO().getRetailerID()
+                    + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + "," + mBModel.QT(mBModel.getNote())
+                    + "," + mBModel.QT(refId);
+
+            db.insertSQL(modName + "_Tracking_Header", headerColumns,
+                    headerValues);
+
+            try {
+                for (SODBO sodBo : getSODList()) {
+                    for (int i = 0; i < sodBo.getLocations().size(); i++) {
+                        if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
+                                && !sodBo.getLocations().get(i).getParentTotal().equals("0.0") || sodBo.getLocations().get(i).getAudit() != 2) {
+                            detailValues = mBModel.QT(uid) + ","
+                                    + sodBo.getProductID() + ","
+                                    + mBModel.getRetailerMasterBO().getRetailerID()
+                                    + "," + sodBo.getNorm() + ","
+                                    + sodBo.getLocations().get(i).getParentTotal() + ","
+                                    + sodBo.getLocations().get(i).getTarget() + "," + sodBo.getLocations().get(i).getActual()
+                                    + "," + sodBo.getLocations().get(i).getPercentage() + ","
+                                    + sodBo.getLocations().get(i).getGap() + "," + sodBo.getLocations().get(i).getReasonId()
+                                    + "," + mBModel.QT(sodBo.getLocations().get(i).getImageName()) + ","
+                                    + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId() + "," + sodBo.getLocations().get(i).getLocationId();
+
+                            db.insertSQL(modName + "_Tracking_Detail",
+                                    detailColumns, detailValues);
+
+                        }
+
+                    }
+
+                }
+            } catch (Exception e) {
+                Commons.printException("SOD Asset track Details Insert" + e);
+            }
+
+            try {
+                for (AssetTrackingBO assetTrackingBO : assetList) {
+                    if (assetTrackingBO.getActual() > 0
+                            || assetTrackingBO.getReasonID() > 0 || assetTrackingBO.getLocationID() > 0
+                            || !assetTrackingBO.getIsPromo().equals("N") || !assetTrackingBO.getIsDisplay().equals("N")) {
+
+                        assetValues = mBModel.QT(uid) + ","
+                                + assetTrackingBO.getAssetID() + ","
+                                + assetTrackingBO.getActual()
+                                + "," + assetTrackingBO.getReasonID() + ","
+                                + assetTrackingBO.getLocationID() + ","
+                                + mBModel.QT(mBModel.retailerMasterBO.getRetailerID()) + "," + assetTrackingBO.getProductId()
+                                + "," + mBModel.QT(assetTrackingBO.getIsPromo()) + ","
+                                + mBModel.QT(assetTrackingBO.getIsDisplay()) + ","
+                                + assetTrackingBO.getTarget();
+
+                        db.insertSQL("SOD_Assets_Detail",
+                                assertColumns, assetValues);
+
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException("SOD_Assets_Detail" + e);
+            }
+
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return true;
+    }
+    
 }

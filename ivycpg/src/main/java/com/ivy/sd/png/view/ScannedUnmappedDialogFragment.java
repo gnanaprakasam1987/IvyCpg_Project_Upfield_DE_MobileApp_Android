@@ -20,11 +20,12 @@ import android.widget.Toast;
 
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
@@ -44,6 +45,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
     protected String serialNo, EquiType, reasonId, remarks, brand, retailerName;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
     protected Integer assetId = -1;
+    AssetTrackingHelper assetTrackingHelper;
 
     @Nullable
     @Override
@@ -55,6 +57,9 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         final Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
+        assetTrackingHelper = AssetTrackingHelper.getInstance(context);
+
+
         ETDesc = (EditText) view.findViewById(R.id.input_description);
         TEquiType = (TextView) view.findViewById(R.id.input_equipment_type);
         TOutletCode = (TextView) view.findViewById(R.id.input__outletcode);
@@ -139,13 +144,13 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         remarks = ETDesc.getText().toString().trim();
-        assetBo.setMposm(String.valueOf(assetId));
-        assetBo.setMbrand(bmodel.assetTrackingHelper.getassetbrandids(brand));
-        assetBo.setMnewinstaldate(todayDate);
-        assetBo.setMsno(serialNo);
-        assetBo.setMreasonId(reasonId);
-        assetBo.setMremarks(remarks);
-        bmodel.assetTrackingHelper.setMassetTrackingBO(assetBo);
+        assetBo.setPOSM(String.valueOf(assetId));
+        assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(brand));
+        assetBo.setNewInstallDate(todayDate);
+        assetBo.setSNO(serialNo);
+        assetBo.setReasonId(reasonId);
+        assetBo.setRemarks(remarks);
+        assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
 
@@ -185,8 +190,8 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                 if (spinnerCustom.getSelectedItemPosition() != 0) {
                     setAddAssetDetails();
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
-                    bmodel.assetTrackingHelper
-                            .saveAssetAddandDeletedetails("MENU_ASSET");
+                    assetTrackingHelper
+                            .saveAssetAddAndDeleteDetails("MENU_ASSET");
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();

@@ -39,37 +39,37 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
-        fragment.updateMultiSelectionBrand(filtername, filterid);
+        fragment.updateMultiSelectionBrand(mFilterName, mFilterId);
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
-        fragment.updateMultiSelectionCatogry(mcatgory);
+        fragment.updateMultiSelectionCategory(mCategory);
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
-        fragment.updatebrandtext(filtertext, id);
+        fragment.updateBrandText(mFilterText, id);
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         EmptyReturnFragment fragment = (EmptyReturnFragment) fm
                 .findFragmentById(R.id.empty_return_fragment);
-        fragment.updategeneraltext(filtertext);
+        fragment.updateGeneralText(mFilterText);
     }
 
     @Override
@@ -89,12 +89,12 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 

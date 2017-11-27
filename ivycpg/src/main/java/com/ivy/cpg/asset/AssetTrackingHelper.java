@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.asset;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.AssetAddDetailBO;
-import com.ivy.sd.png.bo.AssetTrackingBO;
+import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -21,104 +22,64 @@ import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
+
+    private static AssetTrackingHelper instance=null;
     private final Context context;
-    private final BusinessModel bmodel;
-    private static AssetTrackingHelper instance = null;
-    private AssetTrackingBO massetTrackingBO;
+    private final BusinessModel mBusinessModel;
+    private AssetTrackingBO mAssetTrackingBO;
+    public String mSelectedActivityName;
 
-    /**
-     * This ArrayList contains downloaded assettracking records
-     */
     private ArrayList<AssetTrackingBO> mAssetTrackingList = new ArrayList<>();
-    /**
-     * This ArrayList contains downloaded All assettracking records
-     */
-    private ArrayList<AssetTrackingBO> mAllAssetTrackingList = new ArrayList<>();
-
-    /**
-     * Key - AssetID, return AssetTrackingBO
-     */
-
-
-    /**
-     * This ArrayList contains downloaded assetreason records
-     */
-    private Vector<AssetTrackingBO> addremoveassets = null;
-
-    private Vector<AssetAddDetailBO> assetspinner = null;
-    private Vector<AssetAddDetailBO> brandspinner = null;
-
+    private Vector<AssetTrackingBO> mAddRemoveAssets = null;
+    private Vector<AssetAddDetailBO> mAssetSpinner = null;
+    private Vector<AssetAddDetailBO> mBrandSpinner = null;
     private ArrayList<ReasonMaster> mAssetReasonList = new ArrayList<>();
-    /**
-     * This ArrayList contains downloaded assetremarks records
-     */
     private ArrayList<ReasonMaster> mAssetRemarkList = new ArrayList<>();
-    private ArrayList<ReasonMaster> mAssetconditionList = new ArrayList<>();
-
-    /**
-     * This ArrayLsit contains download posm reason,condition and remarks records
-     */
+    private ArrayList<ReasonMaster> mAssetConditionList = new ArrayList<>();
     private ArrayList<ReasonMaster> mPOSMReasonList = new ArrayList<>();
-    private ArrayList<ReasonMaster> mPOSMconditionList = new ArrayList<>();
-    private ArrayList<ReasonMaster> mPOSMRemarkList = new ArrayList<>();
+    private ArrayList<ReasonMaster> mPOSMConditionList = new ArrayList<>();
 
-
-    /**
-     * This String used to store captured images asset id
-     */
     public int mSelectedAssetID = 0;
-    /**
-     * This String used to store captured image's image Name
-     */
     public String mSelectedImageName = "";
-    public String mSelectedSerial = "";
 
-    //Column Configuration - AT01
+    // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
+    private static final String CODE_ASSET_BARCODE = "AT02";
+    private static final String CODE_ASSET_ADD = "AT03";
+    private static final String CODE_REMOVE_ASSET = "AT04";
+    private static final String CODE_SHOW_ALL = "AT05";
+    private static final String CODE_REMARKS_ASSET = "AT06";
+    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
+    private static final String CODE_MOVE_ASSET = "AT09";
+    private static final String ASSET_REASON = "AR";
+    private static final String ASSET_REMARK = "ARR";
+    private static final String ASSET_CONDITION = "CD";
     public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
     public boolean SHOW_ASSET_CONDITION;
-
     public boolean SHOW_ASSET_INSTALL_DATE;
     public boolean SHOW_ASSET_SERVICE_DATE;
     public boolean SHOW_COMPETITOR_QTY;
     public boolean SHOW_ASSET_GRP;
-    public boolean SHOW_ASSET_EXEUTED;
-
-    private static final String CODE_ASSET_BARCODE = "AT02";
+    public boolean SHOW_ASSET_EXECUTED;
     public boolean SHOW_ASSET_BARCODE;
-
-    private static final String CODE_ASSET_ADD = "AT03";
     public boolean SHOW_ADD_NEW_ASSET;
-
-    private static final String CODE_REMOVE_ASSET = "AT04";
     public boolean SHOW_REMOVE_ASSET;
-
-    private static final String CODE_SHOW_ALL = "AT05";
     public boolean SHOW_ASSET_ALL;
-
-    private static final String CODE_REMARKS_ASSET = "AT06";
     public boolean SHOW_REMARKS_ASSET;
-
-    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
     public boolean ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK;
-
-    private static final String CODE_MOVE_ASSET = "AT09";
     public boolean SHOW_MOVE_ASSET;
 
-    /**
-     * Reason Type - Std List Code
-     */
-    private static final String ASSET_REASON = "AR";
-    private static final String ASSET_REMARK = "ARR";
-    private static final String ASSET_CONDITION = "CD";
 
+    //POSM configuration
     private static final String POSM_REASON = "POSMR";
     private static final String POSM_CONDITION = "POSMCD";
-
     private static final String CODE_POSM_COLUMNS = "POSM01";
+    private static final String CODE_POSM_BARCODE = "POSM02";
+    private static final String CODE_SHOW_ALL_POSM = "POSM05";
+    private static final String CODE_SHOW_POSM_REMARKS = "POSM06";
     public boolean SHOW_POSM_TARGET;
     public boolean SHOW_POSM_QTY;
     public boolean SHOW_POSM_REASON;
@@ -129,76 +90,75 @@ public class AssetTrackingHelper {
     public boolean SHOW_POSM_COMPETITOR_QTY;
     public boolean SHOW_POSM_GRP;
     public boolean SHOW_POSM_EXECUTED;
-
-    private static final String CODE_POSM_BARCODE = "POSM02";
     public boolean SHOW_POSM_BARCODE;
-
-    private static final String CODE_POSM_ADD = "POSM03";
-    public boolean SHOW_ADD_NEW_POSM;
-
-    private static final String CODE_REMOVE_POSM = "POSM04";
-    public boolean SHOW_REMOVE_POSM;
-
-    private static final String CODE_SHOW_ALL_POSM = "POSM05";
     public boolean SHOW_POSM_ALL;
-
-    private static final String CODE_SHOW_POSM_REMARKS = "POSM06";
     public boolean SHOW_REMARKS_POSM;
 
     private static final String MERCH = "MERCH";
     private static final String MENU_ASSET = "MENU_ASSET";
     private static final String MERCH_INIT = "MERCH_INIT";
+    private static final String MENU_POSM = "MENU_POSM";
 
     private AssetTrackingHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.mBusinessModel = (BusinessModel) context.getApplicationContext();
     }
 
-    private AssetTrackingBO getMassetTrackingBO() {
-        return massetTrackingBO;
+    private AssetTrackingBO getAssetTrackingBO() {
+        return mAssetTrackingBO;
     }
 
-    public void setMassetTrackingBO(AssetTrackingBO massetTrackingBO) {
-        this.massetTrackingBO = massetTrackingBO;
+    public void setAssetTrackingBO(AssetTrackingBO mAssetTrackingBO) {
+        this.mAssetTrackingBO = mAssetTrackingBO;
     }
 
-    public Vector<AssetTrackingBO> getAddremoveassets() {
-        return addremoveassets;
+    public Vector<AssetTrackingBO> getAddRemoveAssets() {
+        return mAddRemoveAssets;
     }
 
     public static AssetTrackingHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new AssetTrackingHelper(context);
-        }
-        return instance;
+        if(instance==null)
+            instance=new AssetTrackingHelper(context);
+
+         return instance;
     }
 
+    /*
+    Download Master Data needed for Asset Screen
+     */
     public void loadDataForAssetPOSM(String mMenuCode) {
-        if (bmodel.configurationMasterHelper
+        if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
-            bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-            bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-            bmodel.mSurveyHelperNew.downloadQuestionDetails(mMenuCode);
-            bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
-            bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+            mBusinessModel.mSurveyHelperNew.setFromHomeScreen(false);
+            mBusinessModel.mSurveyHelperNew.downloadModuleId("STANDARD");
+            mBusinessModel.mSurveyHelperNew.downloadQuestionDetails(mMenuCode);
+            mBusinessModel.mSurveyHelperNew.loadSurveyAnswers(0);
+            mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         }
 
+        //update configurations
         if (MENU_ASSET.equalsIgnoreCase(mMenuCode))
             loadAssetConfigs();
-        else if ("MENU_POSM".equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
+        else if (MENU_POSM.equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
             loadPOSMConfigs();
 
-        bmodel.productHelper.downloadInStoreLocations();
+        //download locations
+        mBusinessModel.productHelper.downloadInStoreLocations();
 
-        bmodel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
-        // bmodel.productHelper.downloadProductFilter(mMenuCode);
+        //download filter levels
+        mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
+        // Load master records
         downloadAssetMaster(mMenuCode);
 
-        loadAssetData(bmodel
+        // Load data from transaction
+        loadAssetData(mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
+    /**
+     * Load All Asset Screen Specific Configurations
+     */
     private void loadAssetConfigs() {
         try {
             SHOW_ASSET_TARGET = false;
@@ -210,8 +170,7 @@ public class AssetTrackingHelper {
             SHOW_ASSET_SERVICE_DATE = false;
             SHOW_COMPETITOR_QTY = false;
             SHOW_ASSET_GRP = false;
-            SHOW_ASSET_EXEUTED = false;
-
+            SHOW_ASSET_EXECUTED = false;
             SHOW_ASSET_BARCODE = false;
             SHOW_ADD_NEW_ASSET = false;
             SHOW_REMOVE_ASSET = false;
@@ -236,38 +195,7 @@ public class AssetTrackingHelper {
                         if (c.getString(1) != null) {
                             String codeSplit[] = c.getString(1).split(",");
                             for (String temp : codeSplit) {
-                                switch (temp) {
-                                    case "TGT":
-                                        SHOW_ASSET_TARGET = true;
-                                        break;
-                                    case "QTY":
-                                        SHOW_ASSET_QTY = true;
-                                        break;
-                                    case "REASON":
-                                        SHOW_ASSET_REASON = true;
-                                        break;
-                                    case "PHOTO":
-                                        SHOW_ASSET_PHOTO = true;
-                                        break;
-                                    case "CONDITION":
-                                        SHOW_ASSET_CONDITION = true;
-                                        break;
-                                    case "AID":
-                                        SHOW_ASSET_INSTALL_DATE = true;
-                                        break;
-                                    case "ASD":
-                                        SHOW_ASSET_SERVICE_DATE = true;
-                                        break;
-                                    case "COMPQTY":
-                                        SHOW_COMPETITOR_QTY = true;
-                                        break;
-                                    case "GRP":
-                                        SHOW_ASSET_GRP = true;
-                                        break;
-                                    case "EXECUTED":
-                                        SHOW_ASSET_EXEUTED = true;
-                                        break;
-                                }
+                                updateAssetColumnConfig(temp);
                             }
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_BARCODE) && c.getString(1).equalsIgnoreCase("1"))
@@ -301,6 +229,49 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Update Asset Column Configurations
+     *
+     * @param temp Configuration Code
+     */
+    private void updateAssetColumnConfig(String temp) {
+        switch (temp) {
+            case "TGT":
+                SHOW_ASSET_TARGET = true;
+                break;
+            case "QTY":
+                SHOW_ASSET_QTY = true;
+                break;
+            case "REASON":
+                SHOW_ASSET_REASON = true;
+                break;
+            case "PHOTO":
+                SHOW_ASSET_PHOTO = true;
+                break;
+            case "CONDITION":
+                SHOW_ASSET_CONDITION = true;
+                break;
+            case "AID":
+                SHOW_ASSET_INSTALL_DATE = true;
+                break;
+            case "ASD":
+                SHOW_ASSET_SERVICE_DATE = true;
+                break;
+            case "COMPQTY":
+                SHOW_COMPETITOR_QTY = true;
+                break;
+            case "GRP":
+                SHOW_ASSET_GRP = true;
+                break;
+            case "EXECUTED":
+                SHOW_ASSET_EXECUTED = true;
+                break;
+        }
+    }
+
+    /**
+     * Load all POSM related configurations
+     */
     private void loadPOSMConfigs() {
         try {
             SHOW_POSM_TARGET = false;
@@ -315,8 +286,8 @@ public class AssetTrackingHelper {
             SHOW_POSM_EXECUTED = false;
 
             SHOW_POSM_BARCODE = false;
-            SHOW_ADD_NEW_POSM = false;
-            SHOW_REMOVE_POSM = false;
+            // SHOW_ADD_NEW_POSM = false;
+            // SHOW_REMOVE_POSM = false;
             SHOW_POSM_ALL = false;
             SHOW_REMARKS_POSM = false;
 
@@ -326,7 +297,7 @@ public class AssetTrackingHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = 'MENU_POSM' AND flag='1'";
+                    + " WHERE menu_type = '" + MENU_POSM + "' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -336,46 +307,15 @@ public class AssetTrackingHelper {
                         if (c.getString(1) != null) {
                             String codeSplit[] = c.getString(1).split(",");
                             for (String temp : codeSplit) {
-                                switch (temp) {
-                                    case "TGT":
-                                        SHOW_POSM_TARGET = true;
-                                        break;
-                                    case "QTY":
-                                        SHOW_POSM_QTY = true;
-                                        break;
-                                    case "REASON":
-                                        SHOW_POSM_REASON = true;
-                                        break;
-                                    case "PHOTO":
-                                        SHOW_POSM_PHOTO = true;
-                                        break;
-                                    case "CONDITION":
-                                        SHOW_POSM_CONDITION = true;
-                                        break;
-                                    case "AID":
-                                        SHOW_POSM_INSTALL_DATE = true;
-                                        break;
-                                    case "ASD":
-                                        SHOW_POSM_SERVICE_DATE = true;
-                                        break;
-                                    case "COMPQTY":
-                                        SHOW_POSM_COMPETITOR_QTY = true;
-                                        break;
-                                    case "GRP":
-                                        SHOW_POSM_GRP = true;
-                                        break;
-                                    case "EXEUTED":
-                                        SHOW_POSM_EXECUTED = true;
-                                        break;
-                                }
+                                updatePOSMColumnConfig(temp);
                             }
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_POSM_BARCODE))
                         SHOW_POSM_BARCODE = true;
-                    else if (c.getString(0).equalsIgnoreCase(CODE_POSM_ADD))
-                        SHOW_ADD_NEW_POSM = true;
-                    else if (c.getString(0).equalsIgnoreCase(CODE_REMOVE_POSM))
-                        SHOW_REMOVE_POSM = true;
+                   /* else if (c.getString(0).equalsIgnoreCase(CODE_POSM_ADD))
+                        SHOW_ADD_NEW_POSM = true;*/
+                    /*else if (c.getString(0).equalsIgnoreCase(CODE_REMOVE_POSM))
+                        SHOW_REMOVE_POSM = true;*/
                     else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_ALL_POSM))
                         SHOW_POSM_ALL = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_POSM_REMARKS))
@@ -385,23 +325,66 @@ public class AssetTrackingHelper {
             }
             db.closeDB();
 
-            if (SHOW_POSM_REASON)
-                downloadAssetPOSMReason(POSM_REASON);
-            if (SHOW_POSM_CONDITION)
-                downloadAssetPOSMReason(POSM_CONDITION);
 
         } catch (Exception e) {
             Commons.printException("loadPOSMConfigs " + e);
+        }
+
+        if (SHOW_POSM_REASON)
+            downloadAssetPOSMReason(POSM_REASON);
+        if (SHOW_POSM_CONDITION)
+            downloadAssetPOSMReason(POSM_CONDITION);
+
+    }
+
+    /**
+     * Update POSM column configurations
+     *
+     * @param temp Configuration Code
+     */
+    private void updatePOSMColumnConfig(String temp) {
+        switch (temp) {
+            case "TGT":
+                SHOW_POSM_TARGET = true;
+                break;
+            case "QTY":
+                SHOW_POSM_QTY = true;
+                break;
+            case "REASON":
+                SHOW_POSM_REASON = true;
+                break;
+            case "PHOTO":
+                SHOW_POSM_PHOTO = true;
+                break;
+            case "CONDITION":
+                SHOW_POSM_CONDITION = true;
+                break;
+            case "AID":
+                SHOW_POSM_INSTALL_DATE = true;
+                break;
+            case "ASD":
+                SHOW_POSM_SERVICE_DATE = true;
+                break;
+            case "COMPQTY":
+                SHOW_POSM_COMPETITOR_QTY = true;
+                break;
+            case "GRP":
+                SHOW_POSM_GRP = true;
+                break;
+            case "EXEUTED":
+                SHOW_POSM_EXECUTED = true;
+                break;
         }
     }
 
     /**
      * Method that to download Asset Details from SQLite
      *
-     * @param moduleName
+     * @param moduleName module name
      */
-
     private void downloadAssetMaster(String moduleName) {
+        ArrayList<AssetTrackingBO> mAllAssetTrackingList = null;
+
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -409,7 +392,6 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
         mAssetTrackingList = new ArrayList<>();
-        mAllAssetTrackingList = new ArrayList<>();
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
@@ -419,54 +401,57 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
 
-            int level = bmodel.productHelper.getRetailerlevel(moduleName);
+            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and ListType='POSM_GROUP_TYPE' ");
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
-            sb.append(bmodel.QT(type));
+            sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
             if (level == 1) {
                 // account mapping
                 sb.append(" and AccountId =");
-                sb.append(bmodel.getRetailerMasterBO().getAccountid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getAccountid());
             } else if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 3) {
                 // Class mapping
                 sb.append(" and Classid = ");
-                sb.append(bmodel.getRetailerMasterBO().getClassid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getClassid());
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()));
+                sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
                 sb.append(")");
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             }
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
-                allMasterSb = allMasterSb + ("and (SBD.Productid = " + bmodel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                sb.append(" and (SBD.Productid = ");
+                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
+                sb.append(" OR SBD.Productid = 0 )");
+
+                allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
             Cursor c = db.selectSQL(sb.toString());
@@ -483,7 +468,7 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setTarget(c.getInt(3));
-                    assetTrackingBO.setProductid(c.getInt(4));
+                    assetTrackingBO.setProductId(c.getInt(4));
                     if (c.getString(5) != null && !"null".equals(c.getString(5))) {
                         assetTrackingBO.setGroupLevelName(c.getString(5));
                         assetTrackingBO.setGroupLevelId(c.getInt(6));
@@ -498,21 +483,9 @@ public class AssetTrackingHelper {
 
                 }
 
-//                if (mAssetTrackingList != null) {
-//                    for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-//
-//                        ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
-//                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
-//                            clonedList.add(new AssetTrackingBO(assetBO));
-//                        }
-//                        standardListBO.setAssetTrackingList(clonedList);
-//                    }
-//
-//
-//                }
             }
             if (mAssetTrackingList != null) {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         clonedList.add(new AssetTrackingBO(assetBO));
@@ -521,11 +494,12 @@ public class AssetTrackingHelper {
                 }
 
             } else {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
             }
             if (c1.getCount() > 0) {
+                mAllAssetTrackingList = new ArrayList<>();
                 while (c1.moveToNext()) {
                     assetTrackingBO = new AssetTrackingBO();
                     assetTrackingBO.setAssetID(c1.getInt(0));
@@ -537,7 +511,7 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setTarget(c1.getInt(3));
-                    assetTrackingBO.setProductid(c1.getInt(4));
+                    assetTrackingBO.setProductId(c1.getInt(4));
                     if (c1.getString(5) != null && !"null".equals(c1.getString(5))) {
                         assetTrackingBO.setGroupLevelName(c1.getString(5));
                         assetTrackingBO.setGroupLevelId(c1.getInt(6));
@@ -554,7 +528,7 @@ public class AssetTrackingHelper {
 
             }
             if (mAllAssetTrackingList != null) {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAllAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAllAssetTrackingList) {
                         clonedList.add(new AssetTrackingBO(assetBO));
@@ -563,7 +537,7 @@ public class AssetTrackingHelper {
                 }
 
             } else {
-                for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+                for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     standardListBO.getAssetTrackingList().clear();
                 }
             }
@@ -578,13 +552,12 @@ public class AssetTrackingHelper {
     }
 
     /**
-     * Method that to retrive loaded data from sqlite table
+     * Method that to get loaded data from SQLite table
      *
-     * @param retailerid
-     * @param moduleName
+     * @param mRetailerId Retailer ID
+     * @param moduleName  Module Name
      */
-
-    private void loadAssetData(String retailerid, String moduleName) {
+    private void loadAssetData(String mRetailerId, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -596,8 +569,8 @@ public class AssetTrackingHelper {
         try {
             db.openDataBase();
 
-            String sb = "select uid, ifnull(remark,'') from AssetHeader where retailerid=" + QT(retailerid) + " and TypeLovId=" +
-                    "(select listid from StandardListMaster where ListCode=" + bmodel.QT(type) + " and ListType='SBD_TYPE') " +
+            String sb = "select uid, IFNULL(remark,'') from AssetHeader where retailerid=" + QT(mRetailerId) + " and TypeLovId=" +
+                    "(select listid from StandardListMaster where ListCode=" + mBusinessModel.QT(type) + " and ListType='SBD_TYPE') " +
                     "and (upload='N' OR refid!=0)";
 
             Cursor c = db.selectSQL(sb);
@@ -605,13 +578,12 @@ public class AssetTrackingHelper {
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     uid = c.getString(0);
-                    bmodel.setAssetRemark(c.getString(1));
+                    mBusinessModel.setAssetRemark(c.getString(1));
                 }
             } else {
-                bmodel.setAssetRemark("");
+                mBusinessModel.setAssetRemark("");
             }
-            /*String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted  from assetDetail where uid=" +
-                    QT(uid);*/
+
             String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName  from assetDetail where uid=" +
                     QT(uid);
 
@@ -619,34 +591,34 @@ public class AssetTrackingHelper {
             Cursor detailCursor = db.selectSQL(sb2);
             if (detailCursor.getCount() > 0) {
                 while (detailCursor.moveToNext()) {
-                    int assetid = detailCursor.getInt(0);
+                    int mAssetId = detailCursor.getInt(0);
                     int qty = detailCursor.getInt(1);
                     String imageName = detailCursor.getString(2);
-                    String reasonid = detailCursor.getString(3);
+                    String reasonId = detailCursor.getString(3);
 
                     String serialNo = detailCursor.getString(4);
-                    String conditionid = detailCursor.getString(5);
+                    String conditionId = detailCursor.getString(5);
                     int audit = detailCursor.getInt(8);
                     int pid = detailCursor.getInt(9);
                     int compQty = detailCursor.getInt(10);
-                    int locid = detailCursor.getInt(11);
+                    int locId = detailCursor.getInt(11);
                     final int isExecuted = detailCursor.getInt(13);
 
 
                     setAssetDetails(
-                            assetid,
+                            mAssetId,
                             qty,
                             imageName,
-                            reasonid,
+                            reasonId,
 
                             serialNo,
-                            conditionid,
+                            conditionId,
                             DateUtil.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(6),
                                     ConfigurationMasterHelper.outDateFormat),
                             DateUtil.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
-                                    ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locid, isExecuted, detailCursor.getString(detailCursor.getColumnIndex("imgName")));
+                                    ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locId, isExecuted, detailCursor.getString(detailCursor.getColumnIndex("imgName")));
                 }
             }
             detailCursor.close();
@@ -664,7 +636,6 @@ public class AssetTrackingHelper {
      *
      * @return ArrayList<AssetTrackingBO>
      */
-
     public ArrayList<AssetTrackingBO> getAssetTrackingList() {
         if (mAssetTrackingList != null) {
             return mAssetTrackingList;
@@ -678,7 +649,7 @@ public class AssetTrackingHelper {
     /**
      * Method that to download asset reason in ArrayList
      *
-     * @param category
+     * @param category Reason Category
      */
     private void downloadAssetPOSMReason(String category) {
         switch (category) {
@@ -689,13 +660,13 @@ public class AssetTrackingHelper {
                 mAssetRemarkList = new ArrayList<>();
                 break;
             case ASSET_CONDITION:
-                mAssetconditionList = new ArrayList<>();
+                mAssetConditionList = new ArrayList<>();
                 break;
             case POSM_REASON:
                 mPOSMReasonList = new ArrayList<>();
                 break;
             case POSM_CONDITION:
-                mPOSMconditionList = new ArrayList<>();
+                mPOSMConditionList = new ArrayList<>();
                 break;
         }
         ReasonMaster reasonBO;
@@ -704,16 +675,13 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-            Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(category));
+            Cursor c = db.selectSQL(mBusinessModel.reasonHelper.getReasonFromStdListMaster(category));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     reasonBO = new ReasonMaster();
                     reasonBO.setReasonID(c.getString(0));
                     reasonBO.setReasonDesc(c.getString(1));
                     reasonBO.setConditionID(c.getString(0));
-                    // if category is AR, Asset reason downloaded and category
-                    // is ARR, Asset remarks downloaded
-                    // from reason master table
 
                     switch (category) {
                         case ASSET_REASON:
@@ -723,13 +691,13 @@ public class AssetTrackingHelper {
                             mAssetRemarkList.add(reasonBO);
                             break;
                         case ASSET_CONDITION:
-                            mAssetconditionList.add(reasonBO);
+                            mAssetConditionList.add(reasonBO);
                             break;
                         case POSM_REASON:
                             mPOSMReasonList.add(reasonBO);
                             break;
                         case POSM_CONDITION:
-                            mPOSMconditionList.add(reasonBO);
+                            mPOSMConditionList.add(reasonBO);
                             break;
 
                     }
@@ -744,11 +712,16 @@ public class AssetTrackingHelper {
         }
     }
 
-    public void downloadAssetsposm(String moduleName) {
+    /**
+     * Download unique POSM available
+     *
+     * @param moduleName Module Name
+     */
+    public void downloadAssetsPosm(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = "CMP";
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = "CMN";
 
         AssetAddDetailBO assetBO;
@@ -764,13 +737,13 @@ public class AssetTrackingHelper {
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
-                assetspinner = new Vector<>();
+                mAssetSpinner = new Vector<>();
                 while (c.moveToNext()) {
                     assetBO = new AssetAddDetailBO();
-                    assetBO.setMposmid(c.getString(0));
-                    assetBO.setMposmdesc(c.getString(1));
+                    assetBO.setPOSMId(c.getString(0));
+                    assetBO.setPOSMDescription(c.getString(1));
 
-                    assetspinner.add(assetBO);
+                    mAssetSpinner.add(assetBO);
 
                 }
             }
@@ -783,17 +756,22 @@ public class AssetTrackingHelper {
         }
     }
 
-    public Vector<String> getassetposmNames() {
+    /**
+     * Get asset Names
+     *
+     * @return List of assets
+     */
+    public Vector<String> getAssetPosmNames() {
         AssetAddDetailBO brand;
         Vector<String> data = new Vector<>();
         try {
-            int siz = assetspinner.size();
+            int siz = mAssetSpinner.size();
             if (siz == 0)
                 return data;
 
             for (int i = 0; i < siz; ++i) {
-                brand = assetspinner.get(i);
-                data.add(brand.getMposmdesc());
+                brand = mAssetSpinner.get(i);
+                data.add(brand.getPOSMDescription());
             }
         } catch (Exception ex) {
             Commons.printException("" + ex);
@@ -801,17 +779,22 @@ public class AssetTrackingHelper {
         return data;
     }
 
-    public Vector<String> getassetbrandNames() {
+    /**
+     * Get asset brands
+     *
+     * @return Vector List of Asset Brands
+     */
+    public Vector<String> getAssetBrandNames() {
         AssetAddDetailBO brand;
         Vector<String> data = new Vector<>();
         try {
-            int siz = brandspinner.size();
+            int siz = mBrandSpinner.size();
             if (siz == 0)
                 return data;
 
             for (int i = 0; i < siz; ++i) {
-                brand = brandspinner.get(i);
-                data.add(brand.getMassetbrandname());
+                brand = mBrandSpinner.get(i);
+                data.add(brand.getAssetBrandName());
             }
         } catch (Exception ex) {
             Commons.printException("" + ex);
@@ -819,21 +802,27 @@ public class AssetTrackingHelper {
         return data;
     }
 
-    public String getassetposmids(String massetposmName) {
+    /**
+     * Get asset Id for given asset name
+     *
+     * @param mAssetPosmName Asset name
+     * @return Asset Id
+     */
+    public String getAssetPosmIds(String mAssetPosmName) {
         AssetAddDetailBO brand;
 
         try {
-            int siz = assetspinner.size();
+            int siz = mAssetSpinner.size();
             if (siz == 0)
                 return null;
 
             for (int i = 0; i < siz; ++i) {
-                brand = assetspinner.get(i);
-                Commons.print("brand.getMposmdesc()="
-                        + brand.getMposmdesc() + "," + massetposmName);
-                if (brand.getMposmdesc().equals(massetposmName)) {
+                brand = mAssetSpinner.get(i);
+                Commons.print("brand.getPOSMDescription()="
+                        + brand.getPOSMDescription() + "," + mAssetPosmName);
+                if (brand.getPOSMDescription().equals(mAssetPosmName)) {
 
-                    return brand.getMposmid();
+                    return brand.getPOSMId();
 
                 }
 
@@ -841,21 +830,27 @@ public class AssetTrackingHelper {
         } catch (Exception ex) {
             Commons.printException("" + ex);
         }
-        return massetposmName;
+        return mAssetPosmName;
     }
 
-    public String getassetbrandids(String massetbrandName) {
+    /**
+     * Get Asset brand Id for given Asset Brand Name
+     *
+     * @param mAssetBrandName Asset brand name
+     * @return Brand id
+     */
+    public String getAssetBrandIds(String mAssetBrandName) {
         AssetAddDetailBO brand;
 
         try {
-            int siz = brandspinner.size();
+            int siz = mBrandSpinner.size();
             if (siz == 0)
                 return null;
 
             for (int i = 0; i < siz; ++i) {
-                brand = brandspinner.get(i);
-                if (brand.getMassetbrandname().equals(massetbrandName)) {
-                    return brand.getAssetbrandid();
+                brand = mBrandSpinner.get(i);
+                if (brand.getAssetBrandName().equals(mAssetBrandName)) {
+                    return brand.getAssetBrandId();
 
                 }
 
@@ -863,19 +858,24 @@ public class AssetTrackingHelper {
         } catch (Exception ex) {
             Commons.printException("" + ex);
         }
-        return massetbrandName;
+        return mAssetBrandName;
     }
 
-    public void downloadAssetbrand(String brandposm) {
+    /**
+     * Download asset brands
+     *
+     * @param brandPosm POSM Id
+     */
+    public void downloadAssetBrand(String brandPosm) {
 
         AssetAddDetailBO assetBO;
-        brandspinner = new Vector<>();
+        mBrandSpinner = new Vector<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
             db.openDataBase();
-            String sb = "SELECT PM.Pid,PM.PName FROM ProductMaster PM INNER JOIN POSMProductMapping PO ON PM.Pid = PO.Productid WHERE PO.PosmID =" + QT(brandposm);
+            String sb = "SELECT PM.Pid,PM.PName FROM ProductMaster PM INNER JOIN POSMProductMapping PO ON PM.Pid = PO.Productid WHERE PO.PosmID =" + QT(brandPosm);
 
             Cursor c = db.selectSQL(sb);
 
@@ -883,10 +883,10 @@ public class AssetTrackingHelper {
 
                 while (c.moveToNext()) {
                     assetBO = new AssetAddDetailBO();
-                    assetBO.setAssetbrandid(c.getString(0));
-                    assetBO.setMassetbrandname(c.getString(1));
+                    assetBO.setAssetBrandId(c.getString(0));
+                    assetBO.setAssetBrandName(c.getString(1));
 
-                    brandspinner.add(assetBO);
+                    mBrandSpinner.add(assetBO);
 
                 }
             }
@@ -899,6 +899,12 @@ public class AssetTrackingHelper {
         }
     }
 
+
+    /**
+     * Preparing List to Add or remove assets
+     *
+     * @param moduleName Module Name
+     */
     public void lodAddRemoveAssets(String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
@@ -907,7 +913,7 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
         AssetTrackingBO assetBO;
 
-        addremoveassets = new Vector<>();
+        mAddRemoveAssets = new Vector<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -923,7 +929,7 @@ public class AssetTrackingHelper {
                     typeListId = c0.getInt(0);
                 }
             }
-            int level = bmodel.productHelper.getRetailerlevel(moduleName);
+            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
 
 
             StringBuilder sb = new StringBuilder();
@@ -940,31 +946,31 @@ public class AssetTrackingHelper {
             if (level == 2) {
                 // retailer mapping
                 sb.append(" and Retailerid=");
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             } else if (level == 4) {
                 // Location mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(")");
 
 
             } else if (level == 5) {
                 // Channel Mapping
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
 
             } else if (level == 6) {
 
                 // Location Mapping and Channel Mapping
                 sb.append(" and Locid in(");
-                sb.append(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme());
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
                 sb.append(" and (Channelid =");
-                sb.append(bmodel.getRetailerMasterBO().getSubchannelid());
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
                 sb.append(" OR Channelid in (");
-                sb.append(bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()));
+                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
                 sb.append("))");
             }
 
@@ -973,43 +979,43 @@ public class AssetTrackingHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     assetBO = new AssetTrackingBO();
-                    assetBO.setMposm(c.getString(0));
-                    assetBO.setMposmname(c.getString(1));
+                    assetBO.setPOSM(c.getString(0));
+                    assetBO.setPOSMName(c.getString(1));
                     if (c.getString(2) != null && !"null".equals(c.getString(2)) && !"".equals(c.getString(2))) {
-                        assetBO.setMsno(c.getString(2));
+                        assetBO.setSNO(c.getString(2));
 
 
                     } else {
-                        assetBO.setMsno("0");
+                        assetBO.setSNO("0");
                     }
-                    assetBO.setMnewinstaldate(" ");
-                    assetBO.setMflag("N");
-                    assetBO.setMsbdid(c.getString(3));
-                    assetBO.setMbrand(c.getString(4));
-                    addremoveassets.add(assetBO);
+                    assetBO.setNewInstallDate(" ");
+                    assetBO.setFlag("N");
+                    assetBO.setSBDId(c.getString(3));
+                    assetBO.setBrand(c.getString(4));
+                    mAddRemoveAssets.add(assetBO);
                 }
             }
             String sb1 = "select distinct  AssetId,P.Posmdesc,serialNum,installdate,flag ,uid,Productid  from PosmMaster P  inner  join AssetAddDelete AAD on P.PosmId=AAD.AssetId where flag!='D'  and retailerid=" +
-                    QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and AAD.TypeLovId=" + typeListId;
+                    QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + " and AAD.TypeLovId=" + typeListId;
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
                 while (c1.moveToNext()) {
                     assetBO = new AssetTrackingBO();
-                    assetBO.setMposm(c1.getString(0));
-                    assetBO.setMposmname(c1.getString(1));
+                    assetBO.setPOSM(c1.getString(0));
+                    assetBO.setPOSMName(c1.getString(1));
                     if ("null".equals(c1.getString(2)) || "".equals(c1.getString(2))) {
 
-                        assetBO.setMsno("0");
+                        assetBO.setSNO("0");
                     } else {
-                        assetBO.setMsno(c1.getString(2));
+                        assetBO.setSNO(c1.getString(2));
                     }
 
-                    assetBO.setMnewinstaldate(c1.getString(3));
-                    assetBO.setMflag("Y");
-                    assetBO.setMsbdid(" ");
-                    assetBO.setMbrand(c1.getString(6));
-                    addremoveassets.add(assetBO);
+                    assetBO.setNewInstallDate(c1.getString(3));
+                    assetBO.setFlag("Y");
+                    assetBO.setSBDId(" ");
+                    assetBO.setBrand(c1.getString(6));
+                    mAddRemoveAssets.add(assetBO);
                 }
             }
 
@@ -1024,11 +1030,10 @@ public class AssetTrackingHelper {
     }
 
     /**
-     * Method return reason name arraylist
+     * Method return reason name arrayList
      *
-     * @return ArrayList<Reasonmaster>
+     * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getAssetReasonList() {
         if (mAssetReasonList != null) {
             return mAssetReasonList;
@@ -1036,33 +1041,20 @@ public class AssetTrackingHelper {
         return new ArrayList<>();
     }
 
-    /**
-     * Method return reason remarks arraylist
-     *
-     * @return ArrayList<Reasonmaster>
-     */
 
-    public ArrayList<ReasonMaster> getAssetRemarksList() {
-        if (mAssetRemarkList != null) {
-            return mAssetRemarkList;
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<ReasonMaster> getmAssetconditionList() {
-        if (mAssetconditionList != null) {
-            return mAssetconditionList;
+    public ArrayList<ReasonMaster> getAssetConditionList() {
+        if (mAssetConditionList != null) {
+            return mAssetConditionList;
         }
         return new ArrayList<>();
     }
 
 
     /**
-     * Method return reason name arraylist
+     * Method return reason name arrayList
      *
-     * @return ArrayList<Reasonmaster>
+     * @return ArrayList<ReasonMaster>
      */
-
     public ArrayList<ReasonMaster> getPOSMReasonList() {
         if (mPOSMReasonList != null) {
             return mPOSMReasonList;
@@ -1070,75 +1062,44 @@ public class AssetTrackingHelper {
         return new ArrayList<>();
     }
 
-    /**
-     * Method return reason remarks arraylist
-     *
-     * @return ArrayList<Reasonmaster>
-     */
-
-    public ArrayList<ReasonMaster> getPOSMRemarksList() {
-        if (mPOSMRemarkList != null) {
-            return mPOSMRemarkList;
-        }
-        return new ArrayList<>();
-    }
 
     /**
-     * Method return reason conditions arraylist
+     * Method return reason conditions arrayList
      *
-     * @return ArrayList<Reasonmaster>
+     * @return ArrayList<ReasonMaster>
      */
-
-    public ArrayList<ReasonMaster> getmPOSMconditionList() {
-        if (mPOSMconditionList != null) {
-            return mPOSMconditionList;
+    public ArrayList<ReasonMaster> getPOSMConditionList() {
+        if (mPOSMConditionList != null) {
+            return mPOSMConditionList;
         }
         return new ArrayList<>();
     }
 
 
     /**
-     * Method return the correct position to selected reasonid
+     * Method return the correct position to selected ReasonId
      *
-     * @param reasonid
-     * @param reasonList
+     * @param reasonId   ReasonId
+     * @param reasonList Reason List
      * @return integer
      */
-    public int getItemIndex(String reasonid, ArrayList<ReasonMaster> reasonList) {
+    public int getItemIndex(String reasonId, ArrayList<ReasonMaster> reasonList) {
         int size = reasonList.size();
 
         for (int i = 0; i < size; i++) {
             ReasonMaster reasonBO = reasonList.get(i);
-            if (reasonBO.getReasonID().equals(reasonid)) {
+            if (reasonBO.getReasonID().equals(reasonId)) {
                 return i;
             }
         }
         return -1;
     }
 
-    /**
-     * Method return the correct position to selected conditionId
-     *
-     * @param conditionId
-     * @param reasonList
-     * @return integer
-     */
-    public int getConditionItemIndex(String conditionId, ArrayList<ReasonMaster> reasonList) {
-        int size = reasonList.size();
-
-        for (int i = 0; i < size; i++) {
-            ReasonMaster reasonBO = reasonList.get(i);
-            if (reasonBO.getConditionID().equals(conditionId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     /**
-     * Method to delete imagename in sql table
+     * Method to delete imageName in sql table
      *
-     * @param imgName
+     * @param imgName imageName
      */
     public void deleteImageName(String imgName) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -1152,19 +1113,17 @@ public class AssetTrackingHelper {
     /**
      * Method to save Asset Details in sql table
      */
-    public void saveAssetAddandDeletedetails(String moduleName) {
+    public void saveAssetAddAndDeleteDetails(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
             db.openDataBase();
-
-
             int typeListId = 0;
             String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
             Cursor c1 = db.selectSQL(query1);
@@ -1173,22 +1132,22 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
-            AssetTrackingBO assets = getMassetTrackingBO();
-            String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId,reasonid,remarks";
+            AssetTrackingBO assets = getAssetTrackingBO();
+            String addAssetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId,reasonid,remarks";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
-                    + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
-                    + QT(assets.getMbrand()) + ","
+            String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
+                    + QT(assets.getPOSM()) + "," + QT(assets.getSNO()) + ","
+                    + QT(assets.getBrand()) + ","
                     + QT(DateUtil.convertToServerDateFormat(
-                    assets.getMnewinstaldate(),
+                    assets.getNewInstallDate(),
                     ConfigurationMasterHelper.outDateFormat))
                     + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId + "," +
-                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks());
+                    QT(assets.getReasonId()) + "," + QT(assets.getRemarks());
 
-            db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
-                    assetaddanddeleteValues);
+            db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
+                    assetAddAndDeleteValues);
 
             db.closeDB();
 
@@ -1205,7 +1164,7 @@ public class AssetTrackingHelper {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1221,19 +1180,19 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
-            AssetTrackingBO assets = getMassetTrackingBO();
-            String addassetColumns = "uid,retailerid,AssetId,serialNum,productid,creationdate,flag,TypeLovId,reasonid,remarks,toRetailerId";
+            AssetTrackingBO assets = getAssetTrackingBO();
+            String addAssetColumns = "uid,retailerid,AssetId,serialNum,productid,creationdate,flag,TypeLovId,reasonid,remarks,toRetailerId";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
-                    + QT(assets.getMposm()) + "," + QT(assets.getMsno()) + ","
-                    + QT(assets.getMbrand()) + ","
+            String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
+                    + QT(assets.getPOSM()) + "," + QT(assets.getSNO()) + ","
+                    + QT(assets.getBrand()) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
-                    QT(assets.getMreasonId()) + "," + QT(assets.getMremarks()) + "," + QT(assets.getmToRetailerId());
+                    QT(assets.getReasonId()) + "," + QT(assets.getRemarks()) + "," + QT(assets.getToRetailerId());
 
-            db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
-                    assetaddanddeleteValues);
+            db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
+                    assetAddAndDeleteValues);
 
             db.closeDB();
 
@@ -1243,12 +1202,22 @@ public class AssetTrackingHelper {
         }
     }
 
-    public void saveAddandDeletedetails(String posmid, String msno,
-                                        String msbdid, String mbrandid, String reasonId, String moduleName) {
+    /**
+     * Save added or deleted details
+     *
+     * @param posmId     POSM Id
+     * @param mSno       SNO
+     * @param mSbdId     SBD Id
+     * @param mBrandId   Brand ID
+     * @param reasonId   Reason ID
+     * @param moduleName Module Name
+     */
+    public void saveAddAndDeleteDetails(String posmId, String mSno,
+                                        String mSbdId, String mBrandId, String reasonId, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
-        else if ("MENU_POSM".equals(moduleName))
+        else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
 
 
@@ -1257,8 +1226,6 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-
-
             int typeListId = 0;
             String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
             Cursor c1 = db.selectSQL(query1);
@@ -1267,18 +1234,18 @@ public class AssetTrackingHelper {
                     typeListId = c1.getInt(0);
                 }
             }
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String addassetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId,reasonid";
+            String addAssetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId,reasonid";
 
-            String assetaddanddeleteValues = id + "," + QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
-                    + QT(posmid) + "," + QT(msno) + ","
+            String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
+                    + QT(posmId) + "," + QT(mSno) + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
-                    + QT(msbdid) + "," + QT(mbrandid) + "," + typeListId + "," + QT(reasonId);
+                    + QT(mSbdId) + "," + QT(mBrandId) + "," + typeListId + "," + QT(reasonId);
 
-            db.insertSQL(DataMembers.tbl_AssetAddDelete, addassetColumns,
-                    assetaddanddeleteValues);
+            db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
+                    assetAddAndDeleteValues);
 
             db.closeDB();
 
@@ -1288,14 +1255,19 @@ public class AssetTrackingHelper {
         }
     }
 
-    public void deletePosmdetails(String msno) {
+    /**
+     * Delete POSM details
+     *
+     * @param mSno SNO
+     */
+    public void deletePosmDetails(String mSno) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_AssetAddDelete, "serialNum ="
-                    + QT(msno), false);
+                    + QT(mSno), false);
 
             db.closeDB();
 
@@ -1305,7 +1277,13 @@ public class AssetTrackingHelper {
         }
     }
 
-    public boolean isExistingRetailersno(String msno) {
+    /**
+     * Checking Serial number availability
+     *
+     * @param mSno SNO
+     * @return Is Serial Number available
+     */
+    public boolean isExistingRetailerSno(String mSno) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1314,8 +1292,8 @@ public class AssetTrackingHelper {
 
             String sql = "select serialNum from "
                     + DataMembers.tbl_AssetAddDelete + "  where serialNum="
-                    + QT(msno) + " and retailerid = "
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID()) + "";
+                    + QT(mSno) + " and retailerid = "
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + "";
 
             Cursor cursor = db.selectSQL(sql);
 
@@ -1347,7 +1325,7 @@ public class AssetTrackingHelper {
             String sql = "select AssetId from "
                     + DataMembers.tbl_AssetAddDelete + "  where serialNum="
                     + QT(serialNum) + " and retailerid = "
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID()) + "";
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + "";
 
             Cursor cursor = db.selectSQL(sql);
 
@@ -1366,11 +1344,16 @@ public class AssetTrackingHelper {
         }
     }
 
+    /**
+     * Saving asset details
+     *
+     * @param moduleName Module Name
+     */
     public void saveAsset(String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
             type = MERCH;
-        } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+        } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
         }
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -1389,7 +1372,7 @@ public class AssetTrackingHelper {
                 }
             }
             String query = "select uid,refid from AssetHeader where retailerid ="
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID())
                     + " and TypeLovid=" + typeListId;
             query += " and (upload='N' OR refid!=0)";
 
@@ -1404,10 +1387,10 @@ public class AssetTrackingHelper {
             }
 
 
-            int moduleWeightage = 0;
-            double productWeightage = 0, sum = 0;
+            int moduleWeightAge = 0;
+            double productWeightAge, sum = 0;
 
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid";
@@ -1416,24 +1399,24 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            assetHeaderValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(bmodel.getAssetRemark()));
+            assetHeaderValues.append(QT(mBusinessModel.getAssetRemark()));
             assetHeaderValues.append(",");
             assetHeaderValues.append(typeListId);
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
             }
             int totalTarget = 0;
             int totalActualQty = 0;
-            for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+            for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 if (mAssetTrackingList != null) {
-                    productWeightage = (double) 100 / (double) mAssetTrackingList.size();
+                    productWeightAge = (double) 100 / (double) mAssetTrackingList.size();
                     totalTarget = 0;
                     for (AssetTrackingBO assetBo : mAssetTrackingList) {
                         totalTarget = totalTarget + assetBo.getTarget();
@@ -1476,49 +1459,49 @@ public class AssetTrackingHelper {
                                 if (MENU_ASSET.equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
+                                                    .getInstallDate() == null || assetBo
+                                                    .getInstallDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
+                                                            assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
+                                                    .getServiceDate() == null || assetBo
+                                                    .getServiceDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
+                                                            assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
-                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
+                                                    .getInstallDate() == null || assetBo
+                                                    .getInstallDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
+                                                            assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
+                                                    .getServiceDate() == null || assetBo
+                                                    .getServiceDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
+                                                            assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                 }
@@ -1527,11 +1510,11 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(assetBo.getAudit());
 
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getProductid());
+                                assetDetailValues.append(assetBo.getProductId());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
@@ -1546,9 +1529,11 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + productWeightage);
-                                    sum = sum + productWeightage;
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(productWeightAge);
+
+                                    sum = sum + productWeightAge;
                                 }
 
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
@@ -1590,60 +1575,60 @@ public class AssetTrackingHelper {
                                 if (MENU_ASSET.equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
+                                                    .getInstallDate() == null || assetBo
+                                                    .getInstallDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
+                                                            assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
+                                                    .getServiceDate() == null || assetBo
+                                                    .getServiceDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
+                                                            assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
-                                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
-                                                    .getMinstalldate() == null || assetBo
-                                                    .getMinstalldate()
+                                                    .getInstallDate() == null || assetBo
+                                                    .getInstallDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMinstalldate(),
+                                                            assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(DatabaseUtils
                                             .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
-                                                    .getMservicedate() == null || assetBo
-                                                    .getMservicedate()
+                                                    .getServiceDate() == null || assetBo
+                                                    .getServiceDate()
                                                     .length() == 0) ? SDUtil
                                                     .now(SDUtil.DATE_GLOBAL)
                                                     : (DateUtil
                                                     .convertToServerDateFormat(
-                                                            assetBo.getMservicedate(),
+                                                            assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
                                                     : ""));
                                 }
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getAudit());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getProductid());
+                                assetDetailValues.append(assetBo.getProductId());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
@@ -1658,9 +1643,11 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + productWeightage);
-                                    sum = sum + productWeightage;
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append(",");
+                                    assetDetailValues.append(productWeightAge);
+
+                                    sum = sum + productWeightAge;
                                 }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
@@ -1677,15 +1664,17 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(refId));
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 if (MENU_ASSET.equals(moduleName)) {
-                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
-                } else if ("MENU_POSM".equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
-                    moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
+                    moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
+                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
+                    moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
                 }
-                assetHeaderValues.append("," + moduleWeightage);
-                double achieved = ((sum / (double) 100) * moduleWeightage);
-                assetHeaderValues.append("," + achieved);
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(moduleWeightAge);
+                double achieved = ((sum / (double) 100) * moduleWeightAge);
+                assetHeaderValues.append(",");
+                assetHeaderValues.append(achieved);
             }
 
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
@@ -1702,23 +1691,21 @@ public class AssetTrackingHelper {
     /**
      * Ordered asset record set to AssetTrackingBO object
      *
-     * @param assetID
-     * @param qty
-     * @param imageName
-     * @param reasonid
-     * @param --remarksid
-     * @param serialNo
-     * @param imgName
+     * @param assetID   Asset Id
+     * @param qty       Qty
+     * @param imageName image Name
+     * @param mReasonId reason Id
+     * @param serialNo  serial Number
+     * @param imgName   image Name
      */
-
     private void setAssetDetails(int assetID, int qty, String imageName,
-                                 String reasonid, String serialNo,
-                                 String conditionid, String minstalldate, String mservicedate, int audit, int pid, int compQty, int locid, int isExec, String imgName) {
+                                 String mReasonId, String serialNo,
+                                 String conditionId, String installDate, String serviceDate, int audit, int pid, int compQty, int locId, int isExec, String imgName) {
 
         AssetTrackingBO assetBO = null;
         mAssetTrackingList = null;
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-            if (standardListBO.getListID().equals(Integer.toString(locid))) {
+        for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
+            if (standardListBO.getListID().equals(Integer.toString(locId))) {
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 break;
             }
@@ -1727,7 +1714,7 @@ public class AssetTrackingHelper {
             int size = mAssetTrackingList.size();
 
             for (int i = 0; i < size; i++) {
-                if (mAssetTrackingList.get(i).getProductid() == pid && mAssetTrackingList.get(i).getAssetID() == assetID) {
+                if (mAssetTrackingList.get(i).getProductId() == pid && mAssetTrackingList.get(i).getAssetID() == assetID) {
                     assetBO = mAssetTrackingList.get(i);
                     break;
                 }
@@ -1736,10 +1723,10 @@ public class AssetTrackingHelper {
 
                 assetBO.setAvailQty(qty);
                 assetBO.setImageName(imageName);
-                assetBO.setReason1ID(reasonid);
-                assetBO.setConditionID(conditionid);
-                assetBO.setMinstalldate(minstalldate);
-                assetBO.setMservicedate(mservicedate);
+                assetBO.setReason1ID(mReasonId);
+                assetBO.setConditionID(conditionId);
+                assetBO.setInstallDate(installDate);
+                assetBO.setServiceDate(serviceDate);
 
                 assetBO.setAudit(audit);
                 if (!"null".equals(serialNo)) {
@@ -1762,9 +1749,8 @@ public class AssetTrackingHelper {
      *
      * @return true if asset already taken
      */
-
     public boolean hasAssetTaken() {
-        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
+        for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -1786,4 +1772,22 @@ public class AssetTrackingHelper {
         return "'" + data + "'";
     }
 
+    /**
+     * Method to check the movement Asset in sql table
+     */
+    public ArrayList<String> getAssetMovementDetails() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<String> retailerMovedData = new ArrayList<>();
+        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
+        if (c != null)
+            while (c.moveToNext()) {
+                retailerMovedData.add(c.getString(0));
+            }
+        return retailerMovedData;
+    }
+
 }
+
+

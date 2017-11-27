@@ -1,5 +1,8 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.promotion.PromotionBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+
 import java.util.ArrayList;
 
 public class StandardListBO {

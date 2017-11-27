@@ -62,7 +62,7 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         tvpiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvcase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        ListView lv = (ListView) findViewById(R.id.lvwplist);
+        ListView lv = (ListView) findViewById(R.id.list);
         lv.setCacheColorHint(0);
         if (selectedPosition >= 0)
             lv.setAdapter(new MyAdapter());

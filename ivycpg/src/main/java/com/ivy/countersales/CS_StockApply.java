@@ -101,7 +101,7 @@ public class CS_StockApply extends IvyBaseActivityNoActionBar implements View.On
 
         stockApplyAdapter = new StockApplyAdapter(mylist);
 
-        StockApplyListView = (RecyclerView) findViewById(R.id.lvwplist);
+        StockApplyListView = (RecyclerView) findViewById(R.id.list);
         StockApplyListView.setHasFixedSize(true);
         StockApplyListView.setLayoutManager(new LinearLayoutManager(this));
         StockApplyListView.setAdapter(stockApplyAdapter);

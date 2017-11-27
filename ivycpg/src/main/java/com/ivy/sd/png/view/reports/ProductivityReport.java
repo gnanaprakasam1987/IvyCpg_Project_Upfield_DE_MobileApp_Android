@@ -59,7 +59,7 @@ public class ProductivityReport extends Fragment {
         tv_tc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tv_nonpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         mylist = new ArrayList<ProductivityReportBO>();
         return view;
     }

@@ -88,7 +88,7 @@ public class ProductHelper {
     private ArrayList<TaxBO> mTaxProdList = new ArrayList<TaxBO>();
     private ArrayList<TaxTempBO> mTaxSumProdList = new ArrayList<TaxTempBO>();
     public String mHomeScreenThreeActivityName = "";
-    private Vector<StandardListBO> inStoreLocation = new Vector<StandardListBO>();
+    private Vector<StandardListBO> inStoreLocation = new Vector<>();
     private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
     private Vector<LoyaltyBO> loyaltyproductList = new Vector<LoyaltyBO>();
 
@@ -288,9 +288,6 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            /*SparseArray<String> hashMap = new SparseArray<String>();
-            SparseArray<String> hashMap1 = new SparseArray<String>();
-            SparseIntArray oosMap = new SparseIntArray();*/
 
             HashMap<String, String> hashMap = new HashMap<>();
             HashMap<String, String> hashMap1 = new HashMap<>();
@@ -310,18 +307,19 @@ public class ProductHelper {
                 c.close();
             }
             db.closeDB();
-
-            for (ProductMasterBO p : productMaster) {
-                String value = hashMap
-                        .get(p.getProductID());
-                if (value != null) {
-                    p.setRetailerWiseProductWiseP4Qty(value);
-                    p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
-                    p.setOos(oosMap.get(p.getProductID()));
-                } else {
-                    p.setRetailerWiseProductWiseP4Qty("0,0,0,0");
-                    p.setRetailerWiseP4StockQty("0,0,0,0");
-                    p.setOos(-2);
+            if (hashMap.size() > 0 || hashMap1.size() > 0 || oosMap.size() > 0) {
+                for (ProductMasterBO p : productMaster) {
+                    String value = hashMap
+                            .get(p.getProductID());
+                    if (value != null) {
+                        p.setRetailerWiseProductWiseP4Qty(value);
+                        p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
+                        p.setOos(oosMap.get(p.getProductID()));
+                    } else {
+                        p.setRetailerWiseProductWiseP4Qty("0,0,0,0");
+                        p.setRetailerWiseP4StockQty("0,0,0,0");
+                        p.setOos(-2);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -354,10 +352,12 @@ public class ProductHelper {
                 c.close();
             }
             db.closeDB();
-            for (ProductMasterBO p : productMaster) {
-                Integer value = hashMap.get(p.getProductID());
-                if (value != null) {
-                    p.setIsPurchased(value);
+            if (hashMap.size() > 0) {
+                for (ProductMasterBO p : productMaster) {
+                    Integer value = hashMap.get(p.getProductID());
+                    if (value != null) {
+                        p.setIsPurchased(value);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -446,32 +446,33 @@ public class ProductHelper {
                 c.close();
             }
             db.closeDB();
+            if (hasmap.size() > 0) {
+                for (int i = 0; i < productMaster.size(); i++) {
+                    ProductMasterBO p = productMaster.get(i);
+                    int ico = 0;
 
-            for (int i = 0; i < productMaster.size(); i++) {
-                ProductMasterBO p = productMaster.get(i);
-                int ico = 0;
+                    Integer value = hasmap
+                            .get(SDUtil.convertToInt(p.getProductID()));
+                    if (value != null)
+                        ico = value;
 
-                Integer value = hasmap
-                        .get(SDUtil.convertToInt(p.getProductID()));
-                if (value != null)
-                    ico = value;
+                    p.setICO(ico);
+                    int size = p.getLocations().size();
+                    int shelfpcs = 0, whpcs = 0;
+                    for (int j = 0; j < size; j++) {
+                        shelfpcs = shelfpcs
+                                + p.getLocations().get(j).getShelfPiece();
+                        whpcs = whpcs + p.getLocations().get(j).getWHPiece();
 
-                p.setICO(ico);
-                int size = p.getLocations().size();
-                int shelfpcs = 0, whpcs = 0;
-                for (int j = 0; j < size; j++) {
-                    shelfpcs = shelfpcs
-                            + p.getLocations().get(j).getShelfPiece();
-                    whpcs = whpcs + p.getLocations().get(j).getWHPiece();
+                    }
+                    p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
+                            p.getIsInitiativeProduct(), p.getDropQty(),
+                            p.getInitDropSize()));
 
+
+                    productMaster.setElementAt(p, i);
+                    ico = 0;
                 }
-                p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
-                        p.getIsInitiativeProduct(), p.getDropQty(),
-                        p.getInitDropSize()));
-
-
-                productMaster.setElementAt(p, i);
-                ico = 0;
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -1565,7 +1566,7 @@ public class ProductHelper {
             }
 
             if (mChildLevel > 0)
-                downloadLeastBrandProductMapping((mContentLevel - mFiltrtLevel + 1), mChildLevel,moduleCode);
+                downloadLeastBrandProductMapping((mContentLevel - mFiltrtLevel + 1), mChildLevel, moduleCode);
 
             downloadAttributeProductMapping();
             downloadAttributes();
@@ -2240,6 +2241,7 @@ public class ProductHelper {
                             productMasterBO.setColorCode(c.getString(1));
                             productMasterBO.setProductSequence(c.getInt(2));
                             productMasterBO.setSoInventory(c.getInt(3));
+                            break;
                         }
                     }
 
@@ -2607,15 +2609,16 @@ public class ProductHelper {
                 c.close();
             }
             db.closeDB();
-            for (int i = 0; i < productMaster.size(); i++) {
-                ProductMasterBO p = productMaster.get(i);
-                Integer prodId = Integer.valueOf(p.getProductID());
-                if (productIds.contains(prodId)) {
-                    p.setIsInitiativeProduct(1);
-                    p.setInitDropSize(map.get(prodId));
-                    productMaster.setElementAt(p, i);
+            if (productIds.size() > 0 && map.size() > 0) {
+                for (int i = 0; i < productMaster.size(); i++) {
+                    ProductMasterBO p = productMaster.get(i);
+                    Integer prodId = Integer.valueOf(p.getProductID());
+                    if (productIds.contains(prodId)) {
+                        p.setIsInitiativeProduct(1);
+                        p.setInitDropSize(map.get(prodId));
+                        productMaster.setElementAt(p, i);
+                    }
                 }
-
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -4208,7 +4211,7 @@ public class ProductHelper {
             if (inStoreLocation.size() > 0)
                 return;
 
-            inStoreLocation = new Vector<StandardListBO>();
+            inStoreLocation = new Vector<>();
             StandardListBO locations;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -7810,8 +7813,6 @@ public class ProductHelper {
 
                     }
                 }
-
-
             }
         }
         c.close();
@@ -7881,7 +7882,7 @@ public class ProductHelper {
                         ArrayList<LoyaltyBenifitsBO> clonedList = new ArrayList<LoyaltyBenifitsBO>(ltyBenifitsList.size());
                         for (LoyaltyBenifitsBO loyaltysBO : ltyBenifitsList) {
 
-                            if(loyaltyBO.getPointTypeId()==loyaltysBO.getPointTypeId()) {
+                            if (loyaltyBO.getPointTypeId() == loyaltysBO.getPointTypeId()) {
                                 clonedList.add(new LoyaltyBenifitsBO(loyaltysBO));
                             }
                         }

@@ -148,7 +148,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
         lvwplist = (FullLengthListView)
 
-                findViewById(R.id.lvwplist);
+                findViewById(R.id.list);
 
         edt_result.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         edt_hour.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -188,7 +188,7 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        updategeneraltext(GENERAL);
+        updateGeneralText(GENERAL);
         // mDrawerLayout.closeDrawer(GravityCompat.END);
 
 
@@ -359,20 +359,20 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
-        generalbutton = filtertext;
-        updatebrandtext(BRAND, -1);
+    public void updateGeneralText(String mFilterText) {
+        generalbutton = mFilterText;
+        updateBrandText(BRAND, -1);
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         // TODO Auto-generated method stub
 
         try {
             // Close the drawer
             mDrawerLayout.closeDrawers();
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -439,22 +439,22 @@ public class CSapply extends IvyBaseActivityNoActionBar implements BrandDialogIn
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 

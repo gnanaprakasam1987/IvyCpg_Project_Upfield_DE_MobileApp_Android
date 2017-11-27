@@ -218,7 +218,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading_data));
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
         alertDialog = builder.create();
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
@@ -269,7 +269,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             }
         });
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+        lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         expandlvwplist = (ExpandableListView) view.findViewById(R.id.expand_lvwplist);
@@ -429,7 +429,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         hideShemeButton();
         hideLocationButton();
         getActivity().supportInvalidateOptionsMenu();
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
         if (bmodel.configurationMasterHelper.SHOW_SO_APPLY)
             so_apply = true;
         if (bmodel.configurationMasterHelper.SHOW_STD_QTY_APPLY)
@@ -1456,7 +1456,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1730,7 +1730,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             mSelectedFilterMap.put("Category", "All");
             getActivity().supportInvalidateOptionsMenu();
 
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         }
     }
 
@@ -2473,22 +2473,22 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
 
         // Change the Brand button Name
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
 
         // Consider generalbutton text if it is dependent filter.
         String generaltxt = generalbutton;
@@ -2592,10 +2592,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
-        generalbutton = filtertext;
-        updatebrandtext(BRAND, -1);
+        generalbutton = mFilterText;
+        updateBrandText(BRAND, -1);
 
     }
 
@@ -2614,19 +2614,19 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        Commons.print("selected filter " + parentidList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + filtertext);
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         loadloadMylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : stockPropVector) {
                         if (productBO.getIssalable() == 1) {
                             if (levelBO.getProductID() == productBO.getParentid()) {
@@ -2651,7 +2651,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (LoadManagementBO productBO : stockPropVector) {
                     Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
                     if (productBO.getIssalable() == 1) {

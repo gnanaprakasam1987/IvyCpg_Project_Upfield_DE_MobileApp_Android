@@ -190,7 +190,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         vanlist = bmodel.productHelper.getProducts();
 
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
 
         productName.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -232,7 +232,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mBtnClear.setOnClickListener(this);
             mEdtSearchproductName.setOnEditorActionListener(this);
 
-            lvwplist = (ListView) findViewById(R.id.lvwplist);
+            lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
             toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -410,7 +410,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             }
 
             supportInvalidateOptionsMenu();
-            updategeneraltext(GENERAL);
+            updateGeneralText(GENERAL);
         } else if (vw == saveBtn) {
             if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
 
@@ -496,10 +496,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int id) {
+    public void updateBrandText(String mFilterText, int id) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
-        brandFilterText = filtertext;
+        brandFilterText = mFilterText;
 
         if (vanlist == null) {
             bmodel.showAlert(
@@ -519,20 +519,20 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             }
         }
 
-        if (filtertext.equals(BRAND))
+        if (mFilterText.equals(BRAND))
             tvSelectedFilter.setText(getResources().getString(
                     R.string.product_name)
                     + "(" + list.size() + ")");
         else
-            tvSelectedFilter.setText(filtertext + "(" + list.size() + ")");
+            tvSelectedFilter.setText(mFilterText + "(" + list.size() + ")");
 
         mSchedule = new MyAdapter(list);
         lvwplist.setAdapter(mSchedule);
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
-        updatebrandtext(BRAND, -1);
+    public void updateGeneralText(String mFilterText) {
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -916,13 +916,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
@@ -932,10 +932,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
         filterlist = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (LoadManagementBO loadMgtBO : vanlist) {
                 if (loadMgtBO.getIssalable() == 1) {
                     if (levelBO.getProductID() == loadMgtBO.getParentid()) {
@@ -996,11 +996,11 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : vanlist) {
                         if (productBO.getIssalable() == 1) {
                             if (levelBO.getProductID() == productBO.getParentid()) {
@@ -1024,8 +1024,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            if (parentidList.size() > 0 && !filtertext.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0 && !mFilterText.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO loadMgtBO : vanlist) {
                         if (loadMgtBO.getIssalable() == 1) {
                             if (levelBO.getProductID() == loadMgtBO.getParentid()) {
@@ -1395,7 +1395,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, ManualVanLoadActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -1455,7 +1455,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, ManualVanLoadActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -1497,7 +1497,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         protected void onPreExecute() {
             builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
 
-            bmodel.customProgressDialog(alertDialog, builder, ManualVanLoadActivity.this, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }

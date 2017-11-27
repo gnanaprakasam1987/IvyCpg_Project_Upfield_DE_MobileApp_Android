@@ -339,7 +339,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
         (view.findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        lv = (ListView) view.findViewById(R.id.lvwplist);
+        lv = (ListView) view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
         rvCompanyList = (RecyclerView) view.findViewById(R.id.rvCompany);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -394,7 +394,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
         protected void onPreExecute() {
 
             builder = new AlertDialog.Builder(getActivity());
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
         }

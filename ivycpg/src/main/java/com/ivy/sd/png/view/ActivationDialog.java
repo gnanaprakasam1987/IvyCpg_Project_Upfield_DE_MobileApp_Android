@@ -52,7 +52,7 @@ public class ActivationDialog extends Dialog implements OnClickListener {
 		close = (Button) findViewById(R.id.close);
 		close.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 		close.setOnClickListener(this);
-		listView = (ListView) findViewById(R.id.lvwplist);
+		listView = (ListView) findViewById(R.id.list);
 		adapter = new ActivationListViewAdapter(
 				bmodel.activationHelper.getAppUrls());
 		listView.setAdapter(adapter);

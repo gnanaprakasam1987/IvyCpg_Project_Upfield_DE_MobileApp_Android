@@ -41,7 +41,7 @@ public class DSRMTDReportFragment extends Fragment {
 					Toast.LENGTH_SHORT).show();
 			getActivity().finish();
 		}
-		lvwplist = (ListView) view.findViewById(R.id.lvwplist);
+		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
 		dsrmtdlist = bmodel.dashBoardHelper.downloadDSRMTD();
 		// Load listview.

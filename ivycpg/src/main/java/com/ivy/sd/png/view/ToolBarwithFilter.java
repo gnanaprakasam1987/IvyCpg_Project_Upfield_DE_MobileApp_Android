@@ -239,7 +239,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             }
         });
 
-        lvwplist = (ListView) findViewById(R.id.lvwplist);
+        lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         expandlvwplist = (ExpandableListView) findViewById(R.id.expand_lvwplist);
@@ -729,7 +729,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         String mCompertior = "Filt23";
         try {
@@ -737,7 +737,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = filtertext;
+            brandbutton = mFilterText;
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;
@@ -836,7 +836,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                         }
                     } else {
                         if (bid == -1 && ret.getIsSaleable() == 1) {
-                            if (filtertext.equals("Brand")) {
+                            if (mFilterText.equals("Brand")) {
                                 mylist.add(ret);
                             }
                         } else if (bid == ret.getParentid()
@@ -889,14 +889,14 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
         // set the spl filter name on the button for display
         fiveFilter_productIDs = null;
-        generalbutton = filtertext;
+        generalbutton = mFilterText;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        updatebrandtext(BRAND, -1);
+        updateBrandText(BRAND, -1);
     }
 
     @Override
@@ -1271,22 +1271,22 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername,
-                                          List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         mylist = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (ProductMasterBO productBO : items) {
                 if (productBO.getIsSaleable() == 1) {
                     if (levelBO.getProductID() == productBO.getParentid()) {
@@ -1304,14 +1304,14 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
         if (mAttributeProducts != null) {
 
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO productBO : items) {
                         if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
 
@@ -1335,7 +1335,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO productBO : items) {
                     if (productBO.getIsSaleable() == 1) {
                         if (levelBO.getProductID() == productBO.getParentid()) {

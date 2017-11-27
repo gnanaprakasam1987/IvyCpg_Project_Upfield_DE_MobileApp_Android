@@ -65,7 +65,7 @@ public class CS_StockCheckDialog extends Dialog implements View.OnClickListener 
         bmodel = (BusinessModel) context.getApplicationContext();
         lstReasons = reasons;
         facingQty = faQty;
-        listView = (ListView) findViewById(R.id.lvwplist);
+        listView = (ListView) findViewById(R.id.list);
         tv_titleBar = (TextView) findViewById(R.id.titlebar);
         tv_titleBar.setText(productNmae);
         Button doneBtn = (Button) findViewById(R.id.btnDone);

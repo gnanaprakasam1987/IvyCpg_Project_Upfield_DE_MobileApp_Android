@@ -90,9 +90,6 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.stockcheckroot);
-        relativeLayout.setVisibility(View.GONE);
-
         setActionBarTitle(i.getStringExtra("screentitle"));
         hideSpecialFilter();
         hideNextButton();
@@ -108,7 +105,7 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
             if (lbo.getStocksih() > 0)
                 mylist.add(lbo);
         }
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
 
     }
 
@@ -126,9 +123,9 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
         mDrawerLayout.closeDrawers();
-        brandbutton = filtertext;
+        brandbutton = mFilterText;
 
         productName.setText("");
         if (mylist == null) {
@@ -208,10 +205,10 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
         ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (LoadManagementBO loadMgtBO : mylist) {
                 if (levelBO.getProductID() == loadMgtBO.getParentid()) {
                     filterlist.add(loadMgtBO);
@@ -226,11 +223,11 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
+            if (!mParentIdList.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : mylist) {
                         if (levelBO.getProductID() == productBO.getParentid()) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
@@ -250,7 +247,7 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
                 }
             }
         } else {
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (LoadManagementBO loadMgtBO : mylist) {
                     if (levelBO.getProductID() == loadMgtBO.getParentid()) {
                         filterlist.add(loadMgtBO);
@@ -267,8 +264,6 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     private void updateTotalSIHValue(ArrayList<LoadManagementBO> mylist) {
-        RelativeLayout rl = (RelativeLayout) findViewById(layout_sih);
-        rl.setVisibility(View.VISIBLE);
 
         TextView totalSihTV = (TextView) findViewById(R.id.tv_sih);
         int totalSih = 0;

@@ -154,14 +154,12 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
         viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
 
-        RelativeLayout relativeLayout = (RelativeLayout) getView().findViewById(R.id.stockcheckroot);
-        relativeLayout.setVisibility(View.GONE);
 
 
         bmodel.reportHelper.updateBaseUOM("ORDER", 3);
 
 
-        lvwplist = (ListView) getView().findViewById(R.id.lvwplist);
+        lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         /** Load products from product master **/
@@ -172,7 +170,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             if (lbo.getStocksih() > 0)
                 mylist.add(lbo);
         }
-        updatebrandtext("Brand", -1);
+        updateBrandText("Brand", -1);
 
         updateTotalSIHValue();
 
@@ -221,17 +219,17 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
     }
 
     @Override
-    public void updateMultiSelectionCatogry(List<Integer> mcatgory) {
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
     }
 
     @Override
-    public void updatebrandtext(String filtertext, int bid) {
+    public void updateBrandText(String mFilterText, int bid) {
 
 // Close the drawer
         mDrawerLayout.closeDrawers();
@@ -367,7 +365,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
 
     @Override
-    public void updategeneraltext(String filtertext) {
+    public void updateGeneralText(String mFilterText) {
 
     }
 
@@ -381,9 +379,9 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
     }
 
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<LoadManagementBO>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (LoadManagementBO loadMgtBO : mylist) {
                 if (levelBO.getProductID() == loadMgtBO.getParentid()) {
                     filterlist.add(loadMgtBO);
@@ -397,12 +395,12 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updatefromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<LoadManagementBO>();
 
         if (mAttributeProducts != null) {
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
+            if (mParentIdList.size() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
                     for (LoadManagementBO productBO : mylist) {
                         if (levelBO.getProductID() == productBO.getParentid()) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
@@ -424,7 +422,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             }
         } else {
 
-            for (LevelBO levelBO : parentidList) {
+            for (LevelBO levelBO : mParentIdList) {
                 for (LoadManagementBO loadMgtBO : mylist) {
                     if (levelBO.getProductID() == loadMgtBO.getParentid()) {
                         filterlist.add(loadMgtBO);

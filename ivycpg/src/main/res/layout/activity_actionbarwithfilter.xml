@@ -218,11 +218,12 @@
                             android:id="@+id/ListHeader"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/list_title_height"
+                            android:background="@color/list_title_bg_color"
                             android:orientation="horizontal" >
                         </LinearLayout>
 
                         <ListView
-                            android:id="@+id/lvwplist"
+                            android:id="@+id/list"
                             android:layout_width="fill_parent"
                             android:layout_height="match_parent"
                             android:cacheColorHint="@null"

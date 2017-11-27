@@ -74,7 +74,7 @@ public class InitiativeReportFragment extends Fragment {
 
 		loadTitleView(lableTopLayout);
 
-		lv = (ListView) view.findViewById(R.id.lvwplist);
+		lv = (ListView) view.findViewById(R.id.list);
 		lv.setCacheColorHint(0);
 		try {
 

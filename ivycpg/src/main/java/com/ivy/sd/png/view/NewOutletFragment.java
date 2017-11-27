@@ -4461,7 +4461,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(), getResources().getString(R.string.saving));
+            customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
@@ -4532,7 +4532,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             builder = new AlertDialog.Builder(getActivity());
 
-            bmodel.customProgressDialog(alertDialog, builder, getActivity(),
+            customProgressDialog(builder,
                     getResources().getString(R.string.uploading_new_store));
             alertDialog = builder.create();
             alertDialog.show();

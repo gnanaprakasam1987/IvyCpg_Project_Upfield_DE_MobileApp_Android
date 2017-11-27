@@ -63,7 +63,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 		layout_kpi_footer = (LinearLayout) view
 				.findViewById(R.id.layout_bottom_1);
 
-		lstView = (ListView) view.findViewById(R.id.lvwplist);
+		lstView = (ListView) view.findViewById(R.id.list);
 		lstView.setCacheColorHint(0);
 
 

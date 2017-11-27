@@ -245,7 +245,7 @@ public class ProductMasterBO {
     private String invoiceno;
     private String ReasonDesc;
     private String ReasonID = "0";
-    private int oos;
+    private int oos = -2;
 
     private int priceChanged;
     private String price = "0";
