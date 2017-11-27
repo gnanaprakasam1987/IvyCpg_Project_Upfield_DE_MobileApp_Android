@@ -65,7 +65,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     private int mTypeID, mProductID, mFilterProductID;
     private boolean isClicked = true;
     private static String outPutDateFormat;
-    private boolean isPLtype = false;
+    private boolean isPLType = false;
     private boolean isFromSurvey;
     private static int mSelectedItem = 0;
     private String mLocationId = "0";
@@ -274,7 +274,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                         .getSelectedItem();
                                 mTypeID = temp.getPhotoTypeId();
                                 mPhotoCaptureList = temp.getPhotoCaptureProductList();
-                                isPLtype = temp.getPhotoTypeCode().equals("PT");
+                                isPLType = temp.getPhotoTypeCode().equals("PT");
                                 onLoadModule();
                             }
 
@@ -305,7 +305,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFeedback("");
                 }
 
-                if (isPLtype) {
+                if (isPLType) {
                     if (editText_skuName.getText().toString().length() > 0) {
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSkuname(editText_skuName.getText().toString());
                     }
@@ -334,7 +334,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         else
             editText_Feedback.setText("");
 
-        if (isPLtype) {
+        if (isPLType) {
             (findViewById(R.id.card_view1))
                     .setVisibility(View.VISIBLE);
             (findViewById(R.id.ll_pl))
@@ -385,7 +385,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 mBModel.photocount++;
             } else {
                 getPhotoBo("", "");
-                Commons.print("IMAGE NAME:" + ",Camers Activity : Canceled");
+                Commons.print("IMAGE NAME:" + ",Camera Activity : Canceled");
                 imgViewImage.setImageResource(0);
 
                 imageView_capture.setImageResource(0);
@@ -729,7 +729,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     }// end of showChangeA
 
     /**
-     * Save the values in Aysnc task through Background
+     * Save the values in Async task through Background
      *
      * @author gnanaprakasam.d
      */
@@ -889,8 +889,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         ArrayList<PhotoTypeMasterBO> list = mPhotoCaptureHelper.getPhotoTypeMaster();
         ArrayList<PhotoCaptureProductBO> lst;
 
-        int zize = list.size();
-        for (int i = 0; i < zize; i++) {
+        int mSize = list.size();
+        for (int i = 0; i < mSize; i++) {
             if (list.get(i).getPhotoTypeId() == mTypeID) {
                 lst = list.get(i).getPhotoCaptureProductList();
                 for (int j = 0; j < lst.size(); j++)
@@ -942,17 +942,17 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                     .replace("/", "") + "/" + mImageName;
                         }
 
-                        String fnameStarts = mRetailerId + "_" + mTypeID
+                        String mFirstNameStarts = mRetailerId + "_" + mTypeID
                                 + "_" + mProductID + "_" + mLocationId + "_"
                                 + Commons.now(Commons.DATE);
 
-                        boolean nfiles_there = mBModel
+                        boolean mIsFileAvailable = mBModel
                                 .checkForNFilesInFolder(
                                         HomeScreenFragment.folder.getPath(), 1,
-                                        fnameStarts);
+                                        mFirstNameStarts);
 
-                        if (nfiles_there) {
-                            showFileDeleteAlert(fnameStarts);
+                        if (mIsFileAvailable) {
+                            showFileDeleteAlert(mFirstNameStarts);
 
                         } else {
                             try {
@@ -1034,7 +1034,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             mFeedback = editText_Feedback.getText().toString();
             if (mFeedback.length() > 0)
                 mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFeedback(mFeedback);
-            if (isPLtype) {
+            if (isPLType) {
                 mSkuName = editText_skuName.getText().toString();
                 mABV = editText_ABV.getText().toString();
                 mLotCode = editText_LotCode.getText().toString();
