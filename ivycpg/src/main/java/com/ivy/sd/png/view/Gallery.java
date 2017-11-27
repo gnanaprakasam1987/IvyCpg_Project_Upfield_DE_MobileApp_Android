@@ -32,10 +32,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
 import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.bo.PhotoTypeMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
 import com.ivy.sd.png.model.BusinessModel;
@@ -196,9 +195,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
             mPhotoTypeListByProductName = new HashMap<>();
             mLocationListByProductName = new HashMap<>();
 
-            for (StandardListBO temp : mBModel.productHelper
-                    .getInStoreLocation()) {
-                mInStoreLocationNameById.put(temp.getListID(), temp.getListName());
+            for (PhotoCaptureLocationBO temp : PhotoCaptureHelper.getInstance(getApplicationContext()).getLocations()) {
+                mInStoreLocationNameById.put(String.valueOf(temp.getLocationId()), temp.getLocationName());
 
             }
 
@@ -207,9 +205,9 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                         .getPhotoCaptureProductList();
 
                 for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
-                    for (LocationBO lbo : mPhotoCapture.getInStoreLocations()) {
-                        if (lbo.getImagepath() != null && !lbo.getImagepath().isEmpty()) {
-                            System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotcode() + " : " + lbo.getImagepath());
+                    for (PhotoCaptureLocationBO lbo : mPhotoCapture.getInStoreLocations()) {
+                        if (lbo.getImagePath() != null && !lbo.getImagePath().isEmpty()) {
+                            System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotCode() + " : " + lbo.getImagePath());
                             if (prodList.size() > 0) {
                                 if (!prodList.contains(lbo.getProductName())) {
                                     prodList.add(lbo.getProductName());
@@ -383,12 +381,12 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                         ArrayList<PhotoCaptureProductBO> tempCaptureBO = tempTypeBO
                                                 .getPhotoCaptureProductList();
                                         for (PhotoCaptureProductBO photo : tempCaptureBO) {
-                                            for (LocationBO lbo : photo.getInStoreLocations()) {
+                                            for (PhotoCaptureLocationBO lbo : photo.getInStoreLocations()) {
                                                 if (lbo.getImageName() != null && !lbo.getImageName().isEmpty()) {
 
                                                     if (lbo.getImageName().equalsIgnoreCase(imagePathArray.get(i))) {
                                                         lbo.setImageName("");
-                                                        lbo.setImagepath("");
+                                                        lbo.setImagePath("");
                                                     }
                                                 }
                                             }

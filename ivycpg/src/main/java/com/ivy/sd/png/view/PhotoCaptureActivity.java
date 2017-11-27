@@ -27,15 +27,14 @@ import android.widget.Toast;
 
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
 import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.bo.PhotoTypeMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PhotoCaptureHelper;
-import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
@@ -86,10 +85,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     private BusinessModel mBModel;
     private static PhotoCaptureProductBO mPhotoCaptureBO = new PhotoCaptureProductBO();
-    private ArrayList<PhotoCaptureProductBO> mPhotoCaptureList = new ArrayList<>();
+    private ArrayList<PhotoCaptureProductBO> mPhotoCaptureList;
     private ArrayAdapter<PhotoCaptureProductBO> productSelectionAdapter;
     private ArrayAdapter<PhotoTypeMasterBO> photoTypeAdapter;
-    private ArrayAdapter<StandardListBO> locationAdapter;
+    private ArrayAdapter<PhotoCaptureLocationBO> locationAdapter;
     private ArrayList<String> totalImgList = new ArrayList<>();
     PhotoCaptureHelper mPhotoCaptureHelper;
 
@@ -138,7 +137,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
         if (isFromMenuClick) {
             mBModel.productHelper.getLocations();
-            mBModel.productHelper.downloadInStoreLocations();
+            mPhotoCaptureHelper.downloadLocations();
             mPhotoCaptureHelper.downloadPhotoCaptureProducts();
             mPhotoCaptureHelper.downloadPhotoTypeMaster();
             mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(mBModel.getRetailerMasterBO().getRetailerID());
@@ -253,7 +252,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         locationAdapter = new ArrayAdapter<>(this,
                 android.R.layout.select_dialog_singlechoice);
 
-        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
+        for (PhotoCaptureLocationBO temp : mPhotoCaptureHelper.getLocations())
             locationAdapter.add(temp);
 
         if (mPhotoCaptureHelper.getPhotoTypeMaster() != null)
@@ -285,12 +284,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             }
 
         if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            StandardListBO selectedId = locationAdapter
+            PhotoCaptureLocationBO selectedId = locationAdapter
                     .getItem(mBModel.productHelper.getmSelectedGLobalLocationIndex());
             mSelectedItem = mBModel.productHelper.getmSelectedGLobalLocationIndex();
             ClearAll();
             if (selectedId != null)
-                mLocationId = selectedId.getListID();
+                mLocationId = selectedId.getLocationId() + "";
         }
     }
 
@@ -307,16 +306,16 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
                 if (isPLType) {
                     if (editText_skuName.getText().toString().length() > 0) {
-                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSkuname(editText_skuName.getText().toString());
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSKUName(editText_skuName.getText().toString());
                     }
                     if (editText_ABV.getText().toString().length() > 0) {
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setAbv(editText_ABV.getText().toString());
                     }
                     if (editText_LotCode.getText().toString().length() > 0) {
-                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setLotcode(editText_LotCode.getText().toString());
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setLotCode(editText_LotCode.getText().toString());
                     }
                     if (editText_SeqNo.getText().toString().length() > 0) {
-                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSeqno(editText_SeqNo.getText().toString());
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSequenceNO(editText_SeqNo.getText().toString());
                     }
                 }
             }
@@ -339,10 +338,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     .setVisibility(View.VISIBLE);
             (findViewById(R.id.ll_pl))
                     .setVisibility(View.VISIBLE);
-            editText_skuName.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getSkuname());
+            editText_skuName.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getSKUName());
             editText_ABV.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getAbv());
-            editText_LotCode.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getLotcode());
-            editText_SeqNo.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getSeqno());
+            editText_LotCode.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getLotCode());
+            editText_SeqNo.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getSequenceNO());
         } else {
             (findViewById(R.id.card_view1))
                     .setVisibility(View.GONE);
@@ -517,7 +516,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (mBModel.productHelper.getInStoreLocation().size() < 2)
+                if (mPhotoCaptureHelper.getLocations().size() < 2)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
         } catch (Exception e) {
@@ -811,27 +810,29 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     public void onLoadModule() {
         try {
-            for (PhotoCaptureProductBO sku : mPhotoCaptureList) {
+            if (mPhotoCaptureList != null) {
+                for (PhotoCaptureProductBO sku : mPhotoCaptureList) {
 
-                if (sku.getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
-                    mPhotoCaptureBO = sku;
-                    mProductID = mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getProductID();
-                    updateProductList();
-                    setImageFromCamera(mProductID, mTypeID);
-                } else if (mFilterProductID == 0) {
-                    mPhotoCaptureBO = new PhotoCaptureProductBO();
-                    mPhotoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(mBModel.productHelper.locations));
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate("");
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate("");
-                    mProductID = 0;
-                    imgViewImage
-                            .setImageResource(R.drawable.no_image_available);
+                    if (sku.getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
+                        mPhotoCaptureBO = sku;
+                        mProductID = mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getProductID();
+                        updateProductList();
+                        setImageFromCamera(mProductID, mTypeID);
+                    } else if (mFilterProductID == 0) {
+                        mPhotoCaptureBO = new PhotoCaptureProductBO();
+                        mPhotoCaptureBO.setInStoreLocations(PhotoCaptureHelper.cloneLocationList(mPhotoCaptureHelper.getLocations()));
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate("");
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate("");
+                        mProductID = 0;
+                        imgViewImage
+                                .setImageResource(R.drawable.no_image_available);
 
-                    imageView_capture.setImageResource(android.R.color.transparent);
-                    imageView_reTake.setVisibility(View.GONE);
-                    imageView_dummyCapture.setVisibility(View.VISIBLE);
-                    toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        imageView_capture.setImageResource(android.R.color.transparent);
+                        imageView_reTake.setVisibility(View.GONE);
+                        imageView_dummyCapture.setVisibility(View.VISIBLE);
+                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
 
+                    }
                 }
             }
         } catch (Exception e) {
@@ -852,12 +853,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        StandardListBO selectedId = locationAdapter
+                        PhotoCaptureLocationBO selectedId = locationAdapter
                                 .getItem(item);
                         mSelectedItem = item;
                         ClearAll();
                         if (selectedId != null) {
-                            mLocationId = selectedId.getListID();
+                            mLocationId = selectedId.getLocationId() + "";
                         }
                         dialog.dismiss();
 
@@ -896,8 +897,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 for (int j = 0; j < lst.size(); j++)
                     if (lst.get(j).getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
                         lst.get(j).getInStoreLocations().get(mSelectedItem).setImageName(mImageName);
-                        lst.get(j).getInStoreLocations().get(mSelectedItem).setImagepath(_imagePath);
-                        Commons.print("location id" + mBModel.productHelper.getInStoreLocation().get(mSelectedItem).getListID() + " image" + mImageName + " listid" + mLocationId);
+                        lst.get(j).getInStoreLocations().get(mSelectedItem).setImagePath(_imagePath);
                         break;
                     }
 
@@ -1052,10 +1052,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     Toast.makeText(PhotoCaptureActivity.this, "Enter Sequence Number", Toast.LENGTH_SHORT).show();
                     editText_SeqNo.requestFocus();
                 } else {
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSkuname(mSkuName);
+                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSKUName(mSkuName);
                     mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setAbv(mABV);
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setLotcode(mLotCode);
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSeqno(mSeqNo);
+                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setLotCode(mLotCode);
+                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setSequenceNO(mSeqNo);
 
                     new SavePhotoDetails().execute();
                 }
