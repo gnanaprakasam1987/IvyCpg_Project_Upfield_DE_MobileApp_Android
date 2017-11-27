@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -90,7 +91,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     private ArrayAdapter<PhotoTypeMasterBO> photoTypeAdapter;
     private ArrayAdapter<StandardListBO> locationAdapter;
     private ArrayList<String> totalImgList = new ArrayList<>();
-
+    PhotoCaptureHelper mPhotoCaptureHelper;
 
 
     @Override
@@ -100,6 +101,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
+        mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
@@ -137,9 +139,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         if (isFromMenuClick) {
             mBModel.productHelper.getLocations();
             mBModel.productHelper.downloadInStoreLocations();
-            mBModel.photoCaptureHelper.downloadPhotoCaptureProducts();
-            mBModel.photoCaptureHelper.downloadPhotoTypeMaster();
-            mBModel.photoCaptureHelper.loadPhotoCaptureDetailsInEditMode(mBModel.getRetailerMasterBO().getRetailerID());
+            mPhotoCaptureHelper.downloadPhotoCaptureProducts();
+            mPhotoCaptureHelper.downloadPhotoTypeMaster();
+            mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(mBModel.getRetailerMasterBO().getRetailerID());
         }
 
 
@@ -161,9 +163,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         productSelectionAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout);
         productSelectionAdapter.add(new PhotoCaptureProductBO(0, getResources().getString(R.string.select_prod)));
-        if (mBModel.photoCaptureHelper.getPhotoCaptureProductList() != null &&
-                mBModel.photoCaptureHelper.getPhotoCaptureProductList().size() != 0) {
-            for (PhotoCaptureProductBO bo : mBModel.photoCaptureHelper.getPhotoCaptureProductList()) {
+        if (mPhotoCaptureHelper.getPhotoCaptureProductList() != null &&
+                mPhotoCaptureHelper.getPhotoCaptureProductList().size() != 0) {
+            for (PhotoCaptureProductBO bo : mPhotoCaptureHelper.getPhotoCaptureProductList()) {
                 productSelectionAdapter.add(bo);
             }
         }
@@ -242,9 +244,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         // (title support click)
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Used to hide the appLogo icon from action bar
-        // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-        //getSupportActionBar().setTitle(mBModel.mSelectedActivityName);
         getSupportActionBar().setIcon(null);
 
 
@@ -256,11 +256,11 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
             locationAdapter.add(temp);
 
-        if (mBModel.photoCaptureHelper.getPhotoTypeMaster() != null)
-            if (mBModel.photoCaptureHelper.getPhotoTypeMaster().size() > 0) {
+        if (mPhotoCaptureHelper.getPhotoTypeMaster() != null)
+            if (mPhotoCaptureHelper.getPhotoTypeMaster().size() > 0) {
                 photoTypeAdapter = new ArrayAdapter<>(
                         this, R.layout.spinner_bluetext_layout,
-                        mBModel.photoCaptureHelper.getPhotoTypeMaster());
+                        mPhotoCaptureHelper.getPhotoTypeMaster());
                 photoTypeAdapter
                         .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
@@ -381,7 +381,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 imageView_dummyCapture.setVisibility(View.VISIBLE);
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
 
-                setImagefromCamera(mProductID, mTypeID);
+                setImageFromCamera(mProductID, mTypeID);
                 mBModel.photocount++;
             } else {
                 getPhotoBo("", "");
@@ -389,22 +389,20 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 imgViewImage.setImageResource(0);
 
                 imageView_capture.setImageResource(0);
-                //imageView_capture.setVisibility(View.INVISIBLE);
                 imageView_capture.setImageResource(android.R.color.transparent);
                 imageView_reTake.setVisibility(View.GONE);
                 imageView_dummyCapture.setVisibility(View.VISIBLE);
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
 
-                setImagefromCamera(mProductID, mTypeID);
+                setImageFromCamera(mProductID, mTypeID);
             }
         }
         isClicked = true;
     }
 
-    private void setImagefromCamera(int productID, int photoTypeID) {
-        Commons.print("selected " + mSelectedItem);
+    private void setImageFromCamera(int productID, int photoTypeID) {
 
-        for (PhotoTypeMasterBO temp : mBModel.photoCaptureHelper.getPhotoTypeMaster()) {
+        for (PhotoTypeMasterBO temp : mPhotoCaptureHelper.getPhotoTypeMaster()) {
 
             if (temp.getPhotoTypeId() == photoTypeID) {
                 ArrayList<PhotoCaptureProductBO> tem1 = temp.getPhotoCaptureProductList();
@@ -428,7 +426,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                     .setImageResource(R.drawable.no_image_available);
 
 
-//                            imageView_capture.setVisibility(View.INVISIBLE);
                             imageView_capture.setImageResource(android.R.color.transparent);
                             imageView_reTake.setVisibility(View.GONE);
                             imageView_dummyCapture.setVisibility(View.VISIBLE);
@@ -440,7 +437,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 .setImageResource(R.drawable.no_image_available);
 
 
-//                        imageView_capture.setVisibility(View.INVISIBLE);
                         imageView_capture.setImageResource(android.R.color.transparent);
                         imageView_reTake.setVisibility(View.GONE);
                         imageView_dummyCapture.setVisibility(View.VISIBLE);
@@ -545,7 +541,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     Gallery.class);
             mIntent.putExtra("from", "photo_cap");
             startActivity(mIntent);
-            // finish();
             return true;
         } else if (i == R.id.menu_save) {
             addToGallery();
@@ -746,7 +741,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mBModel.photoCaptureHelper.savePhotocaptureDetails(mRetailerId);
+                mPhotoCaptureHelper.savePhotoCaptureDetails(mRetailerId);
 
                 mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO);
@@ -761,9 +756,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPreExecute() {
-            /*progressDialogue = ProgressDialog.show(PhotoCaptureActivity.this,
-                    DataMembers.SD, getResources().getString(R.string.saving),
-					true, false);*/
             builder = new AlertDialog.Builder(PhotoCaptureActivity.this);
 
             customProgressDialog(builder, getResources().getString(R.string.saving));
@@ -776,10 +768,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
 
             alertDialog.dismiss();
-            //	progressDialogue.dismiss();
             if (result == Boolean.TRUE) {
 
 
@@ -789,7 +779,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                         null, new CommonDialog.positiveOnClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
-                        if (BusinessModel.isPhotoCaptureFromHomeScreen) {
+                        if (isFromSurvey) {
+                            finish();
+                        } else {
                             Intent intent = new Intent(PhotoCaptureActivity.this,
                                     HomeScreenTwo.class);
 
@@ -801,9 +793,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
                             startActivity(intent);
                             finish();
-                        } else if (isFromSurvey) {
-                            finish();
                         }
+
                     }
                 }, new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -825,21 +816,18 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 if (sku.getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
                     mPhotoCaptureBO = sku;
                     mProductID = mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getProductID();
-                    //tvProduct.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getProductName() + "");
                     updateProductList();
-                    setImagefromCamera(mProductID, mTypeID);
+                    setImageFromCamera(mProductID, mTypeID);
                 } else if (mFilterProductID == 0) {
                     mPhotoCaptureBO = new PhotoCaptureProductBO();
                     mPhotoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(mBModel.productHelper.locations));
                     mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate("");
                     mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate("");
                     mProductID = 0;
-                    //  setImagefromCamera(mProductID, mTypeID);
                     imgViewImage
                             .setImageResource(R.drawable.no_image_available);
 
                     imageView_capture.setImageResource(android.R.color.transparent);
-                    //imageView_capture.setVisibility(View.INVISIBLE);
                     imageView_reTake.setVisibility(View.GONE);
                     imageView_dummyCapture.setVisibility(View.VISIBLE);
                     toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
@@ -886,7 +874,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
 
         imageView_capture.setImageResource(android.R.color.transparent);
-        //imageView_capture.setVisibility(View.INVISIBLE);
         imageView_reTake.setVisibility(View.GONE);
         imageView_dummyCapture.setVisibility(View.VISIBLE);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
@@ -898,8 +885,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    private void getPhotoBo(String _imagename, String _imagePath) {
-        ArrayList<PhotoTypeMasterBO> list = mBModel.photoCaptureHelper.getPhotoTypeMaster();
+    private void getPhotoBo(String mImageName, String _imagePath) {
+        ArrayList<PhotoTypeMasterBO> list = mPhotoCaptureHelper.getPhotoTypeMaster();
         ArrayList<PhotoCaptureProductBO> lst;
 
         int zize = list.size();
@@ -908,9 +895,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 lst = list.get(i).getPhotoCaptureProductList();
                 for (int j = 0; j < lst.size(); j++)
                     if (lst.get(j).getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
-                        lst.get(j).getInStoreLocations().get(mSelectedItem).setImageName(_imagename);
+                        lst.get(j).getInStoreLocations().get(mSelectedItem).setImageName(mImageName);
                         lst.get(j).getInStoreLocations().get(mSelectedItem).setImagepath(_imagePath);
-                        Commons.print("location id" + mBModel.productHelper.getInStoreLocation().get(mSelectedItem).getListID() + " image" + _imagename + " listid" + mLocationId);
+                        Commons.print("location id" + mBModel.productHelper.getInStoreLocation().get(mSelectedItem).getListID() + " image" + mImageName + " listid" + mLocationId);
                         break;
                     }
 
@@ -920,7 +907,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     }
 
 
-    //mayuri--capturepic--4/3/2017
+    /**
+     * Capture Image
+     */
     public void capturePic() {
         if (mBModel.isExternalStorageAvailable()) {
             if (mProductID != 0) {
@@ -1006,7 +995,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                             R.string.sdcard_is_not_ready_to_capture_img),
                     Toast.LENGTH_SHORT).show();
         }
-        // return true;
     }
 
     private void setPic(String path) {
@@ -1021,7 +1009,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         //BitmapFactory.decode
         BitmapFactory.decodeFile(path, bmOptions);
 
-        //BitmapFactory.decodeByteArray(imgarr,null,null,bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -1043,7 +1030,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     public void addToGallery() {
         String mSkuName, mABV, mLotCode, mSeqNo, mFeedback;
-        if (mBModel.photoCaptureHelper.hasPhotoTaken(mFilterProductID, mTypeID)) {
+        if (mPhotoCaptureHelper.hasPhotoTaken(mFilterProductID, mTypeID)) {
             mFeedback = editText_Feedback.getText().toString();
             if (mFeedback.length() > 0)
                 mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFeedback(mFeedback);
@@ -1078,7 +1065,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         } else {
             mBModel = (BusinessModel) getApplicationContext();
             mBModel.setContext(this);
-            if (!mBModel.photoCaptureHelper.hasPhotoTaken(mFilterProductID, mTypeID) &&
+            if (!mPhotoCaptureHelper.hasPhotoTaken(mFilterProductID, mTypeID) &&
                     productSelectionSpinner.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.select_prod))
                     && spinner_photoType.getSelectedItem().toString().equalsIgnoreCase("--Select PhotoType--")
                     && editText_Feedback.length() == 0) {
@@ -1089,7 +1076,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                         getResources().getString(R.string.take_photos_to_save), 0);
             }
         }
-        //return true;
     }
 
     private boolean isMaxPhotos() {

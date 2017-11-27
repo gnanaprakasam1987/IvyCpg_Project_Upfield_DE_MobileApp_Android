@@ -18,19 +18,20 @@ import java.util.ArrayList;
 
 /**
  * Created by abbasaniefa on 11/07/17.
+ * Photo capture screen specific helper
  */
 
 public class PhotoCaptureHelper {
 
     private final Context context;
-    private final BusinessModel bmodel;
+    private final BusinessModel mBModel;
     private static PhotoCaptureHelper instance = null;
     private ArrayList<PhotoCaptureProductBO> photoCaptureProductList;
     private ArrayList<PhotoTypeMasterBO> photoTypeMaster;
 
     private PhotoCaptureHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        mBModel = (BusinessModel) context;
     }
 
     public static PhotoCaptureHelper getInstance(Context context) {
@@ -96,8 +97,8 @@ public class PhotoCaptureHelper {
 
             for (PhotoCaptureProductBO photoCaptureBO : typeMasterBO.getPhotoCaptureProductList()) {
 
-                if (bmodel.productHelper.locations != null)
-                    photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(bmodel.productHelper.locations));
+                if (mBModel.productHelper.locations != null)
+                    photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(mBModel.productHelper.locations));
                 if (photoCaptureBO.getInStoreLocations() != null)
                     for (LocationBO lbo : photoCaptureBO.getInStoreLocations()) {
                         lbo.setProductID(photoCaptureBO.getProductID());
@@ -117,7 +118,7 @@ public class PhotoCaptureHelper {
                             .setPhotoCaptureProductList(cloneLocationList(getPhotoCaptureProductList()));
                     for (PhotoCaptureProductBO photoCaptureBO : typeMasterBO.getPhotoCaptureProductList()) {
 
-                        photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(bmodel.productHelper.locations));
+                        photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(mBModel.productHelper.locations));
                         for (LocationBO lbo : photoCaptureBO.getInStoreLocations()) {
                             lbo.setProductID(photoCaptureBO.getProductID());
                             lbo.setProductName(photoCaptureBO.getProductName());
@@ -156,7 +157,7 @@ public class PhotoCaptureHelper {
      *
      * @param retailerID retailerID
      */
-    public void savePhotocaptureDetails(String retailerID) {
+    public void savePhotoCaptureDetails(String retailerID) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         Cursor cursor;
         try {
@@ -167,23 +168,23 @@ public class PhotoCaptureHelper {
             // delete transaction if exist
             cursor = db.selectSQL("SELECT Uid FROM "
                     + DataMembers.actPhotocapture + " WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + mBModel.getRetailerMasterBO().getRetailerID()
                     + " AND DistributorID="
-                    + bmodel.getRetailerMasterBO().getDistributorId()
+                    + mBModel.getRetailerMasterBO().getDistributorId()
                     + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL(DataMembers.actPhotocapture,
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
                 cursor.close();
             }
 
-            String uid = QT(bmodel.userMasterHelper.getUserMasterBO()
+            String uid = QT(mBModel.userMasterHelper.getUserMasterBO()
                     .getDistributorid()
                     + ""
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
 
             for (PhotoTypeMasterBO photoTypeBo : getPhotoTypeMaster()) {
@@ -208,12 +209,12 @@ public class PhotoCaptureHelper {
                             sBuffer.append(retailerID);
                             sBuffer.append(",");
                             sBuffer.append(DatabaseUtils
-                                    .sqlEscapeString(bmodel.retailerMasterBO
+                                    .sqlEscapeString(mBModel.retailerMasterBO
                                             .getRetailerName()));
                             sBuffer.append(",");
                             sBuffer.append("1");
                             sBuffer.append(",");
-                            if (bmodel.configurationMasterHelper.SHOW_DATE_BTN) {
+                            if (mBModel.configurationMasterHelper.SHOW_DATE_BTN) {
                                 sBuffer.append(QT(DateUtil.convertToServerDateFormat(
                                         lbo.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
@@ -238,7 +239,7 @@ public class PhotoCaptureHelper {
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getSeqno()));
                             sBuffer.append(",");
-                            sBuffer.append(bmodel.retailerMasterBO
+                            sBuffer.append(mBModel.retailerMasterBO
                                     .getDistributorId());
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getFeedback()));
@@ -295,7 +296,7 @@ public class PhotoCaptureHelper {
         try {
             db.openDataBase();
             String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
-                    + retailerID + " And DistributorID=" + bmodel.getRetailerMasterBO().getDistributorId();
+                    + retailerID + " And DistributorID=" + mBModel.getRetailerMasterBO().getDistributorId();
             cursor = db.selectSQL(sql1);
 
             if (cursor != null) {
