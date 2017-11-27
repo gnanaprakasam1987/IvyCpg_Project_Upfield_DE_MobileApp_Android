@@ -45,6 +45,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
@@ -56,7 +57,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class PriceTrackFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener {
+        BrandDialogInterface, OnClickListener, CompetitorFilterInterface {
 
     private BusinessModel bmodel;
     private static final String BRAND = "Brand";
@@ -77,7 +78,10 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     Button btnSave;
     FrameLayout drawer;
     private boolean isFromChild;
-
+    private String selectedCompetitorId = "";
+    private Vector<LevelBO> parentidList;
+    private ArrayList<Integer> mAttributeProducts;
+    private String filtertext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -159,7 +163,15 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     }
                 }
             }
+            if (bmodel.productHelper.getCompetitorFilterList() != null && bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+                menu.findItem(R.id.menu_competitor_filter).setVisible(true);
+            }
 
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && !selectedCompetitorId.equals("")) {
+                menu.findItem(R.id.menu_competitor_filter).setIcon(
+                        R.drawable.ic_action_filter_select);
+
+            }
             if (drawerOpen || navDrawerOpen)
                 menu.clear();
         } catch (Exception e) {
@@ -197,8 +209,41 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
             return true;
+        } else if (i == R.id.menu_competitor_filter) {
+            competitorFilterClickedFragment();
+            getActivity().supportInvalidateOptionsMenu();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void competitorFilterClickedFragment() {
+        try {
+            QUANTITY = null;
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getActivity()
+                    .getSupportFragmentManager();
+            CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
+                    .findFragmentByTag("competitor filter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+
+            // set Fragmentclass Arguments
+            CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
+            Bundle b = new Bundle();
+            b.putString("selectedCompetitorId", selectedCompetitorId);
+            fragobj.setCompetitorFilterInterface(this);
+            fragobj.setArguments(b);
+            ft.replace(R.id.right_drawer, fragobj, "competitor filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
     }
 
     @Override
@@ -450,6 +495,32 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
     }
 
+    @Override
+    public void updateCompetitorProducts(String filterId) {
+        selectedCompetitorId = filterId;
+        if (mylist != null) {
+            mylist.clear();
+        }
+
+            Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
+            if (filterId != null && !filterId.isEmpty()) {
+                for (ProductMasterBO sku : items) {
+                    if (Integer.parseInt(filterId) == sku.getCompParentId()) {
+                        mylist.add(sku);
+                    }
+                }
+            } else {
+                mylist.addAll(items);
+            }
+            mDrawerLayout.closeDrawers();
+            MyAdapter adapter = new MyAdapter(mylist);
+            lv.setAdapter(adapter);
+        if (!selectedCompetitorId.equals("")) {
+            mSelectedIdByLevelId = new HashMap<>();
+        }
+        getActivity().invalidateOptionsMenu();
+    }
+
     class SaveAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 
         private AlertDialog.Builder builder;
@@ -563,7 +634,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     private void onLoadModule(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
-
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -573,98 +643,101 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         mylist = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 0) {
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
-                            mylist.add(sku);
+                if (mAttributeProducts != null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1) &&
+                                    (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                mylist.add(sku);
+                            }
+                        }
+                    }
+                } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
+                                mylist.add(sku);
+                            }
+                        }
+                    }
+                } else if (mAttributeProducts != null && parentidList.isEmpty()) {
+                    for (int pid : mAttributeProducts) {
+                        for (ProductMasterBO sku : items) {
+                            if ((pid == Integer.parseInt(sku.getProductID())) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
+                                mylist.add(sku);
+                            }
                         }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
-                            mylist.add(sku);
-                        }
-                    }
-                }
-            } else if (mAttributeProducts != null && parentidList.isEmpty()) {
-                for (int pid : mAttributeProducts) {
-                    for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
-                            mylist.add(sku);
-                        }
-                    }
-                }
-            }
 
-        } else if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 1) {
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) &&
-                                (sku.getIsSaleable() == 1 && sku.getOwn() == 0) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
-                            mylist.add(sku);
+            } else if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 1) {
+                if (mAttributeProducts != null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) &&
+                                    (sku.getIsSaleable() == 1 && sku.getOwn() == 0) &&
+                                    (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                mylist.add(sku);
+                            }
+                        }
+                    }
+                } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) &&
+                                    (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
+                                mylist.add(sku);
+                            }
+                        }
+                    }
+                } else if (mAttributeProducts != null && parentidList.isEmpty()) {
+                    for (int pid : mAttributeProducts) {
+                        for (ProductMasterBO sku : items) {
+                            if ((pid == Integer.parseInt(sku.getProductID())) &&
+                                    (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
+                                mylist.add(sku);
+                            }
                         }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) &&
-                                (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
-                            mylist.add(sku);
+            } else if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 2) {
+                if (mAttributeProducts != null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) &&
+                                    (sku.getIsSaleable() == 1) &&
+                                    (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                mylist.add(sku);
+                            }
                         }
                     }
-                }
-            } else if (mAttributeProducts != null && parentidList.isEmpty()) {
-                for (int pid : mAttributeProducts) {
-                    for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) &&
-                                (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
-                            mylist.add(sku);
+                } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
+                    for (LevelBO levelBO : parentidList) {
+                        for (ProductMasterBO sku : items) {
+                            if ((levelBO.getProductID() == sku.getParentid()) &&
+                                    (sku.getIsSaleable() == 1)) {
+                                mylist.add(sku);
+                            }
+                        }
+                    }
+                } else if (mAttributeProducts != null && parentidList.isEmpty()) {
+                    for (int pid : mAttributeProducts) {
+                        for (ProductMasterBO sku : items) {
+                            if ((pid == Integer.parseInt(sku.getProductID())) &&
+                                    (sku.getIsSaleable() == 1)) {
+                                mylist.add(sku);
+                            }
                         }
                     }
                 }
             }
-        } else if (bmodel.configurationMasterHelper.LOAD_PRICE_COMPETITOR == 2) {
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) &&
-                                (sku.getIsSaleable() == 1) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
-                            mylist.add(sku);
-                        }
-                    }
-                }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO sku : items) {
-                        if ((levelBO.getProductID() == sku.getParentid()) &&
-                                (sku.getIsSaleable() == 1)) {
-                            mylist.add(sku);
-                        }
-                    }
-                }
-            } else if (mAttributeProducts != null && parentidList.isEmpty()) {
-                for (int pid : mAttributeProducts) {
-                    for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) &&
-                                (sku.getIsSaleable() == 1)) {
-                            mylist.add(sku);
-                        }
-                    }
-                }
-            }
+            MyAdapter adapter = new MyAdapter(mylist);
+            lv.setAdapter(adapter);
+        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+            selectedCompetitorId = "";
         }
 
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        MyAdapter adapter = new MyAdapter(mylist);
-        lv.setAdapter(adapter);
+
     }
 
     private void onLoadModule() {
@@ -1382,14 +1455,18 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
-        onLoadModule(mParentIdList, mSelectedIdByLevelId, mAttributeProducts);
+        this.parentidList = parentidList;
+        this.mAttributeProducts = mAttributeProducts;
+        this.filtertext = filtertext;
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        onLoadModule(parentidList, mSelectedIdByLevelId, mAttributeProducts);
     }
 
 
     private void FiveFilterFragment() {
         try {
+            QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
-
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm

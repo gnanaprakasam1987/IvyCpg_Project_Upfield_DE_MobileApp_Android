@@ -1449,8 +1449,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper.downloadInStoreLocations();
 
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR)
+                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
+                    if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
+                        bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
+                    else
+                        bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
+                }
 
                 if (bmodel.productHelper.getTaggedProducts().size() > 0) {
                     if (bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
@@ -2747,8 +2752,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 // Load Price related configurations.
                 bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_COMPETITOR)
+                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
+                    bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                }
                 bmodel.mPriceTrackingHelper.clearPriceCheck();
                 bmodel.mPriceTrackingHelper.loadPriceTransaction();
 
@@ -2802,6 +2809,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
+                bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
 
                 bmodel.mPriceTrackingHelper.clearPriceCheck();
                 bmodel.mPriceTrackingHelper.loadPriceTransaction();

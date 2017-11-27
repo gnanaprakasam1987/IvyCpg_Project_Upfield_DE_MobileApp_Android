@@ -3928,6 +3928,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             bmodel.productHelper.downloadTaggedProducts(MENU_NEW_RETAILER);
             bmodel.productHelper.downloadCompetitorProducts("MENU_STK_ORD");
+            bmodel.productHelper.downloadCompetitorTaggedProducts(MENU_NEW_RETAILER);
 
             /** Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();

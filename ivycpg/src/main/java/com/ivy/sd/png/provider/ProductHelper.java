@@ -18,6 +18,7 @@ import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ChildLevelBo;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -2477,7 +2478,7 @@ public class ProductHelper {
             StringBuilder productIds = new StringBuilder();
             Cursor c2 = db
                     .selectSQL("SELECT pid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 1" +
                             " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
                             "WHERE PM.TaggingTypelovID = " + moduletypeid +
                             " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
@@ -6837,20 +6838,48 @@ public class ProductHelper {
     }
 
     public void downloadCompetitorProducts(String moduleCode) {
-
+        if (competitorProductMaster != null) {
+            competitorProductMaster.clear();
+        }
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
+            int mFiltrtLevel = 0;
+            int mContentLevel = 0;
+
+            Cursor filterCur = db
+                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
+                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  " + bmodel.configurationMasterHelper.COMPETITOR_FILTER_TYPE +
+                            " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
+                            "where Sequence = (Select max(Sequence) from ProductLevel))");
+
+            if (filterCur != null) {
+                if (filterCur.moveToNext()) {
+                    mFiltrtLevel = filterCur.getInt(0);
+                    mContentLevel = filterCur.getInt(1);
+                }
+                filterCur.close();
+            }
+
+            int loopEnd = mContentLevel - mFiltrtLevel + 1;
+
+            String sql;
+            sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
+                    + ".CPID as parentId FROM CompetitorProductMaster A1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                        + ".CPID = A" + (i - 1) + ".CPTid";
             Cursor cur = db
-                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID FROM CompetitorProductMaster CP"
-                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
+                    .selectSQL(sql
+                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
                             + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                             + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                            "group by CP.CPID");
+                            " group by A1.CPID");
 
             if (cur != null) {
+
                 while (cur.moveToNext()) {
                     ProductMasterBO product = new ProductMasterBO();
                     product.setProductID(cur.getString(0));
@@ -6867,7 +6896,7 @@ public class ProductHelper {
                     product.setPcUomid(cur.getInt(5));
                     product.setProductCode(cur.getString(6));
                     product.setOwnPID(cur.getString(7));
-                    product.setCompanyId(cur.getInt(8));
+                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
 
                     // for level skiping
                     ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
@@ -6881,23 +6910,16 @@ public class ProductHelper {
                         product.getLocations().get(i)
                                 .setNearexpiryDate(cloneDateList(dateList));
                     }
-                    bmodel.productHelper.getTaggedProducts().add(product);
-                    mTaggedProductById.put(product.getProductID(), product);
+                    /*bmodel.productHelper.getTaggedProducts().add(product);
+                    mTaggedProductById.put(product.getProductID(), product);*/
+                    competitorProductMaster.add(product);
+
                 }
                 cur.close();
+
             }
             db.closeDB();
 
-            Vector<ProductMasterBO> tagItems = bmodel.productHelper.getTaggedProducts();
-            if (tagItems != null)
-                for (ProductMasterBO tagBo : tagItems) {
-                    if (tagBo.getOwn() == 0 && bmodel.productHelper.getFilterColor("Filt23") != 0) {
-                        tagBo.setTextColor(bmodel.productHelper.getFilterColor("Filt23"));
-                    } else {
-                        if (tagBo.getOwn() == 0)
-                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
-                    }
-                }
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -8879,7 +8901,169 @@ public class ProductHelper {
         return isAvailable;
     }
 
+    public Vector<ProductMasterBO> getCompetitorProductMaster() {
+        return competitorProductMaster;
+    }
 
+    private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
+
+    /**
+     * get competitor tagged products and update the productBO.
+     *
+     * @param mMenuCode menu code
+     */
+    public void downloadCompetitorTaggedProducts(String mMenuCode) {
+        try {
+
+            String productIds = getCompetitorTaggingDetails(mMenuCode);
+            List<String> mSKUId = new ArrayList<>();
+
+            mSKUId = Arrays.asList(productIds.split(","));
+
+            if (mTaggedProducts == null) {
+                mTaggedProducts = new Vector<ProductMasterBO>();
+            }
+            if (mTaggedProductById == null) {
+                mTaggedProductById = new HashMap<String, ProductMasterBO>();
+            }
+            String competitorParentIds = "";
+            if (productIds != null && !productIds.trim().equals("")) {
+                for (ProductMasterBO sku : getCompetitorProductMaster()) {
+                    if (mSKUId.contains(sku.getProductID())) {
+                        mTaggedProducts.add(sku);
+                        mTaggedProductById.put(sku.getProductID(), sku);
+                        competitorParentIds += sku.getCompParentId() + ",";
+                    }
+                }
+            } else {
+                for (ProductMasterBO sku : getCompetitorProductMaster()) {
+                    mTaggedProducts.add(sku);
+                    mTaggedProductById.put(sku.getProductID(), sku);
+                    competitorParentIds += sku.getCompParentId() + ",";
+                }
+            }
+            if (competitorParentIds.endsWith(",")) {
+                competitorParentIds = competitorParentIds.substring(0, competitorParentIds.length() - 1);
+            }
+            if (!competitorParentIds.equals("")) {
+                getCompetitorFilter(competitorParentIds);
+            }
+
+            Vector<ProductMasterBO> tagItems = getTaggedProducts();
+            if (tagItems != null)
+                for (ProductMasterBO tagBo : tagItems) {
+                    if (tagBo.getOwn() == 0 && getFilterColor("Filt23") != 0) {
+                        tagBo.setTextColor(getFilterColor("Filt23"));
+                    } else {
+                        if (tagBo.getOwn() == 0)
+                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
+                    }
+                }
+        } catch (Exception e) {
+            Commons.printException("downloadTaggedProducts", e);
+        }
+
+    }
+
+    /**
+     * Method will return competitor tagged products list as a string with comma separator.
+     *
+     * @param taggingType tagging type
+     * @return productId with comma separated string.
+     */
+    public String getCompetitorTaggingDetails(String taggingType) {
+        try {
+            String mappingId = "0", moduletypeid = "0", locationId = "0";
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+
+            Cursor c1 = db
+                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
+                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
+                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+
+            if (c1 != null) {
+                if (c1.moveToNext()) {
+
+
+                    if (c1.getString(0).equals("CHANNEL")) {
+                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+
+                        if (c1.getInt(3) != 0)
+                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+
+                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
+                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
+                    else if (c1.getString(0).equals("LOCATION")) {
+                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                    } else if (c1.getString(0).equals("USER"))
+                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
+
+                    moduletypeid = c1.getString(1);
+                }
+                c1.close();
+            }
+
+            StringBuilder productIds = new StringBuilder();
+            Cursor c2 = db
+                    .selectSQL("SELECT pid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 0" +
+                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
+                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
+                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+
+            if (c2 != null) {
+                while (c2.moveToNext()) {
+                    if (!productIds.toString().equals(""))
+                        productIds.append(",");
+                    productIds.append(c2.getInt(0));
+                }
+                c2.close();
+            }
+            db.closeDB();
+
+            return productIds.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public ArrayList<CompetitorFilterLevelBO> getCompetitorFilterList() {
+        return competitorFilterList;
+    }
+
+    ArrayList<CompetitorFilterLevelBO> competitorFilterList;
+
+    private void getCompetitorFilter(String competitorParentIds) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            Cursor c = db.selectSQL("Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid" +
+                    " where CPID in (" + competitorParentIds + ")");
+            if (c.getCount() > 0) {
+                CompetitorFilterLevelBO competitorBO;
+                competitorFilterList = new ArrayList<CompetitorFilterLevelBO>();
+                while (c.moveToNext()) {
+                    competitorBO = new CompetitorFilterLevelBO();
+                    competitorBO.setProductId(c.getString(0));
+                    competitorBO.setProductName(c.getString(1));
+                    competitorBO.setLevelName(c.getString(2));
+                    competitorFilterList.add(competitorBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+    }
 }
 
 

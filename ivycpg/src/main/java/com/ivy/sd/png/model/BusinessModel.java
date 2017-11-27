@@ -2748,7 +2748,7 @@ public class BusinessModel extends Application {
      * This method will called to store both non-productive as well as Non-Visit
      * reason.
      */
-    public void saveNonproductivereason(NonproductivereasonBO outlet) {
+    public void saveNonproductivereason(NonproductivereasonBO outlet, String remarks) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2782,13 +2782,13 @@ public class BusinessModel extends Application {
                             + " and RouteID="
                             + getRetailerMasterBO().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks";
 
             values = id + "," + QT(getRetailerMasterBO().getRetailerID()) + ","
                     + getRetailerMasterBO().getBeatID() + ","
                     + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
                     + "," + QT(getStandardListId(outlet.getReasontype())) + ","
-                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath());
+                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
@@ -2809,7 +2809,7 @@ public class BusinessModel extends Application {
                         + QT(outlet.getCollectionReasonID())
                         + ","
                         + QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath());
+                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 

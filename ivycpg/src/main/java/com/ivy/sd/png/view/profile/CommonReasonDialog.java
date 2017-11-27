@@ -6,12 +6,17 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
@@ -80,6 +85,7 @@ public class CommonReasonDialog extends Dialog {
         cancelReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard();
                 dismiss();
             }
         });
@@ -87,6 +93,7 @@ public class CommonReasonDialog extends Dialog {
         addReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard();
                 try {
                     if (listLoad.equals("nonVisit")) {
                         temp = selected_reason;
@@ -95,15 +102,19 @@ public class CommonReasonDialog extends Dialog {
                         nonproductive.setReasontype("NV");
                         nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
                                 .getDownloadDate());
-                        bmodel.saveNonproductivereason(nonproductive);
+                        bmodel.saveNonproductivereason(nonproductive, "");
                         bmodel.getRetailerMasterBO().setHasNoVisitReason(true);
                         addNonVisitListener.addReatailerReason();
                         dismiss();
                     } else if (listLoad.equals("deviate")) {
-                        bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
-                                selected_reason, bmodel.retailerMasterBO.getBeatID());
-                        addNonVisitListener.addReatailerReason();
-                        dismiss();
+                        if (selected_reason.getReasonID().equals("0") && remarks.equals("")) {
+                            Toast.makeText(context, context.getResources().getString(R.string.enter_remarks), Toast.LENGTH_LONG).show();
+                        } else {
+                            bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
+                                    selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
+                            addNonVisitListener.addReatailerReason();
+                            dismiss();
+                        }
                     }
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -119,13 +130,20 @@ public class CommonReasonDialog extends Dialog {
             reasonVisitTxt.setVisibility(View.GONE);
             reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getNonVisitReasonMaster()));
         } else if (listLoad.equals("deviate")) {
+            ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
+            deviateReasons.addAll(bmodel.reasonHelper.getDeviatedReturnMaster());
             reasonVisitTxt.setVisibility(View.VISIBLE);
-            reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getDeviatedReturnMaster()));
+            ReasonMaster reason = new ReasonMaster();
+            reason.setReasonID("0");
+            reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+            deviateReasons.add(reason);
+            reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
         }
 
     }
 
     private ReasonMaster selected_reason;
+    private String remarks = "";
 
     class ReasonAdapter extends RecyclerView.Adapter<ReasonAdapter.ViewHolder> {
 
@@ -165,6 +183,30 @@ public class CommonReasonDialog extends Dialog {
                 }
             });
             holder.reason_radio_btn.setChecked(position == lastCheckedPosition);
+            if (holder.reason_radio_btn.isChecked() && holder.reason_radio_btn.getText().toString().equals("Others")) {
+                holder.edt_other_remarks.setVisibility(View.VISIBLE);
+            } else {
+                hideKeyboard();
+                remarks = "";
+                holder.edt_other_remarks.setText("");
+                holder.edt_other_remarks.setVisibility(View.GONE);
+            }
+            holder.edt_other_remarks.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    remarks = s.toString();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
 
         }
@@ -184,11 +226,13 @@ public class CommonReasonDialog extends Dialog {
             AppCompatRadioButton reason_radio_btn;
             ReasonMaster reasonObj;
             StateListDrawable mState1;
+            EditText edt_other_remarks;
 
             public ViewHolder(View v) {
                 super(v);
                 reason_radio_btn = (AppCompatRadioButton) v.findViewById(R.id.reason_radio_btn);
                 reason_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                edt_other_remarks = (EditText) v.findViewById(R.id.edt_other_remarks);
 //                mState1 = new StateListDrawable();
 //
 //                mState1.addState(new int[]{android.R.attr.state_pressed},
@@ -211,5 +255,13 @@ public class CommonReasonDialog extends Dialog {
 
     public void setNonvisitListener(AddNonVisitListener listener) {
         this.addNonVisitListener = listener;
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
