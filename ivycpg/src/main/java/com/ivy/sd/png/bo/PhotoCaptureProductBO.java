@@ -8,10 +8,7 @@ public class PhotoCaptureProductBO {
     private String productName;
     private ArrayList<LocationBO> inStoreLocations;
     private int productID;
-
-
-
-    // For Adhoc Photocapturing
+    // For ADHOC PhotoCapturing
     private String retailerName;
 
     public PhotoCaptureProductBO(PhotoCaptureProductBO captureBO) {

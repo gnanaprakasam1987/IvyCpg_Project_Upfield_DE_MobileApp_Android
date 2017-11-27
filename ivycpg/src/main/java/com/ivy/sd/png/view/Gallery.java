@@ -206,8 +206,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
 
-                for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
-                    for (LocationBO lbo : phcapture.getInStoreLocations()) {
+                for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
+                    for (LocationBO lbo : mPhotoCapture.getInStoreLocations()) {
                         if (lbo.getImagepath() != null && !lbo.getImagepath().isEmpty()) {
                             System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotcode() + " : " + lbo.getImagepath());
                             if (prodList.size() > 0) {
@@ -219,17 +219,17 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                             }
 
                             if (!mImageListByProductName.containsKey(lbo.getProductName())) {
-                                ArrayList<String> imglist = new ArrayList<>();
-                                imglist.add(lbo.getImageName());
-                                mImageListByProductName.put(lbo.getProductName(), imglist);
+                                ArrayList<String> mImageList = new ArrayList<>();
+                                mImageList.add(lbo.getImageName());
+                                mImageListByProductName.put(lbo.getProductName(), mImageList);
 
-                                ArrayList<String> typelist = new ArrayList<>();
-                                typelist.add(photoTypeBo.getPhotoTypeDesc());
-                                mPhotoTypeListByProductName.put(lbo.getProductName(), typelist);
+                                ArrayList<String> mTypeList = new ArrayList<>();
+                                mTypeList.add(photoTypeBo.getPhotoTypeDesc());
+                                mPhotoTypeListByProductName.put(lbo.getProductName(), mTypeList);
 
-                                ArrayList<String> loclist = new ArrayList<>();
-                                loclist.add(mInStoreLocationNameById.get(String.valueOf(lbo.getLocationId())));
-                                mLocationListByProductName.put(lbo.getProductName(), loclist);
+                                ArrayList<String> mLocationList = new ArrayList<>();
+                                mLocationList.add(mInStoreLocationNameById.get(String.valueOf(lbo.getLocationId())));
+                                mLocationListByProductName.put(lbo.getProductName(), mLocationList);
 
                             } else {
                                 mImageListByProductName.get(lbo.getProductName()).add(lbo.getImageName());
