@@ -6334,32 +6334,32 @@ public class ProductHelper {
 
     public void loadData(String menuname) {
         try {
-
+            SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(mContext);
             int level;
             level = getRetailerlevel(menuname);
             Commons.print("level=" + level + " menuname=" + menuname);
             if (menuname.equals("MENU_SOS") || menuname.equals("MENU_SOSKU") || menuname.equals("MENU_SOD")) {
                 switch (level) {
                     case 1:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
+                        mSFHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
                         break;
                     case 2:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
+                        mSFHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
                         break;
                     case 3:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
+                        mSFHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
                         break;
                     case 4:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
+                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
                         break;
                     case 5:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
+                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
                         break;
                     case 6:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
+                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
                         break;
                     case 8:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
+                        mSFHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
                         break;
                     case -1:
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();

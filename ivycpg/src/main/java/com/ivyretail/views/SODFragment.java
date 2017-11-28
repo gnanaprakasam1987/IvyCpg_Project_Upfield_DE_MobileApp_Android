@@ -61,6 +61,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -118,6 +119,7 @@ public class SODFragment extends IvyBaseFragment implements
     private Vector<LevelBO> parentidList;
     private ArrayList<Integer> mAttributeProducts;
     private String filtertext;
+    SalesFundamentalHelper mSFHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,6 +134,7 @@ public class SODFragment extends IvyBaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
     }
 
     @Override
@@ -256,7 +259,7 @@ public class SODFragment extends IvyBaseFragment implements
         }
         loadReasons();
 
-        if (bmodel.salesFundamentalHelper.getmSODList() != null)
+        if (mSFHelper.getmSODList() != null)
             calculateTotalValues();
     }
 
@@ -272,7 +275,7 @@ public class SODFragment extends IvyBaseFragment implements
             float mGap = 0;
             float mparcentagetot = 0;
             float mNamtot = 0;
-            for (SODBO temp : bmodel.salesFundamentalHelper.getmSODList()) {
+            for (SODBO temp : mSFHelper.getmSODList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mtotal = mtotal + SDUtil.convertToFloat(temp.getLocations().get(mSelectedLocationIndex).getParentTotal());
@@ -430,7 +433,7 @@ public class SODFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        if (bmodel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
+                        if (mSFHelper.mSOSTotalPopUpType == 0) {
                             if (dialog != null) {
                                 if (!dialog.isShowing()) {
                                     dialog.cancel();
@@ -527,7 +530,7 @@ public class SODFragment extends IvyBaseFragment implements
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            bmodel.salesFundamentalHelper.mSelectedBrandID = holder.mSOD
+                            mSFHelper.mSelectedBrandID = holder.mSOD
                                     .getProductID();
                             String fnameStarts = "SOD_"
                                     + bmodel.getRetailerMasterBO()
@@ -676,9 +679,9 @@ public class SODFragment extends IvyBaseFragment implements
                 // Photo saved successfully
                 Commons.print(bmodel.mSelectedActivityName
                         + "Camers Activity : Sucessfully Captured.");
-                if (bmodel.salesFundamentalHelper.mSelectedBrandID != 0) {
-                    bmodel.salesFundamentalHelper.onsaveImageName(
-                            bmodel.salesFundamentalHelper.mSelectedBrandID,
+                if (mSFHelper.mSelectedBrandID != 0) {
+                    mSFHelper.onsaveImageName(
+                            mSFHelper.mSelectedBrandID,
                             mImageName, HomeScreenTwo.MENU_SOD, mSelectedLocationIndex);
                 }
             } else {
@@ -887,7 +890,7 @@ public class SODFragment extends IvyBaseFragment implements
             brandFilterText = mFilterText;
             selectedfilterid = id;
             tvSelectedName.setText(mFilterText);
-            ArrayList<SODBO> items = bmodel.salesFundamentalHelper
+            ArrayList<SODBO> items = mSFHelper
                     .getmSODList();
             if (items == null) {
                 bmodel.showAlert(
@@ -913,7 +916,7 @@ public class SODFragment extends IvyBaseFragment implements
     }
 
     private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SODBO> items = bmodel.salesFundamentalHelper.getmSODList();
+        ArrayList<SODBO> items = mSFHelper.getmSODList();
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -939,7 +942,7 @@ public class SODFragment extends IvyBaseFragment implements
 
     private void saveSOS() {
         try {
-            if (bmodel.salesFundamentalHelper
+            if (mSFHelper
                     .hasData(HomeScreenTwo.MENU_SOD)) {
                 new SaveAsyncTask().execute();
             } else {
@@ -959,7 +962,7 @@ public class SODFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.salesFundamentalHelper
+                mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD);
                 bmodel.updateIsVisitedFlag();
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
@@ -1100,8 +1103,8 @@ public class SODFragment extends IvyBaseFragment implements
 
         mCategoryForDialog.clear();
         // All Brands in Total PopUp
-        if (bmodel.salesFundamentalHelper.getmSODList() != null) {
-            for (SODBO sodBO : bmodel.salesFundamentalHelper.getmSODList()) {
+        if (mSFHelper.getmSODList() != null) {
+            for (SODBO sodBO : mSFHelper.getmSODList()) {
                 if (sodBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(sodBO);
                 }

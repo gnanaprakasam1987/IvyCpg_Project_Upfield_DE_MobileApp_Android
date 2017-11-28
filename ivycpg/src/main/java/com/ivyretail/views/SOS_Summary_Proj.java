@@ -20,6 +20,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
@@ -35,6 +36,7 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
     Button btnSave;
 
     TextView lbl_group, lbl_target, lbl_avail, tv_lbl_gap;
+    SalesFundamentalHelper mSFHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
 
         ll_content = (LinearLayout) findViewById(R.id.ll_content);
         loadSummaryView();
+
+        mSFHelper = SalesFundamentalHelper.getInstance(this);
     }
 
     private void loadSummaryView() {
@@ -79,8 +83,8 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
             View view;
             int inTargetTotal = 0, total = 0, target = 0;
             String groupName = "";
-            for (int i = 0; i < bmodel.salesFundamentalHelper.getLstSOSproj().size(); i++) {
-                SOSBO bo = bmodel.salesFundamentalHelper.getLstSOSproj().get(i);
+            for (int i = 0; i < mSFHelper.getLstSOSproj().size(); i++) {
+                SOSBO bo = mSFHelper.getLstSOSproj().get(i);
 
                 if (bo.getInTarget() == 1) {
                     inTargetTotal += bo.getAvailability();
@@ -91,9 +95,9 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
                 target = bo.getGroupTarget();
 
                 // Current list has data as groupWise product. So to show view group wise, this loop is used
-                if (bmodel.salesFundamentalHelper.getLstSOSproj().size() == (i + 1) ||
-                        (bmodel.salesFundamentalHelper.getLstSOSproj().size() > i + 1 && bo.getGroupId()
-                                != bmodel.salesFundamentalHelper.getLstSOSproj().get(i + 1).getGroupId())) {
+                if (mSFHelper.getLstSOSproj().size() == (i + 1) ||
+                        (mSFHelper.getLstSOSproj().size() > i + 1 && bo.getGroupId()
+                                != mSFHelper.getLstSOSproj().get(i + 1).getGroupId())) {
 
                     if (inTargetTotal > 0 || total > 0) {// if availability>0 for any one of the product in the group
 
@@ -155,7 +159,7 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                bmodel.salesFundamentalHelper.saveSOSproj();
+                mSFHelper.saveSOSproj();
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ);
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -180,7 +184,7 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
                         getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();
 
-                bmodel.salesFundamentalHelper.setLstSOSproj(null);
+                mSFHelper.setLstSOSproj(null);
                 startActivity(new Intent(SOS_Summary_Proj.this, HomeScreenTwo.class));
                 finish();
 
@@ -193,8 +197,8 @@ public class SOS_Summary_Proj extends IvyBaseActivityNoActionBar implements View
 
         super.onDestroy();
 
-      /*  if(bmodel.salesFundamentalHelper.getLstSOSproj()!=null)
-            bmodel.salesFundamentalHelper.setLstSOSproj(null);*/
+      /*  if(mSFHelper.getLstSOSproj()!=null)
+            mSFHelper.setLstSOSproj(null);*/
     }
 
     @Override

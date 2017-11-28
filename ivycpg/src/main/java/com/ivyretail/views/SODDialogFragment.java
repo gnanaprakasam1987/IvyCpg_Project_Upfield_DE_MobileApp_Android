@@ -44,6 +44,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -149,6 +150,7 @@ public class SODDialogFragment extends DialogFragment {
     private HashMap<String, HashMap<String, Object>> mShelfDetailForSOD = null;
     private static final String COLOR = "color";
     private static final String COUNT = "count";
+    SalesFundamentalHelper mSFHelper;
 
     public SODDialogFragment() {
 
@@ -172,6 +174,7 @@ public class SODDialogFragment extends DialogFragment {
             this.mSelectedLocationIndex = bundle.getInt("selectedlocation");
             mKey = Integer.toString(mParentID);
         }
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
     }
 
     @Override
@@ -544,7 +547,7 @@ public class SODDialogFragment extends DialogFragment {
 
     private void initBrandNameListFromSOD() {
 
-        ArrayList<SODBO> mSodList = bmodel.salesFundamentalHelper.getmSODList();
+        ArrayList<SODBO> mSodList = mSFHelper.getmSODList();
 
         mCategoryForDialogSODBO = new ArrayList<>();
 
@@ -617,7 +620,7 @@ public class SODDialogFragment extends DialogFragment {
         if (mShelfCount == 0 && !mBrandNameListForDB.isEmpty())
             return;
 
-        bmodel.salesFundamentalHelper.loadSODBlockDetails(DataMembers.uidSOD,
+        mSFHelper.loadSODBlockDetails(DataMembers.uidSOD,
                 String.valueOf(mKey), totalShelfs, locid);
 
     }

@@ -62,6 +62,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -110,6 +111,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private boolean isFromChild;
     private String mFilterText;
     private static final String BRAND = "Brand";
+    SalesFundamentalHelper mSFHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,6 +126,7 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
     }
 
     @Override
@@ -277,7 +280,7 @@ public class SOSFragment extends IvyBaseFragment implements
         }
         loadReasons();
 
-        if (mBModel.salesFundamentalHelper.getmSOSList() != null)
+        if (mSFHelper.getmSOSList() != null)
             calculateTotalValues();
     }
 
@@ -297,7 +300,7 @@ public class SOSFragment extends IvyBaseFragment implements
             float mtotal = 0;
             float mGap = 0;
             float mNamtot = 0;
-            for (SOSBO temp : mBModel.salesFundamentalHelper.getmSOSList()) {
+            for (SOSBO temp : mSFHelper.getmSOSList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mtotal = mtotal
@@ -452,7 +455,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        if (mBModel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
+                        if (mSFHelper.mSOSTotalPopUpType == 0) {
                             if (dialog != null && !dialog.isShowing()) {
                                 dialog.cancel();
                                 dialog = null;
@@ -548,7 +551,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            mBModel.salesFundamentalHelper.mSelectedBrandID = holder.mSOS
+                            mSFHelper.mSelectedBrandID = holder.mSOS
                                     .getProductID();
                             String fnameStarts = "SOS_"
                                     + mBModel.getRetailerMasterBO()
@@ -698,11 +701,11 @@ public class SOSFragment extends IvyBaseFragment implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == mBModel.CAMERA_REQUEST_CODE && resultCode == 1
-                && mBModel.salesFundamentalHelper.mSelectedBrandID != 0) {
+                && mSFHelper.mSelectedBrandID != 0) {
             // Photo saved successfully
             totalImgList.add(mImageName);
-            mBModel.salesFundamentalHelper.onsaveImageName(
-                    mBModel.salesFundamentalHelper.mSelectedBrandID,
+            mSFHelper.onsaveImageName(
+                    mSFHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
         }
     }
@@ -869,7 +872,7 @@ public class SOSFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                if (mBModel.salesFundamentalHelper.getLstSOSproj() != null || totalImgList.size() > 0)
+                if (mSFHelper.getLstSOSproj() != null || totalImgList.size() > 0)
                     showeAlert();
                 else {
                     mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -919,7 +922,7 @@ public class SOSFragment extends IvyBaseFragment implements
             mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
 
-            ArrayList<SOSBO> items = mBModel.salesFundamentalHelper
+            ArrayList<SOSBO> items = mSFHelper
                     .getmSOSList();
             if (items == null) {
                 mBModel.showAlert(
@@ -944,7 +947,7 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SOSBO> items = mBModel.salesFundamentalHelper.getmSOSList();
+        ArrayList<SOSBO> items = mSFHelper.getmSOSList();
         if (items == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -970,7 +973,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
     private void saveSOS() {
         try {
-            if (mBModel.salesFundamentalHelper
+            if (mSFHelper
                     .hasData(HomeScreenTwo.MENU_SOS))
                 new SaveAsyncTask().execute();
             else
@@ -989,7 +992,7 @@ public class SOSFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mBModel.salesFundamentalHelper
+                mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
                 mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
@@ -1062,7 +1065,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                         mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                                 .now(SDUtil.TIME));
-                        /*mBModel.salesFundamentalHelper.setLstSOSproj(null);*/
+                        /*mSFHelper.setLstSOSproj(null);*/
                         if (totalImgList != null)
                             deleteUnsavedImageFromFolder();
 
@@ -1209,8 +1212,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mCategoryForDialog.clear();
         // All Brands in Total PopUp
-        if (mBModel.salesFundamentalHelper.getmSOSList() != null) {
-            for (SOSBO sosBO : mBModel.salesFundamentalHelper.getmSOSList()) {
+        if (mSFHelper.getmSOSList() != null) {
+            for (SOSBO sosBO : mSFHelper.getmSOSList()) {
                 if (sosBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(sosBO);
                 }
