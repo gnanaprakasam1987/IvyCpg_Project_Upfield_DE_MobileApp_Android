@@ -23,7 +23,7 @@ import java.util.Vector;
 
 public class SalesFundamentalHelper {
     private Context mContext;
-    private BusinessModel bmodel;
+    private BusinessModel mBModel;
     private static SalesFundamentalHelper instance = null;
     private ArrayList<SOSBO> mSOSList;
     private ArrayList<SODBO> mSODList;
@@ -35,13 +35,12 @@ public class SalesFundamentalHelper {
 
     private ArrayList<ShelfShareBO> mShelfShareList;
 
-    private ArrayList<String> modules;
     private String mSOSLevelName;
     public int mSOSTotalPopUpType;
 
     protected SalesFundamentalHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.mBModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static SalesFundamentalHelper getInstance(Context context) {
@@ -139,8 +138,8 @@ public class SalesFundamentalHelper {
     public void loadParentFilter(int mProductLevelId) {
 
         String query;
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mProductLevelId - bmodel.productHelper.getmSelectedGLobalLevelID() + 1;
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+            int filterGap = mProductLevelId - mBModel.productHelper.getmSelectedGLobalLevelID() + 1;
 
             query = "SELECT DISTINCT PM" + filterGap + ".PID, PM" + filterGap + ".PName FROM ProductMaster PM1 ";
 
@@ -148,7 +147,7 @@ public class SalesFundamentalHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID() + " and PM1.PID =" + bmodel.productHelper.getmSelectedGlobalProductId();
+            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " and PM1.PID =" + mBModel.productHelper.getmSelectedGlobalProductId();
 
         } else {
             query = "SELECT DISTINCT PM1.PID, PM1.PName FROM ProductMaster PM1"
@@ -181,9 +180,9 @@ public class SalesFundamentalHelper {
                                 int mProductLevelId, int mParentLevelId) {
 
         String query;
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mChildLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
-            int PM1Level = mParentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+            int filterGap = mChildLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
+            int PM1Level = mParentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
 
             query = "SELECT DISTINCT PM" + PM1Level + ".PID, PM" + filterGap + ".PID,  PM"
                     + filterGap + ".PName FROM ProductMaster PM1 ";
@@ -192,7 +191,7 @@ public class SalesFundamentalHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID() + " AND PM1.PID = " + bmodel.productHelper.getmSelectedGlobalProductId();
+            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " AND PM1.PID = " + mBModel.productHelper.getmSelectedGlobalProductId();
 
         } else {
 
@@ -246,7 +245,7 @@ public class SalesFundamentalHelper {
             int loopEnd = 0;
             String query = "";
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
 
                 if (mSFModuleSequence != null) {
                     if (mSFModuleSequence.size() > 0) {
@@ -264,7 +263,7 @@ public class SalesFundamentalHelper {
                                 + mChildLevel
                                 + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
                                 + " WHERE CF.ActivityCode = "
-                                + bmodel.QT(moduleName));
+                                + mBModel.QT(moduleName));
 
                 if (filterCur != null) {
                     if (filterCur.moveToNext()) {
@@ -274,8 +273,8 @@ public class SalesFundamentalHelper {
                     filterCur.close();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                    loopEnd = mContentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                    loopEnd = mContentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
                 else
                     loopEnd = mContentLevel - mParentLevel + 1;
 
@@ -283,8 +282,8 @@ public class SalesFundamentalHelper {
                     mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
                 else
                     mFirstLevel = mContentLevel;
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                    mFirstLevel = bmodel.configurationMasterHelper.globalSeqId;
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                    mFirstLevel = mBModel.configurationMasterHelper.globalSeqId;
 
             } else {
                 Cursor filterCur = db
@@ -294,7 +293,7 @@ public class SalesFundamentalHelper {
                                 + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter2"
                                 + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
                                 + " WHERE CF.ActivityCode = "
-                                + bmodel.QT(moduleName));
+                                + mBModel.QT(moduleName));
 
                 if (filterCur != null) {
                     if (filterCur.moveToNext()) {
@@ -329,7 +328,7 @@ public class SalesFundamentalHelper {
             }
             sBuffer.append(query);
 
-            if (bmodel.configurationMasterHelper.IS_SF_NORM_CHECK) {
+            if (mBModel.configurationMasterHelper.IS_SF_NORM_CHECK) {
                 sBuffer.append(" INNER JOIN ");
             } else {
                 sBuffer.append(" LEFT JOIN ");
@@ -339,26 +338,26 @@ public class SalesFundamentalHelper {
 
             if (IsRetailer) {
                 sBuffer.append("and SFN.RetailerId =");
-                sBuffer.append(bmodel.getRetailerMasterBO().getRetailerID());
+                sBuffer.append(mBModel.getRetailerMasterBO().getRetailerID());
             }
             if (IsAccount) {
-                sBuffer.append(" and SFN.AccId=" + bmodel.getRetailerMasterBO().getAccountid());
+                sBuffer.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
             }
             if (IsClass) {
-                sBuffer.append(" and SFN.ClassId=" + bmodel.getRetailerMasterBO().getClassid());
+                sBuffer.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
             }
 
             if (LocId > 0)
-                sBuffer.append(" and SFN.LocId=" + bmodel.productHelper.getMappingLocationId(LocId, bmodel.getRetailerMasterBO().getLocationId()));
+                sBuffer.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
             if (ChId > 0)
-                sBuffer.append(" and SFN.ChId=" + bmodel.productHelper.getMappingChannelId(ChId, bmodel.getRetailerMasterBO().getSubchannelid()));
+                sBuffer.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
 
             sBuffer.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
-            sBuffer.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+            sBuffer.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
             sBuffer.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                sBuffer.append(" and A1.PID =" + bmodel.productHelper.getmSelectedGlobalProductId());
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                sBuffer.append(" and A1.PID =" + mBModel.productHelper.getmSelectedGlobalProductId());
 
             if (moduleName.equals(moduleSOS)) {
                 SOSBO mSOS;
@@ -373,7 +372,7 @@ public class SalesFundamentalHelper {
                         mSOS.setIsOwn(cursor.getInt(3));
                         mSOS.setNorm(cursor.getFloat(4));
                         mSOS.setMappingId(cursor.getInt(5));
-                        mSOS.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                        mSOS.setLocations(mBModel.productHelper.cloneLocationList(mBModel.productHelper.locations));
                         getmSOSList().add(mSOS);
                     }
                     cursor.close();
@@ -392,7 +391,7 @@ public class SalesFundamentalHelper {
                         mSOD.setIsOwn(cursor.getInt(3));
                         mSOD.setNorm(cursor.getFloat(4));
                         mSOD.setMappingId(cursor.getInt(5));
-                        mSOD.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                        mSOD.setLocations(mBModel.productHelper.cloneLocationList(mBModel.productHelper.locations));
                         getmSODList().add(mSOD);
                     }
                     cursor.close();
@@ -441,7 +440,7 @@ public class SalesFundamentalHelper {
             sBuffer.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
             sBuffer.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
             sBuffer.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
-                    + bmodel.QT(moduleName) + ")");
+                    + mBModel.QT(moduleName) + ")");
 
             cursor = db.selectSQL(sBuffer.toString());
             if (moduleName.equals(moduleSOS)) {
@@ -460,7 +459,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setProductName(cursor.getString(2));
                                     comLevel.setIsOwn(cursor.getInt(3));
                                     comLevel.setNorm(cursor.getInt(4));
-                                    comLevel.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                                    comLevel.setLocations(mBModel.productHelper.cloneLocationList(mBModel.productHelper.locations));
                                     lstCompetitiorPids.add(cursor.getInt(1));
                                     getmSOSList().add(comLevel);
                                     break;
@@ -557,12 +556,12 @@ public class SalesFundamentalHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String uid = (bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+            String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
                     .now(SDUtil.DATE_TIME_ID));
 
             String query = "select Uid,refid from " + modName
                     + "_Tracking_Header  where RetailerId="
-                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerID());
+                    + mBModel.QT(mBModel.retailerMasterBO.getRetailerID());
             query += " and (upload='N' OR refid!=0)";
 
             Cursor cursor = db.selectSQL(query);
@@ -570,14 +569,14 @@ public class SalesFundamentalHelper {
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL(modName + "_Tracking_Header",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
                 db.deleteSQL(modName + "_Tracking_Detail",
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
                 if (modName.equals("SOS")) {
                     db.deleteSQL(modName + "_Tracking_Parent_Detail", "Uid="
-                            + bmodel.QT(cursor.getString(0)), false);
+                            + mBModel.QT(cursor.getString(0)), false);
                     db.deleteSQL(DataMembers.tbl_SOS__Block_Tracking_Detail,
-                            "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                            "Uid=" + mBModel.QT(cursor.getString(0)), false);
                 }
                 refId = cursor.getString(1);
                 // uid = cursor.getString(0);
@@ -585,11 +584,11 @@ public class SalesFundamentalHelper {
             cursor.close();
             // Inserting Header in Tables
 
-            headerValues = bmodel.QT(uid)
-                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + "," + bmodel.QT(bmodel.getNote())
-                    + "," + bmodel.QT(refId);
+            headerValues = mBModel.QT(uid)
+                    + "," + mBModel.getRetailerMasterBO().getRetailerID()
+                    + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + "," + mBModel.QT(mBModel.getNote())
+                    + "," + mBModel.QT(refId);
 
             db.insertSQL(modName + "_Tracking_Header", headerColumns,
                     headerValues.toString());
@@ -605,9 +604,9 @@ public class SalesFundamentalHelper {
                         if ((!sosBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo.getLocations().get(i).getParentTotal().equals("0.0"))
                                 || sosBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = bmodel.QT(uid)
+                            detailValues = mBModel.QT(uid)
                                     + "," + sosBo.getProductID()
-                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + mBModel.getRetailerMasterBO().getRetailerID()
                                     + "," + sosBo.getNorm()
                                     + "," + sosBo.getLocations().get(i).getParentTotal()
                                     + "," + sosBo.getLocations().get(i).getTarget()
@@ -615,14 +614,14 @@ public class SalesFundamentalHelper {
                                     + "," + sosBo.getLocations().get(i).getPercentage()
                                     + "," + sosBo.getLocations().get(i).getGap()
                                     + "," + (sosBo.getLocations().get(i).getReasonId() == -1 ? 0 : sosBo.getLocations().get(i).getReasonId())
-                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getImageName())
+                                    + "," + mBModel.QT(sosBo.getLocations().get(i).getImageName())
                                     + "," + sosBo.getIsOwn()
                                     + "," + sosBo.getParentID()
                                     + "," + sosBo.getLocations().get(i).getAudit()
                                     + "," + sosBo.getMappingId()
                                     + "," + sosBo.getLocations().get(i).getLocationId()
-                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getImgName())
-                                    + "," + bmodel.QT(sosBo.getLocations().get(i).getRemarks());
+                                    + "," + mBModel.QT(sosBo.getLocations().get(i).getImgName())
+                                    + "," + mBModel.QT(sosBo.getLocations().get(i).getRemarks());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues.toString());
@@ -632,20 +631,20 @@ public class SalesFundamentalHelper {
                             mKey1 = sosBo.getParentID() + "";
                             locid1 = sosBo.getLocations().get(i).getLocationId();
 
-                            if (bmodel.mShelfShareHelper.getLocations().get(i).getShelfDetailForSOS()
+                            if (mBModel.mShelfShareHelper.getLocations().get(i).getShelfDetailForSOS()
                                     .containsKey(mKey1))
-                                hashMap = bmodel.mShelfShareHelper.getLocations().get(i)
+                                hashMap = mBModel.mShelfShareHelper.getLocations().get(i)
                                         .getShelfDetailForSOS().get(mKey1);
 
                             if (hashMap != null) {
-                                mParentDetailValues = bmodel.QT(uid)
+                                mParentDetailValues = mBModel.QT(uid)
                                         + "," + sosBo.getParentID()
                                         + "," + hashMap.get(ShelfShareHelper.BLOCK_COUNT)
                                         + "," + hashMap.get(ShelfShareHelper.SHELF_COUNT)
                                         + "," + hashMap.get(ShelfShareHelper.SHELF_LENGTH)
                                         + "," + hashMap.get(ShelfShareHelper.EXTRA_LENGTH)
                                         + "," + sosBo.getLocations().get(i).getParentTotal()
-                                        + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                                        + "," + mBModel.QT(mBModel.getRetailerMasterBO().getRetailerID())
                                         + "," + sosBo.getLocations().get(i).getLocationId();
 
 
@@ -658,7 +657,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + bmodel.QT(uid) + " AND PId = "
+                                            + mBModel.QT(uid) + " AND PId = "
                                             + sosBo.getParentID() + " and locid=" + locid1);
                                     if (cursor.getCount() == 0) {
                                         db.insertSQL(modName
@@ -672,14 +671,14 @@ public class SalesFundamentalHelper {
                                 }
 
                             } else {
-                                mParentDetailValues = bmodel.QT(uid)
+                                mParentDetailValues = mBModel.QT(uid)
                                         + "," + sosBo.getParentID()
                                         + "," + 0
                                         + "," + 0
                                         + "," + 0
                                         + "," + 0
                                         + "," + sosBo.getLocations().get(i).getParentTotal()
-                                        + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                                        + "," + mBModel.QT(mBModel.getRetailerMasterBO().getRetailerID())
                                         + "," + sosBo.getLocations().get(i).getLocationId();
 
                                 if (count > 0 && !mKey1.equals(tempkey)) {
@@ -691,7 +690,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + bmodel.QT(uid) + " AND PId = "
+                                            + mBModel.QT(uid) + " AND PId = "
                                             + sosBo.getParentID() + " and locid=" + locid1);
                                     if (cursor.getCount() == 0) {
                                         db.insertSQL(modName
@@ -728,19 +727,19 @@ public class SalesFundamentalHelper {
                             mKey = sosBo1.getParentID() + "";
                             if (mKeytemp.equals(""))
                                 mKeytemp = mKey;
-                            blockHashMap = bmodel.mShelfShareHelper.getLocations().get(i)
+                            blockHashMap = mBModel.mShelfShareHelper.getLocations().get(i)
                                     .getmShelfBlockDetailForSOS().get(mKey);
                             if (blockHashMap != null) {
                                 for (String key : blockHashMap.keySet()) {
                                     ShelfShareBO ssBO = blockHashMap.get(key);
                                     if (ssBO.getFirstCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + "," + sosBo1.getParentID()
                                                 + "," + sosBo1.getProductID()
                                                 + "," + key
                                                 + "," + "1"
-                                                + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                                                + "," + mBModel.QT(mBModel.getRetailerMasterBO().getRetailerID())
                                                 + "," + sosBo1.getLocations().get(i).getLocationId();
 
                                         db.insertSQL(
@@ -750,7 +749,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -761,7 +760,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -772,7 +771,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -783,7 +782,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -794,7 +793,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sosBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -805,7 +804,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -826,7 +825,7 @@ public class SalesFundamentalHelper {
 
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -837,7 +836,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -848,7 +847,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -859,7 +858,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -870,7 +869,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -881,7 +880,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -892,7 +891,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -903,7 +902,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -917,7 +916,7 @@ public class SalesFundamentalHelper {
                                     /**saving Extra shelf details **/
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -928,7 +927,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -939,7 +938,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -950,7 +949,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -961,7 +960,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sosBo1.getParentID()
@@ -972,7 +971,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -983,7 +982,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
                                                 + sosBo1.getParentID()
                                                 + ","
@@ -993,7 +992,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sosBo1.getLocations().get(i).getLocationId();
 
@@ -1028,18 +1027,18 @@ public class SalesFundamentalHelper {
                     for (int i = 0; i < sodBo.getLocations().size(); i++) {
                         if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sodBo.getLocations().get(i).getParentTotal().equals("0.0") || sodBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = bmodel.QT(uid) + ","
+                            detailValues = mBModel.QT(uid) + ","
                                     + sodBo.getProductID() + ","
-                                    + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + mBModel.getRetailerMasterBO().getRetailerID()
                                     + "," + sodBo.getNorm() + ","
                                     + sodBo.getLocations().get(i).getParentTotal() + ","
                                     + sodBo.getLocations().get(i).getTarget() + "," + sodBo.getLocations().get(i).getActual()
                                     + "," + sodBo.getLocations().get(i).getPercentage() + ","
                                     + sodBo.getLocations().get(i).getGap() + "," + sodBo.getLocations().get(i).getReasonId()
-                                    + "," + bmodel.QT(sodBo.getLocations().get(i).getImageName()) + ","
+                                    + "," + mBModel.QT(sodBo.getLocations().get(i).getImageName()) + ","
                                     + sodBo.getIsOwn() + "," + sodBo.getParentID() + "," + sodBo.getLocations().get(i).getAudit() + "," + sodBo.getMappingId()
                                     + "," + sodBo.getLocations().get(i).getLocationId()
-                                    + "," + bmodel.QT(sodBo.getLocations().get(i).getImgName());
+                                    + "," + mBModel.QT(sodBo.getLocations().get(i).getImgName());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues.toString());
@@ -1050,13 +1049,13 @@ public class SalesFundamentalHelper {
                             if (tempkey.equals(""))
                                 tempkey = mKey;
                             locid = sodBo.getLocations().get(i).getLocationId();
-                            if (bmodel.mShelfShareHelper.getLocations().get(i).getShelfDetailForSOD()
+                            if (mBModel.mShelfShareHelper.getLocations().get(i).getShelfDetailForSOD()
                                     .containsKey(mKey))
-                                hashMap = bmodel.mShelfShareHelper.getLocations().get(i)
+                                hashMap = mBModel.mShelfShareHelper.getLocations().get(i)
                                         .getShelfDetailForSOD().get(mKey);
 
                             if (hashMap != null) {
-                                mParentDetailValues = bmodel.QT(uid)
+                                mParentDetailValues = mBModel.QT(uid)
                                         + ","
                                         + sodBo.getParentID()
                                         + ","
@@ -1072,7 +1071,7 @@ public class SalesFundamentalHelper {
                                         + ","
                                         + sodBo.getLocations().get(i).getParentTotal()
                                         + ","
-                                        + bmodel.QT(bmodel.getRetailerMasterBO()
+                                        + mBModel.QT(mBModel.getRetailerMasterBO()
                                         .getRetailerID()) + "," + sodBo.getLocations().get(i).getLocationId();
                                 if (count > 0 && !mKey.equals(tempkey)) {
                                     db.insertSQL(modName
@@ -1083,7 +1082,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + bmodel.QT(uid) + " AND PId = "
+                                            + mBModel.QT(uid) + " AND PId = "
                                             + sodBo.getParentID() + " and LocId=" + locid);
 
                                     if (cursor.getCount() == 0) {
@@ -1097,7 +1096,7 @@ public class SalesFundamentalHelper {
                                     }
                                 }
                             } else {
-                                mParentDetailValues = bmodel.QT(uid)
+                                mParentDetailValues = mBModel.QT(uid)
                                         + ","
                                         + sodBo.getParentID()
                                         + ","
@@ -1111,7 +1110,7 @@ public class SalesFundamentalHelper {
                                         + ","
                                         + sodBo.getLocations().get(i).getParentTotal()
                                         + ","
-                                        + bmodel.QT(bmodel.getRetailerMasterBO()
+                                        + mBModel.QT(mBModel.getRetailerMasterBO()
                                         .getRetailerID()) + "," + sodBo.getLocations().get(i).getLocationId();
 
                                 if (count > 0 && !mKey.equals(tempkey)) {
@@ -1123,7 +1122,7 @@ public class SalesFundamentalHelper {
                                 } else {
                                     cursor = db.selectSQL("SELECT * FROM " + modName
                                             + "_Tracking_Parent_Detail WHERE Uid = "
-                                            + bmodel.QT(uid) + " AND PId = "
+                                            + mBModel.QT(uid) + " AND PId = "
                                             + sodBo.getParentID() + " and LocId=" + locid);
 
                                     if (cursor.getCount() == 0) {
@@ -1162,7 +1161,7 @@ public class SalesFundamentalHelper {
                             Key = sodBo1.getParentID() + "";
                             if (mKeytemp.equals(""))
                                 mKeytemp = Key;
-                            blockHashMap = bmodel.mShelfShareHelper.getLocations().get(i)
+                            blockHashMap = mBModel.mShelfShareHelper.getLocations().get(i)
                                     .getmShelfBlockDetailForSOD().get(Key);
 
                             if (blockHashMap != null) {
@@ -1171,7 +1170,7 @@ public class SalesFundamentalHelper {
                                     ShelfShareBO ssBO = blockHashMap.get(key);
                                     if (ssBO.getFirstCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1182,7 +1181,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1193,7 +1192,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1204,7 +1203,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1215,7 +1214,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1226,7 +1225,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1237,7 +1236,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sodBo1.getProductName())) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1248,7 +1247,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1269,7 +1268,7 @@ public class SalesFundamentalHelper {
 
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1280,7 +1279,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1291,7 +1290,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1302,7 +1301,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1313,7 +1312,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1324,7 +1323,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1335,7 +1334,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1346,7 +1345,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1357,7 +1356,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1368,7 +1367,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "1"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1379,7 +1378,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1390,7 +1389,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "2"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1401,7 +1400,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1412,7 +1411,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "3"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1423,7 +1422,7 @@ public class SalesFundamentalHelper {
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "empty")) {
-                                        mBlockDetailValues = bmodel.QT(uid)
+                                        mBlockDetailValues = mBModel.QT(uid)
                                                 + ","
 
                                                 + sodBo1.getParentID()
@@ -1434,7 +1433,7 @@ public class SalesFundamentalHelper {
                                                 + ","
                                                 + "4"
                                                 + ","
-                                                + bmodel.QT(bmodel
+                                                + mBModel.QT(mBModel
                                                 .getRetailerMasterBO()
                                                 .getRetailerID()) + "," + sodBo1.getLocations().get(i).getLocationId();
 
@@ -1461,9 +1460,9 @@ public class SalesFundamentalHelper {
             } else if (modName.equals("SOSKU")) {
                 for (SOSKUBO soskuBO : getmSOSKUList()) {
                     if (soskuBO.getParentTotal() > 0) {
-                        detailValues = bmodel.QT(uid) + ","
+                        detailValues = mBModel.QT(uid) + ","
                                 + soskuBO.getProductID() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + mBModel.getRetailerMasterBO().getRetailerID()
                                 + "," + soskuBO.getNorm() + ","
                                 + soskuBO.getParentTotal() + ","
                                 + soskuBO.getTarget() + ","
@@ -1471,13 +1470,13 @@ public class SalesFundamentalHelper {
                                 + soskuBO.getPercentage() + ","
                                 + soskuBO.getGap() + ","
                                 + soskuBO.getReasonId() + ","
-                                + bmodel.QT(soskuBO.getImageName()) + ","
+                                + mBModel.QT(soskuBO.getImageName()) + ","
                                 + soskuBO.getIsOwn() + ","
                                 + soskuBO.getParentID() + ","
                                 + 0 + ","
                                 + soskuBO.getMappingId() + ","
                                 + 0 + ","
-                                + bmodel.QT(soskuBO.getImgName());
+                                + mBModel.QT(soskuBO.getImgName());
 
                         db.insertSQL(modName + "_Tracking_Detail",
                                 detailColumns, detailValues.toString());
@@ -1513,8 +1512,8 @@ public class SalesFundamentalHelper {
 
             sb.append("select sb.SubCellId,sb.CellId,sb.ChildPid,PM.pname from SOS_Tracking_Block_Detail SB ");
             sb.append("left join productmaster pm on PM.pid=SB.ChildPid");
-            sb.append(" WHERE sb.Uid=" + bmodel.QT(uid) + "and SB.PID="
-                    + bmodel.QT(pid) + " and SB.LocId=" + locid);
+            sb.append(" WHERE sb.Uid=" + mBModel.QT(uid) + "and SB.PID="
+                    + mBModel.QT(pid) + " and SB.LocId=" + locid);
             sb.append(" order by sb.SubCellId ,sb.CellId  ");
 
             Cursor detailCursor = db.selectSQL(sb.toString());
@@ -1580,13 +1579,13 @@ public class SalesFundamentalHelper {
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            bmodel.setNote("");
+            mBModel.setNote("");
             sql = "SELECT Uid,Remark FROM " + moduleName + "_Tracking_Header"
                     + " WHERE RetailerId="
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + mBModel.getRetailerMasterBO().getRetailerID()
                     + " and (upload='N' OR refid!=0)";
             /*
-             * + " AND Date = " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+             * + " AND Date = " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 			 */
 
             Cursor headerCursor = db.selectSQL(sql);
@@ -1594,7 +1593,7 @@ public class SalesFundamentalHelper {
                 headerCursor.moveToNext();
                 uid = headerCursor.getString(0);
                 // Set Remark in Object
-                bmodel.setNote(headerCursor.getString(1));
+                mBModel.setNote(headerCursor.getString(1));
 
                 DataMembers.uidSOS = uid;
                 DataMembers.uidSOD = uid;
@@ -1613,7 +1612,7 @@ public class SalesFundamentalHelper {
                             + "_Tracking_Parent_Detail B ON");
                     sb.append(" B.Uid = SF.Uid AND B.PId = SF.Parentid and SF.locid=B.locid");
                 }
-                sb.append(" WHERE SF.Uid=" + bmodel.QT(uid));
+                sb.append(" WHERE SF.Uid=" + mBModel.QT(uid));
 
                 // For shelf share data
                 HashMap<String, Object> hashMap;
@@ -1660,7 +1659,7 @@ public class SalesFundamentalHelper {
                                         .getInt(9)) {
                                     for (int i = 0; i < msos.getLocations().size(); i++) {
                                         if (msos.getLocations().get(i).getLocationId() == detailCursor.getInt(16)) {
-                                            if (!bmodel.mShelfShareHelper.getLocations().get(i).containsKeySOS(String
+                                            if (!mBModel.mShelfShareHelper.getLocations().get(i).containsKeySOS(String
                                                     .valueOf(mKey))) {
                                                 hashMap = new HashMap<String, Object>();
                                                 hashMap.put(ShelfShareHelper.BLOCK_COUNT,
@@ -1673,7 +1672,7 @@ public class SalesFundamentalHelper {
                                                         detailCursor.getInt(14));
                                                 hashMap.put(ShelfShareHelper.LOADING_FROM_DB,
                                                         true);
-                                                bmodel.mShelfShareHelper.getLocations().get(i).setShelfDetailForSOS(
+                                                mBModel.mShelfShareHelper.getLocations().get(i).setShelfDetailForSOS(
                                                         mKey, hashMap);
                                                 break;
                                             }
@@ -1712,7 +1711,7 @@ public class SalesFundamentalHelper {
                                         .getInt(0)) {
                                     for (int i = 0; i < msod.getLocations().size(); i++) {
                                         if (msod.getLocations().get(i).getLocationId() == detailCursor.getInt(16)) {
-                                            if (!bmodel.mShelfShareHelper.containsKeySOD(String
+                                            if (!mBModel.mShelfShareHelper.containsKeySOD(String
                                                     .valueOf(mKey))) {
                                                 hashMap = new HashMap<String, Object>();
                                                 hashMap.put(ShelfShareHelper.BLOCK_COUNT,
@@ -1725,7 +1724,7 @@ public class SalesFundamentalHelper {
                                                         detailCursor.getInt(14));
                                                 hashMap.put(ShelfShareHelper.LOADING_FROM_DB,
                                                         true);
-                                                bmodel.mShelfShareHelper.getLocations().get(i).setShelfDetailForSOD(
+                                                mBModel.mShelfShareHelper.getLocations().get(i).setShelfDetailForSOD(
                                                         mKey, hashMap);
                                                 break;
                                             }
@@ -1759,11 +1758,11 @@ public class SalesFundamentalHelper {
 
                 detailCursor.close();
             } else {
-                if (bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
+                if (mBModel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
                     //Loading Last visit transaction for SOS
                     if (modName.equalsIgnoreCase(moduleSOS)) {
 
-                        String query = "select LocId,pid,parentId,actualValue,reasonId,isOwn,ParentTotal from LastVisitSOS where retailerId=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+                        String query = "select LocId,pid,parentId,actualValue,reasonId,isOwn,ParentTotal from LastVisitSOS where retailerId=" + mBModel.QT(mBModel.getRetailerMasterBO().getRetailerID());
 
                         Cursor cursor = db.selectSQL(query);
                         if (cursor != null) {
@@ -1796,7 +1795,7 @@ public class SalesFundamentalHelper {
                                                         percentage = (actual / mParentTotal) * 100;
 
                                                     msos.getLocations().get(i).setTarget(SDUtil.roundIt(target, 2));
-                                                    msos.getLocations().get(i).setPercentage(bmodel
+                                                    msos.getLocations().get(i).setPercentage(mBModel
                                                             .formatPercent(percentage));
                                                     msos.getLocations().get(i).setGap(SDUtil.roundIt(-gap, 2));
                                                 } else {
@@ -1831,9 +1830,9 @@ public class SalesFundamentalHelper {
      */
 
     public void onsaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
-        String imagePath = bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+        String imagePath = mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
-                + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
+                + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
         try {
             if (moduleName.equals(HomeScreenTwo.MENU_SOS)) {
                 imagePath = "SOS/" + imagePath;
@@ -1978,8 +1977,8 @@ public class SalesFundamentalHelper {
 
             sb.append("select sb.SubCellId,sb.CellId,sb.ChildPid,PM.pname from SOD_Tracking_Block_Detail SB ");
             sb.append("left join productmaster pm on PM.pid=SB.ChildPid");
-            sb.append(" WHERE sb.Uid=" + bmodel.QT(uid) + "and SB.PID="
-                    + bmodel.QT(pid) + " and SB.locid=" + locid);
+            sb.append(" WHERE sb.Uid=" + mBModel.QT(uid) + "and SB.PID="
+                    + mBModel.QT(pid) + " and SB.locid=" + locid);
             sb.append(" order by sb.SubCellId ,sb.CellId  ");
 
             Cursor detailCursor = db.selectSQL(sb.toString());
@@ -2056,10 +2055,10 @@ public class SalesFundamentalHelper {
                     " left join productMaster PM on PM.pid=SD.pid" +
                     " inner join SOS_NormMapping_Proj SM ON SM.SOSgroupid==SD.SOSgroupid" +
                     " LEFT JOIN SOS_NormAttributeMapping_Proj SAM on SAM .GroupId= SM.GroupID and SAM.SOSNormID=SM.SOSNormID");
-            str.append(" where SM.accid in(0," + bmodel.getRetailerMasterBO().getAccountid() + ")" +
-                    "and SM.RetailerId in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")" +
-                    "and SM.chid in(0," + bmodel.getRetailerMasterBO().getSubchannelid() + ")" +
-                    "and SM.locid in(0," + bmodel.getRetailerMasterBO().getLocationId() + ")");
+            str.append(" where SM.accid in(0," + mBModel.getRetailerMasterBO().getAccountid() + ")" +
+                    "and SM.RetailerId in(0," + mBModel.getRetailerMasterBO().getRetailerID() + ")" +
+                    "and SM.chid in(0," + mBModel.getRetailerMasterBO().getSubchannelid() + ")" +
+                    "and SM.locid in(0," + mBModel.getRetailerMasterBO().getLocationId() + ")");
             str.append(" order by SD.sosGroupId,SAm.SOSNormid");
 
             Cursor c = db.selectSQL(str.toString());
@@ -2107,7 +2106,7 @@ public class SalesFundamentalHelper {
             StringBuilder str = new StringBuilder();
             str.append("select Distinct groupid,sosNormid from SOS_NormAttributeMapping_Proj SAM");
             str.append(" where sosNormid not in(");
-            str.append("select sosNormid from SOS_NormAttributeMapping_Proj where attributeid not in (" + bmodel.getRetailerAttributeList() + ")) and attributeid in(" + bmodel.getRetailerAttributeList() + ")");
+            str.append("select sosNormid from SOS_NormAttributeMapping_Proj where attributeid not in (" + mBModel.getRetailerAttributeList() + ")) and attributeid in(" + mBModel.getRetailerAttributeList() + ")");
             str.append("  order by groupId");
 
             Cursor c = db.selectSQL(str.toString());
@@ -2132,7 +2131,7 @@ public class SalesFundamentalHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String uid = (bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+            String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
                     .now(SDUtil.DATE_TIME_ID));
 
 
@@ -2147,7 +2146,7 @@ public class SalesFundamentalHelper {
             }
 
             if (isData) {
-                db.insertSQL(DataMembers.tbl_SOSHeader_Proj, DataMembers.tbl_SOSHeader_Proj_cols, uid + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                db.insertSQL(DataMembers.tbl_SOSHeader_Proj, DataMembers.tbl_SOSHeader_Proj_cols, uid + "," + mBModel.getRetailerMasterBO().getRetailerID() + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             }
 
 

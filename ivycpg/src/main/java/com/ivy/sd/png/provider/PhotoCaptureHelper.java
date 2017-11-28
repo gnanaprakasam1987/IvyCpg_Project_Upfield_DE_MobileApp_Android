@@ -260,7 +260,7 @@ public class PhotoCaptureHelper {
     }
 
     /**
-     *
+     * To check photo taken for given product and photo type
      */
     public boolean hasPhotoTaken(int productId, int typeId) {
         try {
@@ -350,6 +350,9 @@ public class PhotoCaptureHelper {
     }
 
 
+    /**
+     * Download locations
+     */
     public void downloadLocations() {
         try {
 
@@ -391,6 +394,12 @@ public class PhotoCaptureHelper {
         return inStoreLocation;
     }
 
+    /**
+     * Clone given list
+     *
+     * @param list Location List
+     * @return Cloned list
+     */
     public static ArrayList<PhotoCaptureLocationBO> cloneLocationList(
             ArrayList<PhotoCaptureLocationBO> list) {
         ArrayList<PhotoCaptureLocationBO> clone = new ArrayList<>(list.size());

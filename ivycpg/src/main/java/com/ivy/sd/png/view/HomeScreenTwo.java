@@ -55,6 +55,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PhotoCaptureHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -1442,9 +1443,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
 
                 bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
+
+                /** Download location to load in the filter. **/
                 bmodel.productHelper.downloadInStoreLocations();
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR)
+
+                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                     if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                         bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
@@ -2912,8 +2916,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
                 //Load Configurations
-                bmodel.salesFundamentalHelper.setTotalPopUpConfig();
+                mSFHelper.setTotalPopUpConfig();
 
                 //Load the locations
                 bmodel.productHelper.getLocations();
@@ -2922,7 +2927,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.salesFundamentalHelper.downloadSFFiveLevelFilter(MENU_SOS);
+                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
                 else
                     bmodel.productHelper.downloadProductFilter(MENU_SOS);
 
@@ -2930,10 +2935,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper.loadData(MENU_SOS);
 
                 //load transation data
-                bmodel.salesFundamentalHelper.loadSavedTracking(MENU_SOS);
+                mSFHelper.loadSavedTracking(MENU_SOS);
 
-                if (bmodel.salesFundamentalHelper.getmSOSList() != null
-                        && bmodel.salesFundamentalHelper.getmSOSList().size() > 0) {
+                if (mSFHelper.getmSOSList() != null
+                        && mSFHelper.getmSOSList().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
@@ -2991,7 +2996,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                bmodel.salesFundamentalHelper.setTotalPopUpConfig();
+
+                SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
+                mSFHelper.setTotalPopUpConfig();
 
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
@@ -2999,16 +3006,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.salesFundamentalHelper.downloadSFFiveLevelFilter(MENU_SOD);
+                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
                 else
                     bmodel.productHelper.downloadProductFilter(MENU_SOD);
 
                 bmodel.productHelper.loadData(MENU_SOD);
 
-                bmodel.salesFundamentalHelper
+                mSFHelper
                         .loadSavedTracking(MENU_SOD);
 
-                if (bmodel.salesFundamentalHelper.getmSODList() != null && bmodel.salesFundamentalHelper.getmSODList().size() > 0) {
+                if (mSFHelper.getmSODList() != null && mSFHelper.getmSODList().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
@@ -3091,17 +3098,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
+                SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
+
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.salesFundamentalHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
+                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
                 else
                     bmodel.productHelper.downloadProductFilter(MENU_SOSKU);
 
                 bmodel.productHelper.loadData(MENU_SOSKU);
 
-                bmodel.salesFundamentalHelper
+                mSFHelper
                         .loadSavedTracking(MENU_SOSKU);
 
-                if (bmodel.salesFundamentalHelper.getmSOSKUList() != null && bmodel.salesFundamentalHelper.getmSOSKUList().size() > 0) {
+                if (mSFHelper.getmSOSKUList() != null && mSFHelper.getmSOSKUList().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
@@ -3832,7 +3841,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         builder.setCancelable(false);
         builder.setMessage(msg);
         builder.setPositiveButton(getResources().getString(R.string.ok),
-                new android.content.DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         isCreated = false;
@@ -3840,7 +3849,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 });
         builder.setNegativeButton(getResources().getString(R.string.gallery),
-                new android.content.DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(HomeScreenTwo.this, Gallery.class);
                         i.putExtra("IsFromHome", true);
@@ -3858,7 +3867,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         builder.setCancelable(false);
         builder.setMessage(msg);
         builder.setPositiveButton(getResources().getString(R.string.ok),
-                new android.content.DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         isCreated = false;
@@ -4082,7 +4091,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 holder.iconIV.setColorFilter(Color.argb(0, 0, 0, 0));
             }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Toast.makeText(getApplicationContext(),position+"",Toast.LENGTH_SHORT).show();
