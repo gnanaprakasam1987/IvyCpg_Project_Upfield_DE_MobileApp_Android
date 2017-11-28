@@ -200,7 +200,7 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
-import com.ivyretail.views.StockCheckFragmentActivity;
+import com.ivyretail.views.StockCheckActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -580,7 +580,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, TargetPlanActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
-            myIntent = new Intent(ctxx, StockCheckFragmentActivity.class);
+            myIntent = new Intent(ctxx, StockCheckActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actPhotocapture)) {
             myIntent = new Intent(ctxx, PhotoCaptureActivity.class);
@@ -4739,7 +4739,7 @@ public class BusinessModel extends Application {
 //                    frm.finish();
 //                    BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
                 } else if (idd == DataMembers.NOTIFY_UPLOAD_CLOSINGSTOCK) {
-                    StockCheckFragmentActivity frm = (StockCheckFragmentActivity) ctx;
+                    StockCheckActivity frm = (StockCheckActivity) ctx;
                     frm.finish();
                     ctx.startActivity(new Intent(ctx, HomeScreenTwo.class));
                 } else if (idd == 2222) {

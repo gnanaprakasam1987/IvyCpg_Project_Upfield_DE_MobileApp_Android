@@ -70,7 +70,7 @@ import com.ivyretail.views.SODActivity;
 import com.ivyretail.views.SOSActivity;
 import com.ivyretail.views.SOSActivity_Proj;
 import com.ivyretail.views.SOSKUActivity;
-import com.ivyretail.views.StockCheckFragmentActivity;
+import com.ivyretail.views.StockCheckActivity;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -1442,12 +1442,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
 
                 bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
-
-                /** Download location to load in the filter. **/
                 bmodel.productHelper.downloadInStoreLocations();
 
-
-                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
+                if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR)
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                     if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                         bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
@@ -1530,7 +1527,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             intent.putExtra("isFromChild", isFromChild);
                     } else {
                         intent = new Intent(HomeScreenTwo.this,
-                                StockCheckFragmentActivity.class);
+                                StockCheckActivity.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                         if (isFromChild)
                             intent.putExtra("isFromChild", isFromChild);
