@@ -42,6 +42,12 @@ import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
+import com.ivy.cpg.view.sf.SODActivity;
+import com.ivy.cpg.view.sf.SOSActivity;
+import com.ivy.cpg.view.sf.SOSActivity_Proj;
+import com.ivy.cpg.view.sf.SOSKUActivity;
+import com.ivy.cpg.view.sf.SalesFundamentalHelper;
+import com.ivy.cpg.view.sf.ShelfShareHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -55,7 +61,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PhotoCaptureHelper;
-import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -67,10 +72,6 @@ import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivyretail.views.CombinedStockFragmentActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
-import com.ivyretail.views.SODActivity;
-import com.ivyretail.views.SOSActivity;
-import com.ivyretail.views.SOSActivity_Proj;
-import com.ivyretail.views.SOSKUActivity;
 import com.ivyretail.views.StockCheckActivity;
 
 import java.io.File;
@@ -2917,13 +2918,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
+                ShelfShareHelper mShelfShareHelper = ShelfShareHelper.getInstance();
+
                 //Load Configurations
                 mSFHelper.setTotalPopUpConfig();
 
                 //Load the locations
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
@@ -2934,7 +2937,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 //load content data
                 bmodel.productHelper.loadData(MENU_SOS);
 
-                //load transation data
+                //load transaction data
                 mSFHelper.loadSavedTracking(MENU_SOS);
 
                 if (mSFHelper.getmSOSList() != null
@@ -2998,11 +3001,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
 
                 SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
+                ShelfShareHelper mShelfShareHelper = ShelfShareHelper.getInstance();
+
                 mSFHelper.setTotalPopUpConfig();
 
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)

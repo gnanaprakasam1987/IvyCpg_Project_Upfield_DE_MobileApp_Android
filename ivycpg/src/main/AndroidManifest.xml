@@ -576,22 +576,22 @@
             android:name="com.ivy.sd.png.view.RetailerContractActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSActivity"
+            android:name="com.ivy.cpg.view.sf.SOSActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSActivity_Proj"
+            android:name="com.ivy.cpg.view.sf.SOSActivity_Proj"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOS_Summary_Proj"
+            android:name="com.ivy.cpg.view.sf.SOS_Summary_Proj"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SODActivity"
+            android:name="com.ivy.cpg.view.sf.SODActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SODAssetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSKUActivity"
+            android:name="com.ivy.cpg.view.sf.SOSKUActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CallAnalysisActivityKlgs"

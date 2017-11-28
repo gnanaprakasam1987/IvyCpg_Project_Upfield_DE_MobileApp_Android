@@ -146,7 +146,6 @@ import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
-import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -255,8 +254,6 @@ public class BusinessModel extends Application {
     public ArrayList<RetailerMasterBO> visitretailerMaster;
     private Vector<BankMasterBO> bankMaster;
     private Vector<BranchMasterBO> bankBranch;
-    // Shelf Share Helper to maintain shelf detail
-    public ShelfShareHelper mShelfShareHelper;
     //public String mModuleName[];
     public HashMap<String, String> mModuleCompletionResult;
 
@@ -493,7 +490,6 @@ public class BusinessModel extends Application {
         mSurveyHelperNew = SurveyHelperNew.getInstance(this);
 
         // Shelf Share Helper
-        mShelfShareHelper = ShelfShareHelper.getInstance();
         mRetailerHelper = RetailerHelper.getInstance(this);
         orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
