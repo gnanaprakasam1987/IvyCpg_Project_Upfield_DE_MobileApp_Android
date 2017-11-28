@@ -8902,6 +8902,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getCompetitorProductMaster() {
+        if (competitorProductMaster == null)
+            return new Vector<ProductMasterBO>();
         return competitorProductMaster;
     }
 

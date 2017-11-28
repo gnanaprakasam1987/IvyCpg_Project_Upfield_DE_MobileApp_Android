@@ -1219,6 +1219,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHARE_INVOICE = "ORDB68";
     public boolean IS_SHARE_INVOICE;
 
+    private static final String CODE_STK_ORD_ROW = "ORDB69";
+    private static final String CODE_STK_ORD_ROW_BS = "BS";
+    public boolean IS_STK_ORD_BS;
+
     public int MVPTheme = 0;
     public String fontSize = "";
 
@@ -2155,6 +2159,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
+
     }
 
     private void getTaxModel(String hhtCode) {
@@ -3064,6 +3069,7 @@ public class ConfigurationMasterHelper {
             SHOW_DEFAULT_LOCATION_POPUP = false;
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
+            IS_STK_ORD_BS = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3540,6 +3546,25 @@ public class ConfigurationMasterHelper {
                         SHOW_NEW_OUTLET_OPPR = true;
 
                 }
+            }
+
+
+            //STK_ORD row configuration
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_STK_ORD_ROW) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+            }
+            c.close();
+            if (codeValue != null) {
+                if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
+                    IS_STK_ORD_BS = true;
+
             }
 
 
