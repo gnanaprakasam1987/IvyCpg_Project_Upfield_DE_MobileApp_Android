@@ -13,9 +13,9 @@ public class PhotoTypeMasterBO {
 
     }
 
-    public PhotoTypeMasterBO(int photoid, String photdesc) {
-        this.photoTypeId = photoid;
-        this.photoTypeDesc = photdesc;
+    public PhotoTypeMasterBO(int mPhotoId, String mPhotoDescription) {
+        this.photoTypeId = mPhotoId;
+        this.photoTypeDesc = mPhotoDescription;
     }
 
     @Override

@@ -6,12 +6,9 @@ public class PhotoCaptureProductBO {
 
 
     private String productName;
-    private ArrayList<LocationBO> inStoreLocations;
+    private ArrayList<PhotoCaptureLocationBO> inStoreLocations;
     private int productID;
-
-
-
-    // For Adhoc Photocapturing
+    // For ADHOC PhotoCapturing
     private String retailerName;
 
     public PhotoCaptureProductBO(PhotoCaptureProductBO captureBO) {
@@ -51,11 +48,11 @@ public class PhotoCaptureProductBO {
         return productName;
     }
 
-    public ArrayList<LocationBO> getInStoreLocations() {
+    public ArrayList<PhotoCaptureLocationBO> getInStoreLocations() {
         return inStoreLocations;
     }
 
-    public void setInStoreLocations(ArrayList<LocationBO> inStoreLocations) {
+    public void setInStoreLocations(ArrayList<PhotoCaptureLocationBO> inStoreLocations) {
         this.inStoreLocations = inStoreLocations;
     }
 
