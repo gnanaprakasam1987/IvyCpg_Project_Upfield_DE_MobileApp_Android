@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     private String isFrom;
 
     private boolean isAttributeFilter = true;
+    SalesFundamentalHelper mSFHelper;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -64,6 +66,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         Context context = getActivity();
 
         bmodel = (BusinessModel) context.getApplicationContext();
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
         isFrom = getArguments().getString("isFrom");
         isFrom = (isFrom == null) ? "STK" : isFrom;
@@ -184,8 +187,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     sequence = bmodel.productHelper.getSequenceValues();
                     break;
                 case "SF":
-                    loadedFilterValues = bmodel.salesFundamentalHelper.getFiveLevelFilters();
-                    sequence = bmodel.salesFundamentalHelper.getSequenceValues();
+                    loadedFilterValues = mSFHelper.getFiveLevelFilters();
+                    sequence = mSFHelper.getSequenceValues();
                     break;
                 case "SVR":
                     loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();

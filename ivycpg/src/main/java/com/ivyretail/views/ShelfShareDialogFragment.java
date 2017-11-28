@@ -46,6 +46,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -154,6 +155,7 @@ public class ShelfShareDialogFragment extends DialogFragment {
     private static final String SHELF_COLOR = "setCellColor";
     private static final String DONT_SHOW_CLEAR_DIALOG = "do_not_show_clear_data_dialog";
     private static final String EXT_SHELF = "Ext.Shelf";
+    SalesFundamentalHelper mSFHelper;
 
     public ShelfShareDialogFragment() {
 
@@ -177,6 +179,7 @@ public class ShelfShareDialogFragment extends DialogFragment {
             this.mSelectedLocationIndex = bundle.getInt("selectedlocation");
             mKey = Integer.toString(mParentID);
         }
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
     }
 
     @Override
@@ -643,7 +646,7 @@ public class ShelfShareDialogFragment extends DialogFragment {
         if (mShelfCount == 0 && !mBrandNameListForDB.isEmpty())
             return;
 
-        bmodel.salesFundamentalHelper.loadSOSBlockDetails(DataMembers.uidSOS,
+        mSFHelper.loadSOSBlockDetails(DataMembers.uidSOS,
                 String.valueOf(mKey), totalShelfs, locid);
     }
 
@@ -1411,7 +1414,7 @@ public class ShelfShareDialogFragment extends DialogFragment {
         /*
       Contains entire product's details as SOSBO for SOS Module
      */
-        ArrayList<SOSBO> mSosList = bmodel.salesFundamentalHelper.getmSOSList();
+        ArrayList<SOSBO> mSosList = mSFHelper.getmSOSList();
 
         mCategoryForDialogSOSBO = new ArrayList<>();
 

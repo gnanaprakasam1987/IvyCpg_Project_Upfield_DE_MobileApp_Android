@@ -22,6 +22,7 @@ import com.ivy.sd.png.bo.SOSBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
@@ -42,6 +43,7 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
     private EditText QUANTITY;
     private InputMethodManager inputManager;
     private String append = "";
+    SalesFundamentalHelper mSFHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +74,7 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
     }
 
@@ -94,10 +97,10 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
     private void createView() {
 
         try {
-            if (bmodel.salesFundamentalHelper.getLstSOSproj() == null)
-                lstSOS = bmodel.salesFundamentalHelper.downloadSOSgroups();
+            if (mSFHelper.getLstSOSproj() == null)
+                lstSOS = mSFHelper.downloadSOSgroups();
             else
-                lstSOS = bmodel.salesFundamentalHelper.getLstSOSproj();
+                lstSOS = mSFHelper.getLstSOSproj();
 
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -203,8 +206,8 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
         int i = item.getItemId();
         if (i == android.R.id.home) {
 
-            if (bmodel.salesFundamentalHelper.getLstSOSproj() != null)
-                bmodel.salesFundamentalHelper.setLstSOSproj(null);
+            if (mSFHelper.getLstSOSproj() != null)
+                mSFHelper.setLstSOSproj(null);
 
             if (isFromChild)
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class)
