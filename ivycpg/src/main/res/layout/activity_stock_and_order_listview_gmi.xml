@@ -20,13 +20,14 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="3dp">
 
@@ -43,7 +44,7 @@
 
                 <ImageView
                     android:id="@+id/ivInfoicon"
-                    android:layout_width="0dp"
+                    android:layout_width="9dp"
                     android:layout_height="0dp"
                     android:layout_centerVertical="true"
                     android:padding="@dimen/list_item_padding"
@@ -355,39 +356,6 @@
                         android:text="@string/zero" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/llSo"
-                    android:layout_width="@dimen/widht_medium"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/soTitle"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:tag="so_piece"
-                        android:text="@string/so" />
-
-                    <TextView
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
-                        android:maxLines="1"
-                        android:text=":" />
-
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_so"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="@string/zero" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRepCase"
@@ -709,7 +677,6 @@
                     android:gravity="top">
 
 
-
                     <LinearLayout
                         android:id="@+id/llWeight"
                         android:layout_width="wrap_content"
@@ -746,11 +713,37 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:weightSum="4">
+
+            <LinearLayout
+                android:id="@+id/llSo"
+                android:layout_width="@dimen/widht_medium"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/soTitle"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="so_piece"
+                    android:text="@string/so" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_so"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center|right"
+                    android:text="@string/zero"
+                    android:textColor="@color/black_bg1"
+                    android:textSize="@dimen/font_micro_small" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llCase"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -775,7 +768,7 @@
 
             <LinearLayout
                 android:id="@+id/llPcs"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -800,8 +793,9 @@
 
             <LinearLayout
                 android:id="@+id/llTotal"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/widht_medium"
                 android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/list_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -810,6 +804,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:tag="totaltitle"
                     android:text="@string/total" />
 
@@ -819,6 +814,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_gravity="right"
                     android:gravity="center|right"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
