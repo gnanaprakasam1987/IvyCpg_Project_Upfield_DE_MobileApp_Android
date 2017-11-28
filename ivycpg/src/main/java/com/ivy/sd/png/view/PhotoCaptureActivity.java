@@ -113,11 +113,11 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         imageView_capture.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                capturePic();
+                captureImage();
             }
         });
         save_btn = (Button) findViewById(R.id.save_btn);
-        if (isMaxPhotos())
+        if (isMaximumPhotoTaken())
             save_btn.setVisibility(View.GONE);
         else
             save_btn.setVisibility(View.VISIBLE);
@@ -125,7 +125,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         save_btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToGallery();
+                savePhotoCaptureDetails();
             }
         });
 
@@ -274,7 +274,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 mTypeID = temp.getPhotoTypeId();
                                 mPhotoCaptureList = temp.getPhotoCaptureProductList();
                                 isPLType = temp.getPhotoTypeCode().equals("PT");
-                                onLoadModule();
+                                loadViews();
                             }
 
                             @Override
@@ -323,8 +323,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     }
 
 
-    private void updateProductList() {
-        // imgViewImage.setImageResource(0);
+    /**
+     * Update all common fields
+     */
+    private void updateFields() {
         button_fromDate.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getFromDate());
         button_toDate.setText(mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getToDate());
         if (mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getFeedback() != null &&
@@ -360,7 +362,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         isClicked = true;
         if (isPhotoDelete)
             save_btn.setVisibility(View.VISIBLE);
-        onLoadModule();
+        loadViews();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -368,7 +370,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         if (requestCode == CAMERA_REQUEST_CODE) {
 
             if (resultCode == 1) {
-                getPhotoBo(mImageName, mImagePath);
+                updateImageInformation(mImageName, mImagePath);
                 totalImgList.add(mImageName);
                 Commons.print("IMAGE NAME:" + mImageName);
                 imgViewImage.setImageResource(0);
@@ -383,7 +385,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 setImageFromCamera(mProductID, mTypeID);
                 mBModel.photocount++;
             } else {
-                getPhotoBo("", "");
+                updateImageInformation("", "");
                 Commons.print("IMAGE NAME:" + ",Camera Activity : Canceled");
                 imgViewImage.setImageResource(0);
 
@@ -399,6 +401,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         isClicked = true;
     }
 
+    /**
+     * Set image taken from camera
+     *
+     * @param productID   Selected Product
+     * @param photoTypeID Selected photo type
+     */
     private void setImageFromCamera(int productID, int photoTypeID) {
 
         for (PhotoTypeMasterBO temp : mPhotoCaptureHelper.getPhotoTypeMaster()) {
@@ -416,7 +424,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                         .getUriFromFile(path);
                                 imgViewImage.setImageURI(uri);
 
-                                setPic(path);
+                                setImage(path);
 
                                 break;
                             }
@@ -529,10 +537,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            backButtonClick();
+            backButtonAlertDialog();
             return true;
         } else if (i == R.id.menu_capture) {
-            capturePic();
+            captureImage();
         } else if (i == R.id.menu_gallery) {
             mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -542,23 +550,18 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             startActivity(mIntent);
             return true;
         } else if (i == R.id.menu_save) {
-            addToGallery();
+            savePhotoCaptureDetails();
         } else if (i == R.id.menu_location_filter) {
-            showLocationFilterAlert();
+            showLocationAlertDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void backButtonClick() {
-        try {
-            mDialog();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void mDialog() {
+    /**
+     * Alert dialog while moving back
+     */
+    public void backButtonAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         alertDialogBuilder
@@ -689,6 +692,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
+    /**
+     * Alert dialog for deleting image
+     * @param imageNameStarts
+     */
     private void showFileDeleteAlert(final String imageNameStarts) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -808,7 +815,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     }
 
 
-    public void onLoadModule() {
+    /**
+     * initializing views..
+     */
+    public void loadViews() {
         try {
             if (mPhotoCaptureList != null) {
                 for (PhotoCaptureProductBO sku : mPhotoCaptureList) {
@@ -816,7 +826,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     if (sku.getInStoreLocations().get(mSelectedItem).getProductID() == mFilterProductID) {
                         mPhotoCaptureBO = sku;
                         mProductID = mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getProductID();
-                        updateProductList();
+                        updateFields();
                         setImageFromCamera(mProductID, mTypeID);
                     } else if (mFilterProductID == 0) {
                         mPhotoCaptureBO = new PhotoCaptureProductBO();
@@ -841,10 +851,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    /*
-       * Show Location wise Filter
-       */
-    private void showLocationFilterAlert() {
+    /**
+     * Location filter
+     */
+    private void showLocationAlertDialog() {
         AlertDialog.Builder builder;
 
         builder = new AlertDialog.Builder(this);
@@ -868,6 +878,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         mBModel.applyAlertDialogTheme(builder);
     }
 
+    /**
+     * clear all views
+     */
     public void ClearAll() {
         mImageName = "";
         mImagePath = "";
@@ -886,7 +899,13 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    private void getPhotoBo(String mImageName, String _imagePath) {
+    /**
+     * update image path
+     *
+     * @param mImageName Image Name
+     * @param _imagePath Image Path
+     */
+    private void updateImageInformation(String mImageName, String _imagePath) {
         ArrayList<PhotoTypeMasterBO> list = mPhotoCaptureHelper.getPhotoTypeMaster();
         ArrayList<PhotoCaptureProductBO> lst;
 
@@ -908,9 +927,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
 
     /**
-     * Capture Image
+     * Capture Image - call camera
      */
-    public void capturePic() {
+    public void captureImage() {
         if (mBModel.isExternalStorageAvailable()) {
             if (mProductID != 0) {
                 if (mTypeID != 0) {
@@ -997,7 +1016,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private void setPic(String path) {
+    /**
+     * Set captured image in view
+     *
+     * @param path
+     */
+    private void setImage(String path) {
         // Get the dimensions of the View
         int targetW = imageView_capture.getWidth();
         int targetH = imageView_capture.getHeight();
@@ -1028,7 +1052,10 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         imageView_dummyCapture.setVisibility(View.GONE);
     }
 
-    public void addToGallery() {
+    /**
+     * Save photo capture details..
+     */
+    public void savePhotoCaptureDetails() {
         String mSkuName, mABV, mLotCode, mSeqNo, mFeedback;
         if (mPhotoCaptureHelper.hasPhotoTaken(mFilterProductID, mTypeID)) {
             mFeedback = editText_Feedback.getText().toString();
@@ -1078,7 +1105,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private boolean isMaxPhotos() {
+    /**
+     * To check, is photo count reached maximum count
+     *
+     * @return
+     */
+    private boolean isMaximumPhotoTaken() {
         int dbImageCount = mBModel.synchronizationHelper
                 .countImageFiles();
         if (dbImageCount >= mBModel.configurationMasterHelper.photocount) {
@@ -1089,6 +1121,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
+    /**
+     * Removing un wanted images
+     */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
             mBModel.deleteFiles(HomeScreenFragment.photoPath,
