@@ -158,7 +158,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                                         .getString(R.string.select_reason))) {
                             bmodel.reasonHelper.setDeviate(
                                     mSelectedMissedRetailer.getRetailerId(), r,
-                                    mSelectedMissedRetailer.getBeatId());
+                                    mSelectedMissedRetailer.getBeatId(), "");
 
                             loadData();
                         }

@@ -21,9 +21,11 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_webapi/api";
-    // public static String SERVER_URL="https://test2.ivymobileapps.com/IvyCPG_Prod03_Webapi/api";
-//    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+    //public static String SERVER_URL = "https://fe-mm-qa.ivycpg.com/webapi/api";
+    // public static String SERVER_URL = "http://dev.ivymobileapps.com/ivycpg_product_webapi/api";
+    //public static String SERVER_URL = "https://bic-tr-qa.ivycpg.com/webapi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Bic_WebAPI/api";
+    //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
 

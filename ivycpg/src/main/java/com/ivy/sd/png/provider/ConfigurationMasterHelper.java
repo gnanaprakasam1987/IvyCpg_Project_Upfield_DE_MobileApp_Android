@@ -39,6 +39,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
     public static int GET_GENERALFILTET_TYPE = 1;
+    public static int COMPETITOR_FILTER_TYPE;
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";
     public static String SECRET_KEY = "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";
@@ -181,6 +182,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_STK_ORD_SRP = "ORDB24";
     private static final String CODE_SHOW_STK_ORD_SRP_SEC = "ORDB26";
     private static final String CODE_SHOW_SPL_FILTER = "ORDB27";
+    private static final String CODE_SHOW_COMPETITOR_FILTER = "FUN62";
     private static final String CODE_SHOW_MVP_DRAWER = "MVP01";
     private static final String CODE_LAT = "PROFILE08";
     private static final String CODE_LONG = "PROFILE31";
@@ -591,6 +593,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_D3;
     public boolean SHOW_DA;
     public boolean SHOW_SPL_FILTER;
+    public boolean SHOW_COMPETITOR_FILTER;
     public boolean SHOW_SPL_FLIER_NOT_NEEDED = false;
     public boolean SHOW_MVP_DRAWER;
     public boolean SHOW_LAT;
@@ -1098,6 +1101,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_BAR_CODE = "ORDB09";
     public boolean IS_BAR_CODE;
+    public boolean IS_QTY_INCREASE;
 
     private static final String CODE_APLLY_BATCH_PRICE_FROM_PRODCUT = "FUN43";
     public boolean IS_APPLY_BATCH_PRICE_FROM_PRODUCT;
@@ -1214,6 +1218,10 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHARE_INVOICE = "ORDB68";
     public boolean IS_SHARE_INVOICE;
+
+    private static final String CODE_STK_ORD_ROW = "ORDB69";
+    private static final String CODE_STK_ORD_ROW_BS = "BS";
+    public boolean IS_STK_ORD_BS;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -1955,6 +1963,9 @@ public class ConfigurationMasterHelper {
         this.SHOW_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) : false;
         ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
+        this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
+        ConfigurationMasterHelper.COMPETITOR_FILTER_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) : 1;
+
         this.SHOW_VANGPS_VALIDATION = hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) : false;
         ConfigurationMasterHelper.vanDistance = hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) : 0;
 
@@ -2032,6 +2043,9 @@ public class ConfigurationMasterHelper {
         this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;
         this.IS_LOYALTY_AUTO_PAYOUT = hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) != null ? hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) : false;
         this.IS_BAR_CODE = hashMapHHTModuleConfig.get(CODE_BAR_CODE) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE) : false;
+        if (IS_BAR_CODE && hashMapHHTModuleOrder.get(CODE_BAR_CODE) == 1) {
+            IS_QTY_INCREASE = true;
+        }
         this.IS_SHOW_DISCOUNTS_ORDER_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) : false;
         this.IS_APPLY_BATCH_PRICE_FROM_PRODUCT = hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) != null ? hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) : false;
         this.IS_SHOW_PRINT_LANGUAGE_THAI = hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) : false;
@@ -2145,6 +2159,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
+
     }
 
     private void getTaxModel(String hhtCode) {
@@ -3054,6 +3069,7 @@ public class ConfigurationMasterHelper {
             SHOW_DEFAULT_LOCATION_POPUP = false;
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
+            IS_STK_ORD_BS = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3530,6 +3546,25 @@ public class ConfigurationMasterHelper {
                         SHOW_NEW_OUTLET_OPPR = true;
 
                 }
+            }
+
+
+            //STK_ORD row configuration
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_STK_ORD_ROW) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+            }
+            c.close();
+            if (codeValue != null) {
+                if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
+                    IS_STK_ORD_BS = true;
+
             }
 
 

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatRadioButton
         android:id="@+id/reason_radio_btn"
@@ -13,4 +14,17 @@
         android:textColor="@color/FullBlack"
         android:buttonTint="?attr/colorAccent"
         android:padding="12dp" />
+
+    <EditText
+        android:id="@+id/edt_other_remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cursorVisible="false"
+        android:textColor="@color/Black"
+        android:textSize="@dimen/list_item_primary_text_size"
+        android:visibility="gone"
+        tools:text="rg tgerg dfgdfgdf g"
+        android:hint="@string/remark_hint"
+        android:padding="12dp"
+        android:layout_marginLeft="12dp" />
 </LinearLayout>

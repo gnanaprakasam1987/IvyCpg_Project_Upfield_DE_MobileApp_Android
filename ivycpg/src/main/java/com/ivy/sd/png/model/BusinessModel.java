@@ -131,7 +131,6 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
-import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
@@ -241,7 +240,6 @@ public class BusinessModel extends Application {
 
     public static final String PREFS_NAME = "PRINT";
     public static boolean loginFlag;
-    public static boolean isPhotoCaptureFromHomeScreen = false;
     public static String selectedDownloadRetailerID = "";
     public static int selectedDownloadUserID = 0;
     public static boolean dashHomeStatic;
@@ -348,7 +346,6 @@ public class BusinessModel extends Application {
     public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
-    public PhotoCaptureHelper photoCaptureHelper;
     //
     public HashMap<String, PhotoCaptureProductBO> galleryDetails;
     /* ******* Invoice Number To Print ******* */
@@ -362,8 +359,6 @@ public class BusinessModel extends Application {
     //private PaymentBO paymentBO;
     private OrderHeader orderHeaderBO;
     private Activity ctx, activity;
-    // DataStore
-    //private Vector<PhotoTypeMasterBO> photoTypeMaster;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
     //private Vector<DigitalContentBO> digitalMaster;
@@ -386,12 +381,10 @@ public class BusinessModel extends Application {
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
-    //private String existphotoId = "";
     private StoreWsieDiscountBO discountlist;
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private ArrayList<String> mRetailerIDList;
     private boolean isDoubleEdit_temp;
-    //private PhotoCaptureProductBO photocapture;
     //private String appDigitalContentURL;
     private HashMap<String, String> digitalContentURLS;
     private int responceMessage;
@@ -475,12 +468,10 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
-        photoCaptureHelper = photoCaptureHelper.getInstance(this);
 
         /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
         //paymentBO = new PaymentBO();
-        //setPhotoMaster(new Vector<PhotoTypeMasterBO>());
 
         invoiceHeader = new ArrayList<>();
         //payment = new Vector<Object>();
@@ -2746,7 +2737,7 @@ public class BusinessModel extends Application {
      * This method will called to store both non-productive as well as Non-Visit
      * reason.
      */
-    public void saveNonproductivereason(NonproductivereasonBO outlet) {
+    public void saveNonproductivereason(NonproductivereasonBO outlet, String remarks) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2780,13 +2771,13 @@ public class BusinessModel extends Application {
                             + " and RouteID="
                             + getRetailerMasterBO().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks";
 
             values = id + "," + QT(getRetailerMasterBO().getRetailerID()) + ","
                     + getRetailerMasterBO().getBeatID() + ","
                     + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
                     + "," + QT(getStandardListId(outlet.getReasontype())) + ","
-                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath());
+                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
@@ -2807,7 +2798,7 @@ public class BusinessModel extends Application {
                         + QT(outlet.getCollectionReasonID())
                         + ","
                         + QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath());
+                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 

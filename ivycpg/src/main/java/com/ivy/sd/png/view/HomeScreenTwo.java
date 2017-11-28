@@ -54,6 +54,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -722,10 +723,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             return true;
         } else if (i1 == R.id.menu_photo) {
             int count = bmodel.synchronizationHelper.getImagesCount();
+
             if (!isClick) {
                 isClick = true;
+
                 if (count >= 10
                         && count <= bmodel.configurationMasterHelper.photocount) {
+
                     Toast.makeText(
                             this,
                             getResources()
@@ -733,16 +737,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                             R.string.its_highly_recommend_you_to_upload_the_images_before_capturing_new_image),
                             Toast.LENGTH_LONG).show();
 
-                    BusinessModel.isPhotoCaptureFromHomeScreen = true;
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
-                    bmodel.mSelectedActivityName =
-                            getResources().getString(R.string.photo_capture);
                     startActivity(new Intent(HomeScreenTwo.this,
                             PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
+
                 } else if (count >= bmodel.configurationMasterHelper.photocount) {
+
                     showGalleryAlert(
                             getResources()
                                     .getString(
@@ -755,9 +758,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
-                    BusinessModel.isPhotoCaptureFromHomeScreen = true;
-                    bmodel.mSelectedActivityName =
-                            getResources().getString(R.string.photo_capture);
                     startActivity(new Intent(HomeScreenTwo.this,
                             PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
@@ -1446,6 +1446,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR)
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
+                    if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
+                        bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
+                    else
+                        bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
+                }
 
                 if (bmodel.productHelper.getTaggedProducts().size() > 0) {
                     if (bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
@@ -2081,18 +2086,25 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
+
                 int count = bmodel.synchronizationHelper.getImagesCount();
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.photoCaptureHelper.downloadPhotoCaptureProducts();
-                bmodel.photoCaptureHelper.downloadPhotoTypeMaster();
-                bmodel.photoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
+
+                PhotoCaptureHelper mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
+                mPhotoCaptureHelper.downloadPhotoCaptureProducts();
+                mPhotoCaptureHelper.downloadPhotoTypeMaster();
+                mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
+
                 if (!isClick) {
                     isClick = true;
-                    if (bmodel.photoCaptureHelper.getPhotoCaptureProductList().size() > 0
-                            && bmodel.photoCaptureHelper.getPhotoTypeMaster().size() > 0) {
+
+                    if (mPhotoCaptureHelper.getPhotoCaptureProductList().size() > 0
+                            && mPhotoCaptureHelper.getPhotoTypeMaster().size() > 0) {
+
                         if (count >= 10
                                 && count <= bmodel.configurationMasterHelper.photocount) {
+
                             Toast.makeText(
                                     this,
                                     getResources()
@@ -2100,11 +2112,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                                                     R.string.its_highly_recommend_you_to_upload_the_images_before_capturing_new_image),
                                     Toast.LENGTH_LONG).show();
                             finish();
-                            bmodel.mSelectedActivityName = menu.getMenuName();
+
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                            BusinessModel.isPhotoCaptureFromHomeScreen = true;
+
                             Intent intent = new Intent(HomeScreenTwo.this,
                                     PhotoCaptureActivity.class);
                             intent.putExtra("screen_title", menu.getMenuName());
@@ -2112,7 +2124,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             if (isFromChild)
                                 intent.putExtra("isFromChild", isFromChild);
                             startActivity(intent);
+
                         } else if (count >= bmodel.configurationMasterHelper.photocount) {
+
                             showGalleryAlert(
                                     getResources()
                                             .getString(
@@ -2122,11 +2136,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                         } else {
                             finish();
-                            bmodel.mSelectedActivityName = menu.getMenuName();
+
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                            BusinessModel.isPhotoCaptureFromHomeScreen = true;
+
                             Intent intent = new Intent(HomeScreenTwo.this,
                                     PhotoCaptureActivity.class);
                             intent.putExtra("screen_title", menu.getMenuName());
@@ -2134,9 +2148,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             startActivity(intent);
                         }
                     } else {
+
                         dataNotMapped();
+
                         isClick = false;
                         isCreated = false;
+
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                         if (!menuCode.equals(menu.getConfigCode()))
                             menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -2742,8 +2759,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 // Load Price related configurations.
                 bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_COMPETITOR)
+                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
+                    bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                }
                 bmodel.mPriceTrackingHelper.clearPriceCheck();
                 bmodel.mPriceTrackingHelper.loadPriceTransaction();
 
@@ -2797,6 +2816,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
+                bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
 
                 bmodel.mPriceTrackingHelper.clearPriceCheck();
                 bmodel.mPriceTrackingHelper.loadPriceTransaction();

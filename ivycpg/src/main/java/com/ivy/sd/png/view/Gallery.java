@@ -32,10 +32,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
 import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.bo.PhotoTypeMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
 import com.ivy.sd.png.model.BusinessModel;
@@ -50,23 +49,24 @@ import java.util.HashMap;
 
 public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickListener {
 
-    private BusinessModel bmodel;
-    private File deleteFilePath;
-    private boolean isFromHome = false, isfromstorecheck;
+    private BusinessModel mBModel;
     protected RecyclerView recyclerView;
     protected TextView toolBarTitle;
-    protected HashMap<String, String> stdlistMap = new HashMap<>();
-    private String fromScreen;
+
+    private int width, height;
+    public static boolean isPhotoDelete = false;
+
     protected  ArrayList<String> prodList;
-    protected  HashMap<String, ArrayList<String>> imghashMap;
-    protected  HashMap<String, ArrayList<String>> typehashMap;
-    protected  HashMap<String, ArrayList<String>> lochashMap;
-    protected GalRecyclerAdapter galRecyclerAdapter=new GalRecyclerAdapter();
+    protected HashMap<String, ArrayList<String>> mImageListByProductName;
+    protected HashMap<String, ArrayList<String>> mPhotoTypeListByProductName;
+    protected HashMap<String, ArrayList<String>> mLocationListByProductName;
+    protected GalRecyclerAdapter galRecyclerAdapter;
     protected ArrayList<String> imgPathShare=new ArrayList<>();
     protected ArrayList<String> imgPathDelete=new ArrayList<>();
     protected ArrayList<File> imgFileDelete=new ArrayList<>();
-    private int width,height;
-    public static boolean isPhotoDelete = false;
+    protected HashMap<String, String> mInStoreLocationNameById = new HashMap<>();
+
+
     /**
      * Called when the activity is first created.
      */
@@ -74,36 +74,26 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gall);
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            if (extras.containsKey("IsFromHome")) {
-                isFromHome = extras.getBoolean("IsFromHome");
-
-                bmodel.loadPhotoCapturedDetails();
-            }
-            if (extras.containsKey("IsFromStoreCheck")) {
-                isfromstorecheck = extras.getBoolean("IsFromStoreCheck");
-                bmodel.loadPhotoCapturedDetails();
-            }
-        }
-
-        fromScreen = getIntent().getStringExtra("from") != null ? getIntent().getStringExtra("from") : "";
-        bmodel.loadPhotoCapturedDetailsSelectedRetailer();
+        mBModel.loadPhotoCapturedDetailsSelectedRetailer();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null)
             setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-        toolBarTitle = (TextView) toolbar.findViewById(R.id.tv_toolbar_title);
-        toolBarTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        toolBarTitle.setText("My Gallery");
+        if (toolbar != null) {
+            toolBarTitle = (TextView) toolbar.findViewById(R.id.tv_toolbar_title);
+            toolBarTitle.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            toolBarTitle.setText(getResources().getString(R.string.my_gallery));
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.gal_recycler_view);
         if (recyclerView != null) {
@@ -167,7 +157,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         intent.setAction(Intent.ACTION_SEND_MULTIPLE);
         intent.putExtra(Intent.EXTRA_SUBJECT, "Pictures");
         intent.setType("image/*");
-        ArrayList<Uri> files = new ArrayList<Uri>();
+        ArrayList<Uri> files = new ArrayList<>();
         /* List of the files you want to send */
         for(String path : imagePathArray) {
             File file = new File(path);
@@ -201,13 +191,12 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
             imgPathShare=new ArrayList<>();
             imgPathDelete=new ArrayList<>();
             imgFileDelete=new ArrayList<>();
-            imghashMap = new HashMap<>();
-            typehashMap = new HashMap<>();
-            lochashMap = new HashMap<>();
+            mImageListByProductName = new HashMap<>();
+            mPhotoTypeListByProductName = new HashMap<>();
+            mLocationListByProductName = new HashMap<>();
 
-            for (StandardListBO temp : bmodel.productHelper
-                    .getInStoreLocation()) {
-                stdlistMap.put(temp.getListID(), temp.getListName());
+            for (PhotoCaptureLocationBO temp : PhotoCaptureHelper.getInstance(getApplicationContext()).getLocations()) {
+                mInStoreLocationNameById.put(String.valueOf(temp.getLocationId()), temp.getLocationName());
 
             }
 
@@ -215,10 +204,10 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
 
-                for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
-                    for (LocationBO lbo : phcapture.getInStoreLocations()) {
-                        if (lbo.getImagepath() != null && !lbo.getImagepath().isEmpty()) {
-                            System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotcode() + " : " + lbo.getImagepath());
+                for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
+                    for (PhotoCaptureLocationBO lbo : mPhotoCapture.getInStoreLocations()) {
+                        if (lbo.getImagePath() != null && !lbo.getImagePath().isEmpty()) {
+                            System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotCode() + " : " + lbo.getImagePath());
                             if (prodList.size() > 0) {
                                 if (!prodList.contains(lbo.getProductName())) {
                                     prodList.add(lbo.getProductName());
@@ -227,29 +216,30 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                 prodList.add(lbo.getProductName());
                             }
 
-                            if (!imghashMap.containsKey(lbo.getProductName())) {
-                                ArrayList<String> imglist = new ArrayList<String>();
-                                imglist.add(lbo.getImageName());
-                                imghashMap.put(lbo.getProductName(), imglist);
+                            if (!mImageListByProductName.containsKey(lbo.getProductName())) {
+                                ArrayList<String> mImageList = new ArrayList<>();
+                                mImageList.add(lbo.getImageName());
+                                mImageListByProductName.put(lbo.getProductName(), mImageList);
 
-                                ArrayList<String> typelist = new ArrayList<String>();
-                                typelist.add(photoTypeBo.getPhotoTypeDesc());
-                                typehashMap.put(lbo.getProductName(), typelist);
+                                ArrayList<String> mTypeList = new ArrayList<>();
+                                mTypeList.add(photoTypeBo.getPhotoTypeDesc());
+                                mPhotoTypeListByProductName.put(lbo.getProductName(), mTypeList);
 
-                                ArrayList<String> loclist = new ArrayList<String>();
-                                loclist.add(stdlistMap.get(String.valueOf(lbo.getLocationId())));
-                                lochashMap.put(lbo.getProductName(), loclist);
+                                ArrayList<String> mLocationList = new ArrayList<>();
+                                mLocationList.add(mInStoreLocationNameById.get(String.valueOf(lbo.getLocationId())));
+                                mLocationListByProductName.put(lbo.getProductName(), mLocationList);
 
                             } else {
-                                imghashMap.get(lbo.getProductName()).add(lbo.getImageName());
-                                typehashMap.get(lbo.getProductName()).add(photoTypeBo.getPhotoTypeDesc());
-                                lochashMap.get(lbo.getProductName()).add(stdlistMap.get(String.valueOf(lbo.getLocationId())));
+                                mImageListByProductName.get(lbo.getProductName()).add(lbo.getImageName());
+                                mPhotoTypeListByProductName.get(lbo.getProductName()).add(photoTypeBo.getPhotoTypeDesc());
+                                mLocationListByProductName.get(lbo.getProductName()).add(mInStoreLocationNameById.get(String.valueOf(lbo.getLocationId())));
 
                             }
                         }
                     }
                 }
             }
+            galRecyclerAdapter = new GalRecyclerAdapter();
             recyclerView.setAdapter(galRecyclerAdapter);
         } catch (Exception e) {
             Commons.printException(e);
@@ -292,7 +282,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     /**
      * this would clear all the resources used of the layout.
      *
-     * @param view
+     * @param view Root view
      */
     private void unbindDrawables(View view) {
         if (view.getBackground() != null) {
@@ -337,8 +327,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
             holder.ProdName.setText(prodList.get(position));
-            holder.PhoneCaptureGrid.setAdapter(new ProdGridAdapter(imghashMap.get(prodList.get(position)), typehashMap.get(prodList.get(position)), lochashMap.get(prodList.get(position))));
-            holder.ProdName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.PhoneCaptureGrid.setAdapter(new ProdGridAdapter(mImageListByProductName.get(prodList.get(position)), mPhotoTypeListByProductName.get(prodList.get(position)), mLocationListByProductName.get(prodList.get(position))));
+            holder.ProdName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
 
         @Override
@@ -370,8 +360,9 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                     }
                 })
                 .setCancelable(false);
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
+
     /* showDeleteAlertDialog( path of the image, image file) */
     private void showDeleteAlertDialog(final ArrayList<String> imagePathArray, final ArrayList<File> imageFileArray)
     {
@@ -390,21 +381,22 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                         ArrayList<PhotoCaptureProductBO> tempCaptureBO = tempTypeBO
                                                 .getPhotoCaptureProductList();
                                         for (PhotoCaptureProductBO photo : tempCaptureBO) {
-                                            for (LocationBO lbo : photo.getInStoreLocations()) {
+                                            for (PhotoCaptureLocationBO lbo : photo.getInStoreLocations()) {
                                                 if (lbo.getImageName() != null && !lbo.getImageName().isEmpty()) {
 
                                                     if (lbo.getImageName().equalsIgnoreCase(imagePathArray.get(i))) {
                                                         lbo.setImageName("");
-                                                        lbo.setImagepath("");
+                                                        lbo.setImagePath("");
                                                     }
                                                 }
                                             }
                                         }
                                     }
 
-                                    imageFileArray.get(i).delete();
-                                    bmodel.deleteImageDetailsFormTable(imagePathArray.get(i));
-                                    bmodel.photocount--;
+                                    if (imageFileArray.get(i).delete()) {
+                                        mBModel.deleteImageDetailsFormTable(imagePathArray.get(i));
+                                        mBModel.photocount--;
+                                    }
                                 }
                                 loadGrid();
                                 isPhotoDelete = true;
@@ -417,7 +409,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                                 int whichButton) {
                             }
                         });
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
 
     private class ProdGridAdapter extends BaseAdapter {
@@ -462,11 +454,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 holder.RLCheckBg=(RelativeLayout)convertView.findViewById(R.id.layout_share_select);
                 holder.CBSelect=(CheckBox)convertView.findViewById(R.id.check_share_select);
 
-                /*if ("photo_cap".equals(fromScreen))
-                    holder.loc_txt.setVisibility(View.GONE);*/
-
-                holder.type_loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.loc_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.type_loc_txt.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.loc_txt.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
                 holder.RLCheckBg.setOnClickListener(new View.OnClickListener() {
                     @Override

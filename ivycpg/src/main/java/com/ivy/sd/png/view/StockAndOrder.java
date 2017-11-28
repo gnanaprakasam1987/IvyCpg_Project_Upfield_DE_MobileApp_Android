@@ -1471,9 +1471,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (row == null) {
 
                 final LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(
-                        R.layout.activity_stock_and_order_listview_new, parent,
-                        false);
+
+                //Configuration based row rendering
+                if (bmodel.configurationMasterHelper.IS_STK_ORD_BS)
+                    row = inflater.inflate(
+                            R.layout.activity_stock_and_order_listview_gmi, parent,
+                            false);
+                else
+                    row = inflater.inflate(
+                            R.layout.activity_stock_and_order_listview_new, parent,
+                            false);
                 holder = new ViewHolder();
 
                 holder.tvbarcode = (TextView) row
@@ -4293,10 +4300,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     || ret.getOuterbarcode().toLowerCase().
                                     contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
 
-                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
+                                    if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                        if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                            ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                            ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                            ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                        }
+                                    }
                                     mylist.add(ret);
-                                else if (applyProductAndSpecialFilter(ret))
+                                } else if (applyProductAndSpecialFilter(ret)) {
+                                    if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                        if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                            ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                            ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                            ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                        }
+                                    }
                                     mylist.add(ret);
+                                }
                             }
                         } else if (mSelectedFilter.equals(getResources().getString(
                                 R.string.order_gcas))) {
@@ -4460,18 +4486,56 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if ((bid == -1 || bid == ret.getParentid()) && GENERAL.equalsIgnoreCase(generaltxt) && ret.getIsSaleable() == 1) {
                                 // product filter alone
                                 if (mEdt_searchproductName.getText().length() >= 3) {
-                                    if (isUserEntryFilterSatisfied(ret))
+                                    if (isUserEntryFilterSatisfied(ret)) {
+                                        if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                            if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                            }
+                                        }
                                         mylist.add(ret);
+                                    }
                                 } else {
+                                    if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                        if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                            ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                        } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                            ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                        } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                            ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                        }
+                                    }
                                     mylist.add(ret);
                                 }
                             } else if ((bid == -1 || bid == ret.getParentid()) && !GENERAL.equalsIgnoreCase(generaltxt) && ret.getIsSaleable() == 1) {
                                 //special(GENERAL) filter with or without product filter
                                 if (isSpecialFilterAppliedProduct(generaltxt, ret)) {
                                     if (mEdt_searchproductName.getText().length() >= 3) {
-                                        if (isUserEntryFilterSatisfied(ret))
+                                        if (isUserEntryFilterSatisfied(ret)) {
+                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                                }
+                                            }
                                             mylist.add(ret);
+                                        }
                                     } else {
+                                        if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                            if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                            }
+                                        }
                                         mylist.add(ret);
                                     }
                                 }
@@ -5260,10 +5324,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
                                     if (generaltxt.equals(GENERAL))//No special filters selected
                                     {
+                                        if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                            if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                            } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                            }
+                                        }
                                         mylist.add(ret);
                                     } else {
-                                        if (isSpecialFilterAppliedProduct(generaltxt, ret))  //special filter selected
+                                        if (isSpecialFilterAppliedProduct(generaltxt, ret)) {  //special filter selected
+                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                                }
+                                            }
                                             mylist.add(ret);
+                                        }
                                     }
                                 }
                             }
@@ -5339,10 +5422,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                                         if (generaltxt.equals(GENERAL))//No special filters selected
                                         {
+                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                                }
+                                            }
                                             mylist.add(ret);
                                         } else {
-                                            if (isSpecialFilterAppliedProduct(generaltxt, ret))  //special filter selected
+                                            if (isSpecialFilterAppliedProduct(generaltxt, ret)) { //special filter selected
+                                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                                    if (strBarCodeSearch.equals(ret.getBarCode())) {
+                                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                                    } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
+                                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                                    } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
+                                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                                    }
+                                                }
                                                 mylist.add(ret);
+                                            }
                                         }
                                     }
                                 }
@@ -5495,11 +5597,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
 
-
-        }
+    }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        // 22.11.2017 mansoor.k mFilterText length == 0 then no filter selected so no need to loop parent ids loop
         String filtertext = getResources().getString(R.string.product_name);
         if (!mFilterText.equals("")) {
             filtertext = mFilterText;
@@ -5516,8 +5618,34 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (mAttributeProducts != null) {
             count = 0;
             if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    count++;
+                if (mFilterText.length() > 0) {
+                    for (LevelBO levelBO : mParentIdList) {
+                        count++;
+                        for (ProductMasterBO productBO : items) {
+                            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                    && productBO.getSIH() > 0)
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
+                                    (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+
+                                if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+
+                                    if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                        if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+
+                                            if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                                continue;
+                                            mylist.add(productBO);
+                                            fiveFilter_productIDs.add(productBO.getProductID());
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                } else {
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                                 || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
@@ -5527,7 +5655,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                if (productBO.getIsSaleable() == 1) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                     if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
 
@@ -5565,8 +5693,35 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                count++;
+            if (mFilterText.length() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
+                    count++;
+                    for (ProductMasterBO productBO : items) {
+
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.configurationMasterHelper.IS_INVOICE
+                                && productBO.getSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    && productBO.getIndicativeOrder_oc() > 0)) {
+                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                        continue;
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
                 for (ProductMasterBO productBO : items) {
 
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -5583,13 +5738,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                 && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
-                                if (levelBO.getProductID() == productBO.getParentid()) {
-                                    //  filtertext = levelBO.getLevelName();
-                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
-                                        continue;
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                    continue;
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
                     }

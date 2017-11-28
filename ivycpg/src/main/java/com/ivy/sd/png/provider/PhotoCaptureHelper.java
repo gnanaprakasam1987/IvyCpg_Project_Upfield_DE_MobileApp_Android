@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
 import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.bo.PhotoTypeMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -18,19 +18,21 @@ import java.util.ArrayList;
 
 /**
  * Created by abbasaniefa on 11/07/17.
+ * Photo capture screen specific helper
  */
 
 public class PhotoCaptureHelper {
 
     private final Context context;
-    private final BusinessModel bmodel;
+    private final BusinessModel mBModel;
     private static PhotoCaptureHelper instance = null;
     private ArrayList<PhotoCaptureProductBO> photoCaptureProductList;
     private ArrayList<PhotoTypeMasterBO> photoTypeMaster;
+    private ArrayList<PhotoCaptureLocationBO> inStoreLocation;
 
     private PhotoCaptureHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        mBModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static PhotoCaptureHelper getInstance(Context context) {
@@ -92,14 +94,14 @@ public class PhotoCaptureHelper {
             typeMasterBO.setPhotoTypeId(0);
             typeMasterBO.setPhotoTypeDesc("--Select PhotoType--");
             typeMasterBO.setPhotoTypeCode("--Select PhotoType--");
-            typeMasterBO.setPhotoCaptureProductList(cloneLocationList(getPhotoCaptureProductList()));
+            typeMasterBO.setPhotoCaptureProductList(cloneProductList(getPhotoCaptureProductList()));
 
             for (PhotoCaptureProductBO photoCaptureBO : typeMasterBO.getPhotoCaptureProductList()) {
 
-                if (bmodel.productHelper.locations != null)
-                    photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(bmodel.productHelper.locations));
+                if (inStoreLocation != null)
+                    photoCaptureBO.setInStoreLocations(cloneLocationList(inStoreLocation));
                 if (photoCaptureBO.getInStoreLocations() != null)
-                    for (LocationBO lbo : photoCaptureBO.getInStoreLocations()) {
+                    for (PhotoCaptureLocationBO lbo : photoCaptureBO.getInStoreLocations()) {
                         lbo.setProductID(photoCaptureBO.getProductID());
                         lbo.setProductName(photoCaptureBO.getProductName());
                     }
@@ -114,11 +116,11 @@ public class PhotoCaptureHelper {
                     typeMasterBO.setPhotoTypeCode(c.getString(2));
 
                     typeMasterBO
-                            .setPhotoCaptureProductList(cloneLocationList(getPhotoCaptureProductList()));
+                            .setPhotoCaptureProductList(cloneProductList(getPhotoCaptureProductList()));
                     for (PhotoCaptureProductBO photoCaptureBO : typeMasterBO.getPhotoCaptureProductList()) {
 
-                        photoCaptureBO.setInStoreLocations(ProductHelper.cloneLocationList(bmodel.productHelper.locations));
-                        for (LocationBO lbo : photoCaptureBO.getInStoreLocations()) {
+                        photoCaptureBO.setInStoreLocations(cloneLocationList(inStoreLocation));
+                        for (PhotoCaptureLocationBO lbo : photoCaptureBO.getInStoreLocations()) {
                             lbo.setProductID(photoCaptureBO.getProductID());
                             lbo.setProductName(photoCaptureBO.getProductName());
                         }
@@ -141,7 +143,7 @@ public class PhotoCaptureHelper {
      * @param list list
      * @return return
      */
-    private static ArrayList<PhotoCaptureProductBO> cloneLocationList(
+    private static ArrayList<PhotoCaptureProductBO> cloneProductList(
             ArrayList<PhotoCaptureProductBO> list) {
         ArrayList<PhotoCaptureProductBO> clone = new ArrayList<>(
                 list.size());
@@ -156,7 +158,7 @@ public class PhotoCaptureHelper {
      *
      * @param retailerID retailerID
      */
-    public void savePhotocaptureDetails(String retailerID) {
+    public void savePhotoCaptureDetails(String retailerID) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         Cursor cursor;
         try {
@@ -167,31 +169,31 @@ public class PhotoCaptureHelper {
             // delete transaction if exist
             cursor = db.selectSQL("SELECT Uid FROM "
                     + DataMembers.actPhotocapture + " WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + mBModel.getRetailerMasterBO().getRetailerID()
                     + " AND DistributorID="
-                    + bmodel.getRetailerMasterBO().getDistributorId()
+                    + mBModel.getRetailerMasterBO().getDistributorId()
                     + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL(DataMembers.actPhotocapture,
-                        "Uid=" + bmodel.QT(cursor.getString(0)), false);
+                        "Uid=" + mBModel.QT(cursor.getString(0)), false);
                 cursor.close();
             }
 
-            String uid = QT(bmodel.userMasterHelper.getUserMasterBO()
+            String uid = QT(mBModel.userMasterHelper.getUserMasterBO()
                     .getDistributorid()
                     + ""
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
 
             for (PhotoTypeMasterBO photoTypeBo : getPhotoTypeMaster()) {
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
                 for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
-                    for (LocationBO lbo : phcapture.getInStoreLocations())
-                        if (!"".equals(lbo.getImagepath())) {
+                    for (PhotoCaptureLocationBO lbo : phcapture.getInStoreLocations())
+                        if (!"".equals(lbo.getImagePath())) {
 
                             StringBuilder sBuffer = new StringBuilder();
 
@@ -203,17 +205,17 @@ public class PhotoCaptureHelper {
                             sBuffer.append(",");
                             sBuffer.append(lbo.getProductID());
                             sBuffer.append(",");
-                            sBuffer.append(QT(lbo.getImagepath()));
+                            sBuffer.append(QT(lbo.getImagePath()));
                             sBuffer.append(",");
                             sBuffer.append(retailerID);
                             sBuffer.append(",");
                             sBuffer.append(DatabaseUtils
-                                    .sqlEscapeString(bmodel.retailerMasterBO
+                                    .sqlEscapeString(mBModel.retailerMasterBO
                                             .getRetailerName()));
                             sBuffer.append(",");
                             sBuffer.append("1");
                             sBuffer.append(",");
-                            if (bmodel.configurationMasterHelper.SHOW_DATE_BTN) {
+                            if (mBModel.configurationMasterHelper.SHOW_DATE_BTN) {
                                 sBuffer.append(QT(DateUtil.convertToServerDateFormat(
                                         lbo.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
@@ -230,15 +232,15 @@ public class PhotoCaptureHelper {
                             }
                             sBuffer.append(lbo.getLocationId());
                             sBuffer.append(",");
-                            sBuffer.append(QT(lbo.getSkuname()));
+                            sBuffer.append(QT(lbo.getSKUName()));
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getAbv()));
                             sBuffer.append(",");
-                            sBuffer.append(QT(lbo.getLotcode()));
+                            sBuffer.append(QT(lbo.getLotCode()));
                             sBuffer.append(",");
-                            sBuffer.append(QT(lbo.getSeqno()));
+                            sBuffer.append(QT(lbo.getSequenceNO()));
                             sBuffer.append(",");
-                            sBuffer.append(bmodel.retailerMasterBO
+                            sBuffer.append(mBModel.retailerMasterBO
                                     .getDistributorId());
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getFeedback()));
@@ -270,8 +272,8 @@ public class PhotoCaptureHelper {
                 if (photoTypeBo.getPhotoTypeId() == typeId)
                     for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
                         if (phcapture.getProductID() == productId)
-                            for (LocationBO lbo : phcapture.getInStoreLocations())
-                                if (!"".equals(lbo.getImagepath())) {
+                            for (PhotoCaptureLocationBO lbo : phcapture.getInStoreLocations())
+                                if (!"".equals(lbo.getImagePath())) {
                                     return true;
 
                                 }
@@ -295,7 +297,7 @@ public class PhotoCaptureHelper {
         try {
             db.openDataBase();
             String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
-                    + retailerID + " And DistributorID=" + bmodel.getRetailerMasterBO().getDistributorId();
+                    + retailerID + " And DistributorID=" + mBModel.getRetailerMasterBO().getDistributorId();
             cursor = db.selectSQL(sql1);
 
             if (cursor != null) {
@@ -305,21 +307,21 @@ public class PhotoCaptureHelper {
                         ArrayList<PhotoCaptureProductBO> tempCaptureBO = tempTypeBO
                                 .getPhotoCaptureProductList();
                         for (PhotoCaptureProductBO photo : tempCaptureBO) {
-                            for (LocationBO lbo : photo.getInStoreLocations())
+                            for (PhotoCaptureLocationBO lbo : photo.getInStoreLocations())
                                 if (lbo.getProductID() == cursor.getInt(1)
                                         && tempTypeBO.getPhotoTypeId() == cursor
                                         .getInt(0) && lbo.getLocationId() == cursor.getInt(5)) {
-                                    lbo.setImagepath(cursor.getString(2));
+                                    lbo.setImagePath(cursor.getString(2));
                                     lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
                                             cursor.getString(3),
                                             ConfigurationMasterHelper.outDateFormat));
                                     lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
                                             cursor.getString(4),
                                             ConfigurationMasterHelper.outDateFormat));
-                                    lbo.setSkuname(cursor.getString(6));
+                                    lbo.setSKUName(cursor.getString(6));
                                     lbo.setAbv(cursor.getString(7));
-                                    lbo.setLotcode(cursor.getString(8));
-                                    lbo.setSeqno(cursor.getString(9));
+                                    lbo.setLotCode(cursor.getString(8));
+                                    lbo.setSequenceNO(cursor.getString(9));
                                     lbo.setFeedback(cursor.getString(10));
                                     lbo.setImageName(cursor.getString(11));
                                     break;
@@ -346,5 +348,56 @@ public class PhotoCaptureHelper {
     {
         return "'" + data + "'";
     }
+
+
+    public void downloadLocations() {
+        try {
+
+            inStoreLocation = new ArrayList<>();
+            PhotoCaptureLocationBO locations;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
+                    + " FROM StandardListMaster SL  where SL.Listtype='PL' ORDER BY SL.ListId";
+
+            Cursor c = db.selectSQL(sql1);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    locations = new PhotoCaptureLocationBO();
+                    locations.setLocationId(c.getInt(0));
+                    locations.setLocationName(c.getString(1));
+                    inStoreLocation.add(locations);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            if (inStoreLocation.size() == 0) {
+                locations = new PhotoCaptureLocationBO();
+                locations.setLocationId(0);
+                locations.setLocationName("Store");
+                inStoreLocation.add(locations);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("Download Location", e);
+        }
+
+    }
+
+    public ArrayList<PhotoCaptureLocationBO> getLocations() {
+        return inStoreLocation;
+    }
+
+    public static ArrayList<PhotoCaptureLocationBO> cloneLocationList(
+            ArrayList<PhotoCaptureLocationBO> list) {
+        ArrayList<PhotoCaptureLocationBO> clone = new ArrayList<>(list.size());
+        for (PhotoCaptureLocationBO item : list)
+            clone.add(new PhotoCaptureLocationBO(item));
+        return clone;
+    }
+
 
 }

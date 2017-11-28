@@ -766,7 +766,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                                 bmodel.reasonHelper.setDeviate(
                                         retailerObj.getRetailerID(), r,
-                                        retailerObj.getBeatID());
+                                        retailerObj.getBeatID(), "");
 
 
                                 retailer = new ArrayList<>();
@@ -794,7 +794,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                 for (RetailerMasterBO tempBo : retailer) {
                                     bmodel.reasonHelper.setDeviate(
                                             tempBo.getRetailerID(), r,
-                                            tempBo.getBeatID());
+                                            tempBo.getBeatID(), "");
                                 }
 
                                 retailer = new ArrayList<>();

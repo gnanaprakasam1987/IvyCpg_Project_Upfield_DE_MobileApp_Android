@@ -208,8 +208,18 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                           tv_address.setText(detailBO.getAddress());
                           tv_time_in.setText(detailBO.getTimeIn());
                           tv_time_out.setText(detailBO.getTimeOut());
-                          tv_duration.setText(detailBO.getDuration());
+                          //tv_duration.setText(detailBO.getDuration());
                           tv_order_value.setText(detailBO.getSalesValue());
+
+                          long duration = 0;
+                          //parse date and sum up intervals
+                          duration += getDiffDuration(detailBO.getTimeIn(), detailBO.getTimeOut());
+                          tv_duration.setText(String.format("%02d:%02d:%02d",
+                                  TimeUnit.MILLISECONDS.toHours(duration),
+                                  TimeUnit.MILLISECONDS.toMinutes(duration) -
+                                          TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
+                                  TimeUnit.MILLISECONDS.toSeconds(duration) -
+                                          TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))));
 
                           if(detailBO.getTimeOut()!=null) {
                               tv_sequence.setVisibility(View.VISIBLE);
@@ -232,6 +242,20 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
           }
         }
 
+    }
+
+    private long getDiffDuration(String startDate, String endData) {
+        long diffDuration = 0;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        try {
+            Date d1 = format.parse(startDate);
+            Date d2 = format.parse(endData);
+            diffDuration = d2.getTime() - d1.getTime();
+        } catch (ParseException e) {
+            Commons.printException(e);
+        }
+        return diffDuration;
     }
 
     @Override
