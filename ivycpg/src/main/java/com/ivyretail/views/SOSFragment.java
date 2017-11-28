@@ -80,48 +80,36 @@ import java.util.Vector;
 
 public class SOSFragment extends IvyBaseFragment implements
         BrandDialogInterface {
-    // Constants
-    private static final String BRAND = "Brand";
-    // Global Variables
-    private BusinessModel bmodel;
-    // Drawer Implementation
+
+
+    private BusinessModel mBModel;
     private DrawerLayout mDrawerLayout;
-    // Hash map to get selected Category and its Id
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    private int selectedfilterid = -1;
-    private ListView lvwplist;
-    private String brandFilterText = "BRAND";
-    // Reason Adapter
-    private ArrayAdapter<ReasonMaster> spinnerAdapter;
-    // Photo Image Name
-    private String mImageName;
-    // Dialog to enter brand total values
+
+    private ListView mListView;
     private Dialog dialog = null;
-    // Holder to pass BrandId to dialog
     private ViewHolder mSelectedHolder;
-    // Get the typed number and set in Edit Text
     private EditText mSelectedET;
     private EditText mParentTotal;
-    // List for SOSBo
-    private final List<SOSBO> mCategoryForDialog = new ArrayList<>();
-
     private TextView tvSelectedName;
-    // private TextView tvTotalNorm;
-    //private TextView tvTotal;
-    // private TextView tvTarget;
-    // private TextView tvTotalActual;
-    //   private TextView tvTotalGap;
-    //   private TextView tvTotalPer;
     private ShelfShareDialogFragment dialogFragment = null;
-    private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
-    private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private boolean isFromChild;
-    private ArrayList<String> totalImgList = new ArrayList<>();
 
-    private Vector<LevelBO> parentidList;
+    private final List<SOSBO> mCategoryForDialog = new ArrayList<>();
+    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+    private ArrayAdapter<StandardListBO> mLocationAdapter;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
+    private ArrayList<String> totalImgList = new ArrayList<>();
+    private Vector<LevelBO> mParenIdList;
     private ArrayList<Integer> mAttributeProducts;
-    private String filtertext;
+
+
+    private int mSelectedFilterId = -1;
+    private String brandFilterText = "BRAND";
+    private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private String mImageName;
+    private int mSelectedLocationIndex;
+    private boolean isFromChild;
+    private String mFilterText;
+    private static final String BRAND = "Brand";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,17 +136,17 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.list);
-            lvwplist.setCacheColorHint(0);
+            mListView = (ListView) getView().findViewById(R.id.list);
+            mListView.setCacheColorHint(0);
         }
 
         FrameLayout drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
@@ -178,7 +166,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(bmodel.mSelectedActivityName);
+            setScreenTitle(mBModel.mSelectedActivityName);
             getActionBar().setElevation(0);
         }
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
@@ -191,7 +179,7 @@ public class SOSFragment extends IvyBaseFragment implements
         ) {
             public void onDrawerClosed(View view) {
                 if (getActionBar() != null) {
-                    setScreenTitle(bmodel.mSelectedActivityName);
+                    setScreenTitle(mBModel.mSelectedActivityName);
                 }
 
                 getActivity().supportInvalidateOptionsMenu();
@@ -207,61 +195,52 @@ public class SOSFragment extends IvyBaseFragment implements
         };
 
         //setting Header Title Fonts
-        ((TextView) getView().findViewById(R.id.levelName)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlength)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlengthacttar)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hpercent)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hpercentacttar)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hGap)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.levelName)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.hTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.hlength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.hlengthacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) getView().findViewById(R.id.hpercent)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.hpercentacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) getView().findViewById(R.id.hGap)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         tvSelectedName = (TextView) getView().findViewById(R.id.levelName);
-        //tvTotalNorm = (TextView) getView().findViewById(R.id.tv_totalnorm);
-        //tvTotal = (TextView) getView().findViewById(R.id.tv_totalvalue);
-        // tvTarget = (TextView) getView().findViewById(R.id.tv_target);
-        //tvTotalPer = (TextView) getView()
-        //.findViewById(R.id.tv_actualpercentage);
-        //tvTotalActual = (TextView) getView().findViewById(R.id.tv_actual);
-        // tvTotalGap = (TextView) getView().findViewById(R.id.tv_gap);
-        // TextView audit = (TextView) getView().findViewById(R.id.audit);
-        // TextView dummy = (TextView) getView().findViewById(R.id.dummy);
         Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-        btn_save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
+            if (mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.hlength).getTag()) != null)
                 ((TextView) getView().findViewById(R.id.hlength))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(mBModel.labelsMasterHelper
                                 .applyLabels(getView().findViewById(
                                         R.id.hlength).getTag()));
 
-            if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
+            if (mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.hpercent).getTag()) != null)
                 ((TextView) getView().findViewById(R.id.hpercent))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(mBModel.labelsMasterHelper
                                 .applyLabels(getView().findViewById(
                                         R.id.hpercent).getTag()));
 
 
-            if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
+            if (mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.levelName).getTag()) != null)
                 ((TextView) getView().findViewById(R.id.levelName))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(mBModel.labelsMasterHelper
                                 .applyLabels(getView().findViewById(
                                         R.id.levelName).getTag()));
 
-            if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
+            if (mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.hTotal).getTag()) != null)
                 ((TextView) getView().findViewById(R.id.hTotal))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(mBModel.labelsMasterHelper
                                 .applyLabels(getView().findViewById(
                                         R.id.hTotal).getTag()));
 
-            if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
+            if (mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.hGap).getTag()) != null)
                 ((TextView) getView().findViewById(R.id.hGap))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(mBModel.labelsMasterHelper
                                 .applyLabels(getView().findViewById(
                                         R.id.hGap).getTag()));
 
@@ -279,30 +258,26 @@ public class SOSFragment extends IvyBaseFragment implements
         });
 
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
-            //  audit.setVisibility(View.VISIBLE);
-            //  dummy.setVisibility(View.VISIBLE);
-        }
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
-        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        if (mParenIdList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updateFromFiveLevelFilter(mParenIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
         } else {
-            updateBrandText(BRAND, selectedfilterid);
+            updateBrandText(BRAND, mSelectedFilterId);
         }
         loadReasons();
 
-        if (bmodel.salesFundamentalHelper.getmSOSList() != null)
+        if (mBModel.salesFundamentalHelper.getmSOSList() != null)
             calculateTotalValues();
     }
 
@@ -322,7 +297,7 @@ public class SOSFragment extends IvyBaseFragment implements
             float mtotal = 0;
             float mGap = 0;
             float mNamtot = 0;
-            for (SOSBO temp : bmodel.salesFundamentalHelper.getmSOSList()) {
+            for (SOSBO temp : mBModel.salesFundamentalHelper.getmSOSList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mtotal = mtotal
@@ -339,18 +314,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
             }
             parentIds.clear();
-            String strmNamot = Float.toString(mNamtot);
-            //tvTotalNorm.setText(strmNamot);
-            String strmTotal = Float.toString(mtotal);
-            // tvTotal.setText(strmTotal);
-            String strmTarget = Float.toString(mtarget);
-            //  tvTarget.setText(strmTarget);
-            String strmActual = Float.toString(mactual);
-            //   tvTotalActual.setText(strmActual);
-            String strmPercentagetot = Float.toString(mparcentagetot);
-            //   tvTotalPer.setText(strmPercentagetot);
 
-            //   tvTotalGap.setText(SDUtil.roundIt(Float.parseFloat(Float.toString(mGap)), 2));
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -367,7 +331,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
 
-        for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
+        for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
             if ("SOS".equalsIgnoreCase(temp.getReasonCategory())
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
                 spinnerAdapter.add(temp);
@@ -483,16 +447,12 @@ public class SOSFragment extends IvyBaseFragment implements
                 });
 
                 holder.etTotal.setFocusable(false);
-                // setting no of charcters from congifuration
-               /* InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
-                holder.etTotal.setFilters(FilterArray);*/
 
                 holder.etTotal.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        if (bmodel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
+                        if (mBModel.salesFundamentalHelper.mSOSTotalPopUpType == 0) {
                             if (dialog != null && !dialog.isShowing()) {
                                 dialog.cancel();
                                 dialog = null;
@@ -537,7 +497,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                             dialogFragment.dismiss();
                                             dialogFragment = null;
                                             calculateTotalValues();
-                                            lvwplist.invalidateViews();
+                                            mListView.invalidateViews();
                                         }
 
                                         @Override
@@ -580,26 +540,26 @@ public class SOSFragment extends IvyBaseFragment implements
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (bmodel.isExternalStorageAvailable()) {
+                        if (mBModel.isExternalStorageAvailable()) {
                             mImageName = "SOS_"
-                                    + bmodel.getRetailerMasterBO()
+                                    + mBModel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + holder.mSOS.getProductID() + "_"
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            bmodel.salesFundamentalHelper.mSelectedBrandID = holder.mSOS
+                            mBModel.salesFundamentalHelper.mSelectedBrandID = holder.mSOS
                                     .getProductID();
                             String fnameStarts = "SOS_"
-                                    + bmodel.getRetailerMasterBO()
+                                    + mBModel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + holder.mSOS.getProductID() + "_"
                                     + Commons.now(Commons.DATE);
 
-                            boolean nFilesThere = bmodel
+                            boolean nFilesThere = mBModel
                                     .checkForNFilesInFolder(
                                             HomeScreenFragment.photoPath,
-                                            bmodel.mImageCount, fnameStarts);
+                                            mBModel.mImageCount, fnameStarts);
                             if (nFilesThere) {
 
                                 // showFileDeleteAlert(fnameStarts);
@@ -612,7 +572,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                         + mImageName;
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
-                                        bmodel.CAMERA_REQUEST_CODE);
+                                        mBModel.CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
                             }
 
@@ -626,7 +586,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     }
                 });
 
-                if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
+                if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
                     holder.audit.setVisibility(View.VISIBLE);
 
                     holder.spnReason.setEnabled(false);
@@ -646,13 +606,13 @@ public class SOSFragment extends IvyBaseFragment implements
             holder.mSOS = items.get(position);
 
             //typeface
-            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvNorm.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvBrandName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.etTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvActual.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvTarget.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvPercentage.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvNorm.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvGap.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
             if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
@@ -696,7 +656,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
-                        .transform(bmodel.circleTransform)
+                        .transform(mBModel.circleTransform)
                         .into(new BitmapImageViewTarget(holder.btnPhoto));
 
             } else {
@@ -737,19 +697,19 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == bmodel.CAMERA_REQUEST_CODE && resultCode == 1
-                && bmodel.salesFundamentalHelper.mSelectedBrandID != 0) {
+        if (requestCode == mBModel.CAMERA_REQUEST_CODE && resultCode == 1
+                && mBModel.salesFundamentalHelper.mSelectedBrandID != 0) {
             // Photo saved successfully
             totalImgList.add(mImageName);
-            bmodel.salesFundamentalHelper.onsaveImageName(
-                    bmodel.salesFundamentalHelper.mSelectedBrandID,
+            mBModel.salesFundamentalHelper.onsaveImageName(
+                    mBModel.salesFundamentalHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
         }
     }
 
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            bmodel.deleteFiles(HomeScreenFragment.photoPath,
+            mBModel.deleteFiles(HomeScreenFragment.photoPath,
                     imgList.toString());
         }
     }
@@ -768,20 +728,20 @@ public class SOSFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putString("filterName", BRAND);
             bundle.putString("isFrom", "SOS");
-            bundle.putString("filterHeader", bmodel.productHelper
+            bundle.putString("filterHeader", mBModel.productHelper
                     .getRetailerModuleChildLevelBO().get(0).getProductLevel());
             bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
+                    mBModel.productHelper.getRetailerModuleChildLevelBO());
 
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
+            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
 
                 bundle.putBoolean("isFormBrand", true);
 
-                bundle.putString("pfilterHeader", bmodel.productHelper
+                bundle.putString("pfilterHeader", mBModel.productHelper
                         .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
 
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
+                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
                         .getRetailerModuleParentLeveBO());
             } else {
                 bundle.putBoolean("isFormBrand", false);
@@ -813,7 +773,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
+                    mBModel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "SF");
             bundle.putBoolean("isAttributeFilter", false);
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
@@ -831,10 +791,10 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mDrawerLayout.closeDrawers();
 
-        this.parentidList = mParentIdList;
+        this.mParenIdList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = mFilterText;
+        this.mFilterText = mFilterText;
 
         loadData(mParentIdList, mSelectedIdByLevelId);
     }
@@ -857,7 +817,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_product_filter).setIcon(
                         R.drawable.ic_action_filter_select);
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -867,7 +827,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 }
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_REMARKS_STK_ORD) {
+            if (mBModel.configurationMasterHelper.SHOW_REMARKS_STK_ORD) {
                 menu.findItem(R.id.menu_remarks).setVisible(true);
             } else {
                 menu.findItem(R.id.menu_remarks).setVisible(false);
@@ -886,13 +846,13 @@ public class SOSFragment extends IvyBaseFragment implements
 
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOS))
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOS))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (bmodel.productHelper.getInStoreLocation().size() < 2)
+                if (mBModel.productHelper.getInStoreLocation().size() < 2)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }
 
@@ -909,10 +869,10 @@ public class SOSFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                if (bmodel.salesFundamentalHelper.getLstSOSproj() != null || totalImgList.size() > 0)
+                if (mBModel.salesFundamentalHelper.getLstSOSproj() != null || totalImgList.size() > 0)
                     showeAlert();
                 else {
-                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                             .now(SDUtil.TIME));
                     if (isFromChild)
                         startActivity(new Intent(getActivity(), HomeScreenTwo.class)
@@ -956,13 +916,13 @@ public class SOSFragment extends IvyBaseFragment implements
 
             // Change the Brand button Name
             brandFilterText = mFilterText;
-            selectedfilterid = id;
+            mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
 
-            ArrayList<SOSBO> items = bmodel.salesFundamentalHelper
+            ArrayList<SOSBO> items = mBModel.salesFundamentalHelper
                     .getmSOSList();
             if (items == null) {
-                bmodel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(R.string.no_products_exists),
                         0);
                 return;
@@ -976,7 +936,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
             // set the new list to listview
             MyAdapter mSchedule = new MyAdapter(myList);
-            lvwplist.setAdapter(mSchedule);
+            mListView.setAdapter(mSchedule);
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -984,9 +944,9 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SOSBO> items = bmodel.salesFundamentalHelper.getmSOSList();
+        ArrayList<SOSBO> items = mBModel.salesFundamentalHelper.getmSOSList();
         if (items == null) {
-            bmodel.showAlert(
+            mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
                     0);
             return;
@@ -1004,17 +964,17 @@ public class SOSFragment extends IvyBaseFragment implements
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         MyAdapter mSchedule = new MyAdapter(myList);
-        lvwplist.setAdapter(mSchedule);
+        mListView.setAdapter(mSchedule);
     }
 
 
     private void saveSOS() {
         try {
-            if (bmodel.salesFundamentalHelper
+            if (mBModel.salesFundamentalHelper
                     .hasData(HomeScreenTwo.MENU_SOS))
                 new SaveAsyncTask().execute();
             else
-                bmodel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(R.string.no_data_tosave), 0);
 
         } catch (Exception e) {
@@ -1029,11 +989,11 @@ public class SOSFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.salesFundamentalHelper
+                mBModel.salesFundamentalHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
-                bmodel.updateIsVisitedFlag();
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                mBModel.updateIsVisitedFlag();
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -1070,7 +1030,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                         Bundle extras = getActivity().getIntent().getExtras();
                         if (extras != null) {
-                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
 
@@ -1100,9 +1060,9 @@ public class SOSFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                                 .now(SDUtil.TIME));
-                        /*bmodel.salesFundamentalHelper.setLstSOSproj(null);*/
+                        /*mBModel.salesFundamentalHelper.setLstSOSproj(null);*/
                         if (totalImgList != null)
                             deleteUnsavedImageFromFolder();
 
@@ -1126,7 +1086,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 });
 
         builder.setCancelable(false);
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
 
 
@@ -1135,7 +1095,7 @@ public class SOSFragment extends IvyBaseFragment implements
         final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
                 getActivity(), //Context
                 "", //Title
-                getResources().getString(R.string.word_already) + " " + bmodel.mImageCount + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                getResources().getString(R.string.word_already) + " " + mBModel.mImageCount + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
                 true, //ToDisplayImage
                 getResources().getString(R.string.yes), //Positive Button
                 getResources().getString(R.string.no), //Negative Button
@@ -1145,7 +1105,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onPositiveButtonClick() {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
@@ -1154,7 +1114,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         String path = HomeScreenFragment.photoPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
-                                bmodel.CAMERA_REQUEST_CODE);
+                                mBModel.CAMERA_REQUEST_CODE);
 
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -1172,14 +1132,14 @@ public class SOSFragment extends IvyBaseFragment implements
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setMessage(getResources().getString(R.string.word_already)
-                + bmodel.mImageCount
+                + mBModel.mImageCount
                 + getResources().getString(
                 R.string.word_photocaptured_delete_retake));
 
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
@@ -1188,7 +1148,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         String path = HomeScreenFragment.photoPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
-                                bmodel.CAMERA_REQUEST_CODE);
+                                mBModel.CAMERA_REQUEST_CODE);
 
                     }
                 });
@@ -1201,7 +1161,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 });
 
         builder.setCancelable(false);
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
 
     @Override
@@ -1238,19 +1198,19 @@ public class SOSFragment extends IvyBaseFragment implements
         mParentTotal = (EditText) dialog.findViewById(R.id.et_total);
         // setting no of charcters from congifuration
         InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
+        FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sosDigits);
         mParentTotal.setFilters(FilterArray);
-        mParentTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mParentTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) dialog.findViewById(R.id.tvTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((Button) dialog.findViewById(R.id.btn_cancel)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) dialog.findViewById(R.id.tvTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((Button) dialog.findViewById(R.id.btn_cancel)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         mCategoryForDialog.clear();
         // All Brands in Total PopUp
-        if (bmodel.salesFundamentalHelper.getmSOSList() != null) {
-            for (SOSBO sosBO : bmodel.salesFundamentalHelper.getmSOSList()) {
+        if (mBModel.salesFundamentalHelper.getmSOSList() != null) {
+            for (SOSBO sosBO : mBModel.salesFundamentalHelper.getmSOSList()) {
                 if (sosBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(sosBO);
                 }
@@ -1319,7 +1279,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                         percentage = (actual / parentTotal) * 100;
 
                                     sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(bmodel
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
                                             .formatPercent(percentage));
                                     sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
                                 } else {
@@ -1331,7 +1291,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         }
                         calculateTotalValues();
                         dialog.dismiss();
-                        lvwplist.invalidateViews();
+                        mListView.invalidateViews();
                         dialog = null;
                     }
                 });
@@ -1339,7 +1299,7 @@ public class SOSFragment extends IvyBaseFragment implements
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                lvwplist.invalidateViews();
+                mListView.invalidateViews();
                 dialog = null;
             }
         });
@@ -1384,7 +1344,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 holder.et = (EditText) row.findViewById(R.id.et);
                 // setting no of charcters from congifuration
                 InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sosDigits);
+                FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sosDigits);
                 holder.et.setFilters(FilterArray);
 
                 holder.et.setOnTouchListener(new OnTouchListener() {
@@ -1440,8 +1400,8 @@ public class SOSFragment extends IvyBaseFragment implements
             SOSBO brand = mCategoryForDialog.get(position);
             holder.sosBO = brand;
 
-            holder.tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.et.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tv.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.et.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tv.setText(brand.getProductName());
             holder.et.setText(brand.getLocations().get(mSelectedLocationIndex).getActual());
 
@@ -1479,7 +1439,7 @@ public class SOSFragment extends IvyBaseFragment implements
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
             sb.append(s);
-            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
+            if (sb.length() == mBModel.configurationMasterHelper.sosDigits) {
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
                     mSelectedET.setText(String.valueOf(val));
@@ -1580,11 +1540,11 @@ public class SOSFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
                         dialog.dismiss();
-                        updateBrandText(BRAND, selectedfilterid);
+                        updateBrandText(BRAND, mSelectedFilterId);
                     }
                 });
 
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
 
 //    private Bitmap getCircularBitmapFrom(Bitmap source) {
