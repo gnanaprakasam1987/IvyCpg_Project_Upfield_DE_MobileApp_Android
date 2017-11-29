@@ -43,7 +43,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -558,7 +557,7 @@ public class SODDialogFragment extends DialogFragment {
             SODBO sod = new SODBO();
             sod.setProductName("Ext.Shelf");
             sod.setProductID(0);
-            sod.setLocations(ProductHelper.cloneLocationList(bmodel.productHelper.locations));
+            sod.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
             mCategoryForDialogSODBO.add(sod);
             mBrandNameList.add(sod.getProductName());
             for (SODBO sodBO : mSodList) {

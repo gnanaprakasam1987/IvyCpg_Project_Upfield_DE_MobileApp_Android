@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.sf;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -56,6 +56,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
@@ -68,9 +69,13 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,6 +114,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
     private boolean isFromChild;
     private String mFilterText;
     AssetTrackingHelper assetTrackingHelper;
+    SODAssetHelper mSODAssetHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,6 +144,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
+        mSODAssetHelper = SODAssetHelper.getInstance(getActivity());
 
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
@@ -178,8 +185,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-            setScreenTitle(
-                    mBModel.mSelectedActivityName);
+            setScreenTitle(mSODAssetHelper.mSelectedActivityName);
         }
 
         // ActionBarDrawerToggle ties together the the proper interactions
@@ -192,7 +198,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             public void onDrawerClosed(View view) {
                 final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
                 if (actionBar != null) {
-                    actionBar.setTitle(mBModel.mSelectedActivityName);
+                    actionBar.setTitle(mSODAssetHelper.mSelectedActivityName);
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -237,7 +243,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         loadReasons();
 
 
-        if (mBModel.sodAssetHelper.getSODList() != null)
+        if (mSODAssetHelper.getSODList() != null)
             calculateTotalValues();
     }
 
@@ -253,7 +259,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             float mGap = 0;
             float mPercentageTotal = 0;
             float mNameTotal = 0;
-            for (SODBO temp : mBModel.sodAssetHelper.getSODList()) {
+            for (SODBO temp : mSODAssetHelper.getSODList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mTotal = mTotal + SDUtil.convertToFloat(temp.getLocations().get(mSelectedLocationIndex).getParentTotal());
@@ -480,7 +486,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            mBModel.sodAssetHelper.mSelectedBrandID = holder.mSOD
+                            mSODAssetHelper.mSelectedBrandID = holder.mSOD
                                     .getProductID();
                             String mFileNameStarts = "SOD_"
                                     + mBModel.getRetailerMasterBO()
@@ -626,15 +632,15 @@ public class SODAssetFragment extends IvyBaseFragment implements
         if (requestCode == mBModel.CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
-                Commons.print(mBModel.mSelectedActivityName
+                Commons.print(mSODAssetHelper.mSelectedActivityName
                         + "Camera Activity : Successfully Captured.");
-                if (mBModel.sodAssetHelper.mSelectedBrandID != 0) {
-                    mBModel.sodAssetHelper.onSaveImageName(
-                            mBModel.sodAssetHelper.mSelectedBrandID,
+                if (mSODAssetHelper.mSelectedBrandID != 0) {
+                    mSODAssetHelper.onSaveImageName(
+                            mSODAssetHelper.mSelectedBrandID,
                             mImageName, HomeScreenTwo.MENU_SOD_ASSET, mSelectedLocationIndex);
                 }
             } else {
-                Commons.print(mBModel.mSelectedActivityName
+                Commons.print(mSODAssetHelper.mSelectedActivityName
                         + "Camera Activity : Canceled");
             }
         }
@@ -838,7 +844,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             brandFilterText = mFilterText;
             mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
-            ArrayList<SODBO> items = mBModel.sodAssetHelper
+            ArrayList<SODBO> items = mSODAssetHelper
                     .getSODList();
             if (items == null) {
                 mBModel.showAlert(
@@ -864,7 +870,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
     }
 
     private void loadData(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SODBO> items = mBModel.sodAssetHelper.getSODList();
+        ArrayList<SODBO> items = mSODAssetHelper.getSODList();
         if (items == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -890,7 +896,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
     private void saveSOS() {
         try {
-            if (mBModel.sodAssetHelper
+            if (mSODAssetHelper
                     .hasData(HomeScreenTwo.MENU_SOD_ASSET)) {
                 new SaveAsyncTask().execute();
             } else {
@@ -910,7 +916,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mBModel.sodAssetHelper
+                mSODAssetHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD_ASSET, mAssetsForDialog);
                 mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD_ASSET);
@@ -1098,7 +1104,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
                         if (!mAssetsForDialog.isEmpty()) {
 
-                            for (SODBO sodbo : mBModel.sodAssetHelper.getSODList()) {
+                            for (SODBO sodbo : mSODAssetHelper.getSODList()) {
                                 if (sodbo.getProductID() == categoryId) {
                                     sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(SDUtil
                                             .convertToFloat(mParentTotal.getText()

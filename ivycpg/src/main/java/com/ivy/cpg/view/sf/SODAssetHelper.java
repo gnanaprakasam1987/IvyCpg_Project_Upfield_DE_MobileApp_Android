@@ -1,13 +1,15 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.sf;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.widget.Toast;
 
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.cpg.asset.AssetTrackingHelper;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.SODBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -25,6 +27,9 @@ public class SODAssetHelper {
     private ArrayList<SODBO> mSODList;
     public int mSelectedBrandID = 0;
     private String moduleSODAsset = "MENU_SOD_ASSET";
+    int mChannelId, mLocationId;
+    public String mSelectedActivityName;
+    ArrayList<SFLocationBO> mLocationList;
 
 
     private SODAssetHelper(Context context) {
@@ -484,7 +489,7 @@ public class SODAssetHelper {
                         mSOD.setIsOwn(cursor.getInt(3));
                         mSOD.setNorm(cursor.getFloat(4));
                         mSOD.setMappingId(cursor.getInt(5));
-                        mSOD.setLocations(mBModel.productHelper.cloneLocationList(mBModel.productHelper.locations));
+                        mSOD.setLocations(cloneLocationList(getLocationList()));
                         getSODList().add(mSOD);
                     }
                     cursor.close();
@@ -670,5 +675,140 @@ public class SODAssetHelper {
         }
         return true;
     }
-    
+
+
+    public void loadSODAssetData(String menuname) {
+        try {
+
+            int level;
+            level = getRetailerLevel(menuname);
+            if (menuname.equals("MENU_SOD_ASSET")) {
+                switch (level) {
+                    case 1:
+                        downloadSalesFundamental(menuname, true, false, false, 0, 0);
+                        break;
+                    case 2:
+                        downloadSalesFundamental(menuname, false, true, false, 0, 0);
+                        break;
+                    case 3:
+                        downloadSalesFundamental(menuname, false, false, true, 0, 0);
+                        break;
+                    case 4:
+                        downloadSalesFundamental(menuname, false, false, false, mLocationId, 0);
+                        break;
+                    case 5:
+                        downloadSalesFundamental(menuname, false, false, false, 0, mChannelId);
+                        break;
+                    case 6:
+                        downloadSalesFundamental(menuname, false, false, false, mLocationId, mChannelId);
+                        break;
+                    case 8:
+                        downloadSalesFundamental(menuname, true, false, false, 0, mChannelId);
+                        break;
+                    case -1:
+                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
+                        break;
+
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public int getRetailerLevel(String mMenuCode) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select IsAccount,IsRetailer,IsClass,LocLevelId,ChLevelId from ConfigActivityFilter where ActivityCode=" + mBModel.QT(mMenuCode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getInt(0) == 1 && c.getInt(4) > 0) {
+                        mChannelId = c.getInt(4);
+                        return 8;
+                    } else if (c.getInt(0) == 1)
+                        return 1;
+                    else if (c.getInt(1) == 1)
+                        return 2;
+                    else if (c.getInt(2) == 1) {
+                        return 3;
+                    } else {
+                        if (c.getInt(3) > 0 && c.getInt(4) > 0) {
+                            mLocationId = c.getInt(3);
+                            mChannelId = c.getInt(4);
+                            return 6;
+                        } else if (c.getInt(3) > 0) {
+                            mLocationId = c.getInt(3);
+                            return 4;
+                        } else if (c.getInt(4) > 0) {
+                            mChannelId = c.getInt(4);
+                            return 5;
+                        }
+                    }
+
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return -1;
+    }
+
+    public static ArrayList<SFLocationBO> cloneLocationList(
+            ArrayList<SFLocationBO> list) {
+        ArrayList<SFLocationBO> clone = new ArrayList<>(list.size());
+        for (SFLocationBO item : list)
+            clone.add(new SFLocationBO(item));
+        return clone;
+    }
+
+
+    public ArrayList<SFLocationBO> getLocationList() {
+        return mLocationList;
+    }
+
+
+    /**
+     * Download In store Locations
+     */
+    public void downloadLocations() {
+        try {
+
+            mLocationList = new ArrayList<>();
+            SFLocationBO locations;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
+                    + " FROM StandardListMaster SL  where SL.Listtype='PL' ORDER BY SL.ListId";
+
+            Cursor c = db.selectSQL(sql1);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    locations = new SFLocationBO();
+                    locations.setLocationId(c.getInt(0));
+                    locations.setLocationName(c.getString(1));
+                    mLocationList.add(locations);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            if (mLocationList.size() == 0) {
+                locations = new SFLocationBO();
+                locations.setLocationId(0);
+                locations.setLocationName("Store");
+                mLocationList.add(locations);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("Download Location", e);
+        }
+
+    }
 }

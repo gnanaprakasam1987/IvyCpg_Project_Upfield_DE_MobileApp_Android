@@ -187,7 +187,7 @@ public class SODFragment extends IvyBaseFragment implements
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             setScreenTitle(
-                    bmodel.mSelectedActivityName);
+                    mSFHelper.mSelectedActivityName);
         }
 
         // ActionBarDrawerToggle ties together the the proper interactions
@@ -200,7 +200,7 @@ public class SODFragment extends IvyBaseFragment implements
             public void onDrawerClosed(View view) {
                 final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
                 if (actionBar != null) {
-                    actionBar.setTitle(bmodel.mSelectedActivityName);
+                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -675,7 +675,7 @@ public class SODFragment extends IvyBaseFragment implements
         if (requestCode == bmodel.CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
-                Commons.print(bmodel.mSelectedActivityName
+                Commons.print(mSFHelper.mSelectedActivityName
                         + "Camers Activity : Sucessfully Captured.");
                 if (mSFHelper.mSelectedBrandID != 0) {
                     mSFHelper.onsaveImageName(
@@ -683,7 +683,7 @@ public class SODFragment extends IvyBaseFragment implements
                             mImageName, HomeScreenTwo.MENU_SOD, mSelectedLocationIndex);
                 }
             } else {
-                Commons.print(bmodel.mSelectedActivityName
+                Commons.print(mSFHelper.mSelectedActivityName
                         + "Camers Activity : Canceled");
             }
         }

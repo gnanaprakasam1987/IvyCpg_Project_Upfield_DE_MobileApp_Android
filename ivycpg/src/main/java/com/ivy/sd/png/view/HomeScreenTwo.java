@@ -43,6 +43,8 @@ import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.sf.SODActivity;
+import com.ivy.cpg.view.sf.SODAssetActivity;
+import com.ivy.cpg.view.sf.SODAssetHelper;
 import com.ivy.cpg.view.sf.SOSActivity;
 import com.ivy.cpg.view.sf.SOSActivity_Proj;
 import com.ivy.cpg.view.sf.SOSKUActivity;
@@ -2924,9 +2926,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 mSFHelper.setTotalPopUpConfig();
 
                 //Load the locations
-                bmodel.productHelper.getLocations();
-                bmodel.productHelper.downloadInStoreLocations();
-                mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                mSFHelper.downloadLocations();
+                mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
@@ -2935,27 +2936,32 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bmodel.productHelper.downloadProductFilter(MENU_SOS);
 
                 //load content data
-                bmodel.productHelper.loadData(MENU_SOS);
+                mSFHelper.loadData(MENU_SOS);
 
                 //load transaction data
                 mSFHelper.loadSavedTracking(MENU_SOS);
 
                 if (mSFHelper.getmSOSList() != null
                         && mSFHelper.getmSOSList().size() > 0) {
+
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOS);
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+
+                    mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
                     startActivity(intent);
                     finish();
+
                 } else {
+
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -2978,7 +2984,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         SDUtil.now(SDUtil.DATE_GLOBAL),
                         SDUtil.now(SDUtil.TIME),
                         MENU_SOS_PROJ);
-                bmodel.mSelectedActivityName = menu.getMenuName();
+
                 Intent intent = new Intent(this, SOSActivity_Proj.class);
                 if (isFromChild)
                     intent.putExtra("isFromChild", isFromChild);
@@ -3005,9 +3011,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 mSFHelper.setTotalPopUpConfig();
 
-                bmodel.productHelper.getLocations();
-                bmodel.productHelper.downloadInStoreLocations();
-                mShelfShareHelper.setLocations(bmodel.productHelper.cloneLocationList(bmodel.productHelper.locations));
+                mSFHelper.downloadLocations();
+                mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
@@ -3015,22 +3020,23 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 else
                     bmodel.productHelper.downloadProductFilter(MENU_SOD);
 
-                bmodel.productHelper.loadData(MENU_SOD);
+                mSFHelper.loadData(MENU_SOD);
 
-                mSFHelper
-                        .loadSavedTracking(MENU_SOD);
+                mSFHelper.loadSavedTracking(MENU_SOD);
 
                 if (mSFHelper.getmSODList() != null && mSFHelper.getmSODList().size() > 0) {
+
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD);
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+
                     Intent intent = new Intent(this, SODActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
                     startActivity(intent);
                     finish();
+
                 } else {
                     dataNotMapped();
                     isCreated = false;
@@ -3054,35 +3060,36 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                SODAssetHelper mSODAssetHelper = SODAssetHelper.getInstance(this);
 
-                bmodel.productHelper.getLocations();
-                bmodel.productHelper.downloadInStoreLocations();
+                mSODAssetHelper.downloadLocations();
                 assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.sodAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
+                    mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
 
-                bmodel.productHelper.loadSODAssetData(MENU_SOD_ASSET);
+                mSODAssetHelper.loadSODAssetData(MENU_SOD_ASSET);
 
-                bmodel.sodAssetHelper
-                        .loadSavedTracking(MENU_SOD_ASSET);
+                mSODAssetHelper.loadSavedTracking(MENU_SOD_ASSET);
 
-                if (bmodel.sodAssetHelper.getSODList() != null && bmodel.sodAssetHelper.getSODList().size() > 0) {
-                    //for Looading
+                if (mSODAssetHelper.getSODList() != null && mSODAssetHelper.getSODList().size() > 0) {
+
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD_ASSET);
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+
                     Intent intent = new Intent(this, SODAssetActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
                     startActivity(intent);
                     finish();
                 } else {
+
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3110,7 +3117,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 else
                     bmodel.productHelper.downloadProductFilter(MENU_SOSKU);
 
-                bmodel.productHelper.loadData(MENU_SOSKU);
+                mSFHelper.loadData(MENU_SOSKU);
 
                 mSFHelper
                         .loadSavedTracking(MENU_SOSKU);
@@ -3120,7 +3127,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOSKU);
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+
                     Intent intent = new Intent(this, SOSKUActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
@@ -3129,6 +3136,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     finish();
 
                 } else {
+
                     dataNotMapped();
                     isCreated = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));

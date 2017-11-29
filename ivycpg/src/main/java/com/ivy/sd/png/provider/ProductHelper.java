@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -6293,81 +6292,13 @@ public class ProductHelper {
     }
 
 
-    public void loadSODAssetData(String menuname) {
-        try {
 
-            int level;
-            level = getRetailerlevel(menuname);
-            Commons.print("level=" + level + " menuname=" + menuname);
-            if (menuname.equals("MENU_SOD_ASSET")) {
-                switch (level) {
-                    case 1:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
-                        break;
-                    case 8:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     public void loadData(String menuname) {
         try {
-            SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(mContext);
             int level;
             level = getRetailerlevel(menuname);
-            Commons.print("level=" + level + " menuname=" + menuname);
-            if (menuname.equals("MENU_SOS") || menuname.equals("MENU_SOSKU") || menuname.equals("MENU_SOD")) {
-                switch (level) {
-                    case 1:
-                        mSFHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        mSFHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        mSFHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        mSFHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
-                        break;
-                    case 8:
-                        mSFHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-
-                }
-            } else if (menuname.equals("MENU_PLANOGRAM")) {
+            if (menuname.equals("MENU_PLANOGRAM")) {
                 switch (level) {
                     case 1:
                         bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);

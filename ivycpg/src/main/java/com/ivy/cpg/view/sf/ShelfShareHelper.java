@@ -1,7 +1,5 @@
 package com.ivy.cpg.view.sf;
 
-import com.ivy.sd.png.bo.LocationBO;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,7 +17,7 @@ public class ShelfShareHelper {
     public static final int SOD = 1;
     private static ShelfShareHelper mShelfShareHelper = null;
     private HashMap<String, HashMap<String, Object>> mShelfDetailForSOD = null;
-    private ArrayList<LocationBO> locations;
+    private ArrayList<SFLocationBO> locations;
 
     public static ShelfShareHelper getInstance() {
         if (mShelfShareHelper == null)
@@ -36,11 +34,11 @@ public class ShelfShareHelper {
         return this.mShelfDetailForSOD.containsKey(key);
     }
 
-    public ArrayList<LocationBO> getLocations() {
+    public ArrayList<SFLocationBO> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<LocationBO> locations) {
+    public void setLocations(ArrayList<SFLocationBO> locations) {
         this.locations = locations;
     }
 }

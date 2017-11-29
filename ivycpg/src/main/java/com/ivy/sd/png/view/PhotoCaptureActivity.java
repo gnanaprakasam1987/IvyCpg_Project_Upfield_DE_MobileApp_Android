@@ -363,6 +363,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         if (isPhotoDelete)
             save_btn.setVisibility(View.VISIBLE);
         loadViews();
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -482,6 +483,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPhotoCaptureHelper = null;
         unbindDrawables(findViewById(R.id.root));
         // force the garbage collector to run
         System.gc();

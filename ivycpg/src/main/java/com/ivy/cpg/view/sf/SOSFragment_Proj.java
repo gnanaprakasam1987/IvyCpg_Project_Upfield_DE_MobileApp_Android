@@ -85,7 +85,7 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             setScreenTitle(
-                    bmodel.mSelectedActivityName);
+                    mSFHelper.mSelectedActivityName);
         }
 
         setHasOptionsMenu(true);

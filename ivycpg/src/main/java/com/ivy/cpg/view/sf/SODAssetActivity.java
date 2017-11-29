@@ -1,11 +1,10 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.sf;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
@@ -20,20 +19,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class SOSActivity extends IvyBaseActivityNoActionBar implements
+public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sos);
+        setContentView(R.layout.activity_sodasset);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getSupportActionBar().setElevation(0);
             }
         }
@@ -68,10 +68,9 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
                     unbindDrawables(((ViewGroup) view).getChildAt(i));
                 }
                 try {
-                    if (!(view instanceof AdapterView<?>))
-                        ((ViewGroup) view).removeAllViews();
+                    ((ViewGroup) view).removeAllViews();
                 } catch (Exception e) {
-                    Commons.printException(e);
+                    Commons.printException("" + e);
                 }
             }
         }
@@ -80,8 +79,8 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SOSFragment sos = (SOSFragment) fm.findFragmentById(R.id.sos_fragment);
-        sos.updateBrandText(mFilterText, id);
+        SODAssetFragment sod = (SODAssetFragment) fm.findFragmentById(R.id.sod_assetfragment);
+        sod.updateBrandText(mFilterText, id);
     }
 
     @Override
@@ -91,8 +90,8 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SOSFragment sos = (SOSFragment) fm.findFragmentById(R.id.sos_fragment);
-        sos.updateCancel();
+        SODAssetFragment sod = (SODAssetFragment) fm.findFragmentById(R.id.sod_assetfragment);
+        sod.updateCancel();
     }
 
     @Override
@@ -113,13 +112,14 @@ public class SOSActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SOSFragment fragment = (SOSFragment) fm
-                .findFragmentById(R.id.sos_fragment);
+        SODAssetFragment fragment = (SODAssetFragment) fm
+                .findFragmentById(R.id.sod_assetfragment);
         fragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

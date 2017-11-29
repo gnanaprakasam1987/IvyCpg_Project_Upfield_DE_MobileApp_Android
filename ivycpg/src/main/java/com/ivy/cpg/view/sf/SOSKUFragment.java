@@ -156,7 +156,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             setScreenTitle(
-                    bmodel.mSelectedActivityName);
+                    mSFHelper.mSelectedActivityName);
         }
 
         // ActionBarDrawerToggle ties together the the proper interactions
@@ -168,7 +168,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         ) {
             public void onDrawerClosed(View view) {
                 if (actionBar != null) {
-                    actionBar.setTitle(bmodel.mSelectedActivityName);
+                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -528,7 +528,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         if (requestCode == bmodel.CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
-                Commons.print(bmodel.mSelectedActivityName
+                Commons.print(mSFHelper.mSelectedActivityName
                         + "Camers Activity : Sucessfully Captured.");
                 if (mSFHelper.mSelectedBrandID != 0) {
                     mSFHelper.onsaveImageName(
@@ -536,7 +536,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                             mImageName, HomeScreenTwo.MENU_SOSKU, 0);
                 }
             } else {
-                Commons.print(bmodel.mSelectedActivityName
+                Commons.print(mSFHelper.mSelectedActivityName
                         + "Camers Activity : Canceled");
             }
         }

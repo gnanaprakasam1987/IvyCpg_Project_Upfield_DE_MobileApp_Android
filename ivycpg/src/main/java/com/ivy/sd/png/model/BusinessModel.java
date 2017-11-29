@@ -143,7 +143,6 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
@@ -303,7 +302,6 @@ public class BusinessModel extends Application {
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
-    public SODAssetHelper sodAssetHelper;
     public OrderSplitHelper orderSplitHelper = null;
     public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
@@ -477,7 +475,6 @@ public class BusinessModel extends Application {
 
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);
-        sodAssetHelper = SODAssetHelper.getInstance(this);
 
         orderSplitHelper = OrderSplitHelper.getInstance(this);
         mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);

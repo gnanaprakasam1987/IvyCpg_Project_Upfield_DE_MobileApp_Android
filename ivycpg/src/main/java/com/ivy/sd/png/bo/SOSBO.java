@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.sf.SFLocationBO;
+
 import java.util.ArrayList;
 
 public class SOSBO {
@@ -9,7 +11,7 @@ public class SOSBO {
     private int isOwn;
     private float norm;
     private int mappingId;
-    private ArrayList<LocationBO> locations;
+    private ArrayList<SFLocationBO> locations;
     // Project specific
     private int groupId;
     private int productLevelId;
@@ -66,11 +68,11 @@ public class SOSBO {
         this.mappingId = mappingId;
     }
 
-    public ArrayList<LocationBO> getLocations() {
+    public ArrayList<SFLocationBO> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<LocationBO> locations) {
+    public void setLocations(ArrayList<SFLocationBO> locations) {
         this.locations = locations;
     }
 
