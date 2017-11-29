@@ -1471,9 +1471,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (row == null) {
 
                 final LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(
-                        R.layout.activity_stock_and_order_listview_new, parent,
-                        false);
+
+                //Configuration based row rendering
+                if (bmodel.configurationMasterHelper.IS_STK_ORD_BS)
+                    row = inflater.inflate(
+                            R.layout.activity_stock_and_order_listview_gmi, parent,
+                            false);
+                else
+                    row = inflater.inflate(
+                            R.layout.activity_stock_and_order_listview_new, parent,
+                            false);
                 holder = new ViewHolder();
 
                 holder.tvbarcode = (TextView) row
@@ -5590,8 +5597,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
 
-
-        }
+    }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
