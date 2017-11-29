@@ -131,12 +131,12 @@ public class SalesReturnHelper {
      * @return - true or false
      */
     public boolean hasSalesReturn() {
-        int siz = bmodel.productHelper.getProductMaster().size();
+        int siz = bmodel.productHelper.getSalesReturnProducts().size();
         if (siz == 0)
             return false;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getProductMaster().get(i);
+            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
             if (!product.getSalesReturnReasonList().isEmpty())
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -301,12 +301,12 @@ public class SalesReturnHelper {
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid";
 
-            int siz = bmodel.productHelper.getProductMaster().size();
+            int siz = bmodel.productHelper.getSalesReturnProducts().size();
             int totalQty;
             double totalvalue = 0;
             for (int i = 0; i < siz; ++i) {
                 product = bmodel.productHelper
-                        .getProductMaster().elementAt(i);
+                        .getSalesReturnProducts().elementAt(i);
 
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -688,7 +688,7 @@ public class SalesReturnHelper {
     }
 
     private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo) {
-        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
+        ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
         if (productBO != null) {
             for (SalesReturnReasonBO bo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
                 if (bo.getReasonID().equals(condition)) {
@@ -718,7 +718,7 @@ public class SalesReturnHelper {
      */
     public void clearSalesReturnTable() {
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
@@ -752,7 +752,7 @@ public class SalesReturnHelper {
     // set new to add data from db
     public void removeSalesReturnTable() {
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
@@ -835,7 +835,7 @@ public class SalesReturnHelper {
 
     private void saveReplacementDetails(DBUtil db, String uid) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
-        final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
         for (ProductMasterBO product : productMaster) {
@@ -1115,7 +1115,7 @@ public class SalesReturnHelper {
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
                 String pid = c.getString(0);
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(pid);
+                ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);
                 if (productBO != null) {
                     int uomid = c.getInt(2);
                     if (uomid == productBO.getPcUomid()) {
@@ -1184,7 +1184,7 @@ public class SalesReturnHelper {
     }
 
     public List<ProductMasterBO> updateReplaceQtyWithOutTakingOrder(List<ProductMasterBO> orderList) {
-        final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getProductMaster();
+        final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getSalesReturnProducts();
         if (orderList != null && !orderList.isEmpty()) {
             for (ProductMasterBO productMasterBO : productMasterList) {
                 if (productMasterBO.getOrderedPcsQty() == 0 && productMasterBO.getOrderedCaseQty() == 0 && productMasterBO.getOrderedOuterQty() == 0) {

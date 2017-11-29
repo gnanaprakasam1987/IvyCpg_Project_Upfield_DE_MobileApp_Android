@@ -657,7 +657,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     public Vector<ProductMasterBO> getProducts() {
-        return bmodel.productHelper.getProductMaster();
+        return bmodel.productHelper.getSalesReturnProducts();
     }
 
     public void loadSearchedList() {

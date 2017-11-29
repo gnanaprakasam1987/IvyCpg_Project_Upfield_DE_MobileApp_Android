@@ -1029,6 +1029,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SR_TAX = "SR11";
     public boolean IS_APPLY_TAX_IN_SR;
 
+    private static final String CODE_SR_DIFF_CNT = "SR12";
+    public boolean IS_PRD_CNT_DIFF_SR;
+
     public boolean SHOW_PRICECHECK_IN_STOCKCHECK;
     public String CODE_IS_PRICECHECK_IN_STOCKCHECK = "CSSTK02";
     public boolean SHOW_STOCK_PRICECHECK_PCS;

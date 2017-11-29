@@ -285,7 +285,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     private void updateValue() {
         totalvalue = 0;
         int lpccount = 0;
-        Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -392,7 +392,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     private boolean isValidData() {
-        Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
         int totalRetQty = 0;
         int totalRepQty;
         int siz = items.size();
@@ -419,12 +419,12 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     private boolean isValidMRP() {
-        int siz = bmodel.productHelper.getProductMaster().size();
+        int siz = bmodel.productHelper.getSalesReturnProducts().size();
         if (siz == 0)
             return true;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getProductMaster().get(i);
+            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
             if (product.getSalesReturnReasonList() == null || product.getSalesReturnReasonList().size() == 0)
                 return true;
             for (SalesReturnReasonBO bo : product
@@ -505,7 +505,9 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             // Clear the productName
             productName.setText("");
 
-            items = getProducts();
+            //items = getProducts();
+            items = bmodel.productHelper.getSalesReturnProducts();
+            Commons.print("AS<><><><"+bmodel.productHelper.getSalesReturnProducts().size());
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),

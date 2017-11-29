@@ -83,6 +83,8 @@ public class ProductHelper {
     private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
     private Vector<ProductMasterBO> mTaggedProducts = null;
     private Map<String, ProductMasterBO> mTaggedProductById;
+    private Vector<ProductMasterBO> mSalesReturnProducts = null;
+    private Map<String, ProductMasterBO> mSalesReturnProductById;
     private ArrayList<Integer> mIndicativeList;
     private ArrayList<TaxBO> mTaxList = new ArrayList<TaxBO>();
     private ArrayList<TaxBO> mTaxProdList = new ArrayList<TaxBO>();
@@ -211,6 +213,7 @@ public class ProductHelper {
         this.bmodel = (BusinessModel) context;
         productMaster = new Vector<ProductMasterBO>();
         mTaggedProducts = new Vector<ProductMasterBO>();
+        mSalesReturnProducts = new Vector<ProductMasterBO>();
         // bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -219,6 +222,8 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
+        mSalesReturnProducts=null;
+        mSalesReturnProductById=null;
         System.gc();
     }
 
@@ -272,6 +277,10 @@ public class ProductHelper {
 
     public Vector<ProductMasterBO> getTaggedProducts() {
         return mTaggedProducts;
+    }
+
+    public Vector<ProductMasterBO> getSalesReturnProducts() {
+        return mSalesReturnProducts;
     }
 
     private String QT(String data) // Quote
@@ -2360,6 +2369,46 @@ public class ProductHelper {
 
     }
 
+    public void downloadSalesReturnSKUs() {
+        //For counter sales
+
+        mSalesReturnProducts = new Vector<ProductMasterBO>();
+        mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
+        if (c != null) {
+            if (c.getCount() > 0) {
+                ProductMasterBO productMasterBO;
+                while (c.moveToNext()) {
+                    productMasterBO = new ProductMasterBO();
+                    productMasterBO.setProductID(c.getString(0));
+                    productMasterBO.setProductName(c.getString(1));
+                    productMasterBO.setParentid(c.getInt(2));
+                    productMasterBO.setProductShortName(c.getString(3));
+                    productMasterBO.setSrp(c.getFloat(4));
+                    productMasterBO.setMRP(c.getFloat(5));
+                    productMasterBO.setPcUomid(c.getInt(6));
+                    productMasterBO.setCaseSize(0);
+                    productMasterBO.setOutersize(0);
+                    productMasterBO.setBarCode("");
+                    productMasterBO.setCasebarcode("");
+                    productMasterBO.setOuterbarcode("");
+                    productMasterBO.setIsSaleable(1);
+                    mSalesReturnProducts.add(productMasterBO);
+                    mSalesReturnProductById.put(productMasterBO.getProductID(), productMasterBO);
+
+                }
+            }
+        }
+
+
+    }
+
+
     private StringBuffer downloadProductSequenceFromFilter() {
         StringBuffer filter = new StringBuffer();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -2420,6 +2469,27 @@ public class ProductHelper {
 
         } catch (Exception e) {
             Commons.printException("downloadTaggedProducts", e);
+        }
+
+    }
+    /**
+     * get tagged products and update the productBO.
+     *
+     * @param mMenuCode menu code
+     */
+    public void downloadSalesReturnProducts() {
+        try {
+
+            mSalesReturnProducts = new Vector<ProductMasterBO>();
+            mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
+
+                for (ProductMasterBO sku : getProductMaster()) {
+                    mSalesReturnProducts.add(sku);
+                    mSalesReturnProductById.put(sku.getProductID(), sku);
+                }
+
+        } catch (Exception e) {
+            Commons.printException("downloadSalesReturnProducts", e);
         }
 
     }
@@ -2502,7 +2572,7 @@ public class ProductHelper {
 
     public void cloneReasonMaster() {
         try {
-            for (ProductMasterBO product : productMaster) {
+            for (ProductMasterBO product : mSalesReturnProducts) {
                 product.setSalesReturnReasonList(cloneIsolateList(product));
             }
         } catch (Exception e) {
@@ -2662,6 +2732,11 @@ public class ProductHelper {
         if (productMasterById == null)
             return null;
         return productMasterById.get(productId);
+    }
+    public ProductMasterBO getSalesReturnProductBOById(String productId) {
+        if ( mSalesReturnProductById== null)
+            return null;
+        return mSalesReturnProductById.get(productId);
     }
 
 
