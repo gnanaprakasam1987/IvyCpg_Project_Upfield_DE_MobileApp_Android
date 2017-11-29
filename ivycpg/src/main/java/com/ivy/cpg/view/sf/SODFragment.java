@@ -54,7 +54,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.SOSBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -77,55 +76,116 @@ import java.util.Vector;
 
 public class SODFragment extends IvyBaseFragment implements
         BrandDialogInterface {
-    // Constants
-    private static final String BRAND = "Brand";
-    // Global Variables
-    private BusinessModel bmodel;
-    // Drawer Implementation
+
+    private SalesFundamentalHelper mSFHelper;
+    private BusinessModel mBModel;
+    private SODDialogFragment dialogFragment = null;
+
     private DrawerLayout mDrawerLayout;
-    // Hash map to get selected Category and its Id
-    private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    private int selectedfilterid = -1;
-    private ListView lvwplist;
-    private String brandFilterText = "BRAND";
-    // Reason Adapter
-    private ArrayAdapter<ReasonMaster> spinnerAdapter;
-    // Photo Image Name
-    private String mImageName;
-    // Dialog to enter brand total values
     private Dialog dialog = null;
-    // Holder to pass BrandId to dialog
     private ViewHolder mSelectedHolder;
-    // Get the typed number and set in Edit Text
     private EditText mSelectedET;
     private EditText mParentTotal;
-    // List for SOSBo
-    private final List<SODBO> mCategoryForDialog = new ArrayList<>();
     private TextView tvSelectedName;
-    //private TextView tvTotalNorm;
-    // private TextView tvTotal;
-    // private TextView tvTarget;
-    // private TextView tvTotalActual;
-    //  private TextView tvTotalGap;
-    //  private TextView tvTotalPer;
-    private SODDialogFragment dialogFragment = null;
-    private ArrayAdapter<StandardListBO> mLocationAdapter;
-    private int mSelectedLocationIndex;
-    private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private boolean isFromChild;
+    private ListView mListView;
 
-    private Vector<LevelBO> parentidList;
-    private ArrayList<Integer> mAttributeProducts;
-    private String filtertext;
-    SalesFundamentalHelper mSFHelper;
+    private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private final List<SODBO> mCategoryForDialog = new ArrayList<>();
+    private ArrayAdapter<SFLocationBO> mLocationAdapter;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
+
+    private static final String BRAND = "Brand";
+    private String brandFilterText = "BRAND";
+    private int selectedfilterid = -1;
+    private String mImageName;
+    private int mSelectedLocationIndex;
+    private boolean isFromChild;
+    private final int CAMERA_REQUEST_CODE = 1;
+    private StringBuilder sb = new StringBuilder();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sos, container, false);
+
+        initializeView(view);
+
+        return view;
+    }
+
+    private void initializeView(View view) {
+
+        if (getView() != null) {
+            mListView = (ListView) view.findViewById(R.id.list);
+            mListView.setCacheColorHint(0);
+        }
+
+        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
+        //setting Header Title Fonts
+        ((TextView) view.findViewById(R.id.levelName)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hlength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hlengthacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.hpercent)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hpercentacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.hGap)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        tvSelectedName = (TextView) view.findViewById(R.id.levelName);
+        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
-        return view;
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            setScreenTitle(
+                    mSFHelper.mSelectedActivityName);
+        }
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
+        ) {
+            public void onDrawerClosed(View view) {
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
+                }
+                getActivity().supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(getResources().getString(R.string.filter));
+                }
+                getActivity().supportInvalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+
+        Button btn_save = (Button) view.findViewById(R.id.btn_save);
+
+        btn_save.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveSOS();
+            }
+        });
+
     }
 
     @Override
@@ -145,116 +205,27 @@ public class SODFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
-        if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.list);
-            lvwplist.setCacheColorHint(0);
-        }
 
-        FrameLayout drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
-        int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
-        params.width = width;
-        drawer.setLayoutParams(params);
-
-        //setting Header Title Fonts
-        ((TextView) getView().findViewById(R.id.levelName)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlength)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlengthacttar)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hpercent)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hpercentacttar)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hGap)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        tvSelectedName = (TextView) getView().findViewById(R.id.levelName);
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
-        // set a custom shadow that overlays the main content when the drawer
-        // opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.START);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.END);
-
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-            setScreenTitle(
-                    mSFHelper.mSelectedActivityName);
-        }
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
-                }
-                getActivity().supportInvalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(getResources().getString(R.string.filter));
-                }
-                getActivity().supportInvalidateOptionsMenu();
-            }
-        };
-
-        //  tvSelectedName = (TextView) getView().findViewById(R.id.levelName);
-        // tvTotalNorm = (TextView) getView().findViewById(R.id.tv_totalnorm);
-        //  tvTotal = (TextView) getView().findViewById(R.id.tv_totalvalue);
-        //  tvTarget = (TextView) getView().findViewById(R.id.tv_target);
-        //  tvTotalPer = (TextView) getView()
-        //  .findViewById(R.id.tv_actualpercentage);
-        //  tvTotalActual = (TextView) getView().findViewById(R.id.tv_actual);
-        // tvTotalGap = (TextView) getView().findViewById(R.id.tv_gap);
-        // TextView audit = (TextView) getView().findViewById(R.id.audit);
-        // TextView dummy = (TextView) getView().findViewById(R.id.dummy);
-        Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-
-        btn_save.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveSOS();
-            }
-        });
-
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
-            // audit.setVisibility(View.VISIBLE);
-            // dummy.setVisibility(View.VISIBLE);
-        }
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+        for (SFLocationBO temp : mSFHelper.getLocationList())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mDrawerLayout.closeDrawer(GravityCompat.END);
-        if (parentidList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updateFromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
-        } else {
             updateBrandText(BRAND, selectedfilterid);
-        }
+
         loadReasons();
 
         if (mSFHelper.getmSODList() != null)
@@ -289,18 +260,7 @@ public class SODFragment extends IvyBaseFragment implements
 
             }
             parentIds.clear();
-            String strmNamot = mNamtot + "";
-            //  tvTotalNorm.setText(strmNamot);
-            String strmTotal = mtotal + "";
-            //   tvTotal.setText(strmTotal);
-            String strmTarget = mtarget + "";
-            //   tvTarget.setText(strmTarget);
-            String strmActual = mactual + "";
-            //  tvTotalActual.setText(strmActual);
-            String strmPercentagetot = mparcentagetot + "";
-            //    tvTotalPer.setText(strmPercentagetot);
-            String strmGap = mGap + "";
-            //  tvTotalGap.setText(strmGap);
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -311,12 +271,12 @@ public class SODFragment extends IvyBaseFragment implements
      * Initialize Adapter and add reason for SOD module Reason Category : SOD
      */
     private void loadReasons() {
-        spinnerAdapter = new ArrayAdapter<ReasonMaster>(getActivity(),
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
+        for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
             if ("SOD".equalsIgnoreCase(temp.getReasonCategory())
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
                 spinnerAdapter.add(temp);
@@ -328,6 +288,515 @@ public class SODFragment extends IvyBaseFragment implements
             reasonMasterBo.setReasonID("0");
             spinnerAdapter.add(reasonMasterBo);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (resultCode == 1) {
+                // Photo saved successfully
+                Commons.print(mSFHelper.mSelectedActivityName
+                        + "Camera Activity : Successfully Captured.");
+                if (mSFHelper.mSelectedBrandID != 0) {
+                    mSFHelper.onsaveImageName(
+                            mSFHelper.mSelectedBrandID,
+                            mImageName, HomeScreenTwo.MENU_SOD, mSelectedLocationIndex);
+                }
+            } else {
+                Commons.print(mSFHelper.mSelectedActivityName
+                        + "Camera Activity : Canceled");
+            }
+        }
+    }
+
+    private void productFilterClickedFragment() {
+        try {
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            android.support.v4.app.FragmentManager fm = getActivity()
+                    .getSupportFragmentManager();
+            FilterFragment frag = (FilterFragment) fm
+                    .findFragmentByTag("filter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putString("filterName", BRAND);
+            bundle.putString("isFrom", "SOD");
+            bundle.putString("filterHeader", mBModel.productHelper
+                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
+            bundle.putSerializable("serilizeContent",
+                    mBModel.productHelper.getRetailerModuleChildLevelBO());
+
+            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
+
+                bundle.putBoolean("isFormBrand", true);
+
+                bundle.putString("pfilterHeader", mBModel.productHelper
+                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
+
+                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
+                        .getRetailerModuleParentLeveBO());
+            } else {
+                bundle.putBoolean("isFormBrand", false);
+            }
+
+            // set Fragment class Arguments
+            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+            FilterFragment mFragment = new FilterFragment(mSelectedFilterMap);
+            mFragment.setArguments(bundle);
+            ft.add(R.id.right_drawer, mFragment, "filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void FiveFilterFragment() {
+        try {
+            Collections.addAll(new Vector<String>(), getResources().getStringArray(
+                    R.array.productFilterArray));
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
+                    .findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    mBModel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "SF");
+            bundle.putBoolean("isAttributeFilter", false);
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
+            fragobj.setArguments(bundle);
+            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        mDrawerLayout.closeDrawers();
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+        loadData(mParentIdList, mSelectedIdByLevelId);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_sales_fundamental, menu);
+    }
+
+    /**
+     * Called whenever we call invalidateOptionsMenu()
+     */
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        super.onPrepareOptionsMenu(menu);
+        // Change color if Filter is selected
+        try {
+            if (!brandFilterText.equals(BRAND))
+                menu.findItem(R.id.menu_product_filter).setIcon(
+                        R.drawable.ic_action_filter_select);
+
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+                for (Integer id : mSelectedIdByLevelId.keySet()) {
+                    if (mSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_fivefilter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
+            }
+
+            if (mBModel.configurationMasterHelper.SHOW_REMARKS_STK_ORD) {
+                menu.findItem(R.id.menu_remarks).setVisible(true);
+            } else {
+                menu.findItem(R.id.menu_remarks).setVisible(false);
+            }
+
+            menu.findItem(R.id.menu_product_filter).setVisible(false);
+            menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
+                menu.findItem(R.id.menu_fivefilter).setVisible(true);
+
+            // If the nav drawer is open, hide action items related to the
+            // content view
+            boolean drawerOpen = false;
+            boolean navDrawerOpen = false;
+            if (mDrawerLayout != null)
+                drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+
+            if (drawerOpen || navDrawerOpen)
+                menu.clear();
+            // return super.onPrepareOptionsMenu(menu);
+            menu.findItem(R.id.menu_next).setVisible(false);
+
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+                menu.findItem(R.id.menu_loc_filter).setVisible(false);
+            else {
+                if (mSFHelper.getLocationList().size() < 2)
+                    menu.findItem(R.id.menu_loc_filter).setVisible(false);
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                getActivity().finish();
+            }
+            return true;
+        } else if (i == R.id.menu_next) {
+            saveSOS();
+            return true;
+        } else if (i == R.id.menu_product_filter) {
+            productFilterClickedFragment();
+            return true;
+        } else if (i == R.id.menu_fivefilter) {
+            FiveFilterFragment();
+            return true;
+        } else if (i == R.id.menu_remarks) {
+            android.support.v4.app.FragmentManager ft = getActivity()
+                    .getSupportFragmentManager();
+            RemarksDialog remarksDialog = new RemarksDialog(
+                    HomeScreenTwo.MENU_SOD);
+            remarksDialog.setCancelable(false);
+            remarksDialog.show(ft, HomeScreenTwo.MENU_SOD);
+            return true;
+        } else if (i == R.id.menu_loc_filter) {
+            showLocation();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void updateBrandText(String mFilterText, int id) {
+        try {
+            // Close the drawer
+            mDrawerLayout.closeDrawers();
+
+            // Change the Brand button Name
+            brandFilterText = mFilterText;
+            selectedfilterid = id;
+            tvSelectedName.setText(mFilterText);
+            ArrayList<SODBO> items = mSFHelper
+                    .getmSODList();
+            if (items == null) {
+                mBModel.showAlert(
+                        getResources().getString(R.string.no_products_exists),
+                        0);
+                return;
+            }
+
+            ArrayList<SODBO> myList = new ArrayList<>();
+            for (SODBO temp : items) {
+                if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1) {
+                    myList.add(temp);
+                }
+            }
+
+            // set the new list to list view
+            MyAdapter mSchedule = new MyAdapter(myList);
+            mListView.setAdapter(mSchedule);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
+        ArrayList<SODBO> items = mSFHelper.getmSODList();
+        if (items == null) {
+            mBModel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+
+        ArrayList<SODBO> myList = new ArrayList<>();
+        for (LevelBO levelBO : parentidList) {
+            for (SODBO temp : items) {
+                if (temp.getParentID() == levelBO.getProductID()) {
+                    if (temp.getIsOwn() == 1)
+                        myList.add(temp);
+                }
+            }
+        }
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+        MyAdapter mSchedule = new MyAdapter(myList);
+        mListView.setAdapter(mSchedule);
+    }
+
+    private void saveSOS() {
+        try {
+            if (mSFHelper
+                    .hasData(HomeScreenTwo.MENU_SOD)) {
+                new SaveAsyncTask().execute();
+            } else {
+                mBModel.showAlert(
+                        getResources().getString(R.string.no_data_tosave), 0);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void showFileDeleteAlert(final String imageNameStarts) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(R.string.word_already)
+                + 1
+                + getResources().getString(
+                R.string.word_photocaptured_delete_retake));
+
+        builder.setPositiveButton(getResources().getString(R.string.yes),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                                imageNameStarts);
+                        dialog.dismiss();
+                        Intent intent = new Intent(getActivity(),
+                                CameraActivity.class);
+                        intent.putExtra("quality", 40);
+                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent,
+                                CAMERA_REQUEST_CODE);
+
+                    }
+                });
+
+        builder.setNegativeButton(getResources().getString(R.string.no),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setCancelable(false);
+        mBModel.applyAlertDialogTheme(builder);
+    }
+
+    @Override
+    public void updateGeneralText(String mFilterText) {
+
+    }
+
+    @Override
+    public void updateCancel() {
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void loadStartVisit() {
+
+    }
+
+    /**
+     * Open Dialog with Competitor to Get Actual Values and Calculate Total
+     * Value
+     */
+    private void getTotalValue(final int categoryId) {
+        mSelectedET = null;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_salesfundamental_total);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }
+
+        mParentTotal = (EditText) dialog.findViewById(R.id.et_total);
+
+        // setting no of charcters from congifuration
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sodDigits);
+        mParentTotal.setFilters(FilterArray);
+
+        mParentTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) dialog.findViewById(R.id.tvTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((Button) dialog.findViewById(R.id.btn_cancel)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        mCategoryForDialog.clear();
+
+        // All Brands in Total PopUp
+        if (mSFHelper.getmSODList() != null) {
+            for (SODBO sodBO : mSFHelper.getmSODList()) {
+                if (sodBO.getParentID() == categoryId) {
+                    mCategoryForDialog.add(sodBO);
+                }
+            }
+        }
+
+        ListView listView = (ListView) dialog.findViewById(R.id.lv);
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = displayMetrics.heightPixels / 3;
+        listView.setLayoutParams(params);
+        listView.setAdapter(new TotalDialogAdapter());
+        dialog.findViewById(R.id.calczero)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcone)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calctwo)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcthree)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcfour)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcfive)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcsix)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcseven)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calceight)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcnine)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdel)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdot)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdot).setVisibility(View.GONE);
+
+        dialog.findViewById(R.id.btn_done)
+                .setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!mCategoryForDialog.isEmpty()) {
+                            for (int i = 0; i < mCategoryForDialog.size(); i++) {
+
+                                SODBO sodbo = mCategoryForDialog.get(i);
+                                sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(SDUtil
+                                        .convertToFloat(mParentTotal.getText()
+                                                .toString()) + "");
+
+                                sodbo.setGap(Integer.toString(0));
+                            }
+                        }
+                        calculateTotalValues();
+                        dialog.dismiss();
+                        mListView.invalidateViews();
+                        dialog = null;
+                    }
+                });
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                mListView.invalidateViews();
+                dialog = null;
+            }
+        });
+
+
+        dialog.show();
+    }
+
+    /**
+     * Add Actual Values and Update the Total
+     */
+    private void updateTotal() {
+        int tot = 0;
+        if (!mCategoryForDialog.isEmpty()) {
+            for (int i = 0; i < mCategoryForDialog.size(); i++) {
+
+                SODBO sodbo = mCategoryForDialog.get(i);
+                tot = tot + (sodbo.getActual());
+            }
+            String strTotal = tot + "";
+            mParentTotal.setText(strTotal);
+
+        }
+    }
+
+    private void eff(int val) {
+
+        if (mSelectedET != null && mSelectedET.getText() != null) {
+            String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == mSFHelper.sosDigits) {
+
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText() + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
+    }
+
+    @Override
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
+    }
+
+    private void showLocation() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedLocationIndex = item;
+                        dialog.dismiss();
+                        updateBrandText(BRAND, selectedfilterid);
+                    }
+                });
+
+        mBModel.applyAlertDialogTheme(builder);
     }
 
     class ViewHolder {
@@ -481,7 +950,7 @@ public class SODFragment extends IvyBaseFragment implements
                                                                      dialogFragment.dismiss();
                                                                      dialogFragment = null;
                                                                      calculateTotalValues();
-                                                                     lvwplist.invalidateViews();
+                                                                     mListView.invalidateViews();
                                                                  }
 
                                                                  @Override
@@ -520,9 +989,9 @@ public class SODFragment extends IvyBaseFragment implements
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (bmodel.isExternalStorageAvailable()) {
+                        if (mBModel.isExternalStorageAvailable()) {
                             mImageName = "SOD_"
-                                    + bmodel.getRetailerMasterBO()
+                                    + mBModel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + holder.mSOD.getProductID() + "_"
                                     + Commons.now(Commons.DATE_TIME)
@@ -531,15 +1000,15 @@ public class SODFragment extends IvyBaseFragment implements
                             mSFHelper.mSelectedBrandID = holder.mSOD
                                     .getProductID();
                             String fnameStarts = "SOD_"
-                                    + bmodel.getRetailerMasterBO()
+                                    + mBModel.getRetailerMasterBO()
                                     .getRetailerID() + "_"
                                     + holder.mSOD.getProductID() + "_"
                                     + Commons.now(Commons.DATE);
 
-                            boolean nfiles_there = bmodel
+                            boolean nfiles_there = mBModel
                                     .checkForNFilesInFolder(
                                             HomeScreenFragment.photoPath,
-                                            bmodel.mImageCount, fnameStarts);
+                                            1, fnameStarts);
                             if (nfiles_there) {
 
                                 showFileDeleteAlert(fnameStarts);
@@ -551,7 +1020,7 @@ public class SODFragment extends IvyBaseFragment implements
                                         + mImageName;
                                 intent.putExtra("path", _path);
                                 startActivityForResult(intent,
-                                        bmodel.CAMERA_REQUEST_CODE);
+                                        CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
                             }
 
@@ -564,7 +1033,7 @@ public class SODFragment extends IvyBaseFragment implements
 
                     }
                 });
-                if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
+                if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
                     holder.audit.setVisibility(View.VISIBLE);
 
                     holder.spnReason.setEnabled(false);
@@ -583,14 +1052,15 @@ public class SODFragment extends IvyBaseFragment implements
             }
 
             holder.mSOD = items.get(position);
+
             //typeface
-            holder.tvBrandName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.etTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvActual.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvPercentage.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvNorm.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvGap.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvBrandName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.etTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvActual.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvTarget.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvPercentage.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvNorm.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvGap.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
@@ -598,9 +1068,12 @@ public class SODFragment extends IvyBaseFragment implements
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
             else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 0)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
+
             holder.tvBrandName.setText(holder.mSOD.getProductName());
+
             String strNorm = holder.mSOD.getNorm() + "";
             holder.tvNorm.setText(strNorm);
+
             if ("0.0".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
                 holder.etTotal.setText("0");
             } else {
@@ -617,6 +1090,7 @@ public class SODFragment extends IvyBaseFragment implements
                 holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
             else
                 holder.tvGap.setTextColor(Color.BLACK);
+
             holder.spnReason.setSelection(getReasonIndex(holder.mSOD
                     .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
             holder.spnReason.setSelected(true);
@@ -629,12 +1103,13 @@ public class SODFragment extends IvyBaseFragment implements
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
-                        .transform(bmodel.circleTransform)
+                        .transform(mBModel.circleTransform)
                         .into(new BitmapImageViewTarget(holder.btnPhoto));
 
             } else {
                 holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera));
             }
+
             TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
                 row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
@@ -667,292 +1142,6 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == bmodel.CAMERA_REQUEST_CODE) {
-            if (resultCode == 1) {
-                // Photo saved successfully
-                Commons.print(mSFHelper.mSelectedActivityName
-                        + "Camers Activity : Sucessfully Captured.");
-                if (mSFHelper.mSelectedBrandID != 0) {
-                    mSFHelper.onsaveImageName(
-                            mSFHelper.mSelectedBrandID,
-                            mImageName, HomeScreenTwo.MENU_SOD, mSelectedLocationIndex);
-                }
-            } else {
-                Commons.print(mSFHelper.mSelectedActivityName
-                        + "Camers Activity : Canceled");
-            }
-        }
-    }
-
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("isFrom", "SOD");
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private void FiveFilterFragment() {
-        try {
-            Collections.addAll(new Vector<String>(), getResources().getStringArray(
-                    R.array.productFilterArray));
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
-                    .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
-            bundle.putString("isFrom", "SF");
-            bundle.putBoolean("isAttributeFilter", false);
-            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        mDrawerLayout.closeDrawers();
-
-        this.parentidList = mParentIdList;
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = mFilterText;
-
-        loadData(mParentIdList, mSelectedIdByLevelId);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_sales_fundamental, menu);
-    }
-
-    /**
-     * Called whenever we call invalidateOptionsMenu()
-     */
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-
-        super.onPrepareOptionsMenu(menu);
-        // Change color if Filter is selected
-        try {
-            if (!brandFilterText.equals(BRAND))
-                menu.findItem(R.id.menu_product_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
-
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
-                for (Integer id : mSelectedIdByLevelId.keySet()) {
-                    if (mSelectedIdByLevelId.get(id) > 0) {
-                        menu.findItem(R.id.menu_fivefilter).setIcon(
-                                R.drawable.ic_action_filter_select);
-                        break;
-                    }
-                }
-            }
-
-            if (bmodel.configurationMasterHelper.SHOW_REMARKS_STK_ORD) {
-                menu.findItem(R.id.menu_remarks).setVisible(true);
-            } else {
-                menu.findItem(R.id.menu_remarks).setVisible(false);
-            }
-
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
-            menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
-                menu.findItem(R.id.menu_fivefilter).setVisible(true);
-
-            // If the nav drawer is open, hide action items related to the
-            // content view
-            boolean drawerOpen = false;
-            boolean navDrawerOpen = false;
-            if (mDrawerLayout != null)
-                drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-
-            if (drawerOpen || navDrawerOpen)
-                menu.clear();
-            // return super.onPrepareOptionsMenu(menu);
-            menu.findItem(R.id.menu_next).setVisible(false);
-
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
-                menu.findItem(R.id.menu_loc_filter).setVisible(false);
-            else {
-                if (bmodel.productHelper.getInStoreLocation().size() < 2)
-                    menu.findItem(R.id.menu_loc_filter).setVisible(false);
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                getActivity().finish();
-            }
-            return true;
-        } else if (i == R.id.menu_next) {
-            saveSOS();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_fivefilter) {
-            FiveFilterFragment();
-            return true;
-        } else if (i == R.id.menu_remarks) {
-            android.support.v4.app.FragmentManager ft = getActivity()
-                    .getSupportFragmentManager();
-            RemarksDialog remarksDialog = new RemarksDialog(
-                    HomeScreenTwo.MENU_SOD);
-            remarksDialog.setCancelable(false);
-            remarksDialog.show(ft, HomeScreenTwo.MENU_SOD);
-            return true;
-        } else if (i == R.id.menu_loc_filter) {
-            showLocation();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void updateBrandText(String mFilterText, int id) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-
-            // Change the Brand button Name
-            brandFilterText = mFilterText;
-            selectedfilterid = id;
-            tvSelectedName.setText(mFilterText);
-            ArrayList<SODBO> items = mSFHelper
-                    .getmSODList();
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-
-            ArrayList<SODBO> myList = new ArrayList<>();
-            for (SODBO temp : items) {
-                if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1) {
-                    myList.add(temp);
-                }
-            }
-
-            // set the new list to list view
-            MyAdapter mSchedule = new MyAdapter(myList);
-            lvwplist.setAdapter(mSchedule);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SODBO> items = mSFHelper.getmSODList();
-        if (items == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.no_products_exists),
-                    0);
-            return;
-        }
-
-        ArrayList<SODBO> myList = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
-            for (SODBO temp : items) {
-                if (temp.getParentID() == levelBO.getProductID()) {
-                    if (temp.getIsOwn() == 1)
-                        myList.add(temp);
-                }
-            }
-        }
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-
-        MyAdapter mSchedule = new MyAdapter(myList);
-        lvwplist.setAdapter(mSchedule);
-    }
-
-    private void saveSOS() {
-        try {
-            if (mSFHelper
-                    .hasData(HomeScreenTwo.MENU_SOD)) {
-                new SaveAsyncTask().execute();
-            } else {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_data_tosave), 0);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -962,9 +1151,9 @@ public class SODFragment extends IvyBaseFragment implements
             try {
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD);
-                bmodel.updateIsVisitedFlag();
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                mBModel.updateIsVisitedFlag();
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -1000,7 +1189,7 @@ public class SODFragment extends IvyBaseFragment implements
 
                         Bundle extras = getActivity().getIntent().getExtras();
                         if (extras != null) {
-                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
 
@@ -1016,162 +1205,6 @@ public class SODFragment extends IvyBaseFragment implements
             }
         }
 
-    }
-
-    private void showFileDeleteAlert(final String imageNameStarts) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("");
-        builder.setMessage(getResources().getString(R.string.word_already)
-                + bmodel.mImageCount
-                + getResources().getString(
-                R.string.word_photocaptured_delete_retake));
-
-        builder.setPositiveButton(getResources().getString(R.string.yes),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
-                                imageNameStarts);
-                        dialog.dismiss();
-                        Intent intent = new Intent(getActivity(),
-                                CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
-                        startActivityForResult(intent,
-                                bmodel.CAMERA_REQUEST_CODE);
-
-                    }
-                });
-
-        builder.setNegativeButton(getResources().getString(R.string.no),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builder.setCancelable(false);
-        bmodel.applyAlertDialogTheme(builder);
-    }
-
-    @Override
-    public void updateGeneralText(String mFilterText) {
-
-    }
-
-    @Override
-    public void updateCancel() {
-        // Close the drawer
-        mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
-    /**
-     * Open Dialog with Competitor to Get Actual Values and Calculate Total
-     * Value
-     */
-    private void getTotalValue(final int categoryId) {
-        mSelectedET = null;
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setContentView(R.layout.dialog_salesfundamental_total);
-        dialog.getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        mParentTotal = (EditText) dialog.findViewById(R.id.et_total);
-
-        // setting no of charcters from congifuration
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sodDigits);
-        mParentTotal.setFilters(FilterArray);
-
-        mParentTotal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) dialog.findViewById(R.id.tvTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((Button) dialog.findViewById(R.id.btn_cancel)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
-        mCategoryForDialog.clear();
-        // All Brands in Total PopUp
-        if (mSFHelper.getmSODList() != null) {
-            for (SODBO sodBO : mSFHelper.getmSODList()) {
-                if (sodBO.getParentID() == categoryId) {
-                    mCategoryForDialog.add(sodBO);
-                }
-            }
-        }
-
-        ListView listView = (ListView) dialog.findViewById(R.id.lv);
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = displayMetrics.heightPixels / 3;
-        listView.setLayoutParams(params);
-        listView.setAdapter(new TotalDialogAdapter());
-        dialog.findViewById(R.id.calczero)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcone)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calctwo)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcthree)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcfour)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcfive)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcsix)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcseven)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calceight)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcnine)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcdel)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcdot)
-                .setOnClickListener(new MyClickListener());
-        dialog.findViewById(R.id.calcdot).setVisibility(View.GONE);
-
-        dialog.findViewById(R.id.btn_done)
-                .setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!mCategoryForDialog.isEmpty()) {
-                            for (int i = 0; i < mCategoryForDialog.size(); i++) {
-
-                                SODBO sodbo = mCategoryForDialog.get(i);
-                                sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(SDUtil
-                                        .convertToFloat(mParentTotal.getText()
-                                                .toString()) + "");
-
-                                sodbo.setGap(Integer.toString(0));
-                            }
-                        }
-                        calculateTotalValues();
-                        dialog.dismiss();
-                        lvwplist.invalidateViews();
-                        dialog = null;
-                    }
-                });
-        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                lvwplist.invalidateViews();
-                dialog = null;
-            }
-        });
-
-
-        dialog.show();
     }
 
     /**
@@ -1209,9 +1242,11 @@ public class SODFragment extends IvyBaseFragment implements
 
                 holder.tv = (TextView) row.findViewById(R.id.tv);
                 holder.et = (EditText) row.findViewById(R.id.et);
+
                 // setting no of charcters from congifuration
                 InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(bmodel.configurationMasterHelper.sodDigits);
+                FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sodDigits);
+
                 holder.et.setFilters(FilterArray);
 
                 holder.et.setOnTouchListener(new OnTouchListener() {
@@ -1267,8 +1302,8 @@ public class SODFragment extends IvyBaseFragment implements
             SODBO brand = mCategoryForDialog.get(position);
 
             holder.sodBO = brand;
-            holder.tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.et.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tv.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.et.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.tv.setText(brand.getProductName());
 
@@ -1284,44 +1319,6 @@ public class SODFragment extends IvyBaseFragment implements
         SODBO sodBO;
         TextView tv;
         EditText et;
-    }
-
-    /**
-     * Add Actual Values and Update the Total
-     */
-    private void updateTotal() {
-        int tot = 0;
-        if (!mCategoryForDialog.isEmpty()) {
-            for (int i = 0; i < mCategoryForDialog.size(); i++) {
-
-                SODBO sodbo = mCategoryForDialog.get(i);
-                tot = tot + (sodbo.getActual());
-            }
-            String strTotal = tot + "";
-            mParentTotal.setText(strTotal);
-
-        }
-    }
-
-    private StringBuilder sb = new StringBuilder();
-
-    private void eff(int val) {
-
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-            String s = mSelectedET.getText().toString();
-            sb.append(s);
-            if (sb.length() == bmodel.configurationMasterHelper.sosDigits) {
-
-                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-                    mSelectedET.setText(String.valueOf(val));
-                } else {
-                    String strVal = mSelectedET.getText() + String.valueOf(val);
-                    mSelectedET.setText(strVal);
-                }
-            } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private class MyClickListener implements OnClickListener {
@@ -1382,60 +1379,5 @@ public class SODFragment extends IvyBaseFragment implements
 
         }
     }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void showLocation() {
-        AlertDialog.Builder builder;
-
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(null);
-        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        mSelectedLocationIndex = item;
-                        dialog.dismiss();
-                        updateBrandText(BRAND, selectedfilterid);
-                    }
-                });
-
-        bmodel.applyAlertDialogTheme(builder);
-    }
-
-//    private Bitmap getCircularBitmapFrom(Bitmap source) {
-//        if (source == null || source.isRecycled()) {
-//            return null;
-//        }
-//        float radius = source.getWidth() > source.getHeight() ? ((float) source
-//                .getHeight()) / 2f : ((float) source.getWidth()) / 2f;
-//        Bitmap bitmap = Bitmap.createBitmap(source.getWidth(),
-//                source.getHeight(), Bitmap.Config.ARGB_8888);
-//
-//        Paint paint = new Paint();
-//        BitmapShader shader = new BitmapShader(source, Shader.TileMode.CLAMP,
-//                Shader.TileMode.CLAMP);
-//        paint.setShader(shader);
-//        paint.setAntiAlias(true);
-//
-//        Canvas canvas = new Canvas(bitmap);
-//        canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2,
-//                radius, paint);
-//
-//        return bitmap;
-//    }
 
 }

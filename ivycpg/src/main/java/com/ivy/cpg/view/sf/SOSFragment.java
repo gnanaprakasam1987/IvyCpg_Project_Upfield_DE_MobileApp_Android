@@ -86,8 +86,8 @@ public class SOSFragment extends IvyBaseFragment implements
     private String mImageName;
     private int mSelectedLocationIndex;
     private boolean isFromChild;
-    private String mFilterText;
     private StringBuilder sb = new StringBuilder();
+    private final int CAMERA_REQUEST_CODE = 1;
 
     SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
@@ -105,8 +105,6 @@ public class SOSFragment extends IvyBaseFragment implements
     private ArrayAdapter<SFLocationBO> mLocationAdapter;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> totalImgList = new ArrayList<>();
-    private Vector<LevelBO> mParenIdList;
-    private ArrayList<Integer> mAttributeProducts;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
 
 
@@ -273,11 +271,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
-        if (mParenIdList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updateFromFiveLevelFilter(mParenIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
-        } else {
             updateBrandText(BRAND, mSelectedFilterId);
-        }
+
         loadReasons();
 
         if (mSFHelper.getmSOSList() != null)
@@ -352,7 +347,7 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == mBModel.CAMERA_REQUEST_CODE && resultCode == 1
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == 1
                 && mSFHelper.mSelectedBrandID != 0) {
 
             // Photo saved successfully
@@ -447,11 +442,7 @@ public class SOSFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
-
-        this.mParenIdList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        this.mAttributeProducts = mAttributeProducts;
-        this.mFilterText = mFilterText;
 
         loadData(mParentIdList, mSelectedIdByLevelId);
     }
@@ -468,6 +459,7 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onPrepareOptionsMenu(Menu menu) {
 
         super.onPrepareOptionsMenu(menu);
+
         // Change color if Filter is selected
         try {
             if (!brandFilterText.equals(BRAND))
@@ -503,13 +495,15 @@ public class SOSFragment extends IvyBaseFragment implements
 
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
+
             if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOS))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (mBModel.productHelper.getInStoreLocation().size() < 2)
+
+                if (mSFHelper.getLocationList().size() < 2)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }
 
@@ -568,6 +562,7 @@ public class SOSFragment extends IvyBaseFragment implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         try {
+
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
@@ -684,7 +679,7 @@ public class SOSFragment extends IvyBaseFragment implements
         final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
                 getActivity(), //Context
                 "", //Title
-                getResources().getString(R.string.word_already) + " " + mBModel.mImageCount + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
                 true, //ToDisplayImage
                 getResources().getString(R.string.yes), //Positive Button
                 getResources().getString(R.string.no), //Negative Button
@@ -703,7 +698,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         String path = HomeScreenFragment.photoPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
-                                mBModel.CAMERA_REQUEST_CODE);
+                                CAMERA_REQUEST_CODE);
 
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -753,7 +748,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
         // setting no of characters from configuration
         InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sosDigits);
+        FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sosDigits);
         mParentTotal.setFilters(FilterArray);
         mParentTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
@@ -883,7 +878,7 @@ public class SOSFragment extends IvyBaseFragment implements
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
             sb.append(s);
-            if (sb.length() == mBModel.configurationMasterHelper.sosDigits) {
+            if (sb.length() == mSFHelper.sosDigits) {
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
                     mSelectedET.setText(String.valueOf(val));
@@ -1146,7 +1141,7 @@ public class SOSFragment extends IvyBaseFragment implements
                             boolean nFilesThere = mBModel
                                     .checkForNFilesInFolder(
                                             HomeScreenFragment.photoPath,
-                                            mBModel.mImageCount, mFirstName);
+                                            1, mFirstName);
                             if (nFilesThere) {
 
                                 showFileDeleteAlertWithImage(mFirstName, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
@@ -1158,7 +1153,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                         + mImageName;
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
-                                        mBModel.CAMERA_REQUEST_CODE);
+                                        CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
                             }
 
@@ -1383,7 +1378,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                 // setting no of characters from configuration
                 InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sosDigits);
+                FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sosDigits);
                 holder.et.setFilters(FilterArray);
 
                 holder.et.setOnTouchListener(new OnTouchListener() {

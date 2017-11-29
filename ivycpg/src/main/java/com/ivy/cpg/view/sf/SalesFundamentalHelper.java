@@ -51,6 +51,10 @@ public class SalesFundamentalHelper {
     public int mSOSTotalPopUpType;
     private int mChannelId, mLocationId;
 
+    public int sosDigits = 4;
+    public int sodDigits = 4;
+    public static final String CODE_SOS_DIGITS = "SOS03";
+    public static final String CODE_SOD_DIGITS = "SOD01";
 
 
     protected SalesFundamentalHelper(Context context) {
@@ -66,6 +70,36 @@ public class SalesFundamentalHelper {
         return instance;
     }
 
+    public void updateSalesFundamentalConfigurations() {
+        try {
+
+            String sql = "select hhtCode, RField,menu_type from "
+                    + DataMembers.tbl_HhtModuleMaster + " where menu_type='COMMON' and flag=1";
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    String code = c.getString(0);
+                    if (code.equals(CODE_SOS_DIGITS)) {
+                        sosDigits = c.getInt(1);
+                        sosDigits = sosDigits > 4 ? 4 : sosDigits;
+                    } else if (code.equals(CODE_SOD_DIGITS)) {
+                        sodDigits = c.getInt(1);
+                        sodDigits = sodDigits > 4 ? 4 : sodDigits;
+                    }
+
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception ex) {
+
+        }
+    }
     public static ArrayList<SFLocationBO> cloneLocationList(
             ArrayList<SFLocationBO> list) {
         ArrayList<SFLocationBO> clone = new ArrayList<>(list.size());

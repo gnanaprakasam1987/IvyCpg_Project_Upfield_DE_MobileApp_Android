@@ -21,29 +21,26 @@ import java.util.Vector;
 
 public class SODActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface {
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sod);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getSupportActionBar().setElevation(0);
             }
         }
 
-        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(this);
+        BusinessModel mBModel = (BusinessModel) this.getApplicationContext();
+        mBModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -114,7 +111,6 @@ public class SODActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TODO Auto-generated method stub
 
     }
 

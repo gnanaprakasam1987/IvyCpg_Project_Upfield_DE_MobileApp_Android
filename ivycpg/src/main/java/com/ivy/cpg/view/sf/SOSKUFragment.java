@@ -409,7 +409,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                             boolean nFilesthere = bmodel
                                     .checkForNFilesInFolder(
                                             HomeScreenFragment.photoPath,
-                                            bmodel.mImageCount, fnameStarts);
+                                            1, fnameStarts);
                             if (nFilesthere) {
 
                                 showFileDeleteAlert(holder.mSOSKU.getProductID()
@@ -867,7 +867,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setMessage(getResources().getString(R.string.word_already)
-                + bmodel.mImageCount
+                + 1
                 + getResources().getString(
                 R.string.word_photocaptured_delete_retake));
 

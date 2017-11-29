@@ -263,7 +263,6 @@ public class BusinessModel extends Application {
     public String mSelectedActivityConfigCode = new String();
     // To retain the Selected filter across the module
     public int mSFSelectedFilter = -1;
-    public int mImageCount = 1;
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
