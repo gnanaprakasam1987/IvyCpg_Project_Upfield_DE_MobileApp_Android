@@ -333,6 +333,10 @@ public class SOSFragment extends IvyBaseFragment implements
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
+        ReasonMaster reason = new ReasonMaster();
+        reason.setReasonID("-1");
+        reason.setReasonDesc(getResources().getString(R.string.other_reason));
+        reason.setReasonCategory("SOS");
 
         for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
             if ("SOS".equalsIgnoreCase(temp.getReasonCategory())
@@ -346,6 +350,7 @@ public class SOSFragment extends IvyBaseFragment implements
             reasonMasterBo.setReasonID("0");
             spinnerAdapter.add(reasonMasterBo);
         }
+        spinnerAdapter.add(reason);
     }
 
     class ViewHolder {
@@ -360,6 +365,7 @@ public class SOSFragment extends IvyBaseFragment implements
         Spinner spnReason;
         ImageButton audit;
         ImageView btnPhoto;
+        EditText edt_other_remarks;
     }
 
     private class MyAdapter extends ArrayAdapter<SOSBO> {
@@ -412,7 +418,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_photo);
                 holder.spnReason = (Spinner) row
                         .findViewById(R.id.spnReason);
-
+                holder.edt_other_remarks = (EditText) row.findViewById(R.id.edt_other_remarks);
                 holder.etTotal = (EditText) row
                         .findViewById(R.id.etTotal);
 
@@ -522,23 +528,23 @@ public class SOSFragment extends IvyBaseFragment implements
 
                 });
 
-                holder.spnReason.setAdapter(spinnerAdapter);
-                holder.spnReason
-                        .setOnItemSelectedListener(new OnItemSelectedListener() {
-                            public void onItemSelected(AdapterView<?> parent,
-                                                       View view, int position, long id) {
 
-                                ReasonMaster reString = (ReasonMaster) holder.spnReason
-                                        .getSelectedItem();
+                holder.edt_other_remarks.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
-                                        .convertToInt(reString.getReasonID()));
+                    }
 
-                            }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks(s.toString());
+                    }
 
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
-                        });
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override
@@ -638,6 +644,48 @@ public class SOSFragment extends IvyBaseFragment implements
             holder.tvTarget.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget());
             holder.tvPercentage.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage());
             holder.tvGap.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap());
+
+            holder.spnReason.setAdapter(spinnerAdapter);
+            holder.spnReason
+                    .setOnItemSelectedListener(new OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> parent,
+                                                   View view, int position, long id) {
+
+                            ReasonMaster reString = (ReasonMaster) holder.spnReason
+                                    .getSelectedItem();
+
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
+                                    .convertToInt(reString.getReasonID()));
+                            if (reString.getReasonID().equals("-1")) {
+                                holder.edt_other_remarks.setVisibility(View.VISIBLE);
+                                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
+                            } else {
+                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
+                                holder.edt_other_remarks.setVisibility(View.GONE);
+
+                            }
+
+                        }
+
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+
+            if (!holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks().equals("")) {
+                holder.spnReason.setSelection(getReasonIndex("-1"));
+            } else {
+                holder.spnReason.setSelection(getReasonIndex(holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                        .getReasonId() + ""));
+            }
+            holder.spnReason.setSelected(true);
+            if (((ReasonMaster) holder.spnReason.getSelectedItem()).getReasonID().equals("-1")) {
+                holder.edt_other_remarks.setVisibility(View.VISIBLE);
+                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
+
+            } else {
+                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
+                holder.edt_other_remarks.setVisibility(View.GONE);
+            }
 
             if (Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
                 holder.tvGap.setTextColor(Color.RED);
