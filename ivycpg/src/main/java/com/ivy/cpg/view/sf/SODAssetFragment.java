@@ -115,6 +115,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
     private String mFilterText;
     AssetTrackingHelper assetTrackingHelper;
     SODAssetHelper mSODAssetHelper;
+    SalesFundamentalHelper mSFHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -145,6 +146,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         mBModel.setContext(getActivity());
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
         mSODAssetHelper = SODAssetHelper.getInstance(getActivity());
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
@@ -497,7 +499,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                             boolean mIsFileAvailable = mBModel
                                     .checkForNFilesInFolder(
                                             HomeScreenFragment.photoPath,
-                                            mBModel.mImageCount, mFileNameStarts);
+                                            1, mFileNameStarts);
                             if (mIsFileAvailable) {
 
                                 showFileDeleteAlert(mFileNameStarts);
@@ -979,7 +981,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setMessage(getResources().getString(R.string.word_already)
-                + mBModel.mImageCount
+                + 1
                 + getResources().getString(
                 R.string.word_photocaptured_delete_retake));
 
@@ -1048,7 +1050,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
         // setting no of characters from configuration
         InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sodDigits);
+        FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sodDigits);
         mParentTotal.setFilters(FilterArray);
 
         mParentTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1177,7 +1179,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 // setting no of characters from configuration
                 InputFilter[] FilterArray = new InputFilter[1];
-                FilterArray[0] = new InputFilter.LengthFilter(mBModel.configurationMasterHelper.sodDigits);
+                FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sodDigits);
                 holder.actual.setFilters(FilterArray);
 
                 holder.actual.setOnTouchListener(new OnTouchListener() {

@@ -579,10 +579,10 @@
             android:name="com.ivy.cpg.view.sf.SOSActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.sf.SOSActivity_Proj"
+            android:name="com.ivy.cpg.view.sf.SOSActivity_PRJSpecific"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.sf.SOS_Summary_Proj"
+            android:name="com.ivy.cpg.view.sf.SOSSummaryActivity_PRJSpecific"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.sf.SODActivity"

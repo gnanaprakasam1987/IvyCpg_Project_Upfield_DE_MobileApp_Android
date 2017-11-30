@@ -38,14 +38,11 @@ public class SalesFundamentalHelper {
     private Vector<LevelBO> mSFModuleSequence;
     private Vector<LevelBO> mFilterLevel;
     private HashMap<Integer, Vector<LevelBO>> mFilterLevelBo;
-    private Vector<SOSBO> sosVector = new Vector<>();
-    private ArrayList<ShelfShareBO> mShelfShareList;
 
 
     private String moduleSOS = "MENU_SOS";
     private String moduleSOSKU = "MENU_SOSKU";
     private String moduleSOD = "MENU_SOD";
-    private String mSOSLevelName;
     public int mSelectedBrandID = 0;
     public String mSelectedActivityName;
     public int mSOSTotalPopUpType;
@@ -97,7 +94,7 @@ public class SalesFundamentalHelper {
             }
             db.closeDB();
         } catch (Exception ex) {
-
+            Commons.printException(ex);
         }
     }
     public static ArrayList<SFLocationBO> cloneLocationList(
@@ -124,12 +121,15 @@ public class SalesFundamentalHelper {
                 if (c.moveToNext() && c.getInt(0) > 0) {
                     mSOSTotalPopUpType = 1;
                 }
+                c.close();
             }
-            c.close();
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
         }
     }
 
@@ -189,7 +189,7 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public void loadParentFilter(int mProductLevelId) {
+    private void loadParentFilter(int mProductLevelId) {
 
         String query;
         if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -230,8 +230,8 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public void loadChildFilter(int mChildLevel, int mParentLevel,
-                                int mProductLevelId, int mParentLevelId) {
+    private void loadChildFilter(int mChildLevel, int mParentLevel,
+                                 int mProductLevelId, int mParentLevelId) {
 
         String query;
         if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -285,10 +285,10 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
+    private void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
         DBUtil db = null;
         try {
-            Cursor cursor = null;
+            Cursor cursor;
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             int mParentLevel = 0;
@@ -296,7 +296,7 @@ public class SalesFundamentalHelper {
             int mContentLevel = 0;
             int mParentLevelId = 0, mChildLevelId = 0;
             int mFirstLevel;
-            int loopEnd = 0;
+            int loopEnd;
             String query = "";
 
             if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
@@ -472,7 +472,9 @@ public class SalesFundamentalHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
             Commons.printException(moduleName, e);
         }
     }
@@ -480,13 +482,13 @@ public class SalesFundamentalHelper {
     /**
      * Load Competitors
      *
-     * @param moduleName
+     * @param moduleName Module Name
      */
-    public void loadCompetitors(String moduleName) {
-        DBUtil db = null;
+    private void loadCompetitors(String moduleName) {
+        DBUtil db;
         ArrayList<Integer> lstCompetitiorPids;
         try {
-            Cursor cursor = null;
+            Cursor cursor;
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sBuffer = new StringBuffer();
@@ -587,11 +589,11 @@ public class SalesFundamentalHelper {
      * Save Sales Fundamentals Module wise
      *
      * @param moduleName
-     * @return
+     * @return status
      */
     public boolean saveSalesFundamentalDetails(String moduleName) {
         String modName = moduleName.replaceAll("MENU_", "");
-        int count = 1;
+        int count;
         try {
             String refId = "0";
             String headerValues;
@@ -645,11 +647,11 @@ public class SalesFundamentalHelper {
                     + "," + mBModel.QT(refId);
 
             db.insertSQL(modName + "_Tracking_Header", headerColumns,
-                    headerValues.toString());
+                    headerValues);
 
             if (modName.equals("SOS")) {
                 count = 1;
-                int locid1 = 0;
+                int locid1;
                 String tempkey = "";
                 String mKey1 = "";
                 detailColumns += ",remarks";
@@ -678,7 +680,7 @@ public class SalesFundamentalHelper {
                                     + "," + mBModel.QT(sosBo.getLocations().get(i).getRemarks());
 
                             db.insertSQL(modName + "_Tracking_Detail",
-                                    detailColumns, detailValues.toString());
+                                    detailColumns, detailValues);
 
                             // For share shelf detail
                             HashMap<String, Object> hashMap = null;
@@ -770,19 +772,18 @@ public class SalesFundamentalHelper {
                 }
 
                 String mKeytemp = "";
-                String mKey = ";";
-                count = 1;
+                String mKey;
                 for (SOSBO sosBo1 : getmSOSList()) {
                     for (int i = 0; i < sosBo1.getLocations().size(); i++) {
                         if (!sosBo1.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo1.getLocations().get(i).getParentTotal().equals("0.0")) {
                             // For share shelf detail
-                            HashMap<String, ShelfShareBO> blockHashMap = null;
+                            HashMap<String, ShelfShareBO> blockHashMap;
                             mKey = sosBo1.getParentID() + "";
                             if (mKeytemp.equals(""))
                                 mKeytemp = mKey;
                             blockHashMap = mShelfShareHelper.getLocations().get(i)
-                                    .getmShelfBlockDetailForSOS().get(mKey);
+                                    .getShelfBlockDetailForSOS().get(mKey);
                             if (blockHashMap != null) {
                                 for (String key : blockHashMap.keySet()) {
                                     ShelfShareBO ssBO = blockHashMap.get(key);
@@ -799,7 +800,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sosBo1.getProductName())) {
@@ -821,7 +822,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sosBo1.getProductName())) {
@@ -843,7 +844,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sosBo1.getProductName())) {
@@ -865,17 +866,10 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
 
-                                    // if you uncomment below code, it will throw
-                                    // java.util.ConcurrentModificationException
-                                    // studentGrades.remove("Alan");
-
-
-                                    /**Saving Empty Block Details **/
-//Log.v("Test1",count +" "+ ssBO.getFirstCell().equalsIgnoreCase("Ext.Shelf"));
-                                    //if (count > 0) {
+                                    //Saving Empty Block Details
 
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "empty")) {
@@ -897,7 +891,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
@@ -919,7 +913,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "empty")) {
@@ -941,7 +935,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "empty")) {
@@ -963,11 +957,11 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
 
 
-                                    /**saving Extra shelf details **/
+                                    //saving Extra shelf details **/
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
                                         mBlockDetailValues = mBModel.QT(uid)
@@ -988,7 +982,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1010,7 +1004,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1032,7 +1026,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1053,7 +1047,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 DataMembers.tbl_SOS__Block_Tracking_Detail,
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
 
                                     //}
@@ -1076,7 +1070,7 @@ public class SalesFundamentalHelper {
             } else if (modName.equals("SOD")) {
                 count = 1;
                 String mKey = "", tempkey = "";
-                int locid = 0;
+                int locid;
                 for (SODBO sodBo : getmSODList()) {
                     for (int i = 0; i < sodBo.getLocations().size(); i++) {
                         if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
@@ -1095,7 +1089,7 @@ public class SalesFundamentalHelper {
                                     + "," + mBModel.QT(sodBo.getLocations().get(i).getImgName());
 
                             db.insertSQL(modName + "_Tracking_Detail",
-                                    detailColumns, detailValues.toString());
+                                    detailColumns, detailValues);
 
                             // For share shelf detail
                             HashMap<String, Object> hashMap = null;
@@ -1203,20 +1197,19 @@ public class SalesFundamentalHelper {
                     }
                 }
 
-                String Key = ";";
+                String Key;
                 String mKeytemp = "";
-                count = 1;
                 for (SODBO sodBo1 : getmSODList()) {
                     for (int i = 0; i < sodBo1.getLocations().size(); i++) {
                         if (!sodBo1.getLocations().get(i).getParentTotal().equals("0")
                                 && !sodBo1.getLocations().get(i).getParentTotal().equals("0.0")) {
                             // For share shelf detail
-                            HashMap<String, ShelfShareBO> blockHashMap = null;
+                            HashMap<String, ShelfShareBO> blockHashMap;
                             Key = sodBo1.getParentID() + "";
                             if (mKeytemp.equals(""))
                                 mKeytemp = Key;
                             blockHashMap = mShelfShareHelper.getLocations().get(i)
-                                    .getmShelfBlockDetailForSOD().get(Key);
+                                    .getShelfBlockDetailForSOD().get(Key);
 
                             if (blockHashMap != null) {
                                 Commons.print("key set" + blockHashMap.keySet().toString());
@@ -1242,7 +1235,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equals(
                                             sodBo1.getProductName())) {
@@ -1264,7 +1257,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equals(
                                             sodBo1.getProductName())) {
@@ -1286,7 +1279,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equals(
                                             sodBo1.getProductName())) {
@@ -1308,18 +1301,10 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
 
-                                    // if you uncomment below code, it will throw
-                                    // java.util.ConcurrentModificationException
-                                    // studentGrades.remove("Alan");
-
-
-                                    /**Extra Block Details **/
-                                    //Log.v("Test1",count +" "+ ssBO.getFirstCell().equalsIgnoreCase("Ext.Shelf"));
-                                    //if (count > 0) {
-
+                                    //Extra Block Details **/
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
                                         mBlockDetailValues = mBModel.QT(uid)
@@ -1340,7 +1325,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1362,7 +1347,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1384,7 +1369,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "Ext.Shelf")) {
@@ -1406,7 +1391,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFirstCell().equalsIgnoreCase(
                                             "empty")) {
@@ -1428,7 +1413,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getSecondCell().equalsIgnoreCase(
                                             "empty")) {
@@ -1450,7 +1435,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getThirdCell().equalsIgnoreCase(
                                             "empty")) {
@@ -1472,7 +1457,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
                                     if (ssBO.getFourthCell().equalsIgnoreCase(
                                             "empty")) {
@@ -1494,7 +1479,7 @@ public class SalesFundamentalHelper {
                                         db.insertSQL(
                                                 "SOD_Tracking_Block_Detail",
                                                 mBlockDetailColumns,
-                                                mBlockDetailValues.toString());
+                                                mBlockDetailValues);
                                     }
 
                                     //}
@@ -1533,7 +1518,7 @@ public class SalesFundamentalHelper {
                                 + mBModel.QT(soskuBO.getImgName());
 
                         db.insertSQL(modName + "_Tracking_Detail",
-                                detailColumns, detailValues.toString());
+                                detailColumns, detailValues);
                     }
 
                 }
@@ -1551,10 +1536,12 @@ public class SalesFundamentalHelper {
 
     /**
      * Load and set Values to objects in Edit Mode
-     *
-     * @param
+     * @param uid Transaction Id
+     * @param pid Product Id
+     * @param totalShelf Total Shelf
+     * @param mLocationId Location Id
      */
-    public void loadSOSBlockDetails(String uid, String pid, int totalShelfs, int locid) {
+    public void loadSOSBlockDetails(String uid, String pid, int totalShelf, int mLocationId) {
         DBUtil db = null;
         // ShelfShareDialogFragment.mBrandsDetailsHashMap = new HashMap<String,
         // ShelfShareBO>();
@@ -1567,14 +1554,14 @@ public class SalesFundamentalHelper {
             sb.append("select sb.SubCellId,sb.CellId,sb.ChildPid,PM.pname from SOS_Tracking_Block_Detail SB ");
             sb.append("left join productmaster pm on PM.pid=SB.ChildPid");
             sb.append(" WHERE sb.Uid=" + mBModel.QT(uid) + "and SB.PID="
-                    + mBModel.QT(pid) + " and SB.LocId=" + locid);
+                    + mBModel.QT(pid) + " and SB.LocId=" + mLocationId);
             sb.append(" order by sb.SubCellId ,sb.CellId  ");
 
             Cursor detailCursor = db.selectSQL(sb.toString());
 
             if (detailCursor.getCount() > 0) {
 
-                for (int i = 0; i < totalShelfs; i++) {
+                for (int i = 0; i < totalShelf; i++) {
                     ShelfShareBO shelfShareBO = new ShelfShareBO();
 
                     shelfShareBO.setFirstCell("empty");
@@ -1616,20 +1603,21 @@ public class SalesFundamentalHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null)
+                db.closeDB();
         }
     }
 
     /**
      * Load and set Values to objects in Edit Mode
      *
-     * @param modName
+     * @param mModuleName Module Name
      */
-    public void loadSavedTracking(String modName) {
+    public void loadSavedTracking(String mModuleName) {
         DBUtil db = null;
         String sql;
-        String uid = "";
-        String moduleName = modName.replaceAll("MENU_", "");
+        String uid;
+        String moduleName = mModuleName.replaceAll("MENU_", "");
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -1676,7 +1664,7 @@ public class SalesFundamentalHelper {
                 if (detailCursor.getCount() > 0) {
 
                     while (detailCursor.moveToNext()) {
-                        if (modName.equalsIgnoreCase(moduleSOS)) {
+                        if (mModuleName.equalsIgnoreCase(moduleSOS)) {
                             for (SOSBO msos : getmSOSList()) {
                                 if (msos.getProductID() == detailCursor
                                         .getInt(0)
@@ -1715,7 +1703,7 @@ public class SalesFundamentalHelper {
                                         if (msos.getLocations().get(i).getLocationId() == detailCursor.getInt(16)) {
                                             if (!mShelfShareHelper.getLocations().get(i).containsKeySOS(String
                                                     .valueOf(mKey))) {
-                                                hashMap = new HashMap<String, Object>();
+                                                hashMap = new HashMap<>();
                                                 hashMap.put(ShelfShareHelper.BLOCK_COUNT,
                                                         detailCursor.getInt(11));
                                                 hashMap.put(ShelfShareHelper.SHELF_COUNT,
@@ -1737,7 +1725,7 @@ public class SalesFundamentalHelper {
 
                         }
                         // Load SOD
-                        else if (modName.equalsIgnoreCase(moduleSOD)) {
+                        else if (mModuleName.equalsIgnoreCase(moduleSOD)) {
                             for (SODBO msod : getmSODList()) {
                                 if (msod.getProductID() == detailCursor
                                         .getInt(0)) {
@@ -1767,7 +1755,7 @@ public class SalesFundamentalHelper {
                                         if (msod.getLocations().get(i).getLocationId() == detailCursor.getInt(16)) {
                                             if (!mShelfShareHelper.containsKeySOD(String
                                                     .valueOf(mKey))) {
-                                                hashMap = new HashMap<String, Object>();
+                                                hashMap = new HashMap<>();
                                                 hashMap.put(ShelfShareHelper.BLOCK_COUNT,
                                                         detailCursor.getInt(11));
                                                 hashMap.put(ShelfShareHelper.SHELF_COUNT,
@@ -1786,7 +1774,7 @@ public class SalesFundamentalHelper {
                                     }
                                 }
                             }
-                        } else if (modName.equalsIgnoreCase(moduleSOSKU)) {
+                        } else if (mModuleName.equalsIgnoreCase(moduleSOSKU)) {
                             for (SOSKUBO soskuBO : getmSOSKUList()) {
                                 if (soskuBO.getProductID() == detailCursor
                                         .getInt(0)) {
@@ -1814,7 +1802,7 @@ public class SalesFundamentalHelper {
             } else {
                 if (mBModel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
                     //Loading Last visit transaction for SOS
-                    if (modName.equalsIgnoreCase(moduleSOS)) {
+                    if (mModuleName.equalsIgnoreCase(moduleSOS)) {
 
                         String query = "select LocId,pid,parentId,actualValue,reasonId,isOwn,ParentTotal from LastVisitSOS where retailerId=" + mBModel.QT(mBModel.getRetailerMasterBO().getRetailerID());
 
@@ -1871,30 +1859,31 @@ public class SalesFundamentalHelper {
             headerCursor.close();
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
-            Commons.printException("loadSavedTracking" + modName + e);
+            if (db != null)
+                db.closeDB();
+            Commons.printException("loadSavedTracking" + mModuleName + e);
         }
     }
 
     /**
      * set Image Name in Each Objects
      *
-     * @param mBrandID
-     * @param imgName
+     * @param mBrandID Brand ID
+     * @param mImageName Image Name
      */
 
-    public void onsaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
+    public void onsaveImageName(int mBrandID, String mImageName, String moduleName, int locationIndex) {
         String imagePath = mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
-                + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
+                + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + mImageName;
         try {
             if (moduleName.equals(HomeScreenTwo.MENU_SOS)) {
                 imagePath = "SOS/" + imagePath;
                 for (int i = 0; i < getmSOSList().size(); ++i) {
-                    SOSBO sos = (SOSBO) getmSOSList().get(i);
+                    SOSBO sos = getmSOSList().get(i);
                     if (sos.getProductID() == mBrandID) {
                         getmSOSList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
-                        getmSOSList().get(i).getLocations().get(locationIndex).setImgName(imgName);
+                        getmSOSList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
                         break;
 
                     }
@@ -1905,7 +1894,7 @@ public class SalesFundamentalHelper {
                     SODBO sod = getmSODList().get(i);
                     if (sod.getProductID() == mBrandID) {
                         getmSODList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
-                        getmSODList().get(i).getLocations().get(locationIndex).setImgName(imgName);
+                        getmSODList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
                         break;
 
                     }
@@ -1913,10 +1902,10 @@ public class SalesFundamentalHelper {
             } else if (moduleName.equals(HomeScreenTwo.MENU_SOSKU)) {
                 imagePath = "SOSKU/" + imagePath;
                 for (int i = 0; i < getmSOSKUList().size(); ++i) {
-                    SOSKUBO sosku = (SOSKUBO) getmSOSKUList().get(i);
+                    SOSKUBO sosku = getmSOSKUList().get(i);
                     if (sosku.getProductID() == mBrandID) {
                         getmSOSKUList().get(i).setImageName(imagePath);
-                        getmSOSKUList().get(i).setImgName(imgName);
+                        getmSOSKUList().get(i).setImgName(mImageName);
                         break;
                     }
                 }
@@ -1929,8 +1918,8 @@ public class SalesFundamentalHelper {
     /**
      * Check Whether the Module is Tracked or Not, Based on ParentTotal
      *
-     * @param module
-     * @return
+     * @param module Module Code
+     * @return Is data available for given menu code
      */
     public boolean hasData(String module) {
 
@@ -1960,17 +1949,9 @@ public class SalesFundamentalHelper {
         return false;
     }
 
-    public String getSOSLevelName() {
-        return mSOSLevelName;
-    }
-
-    public void setSOSLevelName(String mSOSLevelName) {
-        this.mSOSLevelName = mSOSLevelName;
-    }
-
     public ArrayList<SODBO> getmSODList() {
         if (mSODList == null)
-            return new ArrayList<SODBO>();
+            return new ArrayList<>();
         return mSODList;
     }
 
@@ -1988,7 +1969,7 @@ public class SalesFundamentalHelper {
 
     public ArrayList<SOSKUBO> getmSOSKUList() {
         if (mSOSKUList == null)
-            return new ArrayList<SOSKUBO>();
+            return new ArrayList<>();
         return mSOSKUList;
     }
 
@@ -1996,31 +1977,16 @@ public class SalesFundamentalHelper {
         this.mSOSKUList = mSOSKUList;
     }
 
-    public ArrayList<ShelfShareBO> getmShelfShareList() {
-        return mShelfShareList;
-    }
-
-    public void setmShelfShareList(ArrayList<ShelfShareBO> mShelfShareList) {
-        this.mShelfShareList = mShelfShareList;
-    }
-
-    public Vector<SOSBO> getSOSBO() {
-        return sosVector;
-    }
-
-    public void setSOSBO(Vector<SOSBO> sosVector) {
-        this.sosVector = sosVector;
-    }
-
     /**
-     * Load and set Values to objects in Edit Mode
-     *
-     * @param
+     *  Load and set Values to objects in Edit Mode
+     * @param uid Transaction ID
+     * @param pid Product Id
+     * @param mTotalShelf Total Shelf
+     * @param mLocationId Location Id
      */
-    public void loadSODBlockDetails(String uid, String pid, int totalShelfs, int locid) {
+    public void loadSODBlockDetails(String uid, String pid, int mTotalShelf, int mLocationId) {
         DBUtil db = null;
-        // ShelfShareDialogFragment.mBrandsDetailsHashMap = new HashMap<String,
-        // ShelfShareBO>();
+
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -2030,14 +1996,14 @@ public class SalesFundamentalHelper {
             sb.append("select sb.SubCellId,sb.CellId,sb.ChildPid,PM.pname from SOD_Tracking_Block_Detail SB ");
             sb.append("left join productmaster pm on PM.pid=SB.ChildPid");
             sb.append(" WHERE sb.Uid=" + mBModel.QT(uid) + "and SB.PID="
-                    + mBModel.QT(pid) + " and SB.locid=" + locid);
+                    + mBModel.QT(pid) + " and SB.locid=" + mLocationId);
             sb.append(" order by sb.SubCellId ,sb.CellId  ");
 
             Cursor detailCursor = db.selectSQL(sb.toString());
 
             if (detailCursor.getCount() > 0) {
 
-                for (int i = 0; i < totalShelfs; i++) {
+                for (int i = 0; i < mTotalShelf; i++) {
                     ShelfShareBO shelfShareBO = new ShelfShareBO();
 
                     shelfShareBO.setFirstCell("empty");
@@ -2078,7 +2044,9 @@ public class SalesFundamentalHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
         }
     }
 
@@ -2139,7 +2107,9 @@ public class SalesFundamentalHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
         }
         return lstSOSproj;
     }
@@ -2168,7 +2138,9 @@ public class SalesFundamentalHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
         }
     }
 
@@ -2182,7 +2154,7 @@ public class SalesFundamentalHelper {
                     .now(SDUtil.DATE_TIME_ID));
 
 
-            String values = "";
+            String values;
             boolean isData = false;
             for (SOSBO bo : getLstSOSproj()) {
                 if (bo.getAvailability() > 0) {
@@ -2199,7 +2171,9 @@ public class SalesFundamentalHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
         }
 
     }
@@ -2243,7 +2217,7 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public int getRetailerLevel(String mMenuCode) {
+    private int getRetailerLevel(String mMenuCode) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

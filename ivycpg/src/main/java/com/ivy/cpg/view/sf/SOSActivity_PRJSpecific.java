@@ -14,9 +14,10 @@ import com.ivy.sd.png.util.Commons;
 
 /**
  * Created by rajkumar.s on 4/20/2017.
+ * SOS Project specific activity
  */
 
-public class SOSActivity_Proj extends IvyBaseActivityNoActionBar {
+public class SOSActivity_PRJSpecific extends IvyBaseActivityNoActionBar {
 
     Toolbar toolbar;
 
@@ -33,10 +34,10 @@ public class SOSActivity_Proj extends IvyBaseActivityNoActionBar {
 
         }
 
-        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(this);
+        BusinessModel mBModel = (BusinessModel) this.getApplicationContext();
+        mBModel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -46,7 +47,7 @@ public class SOSActivity_Proj extends IvyBaseActivityNoActionBar {
 
     public void numberPressed(View vw) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SOSFragment_Proj asf = (SOSFragment_Proj) fm
+        SOSFragment_PRJSpecific asf = (SOSFragment_PRJSpecific) fm
                 .findFragmentById(R.id.sos_fragment_proj);
         asf.numberPressed(vw);
     }

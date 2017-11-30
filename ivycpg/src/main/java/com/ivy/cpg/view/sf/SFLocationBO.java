@@ -5,12 +5,13 @@ import com.ivy.sd.png.bo.ShelfShareBO;
 import java.util.HashMap;
 
 /**
- * Created by ivyuser on 29/11/17.
+ * Created by Rajkumar.S on 29/11/17.
+ * Sales fundamental specific location BO
  */
 
 public class SFLocationBO {
 
-    int audit = 2;
+    private int audit = 2;
     private String actual = "0", parentTotal = "0";
     private String gap = "0", target = "0", percentage = "0";
     private String imageName = "";
@@ -132,12 +133,12 @@ public class SFLocationBO {
         return this.mShelfDetailForSOS.containsKey(key);
     }
 
-    public HashMap<String, HashMap<String, ShelfShareBO>> getmShelfBlockDetailForSOS() {
+    public HashMap<String, HashMap<String, ShelfShareBO>> getShelfBlockDetailForSOS() {
         return mShelfBlockDetailForSOS;
     }
 
-    public void setmShelfBlockDetailForSOS(String key,
-                                           HashMap<String, ShelfShareBO> mShelfBlockDetailForSOS) {
+    public void setShelfBlockDetailForSOS(String key,
+                                          HashMap<String, ShelfShareBO> mShelfBlockDetailForSOS) {
         this.mShelfBlockDetailForSOS.put(key, mShelfBlockDetailForSOS);
     }
 
@@ -151,12 +152,12 @@ public class SFLocationBO {
     }
 
 
-    public HashMap<String, HashMap<String, ShelfShareBO>> getmShelfBlockDetailForSOD() {
+    public HashMap<String, HashMap<String, ShelfShareBO>> getShelfBlockDetailForSOD() {
         return mShelfBlockDetailForSOD;
     }
 
-    public void setmShelfBlockDetailForSOD(String key,
-                                           HashMap<String, ShelfShareBO> mShelfBlockDetailForSOD) {
+    public void setShelfBlockDetailForSOD(String key,
+                                          HashMap<String, ShelfShareBO> mShelfBlockDetailForSOD) {
         this.mShelfBlockDetailForSOD.put(key, mShelfBlockDetailForSOD);
     }
 

@@ -21,15 +21,18 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class SODAssetHelper {
+    private static SODAssetHelper instance = null;
+    public int mSelectedBrandID = 0;
+    public String mSelectedActivityName;
+    private int mChannelId, mLocationId;
+    private ArrayList<SFLocationBO> mLocationList;
     private Context mContext;
     private BusinessModel mBModel;
-    private static SODAssetHelper instance = null;
     private ArrayList<SODBO> mSODList;
-    public int mSelectedBrandID = 0;
     private String moduleSODAsset = "MENU_SOD_ASSET";
-    int mChannelId, mLocationId;
-    public String mSelectedActivityName;
-    ArrayList<SFLocationBO> mLocationList;
+    private Vector<LevelBO> mFilterLevel;
+    private HashMap<Integer, Vector<LevelBO>> mFilterLevelBo;
+    private Vector<LevelBO> mSFModuleSequence;
 
 
     private SODAssetHelper(Context context) {
@@ -44,9 +47,14 @@ public class SODAssetHelper {
         return instance;
     }
 
-    private Vector<LevelBO> mFilterLevel;
-    private HashMap<Integer, Vector<LevelBO>> mFilterLevelBo;
-    private Vector<LevelBO> mSFModuleSequence;
+    private static ArrayList<SFLocationBO> cloneLocationList(
+            ArrayList<SFLocationBO> list) {
+        ArrayList<SFLocationBO> clone = new ArrayList<>(list.size());
+        for (SFLocationBO item : list)
+            clone.add(new SFLocationBO(item));
+        return clone;
+    }
+
     public void downloadSFFiveLevelFilter(String moduleName) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -136,7 +144,7 @@ public class SODAssetHelper {
     }
 
     private void loadChildFilter(int mChildLevel, int mParentLevel,
-                                int mProductLevelId, int mParentLevelId) {
+                                 int mProductLevelId, int mParentLevelId) {
 
         String query;
         if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -190,11 +198,10 @@ public class SODAssetHelper {
         }
     }
 
-
     public void loadSavedTracking(String modName) {
         DBUtil db = null;
         String sql;
-        String uid ;
+        String uid;
         String moduleName = modName.replaceAll("MENU_", "");
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -270,7 +277,7 @@ public class SODAssetHelper {
             headerCursor.close();
             db.closeDB();
         } catch (Exception e) {
-            if(db!=null) {
+            if (db != null) {
                 db.closeDB();
             }
             Commons.printException("loadSavedTracking" + modName + e);
@@ -281,7 +288,7 @@ public class SODAssetHelper {
      * set Image Name in Each Objects
      *
      * @param mBrandID Brand ID
-     * @param imgName image Name
+     * @param imgName  image Name
      */
 
     public void onSaveImageName(int mBrandID, String imgName, String moduleName, int locationIndex) {
@@ -321,14 +328,14 @@ public class SODAssetHelper {
         return false;
     }
 
-
-    private void setSODList(ArrayList<SODBO> mList){
-        mSODList=mList;
-    }
     public ArrayList<SODBO> getSODList() {
         if (mSODList == null)
             return new ArrayList<>();
         return mSODList;
+    }
+
+    private void setSODList(ArrayList<SODBO> mList) {
+        mSODList = mList;
     }
 
     private void updateSODAsset(int assetID, int productId, int actual, int reasonId, int locationId, String isPromo, String isDisplay) {
@@ -349,14 +356,15 @@ public class SODAssetHelper {
 
     /**
      * Download SOD Assets
+     *
      * @param moduleName Module Name
-     * @param IsAccount Is Account Wise filter
+     * @param IsAccount  Is Account Wise filter
      * @param IsRetailer Is Retailer Wise filter
-     * @param IsClass Is Class wise filter
-     * @param LocId Is Location wise  filter
-     * @param ChId Is Channel wise filter
+     * @param IsClass    Is Class wise filter
+     * @param LocId      Is Location wise  filter
+     * @param ChId       Is Channel wise filter
      */
-    public void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
+    private void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
         DBUtil db = null;
         try {
             Cursor cursor;
@@ -367,7 +375,7 @@ public class SODAssetHelper {
             int mContentLevel = 0;
             int mParentLevelId = 0, mChildLevelId = 0;
             int mFirstLevel;
-            int loopEnd ;
+            int loopEnd;
             String query = "";
 
             if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
@@ -498,8 +506,8 @@ public class SODAssetHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-            if(db!=null)
-            db.closeDB();
+            if (db != null)
+                db.closeDB();
             Commons.printException(moduleName, e);
         }
     }
@@ -510,9 +518,9 @@ public class SODAssetHelper {
      * @param moduleName Module Name
      */
     private void loadCompetitors(String moduleName) {
-        DBUtil db ;
+        DBUtil db;
         try {
-            Cursor cursor ;
+            Cursor cursor;
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuilder stringBuilder = new StringBuilder();
@@ -555,7 +563,6 @@ public class SODAssetHelper {
             Commons.printException(e);
         }
     }
-
 
     /**
      * Save Sales Fundamentals Module wise
@@ -676,34 +683,33 @@ public class SODAssetHelper {
         return true;
     }
 
-
-    public void loadSODAssetData(String menuname) {
+    public void loadSODAssetData(String mMenuName) {
         try {
 
             int level;
-            level = getRetailerLevel(menuname);
-            if (menuname.equals("MENU_SOD_ASSET")) {
+            level = getRetailerLevel(mMenuName);
+            if (mMenuName.equals("MENU_SOD_ASSET")) {
                 switch (level) {
                     case 1:
-                        downloadSalesFundamental(menuname, true, false, false, 0, 0);
+                        downloadSalesFundamental(mMenuName, true, false, false, 0, 0);
                         break;
                     case 2:
-                        downloadSalesFundamental(menuname, false, true, false, 0, 0);
+                        downloadSalesFundamental(mMenuName, false, true, false, 0, 0);
                         break;
                     case 3:
-                        downloadSalesFundamental(menuname, false, false, true, 0, 0);
+                        downloadSalesFundamental(mMenuName, false, false, true, 0, 0);
                         break;
                     case 4:
-                        downloadSalesFundamental(menuname, false, false, false, mLocationId, 0);
+                        downloadSalesFundamental(mMenuName, false, false, false, mLocationId, 0);
                         break;
                     case 5:
-                        downloadSalesFundamental(menuname, false, false, false, 0, mChannelId);
+                        downloadSalesFundamental(mMenuName, false, false, false, 0, mChannelId);
                         break;
                     case 6:
-                        downloadSalesFundamental(menuname, false, false, false, mLocationId, mChannelId);
+                        downloadSalesFundamental(mMenuName, false, false, false, mLocationId, mChannelId);
                         break;
                     case 8:
-                        downloadSalesFundamental(menuname, true, false, false, 0, mChannelId);
+                        downloadSalesFundamental(mMenuName, true, false, false, 0, mChannelId);
                         break;
                     case -1:
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
@@ -716,7 +722,7 @@ public class SODAssetHelper {
         }
     }
 
-    public int getRetailerLevel(String mMenuCode) {
+    private int getRetailerLevel(String mMenuCode) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -757,15 +763,6 @@ public class SODAssetHelper {
         }
         return -1;
     }
-
-    public static ArrayList<SFLocationBO> cloneLocationList(
-            ArrayList<SFLocationBO> list) {
-        ArrayList<SFLocationBO> clone = new ArrayList<>(list.size());
-        for (SFLocationBO item : list)
-            clone.add(new SFLocationBO(item));
-        return clone;
-    }
-
 
     public ArrayList<SFLocationBO> getLocationList() {
         return mLocationList;

@@ -96,7 +96,7 @@ public class SODFragment extends IvyBaseFragment implements
 
     private static final String BRAND = "Brand";
     private String brandFilterText = "BRAND";
-    private int selectedfilterid = -1;
+    private int mSelectedFilterId = -1;
     private String mImageName;
     private int mSelectedLocationIndex;
     private boolean isFromChild;
@@ -224,7 +224,7 @@ public class SODFragment extends IvyBaseFragment implements
             mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-            updateBrandText(BRAND, selectedfilterid);
+        updateBrandText(BRAND, mSelectedFilterId);
 
         loadReasons();
 
@@ -435,11 +435,10 @@ public class SODFragment extends IvyBaseFragment implements
             // If the nav drawer is open, hide action items related to the
             // content view
             boolean drawerOpen = false;
-            boolean navDrawerOpen = false;
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-            if (drawerOpen || navDrawerOpen)
+            if (drawerOpen)
                 menu.clear();
             // return super.onPrepareOptionsMenu(menu);
             menu.findItem(R.id.menu_next).setVisible(false);
@@ -506,7 +505,7 @@ public class SODFragment extends IvyBaseFragment implements
 
             // Change the Brand button Name
             brandFilterText = mFilterText;
-            selectedfilterid = id;
+            mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
             ArrayList<SODBO> items = mSFHelper
                     .getmSODList();
@@ -792,7 +791,7 @@ public class SODFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
                         dialog.dismiss();
-                        updateBrandText(BRAND, selectedfilterid);
+                        updateBrandText(BRAND, mSelectedFilterId);
                     }
                 });
 
@@ -1125,7 +1124,7 @@ public class SODFragment extends IvyBaseFragment implements
          * spinner item
          *
          * @param reasonId
-         * @return
+         * @return Index position
          */
         private int getReasonIndex(String reasonId) {
             if (spinnerAdapter.getCount() == 0)
@@ -1134,9 +1133,11 @@ public class SODFragment extends IvyBaseFragment implements
             if (len == 0)
                 return 0;
             for (int i = 0; i < len; ++i) {
-                ReasonMaster s = spinnerAdapter.getItem(i);
-                if (s.getReasonID().equals(reasonId))
-                    return i;
+                ReasonMaster mReasonBO = spinnerAdapter.getItem(i);
+                if (mReasonBO != null) {
+                    if (mReasonBO.getReasonID().equals(reasonId))
+                        return i;
+                }
             }
             return -1;
         }

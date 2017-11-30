@@ -46,7 +46,7 @@ import com.ivy.cpg.view.sf.SODActivity;
 import com.ivy.cpg.view.sf.SODAssetActivity;
 import com.ivy.cpg.view.sf.SODAssetHelper;
 import com.ivy.cpg.view.sf.SOSActivity;
-import com.ivy.cpg.view.sf.SOSActivity_Proj;
+import com.ivy.cpg.view.sf.SOSActivity_PRJSpecific;
 import com.ivy.cpg.view.sf.SOSKUActivity;
 import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.cpg.view.sf.ShelfShareHelper;
@@ -2923,6 +2923,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 ShelfShareHelper mShelfShareHelper = ShelfShareHelper.getInstance();
 
                 //Load Configurations
+                mSFHelper.updateSalesFundamentalConfigurations();
                 mSFHelper.setTotalPopUpConfig();
 
                 //Load the locations
@@ -2985,7 +2986,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         SDUtil.now(SDUtil.TIME),
                         MENU_SOS_PROJ);
 
-                Intent intent = new Intent(this, SOSActivity_Proj.class);
+                Intent intent = new Intent(this, SOSActivity_PRJSpecific.class);
                 if (isFromChild)
                     intent.putExtra("isFromChild", isFromChild);
                 startActivity(intent);

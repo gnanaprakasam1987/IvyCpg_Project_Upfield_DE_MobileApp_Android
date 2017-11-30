@@ -31,10 +31,10 @@ import java.util.ArrayList;
  * Created by rajkumar.s on 4/20/2017.
  */
 
-public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickListener {
+public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnClickListener {
 
     ArrayList<SOSBO> lstSOS;
-    BusinessModel bmodel;
+    BusinessModel mBModel;
     LinearLayout ll_content;
     Button btnSave;
     TextView lbl_prod_name, lbl_avail;
@@ -49,8 +49,8 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
 
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
 
         View view = inflater.inflate(R.layout.fragment_sos_proj, container, false);
 
@@ -59,9 +59,9 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
         btnSave.setOnClickListener(this);
 
         lbl_prod_name = (TextView) view.findViewById(R.id.tv_prod_lbl);
-        lbl_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lbl_prod_name.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_avail = (TextView) view.findViewById(R.id.tv_availability);
-        lbl_avail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lbl_avail.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
@@ -118,16 +118,18 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
 
                 }
 
-                ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
+                if (cardView != null) {
+                    ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
+                }
 
                 productView = inflater.inflate(R.layout.layout_sos_group_list_item, null);
 
                 TextView tv_prod_name = (TextView) productView.findViewById(R.id.tv_productname);
-                tv_prod_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_prod_name.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tv_prod_name.setText(bo.getProductName());
 
                 final EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
-                edt_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                edt_availability.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 edt_availability.setTag(bo.getGroupId() + "" + bo.getProductID());
                 edt_availability.setText(bo.getAvailability() + "");
 
@@ -165,7 +167,7 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
                 setValues();
 
                 if (checkIsDataAvailable()) {
-                    Intent intent = new Intent(getActivity(), SOS_Summary_Proj.class);
+                    Intent intent = new Intent(getActivity(), SOSSummaryActivity_PRJSpecific.class);
                     startActivity(intent);
                     getActivity().finish();
                 } else {
@@ -230,7 +232,7 @@ public class SOSFragment_Proj extends IvyBaseFragment implements View.OnClickLis
 
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
-            bmodel.showAlert(
+            mBModel.showAlert(
                     getResources().getString(R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
