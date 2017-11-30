@@ -180,7 +180,7 @@
                 android:textColor="@color/call_duration_value_text_color"
                 android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:visibility="visible"
+                android:visibility="gone"
                 tools:text="f sfsdf sdfsdf sd"
                 android:hint="@string/remark_hint"
                 android:textColorHint="@color/call_duration_value_hint_color" />
