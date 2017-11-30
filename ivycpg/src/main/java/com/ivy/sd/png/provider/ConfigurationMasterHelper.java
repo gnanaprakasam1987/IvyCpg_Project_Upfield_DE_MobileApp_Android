@@ -1435,14 +1435,7 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             db.closeDB();
-
             loadOrderAndStockConfiguration(0);
-            loadOrderSummaryDetailConfig();
-            loadPriceUOMConfiguration(0);
-            loadDeliveryUOMConfiguration();
-            loadProfileHistoryConfiguration();
-            if (IS_CNT01)
-                bmodel.mAttendanceHelper.loadChildUserList();
             getDateFormat();
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
@@ -3661,7 +3654,7 @@ public class ConfigurationMasterHelper {
 
     }
 
-    private void loadOrderSummaryDetailConfig() {
+    public void loadOrderSummaryDetailConfig() {
         SHOW_ORD_SUMMARY_PRICEOFF = false;
         SHOW_ORD_SUMMARY_DISC1 = false;
         SHOW_ORD_SUMMARY_DISC2 = false;

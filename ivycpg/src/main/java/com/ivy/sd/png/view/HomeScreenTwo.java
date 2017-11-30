@@ -3246,7 +3246,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     || menu.getModule_Order() == 1) {
-
+                bmodel.configurationMasterHelper.loadDeliveryUOMConfiguration();
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 Intent i = new Intent(this, DeliveryManagement.class);
                 i.putExtra("screentitle", menu.getMenuName());

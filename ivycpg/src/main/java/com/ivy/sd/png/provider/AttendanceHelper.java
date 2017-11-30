@@ -43,7 +43,6 @@ public class AttendanceHelper {
     ArrayList<String> dateList;
 
     private String[] weekOffDays = new String[7];
-    private ArrayList<StandardListBO> childUserList;
 
     public Vector<AttendanceBO> getReasonList() {
         return reasonList;
@@ -1371,9 +1370,6 @@ public class AttendanceHelper {
                     childUserBO.setChildUserId(c.getInt(0));
                     childUserBO.setChildUserName(c.getString(1));
                     childUserBOs.add(childUserBO);
-
-                    if (c.isLast())
-                        setChildUserList(childUserBOs);
                 }
                 c.close();
             }
@@ -1384,12 +1380,5 @@ public class AttendanceHelper {
         return childUserBOs;
     }
 
-    public void setChildUserList(ArrayList<StandardListBO> childUserList) {
-        this.childUserList = childUserList;
-    }
-
-    public ArrayList<StandardListBO> getChildUserList() {
-        return childUserList;
-    }
 
 }
