@@ -67,6 +67,9 @@ public class SalesFundamentalHelper {
         return instance;
     }
 
+    /**
+     * update SF configurations
+     */
     public void updateSalesFundamentalConfigurations() {
         try {
 
@@ -97,6 +100,13 @@ public class SalesFundamentalHelper {
             Commons.printException(ex);
         }
     }
+
+    /**
+     * Method used to clone given list
+     *
+     * @param list List to clone
+     * @return
+     */
     public static ArrayList<SFLocationBO> cloneLocationList(
             ArrayList<SFLocationBO> list) {
         ArrayList<SFLocationBO> clone = new ArrayList<>(list.size());
@@ -141,6 +151,10 @@ public class SalesFundamentalHelper {
         return mSFModuleSequence;
     }
 
+    /**
+     * Download filter levels
+     * @param moduleName
+     */
     public void downloadSFFiveLevelFilter(String moduleName) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -189,6 +203,10 @@ public class SalesFundamentalHelper {
         }
     }
 
+    /**
+     * Load parent filter
+     * @param mProductLevelId Parent Level ID
+     */
     private void loadParentFilter(int mProductLevelId) {
 
         String query;
@@ -230,6 +248,13 @@ public class SalesFundamentalHelper {
         }
     }
 
+    /**
+     * Load all child levels
+     * @param mChildLevel Child Level Id
+     * @param mParentLevel Parent level Id
+     * @param mProductLevelId  Product Id
+     * @param mParentLevelId Parent product Id
+     */
     private void loadChildFilter(int mChildLevel, int mParentLevel,
                                  int mProductLevelId, int mParentLevelId) {
 
@@ -285,6 +310,15 @@ public class SalesFundamentalHelper {
         }
     }
 
+    /**
+     * Download masters for sales fundamental
+     * @param moduleName Module Name
+     * @param IsAccount Is Account wise mapped
+     * @param IsRetailer Is Retailer wise mapped
+     * @param IsClass Is class wise mapped
+     * @param LocId Is location wise mapped
+     * @param ChId Is channel wise mapped
+     */
     private void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
         DBUtil db = null;
         try {
@@ -588,7 +622,7 @@ public class SalesFundamentalHelper {
     /**
      * Save Sales Fundamentals Module wise
      *
-     * @param moduleName
+     * @param moduleName Module Name
      * @return status
      */
     public boolean saveSalesFundamentalDetails(String moduleName) {
@@ -1489,12 +1523,6 @@ public class SalesFundamentalHelper {
                         }
                     }
 
-                    /*if (Key.equals(mKeytemp)) {
-                        count = 0;
-                    } else {
-                        mKeytemp = mKey;
-                        count = 1;
-                    }*/
                 }
             } else if (modName.equals("SOSKU")) {
                 for (SOSKUBO soskuBO : getmSOSKUList()) {
@@ -1543,8 +1571,7 @@ public class SalesFundamentalHelper {
      */
     public void loadSOSBlockDetails(String uid, String pid, int totalShelf, int mLocationId) {
         DBUtil db = null;
-        // ShelfShareDialogFragment.mBrandsDetailsHashMap = new HashMap<String,
-        // ShelfShareBO>();
+
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();

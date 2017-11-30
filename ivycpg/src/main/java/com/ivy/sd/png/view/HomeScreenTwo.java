@@ -3010,6 +3010,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
                 ShelfShareHelper mShelfShareHelper = ShelfShareHelper.getInstance();
 
+                mSFHelper.updateSalesFundamentalConfigurations();
                 mSFHelper.setTotalPopUpConfig();
 
                 mSFHelper.downloadLocations();
@@ -3112,6 +3113,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
 
                 SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
+
+                mSFHelper.updateSalesFundamentalConfigurations();
 
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
                     mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);

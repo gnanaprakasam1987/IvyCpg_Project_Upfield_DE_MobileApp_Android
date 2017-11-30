@@ -113,6 +113,11 @@ public class SODFragment extends IvyBaseFragment implements
         return view;
     }
 
+    /**
+     * Initialize views
+     *
+     * @param view Parent view
+     */
     private void initializeView(View view) {
 
         if (getView() != null) {
@@ -311,6 +316,9 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Two level filter call
+     */
     private void productFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -355,6 +363,9 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Five level filter call
+     */
     private void FiveFilterFragment() {
         try {
             Collections.addAll(new Vector<String>(), getResources().getStringArray(
@@ -390,7 +401,7 @@ public class SODFragment extends IvyBaseFragment implements
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
-        loadData(mParentIdList, mSelectedIdByLevelId);
+        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId);
     }
 
     @Override
@@ -532,7 +543,13 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
-    private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
+    /**
+     * Load list based on five level filter selection
+     *
+     * @param mParentIdList        Parent Id list
+     * @param mSelectedIdByLevelId Selected product Id by level id
+     */
+    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
         ArrayList<SODBO> items = mSFHelper.getmSODList();
         if (items == null) {
             mBModel.showAlert(
@@ -542,7 +559,7 @@ public class SODFragment extends IvyBaseFragment implements
         }
 
         ArrayList<SODBO> myList = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (SODBO temp : items) {
                 if (temp.getParentID() == levelBO.getProductID()) {
                     if (temp.getIsOwn() == 1)
@@ -557,6 +574,9 @@ public class SODFragment extends IvyBaseFragment implements
         mListView.setAdapter(mSchedule);
     }
 
+    /**
+     * Save record in transaction table
+     */
     private void saveSOS() {
         try {
             if (mSFHelper
@@ -572,6 +592,10 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Shows alert dialog to denote image availability
+     * @param imageNameStarts Image Name
+     */
     private void showFileDeleteAlert(final String imageNameStarts) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -747,24 +771,7 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
-    private void eff(int val) {
 
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-            String s = mSelectedET.getText().toString();
-            sb.append(s);
-            if (sb.length() == mSFHelper.sosDigits) {
-
-                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-                    mSelectedET.setText(String.valueOf(val));
-                } else {
-                    String strVal = mSelectedET.getText() + String.valueOf(val);
-                    mSelectedET.setText(strVal);
-                }
-            } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     @Override
     public void updateMultiSelectionCategory(List<Integer> mCategory) {
@@ -780,6 +787,9 @@ public class SODFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Alert dialog to show location
+     */
     private void showLocation() {
         AlertDialog.Builder builder;
 
@@ -812,6 +822,9 @@ public class SODFragment extends IvyBaseFragment implements
         ImageButton audit;
     }
 
+    /**
+     * Adapter for listView
+     */
     private class MyAdapter extends ArrayAdapter<SODBO> {
         private final ArrayList<SODBO> items;
 
@@ -1143,6 +1156,9 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Save call
+     */
     class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -1322,6 +1338,9 @@ public class SODFragment extends IvyBaseFragment implements
         EditText et;
     }
 
+    /**
+     * NumberPad click listener
+     */
     private class MyClickListener implements OnClickListener {
 
         @Override
@@ -1329,34 +1348,34 @@ public class SODFragment extends IvyBaseFragment implements
 
             int i = v.getId();
             if (i == R.id.calczero) {
-                eff(0);
+                updateValue(0);
 
             } else if (i == R.id.calcone) {
-                eff(1);
+                updateValue(1);
 
             } else if (i == R.id.calctwo) {
-                eff(2);
+                updateValue(2);
 
             } else if (i == R.id.calcthree) {
-                eff(3);
+                updateValue(3);
 
             } else if (i == R.id.calcfour) {
-                eff(4);
+                updateValue(4);
 
             } else if (i == R.id.calcfive) {
-                eff(5);
+                updateValue(5);
 
             } else if (i == R.id.calcsix) {
-                eff(6);
+                updateValue(6);
 
             } else if (i == R.id.calcseven) {
-                eff(7);
+                updateValue(7);
 
             } else if (i == R.id.calceight) {
-                eff(8);
+                updateValue(8);
 
             } else if (i == R.id.calcnine) {
-                eff(9);
+                updateValue(9);
 
             } else if (i == R.id.calcdel) {
                 String s = mSelectedET.getText().toString();
@@ -1378,6 +1397,30 @@ public class SODFragment extends IvyBaseFragment implements
 
             }
 
+        }
+    }
+
+    /**
+     * Update value in view
+     *
+     * @param val selected value
+     */
+    private void updateValue(int val) {
+
+        if (mSelectedET != null && mSelectedET.getText() != null) {
+            String s = mSelectedET.getText().toString();
+            sb.append(s);
+            if (sb.length() == mSFHelper.sosDigits) {
+
+                if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+                    mSelectedET.setText(String.valueOf(val));
+                } else {
+                    String strVal = mSelectedET.getText() + String.valueOf(val);
+                    mSelectedET.setText(strVal);
+                }
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
