@@ -1464,7 +1464,7 @@ public class BusinessModel extends Application {
                             + " (select ListCode from StandardListMaster where ListID=A.RpTypeId) as RpTypeCode, A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone, A.IsGoldStore,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
-                            + " A.sbd_dist_count,A.sbd_dist_stock,A.RField1,"
+                            + " A.sbd_dist_stock,A.RField1,"
                             + "(select count (sbdid) from SbdMerchandisingMaster where "
                             + "ChannelId = A.ChannelId and TypeListId=(select ListId from "
                             + "StandardListMaster where ListCode='MERCH_INIT')) as pricetgt,"
@@ -1572,7 +1572,6 @@ public class BusinessModel extends Application {
                     retailer.setIsInitMerchandisingDone(c.getString(c.getColumnIndex("isInitMerchandisingDone")));
 
 
-                    retailer.setSbdDistCount(c.getInt(c.getColumnIndex("sbd_dist_count")));
                     retailer.setSbdDistStock(c.getInt(c.getColumnIndex("sbd_dist_stock")));
                     retailer.setSbdMerchInitTarget(c.getInt(c.getColumnIndex("pricetgt")));
                     retailer.setSbdMerchInitAcheived(c.getInt(c.getColumnIndex("sbdMerchInitAcheived")));

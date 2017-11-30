@@ -61,7 +61,6 @@ public class MyThread extends Thread {
                 /** Load all the configurations**/
                 bmodel.configurationMasterHelper.downloadConfig();
                 bmodel.configurationMasterHelper.downloadIndicativeOrderConfig();
-                bmodel.configurationMasterHelper.downloadProfileModuleConfig();
                 bmodel.mRetailerHelper.setVisitPlanning(bmodel.configurationMasterHelper
                         .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_PLANNING));
                 bmodel.mRetailerHelper.setVisitCoverage(bmodel.configurationMasterHelper
@@ -88,7 +87,6 @@ public class MyThread extends Thread {
                 bmodel.reasonHelper.downloadNonVisitReasonMaster();
                 bmodel.reasonHelper.downloadNonProductiveReasonMaster();
 
-                // bmodel.getimageDownloadURL();
                 bmodel.productHelper
                         .setBuffer(((float) bmodel.configurationMasterHelper
                                 .downloadSOBuffer() / (float) 100));
