@@ -457,7 +457,7 @@ public class SODDialogFragment extends DialogFragment {
 
     private void initBrandNameListFromSOD() {
 
-        ArrayList<SODBO> mSodList = mSFHelper.getmSODList();
+        ArrayList<SODBO> mSodList = mSFHelper.getSODList();
 
         mCategoryForDialogSODBO = new ArrayList<>();
 

@@ -233,7 +233,7 @@ public class SODFragment extends IvyBaseFragment implements
 
         loadReasons();
 
-        if (mSFHelper.getmSODList() != null)
+        if (mSFHelper.getSODList() != null)
             calculateTotalValues();
     }
 
@@ -249,7 +249,7 @@ public class SODFragment extends IvyBaseFragment implements
             float mGap = 0;
             float mparcentagetot = 0;
             float mNamtot = 0;
-            for (SODBO temp : mSFHelper.getmSODList()) {
+            for (SODBO temp : mSFHelper.getSODList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mtotal = mtotal + SDUtil.convertToFloat(temp.getLocations().get(mSelectedLocationIndex).getParentTotal());
@@ -305,7 +305,7 @@ public class SODFragment extends IvyBaseFragment implements
                 Commons.print(mSFHelper.mSelectedActivityName
                         + "Camera Activity : Successfully Captured.");
                 if (mSFHelper.mSelectedBrandID != 0) {
-                    mSFHelper.onsaveImageName(
+                    mSFHelper.onSaveImageName(
                             mSFHelper.mSelectedBrandID,
                             mImageName, HomeScreenTwo.MENU_SOD, mSelectedLocationIndex);
                 }
@@ -519,7 +519,7 @@ public class SODFragment extends IvyBaseFragment implements
             mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
             ArrayList<SODBO> items = mSFHelper
-                    .getmSODList();
+                    .getSODList();
             if (items == null) {
                 mBModel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -550,7 +550,7 @@ public class SODFragment extends IvyBaseFragment implements
      * @param mSelectedIdByLevelId Selected product Id by level id
      */
     private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SODBO> items = mSFHelper.getmSODList();
+        ArrayList<SODBO> items = mSFHelper.getSODList();
         if (items == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -681,8 +681,8 @@ public class SODFragment extends IvyBaseFragment implements
         mCategoryForDialog.clear();
 
         // All Brands in Total PopUp
-        if (mSFHelper.getmSODList() != null) {
-            for (SODBO sodBO : mSFHelper.getmSODList()) {
+        if (mSFHelper.getSODList() != null) {
+            for (SODBO sodBO : mSFHelper.getSODList()) {
                 if (sodBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(sodBO);
                 }

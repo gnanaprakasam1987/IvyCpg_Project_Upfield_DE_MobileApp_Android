@@ -102,8 +102,6 @@ public class SODAssetFragment extends IvyBaseFragment implements
     private final ArrayList<AssetTrackingBO> mAssetsForDialog = new ArrayList<>();
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private Vector<LevelBO> mParentIdList;
-    private ArrayList<Integer> mAttributeProducts;
 
     private static final String BRAND = "Brand";
     private static final String TAG="SOD Tracking";
@@ -112,7 +110,6 @@ public class SODAssetFragment extends IvyBaseFragment implements
     private int mSelectedFilterId = -1;
     private int mSelectedLocationIndex;
     private boolean isFromChild;
-    private String mFilterText;
     AssetTrackingHelper assetTrackingHelper;
     SODAssetHelper mSODAssetHelper;
     SalesFundamentalHelper mSFHelper;
@@ -121,9 +118,103 @@ public class SODAssetFragment extends IvyBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sos, container, false);
+
+        initializeViews(view);
+
+        return view;
+    }
+
+    /**
+     * Initialize views
+     *
+     * @param view Parent view
+     */
+    private void initializeViews(View view) {
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
-        return view;
+
+        if (getView() != null) {
+            mListView = (ListView) view.findViewById(R.id.list);
+            mListView.setCacheColorHint(0);
+        }
+
+        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
+        //setting Header Title Fonts
+        ((TextView) view.findViewById(R.id.levelName)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hlength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hlengthacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.hpercent)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.hpercentacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.hGap)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        tvSelectedName = (TextView) view.findViewById(R.id.levelName);
+        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+        // set a custom shadow that overlays the main content when the drawer
+        // opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            setScreenTitle(mSODAssetHelper.mSelectedActivityName);
+        }
+
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
+        ) {
+            public void onDrawerClosed(View view) {
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(mSODAssetHelper.mSelectedActivityName);
+                }
+                getActivity().supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(getResources().getString(R.string.filter));
+                }
+                getActivity().supportInvalidateOptionsMenu();
+            }
+        };
+
+        Button btn_save = (Button) view.findViewById(R.id.btn_save);
+        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        btn_save.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveSOS();
+            }
+        });
+
+        // load location filter
+        mLocationAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.select_dialog_singlechoice);
+
+        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
+            mLocationAdapter.add(temp);
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
+        }
+
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
     @Override
@@ -154,96 +245,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
-        if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.list);
-            mListView.setCacheColorHint(0);
-        }
 
-        FrameLayout drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
-        int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
-        params.width = width;
-        drawer.setLayoutParams(params);
-
-        //setting Header Title Fonts
-        ((TextView) getView().findViewById(R.id.levelName)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hlengthacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hpercent)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) getView().findViewById(R.id.hpercentacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) getView().findViewById(R.id.hGap)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        tvSelectedName = (TextView) getView().findViewById(R.id.levelName);
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
-        // set a custom shadow that overlays the main content when the drawer
-        // opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.START);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.END);
-
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-            setScreenTitle(mSODAssetHelper.mSelectedActivityName);
-        }
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(mSODAssetHelper.mSelectedActivityName);
-                }
-                getActivity().supportInvalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(getResources().getString(R.string.filter));
-                }
-                getActivity().supportInvalidateOptionsMenu();
-            }
-        };
-
-        Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
-        btn_save.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveSOS();
-            }
-        });
-
-        // load location filter
-        mLocationAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_singlechoice);
-
-        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
-        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
-        }
-
-
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mDrawerLayout.closeDrawer(GravityCompat.END);
-        if (mParentIdList != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
-        } else {
-            updateBrandText(BRAND, mSelectedFilterId);
-        }
-        loadReasons();
-
+        updateBrandText(BRAND, mSelectedFilterId);
 
         if (mSODAssetHelper.getSODList() != null)
             calculateTotalValues();
@@ -355,6 +358,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
         ImageButton audit;
     }
 
+    /**
+     * Adapter for list view
+     */
     private class MyAdapter extends ArrayAdapter<SODBO> {
         private final ArrayList<SODBO> items;
 
@@ -648,6 +654,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Two level filter
+     */
     private void productFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -691,6 +700,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Five level filter
+     */
     private void FiveFilterFragment() {
         try {
             Collections.addAll(new Vector<String>(), getResources().getStringArray(
@@ -724,12 +736,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
 
-        this.mParentIdList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        this.mAttributeProducts = mAttributeProducts;
-        this.mFilterText = mFilterText;
 
-        loadData(mParentIdList, mSelectedIdByLevelId);
+        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId);
     }
 
     @Override
@@ -871,7 +880,13 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
-    private void loadData(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
+    /**
+     * update list based on filter selection
+     *
+     * @param mParentIdList        Parent Id List
+     * @param mSelectedIdByLevelId Selected product Id's by level ID
+     */
+    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
         ArrayList<SODBO> items = mSODAssetHelper.getSODList();
         if (items == null) {
             mBModel.showAlert(
@@ -896,6 +911,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
         mListView.setAdapter(mSchedule);
     }
 
+    /**
+     * Save transaction
+     */
     private void saveSOS() {
         try {
             if (mSODAssetHelper
@@ -911,6 +929,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Save transaction in background
+     */
     class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -976,6 +997,10 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Showing alert dialog to denote image availability..
+     * @param imageNameStarts
+     */
     private void showFileDeleteAlert(final String imageNameStarts) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1183,7 +1208,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                 holder.actual.setFilters(FilterArray);
 
                 holder.actual.setOnTouchListener(new OnTouchListener() {
-                     @Override
+                    @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         mSelectedET = holder.actual;
                         int inType = holder.actual.getInputType();
@@ -1331,6 +1356,11 @@ public class SODAssetFragment extends IvyBaseFragment implements
             return row;
         }
 
+        /**
+         * Get index of given reason ID
+         * @param reasonId Reason Id
+         * @return Index
+         */
         private int getReasonIndex(String reasonId) {
             if (assetReasonAdapter.getCount() == 0)
                 return 0;
@@ -1347,7 +1377,13 @@ public class SODAssetFragment extends IvyBaseFragment implements
             return -1;
         }
 
-        private int getLocationIndex(String reasonId) {
+        /**
+         * Get index of given location ID
+         *
+         * @param mLocationId Location Id
+         * @return Index
+         */
+        private int getLocationIndex(String mLocationId) {
             if (assetLocationAdapter.getCount() == 0)
                 return 0;
             int len = assetLocationAdapter.getCount();
@@ -1355,8 +1391,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
                 return 0;
             for (int i = 0; i < len; ++i) {
                 ReasonMaster s = assetLocationAdapter.getItem(i);
-                if(s!=null) {
-                    if (s.getReasonID().equals(reasonId))
+                if (s != null) {
+                    if (s.getReasonID().equals(mLocationId))
                         return i;
                 }
             }
@@ -1394,19 +1430,10 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
-    private void eff(int val) {
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-            String s = mSelectedET.getText().toString();
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-                mSelectedET.setText(String.valueOf(val));
-            } else {
-                String strVal = mSelectedET.getText() + String.valueOf(val);
-                mSelectedET.setText(strVal);
-            }
-        }
-    }
-
+    /**
+     * NumberPad click listener
+     */
     private class MyClickListener implements OnClickListener {
 
         @Override
@@ -1414,34 +1441,34 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
             int i = v.getId();
             if (i == R.id.calczero) {
-                eff(0);
+                updateValue(0);
 
             } else if (i == R.id.calcone) {
-                eff(1);
+                updateValue(1);
 
             } else if (i == R.id.calctwo) {
-                eff(2);
+                updateValue(2);
 
             } else if (i == R.id.calcthree) {
-                eff(3);
+                updateValue(3);
 
             } else if (i == R.id.calcfour) {
-                eff(4);
+                updateValue(4);
 
             } else if (i == R.id.calcfive) {
-                eff(5);
+                updateValue(5);
 
             } else if (i == R.id.calcsix) {
-                eff(6);
+                updateValue(6);
 
             } else if (i == R.id.calcseven) {
-                eff(7);
+                updateValue(7);
 
             } else if (i == R.id.calceight) {
-                eff(8);
+                updateValue(8);
 
             } else if (i == R.id.calcnine) {
-                eff(9);
+                updateValue(9);
 
             } else if (i == R.id.calcdel) {
                 String s = mSelectedET.getText().toString();
@@ -1466,6 +1493,24 @@ public class SODAssetFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * update values in view
+     *
+     * @param val value
+     */
+    private void updateValue(int val) {
+        if (mSelectedET != null && mSelectedET.getText() != null) {
+            String s = mSelectedET.getText().toString();
+
+            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+                mSelectedET.setText(String.valueOf(val));
+            } else {
+                String strVal = mSelectedET.getText() + String.valueOf(val);
+                mSelectedET.setText(strVal);
+            }
+        }
+    }
+
     @Override
     public void updateMultiSelectionCategory(List<Integer> mCategory) {
     }
@@ -1480,6 +1525,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Show location dialog
+     */
     private void showLocation() {
         AlertDialog.Builder builder;
 
@@ -1498,6 +1546,11 @@ public class SODAssetFragment extends IvyBaseFragment implements
         mBModel.applyAlertDialogTheme(builder);
     }
 
+    /**
+     * Draw circular image
+     * @param source Source image
+     * @return
+     */
     private Bitmap getCircularBitmapFrom(Bitmap source) {
         if (source == null || source.isRecycled()) {
             return null;

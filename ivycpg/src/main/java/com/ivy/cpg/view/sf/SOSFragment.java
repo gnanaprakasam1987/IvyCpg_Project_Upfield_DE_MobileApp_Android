@@ -167,7 +167,7 @@ public class SOSFragment extends IvyBaseFragment implements
         updateBrandText(BRAND, mSelectedFilterId);
         loadReasons();
 
-        if (mSFHelper.getmSOSList() != null)
+        if (mSFHelper.getSOSList() != null)
             calculateTotalValues();
 
     }
@@ -306,7 +306,7 @@ public class SOSFragment extends IvyBaseFragment implements
             float mTotal = 0;
             float mGap = 0;
             float mNormTotal = 0;
-            for (SOSBO temp : mSFHelper.getmSOSList()) {
+            for (SOSBO temp : mSFHelper.getSOSList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mTotal = mTotal
@@ -362,7 +362,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
             // Photo saved successfully
             totalImgList.add(mImageName);
-            mSFHelper.onsaveImageName(
+            mSFHelper.onSaveImageName(
                     mSFHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
         }
@@ -539,7 +539,7 @@ public class SOSFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                if (mSFHelper.getLstSOSproj() != null || totalImgList.size() > 0)
+                if (mSFHelper.getLstSOS_PRJSpecific() != null || totalImgList.size() > 0)
                     showAlertOnBackClick();
                 else {
                     mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -591,7 +591,7 @@ public class SOSFragment extends IvyBaseFragment implements
             tvSelectedName.setText(mFilterText);
 
             ArrayList<SOSBO> items = mSFHelper
-                    .getmSOSList();
+                    .getSOSList();
             if (items == null) {
                 mBModel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -621,7 +621,7 @@ public class SOSFragment extends IvyBaseFragment implements
      * @param mSelectedIdByLevelId Selected product Id's by level ID
      */
     private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SOSBO> items = mSFHelper.getmSOSList();
+        ArrayList<SOSBO> items = mSFHelper.getSOSList();
         if (items == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -792,8 +792,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
         mCategoryForDialog.clear();
         // All Brands in Total PopUp
-        if (mSFHelper.getmSOSList() != null) {
-            for (SOSBO sosBO : mSFHelper.getmSOSList()) {
+        if (mSFHelper.getSOSList() != null) {
+            for (SOSBO sosBO : mSFHelper.getSOSList()) {
                 if (sosBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(sosBO);
                 }

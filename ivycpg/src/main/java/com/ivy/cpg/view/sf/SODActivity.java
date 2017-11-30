@@ -29,6 +29,7 @@ public class SODActivity extends IvyBaseActivityNoActionBar implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -39,6 +40,7 @@ public class SODActivity extends IvyBaseActivityNoActionBar implements
 
         BusinessModel mBModel = (BusinessModel) this.getApplicationContext();
         mBModel.setContext(this);
+
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,

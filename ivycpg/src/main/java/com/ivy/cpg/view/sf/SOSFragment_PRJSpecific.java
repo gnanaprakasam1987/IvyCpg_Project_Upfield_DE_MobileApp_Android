@@ -96,10 +96,10 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
     private void createView() {
 
         try {
-            if (mSFHelper.getLstSOSproj() == null)
-                lstSOS = mSFHelper.downloadSOSgroups();
+            if (mSFHelper.getLstSOS_PRJSpecific() == null)
+                lstSOS = mSFHelper.downloadSOSGroups();
             else
-                lstSOS = mSFHelper.getLstSOSproj();
+                lstSOS = mSFHelper.getLstSOS_PRJSpecific();
 
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -207,8 +207,8 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
         int i = item.getItemId();
         if (i == android.R.id.home) {
 
-            if (mSFHelper.getLstSOSproj() != null)
-                mSFHelper.setLstSOSproj(null);
+            if (mSFHelper.getLstSOS_PRJSpecific() != null)
+                mSFHelper.setLstSOS_PRJSpecific(null);
 
             if (isFromChild)
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class)

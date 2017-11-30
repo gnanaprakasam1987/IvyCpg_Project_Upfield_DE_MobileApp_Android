@@ -1176,7 +1176,7 @@ public class ShelfShareDialogFragment extends DialogFragment {
         /*
       Contains entire product's details as SOSBO for SOS Module
      */
-        ArrayList<SOSBO> mSosList = mSFHelper.getmSOSList();
+        ArrayList<SOSBO> mSosList = mSFHelper.getSOSList();
 
         mCategoryForDialogSOSBO = new ArrayList<>();
 

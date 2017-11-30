@@ -86,8 +86,8 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
             View view;
             int inTargetTotal = 0, total = 0, target;
             String groupName;
-            for (int i = 0; i < mSFHelper.getLstSOSproj().size(); i++) {
-                SOSBO bo = mSFHelper.getLstSOSproj().get(i);
+            for (int i = 0; i < mSFHelper.getLstSOS_PRJSpecific().size(); i++) {
+                SOSBO bo = mSFHelper.getLstSOS_PRJSpecific().get(i);
 
                 if (bo.getInTarget() == 1) {
                     inTargetTotal += bo.getAvailability();
@@ -98,9 +98,9 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
                 target = bo.getGroupTarget();
 
                 // Current list has data as groupWise product. So to show view group wise, this loop is used
-                if (mSFHelper.getLstSOSproj().size() == (i + 1) ||
-                        (mSFHelper.getLstSOSproj().size() > i + 1 && bo.getGroupId()
-                                != mSFHelper.getLstSOSproj().get(i + 1).getGroupId())) {
+                if (mSFHelper.getLstSOS_PRJSpecific().size() == (i + 1) ||
+                        (mSFHelper.getLstSOS_PRJSpecific().size() > i + 1 && bo.getGroupId()
+                                != mSFHelper.getLstSOS_PRJSpecific().get(i + 1).getGroupId())) {
 
                     if (inTargetTotal > 0 || total > 0) {// if availability>0 for any one of the product in the group
 
@@ -187,7 +187,7 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                mSFHelper.saveSOSproj();
+                mSFHelper.saveSOS_PRJSpecific_Transaction();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ);
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -212,7 +212,7 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
                         getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();
 
-                mSFHelper.setLstSOSproj(null);
+                mSFHelper.setLstSOS_PRJSpecific(null);
                 startActivity(new Intent(SOSSummaryActivity_PRJSpecific.this, HomeScreenTwo.class));
                 finish();
 

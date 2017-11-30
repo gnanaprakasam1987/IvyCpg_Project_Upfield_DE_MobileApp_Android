@@ -110,6 +110,11 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
     }
 
+    /**
+     * Initialize views
+     *
+     * @param view Parent view
+     */
     private void initializeView(View view) {
 
         mDrawerLayout = (DrawerLayout) view.findViewById(
@@ -215,9 +220,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         float mtarget = 0;
         float mGap = 0;
         float mNamtot = 0;
-        ArrayList<SOSKUBO> soskuList = mSFHelper.getmSOSKUList();
+        ArrayList<SOSKUBO> soskuList = mSFHelper.getSOSKUList();
         if (soskuList != null) {
-            for (SOSKUBO temp : mSFHelper.getmSOSKUList()) {
+            for (SOSKUBO temp : mSFHelper.getSOSKUList()) {
                 if (temp.getIsOwn() == 1) {
                     if (!parentIds.contains(temp.getParentID())) {
                         mtotal = mtotal + temp.getParentTotal();
@@ -231,16 +236,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             }
         }
-       /* String strNamtot = mNamtot + "";
-        //tvTotalNorm.setText(strNamtot);
-        String strTotal = mtotal + "";
-        //tvTotal.setText(strTotal);
-        String strTarget = mtarget + "";
-        //tvTarget.setText(strTarget);
-        String strActual = mactual + "";
-        //tvTotalActual.setText(strActual);
-        String strGap = mGap + "";
-        //tvTotalGap.setText(strGap);*/
+
     }
 
     /**
@@ -272,6 +268,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         ImageView btnPhoto;
     }
 
+    /**
+     * Adapter for list view
+     */
     private class MyAdapter extends ArrayAdapter<SOSKUBO> {
         private final List<SOSKUBO> items;
 
@@ -515,7 +514,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                 Commons.print(mSFHelper.mSelectedActivityName
                         + "Camera Activity : Successfully Captured.");
                 if (mSFHelper.mSelectedBrandID != 0) {
-                    mSFHelper.onsaveImageName(
+                    mSFHelper.onSaveImageName(
                             mSFHelper.mSelectedBrandID,
                             mImageName, HomeScreenTwo.MENU_SOSKU, 0);
                 }
@@ -526,6 +525,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Two level filter
+     */
     private void productFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -570,6 +572,10 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     *    Five level filter
+     */
+
     private void FiveFilterFragment() {
         try {
             Collections.addAll(new Vector(), getResources().getStringArray(
@@ -605,7 +611,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
-        loadData(mParentIdList, mSelectedIdByLevelId);
+        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId);
     }
 
     @Override
@@ -716,7 +722,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             mSelectedFilterId = id;
             tvSelectedName.setText(mFilterText);
             ArrayList<SOSKUBO> items = mSFHelper
-                    .getmSOSKUList();
+                    .getSOSKUList();
 
             if (items == null) {
                 mBModel.showAlert(
@@ -741,8 +747,14 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
-    private void loadData(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
-        ArrayList<SOSKUBO> items = mSFHelper.getmSOSKUList();
+    /**
+     * Load list based on five level filter selection
+     *
+     * @param mParentIdList        Parent Id list
+     * @param mSelectedIdByLevelId Selected product Id by level id
+     */
+    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
+        ArrayList<SOSKUBO> items = mSFHelper.getSOSKUList();
         if (items == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -751,7 +763,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
 
         myList = new ArrayList<>();
-        for (LevelBO levelBO : parentidList) {
+        for (LevelBO levelBO : mParentIdList) {
             for (SOSKUBO temp : items) {
                 if (temp.getParentID() == levelBO.getProductID()) {
                     if (temp.getIsOwn() == 1)
@@ -766,6 +778,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mListView.setAdapter(mSchedule);
     }
 
+    /**
+     * Save record in transaction table
+     */
     private void saveSOSKU() {
         try {
             if (mSFHelper
@@ -780,6 +795,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
+    /**
+     * Saving record in background
+     */
     class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -849,6 +867,11 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
     }
 
+    /**
+     * Shows alert dialog to denote image availability
+     * @param imageNameStarts Image Name
+     * @param  mProductId     Product Id
+     */
     private void showFileDeleteAlert(final String mProductId,
                                      final String imageNameStarts) {
 
@@ -863,7 +886,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ArrayList<SOSKUBO> items = mSFHelper
-                                .getmSOSKUList();
+                                .getSOSKUList();
                         for (int i = 0; i < items.size(); i++) {
                             SOSKUBO sosku = items.get(i);
                             if (sosku.getProductID() == Integer.parseInt(mProductId)) {
@@ -938,9 +961,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mCategoryForDialog.clear();
 
         // All Brands in Total PopUp
-        if (mSFHelper.getmSOSKUList() != null) {
+        if (mSFHelper.getSOSKUList() != null) {
             for (SOSKUBO soskuBO : mSFHelper
-                    .getmSOSKUList()) {
+                    .getSOSKUList()) {
                 if (soskuBO.getParentID() == categoryId) {
                     mCategoryForDialog.add(soskuBO);
                 }
@@ -1168,21 +1191,10 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
-    private void eff(int val) {
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-            String s = mSelectedET.getText().toString();
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
-
-                mSelectedET.setText(String.valueOf(val));
-            } else {
-                String strVal = mSelectedET.getText()
-                        + String.valueOf(val);
-                mSelectedET.setText(strVal);
-            }
-        }
-    }
-
+    /**
+     * NumberPad click listener
+     */
     private class MyClickListener implements OnClickListener {
 
         @Override
@@ -1190,34 +1202,34 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             int i = v.getId();
             if (i == R.id.calczero) {
-                eff(0);
+                updateValue(0);
 
             } else if (i == R.id.calcone) {
-                eff(1);
+                updateValue(1);
 
             } else if (i == R.id.calctwo) {
-                eff(2);
+                updateValue(2);
 
             } else if (i == R.id.calcthree) {
-                eff(3);
+                updateValue(3);
 
             } else if (i == R.id.calcfour) {
-                eff(4);
+                updateValue(4);
 
             } else if (i == R.id.calcfive) {
-                eff(5);
+                updateValue(5);
 
             } else if (i == R.id.calcsix) {
-                eff(6);
+                updateValue(6);
 
             } else if (i == R.id.calcseven) {
-                eff(7);
+                updateValue(7);
 
             } else if (i == R.id.calceight) {
-                eff(8);
+                updateValue(8);
 
             } else if (i == R.id.calcnine) {
-                eff(9);
+                updateValue(9);
 
             } else if (i == R.id.calcdel) {
                 String s = mSelectedET.getText().toString();
@@ -1241,6 +1253,27 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             }
 
+        }
+    }
+
+
+    /**
+     * Update value in view
+     *
+     * @param val selected value
+     */
+    private void updateValue(int val) {
+        if (mSelectedET != null && mSelectedET.getText() != null) {
+            String s = mSelectedET.getText().toString();
+
+            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
+
+                mSelectedET.setText(String.valueOf(val));
+            } else {
+                String strVal = mSelectedET.getText()
+                        + String.valueOf(val);
+                mSelectedET.setText(strVal);
+            }
         }
     }
 

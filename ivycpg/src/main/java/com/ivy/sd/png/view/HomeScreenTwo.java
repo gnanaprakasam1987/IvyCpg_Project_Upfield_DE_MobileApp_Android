@@ -2942,8 +2942,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 //load transaction data
                 mSFHelper.loadSavedTracking(MENU_SOS);
 
-                if (mSFHelper.getmSOSList() != null
-                        && mSFHelper.getmSOSList().size() > 0) {
+                if (mSFHelper.getSOSList() != null
+                        && mSFHelper.getSOSList().size() > 0) {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3026,7 +3026,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 mSFHelper.loadSavedTracking(MENU_SOD);
 
-                if (mSFHelper.getmSODList() != null && mSFHelper.getmSODList().size() > 0) {
+                if (mSFHelper.getSODList() != null && mSFHelper.getSODList().size() > 0) {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3126,7 +3126,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 mSFHelper
                         .loadSavedTracking(MENU_SOSKU);
 
-                if (mSFHelper.getmSOSKUList() != null && mSFHelper.getmSOSKUList().size() > 0) {
+                if (mSFHelper.getSOSKUList() != null && mSFHelper.getSOSKUList().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),

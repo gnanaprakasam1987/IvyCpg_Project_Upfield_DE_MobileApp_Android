@@ -451,7 +451,7 @@ public class SalesFundamentalHelper {
                 SOSBO mSOS;
                 cursor = db.selectSQL(sBuffer.toString());
                 if (cursor != null) {
-                    setmSOSList(new ArrayList<SOSBO>());
+                    setSOSList(new ArrayList<SOSBO>());
                     while (cursor.moveToNext()) {
                         mSOS = new SOSBO();
                         mSOS.setParentID(cursor.getInt(0));
@@ -461,7 +461,7 @@ public class SalesFundamentalHelper {
                         mSOS.setNorm(cursor.getFloat(4));
                         mSOS.setMappingId(cursor.getInt(5));
                         mSOS.setLocations(cloneLocationList(getLocationList()));
-                        getmSOSList().add(mSOS);
+                        getSOSList().add(mSOS);
                     }
                     cursor.close();
                 }
@@ -470,7 +470,7 @@ public class SalesFundamentalHelper {
                 SODBO mSOD;
                 cursor = db.selectSQL(sBuffer.toString());
                 if (cursor != null) {
-                    setmSODList(new ArrayList<SODBO>());
+                    setSODList(new ArrayList<SODBO>());
                     while (cursor.moveToNext()) {
                         mSOD = new SODBO();
                         mSOD.setParentID(cursor.getInt(0));
@@ -480,7 +480,7 @@ public class SalesFundamentalHelper {
                         mSOD.setNorm(cursor.getFloat(4));
                         mSOD.setMappingId(cursor.getInt(5));
                         mSOD.setLocations(cloneLocationList(getLocationList()));
-                        getmSODList().add(mSOD);
+                        getSODList().add(mSOD);
                     }
                     cursor.close();
                 }
@@ -489,7 +489,7 @@ public class SalesFundamentalHelper {
                 SOSKUBO mSOSKU;
                 cursor = db.selectSQL(sBuffer.toString());
                 if (cursor != null) {
-                    setmSOSKUList(new ArrayList<SOSKUBO>());
+                    setSOSKUList(new ArrayList<SOSKUBO>());
                     while (cursor.moveToNext()) {
                         mSOSKU = new SOSKUBO();
                         mSOSKU.setParentID(cursor.getInt(0));
@@ -498,7 +498,7 @@ public class SalesFundamentalHelper {
                         mSOSKU.setIsOwn(cursor.getInt(3));
                         mSOSKU.setNorm(cursor.getFloat(4));
                         mSOSKU.setMappingId(cursor.getInt(5));
-                        getmSOSKUList().add(mSOSKU);
+                        getSOSKUList().add(mSOSKU);
                     }
                     cursor.close();
                 }
@@ -539,7 +539,7 @@ public class SalesFundamentalHelper {
                     while (cursor.moveToNext()) {
 
                         if (!lstCompetitiorPids.contains(cursor.getInt(1))) {
-                            for (SOSBO prodBO : getmSOSList()) {
+                            for (SOSBO prodBO : getSOSList()) {
 
                                 if (prodBO.getProductID() == cursor.getInt(0)) {
 
@@ -551,7 +551,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setNorm(cursor.getInt(4));
                                     comLevel.setLocations(cloneLocationList(getLocationList()));
                                     lstCompetitiorPids.add(cursor.getInt(1));
-                                    getmSOSList().add(comLevel);
+                                    getSOSList().add(comLevel);
                                     break;
                                 }
 
@@ -567,7 +567,7 @@ public class SalesFundamentalHelper {
                 if (cursor != null) {
 
                     while (cursor.moveToNext()) {
-                        for (SODBO prodBO : getmSODList()) {
+                        for (SODBO prodBO : getSODList()) {
 
                             if (prodBO.getProductID() == cursor.getInt(0)) {
 
@@ -578,7 +578,7 @@ public class SalesFundamentalHelper {
                                 comLevel.setIsOwn(cursor.getInt(3));
                                 comLevel.setNorm(cursor.getInt(4));
 
-                                getmSOSList().add(comLevel);
+                                getSOSList().add(comLevel);
                                 break;
                             }
 
@@ -591,7 +591,7 @@ public class SalesFundamentalHelper {
                 if (cursor != null) {
 
                     while (cursor.moveToNext()) {
-                        for (SOSKUBO prodBO : getmSOSKUList()) {
+                        for (SOSKUBO prodBO : getSOSKUList()) {
 
                             if (prodBO.getProductID() == cursor.getInt(0)) {
 
@@ -602,7 +602,7 @@ public class SalesFundamentalHelper {
                                 comLevel.setIsOwn(cursor.getInt(3));
                                 comLevel.setNorm(cursor.getInt(4));
 
-                                getmSOSList().add(comLevel);
+                                getSOSList().add(comLevel);
                                 break;
                             }
 
@@ -689,7 +689,7 @@ public class SalesFundamentalHelper {
                 String tempkey = "";
                 String mKey1 = "";
                 detailColumns += ",remarks";
-                for (SOSBO sosBo : getmSOSList()) {
+                for (SOSBO sosBo : getSOSList()) {
                     for (int i = 0; i < sosBo.getLocations().size(); i++) {
                         if ((!sosBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo.getLocations().get(i).getParentTotal().equals("0.0"))
@@ -807,7 +807,7 @@ public class SalesFundamentalHelper {
 
                 String mKeytemp = "";
                 String mKey;
-                for (SOSBO sosBo1 : getmSOSList()) {
+                for (SOSBO sosBo1 : getSOSList()) {
                     for (int i = 0; i < sosBo1.getLocations().size(); i++) {
                         if (!sosBo1.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo1.getLocations().get(i).getParentTotal().equals("0.0")) {
@@ -1105,7 +1105,7 @@ public class SalesFundamentalHelper {
                 count = 1;
                 String mKey = "", tempkey = "";
                 int locid;
-                for (SODBO sodBo : getmSODList()) {
+                for (SODBO sodBo : getSODList()) {
                     for (int i = 0; i < sodBo.getLocations().size(); i++) {
                         if (!sodBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sodBo.getLocations().get(i).getParentTotal().equals("0.0") || sodBo.getLocations().get(i).getAudit() != 2) {
@@ -1233,7 +1233,7 @@ public class SalesFundamentalHelper {
 
                 String Key;
                 String mKeytemp = "";
-                for (SODBO sodBo1 : getmSODList()) {
+                for (SODBO sodBo1 : getSODList()) {
                     for (int i = 0; i < sodBo1.getLocations().size(); i++) {
                         if (!sodBo1.getLocations().get(i).getParentTotal().equals("0")
                                 && !sodBo1.getLocations().get(i).getParentTotal().equals("0.0")) {
@@ -1525,7 +1525,7 @@ public class SalesFundamentalHelper {
 
                 }
             } else if (modName.equals("SOSKU")) {
-                for (SOSKUBO soskuBO : getmSOSKUList()) {
+                for (SOSKUBO soskuBO : getSOSKUList()) {
                     if (soskuBO.getParentTotal() > 0) {
                         detailValues = mBModel.QT(uid) + ","
                                 + soskuBO.getProductID() + ","
@@ -1692,7 +1692,7 @@ public class SalesFundamentalHelper {
 
                     while (detailCursor.moveToNext()) {
                         if (mModuleName.equalsIgnoreCase(moduleSOS)) {
-                            for (SOSBO msos : getmSOSList()) {
+                            for (SOSBO msos : getSOSList()) {
                                 if (msos.getProductID() == detailCursor
                                         .getInt(0)
                                         && msos.getIsOwn() == detailCursor
@@ -1721,7 +1721,7 @@ public class SalesFundamentalHelper {
                             }
 
                             String mKey = detailCursor.getInt(15) + "";
-                            for (SOSBO msos : getmSOSList()) {
+                            for (SOSBO msos : getSOSList()) {
                                 if (msos.getProductID() == detailCursor
                                         .getInt(0)
                                         && msos.getIsOwn() == detailCursor
@@ -1753,7 +1753,7 @@ public class SalesFundamentalHelper {
                         }
                         // Load SOD
                         else if (mModuleName.equalsIgnoreCase(moduleSOD)) {
-                            for (SODBO msod : getmSODList()) {
+                            for (SODBO msod : getSODList()) {
                                 if (msod.getProductID() == detailCursor
                                         .getInt(0)) {
                                     for (int i = 0; i < msod.getLocations().size(); i++) {
@@ -1775,7 +1775,7 @@ public class SalesFundamentalHelper {
                             }
 
                             String mKey = detailCursor.getInt(15) + "";
-                            for (SODBO msod : getmSODList()) {
+                            for (SODBO msod : getSODList()) {
                                 if (msod.getProductID() == detailCursor
                                         .getInt(0)) {
                                     for (int i = 0; i < msod.getLocations().size(); i++) {
@@ -1802,7 +1802,7 @@ public class SalesFundamentalHelper {
                                 }
                             }
                         } else if (mModuleName.equalsIgnoreCase(moduleSOSKU)) {
-                            for (SOSKUBO soskuBO : getmSOSKUList()) {
+                            for (SOSKUBO soskuBO : getSOSKUList()) {
                                 if (soskuBO.getProductID() == detailCursor
                                         .getInt(0)) {
                                     soskuBO.setNorm(detailCursor.getFloat(1));
@@ -1837,7 +1837,7 @@ public class SalesFundamentalHelper {
                         if (cursor != null) {
                             while (cursor.moveToNext()) {
 
-                                for (SOSBO msos : getmSOSList()) {
+                                for (SOSBO msos : getSOSList()) {
                                     if (msos.getProductID() == cursor
                                             .getInt(1)
                                             && msos.getIsOwn() == cursor
@@ -1899,40 +1899,40 @@ public class SalesFundamentalHelper {
      * @param mImageName Image Name
      */
 
-    public void onsaveImageName(int mBrandID, String mImageName, String moduleName, int locationIndex) {
+    public void onSaveImageName(int mBrandID, String mImageName, String moduleName, int locationIndex) {
         String imagePath = mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
                 + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + mImageName;
         try {
             if (moduleName.equals(HomeScreenTwo.MENU_SOS)) {
                 imagePath = "SOS/" + imagePath;
-                for (int i = 0; i < getmSOSList().size(); ++i) {
-                    SOSBO sos = getmSOSList().get(i);
+                for (int i = 0; i < getSOSList().size(); ++i) {
+                    SOSBO sos = getSOSList().get(i);
                     if (sos.getProductID() == mBrandID) {
-                        getmSOSList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
-                        getmSOSList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
+                        getSOSList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
+                        getSOSList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
                         break;
 
                     }
                 }
             } else if (moduleName.equals(HomeScreenTwo.MENU_SOD)) {
                 imagePath = "SOD/" + imagePath;
-                for (int i = 0; i < getmSODList().size(); ++i) {
-                    SODBO sod = getmSODList().get(i);
+                for (int i = 0; i < getSODList().size(); ++i) {
+                    SODBO sod = getSODList().get(i);
                     if (sod.getProductID() == mBrandID) {
-                        getmSODList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
-                        getmSODList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
+                        getSODList().get(i).getLocations().get(locationIndex).setImageName(imagePath);
+                        getSODList().get(i).getLocations().get(locationIndex).setImgName(mImageName);
                         break;
 
                     }
                 }
             } else if (moduleName.equals(HomeScreenTwo.MENU_SOSKU)) {
                 imagePath = "SOSKU/" + imagePath;
-                for (int i = 0; i < getmSOSKUList().size(); ++i) {
-                    SOSKUBO sosku = getmSOSKUList().get(i);
+                for (int i = 0; i < getSOSKUList().size(); ++i) {
+                    SOSKUBO sosku = getSOSKUList().get(i);
                     if (sosku.getProductID() == mBrandID) {
-                        getmSOSKUList().get(i).setImageName(imagePath);
-                        getmSOSKUList().get(i).setImgName(mImageName);
+                        getSOSKUList().get(i).setImageName(imagePath);
+                        getSOSKUList().get(i).setImgName(mImageName);
                         break;
                     }
                 }
@@ -1951,7 +1951,7 @@ public class SalesFundamentalHelper {
     public boolean hasData(String module) {
 
         if (module.equalsIgnoreCase(moduleSOS)) {
-            for (SOSBO levelbo : getmSOSList()) {
+            for (SOSBO levelbo : getSOSList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
                     if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
@@ -1959,7 +1959,7 @@ public class SalesFundamentalHelper {
                 }
             }
         } else if (module.equalsIgnoreCase(moduleSOD)) {
-            for (SODBO levelbo : getmSODList()) {
+            for (SODBO levelbo : getSODList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
                     if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
@@ -1967,7 +1967,7 @@ public class SalesFundamentalHelper {
                 }
             }
         } else if (module.equalsIgnoreCase(moduleSOSKU)) {
-            for (SOSKUBO soskuBO : getmSOSKUList()) {
+            for (SOSKUBO soskuBO : getSOSKUList()) {
                 if (soskuBO.getParentTotal() > 0) {
                     return true;
                 }
@@ -1976,31 +1976,31 @@ public class SalesFundamentalHelper {
         return false;
     }
 
-    public ArrayList<SODBO> getmSODList() {
+    public ArrayList<SODBO> getSODList() {
         if (mSODList == null)
             return new ArrayList<>();
         return mSODList;
     }
 
-    public void setmSODList(ArrayList<SODBO> mSODList) {
+    public void setSODList(ArrayList<SODBO> mSODList) {
         this.mSODList = mSODList;
     }
 
-    public ArrayList<SOSBO> getmSOSList() {
+    public ArrayList<SOSBO> getSOSList() {
         return mSOSList;
     }
 
-    public void setmSOSList(ArrayList<SOSBO> mSOSList) {
+    public void setSOSList(ArrayList<SOSBO> mSOSList) {
         this.mSOSList = mSOSList;
     }
 
-    public ArrayList<SOSKUBO> getmSOSKUList() {
+    public ArrayList<SOSKUBO> getSOSKUList() {
         if (mSOSKUList == null)
             return new ArrayList<>();
         return mSOSKUList;
     }
 
-    public void setmSOSKUList(ArrayList<SOSKUBO> mSOSKUList) {
+    public void setSOSKUList(ArrayList<SOSKUBO> mSOSKUList) {
         this.mSOSKUList = mSOSKUList;
     }
 
@@ -2077,19 +2077,24 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public ArrayList<SOSBO> getLstSOSproj() {
+    public ArrayList<SOSBO> getLstSOS_PRJSpecific() {
         return lstSOSproj;
     }
 
-    public void setLstSOSproj(ArrayList<SOSBO> lstSOSproj) {
+    public void setLstSOS_PRJSpecific(ArrayList<SOSBO> lstSOSproj) {
         this.lstSOSproj = lstSOSproj;
     }
 
-    public ArrayList<SOSBO> downloadSOSgroups() {
+    /**
+     * Download SOS record group wise
+     *
+     * @return List group wise
+     */
+    public ArrayList<SOSBO> downloadSOSGroups() {
 
         DBUtil db = null;
         try {
-            downloadSOSProjAttributes();
+            downloadSOS_PRJSpecific_Attributes();
 
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -2141,7 +2146,10 @@ public class SalesFundamentalHelper {
         return lstSOSproj;
     }
 
-    private void downloadSOSProjAttributes() {
+    /**
+     * Download attributes
+     */
+    private void downloadSOS_PRJSpecific_Attributes() {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -2171,7 +2179,10 @@ public class SalesFundamentalHelper {
         }
     }
 
-    public void saveSOSproj() {
+    /**
+     * Save SOS project specific transactions
+     */
+    public void saveSOS_PRJSpecific_Transaction() {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -2183,7 +2194,7 @@ public class SalesFundamentalHelper {
 
             String values;
             boolean isData = false;
-            for (SOSBO bo : getLstSOSproj()) {
+            for (SOSBO bo : getLstSOS_PRJSpecific()) {
                 if (bo.getAvailability() > 0) {
                     values = uid + "," + bo.getGroupId() + "," + bo.getProductID() + "," + bo.getAvailability() + "," + bo.getIsOwn() + "," + bo.getInTarget() + "," + bo.getGroupTarget();
                     db.insertSQL(DataMembers.tbl_SOSDetail_Proj, DataMembers.tbl_SOSDetail_Proj_cols, values);
@@ -2205,10 +2216,14 @@ public class SalesFundamentalHelper {
 
     }
 
+    /**
+     * Load data for SOS/SOD/SOSKU
+     * @param mMenuName Module Code
+     */
     public void loadData(String mMenuName) {
         try {
             int level;
-            level = getRetailerLevel(mMenuName);
+            level = getMappingLevels(mMenuName);
 
             if (mMenuName.equals("MENU_SOS") || mMenuName.equals("MENU_SOSKU") || mMenuName.equals("MENU_SOD")) {
                 switch (level) {
@@ -2244,7 +2259,13 @@ public class SalesFundamentalHelper {
         }
     }
 
-    private int getRetailerLevel(String mMenuCode) {
+    /**
+     * Get mapping levels(Retailer/account wise) for given menu code
+     *
+     * @param mMenuCode Module Code
+     * @return Mapping type
+     */
+    private int getMappingLevels(String mMenuCode) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
