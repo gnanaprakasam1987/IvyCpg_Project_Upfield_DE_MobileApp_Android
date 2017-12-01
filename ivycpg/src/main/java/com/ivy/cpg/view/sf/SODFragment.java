@@ -108,6 +108,7 @@ public class SODFragment extends IvyBaseFragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sos, container, false);
 
+
         initializeView(view);
 
         return view;
@@ -120,7 +121,11 @@ public class SODFragment extends IvyBaseFragment implements
      */
     private void initializeView(View view) {
 
-        if (getView() != null) {
+
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+
+        if (view != null) {
             mListView = (ListView) view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
@@ -210,8 +215,6 @@ public class SODFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),

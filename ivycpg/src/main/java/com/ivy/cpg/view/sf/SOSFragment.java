@@ -113,6 +113,9 @@ public class SOSFragment extends IvyBaseFragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sos, container, false);
 
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
         initializeViews(view);
 
@@ -135,9 +138,7 @@ public class SOSFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
-        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
+
 
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
@@ -182,7 +183,7 @@ public class SOSFragment extends IvyBaseFragment implements
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
 
-        if (getView() != null) {
+        if (view != null) {
             mListView = (ListView) view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
@@ -704,8 +705,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
     /**
      * Showing alert dialog to denote image availability..
-     * @param imageNameStarts
-     * @param imageSrc
+     * @param imageNameStarts Image Name
+     * @param imageSrc  Image Path
      */
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
                                               final String imageSrc) {

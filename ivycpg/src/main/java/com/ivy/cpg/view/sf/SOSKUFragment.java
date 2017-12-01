@@ -117,10 +117,14 @@ public class SOSKUFragment extends IvyBaseFragment implements
      */
     private void initializeView(View view) {
 
+
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
 
-        if (getView() != null) {
+        if (view != null) {
             mListView = (ListView) view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
@@ -193,8 +197,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
     public void onStart() {
         super.onStart();
 
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
 
 
         updateBrandText(BRAND, mSelectedFilterId);
