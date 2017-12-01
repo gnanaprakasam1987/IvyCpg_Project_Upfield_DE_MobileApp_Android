@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.price;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -23,9 +23,30 @@ public class PriceTrackingHelper {
     private final String mPriceChangeDetail = "PriceCheckDetail";
     public int mSelectedFilter = -1;
 
+    public boolean SHOW_PRICE_CA;
+    public boolean SHOW_PRICE_PC;
+    public boolean SHOW_PRICE_OU;
+    public boolean SHOW_PRICE_SRP;
+    public boolean SHOW_PRICE_CHANGED;
+    public boolean SHOW_PRICE_COMPLIANCE;
+    public boolean SHOW_PRICE_LASTVP;
+
+    // 0 - product ,1 - Competitor product , 2 - Product & Competitior product
+    public int LOAD_PRICE_COMPETITOR = 0;
+    public boolean IS_LOAD_PRICE_COMPETITOR = false;
+    public boolean SHOW_PREV_MRP_IN_PRICE = false;
+
+    private String CODE_PRICE_UOM = "PRICE_UOM";
+    private String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
+    private String CODE_PRICE_SRP = "PRICE_SRP";
+    private String CODE_PRICE_CHANGED = "PRICE_CHANGED";
+    private String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
+    private String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
+    private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
+
     private PriceTrackingHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static PriceTrackingHelper getInstance(Context context) {
@@ -70,7 +91,7 @@ public class PriceTrackingHelper {
             sb.append(mPriceChangeHeader);
             sb.append(" WHERE retailerid = ");
             sb.append(bmodel.getRetailerMasterBO().getRetailerID());
-            sb.append(" AND distributorid="+bmodel.getRetailerMasterBO().getDistributorId());
+            sb.append(" AND distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
 
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb.append(" AND date = ");
@@ -306,7 +327,7 @@ public class PriceTrackingHelper {
                         isInserted = true;
                     }
 
-                    if (!isInserted && !sku.getReasonID().equals("0")||sku.getPriceCompliance()==1) {
+                    if (!isInserted && !sku.getReasonID().equals("0") || sku.getPriceCompliance() == 1) {
                         values = QT(tid) + "," + sku.getProductID() + ","
                                 + sku.getPriceChanged() + ","
                                 + QT(sku.getPrice_pc())
@@ -327,7 +348,7 @@ public class PriceTrackingHelper {
             }
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ( ((double)sum / (double)100) * moduleWeightage);
+                double achieved = (((double) sum / (double) 100) * moduleWeightage);
                 db.updateSQL("Update PriceCheckHeader set Score = " + achieved + " where TID = " + QT(tid) + " and" +
                         " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(bmodel.getRetailerMasterBO().getRetailerID()));
@@ -340,6 +361,7 @@ public class PriceTrackingHelper {
         }
     }
 
+    //save price track to transaction table
     public void savePriceTransaction(ProductMasterBO sku) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -386,66 +408,66 @@ public class PriceTrackingHelper {
             db.insertSQL(mPriceChangeHeader, headerColumns, values);
 
             // Save Details
-                if (!sku.getPrice().equals("0")
-                        || sku.getPriceCompliance() == 1
-                        || !sku.getReasonID().equals("0")
-                        || !sku.getPrice_ca().equals("0")
-                        || !sku.getPrice_pc().equals("0")
-                        || !sku.getPrice_oo().equals("0")
-                        || !sku.getMrp_ca().equals("0")
-                        || !sku.getMrp_pc().equals("0")
-                        || !sku.getMrp_ou().equals("0")
-                        ) {
-                    boolean isInserted = false;
-                    if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_ca())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
-                                + "," + sku.getCaseUomId() + "," + sku.getMrp_ca() + "," + sku.getPriceMOP();
+            if (!sku.getPrice().equals("0")
+                    || sku.getPriceCompliance() == 1
+                    || !sku.getReasonID().equals("0")
+                    || !sku.getPrice_ca().equals("0")
+                    || !sku.getPrice_pc().equals("0")
+                    || !sku.getPrice_oo().equals("0")
+                    || !sku.getMrp_ca().equals("0")
+                    || !sku.getMrp_pc().equals("0")
+                    || !sku.getMrp_ou().equals("0")
+                    ) {
+                boolean isInserted = false;
+                if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
+                    values = QT(tid) + "," + sku.getProductID() + ","
+                            + sku.getPriceChanged() + ","
+                            + QT(sku.getPrice_ca())
+                            + "," + sku.getPriceCompliance() + ","
+                            + sku.getReasonID() + "," + sku.getOwn() + ","
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + "," + sku.getCaseUomId() + "," + sku.getMrp_ca() + "," + sku.getPriceMOP();
 
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-                    if ((!sku.getPrice_pc().equals("0") && !sku.getPrice_pc().equals("0.0")) || (!sku.getMrp_pc().equals("0") && !sku.getMrp_pc().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_pc())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
-                                + "," + sku.getPcUomid() + "," + sku.getMrp_pc() + "," + sku.getPriceMOP();
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-                    if ((!sku.getPrice_oo().equals("0") && !sku.getPrice_oo().equals("0.0")) || (!sku.getMrp_ou().equals("0") && !sku.getMrp_ou().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_oo())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
-                                + "," + sku.getOuUomid() + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-
-                    if (!isInserted && !sku.getReasonID().equals("0")||sku.getPriceCompliance()==1) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_pc())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
-                                + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                    }
+                    db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                    isInserted = true;
                 }
+                if ((!sku.getPrice_pc().equals("0") && !sku.getPrice_pc().equals("0.0")) || (!sku.getMrp_pc().equals("0") && !sku.getMrp_pc().equals("0.0"))) {
+                    values = QT(tid) + "," + sku.getProductID() + ","
+                            + sku.getPriceChanged() + ","
+                            + QT(sku.getPrice_pc())
+                            + "," + sku.getPriceCompliance() + ","
+                            + sku.getReasonID() + "," + sku.getOwn() + ","
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + "," + sku.getPcUomid() + "," + sku.getMrp_pc() + "," + sku.getPriceMOP();
+
+                    db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                    isInserted = true;
+                }
+                if ((!sku.getPrice_oo().equals("0") && !sku.getPrice_oo().equals("0.0")) || (!sku.getMrp_ou().equals("0") && !sku.getMrp_ou().equals("0.0"))) {
+                    values = QT(tid) + "," + sku.getProductID() + ","
+                            + sku.getPriceChanged() + ","
+                            + QT(sku.getPrice_oo())
+                            + "," + sku.getPriceCompliance() + ","
+                            + sku.getReasonID() + "," + sku.getOwn() + ","
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + "," + sku.getOuUomid() + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
+
+                    db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                    isInserted = true;
+                }
+
+                if (!isInserted && !sku.getReasonID().equals("0") || sku.getPriceCompliance() == 1) {
+                    values = QT(tid) + "," + sku.getProductID() + ","
+                            + sku.getPriceChanged() + ","
+                            + QT(sku.getPrice_pc())
+                            + "," + sku.getPriceCompliance() + ","
+                            + sku.getReasonID() + "," + sku.getOwn() + ","
+                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
+
+                    db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                }
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -453,6 +475,7 @@ public class PriceTrackingHelper {
         }
     }
 
+    //to check whether modification or data added
     public boolean hasDataTosave(List<ProductMasterBO> productList) {
 
         for (ProductMasterBO sku : productList) {
@@ -488,6 +511,8 @@ public class PriceTrackingHelper {
 
     }
 
+
+    //to update visited status for price check module icon
     public boolean isPriceCheckDone() {
         boolean flag = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -510,19 +535,149 @@ public class PriceTrackingHelper {
 
     }
 
-    public void clearPriceCheck(){
-        Vector<ProductMasterBO> priceCheckDetails=bmodel.productHelper.getTaggedProducts();
-        if(priceCheckDetails!=null){
-            for(ProductMasterBO productMasterBO:priceCheckDetails){
-                productMasterBO.setPrice_ca(0+"");
-                productMasterBO.setPrice_oo(0+"");
-                productMasterBO.setPrice_pc(0+"");
-                productMasterBO.setReasonID(0+"");
+    //to refresh price check object
+    public void clearPriceCheck() {
+        Vector<ProductMasterBO> priceCheckDetails = bmodel.productHelper.getTaggedProducts();
+        if (priceCheckDetails != null) {
+            for (ProductMasterBO productMasterBO : priceCheckDetails) {
+                productMasterBO.setPrice_ca(0 + "");
+                productMasterBO.setPrice_oo(0 + "");
+                productMasterBO.setPrice_pc(0 + "");
+                productMasterBO.setReasonID(0 + "");
                 productMasterBO.setPriceChanged(0);
                 productMasterBO.setPriceCompliance(0);
             }
         }
     }
 
+    public void loadPriceCheckConfiguration(int subChannelId) {
+        try {
 
+            SHOW_PRICE_PC = false;
+            SHOW_PRICE_OU = false;
+            SHOW_PRICE_CA = false;
+            SHOW_PRICE_SRP = false;
+            SHOW_PRICE_CHANGED = false;
+            SHOW_PRICE_COMPLIANCE = false;
+            LOAD_PRICE_COMPETITOR = 0;
+            IS_LOAD_PRICE_COMPETITOR = false;
+            SHOW_PREV_MRP_IN_PRICE = false;
+            SHOW_PRICE_LASTVP = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and subchannelid=" + subChannelId;
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            } else {
+                sql = "select RField from "
+                        + DataMembers.tbl_HhtModuleMaster
+                        + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and subchannelid=0";
+                c = db.selectSQL(sql);
+                if (c != null && c.getCount() != 0) {
+                    if (c.moveToNext()) {
+                        codeValue = c.getString(0);
+                    }
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "OP":
+                            this.SHOW_PRICE_PC = true;
+                            break;
+                        case "OO":
+                            this.SHOW_PRICE_OU = true;
+                            break;
+                        case "OC":
+                            this.SHOW_PRICE_CA = true;
+                            break;
+                    }
+
+                }
+            }
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_SRP) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_SRP = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_CHANGED) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_CHANGED = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPLIANCE) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_COMPLIANCE = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.LOAD_PRICE_COMPETITOR = c.getInt(0);
+                    this.IS_LOAD_PRICE_COMPETITOR = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PREV_MRP_IN_PRICE) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PREV_MRP_IN_PRICE = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_LASTVP) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_LASTVP = true;
+                }
+                c.close();
+            }
+
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 }

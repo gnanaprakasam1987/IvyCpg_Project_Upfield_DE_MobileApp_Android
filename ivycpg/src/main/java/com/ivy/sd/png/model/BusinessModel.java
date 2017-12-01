@@ -133,7 +133,6 @@ import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
-import com.ivy.sd.png.provider.PriceTrackingHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
@@ -302,7 +301,7 @@ public class BusinessModel extends Application {
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
     public OrderSplitHelper orderSplitHelper = null;
-    public PriceTrackingHelper mPriceTrackingHelper;
+  //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -476,7 +475,7 @@ public class BusinessModel extends Application {
         //promotionHelper = PromotionHelper.getInstance(this);
 
         orderSplitHelper = OrderSplitHelper.getInstance(this);
-        mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
+        //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
         groomingHelper = GroomingHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
