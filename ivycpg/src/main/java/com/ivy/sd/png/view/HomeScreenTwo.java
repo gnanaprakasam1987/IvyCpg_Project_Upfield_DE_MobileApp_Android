@@ -40,6 +40,8 @@ import android.widget.Toast;
 import com.ivy.cpg.asset.AssetTrackingActivity;
 import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.cpg.asset.PosmTrackingActivity;
+import com.ivy.cpg.price.PriceTrackActivity;
+import com.ivy.cpg.price.PriceTrackCompActivity;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.lib.existing.DBUtil;
@@ -55,6 +57,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PhotoCaptureHelper;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
@@ -1482,9 +1485,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         }
 
                         if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
-                            bmodel.mPriceTrackingHelper.loadPriceTransaction();
-                            if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !bmodel.mPriceTrackingHelper.isPriceCheckDone()) {
-                                bmodel.mPriceTrackingHelper.updateLastVisitPriceAndMRP();
+                            PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
+                            priceTrackingHelper.loadPriceTransaction();
+                            if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                                priceTrackingHelper.updateLastVisitPriceAndMRP();
                             }
                         }
                     } else if (bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
@@ -2559,7 +2563,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
-                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
                 assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
 
@@ -2744,6 +2748,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
+                PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
 
                 // To set the screen name, we are taking the menu name storing in global obj.
                 bmodel.mSelectedActivityName = menu.getMenuName();
@@ -2761,17 +2766,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper.downloadTaggedProducts("PC");
 
                 // Load Price related configurations.
-                bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
+                priceTrackingHelper.loadPriceCheckConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_COMPETITOR) {
+                if (priceTrackingHelper.IS_LOAD_PRICE_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
                     bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
                 }
-                bmodel.mPriceTrackingHelper.clearPriceCheck();
-                bmodel.mPriceTrackingHelper.loadPriceTransaction();
 
-                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !bmodel.mPriceTrackingHelper.isPriceCheckDone()) {
-                    bmodel.mPriceTrackingHelper.updateLastVisitPriceAndMRP();
+                priceTrackingHelper.clearPriceCheck();
+                priceTrackingHelper.loadPriceTransaction();
+
+                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                    priceTrackingHelper.updateLastVisitPriceAndMRP();
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_PRICE), 0);
@@ -2800,7 +2806,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-
+                PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
                 // To set the screen name, we are taking the menu name storing in global obj.
                 bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -2817,17 +2823,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper.downloadTaggedProducts("PC");
 
                 // Load Price related configurations.
-                bmodel.configurationMasterHelper.loadPriceUOMConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
+                priceTrackingHelper.loadPriceCheckConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
                 bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
 
-                bmodel.mPriceTrackingHelper.clearPriceCheck();
-                bmodel.mPriceTrackingHelper.loadPriceTransaction();
+                priceTrackingHelper.clearPriceCheck();
+                priceTrackingHelper.loadPriceTransaction();
                 bmodel.competitorTrackingHelper.downloadPriceCompanyMaster(MENU_PRICE_COMP);
 
-                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !bmodel.mPriceTrackingHelper.isPriceCheckDone()) {
-                    bmodel.mPriceTrackingHelper.updateLastVisitPriceAndMRP();
+                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                    priceTrackingHelper.updateLastVisitPriceAndMRP();
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_PRICE_COMP), 0);
@@ -3292,7 +3298,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bnd.putString("screentitle", menu.getMenuName());
                     bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
                     bnd.putBoolean("isFromHomeScreenTwo", true);
-                    bnd.putString("menuCode",menu.getConfigCode());
+                    bnd.putString("menuCode", menu.getConfigCode());
                     i.putExtras(bnd);
 //                    i.putExtra("screentitle", menu.getMenuName());
 //                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
@@ -3331,7 +3337,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 i.putExtra("screentitle", menu.getMenuName());
                 i.putExtra("isFromHomeScreenTwo", true);
-                i.putExtra("menuCode",menu.getConfigCode());
+                i.putExtra("menuCode", menu.getConfigCode());
                 i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3395,7 +3401,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     FitScoreDashboardActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.putExtra("screentitle", menu.getMenuName());
-            i.putExtra("menuCode",menu.getConfigCode());
+            i.putExtra("menuCode", menu.getConfigCode());
             startActivity(i);
             finish();
         } else {
@@ -3982,7 +3988,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
             bmodel.configurationMasterHelper.IS_GST = flag;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG= flag;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = flag;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
 //            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;
         } else {

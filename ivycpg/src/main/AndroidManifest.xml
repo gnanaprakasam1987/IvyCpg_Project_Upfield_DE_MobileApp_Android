@@ -549,10 +549,10 @@
             android:name="com.ivy.sd.png.view.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PriceTrackActivity"
+            android:name="com.ivy.cpg.price.PriceTrackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PriceTrackCompActivity"
+            android:name="com.ivy.cpg.price.PriceTrackCompActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"

@@ -27,6 +27,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import java.util.Vector;
  */
 public class CurrentStockBatchViewFragment extends IvyBaseFragment implements BrandDialogInterface {
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
     // Drawer Implimentation
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -67,8 +69,10 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 		 * bmodel.mPriceChangeCheckHelper.mSelectedParentFilter = -1; }
 		 */
 
-        if (bmodel.mPriceTrackingHelper.mSelectedFilter == 0)
-            bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+
+        if (priceTrackingHelper.mSelectedFilter == 0)
+            priceTrackingHelper.mSelectedFilter = -1;
 
     }
 
