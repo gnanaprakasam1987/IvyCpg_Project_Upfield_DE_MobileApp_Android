@@ -63,6 +63,8 @@ import com.ivy.countersales.provider.CS_StockApplyHelper;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
+import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
+import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.lib.base64.Base64;
@@ -84,7 +86,6 @@ import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.bo.OrderHeader;
-import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -143,10 +144,8 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SODAssetHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
-import com.ivy.sd.png.provider.ShelfShareHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -183,7 +182,6 @@ import com.ivy.sd.png.view.LoginScreen;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
-import com.ivy.sd.png.view.PhotoCaptureActivity;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.SalesReturnSummery;
 import com.ivy.sd.png.view.ScreenActivationActivity;
@@ -255,8 +253,6 @@ public class BusinessModel extends Application {
     public ArrayList<RetailerMasterBO> visitretailerMaster;
     private Vector<BankMasterBO> bankMaster;
     private Vector<BranchMasterBO> bankBranch;
-    // Shelf Share Helper to maintain shelf detail
-    public ShelfShareHelper mShelfShareHelper;
     //public String mModuleName[];
     public HashMap<String, String> mModuleCompletionResult;
 
@@ -267,7 +263,6 @@ public class BusinessModel extends Application {
     public String mSelectedActivityConfigCode = new String();
     // To retain the Selected filter across the module
     public int mSFSelectedFilter = -1;
-    public int mImageCount = 1;
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
@@ -306,7 +301,6 @@ public class BusinessModel extends Application {
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
-    public SODAssetHelper sodAssetHelper;
     public OrderSplitHelper orderSplitHelper = null;
     public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
@@ -480,7 +474,6 @@ public class BusinessModel extends Application {
 
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);
-        sodAssetHelper = SODAssetHelper.getInstance(this);
 
         orderSplitHelper = OrderSplitHelper.getInstance(this);
         mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
@@ -493,7 +486,6 @@ public class BusinessModel extends Application {
         mSurveyHelperNew = SurveyHelperNew.getInstance(this);
 
         // Shelf Share Helper
-        mShelfShareHelper = ShelfShareHelper.getInstance();
         mRetailerHelper = RetailerHelper.getInstance(this);
         orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);

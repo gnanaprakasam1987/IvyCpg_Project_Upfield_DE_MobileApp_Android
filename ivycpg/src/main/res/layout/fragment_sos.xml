@@ -51,10 +51,11 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/target_top_margin"
                         android:layout_marginLeft="@dimen/target_top_margin"
                         android:layout_weight="3"
                         android:tag="level_name"
-                        android:gravity="center|left"
+                        android:gravity="center|start"
                         android:text="@string/brand"
                         android:textStyle="bold" />
 
@@ -66,7 +67,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.8"
                         android:gravity="center"
-                        android:tag="item_htotal"
+                        android:tag="item_total"
                         android:text="@string/total"
                         android:textStyle="bold" />
 

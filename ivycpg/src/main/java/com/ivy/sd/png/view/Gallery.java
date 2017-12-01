@@ -31,15 +31,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
+import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
+import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
-import com.ivy.sd.png.bo.PhotoCaptureProductBO;
-import com.ivy.sd.png.bo.PhotoTypeMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
