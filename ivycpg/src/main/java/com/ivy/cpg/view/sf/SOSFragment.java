@@ -1272,6 +1272,15 @@ public class SOSFragment extends IvyBaseFragment implements
                             holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
                                     .convertToInt(reString.getReasonID()));
 
+                            if (reString.getReasonID().equals("-1")) {
+                                holder.edt_other_remarks.setVisibility(View.VISIBLE);
+                                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
+                            } else {
+                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
+                                holder.edt_other_remarks.setVisibility(View.GONE);
+
+                            }
+
                         }
 
                         public void onNothingSelected(AdapterView<?> parent) {
