@@ -1153,23 +1153,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                 });
 
-                holder.spnReason.setAdapter(spinnerAdapter);
-                holder.spnReason
-                        .setOnItemSelectedListener(new OnItemSelectedListener() {
-                            public void onItemSelected(AdapterView<?> parent,
-                                                       View view, int position, long id) {
 
-                                ReasonMaster reString = (ReasonMaster) holder.spnReason
-                                        .getSelectedItem();
-
-                                holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
-                                        .convertToInt(reString.getReasonID()));
-
-                            }
-
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
-                        });
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override
@@ -1275,6 +1259,24 @@ public class SOSFragment extends IvyBaseFragment implements
                 holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
             else
                 holder.tvGap.setTextColor(Color.BLACK);
+
+            holder.spnReason.setAdapter(spinnerAdapter);
+            holder.spnReason
+                    .setOnItemSelectedListener(new OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> parent,
+                                                   View view, int position, long id) {
+
+                            ReasonMaster reString = (ReasonMaster) holder.spnReason
+                                    .getSelectedItem();
+
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setReasonId(SDUtil
+                                    .convertToInt(reString.getReasonID()));
+
+                        }
+
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
 
             if (!holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks().equals("")) {
                 holder.spnReason.setSelection(getReasonIndex("-1"));
