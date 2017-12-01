@@ -238,7 +238,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
 
             if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
                 return 1;
-            }else{
+            } else {
                 return 3;
             }
         }

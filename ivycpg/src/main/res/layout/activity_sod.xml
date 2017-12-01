@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/sod_fragment"
-        android:name="com.ivyretail.views.SODFragment"
+        android:name="com.ivy.cpg.view.sf.SODFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

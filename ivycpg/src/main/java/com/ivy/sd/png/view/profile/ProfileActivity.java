@@ -81,6 +81,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
+import com.ivy.sd.png.view.AssetHistoryFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MSLUnsoldFragment;
@@ -91,7 +92,6 @@ import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.UserDialogue;
-import com.ivy.sd.png.view.AssetHistoryFragment;
 
 import org.json.JSONObject;
 

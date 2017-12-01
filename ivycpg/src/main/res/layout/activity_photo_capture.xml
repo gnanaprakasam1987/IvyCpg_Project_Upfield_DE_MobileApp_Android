@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.ivy.sd.png.view.PhotoCaptureActivity">
+    tools:context="com.ivy.cpg.view.photocapture.PhotoCaptureActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.PhotoCaptureProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
