@@ -318,6 +318,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
         if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
             try {
+                bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
                 if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("order_history").length() > 0)) {
                     order_history_title = bmodel.labelsMasterHelper.applyLabels("order_history");
@@ -542,7 +543,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         retailerObj = bmodel.getRetailerMasterBO();
         new LoadProfileConfigs().execute();
-        Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+        /*Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         for (ConfigureBO conBo : profileConfig) {
             if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
                 isMapview = true;
@@ -560,7 +561,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             View mapFrag = findViewById(R.id.profile_map);
             mapFrag.setVisibility(View.GONE);
             retailerCodeTxt.setVisibility(View.GONE);
-        }
+        }*/
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 

@@ -449,6 +449,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_FILTER_TOP = "FUN61";
     public boolean IS_TOP_ORDER_FILTER;
 
+    private static final String CODE_SHOW_ONLY_SERVER_TASK = "FUN63";
+    public boolean IS_SHOW_ONLY_SERVER_TASK;
     /**
      * RoadActivity config *
      */
@@ -1432,14 +1434,7 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             db.closeDB();
-
             loadOrderAndStockConfiguration(0);
-            loadOrderSummaryDetailConfig();
-            loadPriceUOMConfiguration(0);
-            loadDeliveryUOMConfiguration();
-            loadProfileHistoryConfiguration();
-            if (IS_CNT01)
-                bmodel.mAttendanceHelper.loadChildUserList();
             getDateFormat();
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
@@ -2155,7 +2150,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
-
+        this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
     }
 
     private void getTaxModel(String hhtCode) {
@@ -3655,7 +3650,7 @@ public class ConfigurationMasterHelper {
 
     }
 
-    private void loadOrderSummaryDetailConfig() {
+    public void loadOrderSummaryDetailConfig() {
         SHOW_ORD_SUMMARY_PRICEOFF = false;
         SHOW_ORD_SUMMARY_DISC1 = false;
         SHOW_ORD_SUMMARY_DISC2 = false;

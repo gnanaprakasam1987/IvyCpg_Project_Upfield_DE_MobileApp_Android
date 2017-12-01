@@ -394,7 +394,7 @@ public class NonFieldFragmentTwo extends IvyBaseFragment {
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.getChildUserList();
+        childList = bmodel.mAttendanceHelper.loadChildUserList();
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();

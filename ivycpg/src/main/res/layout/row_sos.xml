@@ -152,7 +152,7 @@
             android:cursorVisible="false"
             android:textColor="@color/Black"
             android:textSize="@dimen/list_item_primary_text_size"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:text=""
             android:hint="@string/remark_hint"
             android:layout_alignTop="@+id/btn_photo"

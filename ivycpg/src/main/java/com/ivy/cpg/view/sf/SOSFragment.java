@@ -340,6 +340,11 @@ public class SOSFragment extends IvyBaseFragment implements
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
+        ReasonMaster reason = new ReasonMaster();
+        reason.setReasonID("-1");
+        reason.setReasonDesc(getResources().getString(R.string.other_reason));
+        reason.setReasonCategory("SOS");
+
         for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
             if ("SOS".equalsIgnoreCase(temp.getReasonCategory())
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
@@ -352,6 +357,7 @@ public class SOSFragment extends IvyBaseFragment implements
             reasonMasterBo.setReasonID("0");
             spinnerAdapter.add(reasonMasterBo);
         }
+        spinnerAdapter.add(reason);
     }
 
     @Override
@@ -963,6 +969,7 @@ public class SOSFragment extends IvyBaseFragment implements
         Spinner spnReason;
         ImageButton audit;
         ImageView btnPhoto;
+        EditText edt_other_remarks;
     }
 
     /**
@@ -1027,7 +1034,25 @@ public class SOSFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_audit);
 
                 holder.etTotal.setTag(holder);
+                holder.edt_other_remarks = (EditText) row.findViewById(R.id.edt_other_remarks);
 
+
+                holder.edt_other_remarks.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks(s.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
 
                 holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -1251,9 +1276,22 @@ public class SOSFragment extends IvyBaseFragment implements
             else
                 holder.tvGap.setTextColor(Color.BLACK);
 
-            holder.spnReason.setSelection(getReasonIndex(holder.mSOS.getLocations().get(mSelectedLocationIndex)
-                    .getReasonId() + ""));
+            if (!holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks().equals("")) {
+                holder.spnReason.setSelection(getReasonIndex("-1"));
+            } else {
+                holder.spnReason.setSelection(getReasonIndex(holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                        .getReasonId() + ""));
+            }
             holder.spnReason.setSelected(true);
+
+            if (((ReasonMaster) holder.spnReason.getSelectedItem()).getReasonID().equals("-1")) {
+                holder.edt_other_remarks.setVisibility(View.VISIBLE);
+                holder.edt_other_remarks.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getRemarks());
+
+            } else {
+                holder.mSOS.getLocations().get(mSelectedLocationIndex).setRemarks("");
+                holder.edt_other_remarks.setVisibility(View.GONE);
+            }
 
             if ((holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName() != null)
                     && (!"".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))
