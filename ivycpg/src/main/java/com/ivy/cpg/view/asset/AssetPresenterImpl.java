@@ -1,21 +1,16 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.io.File;
 import java.util.ArrayList;

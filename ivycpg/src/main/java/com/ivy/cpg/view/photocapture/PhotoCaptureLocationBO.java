@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.photocapture;
 
 /**
  * Created by Rajkumar.S on 27/11/17.

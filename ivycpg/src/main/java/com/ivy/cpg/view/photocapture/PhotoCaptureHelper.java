@@ -1,15 +1,13 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.photocapture;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
-import com.ivy.sd.png.bo.PhotoCaptureProductBO;
-import com.ivy.sd.png.bo.PhotoTypeMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;

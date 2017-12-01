@@ -1,4 +1,4 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenTwo;

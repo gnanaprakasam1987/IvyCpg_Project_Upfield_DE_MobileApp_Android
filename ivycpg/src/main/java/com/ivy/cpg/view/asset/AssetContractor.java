@@ -1,6 +1,5 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.ivy.sd.png.bo.LevelBO;

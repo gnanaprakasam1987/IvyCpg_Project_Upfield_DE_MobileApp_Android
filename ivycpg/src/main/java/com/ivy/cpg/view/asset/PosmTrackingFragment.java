@@ -1,4 +1,4 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
 import android.Manifest;
 import android.app.AlertDialog;

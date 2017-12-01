@@ -51,7 +51,7 @@
     <screenName name="com.ivy.sd.png.view.OrderNewOutlet">OrderNewOutlet</screenName>
     <screenName name="com.ivy.sd.png.view.OpportunityNewOutlet">Opportunity</screenName>
     <screenName name="com.ivy.sd.png.view.Task">Task</screenName>
-    <screenName name="com.ivy.sd.png.view.PhotoCaptureActivity">Photo Capture</screenName>
+    <screenName name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity">Photo Capture</screenName>
     <screenName name="com.ivy.sd.png.view.CollectionScreen">Collection</screenName>
     <screenName name="com.ivy.sd.png.view.SalesReturnWithActionBar">Sales Return</screenName>
     <screenName name="com.ivy.sd.png.view.PlanogramActivity">Planogram</screenName>

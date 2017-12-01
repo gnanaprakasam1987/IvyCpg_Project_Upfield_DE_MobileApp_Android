@@ -1,11 +1,11 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -24,44 +24,74 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
-        OnEditorActionListener, BrandDialogInterface,DataPickerDialogFragment.UpdateDateInterface {
-    BusinessModel mBModel;
+public class
+AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
+        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
+
+    private BusinessModel mBModel;
+    private NFCManager nfcManager;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_posm_tracking);
+        setContentView(R.layout.activity_asset_tracking);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        setSupportActionBar(toolbar);
+
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
-
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if(getSupportActionBar()!=null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
         if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
-            NFCManager nfcManager = new NFCManager(PosmTrackingActivity.this);
+            nfcManager = new NFCManager(AssetTrackingActivity.this);
             nfcManager.onActivityCreate();
             nfcManager.setOnTagReadListener(new NFCManager.TagReadListener() {
                 @Override
                 public void onTagRead(String tagRead) {
                     if (!tagRead.equals("")) {
                         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                                .findFragmentById(R.id.posm_tracking);
+                        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                                .findFragmentById(R.id.asset_tracking_fragment);
                         asf.updateListByNFCTag(tagRead);
                     }
                 }
             });
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBModel.useNetworkProvidedValues();
+
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+            nfcManager.onActivityResume();
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && nfcManager != null) {
+            nfcManager.onActivityPause();
+        }
+
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
+            nfcManager.onActivityNewIntent(intent);
+        }
     }
 
     @Override
@@ -83,27 +113,20 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
                     unbindDrawables(((ViewGroup) view).getChildAt(i));
                 }
                 try {
-                    if (!(view instanceof AdapterView<?>))
-                        ((ViewGroup) view).removeAllViews();
+                    ((ViewGroup) view).removeAllViews();
                 } catch (Exception e) {
-                    Commons.printException(e);
+                    Commons.printException("" + e);
                 }
             }
         }
     }
 
-    public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
-        asf.numberPressed(vw);
-    }
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateBrandText(mFilterText, id);
     }
 
@@ -114,8 +137,8 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateCancel();
     }
 
@@ -143,24 +166,25 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mParentIdList);
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
     @Override
     public void updateDate(Date date, String tag) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment mPOSMFragment = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
-        mPOSMFragment.updateDate(date,tag);
+        AssetTrackingFragment fragment = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
+        fragment.updateDate(date,tag);
+
     }
 }

@@ -56,7 +56,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.ivy.cpg.asset.AssetTrackingHelper;
+import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;

@@ -613,7 +613,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
-        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId);
+        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId, mFilterText);
     }
 
     @Override
@@ -755,7 +755,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
      * @param mParentIdList        Parent Id list
      * @param mSelectedIdByLevelId Selected product Id by level id
      */
-    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId) {
+    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
         ArrayList<SOSKUBO> items = mSFHelper.getSOSKUList();
         if (items == null) {
             mBModel.showAlert(
@@ -765,13 +765,17 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
 
         myList = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (SOSKUBO temp : items) {
-                if (temp.getParentID() == levelBO.getProductID()) {
-                    if (temp.getIsOwn() == 1)
-                        myList.add(temp);
+        if (mFilterText.length() > 0) {
+            for (LevelBO levelBO : mParentIdList) {
+                for (SOSKUBO temp : items) {
+                    if (temp.getParentID() == levelBO.getProductID()) {
+                        if (temp.getIsOwn() == 1)
+                            myList.add(temp);
+                    }
                 }
             }
+        } else {
+            myList.addAll(items);
         }
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;

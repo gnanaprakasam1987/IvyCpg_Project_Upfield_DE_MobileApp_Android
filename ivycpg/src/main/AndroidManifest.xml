@@ -267,7 +267,7 @@
             android:name="com.ivy.sd.png.view.PlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.PosmTrackingActivity"
+            android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.survey.SurveyActivityNew"
@@ -384,7 +384,7 @@
             android:name="com.ivy.sd.png.view.Task"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PhotoCaptureActivity"
+            android:name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SyncRetailerSelectActivity"
@@ -512,7 +512,7 @@
             android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.AssetTrackingActivity"
+            android:name="com.ivy.cpg.view.asset.AssetTrackingActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -523,7 +523,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.cpg.asset.AssetPosmRemoveActivity"
+            android:name="com.ivy.cpg.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
@@ -765,7 +765,7 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.AssetMovementActivity"
+            android:name="com.ivy.cpg.view.asset.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

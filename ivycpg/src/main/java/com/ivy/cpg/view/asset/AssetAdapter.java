@@ -1,4 +1,4 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
 import android.content.Context;
 import android.content.Intent;

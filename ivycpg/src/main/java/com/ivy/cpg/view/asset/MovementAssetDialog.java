@@ -1,4 +1,4 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,12 +20,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

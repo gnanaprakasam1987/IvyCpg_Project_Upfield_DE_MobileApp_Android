@@ -1,4 +1,4 @@
-package com.ivy.cpg.asset;
+package com.ivy.cpg.view.asset;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.MyDialogCloseListener;
