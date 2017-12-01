@@ -37,11 +37,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.asset.AssetTrackingActivity;
-import com.ivy.cpg.asset.AssetTrackingHelper;
-import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivy.cpg.price.PriceTrackActivity;
 import com.ivy.cpg.price.PriceTrackCompActivity;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
@@ -69,9 +67,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PhotoCaptureHelper;
-import com.ivy.cpg.price.PriceTrackingHelper;
-import com.ivy.sd.png.provider.SalesFundamentalHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -2650,7 +2645,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
-
         } else if (menu.getConfigCode().equals(MENU_SKUWISERTGT)
                 && hasLink == 1) {
 
