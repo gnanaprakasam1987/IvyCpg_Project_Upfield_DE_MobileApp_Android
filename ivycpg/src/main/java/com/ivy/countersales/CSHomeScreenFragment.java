@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -41,7 +43,6 @@ import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CounterPlanogramActivity;
-import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
@@ -604,18 +605,18 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
+                DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
-                mPlanoGramMasterHelper.downloadDigitalContent("COUNTER");
-                if (mPlanoGramMasterHelper.getDigitalMaster() != null
-                        && mPlanoGramMasterHelper.getDigitalMaster()
+                mDigitalContentHelper.downloadDigitalContent("COUNTER");
+                if (mDigitalContentHelper.getDigitalMaster() != null
+                        && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
                     int counterId = bmodel.getCounterId();
                     Intent i = new Intent(getActivity(),
-                            DigitalContentDisplay.class);
+                            DigitalContentActivity.class);
                     i.putExtra("FromInit", "DigiCS");
                     i.putExtra("counterId", counterId);
                     i.putExtra("screentitle", menu.getMenuName());

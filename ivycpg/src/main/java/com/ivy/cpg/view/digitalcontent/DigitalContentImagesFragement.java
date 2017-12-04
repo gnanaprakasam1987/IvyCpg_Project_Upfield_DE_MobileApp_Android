@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 
 import android.content.ActivityNotFoundException;
@@ -42,6 +42,7 @@ public class DigitalContentImagesFragement extends IvyBaseFragment {
     private ArrayList<DigitalContentBO> mylist;
     RecyclerViewAdapter recycleradapter;
     private int screenwidth = 0, screenheight = 0;
+    private DigitalContentHelper mDigitalContentHelper;
 
 
     @Override
@@ -64,11 +65,12 @@ public class DigitalContentImagesFragement extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle(bmodel.mSelectedActivityName);
+        setScreenTitle(mDigitalContentHelper.mSelectedActivityName);
 
         recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
 
@@ -98,7 +100,7 @@ public class DigitalContentImagesFragement extends IvyBaseFragment {
         super.onStart();
         ArrayList<DigitalContentBO> imgsList = new ArrayList<>();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
-        mylist = bmodel.planogramMasterHelper.getFilteredDigitalMaster();
+        mylist = mDigitalContentHelper.getFilteredDigitalMaster();
         if (mylist.size() > 0) {
 
             for (DigitalContentBO bo : mylist) {

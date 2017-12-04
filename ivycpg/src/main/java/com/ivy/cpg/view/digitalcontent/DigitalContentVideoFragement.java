@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 
 import android.content.ActivityNotFoundException;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class DigitalContentAudioFragement extends IvyBaseFragment {
+public class DigitalContentVideoFragement extends IvyBaseFragment {
 
 
     BusinessModel bmodel;
@@ -40,7 +40,7 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
     private ArrayList<DigitalContentBO> mylist;
     RecyclerViewAdapter recycleradapter;
     private int screenwidth = 0, screenheight = 0;
-
+    private DigitalContentHelper mDigitalContentHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,12 +62,12 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle(bmodel.mSelectedActivityName);
-
+        setScreenTitle(mDigitalContentHelper.mSelectedActivityName);
 
         recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
 
@@ -94,17 +94,16 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.planogramMasterHelper.getFilteredDigitalMaster();
+        mylist = mDigitalContentHelper.getFilteredDigitalMaster();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mylist.size() > 0) {
-            ArrayList<DigitalContentBO> audioList = new ArrayList<>();
+            ArrayList<DigitalContentBO> videoList = new ArrayList<>();
             for (DigitalContentBO bo : mylist) {
-                if (bo.getImgFlag() == 2)
-                    audioList.add(bo);
+                if (bo.getImgFlag() == 3)
+                    videoList.add(bo);
             }
-            if (audioList.size() > 0) {
-                Collections.sort(audioList, DigitalContentBO.dateCompartor);
-
+            if (videoList.size() > 0) {
+                Collections.sort(videoList, DigitalContentBO.dateCompartor);
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
                 String currentday = today.split("/")[2];
                 String current_month_year = today.split(currentday)[0];
@@ -116,8 +115,8 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                 month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("OLDER", new ArrayList<DigitalContentBO>());
                 ArrayList<DigitalContentBO> temp;
-                for (int i = 0; i < audioList.size(); i++) {
-                    if (audioList.get(i).getImageDate().startsWith(current_month_year)) {
+                for (int i = 0; i < videoList.size(); i++) {
+                    if (videoList.get(i).getImageDate().startsWith(current_month_year)) {
                         temp = (month_wise_group.get("THIS MONTH"));
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
@@ -126,9 +125,9 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                             temp.add(digital);
                         }
 
-                        temp.add(audioList.get(i));
+                        temp.add(videoList.get(i));
                         month_wise_group.put("THIS MONTH", temp);
-                    } else if (audioList.get(i).getImageDate().startsWith(previous_month_year)) {
+                    } else if (videoList.get(i).getImageDate().startsWith(previous_month_year)) {
                         temp = (month_wise_group.get("PREVIOUS MONTH"));
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
@@ -136,7 +135,7 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                             digital.setHeaderTitle("PREVIOUS MONTH");
                             temp.add(digital);
                         }
-                        temp.add(audioList.get(i));
+                        temp.add(videoList.get(i));
                         month_wise_group.put("PREVIOUS MONTH", temp);
                     } else {
                         temp = (month_wise_group.get("OLDER"));
@@ -146,31 +145,24 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                             digital.setHeaderTitle("OLDER");
                             temp.add(digital);
                         }
-                        temp.add(audioList.get(i));
+                        temp.add(videoList.get(i));
                         month_wise_group.put("OLDER", temp);
                     }
                 }
-                audioList.clear();
+
+                videoList.clear();
                 if (month_wise_group.get("THIS MONTH") != null && month_wise_group.get("THIS MONTH").size() != 0) {
-                    audioList.addAll(month_wise_group.get("THIS MONTH"));
+                    videoList.addAll(month_wise_group.get("THIS MONTH"));
                 }
                 if (month_wise_group.get("PREVIOUS MONTH") != null && month_wise_group.get("PREVIOUS MONTH").size() != 0) {
-                    audioList.addAll(month_wise_group.get("PREVIOUS MONTH"));
+                    videoList.addAll(month_wise_group.get("PREVIOUS MONTH"));
                 }
                 if (month_wise_group.get("OLDER") != null && month_wise_group.get("OLDER").size() != 0) {
-                    audioList.addAll(month_wise_group.get("OLDER"));
+                    videoList.addAll(month_wise_group.get("OLDER"));
                 }
-                recycleradapter = new RecyclerViewAdapter(audioList);
-                recyclerview.setAdapter(recycleradapter);
-            } else {
-                ArrayList<DigitalContentBO> audiolist = new ArrayList<>();
-                recycleradapter = new RecyclerViewAdapter(audiolist);
+                recycleradapter = new RecyclerViewAdapter(videoList);
                 recyclerview.setAdapter(recycleradapter);
             }
-        } else {
-            ArrayList<DigitalContentBO> pdflist = new ArrayList<>();
-            recycleradapter = new RecyclerViewAdapter(pdflist);
-            recyclerview.setAdapter(recycleradapter);
         }
 
     }
@@ -199,6 +191,22 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                         .inflate(R.layout.activity_digital_content_header, parent, false));
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (isPositionHeader(position))
+                return TYPE_HEADER;
+
+            return TYPE_ITEM;
+        }
+
+        private boolean isPositionHeader(int position) {
+            if (items.get(position).isHeader()) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
@@ -231,11 +239,17 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                                         + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName())))
                         .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_digital_video))
                         .into(((VHItem) holder).image);
+
+               /* ((VHItem)holder).image.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                        R.drawable.ic_digital_video));
+                ((VHItem)holder).image.getLayoutParams().height = 160;*/
+
                 ((VHItem) holder).image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        openAudio(((VHItem) holder).filename);
+                        openMov(((VHItem) holder).filename);
+
                     }
                 });
             } else if (holder instanceof VHHeader) {
@@ -245,26 +259,12 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
 
         }
 
-        @Override
-        public int getItemViewType(int position) {
-            if (isPositionHeader(position))
-                return TYPE_HEADER;
-
-            return TYPE_ITEM;
-        }
-
-        private boolean isPositionHeader(int position) {
-            if (items.get(position).isHeader()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
 
         @Override
         public int getItemCount() {
             return items.size();
         }
+
 
         public class VHItem extends RecyclerView.ViewHolder {
             TextView pname, date, prodname, month_label;
@@ -281,7 +281,6 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
                 month_label = (TextView) v.findViewById(R.id.month_label);
                 play_icon = (ImageView) v.findViewById(R.id.play_icon);
                 play_icon.setVisibility(View.VISIBLE);
-
             }
         }
 
@@ -301,7 +300,7 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
      *
      * @param name
      */
-    private void openAudio(String name) {
+    private void openMov(String name) {
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -310,7 +309,7 @@ public class DigitalContentAudioFragement extends IvyBaseFragment {
         if (file.exists()) {
             Uri path = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(path, "audio/*");
+            intent.setDataAndType(path, "video/*");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             try {
                 startActivity(intent);

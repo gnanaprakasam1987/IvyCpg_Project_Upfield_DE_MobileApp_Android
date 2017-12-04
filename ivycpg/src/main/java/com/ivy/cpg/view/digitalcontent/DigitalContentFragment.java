@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 
 import android.app.ProgressDialog;
@@ -44,6 +44,17 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.sd.png.view.CrownReturnActivity;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.sd.png.view.SchemeApply;
+import com.ivy.sd.png.view.StockAndOrder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +64,7 @@ import java.util.Vector;
 
 import static java.lang.Math.pow;
 
-public class DigitalContentDisplayFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface {
 
     private BusinessModel bmodel;
 
@@ -89,12 +100,14 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
 
     private static final String MENU_DGT_SW = "MENU_DGT_SW";
     private static final String MENU_DGT = "MENU_DGT";
+    DigitalContentHelper mDigitalContentHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
     }
 
     @Override
@@ -252,6 +265,9 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
         if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(screentitle);
+
+            //For Other Digital content fragments
+            mDigitalContentHelper.mSelectedActivityName = screentitle;
         }
 
     }
@@ -486,8 +502,8 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
             isClicked = true;
             if (action == 1) {
 
-                bmodel.setIsDigitalContent();
-                bmodel.setDigitalContentInDB();
+                mDigitalContentHelper.setIsDigitalContent();
+                mDigitalContentHelper.setDigitalContentInDB();
                 bmodel.getRetailerMasterBO().setIsDigitalContent("Y");
 
                 if (calledFrom.equals(MENU_Init)) {
@@ -556,8 +572,8 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
                     getActivity().finish();
                 }
             } else if (action == 2) {
-                bmodel.setIsDigitalContent();
-                bmodel.setDigitalContentInDB();
+                mDigitalContentHelper.setIsDigitalContent();
+                mDigitalContentHelper.setDigitalContentInDB();
                 bmodel.getRetailerMasterBO().setIsDigitalContent("Y");
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -659,8 +675,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
             try {
                 mylist = new ArrayList<>();
                 imglist = new ArrayList<>();
-                items = bmodel.planogramMasterHelper
-                        .getDigitalMaster();
+                items = mDigitalContentHelper.getDigitalMaster();
                 if (items == null) {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
@@ -712,7 +727,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
                 }
                 //for sorting types of files in group
                 Collections.sort(mylist, DigitalContentBO.imgFileCompartor);
-                bmodel.planogramMasterHelper.setFilteredDigitalMaster(mylist);
+                mDigitalContentHelper.setFilteredDigitalMaster(mylist);
 
 
                 if (mylist.size() > 0) {

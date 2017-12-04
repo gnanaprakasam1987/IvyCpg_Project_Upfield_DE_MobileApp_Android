@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 
 import android.content.ActivityNotFoundException;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class DigitalContentPdfFragement extends IvyBaseFragment {
+public class DigitalContentOthersFragement extends IvyBaseFragment {
 
 
     BusinessModel bmodel;
@@ -41,7 +41,7 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
     RecyclerViewAdapter recycleradapter;
     private int screenwidth = 0, screenheight = 0;
 
-
+    private DigitalContentHelper mDigitalContentHelper;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +62,12 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle(bmodel.mSelectedActivityName);
-
+        setScreenTitle(mDigitalContentHelper.mSelectedActivityName);
 
         recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
 
@@ -76,7 +76,6 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
             gridlaymanager = new GridLayoutManager(getActivity(), 3);
         else
             gridlaymanager = new GridLayoutManager(getActivity(), 2);
-
 
         gridlaymanager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -95,29 +94,29 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.planogramMasterHelper.getFilteredDigitalMaster();
+        mylist = mDigitalContentHelper.getFilteredDigitalMaster();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mylist.size() > 0) {
-            ArrayList<DigitalContentBO> pdfList = new ArrayList<>();
+            ArrayList<DigitalContentBO> otherList = new ArrayList<>();
             for (DigitalContentBO bo : mylist) {
-                if (bo.getImgFlag() == 5)
-                    pdfList.add(bo);
+                if (bo.getImgFlag() == 6)
+                    otherList.add(bo);
             }
-            if (pdfList.size() > 0) {
-                Collections.sort(pdfList, DigitalContentBO.dateCompartor);
+            if (otherList.size() > 0) {
+                Collections.sort(otherList, DigitalContentBO.dateCompartor);
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
                 String currentday = today.split("/")[2];
                 String current_month_year = today.split(currentday)[0];
                 String current_month = today.split("/")[1];
                 String currentyear = today.split("/")[0];
                 String previous_month_year = currentyear + "/" + (Integer.parseInt(current_month) - 1) + "/";
-                month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
+
                 month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
-                //month_wise_group.put("LAST MONTH", new ArrayList<DigitalContentBO>());
+                month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("OLDER", new ArrayList<DigitalContentBO>());
                 ArrayList<DigitalContentBO> temp;
-                for (int i = 0; i < pdfList.size(); i++) {
-                    if (pdfList.get(i).getImageDate().startsWith(current_month_year)) {
+                for (int i = 0; i < otherList.size(); i++) {
+                    if (otherList.get(i).getImageDate().startsWith(current_month_year)) {
                         temp = (month_wise_group.get("THIS MONTH"));
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
@@ -126,9 +125,9 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                             temp.add(digital);
                         }
 
-                        temp.add(pdfList.get(i));
+                        temp.add(otherList.get(i));
                         month_wise_group.put("THIS MONTH", temp);
-                    } else if (pdfList.get(i).getImageDate().startsWith(previous_month_year)) {
+                    } else if (otherList.get(i).getImageDate().startsWith(previous_month_year)) {
                         temp = (month_wise_group.get("PREVIOUS MONTH"));
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
@@ -136,7 +135,7 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                             digital.setHeaderTitle("PREVIOUS MONTH");
                             temp.add(digital);
                         }
-                        temp.add(pdfList.get(i));
+                        temp.add(otherList.get(i));
                         month_wise_group.put("PREVIOUS MONTH", temp);
                     } else {
                         temp = (month_wise_group.get("OLDER"));
@@ -146,32 +145,24 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                             digital.setHeaderTitle("OLDER");
                             temp.add(digital);
                         }
-                        temp.add(pdfList.get(i));
+                        temp.add(otherList.get(i));
                         month_wise_group.put("OLDER", temp);
                     }
                 }
 
-                pdfList.clear();
+                otherList.clear();
                 if (month_wise_group.get("THIS MONTH") != null && month_wise_group.get("THIS MONTH").size() != 0) {
-                    pdfList.addAll(month_wise_group.get("THIS MONTH"));
+                    otherList.addAll(month_wise_group.get("THIS MONTH"));
                 }
                 if (month_wise_group.get("PREVIOUS MONTH") != null && month_wise_group.get("PREVIOUS MONTH").size() != 0) {
-                    pdfList.addAll(month_wise_group.get("PREVIOUS MONTH"));
+                    otherList.addAll(month_wise_group.get("PREVIOUS MONTH"));
                 }
                 if (month_wise_group.get("OLDER") != null && month_wise_group.get("OLDER").size() != 0) {
-                    pdfList.addAll(month_wise_group.get("OLDER"));
+                    otherList.addAll(month_wise_group.get("OLDER"));
                 }
-                recycleradapter = new RecyclerViewAdapter(pdfList);
-                recyclerview.setAdapter(recycleradapter);
-            } else {
-                ArrayList<DigitalContentBO> pdflist = new ArrayList<>();
-                recycleradapter = new RecyclerViewAdapter(pdflist);
+                recycleradapter = new RecyclerViewAdapter(otherList);
                 recyclerview.setAdapter(recycleradapter);
             }
-        } else {
-            ArrayList<DigitalContentBO> pdflist = new ArrayList<>();
-            recycleradapter = new RecyclerViewAdapter(pdflist);
-            recyclerview.setAdapter(recycleradapter);
         }
 
     }
@@ -218,6 +209,7 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
             }
         }
 
+
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
             DigitalContentBO product = items.get(position);
@@ -239,11 +231,6 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                     ((VHItem) holder).prodname.setVisibility(View.GONE);
                 }
 
-                /*if (product.getFileName().endsWith("pdf")) {
-                    ((VHItem)holder).image.setImageDrawable(ContextCompat.getDrawable(getActivity(),
-                            R.drawable.ic_digital_pdf));
-                    ((VHItem)holder).image.getLayoutParams().height = 160;
-                }*/
                 Glide
                         .with(getContext())
                         .load(Uri.fromFile(new File(
@@ -251,20 +238,18 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                         + DataMembers.DIGITAL_CONTENT + "/"
                                         + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName())))
-                        .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_digital_pdf))
+                        .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_digital_ppt))
                         .into(((VHItem) holder).image);
                 ((VHItem) holder).image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        openPDF(((VHItem) holder).filename);
+                        openPPT(((VHItem) holder).filename);
 
                     }
                 });
             } else if (holder instanceof VHHeader) {
                 ((VHHeader) holder).month_label.setText(items.get(position).getHeaderTitle());
             }
-
 
         }
 
@@ -319,11 +304,11 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
     }
 
     /**
-     * Method to view PDF File
+     * Method to view Power point File
      *
      * @param name
      */
-    private void openPDF(String name) {
+    private void openPPT(String name) {
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -332,7 +317,7 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
         if (file.exists()) {
             Uri path = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(path, "application/pdf");
+            intent.setDataAndType(path, "application/vnd.ms-powerpoint");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             try {
@@ -341,7 +326,7 @@ public class DigitalContentPdfFragement extends IvyBaseFragment {
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(
-                                R.string.no_application_available_to_view_pdf),
+                                R.string.no_application_available_to_view_ppt),
                         Toast.LENGTH_SHORT).show();
             }
         } else {

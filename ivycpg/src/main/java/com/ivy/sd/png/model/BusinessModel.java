@@ -63,6 +63,7 @@ import com.ivy.countersales.provider.CS_StockApplyHelper;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.lib.Logs;
@@ -170,7 +171,6 @@ import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.DashBoardActivity;
-import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.Gallery;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
@@ -352,7 +352,6 @@ public class BusinessModel extends Application {
     private Activity ctx, activity;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
-    //private Vector<DigitalContentBO> digitalMaster;
 
     //private Vector payment;
     private DailyReportBO dailyRep;
@@ -376,7 +375,6 @@ public class BusinessModel extends Application {
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private ArrayList<String> mRetailerIDList;
     private boolean isDoubleEdit_temp;
-    //private String appDigitalContentURL;
     private HashMap<String, String> digitalContentURLS;
     private int responceMessage;
     private Handler handler;
@@ -547,7 +545,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, NewOutlet.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actDigitalContent)) {
-            myIntent = new Intent(ctxx, DigitalContentDisplay.class);
+            myIntent = new Intent(ctxx, DigitalContentActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actOrderAndStock)) {
             myIntent = new Intent(ctxx, StockAndOrder.class);
@@ -5373,26 +5371,6 @@ public class BusinessModel extends Application {
     }
 
 
-    // UPDATE OrderDetail SET RetailerId = (SELECT RetailerId FROM OrderHeader
-    // WHERE OrderId = OrderDetail .OrderId )
-
-    public void setIsDigitalContent() {
-        RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = retailerMaster.get(i);
-            if (retailer.getRetailerID().equals(
-                    getRetailerMasterBO().getRetailerID())) {
-                retailer.setIsDigitalContent("Y");
-                retailerMaster.setElementAt(retailer, i);
-                return;
-            }
-        }
-
-    }
 
     public void setIsReviewPlan(String flag) {
         RetailerMasterBO retailer;
@@ -5476,15 +5454,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void setDigitalContentInDB() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        db.executeQ("update " + DataMembers.tbl_retailerMaster
-                + " set isDigitalContent=" + QT("Y") + " where retailerid="
-                + QT(getRetailerMasterBO().getRetailerID()));
-        db.closeDB();
-    }
 
     /**
      * Set Review plan in DB. This will update the isReviewPlan field in

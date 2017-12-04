@@ -190,7 +190,7 @@
             android:name="com.ivy.sd.png.view.NonVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplayNew"
+            android:name="com.ivy.cpg.view.digitalcontent.DigitalContentDisplayNew"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
@@ -357,7 +357,7 @@
             android:name="com.ivy.sd.png.view.reports.Orderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplay"
+            android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity

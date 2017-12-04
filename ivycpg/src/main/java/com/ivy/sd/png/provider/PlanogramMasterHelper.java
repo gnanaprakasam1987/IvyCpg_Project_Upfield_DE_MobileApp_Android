@@ -9,7 +9,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.CounterPlanogramBO;
-import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.PlanogramBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -18,7 +17,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class PlanogramMasterHelper {
@@ -32,8 +30,6 @@ public class PlanogramMasterHelper {
     private Vector<ChildLevelBo> mChildLevelBo;
 
 
-    private Vector<DigitalContentBO> digitalMaster;
-    private ArrayList<DigitalContentBO> filteredDigitalMaster;
 
     private PlanogramMasterHelper(Context context) {
         this.context = context;
@@ -783,118 +779,6 @@ public class PlanogramMasterHelper {
     }
 
 
-
-    // ----------- Load Digital Content Details -----------------/
-    private String getDigitialContentTaggingDetails() {
-        String mappingId = "-1";
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c1 = db
-                    .selectSQL("SELECT mappingtype  FROM DigitalContentMapping WHERE mappingtype != 'SELLER'");
-
-            if (c1 != null && c1.moveToNext()) {
-                if (c1.getString(0).equals("CHL_L1"))
-                    mappingId = ""
-                            + bmodel.getRetailerMasterBO().getChannelID();
-                else if (c1.getString(0).equals("CHL_L2"))
-                    mappingId = ""
-                            + bmodel.getRetailerMasterBO()
-                            .getSubchannelid();
-                else if (c1.getString(0).equals("RETAILER"))
-                    mappingId = bmodel.getRetailerMasterBO()
-                            .getRetailerID();
-                else if (c1.getString(0).equals("COUNTER"))
-                    mappingId = "" + bmodel.getCounterId();
-
-                c1.close();
-            }
-            db.closeDB();
-            return mappingId;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            return mappingId;
-        }
-    }
-
-    /**
-     * Download Digital Content details for Seller and retailer wise
-     *
-     * @param --seller /Retailer  seller /Retailer
-     */
-    public void downloadDigitalContent(String value) {
-        DigitalContentBO product;
-        String mapppingID;
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sBuffer = new StringBuilder();
-            if ("SELLER".equals(value))
-                mapppingID = "0";
-            else
-                mapppingID = getDigitialContentTaggingDetails();
-            if ("SELLER".equals(value))
-
-            {
-                sBuffer.append("SELECT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),IFNULL(PM.psname,'')");
-                sBuffer.append(" FROM  DigitalContentMaster DC");
-                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON DC.Imageid = DCM.Imgid  ");
-                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
-                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid ");
-                sBuffer.append(" where mappingid=0 and DCM.mappingtype='SELLER' ");
-
-                Cursor c = db.selectSQL(sBuffer.toString());
-                if (c != null) {
-                    digitalMaster = new Vector<>();
-                    while (c.moveToNext()) {
-                        product = new DigitalContentBO();
-                        product.setImageID(c.getInt(0));
-                        product.setFileName(c.getString(1));
-                        product.setDescription(c.getString(2));
-                        product.setImageDate(c.getString(3));
-                        product.setProductID(c.getInt(4));
-                        product.setProductName(c.getString(5));
-                        digitalMaster.add(product);
-                    }
-                    c.close();
-                }
-
-            } else {
-                sBuffer.append("SELECT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),PM.psname");
-                sBuffer.append(" FROM  DigitalContentMaster DC");
-                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid ) ");
-                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
-                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid ");
-                sBuffer.append(" where mappingid=");
-                sBuffer.append(mapppingID);
-                sBuffer.append(" and DCM.mappingtype!='SELLER' ");
-
-                Cursor c = db.selectSQL(sBuffer.toString());
-                if (c != null) {
-                    digitalMaster = new Vector<>();
-                    while (c.moveToNext()) {
-                        product = new DigitalContentBO();
-                        product.setImageID(c.getInt(0));
-                        product.setFileName(c.getString(1));
-                        product.setDescription(c.getString(2));
-                        product.setImageDate(c.getString(3));
-                        product.setProductID(c.getInt(4));
-                        product.setProductName(c.getString(5));
-
-                        digitalMaster.add(product);
-                    }
-                    c.close();
-                }
-
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     private String QT(String data) // Quote
     {
         return "'" + data + "'";
@@ -927,28 +811,12 @@ public class PlanogramMasterHelper {
 
 
 
-
-
-    public Vector<DigitalContentBO> getDigitalMaster() {
-        return digitalMaster;
-    }
-
-
     public Vector<CounterPlanogramBO> getCsPlanogramMaster() {
         return csPlanogramMaster;
     }
 
     private void setCsPlanogramMaster(Vector<CounterPlanogramBO> csPlanogramMaster) {
         this.csPlanogramMaster = csPlanogramMaster;
-    }
-
-    public ArrayList<DigitalContentBO> getFilteredDigitalMaster() {
-        return filteredDigitalMaster;
-    }
-
-    public void setFilteredDigitalMaster(ArrayList<DigitalContentBO> filteredDigitalMaster) {
-        this.filteredDigitalMaster = new ArrayList<>();
-        this.filteredDigitalMaster = filteredDigitalMaster;
     }
 
     public void deleteImageName(String imgName) {

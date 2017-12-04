@@ -57,6 +57,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.ConfigData;
@@ -1237,10 +1239,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
-                mPlanoGramMasterHelper.downloadDigitalContent("SELLER");
-                if (mPlanoGramMasterHelper.getDigitalMaster() != null
-                        && mPlanoGramMasterHelper.getDigitalMaster()
+                DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
+                mDigitalContentHelper.downloadDigitalContent("SELLER");
+                if (mDigitalContentHelper.getDigitalMaster() != null
+                        && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     switchFragment(MENU_DIGITIAL_SELLER, menuItem.getMenuName());
@@ -1482,7 +1484,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         EmptyReconciliationFragment mEmptyReconFragment = (EmptyReconciliationFragment) fm
                 .findFragmentByTag(MENU_EMPTY_RECONCILIATION);
 
-        DigitalContentDisplayFragment mDigitalContentFragment = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mDigitalContentFragment = (DigitalContentFragment) fm
                 .findFragmentByTag(MENU_DIGITIAL_SELLER);
         RoadFragment mRoadFragment = (RoadFragment) fm
                 .findFragmentByTag(MENU_ROAD_ACTIVITY);
@@ -1818,7 +1820,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("ScreenCode", fragmentName);
                 bndl.putString("FromInit", fragmentName);
                 bndl.putString("screentitle", menuName);
-                fragment = new DigitalContentDisplayFragment();
+                fragment = new DigitalContentFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DIGITIAL_SELLER);
@@ -1994,7 +1996,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         EmptyReconciliationFragment mEmptyReconFragment = (EmptyReconciliationFragment) fm
                 .findFragmentByTag(MENU_EMPTY_RECONCILIATION);
 
-        DigitalContentDisplayFragment mDigitalContentFragment = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mDigitalContentFragment = (DigitalContentFragment) fm
                 .findFragmentByTag(MENU_DIGITIAL_SELLER);
         RoadFragment mRoadFragment = (RoadFragment) fm
                 .findFragmentByTag(MENU_ROAD_ACTIVITY);

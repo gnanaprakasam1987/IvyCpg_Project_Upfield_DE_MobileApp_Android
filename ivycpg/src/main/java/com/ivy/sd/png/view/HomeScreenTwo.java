@@ -45,6 +45,9 @@ import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentDisplayNew;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -803,16 +806,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         } else if (i1 == R.id.menu_digital_content) {
             if (!isClick) {
                 isClick = true;
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                mPlanoGramMasterHelper.downloadDigitalContent("RETAILER");
-                if (mPlanoGramMasterHelper.getDigitalMaster() != null
-                        && mPlanoGramMasterHelper.getDigitalMaster()
+                DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
+                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                if (mDigitalContentHelper.getDigitalMaster() != null
+                        && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_DGT);
                     Intent i = new Intent(HomeScreenTwo.this,
-                            DigitalContentDisplay.class);
+                            DigitalContentActivity.class);
                     i.putExtra("FromDigi", "Digi");
                     startActivity(i);
                     finish();
@@ -2428,16 +2431,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                mPlanoGramMasterHelper.downloadDigitalContent("RETAILER");
-                if (mPlanoGramMasterHelper.getDigitalMaster() != null
-                        && mPlanoGramMasterHelper.getDigitalMaster()
+                DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
+                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                if (mDigitalContentHelper.getDigitalMaster() != null
+                        && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
                     Intent i = new Intent(HomeScreenTwo.this,
-                            DigitalContentDisplay.class);
+                            DigitalContentActivity.class);
                     i.putExtra("CurrentActivityCode", menu.getConfigCode());
                     i.putExtra("FromDigi", "Digi");
                     i.putExtra("screentitle", menu.getMenuName());

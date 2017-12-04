@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ImageBO;
+import com.ivy.sd.png.view.ViewImage;
 
 import java.util.ArrayList;
 

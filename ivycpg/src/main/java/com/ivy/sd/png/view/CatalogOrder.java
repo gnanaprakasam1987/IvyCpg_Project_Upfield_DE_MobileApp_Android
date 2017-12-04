@@ -46,6 +46,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.carousel.CarouselLayoutManager;
 import com.ivy.carousel.CarouselZoomPostLayoutListener;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -1804,7 +1805,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             finish();
         } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
             Intent i = new Intent(CatalogOrder.this,
-                    DigitalContentDisplay.class);
+                    DigitalContentActivity.class);
             i.putExtra("ScreenCode", screenCode);
             i.putExtra("FromInit", "Initiative");
             startActivity(i);

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * The Class DigitalContentDisplay is used to show digital images Two types of
+ * The Class DigitalContentActivity is used to show digital images Two types of
  * digital content( Seller wise and Retailer wise), both types same screen is
  * using Screen able to view (Images, Audio & Video, Excel, Power point) Product
  * filter for this Screen
  *
  * @author gnanaprakasam.d
  */
-public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class DigitalContentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
 
     private Toolbar toolbar;
 
@@ -42,7 +42,7 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment dcdf = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         dcdf.updateBrandText(mFilterText, id);
     }
@@ -51,7 +51,7 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     public void updateGeneralText(String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment dcdf = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         dcdf.updateGeneralText(mFilterText);
     }
@@ -59,7 +59,7 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment dcdf = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         dcdf.updateCancel();
     }
@@ -86,7 +86,7 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         // TODO Auto-generated method stub
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment dcdf = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         dcdf.updateFromFiveLevelFilter(mParentIdList);
 
@@ -96,7 +96,7 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         // TODO Auto-generated method stub
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment dcdf = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         dcdf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
