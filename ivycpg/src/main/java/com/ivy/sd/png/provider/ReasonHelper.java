@@ -229,7 +229,7 @@ public class ReasonHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType ="+listType;
+            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + QT(listType);
             Cursor c = db.selectSQL(s);
             if (c != null) {
                 reasonPlaneDeviationMaster = null;
@@ -241,14 +241,16 @@ public class ReasonHelper {
                     reasonPlaneDeviationMaster.add(reason);
                 }
                 c.close();
+                reason = new ReasonMaster();
+                reason.setReasonID("0");
+                reason.setReasonDesc("Others");
+                reasonPlaneDeviationMaster.add(reason);
             }
             db.closeDB();
         } catch (SQLException e) {
             Commons.printException(e);
         }
     }
-
-
 
 
     public void downloadNonProductiveReasonMaster() {

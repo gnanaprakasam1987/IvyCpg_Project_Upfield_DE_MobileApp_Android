@@ -1,6 +1,9 @@
 package com.ivy.sd.png.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -23,6 +26,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
@@ -36,6 +40,7 @@ public class PlanDeviationFragment extends IvyBaseFragment {
     Button saveBtn;
     LinearLayout remarkLty;
     private ReasonMaster temp;
+    private AlertDialog alertDialog;
 
     @Nullable
     @Override
@@ -60,13 +65,8 @@ public class PlanDeviationFragment extends IvyBaseFragment {
             public void onClick(View view) {
                 hideKeyboard();
                 try {
-                    temp = selected_reason;
-                    NonproductivereasonBO nonproductive = new NonproductivereasonBO();
-                    nonproductive.setReasonid(temp.getReasonID());
-                    nonproductive.setReasontype("Field_Plan_Type");
-                    nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate());
-                    bmodel.savePlaneDiveateReason(nonproductive, remarks);
+                    new SavePlaneDeviateReason().execute();
+
                 } catch (Exception e) {
 
                 }
@@ -75,6 +75,49 @@ public class PlanDeviationFragment extends IvyBaseFragment {
 
         return rootView;
     }
+
+
+    // Save the Plane deviate reason Work Details
+    private class SavePlaneDeviateReason extends AsyncTask<String, Integer, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                temp = selected_reason;
+                NonproductivereasonBO nonproductive = new NonproductivereasonBO();
+                nonproductive.setReasonid(temp.getReasonID());
+                nonproductive.setReasontype("Field_Plan_Type");
+                nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
+                        .getDownloadDate());
+                bmodel.savePlaneDiveateReason(nonproductive, remarks);
+
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+        }
+
+        protected void onPreExecute() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.saving));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        protected void onPostExecute(Boolean result) {
+            // result is the value returned from doInBackground
+            alertDialog.dismiss();
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.saved_successfully),
+                    Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+            startActivity(i);
+            getActivity().finish();
+
+        }
+    }
+
 
     private ReasonMaster selected_reason;
     private String remarks = "";

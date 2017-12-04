@@ -301,7 +301,7 @@ public class BusinessModel extends Application {
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
     public OrderSplitHelper orderSplitHelper = null;
-  //  public PriceTrackingHelper mPriceTrackingHelper;
+    //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -6904,20 +6904,19 @@ public class BusinessModel extends Application {
                 }
             }
 
-                String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID());
-                Cursor c = db.selectSQL(query);
-                if (c.getCount() > 0) {
-                    if (c.moveToFirst()) {
-                        timeStampid = c.getString(0);
+            String query = "select max(VisitID) from OutletTimestamp where retailerid="
+                    + QT(getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    timeStampid = c.getString(0);
 
-                        if (outletTimeStampHelper.isJointCall(userMasterHelper
-                                .getUserMasterBO().getJoinCallUserList())) {
-                            flag = 1;
-                        }
+                    if (outletTimeStampHelper.isJointCall(userMasterHelper
+                            .getUserMasterBO().getJoinCallUserList())) {
+                        flag = 1;
                     }
                 }
-
+            }
 
 
             String id = userMasterHelper.getUserMasterBO().getUserid()
@@ -8245,6 +8244,7 @@ public class BusinessModel extends Application {
             }
         }
     }
+
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
         try {
@@ -11742,26 +11742,36 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             // uid = distid+uid+hh:mm
+            String id = "";
+            Cursor c = db.selectSQL("Select Uid from NonFieldActivity where UserId="
+                    + userMasterHelper.getUserMasterBO().getUserid() + " AND Upload ='N'");
 
-            String id = QT(userMasterHelper.getUserMasterBO()
+            if (c != null) {
+
+                id = c.getString(0);
+
+            }
+            c.close();
+
+            db.deleteSQL(
+                    "NonFieldActivity",
+                    "Uid=" + QT(id), false);
+
+
+            id = QT(userMasterHelper.getUserMasterBO()
                     .getDistributorid()
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
                     + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
-            db.deleteSQL(
-                    "NonFieldActivity",
-                    "ReasonId=" + QT(outlet.getReasonid())
-                            + " and ReasonTypes="
-                            + QT(getStandardListId(outlet.getReasontype())), false);
 
-            String columns = "Uid,UserId,Date,ReasonId,Remarks,DistributorId";
+            String columns = "Uid,UserId,Date,ReasonId,Remarks,DistributorId,Upload";
 
-            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid()+"") + ","
+            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
                     + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(remarks)+
-                   "," + getRetailerMasterBO().getDistributorId();
+                    + "," + QT(remarks) +
+                    "," + getRetailerMasterBO().getDistributorId() + "," + "Y";
 
             db.insertSQL("NonFieldActivity", columns, values);
 

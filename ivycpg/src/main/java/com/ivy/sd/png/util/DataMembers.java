@@ -620,6 +620,9 @@ public class DataMembers {
     private static final String tbl_OrderDeliveryDetail = "OrderDeliveryDetail";
     private static final String tbl_OrderDeliveryDetail_cols = "orderId,productId,uomId,qty,uomCount,price,taxPrice,lineValue";
 
+    private static final String tbl_NonFieldActivity = "NonFieldActivity";
+    private static final String tbl_NonFieldActivity_cols = "Uid,UserId,Date,ReasonId,Remarks,DistributorId";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -788,6 +791,8 @@ public class DataMembers {
         uploadColumn.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
         uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
         uploadColumn.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
+        uploadColumn.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
+
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -980,6 +985,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_PaymentDiscount_Detail, tbl_PaymentDiscountDetail_Cols);
         uploadColumnWithOutRetailer.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
         uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

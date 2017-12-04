@@ -1424,7 +1424,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             startActivity(i);
             getActivity().finish();
         } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
-            bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("Field_Plan_Type");
+            bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
         }
 
