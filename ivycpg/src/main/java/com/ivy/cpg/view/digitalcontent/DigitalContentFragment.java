@@ -4,8 +4,6 @@ package com.ivy.cpg.view.digitalcontent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,9 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,51 +58,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import static java.lang.Math.pow;
-
 public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface {
 
-    private BusinessModel bmodel;
+    private BusinessModel mBModel;
+    DigitalContentHelper mDigitalContentHelper;
 
-    private ArrayList<DigitalContentBO> mylist;
+    private ArrayList<DigitalContentBO> mDigitalContentList;
 
-    private String calledFrom = "", screenCode = "MENU_STK_ORD";
-
-    private final String MENU_Init = "Initiative";
-
-    private boolean isClicked = false;
-
-    // Drawer Implementation
     private DrawerLayout mDrawerLayout;
-
-    private static final String BRAND = "Brand";
-
-    private HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-
-    public int screenwidth = 0, screenheight = 0;
-
-
     private TabLayout tabLayout;
-
-    private int isImg = 1, isAudio = 2, isVideo = 3, isXls = 4, isPDF = 5, isOthers = 6;
-    private int mImgCount = 0, mAudioCount = 0, mVideoCount = 0, mXlsCount = 0, mPDFCount = 0, mOthersCount = 0;
-    private TypedArray typearr;
     private View view;
-    private FrameLayout drawer;
-    private int mSelectedTab = 0;
     private ViewPager viewPager = null;
     private PagerAdapter adapter = null;
-    private String screentitle = "Digital Content";
 
+    private int mSelectedTab = 0;
+    private static final String BRAND = "Brand";
+    private boolean isClicked = false;
+    public int mScreenWidth = 0, mScreenHeight = 0;
+    private int isImg = 1, isAudio = 2, isVideo = 3, isXls = 4, isPDF = 5, isOthers = 6;
+    private int mImgCount = 0, mAudioCount = 0, mVideoCount = 0, mXlsCount = 0, mPDFCount = 0, mOthersCount = 0;
+    private String calledFrom = "", screenCode = "MENU_STK_ORD";
+    private final String MENU_Init = "Initiative";
+    private String mScreenTitle = "Digital Content";
     private static final String MENU_DGT_SW = "MENU_DGT_SW";
     private static final String MENU_DGT = "MENU_DGT";
-    DigitalContentHelper mDigitalContentHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
         mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
     }
 
@@ -124,8 +105,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        screenwidth = displaymetrics.widthPixels;
-        screenheight = displaymetrics.heightPixels;
+        mScreenWidth = displaymetrics.widthPixels;
+        mScreenHeight = displaymetrics.heightPixels;
 
         Bundle extras = getArguments();
         if (extras == null) {
@@ -139,14 +120,14 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         }
 
         if (calledFrom != null && calledFrom.equals("DigiCS")) {
-            bmodel.productHelper.downloadProductFilter(CSHomeScreenFragment.MENU_DGT_CS);
+            mBModel.productHelper.downloadProductFilter(CSHomeScreenFragment.MENU_DGT_CS);
         } else if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
-            bmodel.productHelper.downloadProductFilter(MENU_DGT_SW);
+            mBModel.productHelper.downloadProductFilter(MENU_DGT_SW);
         } else {
-            bmodel.productHelper.downloadProductFilter(MENU_DGT);
+            mBModel.productHelper.downloadProductFilter(MENU_DGT);
         }
 
-        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -161,15 +142,13 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         // Set title to action bar
         if (extras != null) {
-            screentitle = extras.getString("screentitle");
+            mScreenTitle = extras.getString("mScreenTitle");
         }
         //If this screen is called from Menu item or Order flow..
         if (screenCode.equals("MENU_STK_ORD")
                 || screenCode.equals("MENU_ORDER") || calledFrom.equals("Digi"))
-            screentitle = bmodel.configurationMasterHelper
+            mScreenTitle = mBModel.configurationMasterHelper
                     .getHomescreentwomenutitle(MENU_DGT);
-
-        typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
@@ -180,7 +159,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             public void onDrawerClosed(View view) {
 
                 if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                    setScreenTitle(screentitle);
+                    setScreenTitle(mScreenTitle);
                     getActivity().supportInvalidateOptionsMenu();
                 }
             }
@@ -201,7 +180,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         LinearLayout footer = (LinearLayout) view.findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
         Button btnClose = (Button) view.findViewById(R.id.btn_close);
-        if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
+        if (mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             btnClose.setVisibility(View.VISIBLE);
 
             btnClose.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +227,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         } else {
             btn_next.setVisibility(View.GONE);
         }
-        if (!bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY && !MENU_Init.equals(calledFrom)) {
+        if (!mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY && !MENU_Init.equals(calledFrom)) {
             footer.setVisibility(View.GONE);
         }
         return view;
@@ -259,15 +238,15 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         super.onResume();
         isClicked = false;
 
-        screentitle = bmodel.labelsMasterHelper
+        mScreenTitle = mBModel.labelsMasterHelper
                 .applyLabels((Object) "menu_dgt");
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(screentitle);
+            setScreenTitle(mScreenTitle);
 
             //For Other Digital content fragments
-            mDigitalContentHelper.mSelectedActivityName = screentitle;
+            mDigitalContentHelper.mSelectedActivityName = mScreenTitle;
         }
 
     }
@@ -279,18 +258,18 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_next).setVisible(false);
 
-        if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null && bmodel.productHelper.getRetailerModuleParentLeveBO().size() > 0 || (bmodel.productHelper.getRetailerModuleChildLevelBO() != null && bmodel.productHelper.getRetailerModuleChildLevelBO().size() > 0)) {
+        if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0 || (mBModel.productHelper.getRetailerModuleChildLevelBO() != null && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)) {
             menu.findItem(R.id.menu_product_filter).setVisible(true);
         } else
             menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
         }
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -352,11 +331,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             if (tabLayout != null) {
                 mSelectedTab = tabLayout.getSelectedTabPosition();
             }
-            Vector<String> vect = new Vector();
-            for (String string : getResources().getStringArray(
-                    R.array.productFilterArray)) {
-                vect.add(string);
-            }
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
@@ -369,14 +343,15 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
+                    mBModel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-            // set Fragmentclass Arguments
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<Object>();
-            fragobj.setArguments(bundle);
 
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            // set Fragment class Arguments
+            FilterFiveFragment<Object> mFragment = new FilterFiveFragment<>();
+            mFragment.setArguments(bundle);
+
+            ft.replace(R.id.right_drawer, mFragment, "Fivefilter");
             ft.commit();
         } catch (Exception e) {
             Commons.print("" + e);
@@ -399,102 +374,36 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", bmodel.productHelper
+            bundle.putString("filterHeader", mBModel.productHelper
                     .getRetailerModuleChildLevelBO().get(0).getProductLevel());
             bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
+                    mBModel.productHelper.getRetailerModuleChildLevelBO());
 
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
+            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
 
                 bundle.putBoolean("isFormBrand", true);
 
-                bundle.putString("pfilterHeader", bmodel.productHelper
+                bundle.putString("pfilterHeader", mBModel.productHelper
                         .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
 
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
+                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
                         .getRetailerModuleParentLeveBO());
             } else {
                 bundle.putBoolean("isFormBrand", false);
             }
 
             // set Fragment class Arguments
-            FilterFragment<?> fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
+            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+            FilterFragment<?> mFragment = new FilterFragment(mSelectedFilterMap);
+            mFragment.setArguments(bundle);
+            ft.add(R.id.right_drawer, mFragment, "filter");
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e);
         }
     }
 
-
-    //use palette to fectch suitable colors based on the images displayed
-    /*
-      * generate palette based on the bitmap
-	  * get mostly used colors using getVibrantSwatch()
-	  * set background of textview in accordance with the returned color
-	  * set text colors in contrast to background.
-
-	  * Note- palette may return null . So use default color in place of null value
-	 */
-    public void updatePalette(Bitmap bitmap, final DigitalContentBO ret) {
-        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-
-                Palette.Swatch item = palette.getVibrantSwatch();//use default color if null value is returned
-                if (item != null) {
-                    ret.setTextbgcolor(adjustAlpha(item.getRgb(), 0.4f));
-                } else {
-                    ret.setTextbgcolor(1073741824);//decimal code of 40% of black
-                }
-                item = palette.getDarkVibrantSwatch();//use default color if null value is returned
-                if (item != null) {
-                    ret.setTextcolor(contrastcolor(item.getRgb()));
-                } else {
-                    ret.setTextcolor(Color.BLACK);
-                }
-
-            }
-
-        });
-    }
-
-    //returns the suited color(black/white) for the background
-    /*
-      * returns white- if background is dark
-	  * returns black- if background is light
-	 */
-    public int contrastcolor(int color) {
-        float r = Color.red(color);
-        float g = Color.green(color);
-        float b = Color.blue(color);
-
-        float gamma = 2.2f;
-        float L = (float) (0.2126 * pow(r / 255, gamma)
-                + 0.7152 * pow(g / 255, gamma)
-                + 0.0722 * pow(b / 255, gamma));
-        if (L > 0.5) {
-            return Color.BLACK;
-        } else {
-
-            return Color.WHITE;
-        }
-    }
-
-    /*create ARGB color
-      * params
-      * color - need to be adjusted
-      * factor - factor of the color (from 0.0 to 1.0)
-    */
-    public int adjustAlpha(int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
-    }
 
 
     public void click(int action) {
@@ -504,78 +413,84 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
                 mDigitalContentHelper.setIsDigitalContent();
                 mDigitalContentHelper.setDigitalContentInDB();
-                bmodel.getRetailerMasterBO().setIsDigitalContent("Y");
+                mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
 
-                if (calledFrom.equals(MENU_Init)) {
+                switch (calledFrom) {
+                    case MENU_Init:
 
-                    if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                        bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil
-                                        .now(SDUtil.TIME));
-                        Intent intent = new Intent(getActivity(),
-                                InitiativeActivity.class);
-                        intent.putExtra("ScreenCode", screenCode);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                        getActivity().finish();
-                    } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
-                        Intent init = new Intent(getActivity(),
-                                OrderDiscount.class);
-                        init.putExtra("ScreenCode", screenCode);
-                        startActivity(init);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                        getActivity().finish();
-                    } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                            && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
-                        Intent init = new Intent(getActivity(),
-                                SchemeApply.class);
-                        init.putExtra("ScreenCode", screenCode);
-                        startActivity(init);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                        getActivity().finish();
-                    } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        Intent intent = new Intent(getActivity(),
-                                CrownReturnActivity.class);
-                        intent.putExtra("OrderFlag", "Nothing");
-                        intent.putExtra("ScreenCode", screenCode);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                    } else {
-                        bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil
-                                        .now(SDUtil.TIME));
-                        Intent intent;
-                        if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
-                            intent = new Intent(getActivity(), CatalogOrder.class);
+                        if (mBModel.configurationMasterHelper.IS_INITIATIVE) {
+                            mBModel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil
+                                            .now(SDUtil.TIME));
+                            Intent intent = new Intent(getActivity(),
+                                    InitiativeActivity.class);
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if (mBModel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
+                            Intent init = new Intent(getActivity(),
+                                    OrderDiscount.class);
+                            init.putExtra("ScreenCode", screenCode);
+                            startActivity(init);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if (mBModel.configurationMasterHelper.IS_SCHEME_ON
+                                && mBModel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+                            Intent init = new Intent(getActivity(),
+                                    SchemeApply.class);
+                            init.putExtra("ScreenCode", screenCode);
+                            startActivity(init);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if ((mBModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || mBModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
+                                && mBModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                            Intent intent = new Intent(getActivity(),
+                                    CrownReturnActivity.class);
+                            intent.putExtra("OrderFlag", "Nothing");
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                         } else {
-                            intent = new Intent(getActivity(), StockAndOrder.class);
+                            mBModel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil
+                                            .now(SDUtil.TIME));
+                            Intent intent;
+                            if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
+                                intent = new Intent(getActivity(), CatalogOrder.class);
+                            } else {
+                                intent = new Intent(getActivity(), StockAndOrder.class);
+                            }
+                            intent.putExtra("OrderFlag", "Nothing");
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                         }
-                        intent.putExtra("OrderFlag", "Nothing");
-                        intent.putExtra("ScreenCode", screenCode);
+
+                        break;
+                    case "Digi": {
+                        mBModel.outletTimeStampHelper
+                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        Intent intent = new Intent(getActivity(),
+                                HomeScreenTwo.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                        break;
+                    }
+                    case "DigiCS": {
+                        Intent intent = new Intent(getActivity(),
+                                HomeScreenActivity.class).putExtra("menuCode", "MENU_COUNTER");
                         startActivity(intent);
                         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        getActivity().finish();
+                        break;
                     }
-
-                } else if ("Digi".equals(calledFrom)) {
-                    bmodel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                    Intent intent = new Intent(getActivity(),
-                            HomeScreenTwo.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                } else if (calledFrom.equals("DigiCS")) {
-                    Intent intent = new Intent(getActivity(),
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_COUNTER");
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                    getActivity().finish();
                 }
             } else if (action == 2) {
                 mDigitalContentHelper.setIsDigitalContent();
                 mDigitalContentHelper.setDigitalContentInDB();
-                bmodel.getRetailerMasterBO().setIsDigitalContent("Y");
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 Intent i = new Intent(getActivity(),
                         OrderSummary.class);
@@ -613,19 +528,15 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
     @Override
     public void updateCancel() {
-        // Close Drawer
         mDrawerLayout.closeDrawers();
     }
 
     @Override
     public void loadStartVisit() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TODO Auto-generated method stub
-        Log.v("", "Data");
 
     }
 
@@ -633,8 +544,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        // TODO Auto-generated method stub
-        Log.v("", "Data");
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         mDrawerLayout.closeDrawers();
@@ -655,31 +564,31 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private ProgressDialog progressDialogue;
         private int pid;
-        Vector<LevelBO> parentidList;
+        Vector<LevelBO> mParentIdList;
         Vector<DigitalContentBO> items;
         int size;
-        ArrayList<DigitalContentBO> imglist;
+        ArrayList<DigitalContentBO> mImageList;
 
         private LoadAsyncTask(int pid) {
             super();
             this.pid = pid;
         }
 
-        private LoadAsyncTask(Vector<LevelBO> parentidList) {
+        private LoadAsyncTask(Vector<LevelBO> mParentIdList) {
             super();
-            this.parentidList = new Vector<>(parentidList);
+            this.mParentIdList = new Vector<>(mParentIdList);
         }
 
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mylist = new ArrayList<>();
-                imglist = new ArrayList<>();
+                mDigitalContentList = new ArrayList<>();
+                mImageList = new ArrayList<>();
                 items = mDigitalContentHelper.getDigitalMaster();
                 if (items == null) {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
-                            bmodel.showAlert(getResources().getString(R.string.no_data_exists),
+                            mBModel.showAlert(getResources().getString(R.string.no_data_exists),
                                     0);
                         }
                     });
@@ -688,12 +597,12 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 size = items.size();
 
 		/*
-          add extension of image types in imglist
-		  other types in mylist
+          add extension of image types in mImageList
+		  other types in mDigitalContentList
 		*/
-                if (parentidList != null && parentidList.size() > 0) {
-                    for (int k = 0; k < parentidList.size(); k++) {
-                        pid = parentidList.get(k).getParentID();
+                if (mParentIdList != null && mParentIdList.size() > 0) {
+                    for (int k = 0; k < mParentIdList.size(); k++) {
+                        pid = mParentIdList.get(k).getParentID();
                         loadList(pid);
                     }
                 } else {
@@ -703,44 +612,44 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
 
        /*
-         * loop through the imglist size
-         * check the loopcount is less than mylist size
-         * if yes add the imglist element to the loopcount position
-           * increase loopcount to 5
-         * if no add the imglist element at end of mylist.
+         * loop through the mImageList size
+         * check the loop count is less than mDigitalContentList size
+         * if yes add the mImageList element to the loop count position
+           * increase loop count to 5
+         * if no add the mImageList element at end of mDigitalContentList.
         */
-                int loopcount = 0;
+                int loopCount = 0;
                 mImgCount = 0;
-                for (int j = 0; j < imglist.size(); j++) {
-                    int listsize = mylist.size();
-                    if (loopcount < listsize) {
-                        if (imglist.get(j).isLessimagewidth())//compares image width to screen width
+                for (int j = 0; j < mImageList.size(); j++) {
+                    int mSize = mDigitalContentList.size();
+                    if (loopCount < mSize) {
+                        if (mImageList.get(j).isLessimagewidth())//compares image width to screen width
                         {
-                            mylist.add(imglist.get(j));
+                            mDigitalContentList.add(mImageList.get(j));
                         } else {
-                            mylist.add(loopcount, imglist.get(j));
-                            loopcount += 5;
+                            mDigitalContentList.add(loopCount, mImageList.get(j));
+                            loopCount += 5;
                         }
                     } else {
-                        mylist.add(imglist.get(j));
+                        mDigitalContentList.add(mImageList.get(j));
                     }
                 }
                 //for sorting types of files in group
-                Collections.sort(mylist, DigitalContentBO.imgFileCompartor);
-                mDigitalContentHelper.setFilteredDigitalMaster(mylist);
+                Collections.sort(mDigitalContentList, DigitalContentBO.imgFileCompartor);
+                mDigitalContentHelper.setFilteredDigitalMaster(mDigitalContentList);
 
 
-                if (mylist.size() > 0) {
-                    for (int i = 0; i < mylist.size(); i++) {
-                        if (mylist.get(i).getImgFlag() == isImg)
+                if (mDigitalContentList.size() > 0) {
+                    for (int i = 0; i < mDigitalContentList.size(); i++) {
+                        if (mDigitalContentList.get(i).getImgFlag() == isImg)
                             mImgCount++;
-                        else if (mylist.get(i).getImgFlag() == isAudio)
+                        else if (mDigitalContentList.get(i).getImgFlag() == isAudio)
                             mAudioCount++;
-                        else if (mylist.get(i).getImgFlag() == isVideo)
+                        else if (mDigitalContentList.get(i).getImgFlag() == isVideo)
                             mVideoCount++;
-                        else if (mylist.get(i).getImgFlag() == isXls)
+                        else if (mDigitalContentList.get(i).getImgFlag() == isXls)
                             mXlsCount++;
-                        else if (mylist.get(i).getImgFlag() == isPDF)
+                        else if (mDigitalContentList.get(i).getImgFlag() == isPDF)
                             mPDFCount++;
                         else
                             mOthersCount++;
@@ -769,7 +678,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             // result is the value returned from doInBackground
 
             progressDialogue.dismiss();
-            if (mylist.size() > 0) {
+            if (mDigitalContentList.size() > 0) {
 
                 if (tabLayout != null) {
                     tabLayout.removeAllTabs();
@@ -780,19 +689,19 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
                 viewPager = (ViewPager) view.findViewById(R.id.pager);
                 adapter = new PagerAdapter
-                        (getChildFragmentManager(), tabLayout.getTabCount());
+                        (getChildFragmentManager());
                 if (mImgCount > 0)
-                    adapter.addFragment(new DigitalContentImagesFragement(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
+                    adapter.addFragment(new DigitalContentImagesFragment(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
                 if (mAudioCount > 0)
-                    adapter.addFragment(new DigitalContentAudioFragement(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
+                    adapter.addFragment(new DigitalContentAudioFragment(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
                 if (mVideoCount > 0)
                     adapter.addFragment(new DigitalContentVideoFragement(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
                 if (mXlsCount > 0)
-                    adapter.addFragment(new DigitalContentXlsFragement(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
+                    adapter.addFragment(new DigitalContentXlsFragment(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
                 if (mPDFCount > 0)
-                    adapter.addFragment(new DigitalContentPdfFragement(), getResources().getString(R.string.tab_text_pdf) + ":" + mPDFCount);
+                    adapter.addFragment(new DigitalContentPdfFragment(), getResources().getString(R.string.tab_text_pdf) + ":" + mPDFCount);
                 if (mOthersCount > 0)
-                    adapter.addFragment(new DigitalContentOthersFragement(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
+                    adapter.addFragment(new DigitalContentOthersFragment(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
 
             }
 
@@ -817,7 +726,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                         ret.setTextcolor(Color.BLACK);
 
                         ret.setImgFlag(isImg);
-                        imglist.add(ret);
+                        mImageList.add(ret);
 
                     } else {
                         if (ret.getFileName().endsWith("xls")
@@ -841,7 +750,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                         }
                         ret.setTextcolor(Color.WHITE);
 
-                        mylist.add(ret);
+                        mDigitalContentList.add(ret);
 
                     }
                 }
@@ -851,13 +760,11 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
 
     public class PagerAdapter extends FragmentPagerAdapter {//FragmentPagerAdapter {//FragmentStatePagerAdapter
-        private int mNumOfTabs, index;
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        private PagerAdapter(FragmentManager fm, int NumOfTabs) {
+        private PagerAdapter(FragmentManager fm) {
             super(fm);
-            this.mNumOfTabs = NumOfTabs;
         }
 
         @Override

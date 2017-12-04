@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 /**
- * Created by ivyuser on 4/12/17.
+ * Created by Rajkumar.S on 4/12/17.
+ *
  */
 
 public class DigitalContentHelper {
@@ -24,7 +25,7 @@ public class DigitalContentHelper {
     private final BusinessModel mBModel;
     private static DigitalContentHelper instance;
     private Vector<DigitalContentBO> digitalMaster;
-    ArrayList<DigitalContentBO> filteredDigitalMaster;
+    private ArrayList<DigitalContentBO> filteredDigitalMaster;
     public String mSelectedActivityName;
 
     private DigitalContentHelper(Context context) {
@@ -53,7 +54,7 @@ public class DigitalContentHelper {
     }
 
     // ----------- Load Digital Content Details -----------------/
-    private String getDigitialContentTaggingDetails() {
+    private String getDigitalContentTaggingDetails() {
         String mappingId = "-1";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -89,20 +90,20 @@ public class DigitalContentHelper {
     /**
      * Download Digital Content details for Seller and retailer wise
      *
-     * @param --seller /Retailer  seller /Retailer
+     * @param value seller or Retailer
      */
     public void downloadDigitalContent(String value) {
         DigitalContentBO product;
-        String mapppingID;
+        String mMappingId;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
             if ("SELLER".equals(value))
-                mapppingID = "0";
+                mMappingId = "0";
             else
-                mapppingID = getDigitialContentTaggingDetails();
+                mMappingId = getDigitalContentTaggingDetails();
             if ("SELLER".equals(value))
 
             {
@@ -136,7 +137,7 @@ public class DigitalContentHelper {
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
                 sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid ");
                 sBuffer.append(" where mappingid=");
-                sBuffer.append(mapppingID);
+                sBuffer.append(mMappingId);
                 sBuffer.append(" and DCM.mappingtype!='SELLER' ");
 
                 Cursor c = db.selectSQL(sBuffer.toString());
