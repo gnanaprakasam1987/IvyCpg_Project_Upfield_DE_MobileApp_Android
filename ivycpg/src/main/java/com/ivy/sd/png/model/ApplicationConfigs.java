@@ -5,7 +5,7 @@ ApplicationConfigs {
 
     String DB_NAME = "ivycpg_v18";
 
-    boolean withActivation = true;
+    boolean withActivation = false;
 
     boolean checkUTCTime = true;
     String LANGUAGE = "en";
