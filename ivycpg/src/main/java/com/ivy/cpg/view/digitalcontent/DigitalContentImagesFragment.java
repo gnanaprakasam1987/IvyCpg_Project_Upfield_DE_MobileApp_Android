@@ -35,14 +35,14 @@ import java.util.HashMap;
 
 public class DigitalContentImagesFragment extends IvyBaseFragment {
 
-
     BusinessModel mBModel;
+    private DigitalContentHelper mDigitalContentHelper;
+
     private RecyclerView recyclerview;
     public GridLayoutManager mGridLayoutManager;
     RecyclerViewAdapter mRecyclerAdapter;
-    private int mScreenWidth = 0;
-    private DigitalContentHelper mDigitalContentHelper;
 
+    private int mScreenWidth = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,12 +100,15 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         ArrayList<DigitalContentBO> mImageList = new ArrayList<>();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         mDigitalContentList = mDigitalContentHelper.getFilteredDigitalMaster();
+
         if (mDigitalContentList.size() > 0) {
 
+            // load only images to the list
             for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 1)
                     mImageList.add(bo);
             }
+
             if (mImageList.size() > 0) {
                 Collections.sort(mImageList, DigitalContentBO.dateCompartor);
 
@@ -174,19 +177,23 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 recyclerview.setAdapter(mRecyclerAdapter);
             }
         } else {
-            ArrayList<DigitalContentBO> mPDFList = new ArrayList<>();
-            mRecyclerAdapter = new RecyclerViewAdapter(mPDFList);
+            ArrayList<DigitalContentBO> mList = new ArrayList<>();
+            mRecyclerAdapter = new RecyclerViewAdapter(mList);
             recyclerview.setAdapter(mRecyclerAdapter);
         }
 
     }
 
+    /**
+     * Load Images
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         ArrayList<DigitalContentBO> items;
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
+
         RecyclerViewAdapter(ArrayList<DigitalContentBO> items) {
             this.items = items;
         }
@@ -267,6 +274,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         private boolean isPositionHeader(int position) {
             return items.get(position).isHeader();
         }
+
         @Override
         public int getItemCount() {
             return items.size();

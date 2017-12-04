@@ -31,16 +31,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class DigitalContentVideoFragement extends IvyBaseFragment {
+public class DigitalContentVideoFragment extends IvyBaseFragment {
 
 
-    BusinessModel bmodel;
-    private RecyclerView recyclerview;
-    public GridLayoutManager gridlaymanager;
-    private ArrayList<DigitalContentBO> mylist;
-    RecyclerViewAdapter recycleradapter;
-    private int screenwidth = 0, screenheight = 0;
+    BusinessModel mBModel;
     private DigitalContentHelper mDigitalContentHelper;
+
+    private RecyclerView recyclerview;
+    public GridLayoutManager mGridLayoutManager;
+    RecyclerViewAdapter mRecyclerAdapter;
+
+    private int mScreenWidth = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,12 +57,10 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
                 container, false);
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        screenwidth = displaymetrics.widthPixels;
-        screenheight = displaymetrics.heightPixels;
+        mScreenWidth = displaymetrics.widthPixels;
 
-
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
         mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
         if (getActivity().getActionBar() != null) {
@@ -71,22 +70,22 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
 
         recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
 
-        //set GridLayoutManager in recyclerview
-        if (screenwidth > 400)
-            gridlaymanager = new GridLayoutManager(getActivity(), 3);
+        //set GridLayoutManager in recycler view
+        if (mScreenWidth > 400)
+            mGridLayoutManager = new GridLayoutManager(getActivity(), 3);
         else
-            gridlaymanager = new GridLayoutManager(getActivity(), 2);
+            mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
 
-        gridlaymanager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        mGridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (screenwidth >= 400) {
-                    return recycleradapter.isPositionHeader(position) ? 3 : 1;
+                if (mScreenWidth >= 400) {
+                    return mRecyclerAdapter.isPositionHeader(position) ? 3 : 1;
                 }
                 return 1;
             }
         });
-        recyclerview.setLayoutManager(gridlaymanager);
+        recyclerview.setLayoutManager(mGridLayoutManager);
 
         return view;
     }
@@ -94,22 +93,24 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = mDigitalContentHelper.getFilteredDigitalMaster();
+        ArrayList<DigitalContentBO> mDigitalContentList = mDigitalContentHelper.getFilteredDigitalMaster();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
-        if (mylist.size() > 0) {
+        if (mDigitalContentList.size() > 0) {
+
+            //Loading only video types
             ArrayList<DigitalContentBO> videoList = new ArrayList<>();
-            for (DigitalContentBO bo : mylist) {
+            for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 3)
                     videoList.add(bo);
             }
             if (videoList.size() > 0) {
                 Collections.sort(videoList, DigitalContentBO.dateCompartor);
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
-                String currentday = today.split("/")[2];
-                String current_month_year = today.split(currentday)[0];
+                String mCurrentDay = today.split("/")[2];
+                String current_month_year = today.split(mCurrentDay)[0];
                 String current_month = today.split("/")[1];
-                String currentyear = today.split("/")[0];
-                String previous_month_year = currentyear + "/" + (Integer.parseInt(current_month) - 1) + "/";
+                String mCurrentYear = today.split("/")[0];
+                String previous_month_year = mCurrentYear + "/" + (Integer.parseInt(current_month) - 1) + "/";
 
                 month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
@@ -160,13 +161,16 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
                 if (month_wise_group.get("OLDER") != null && month_wise_group.get("OLDER").size() != 0) {
                     videoList.addAll(month_wise_group.get("OLDER"));
                 }
-                recycleradapter = new RecyclerViewAdapter(videoList);
-                recyclerview.setAdapter(recycleradapter);
+                mRecyclerAdapter = new RecyclerViewAdapter(videoList);
+                recyclerview.setAdapter(mRecyclerAdapter);
             }
         }
 
     }
 
+    /**
+     * Loading video to the view
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<DigitalContentBO> items;
@@ -202,11 +206,7 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
         }
 
         private boolean isPositionHeader(int position) {
-            if (items.get(position).isHeader()) {
-                return true;
-            } else {
-                return false;
-            }
+            return items.get(position).isHeader();
         }
 
         @Override
@@ -216,39 +216,35 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
                 if (product.getDescription() != null) {
                     String str = product.getDescription().equals("null") ? product
                             .getFileName() : product.getDescription();
-                    ((VHItem) holder).pname.setText(str);
+                    ((VHItem) holder).mPDescription.setText(str);
                 } else {
-                    ((VHItem) holder).pname.setText(product.getFileName());
+                    ((VHItem) holder).mPDescription.setText(product.getFileName());
                 }
                 ((VHItem) holder).date.setText(product.getImageDate());
                 ((VHItem) holder).filename = product.getFileName();
 
                 if (product.getProductName() != null && !(product.getProductName().equals(""))) {
-                    ((VHItem) holder).prodname.setText(product.getProductName());
-                    ((VHItem) holder).prodname.setVisibility(View.VISIBLE);
+                    ((VHItem) holder).mPName.setText(product.getProductName());
+                    ((VHItem) holder).mPName.setVisibility(View.VISIBLE);
                 } else {
-                    ((VHItem) holder).prodname.setVisibility(View.GONE);
+                    ((VHItem) holder).mPName.setVisibility(View.GONE);
                 }
 
                 Glide
                         .with(getContext())
                         .load(Uri.fromFile(new File(
                                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                                         + DataMembers.DIGITAL_CONTENT + "/"
                                         + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName())))
                         .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_digital_video))
                         .into(((VHItem) holder).image);
 
-               /* ((VHItem)holder).image.setImageDrawable(ContextCompat.getDrawable(getActivity(),
-                        R.drawable.ic_digital_video));
-                ((VHItem)holder).image.getLayoutParams().height = 160;*/
-
                 ((VHItem) holder).image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        openMov(((VHItem) holder).filename);
+                        openVideo(((VHItem) holder).filename);
 
                     }
                 });
@@ -267,17 +263,17 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
 
 
         public class VHItem extends RecyclerView.ViewHolder {
-            TextView pname, date, prodname, month_label;
+            TextView mPDescription, date, mPName, month_label;
             ImageView image, play_icon;
             String filename;
 
             public VHItem(View v) {
                 super(v);
-                pname = (TextView) v
+                mPDescription = (TextView) v
                         .findViewById(R.id.closePRODNAME);
                 image = (ImageView) v.findViewById(R.id.icon);
                 date = (TextView) v.findViewById(R.id.date);
-                prodname = (TextView) v.findViewById(R.id.prodName);
+                mPName = (TextView) v.findViewById(R.id.prodName);
                 month_label = (TextView) v.findViewById(R.id.month_label);
                 play_icon = (ImageView) v.findViewById(R.id.play_icon);
                 play_icon.setVisibility(View.VISIBLE);
@@ -298,12 +294,12 @@ public class DigitalContentVideoFragement extends IvyBaseFragment {
     /**
      * Method to show Video File
      *
-     * @param name
+     * @param name File Name
      */
-    private void openMov(String name) {
+    private void openVideo(String name) {
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.DIGITALCONTENT + "/" + name);
         if (file.exists()) {

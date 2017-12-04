@@ -96,6 +96,8 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mDigitalContentList.size() > 0) {
             ArrayList<DigitalContentBO> xlsList = new ArrayList<>();
+
+            //Loading only Excel file
             for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 4)
                     xlsList.add(bo);
@@ -165,6 +167,9 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
 
     }
 
+    /**
+     * Loading Excel file to the view
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<DigitalContentBO> items;
@@ -190,6 +195,7 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
+
         @Override
         public int getItemViewType(int position) {
             if (isPositionHeader(position))

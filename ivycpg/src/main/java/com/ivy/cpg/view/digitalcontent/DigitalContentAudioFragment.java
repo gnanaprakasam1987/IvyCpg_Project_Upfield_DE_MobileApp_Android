@@ -35,12 +35,13 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
 
 
     BusinessModel mBModel;
+    private DigitalContentHelper mDigitalContentHelper;
+
     private RecyclerView recyclerview;
     public GridLayoutManager mGridLayoutManager;
     private RecyclerViewAdapter mRecyclerAdapter;
-    private int mScreenWidth = 0;
-    private DigitalContentHelper mDigitalContentHelper;
 
+    private int mScreenWidth = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +58,6 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScreenWidth = displaymetrics.widthPixels;
-
 
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
@@ -98,6 +98,8 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mDigitalContentList.size() > 0) {
             ArrayList<DigitalContentBO> audioList = new ArrayList<>();
+
+            //Loading only audio types
             for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 2)
                     audioList.add(bo);
@@ -175,6 +177,9 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
 
     }
 
+    /**
+     * Loading digital content to the view
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<DigitalContentBO> items;

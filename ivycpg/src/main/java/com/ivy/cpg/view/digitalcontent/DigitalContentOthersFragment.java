@@ -33,14 +33,15 @@ import java.util.HashMap;
 
 public class DigitalContentOthersFragment extends IvyBaseFragment {
 
-
     BusinessModel mBModel;
+    private DigitalContentHelper mDigitalContentHelper;
+
     private RecyclerView recyclerview;
     public GridLayoutManager mGridLayoutManager;
     RecyclerViewAdapter mRecyclerAdapter;
+
     private int mScreenWidth = 0;
 
-    private DigitalContentHelper mDigitalContentHelper;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +96,13 @@ public class DigitalContentOthersFragment extends IvyBaseFragment {
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mDigitalContentList.size() > 0) {
             ArrayList<DigitalContentBO> otherList = new ArrayList<>();
+
+            //Load other type of digital content files
             for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 6)
                     otherList.add(bo);
             }
+
             if (otherList.size() > 0) {
                 Collections.sort(otherList, DigitalContentBO.dateCompartor);
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
@@ -164,6 +168,9 @@ public class DigitalContentOthersFragment extends IvyBaseFragment {
 
     }
 
+    /**
+     * Loading digital content to the recycler view
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<DigitalContentBO> items;

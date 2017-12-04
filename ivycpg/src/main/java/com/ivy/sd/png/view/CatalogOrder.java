@@ -399,8 +399,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 super.onScrolled(recyclerView, dx, dy);
 
                 visibleItemCount = pdt_recycler_view.getChildCount();
-                totalItemCount = gridlaymanager.getItemCount();
-                firstVisibleItem = gridlaymanager.findFirstVisibleItemPosition();
+                totalItemCount = mGridLayoutManager.getItemCount();
+                firstVisibleItem = mGridLayoutManager.findFirstVisibleItemPosition();
 
                 if (loading) {
                     if (totalItemCount > previousTotal) {

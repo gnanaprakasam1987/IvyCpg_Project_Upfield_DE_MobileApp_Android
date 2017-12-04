@@ -33,13 +33,14 @@ import java.util.HashMap;
 
 public class DigitalContentPdfFragment extends IvyBaseFragment {
 
-
     BusinessModel mBModel;
+    private DigitalContentHelper mDigitalContentHelper;
+
     private RecyclerView recyclerview;
     public GridLayoutManager mGridLayoutManager;
-    RecyclerViewAdapter mRecyclerAdapter;
+    private RecyclerViewAdapter mRecyclerAdapter;
+
     private int mScreenWidth = 0;
-    private DigitalContentHelper mDigitalContentHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,10 +98,13 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
         if (mDigitalContentList.size() > 0) {
             ArrayList<DigitalContentBO> pdfList = new ArrayList<>();
+
+            //Loading only PDF type
             for (DigitalContentBO bo : mDigitalContentList) {
                 if (bo.getImgFlag() == 5)
                     pdfList.add(bo);
             }
+
             if (pdfList.size() > 0) {
                 Collections.sort(pdfList, DigitalContentBO.dateCompartor);
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
@@ -111,7 +115,6 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                 String previous_month_year = mCurrentYear + "/" + (Integer.parseInt(current_month) - 1) + "/";
                 month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
-                //month_wise_group.put("LAST MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("OLDER", new ArrayList<DigitalContentBO>());
                 ArrayList<DigitalContentBO> temp;
                 for (int i = 0; i < pdfList.size(); i++) {
@@ -174,6 +177,9 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
 
     }
 
+    /**
+     * Loading PDF to the view
+     */
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<DigitalContentBO> items;
@@ -233,11 +239,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                     ((VHItem) holder).mPName.setVisibility(View.GONE);
                 }
 
-                /*if (product.getFileName().endsWith("pdf")) {
-                    ((VHItem)holder).image.setImageDrawable(ContextCompat.getDrawable(getActivity(),
-                            R.drawable.ic_digital_pdf));
-                    ((VHItem)holder).image.getLayoutParams().height = 160;
-                }*/
+
                 Glide
                         .with(getContext())
                         .load(Uri.fromFile(new File(

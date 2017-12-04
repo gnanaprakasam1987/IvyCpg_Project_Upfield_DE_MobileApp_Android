@@ -324,7 +324,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     /**
      * Method used to call Five level filter.
      */
-
     private void FiveFilterFragment() {
         try {
 
@@ -405,7 +404,11 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     }
 
 
-
+    /**
+     * Click action
+     *
+     * @param action Action type
+     */
     public void click(int action) {
         if (!isClicked) {
             isClicked = true;
@@ -561,6 +564,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
     }
 
+    /**
+     * Load images in the view
+     */
     class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private ProgressDialog progressDialogue;
         private int pid;
@@ -603,10 +609,10 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 if (mParentIdList != null && mParentIdList.size() > 0) {
                     for (int k = 0; k < mParentIdList.size(); k++) {
                         pid = mParentIdList.get(k).getParentID();
-                        loadList(pid);
+                        loadDigitalContentByType(pid);
                     }
                 } else {
-                    loadList(-1);
+                    loadDigitalContentByType(-1);
                 }
 
 
@@ -695,7 +701,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 if (mAudioCount > 0)
                     adapter.addFragment(new DigitalContentAudioFragment(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
                 if (mVideoCount > 0)
-                    adapter.addFragment(new DigitalContentVideoFragement(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
+                    adapter.addFragment(new DigitalContentVideoFragment(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
                 if (mXlsCount > 0)
                     adapter.addFragment(new DigitalContentXlsFragment(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
                 if (mPDFCount > 0)
@@ -714,7 +720,12 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         }
 
-        private void loadList(int pid) {
+        /**
+         * Preparing list based on digital content type
+         *
+         * @param pid
+         */
+        private void loadDigitalContentByType(int pid) {
             for (int i = 0; i < size; ++i) {
                 DigitalContentBO ret = items.elementAt(i);
                 if (ret.getProductID() == pid || pid == -1) {
@@ -759,7 +770,10 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     }
 
 
-    public class PagerAdapter extends FragmentPagerAdapter {//FragmentPagerAdapter {//FragmentStatePagerAdapter
+    /**
+     * Loading separate fragment for all digital content types
+     */
+    public class PagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 

@@ -53,7 +53,11 @@ public class DigitalContentHelper {
         this.filteredDigitalMaster = filteredDigitalMaster;
     }
 
-    // ----------- Load Digital Content Details -----------------/
+    /**
+     * Get mapping Id based on the mapping type
+     *
+     * @return Mapping Id
+     */
     private String getDigitalContentTaggingDetails() {
         String mappingId = "-1";
         try {
@@ -164,6 +168,9 @@ public class DigitalContentHelper {
         }
     }
 
+    /**
+     * Update digital content availability
+     */
     public void setIsDigitalContent() {
         RetailerMasterBO retailer;
         int siz = mBModel.getRetailerMaster().size();
@@ -182,6 +189,9 @@ public class DigitalContentHelper {
 
     }
 
+    /**
+     * Update digital content availability in Db
+     */
     public void setDigitalContentInDB() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
