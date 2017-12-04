@@ -46,8 +46,8 @@ import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.digitalcontent.DigitalContentDisplayNew;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -798,7 +798,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (!isClick) {
                 isClick = true;
                 Intent intent = new Intent(HomeScreenTwo.this,
-                        DigitalContentDisplayNew.class);
+                        StoreWiseGallery.class);
                 startActivity(intent);
                 finish();
             }

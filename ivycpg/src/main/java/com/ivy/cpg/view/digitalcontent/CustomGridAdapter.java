@@ -18,9 +18,9 @@ import java.util.ArrayList;
 public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.ViewHolder> {
 	private Context context;
 	private final ArrayList<ImageBO> items;
-	private DigitalContentDisplayNew ob;
+    private StoreWiseGallery ob;
 
-	public CustomGridAdapter(Context context,ArrayList<ImageBO> im,DigitalContentDisplayNew ob2) {
+    public CustomGridAdapter(Context context, ArrayList<ImageBO> im, StoreWiseGallery ob2) {
 
 		this.context = context;
 		this.items = im;
@@ -54,7 +54,7 @@ public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.Vi
 
 				i.putExtra("position", position);
 
-				ob.statingactivity(i);
+                ob.startingActivity(i);
 
 			}
 		});

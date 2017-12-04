@@ -60,11 +60,11 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected HashMap<String, ArrayList<String>> mImageListByProductName;
     protected HashMap<String, ArrayList<String>> mPhotoTypeListByProductName;
     protected HashMap<String, ArrayList<String>> mLocationListByProductName;
+    protected HashMap<String, String> mInStoreLocationNameById;
     protected GalRecyclerAdapter galRecyclerAdapter;
-    protected ArrayList<String> imgPathShare=new ArrayList<>();
-    protected ArrayList<String> imgPathDelete=new ArrayList<>();
-    protected ArrayList<File> imgFileDelete=new ArrayList<>();
-    protected HashMap<String, String> mInStoreLocationNameById = new HashMap<>();
+    protected ArrayList<String> imgPathShare;
+    protected ArrayList<String> imgPathDelete;
+    protected ArrayList<File> imgFileDelete;
 
 
     /**
@@ -76,8 +76,6 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         setContentView(R.layout.gall);
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
-
-        mBModel.loadPhotoCapturedDetailsSelectedRetailer();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null)
@@ -194,6 +192,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
             mImageListByProductName = new HashMap<>();
             mPhotoTypeListByProductName = new HashMap<>();
             mLocationListByProductName = new HashMap<>();
+            mInStoreLocationNameById = new HashMap<>();
 
             for (PhotoCaptureLocationBO temp : PhotoCaptureHelper.getInstance(getApplicationContext()).getLocations()) {
                 mInStoreLocationNameById.put(String.valueOf(temp.getLocationId()), temp.getLocationName());

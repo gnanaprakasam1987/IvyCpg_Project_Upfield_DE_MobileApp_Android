@@ -19,11 +19,11 @@ import java.util.Collections;
 class CustomGridAdapterDigitalDisplay extends RecyclerView.Adapter<CustomGridAdapterDigitalDisplay.ViewHolder> {
     private Context context;
     private ArrayList<ImageBO> items, mAllImagesList;
-    private DigitalContentDisplayNew ob;
+    private StoreWiseGallery ob;
     private TextView selected_folder;
     private RecyclerView mDetailGridView;
 
-    public CustomGridAdapterDigitalDisplay(Context context, ArrayList<ImageBO> im, DigitalContentDisplayNew ob2
+    public CustomGridAdapterDigitalDisplay(Context context, ArrayList<ImageBO> im, StoreWiseGallery ob2
             , TextView selected_folder, RecyclerView mDetailGridView,
                                            ArrayList<ImageBO> mAllImagesList) {
 

@@ -337,8 +337,6 @@ public class BusinessModel extends Application {
     public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
-    //
-    public HashMap<String, PhotoCaptureProductBO> galleryDetails;
     /* ******* Invoice Number To Print ******* */
     public String invoiceNumber;
     public String invoiceDate;
@@ -2876,70 +2874,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-
-    // Load all retailer in Gallery
-    public void loadPhotoCapturedDetails() {
-
-        galleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-        for (int i = 0; i < retailerMaster.size(); i++) {
-            String sql = "select * from Photocapture where RetailerId="
-                    + retailerMaster.get(i).getRetailerID();
-            int imageCount = 1;
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                PhotoCaptureProductBO photoBO;
-                while (c.moveToNext()) {
-                    photoBO = new PhotoCaptureProductBO();
-                    photoBO.setRetailerName(c.getString(c
-                            .getColumnIndex("RetailerName")) + "." + imageCount);
-                    photoBO.setProductID(c.getInt(c.getColumnIndex("pid")));
-//                    photoBO.setPhototypeid(c.getInt(c.getColumnIndex("phototypeid")));
-                    galleryDetails
-                            .put(c.getString(c.getColumnIndex("imagepath")),
-                                    photoBO);
-                    imageCount++;
-                }
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
-
-    public void loadPhotoCapturedDetailsSelectedRetailer() {
-
-        galleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-        String sql = "select * from Photocapture where RetailerId="
-                + Utils.QT(this.getRetailerMasterBO().getRetailerID());
-        int imageCount = 1;
-        Cursor c = db.selectSQL(sql);
-        if (c != null) {
-            PhotoCaptureProductBO photoBO;
-            while (c.moveToNext()) {
-                photoBO = new PhotoCaptureProductBO();
-                photoBO.setRetailerName(c.getString(c
-                        .getColumnIndex("RetailerName")) + "." + imageCount);
-                photoBO.setProductID(c.getInt(c.getColumnIndex("pid")));
-//                photoBO.setPhototypeid(c.getInt(c.getColumnIndex("phototypeid")));
-                galleryDetails.put(c.getString(c.getColumnIndex("imagepath")),
-                        photoBO);
-                imageCount++;
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
 
     /**
      * This method will save the Invoice into InvoiceMaster table as well as the
