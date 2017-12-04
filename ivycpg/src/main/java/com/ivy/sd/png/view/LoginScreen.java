@@ -67,6 +67,7 @@ import com.ivy.sd.png.model.DownloaderThreadCatalog;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -123,6 +124,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     private int mIterateCount;
     private TextView mForgotPasswordTV;
     LinearLayout ll_footer;
+    private LoginHelper loginHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        loginHelper = LoginHelper.getInstance(this);
 
         bmodel.configurationMasterHelper.loadConfigurationForLoginScreen();
         bmodel.configurationMasterHelper.loadPasswordConfiguration();
@@ -1004,11 +1007,11 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     //
-    private int chmod(File path, int mode) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private void chmod(File path, int mode) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Class fileUtils = Class.forName("android.os.FileUtils");
         Method setPermissions = fileUtils.getMethod("setPermissions",
                 String.class, int.class, int.class, int.class);
-        return (Integer) setPermissions.invoke(null, path.getAbsolutePath(),
+        setPermissions.invoke(null, path.getAbsolutePath(),
                 mode, -1, -1);
     }
 
@@ -1049,7 +1052,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                                 .edit();
                         editor.putString("rpt_dwntime",
                                 SDUtil.now(SDUtil.DATE_TIME_NEW));
-                        editor.commit();
+                        editor.apply();
                     }
                     new UpdateFinish().execute();
                 } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
@@ -1097,7 +1100,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 bmodel.configurationMasterHelper.outDateFormat));
                         edt.putString("time", SDUtil.now(SDUtil.TIME));
-                        edt.commit();
+                        edt.apply();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     new UpdateRetailerFinish().execute();

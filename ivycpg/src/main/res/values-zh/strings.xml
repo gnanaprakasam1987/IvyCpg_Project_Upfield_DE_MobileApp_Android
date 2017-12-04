@@ -931,7 +931,7 @@
     <string name="text_mdate">错过的日期</string>
     <string name="menu_not_available">菜单（s）不可用。</string>
     <string name="download_url_empty">下载网址为空</string>
-    <string name="out_of">1 %基础数据已下载</string>
+    <string name="out_of">%1$d基础数据已下载</string>
     <string name="still_you_can">仍然可以拍摄“% 1 $ D”更多的照片，要继续吗？</string>
     <string name="table_downloaded">表“% 1 $ D”已下载</string>
     <string name="error">错误：</string>

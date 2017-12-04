@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -112,10 +112,12 @@ public class LoginHelper {
      */
     public boolean checkPlayServices() {
         Commons.print("check play service");
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(context);
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context);
+        /*int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(context);*/
         if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+            if (googleApiAvailability.isUserResolvableError(resultCode)) {
                 /*GooglePlayServicesUtil.getErrorDialog(resultCode, context,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();*/
             } else {

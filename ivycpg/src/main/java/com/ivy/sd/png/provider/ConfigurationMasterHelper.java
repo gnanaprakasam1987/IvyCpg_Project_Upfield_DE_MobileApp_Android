@@ -4972,7 +4972,6 @@ public class ConfigurationMasterHelper {
     }
 
     public void loadPasswordConfiguration() {
-        boolean isPasswordLock = false;
         DBUtil db = null;
         db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -4987,30 +4986,27 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
                     if (value == 1) {
-                        isPasswordLock = true;
+                        sb = new StringBuffer();
+                        sb.append("select RField from hhtmodulemaster where hhtcode =");
+                        sb.append(bmodel.QT(CODE_MAXIMUM_ATTEMPTCOUNT));
+                        sb.append(" and Flag=1");
+                        c = db.selectSQL(sb.toString());
+                        if (c.getCount() > 0) {
+                            if (c.moveToNext()) {
 
+                                MAXIMUM_ATTEMPT_COUNT = c.getInt(0);
+
+                            }
+                        }
+                        if (MAXIMUM_ATTEMPT_COUNT > 0) {
+                            int listid = getActivtyType("RESET_PWD");
+                            if (listid != 0)
+                                IS_PASSWORD_LOCK = true;
+                        }
                     }
                 }
             }
-            if (isPasswordLock) {
-                sb = new StringBuffer();
-                sb.append("select RField from hhtmodulemaster where hhtcode =");
-                sb.append(bmodel.QT(CODE_MAXIMUM_ATTEMPTCOUNT));
-                sb.append(" and Flag=1");
-                c = db.selectSQL(sb.toString());
-                if (c.getCount() > 0) {
-                    if (c.moveToNext()) {
 
-                        MAXIMUM_ATTEMPT_COUNT = c.getInt(0);
-
-                    }
-                }
-                if (MAXIMUM_ATTEMPT_COUNT > 0) {
-                    int listid = getActivtyType("RESET_PWD");
-                    if (listid != 0)
-                        IS_PASSWORD_LOCK = true;
-                }
-            }
 
             SHOW_CHANGE_PASSWORD = false;
             SHOW_FORGET_PASSWORD = false;
