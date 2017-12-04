@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -59,7 +58,6 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     private BusinessModel bmodel;
 
     private ArrayList<DigitalContentBO> mylist;
-    public ArrayList<DigitalContentBO> filteredList;
 
     private String calledFrom = "", screenCode = "MENU_STK_ORD";
 
@@ -76,8 +74,6 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
 
     public int screenwidth = 0, screenheight = 0;
 
-    public static final int reqWidth = 240,
-            reqHeight = 240;
 
     private TabLayout tabLayout;
 
@@ -89,7 +85,10 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     private int mSelectedTab = 0;
     private ViewPager viewPager = null;
     private PagerAdapter adapter = null;
-    String screentitle;
+    private String screentitle = "Digital Content";
+
+    private static final String MENU_DGT_SW = "MENU_DGT_SW";
+    private static final String MENU_DGT = "MENU_DGT";
 
     @Override
     public void onAttach(Context context) {
@@ -109,15 +108,16 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_digital_content, container, false);
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         screenwidth = displaymetrics.widthPixels;
         screenheight = displaymetrics.heightPixels;
+
         Bundle extras = getArguments();
         if (extras == null) {
             extras = getActivity().getIntent().getExtras();
         }
-
         if (extras != null) {
             screenCode = extras.getString("ScreenCode");
             calledFrom = extras.getString("FromInit");
@@ -127,10 +127,10 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
 
         if (calledFrom != null && calledFrom.equals("DigiCS")) {
             bmodel.productHelper.downloadProductFilter(CSHomeScreenFragment.MENU_DGT_CS);
-        } else if (calledFrom != null && calledFrom.equalsIgnoreCase("MENU_DGT_SW")) {
-            bmodel.productHelper.downloadProductFilter("MENU_DGT_SW");
+        } else if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
+            bmodel.productHelper.downloadProductFilter(MENU_DGT_SW);
         } else {
-            bmodel.productHelper.downloadProductFilter("MENU_DGT");
+            bmodel.productHelper.downloadProductFilter(MENU_DGT);
         }
 
         drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
@@ -139,45 +139,35 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
-
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
-        // set a custom shadow that overlays the main content when the drawer
-        // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
-
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
+        // Set title to action bar
         if (extras != null) {
-            //Set Screen Title
             screentitle = extras.getString("screentitle");
         }
+        //If this screen is called from Menu item or Order flow..
+        if (screenCode.equals("MENU_STK_ORD")
+                || screenCode.equals("MENU_ORDER") || calledFrom.equals("Digi"))
+            screentitle = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle(MENU_DGT);
 
         typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 
-        // Set title to action bar
-        if (screenCode.equals("MENU_STK_ORD")
-                || screenCode.equals("MENU_ORDER") || calledFrom.equals("Digi"))
-            bmodel.mSelectedActivityName = bmodel.configurationMasterHelper
-                    .getHomescreentwomenutitle("MENU_DGT");
 
-        if (calledFrom.equals("DigiCS"))
-            bmodel.mSelectedActivityName = bmodel.configurationMasterHelper
-                    .getHomescreentwomenutitle(CSHomeScreenFragment.MENU_DGT_CS);
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
-                mDrawerLayout, /* DrawerLayout object */
-                R.string.ok, /* "open drawer" description for accessibility */
-                R.string.close /* "close drawer" description for accessibility */
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
         ) {
             public void onDrawerClosed(View view) {
 
                 if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                    setScreenTitle(bmodel.mSelectedActivityName);
+                    setScreenTitle(screentitle);
                     getActivity().supportInvalidateOptionsMenu();
                 }
             }
@@ -190,13 +180,11 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
                 }
             }
         };
-
-
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        /*updateBrandText(BRAND, -1);
-        productFilterClickedFragment();*/
-        new LoadAsyncTask(-1).execute();
         mDrawerLayout.closeDrawer(GravityCompat.END);
+
+        new LoadAsyncTask(-1).execute();
+
         LinearLayout footer = (LinearLayout) view.findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
         Button btnClose = (Button) view.findViewById(R.id.btn_close);
@@ -257,35 +245,24 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     public void onResume() {
         super.onResume();
         isClicked = false;
+
+        screentitle = bmodel.labelsMasterHelper
+                .applyLabels((Object) "menu_dgt");
+
         if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
-            //Set Screen Title
-            if (screentitle == null || screentitle.isEmpty())
-                setScreenTitle(bmodel.getMenuName("MENU_DIGITIAL_SELLER"));
-            else
-                setScreenTitle(screentitle);
-        }
-        if (!bmodel.mSelectedActivityName.equalsIgnoreCase("MENU_DGT") && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            setScreenTitle(bmodel.mSelectedActivityName);
-        } else if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            setScreenTitle(bmodel.labelsMasterHelper
-                    .applyLabels((Object) "menu_dgt"));
+            setScreenTitle(screentitle);
         }
 
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_only_next, menu);
 
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+        menu.findItem(R.id.menu_next).setVisible(false);
 
-//        if (MENU_Init.equals(calledFrom)) {
-//            menu.findItem(R.id.menu_next).setVisible(true);
-//        } else {
-        menu.findItem(R.id.menu_next).setVisible(false);//next button has been brought to bottom
-//        }
         if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null && bmodel.productHelper.getRetailerModuleParentLeveBO().size() > 0 || (bmodel.productHelper.getRetailerModuleChildLevelBO() != null && bmodel.productHelper.getRetailerModuleChildLevelBO().size() > 0)) {
             menu.findItem(R.id.menu_product_filter).setVisible(true);
         } else
@@ -295,10 +272,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        } /*else {
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-        }*/
+        }
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -359,7 +333,6 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
     private void FiveFilterFragment() {
         try {
 
-            //QUANTITY = null;
             if (tabLayout != null) {
                 mSelectedTab = tabLayout.getSelectedTabPosition();
             }
@@ -507,46 +480,6 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
         return Color.argb(alpha, red, green, blue);
     }
 
-    //decodes bitmap from resource with required height and width
-    public static Bitmap decodeSampledBitmapFromResource(String res) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(res, options);
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(res, options);
-    }
-
-
-    /*
-       reduces the image height and width if it is
-       greater than the required height and width
-     */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
 
     public void click(int action) {
         if (!isClicked) {
@@ -622,9 +555,7 @@ public class DigitalContentDisplayFragment extends IvyBaseFragment implements Br
                     getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                     getActivity().finish();
                 }
-            }
-
-            if (action == 2) {
+            } else if (action == 2) {
                 bmodel.setIsDigitalContent();
                 bmodel.setDigitalContentInDB();
                 bmodel.getRetailerMasterBO().setIsDigitalContent("Y");

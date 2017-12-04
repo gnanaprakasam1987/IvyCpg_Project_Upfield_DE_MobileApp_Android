@@ -67,6 +67,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -802,9 +803,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
         } else if (i1 == R.id.menu_digital_content) {
             if (!isClick) {
                 isClick = true;
-                bmodel.planogramMasterHelper.downloadDigitalContent("RETAILER");
-                if (bmodel.planogramMasterHelper.getDigitalMaster() != null
-                        && bmodel.planogramMasterHelper.getDigitalMaster()
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
+                mPlanoGramMasterHelper.downloadDigitalContent("RETAILER");
+                if (mPlanoGramMasterHelper.getDigitalMaster() != null
+                        && mPlanoGramMasterHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -2426,9 +2428,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                bmodel.planogramMasterHelper.downloadDigitalContent("RETAILER");
-                if (bmodel.planogramMasterHelper.getDigitalMaster() != null
-                        && bmodel.planogramMasterHelper.getDigitalMaster()
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
+                mPlanoGramMasterHelper.downloadDigitalContent("RETAILER");
+                if (mPlanoGramMasterHelper.getDigitalMaster() != null
+                        && mPlanoGramMasterHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -2437,6 +2440,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             DigitalContentDisplay.class);
                     i.putExtra("CurrentActivityCode", menu.getConfigCode());
                     i.putExtra("FromDigi", "Digi");
+                    i.putExtra("screentitle", menu.getMenuName());
                     startActivity(i);
                     finish();
                 } else {
@@ -2704,22 +2708,23 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
 
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 chooseFilterType(MENU_PLANOGRAM);
-                bmodel.planogramMasterHelper.downloadlevels(MENU_PLANOGRAM,
+                mPlanoGramMasterHelper.downloadlevels(MENU_PLANOGRAM,
                         bmodel.retailerMasterBO.getRetailerID());
                 bmodel.productHelper.loadData(MENU_PLANOGRAM);
                 bmodel.mSFSelectedFilter = -1;
-                /*bmodel.planogramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
+                /*mPlanoGramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
                         bmodel.retailerMasterBO.getRetailerID());*/
                 //bmodel.productHelper.downloadPlanogramProdutLocations(MENU_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID());
-                bmodel.planogramMasterHelper
+                mPlanoGramMasterHelper
                         .loadPlanoGramInEditMode(bmodel.retailerMasterBO
                                 .getRetailerID());
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_PLANOGRAM);
 
-                if (bmodel.planogramMasterHelper.getPlanogramMaster() != null && bmodel.planogramMasterHelper.getPlanogramMaster().size() > 0) {
+                if (mPlanoGramMasterHelper.getPlanogramMaster() != null && mPlanoGramMasterHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());

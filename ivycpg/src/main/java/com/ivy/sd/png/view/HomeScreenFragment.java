@@ -73,6 +73,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.survey.SurveyActivityNewFragment;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -463,7 +464,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                Uri uri = bmodel.planogramMasterHelper
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
+                Uri uri = mPlanoGramMasterHelper
                         .getUriFromFile(photoPath + "/" + imageFileName);
                 bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                 bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
@@ -1235,9 +1237,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.planogramMasterHelper.downloadDigitalContent("SELLER");
-                if (bmodel.planogramMasterHelper.getDigitalMaster() != null
-                        && bmodel.planogramMasterHelper.getDigitalMaster()
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
+                mPlanoGramMasterHelper.downloadDigitalContent("SELLER");
+                if (mPlanoGramMasterHelper.getDigitalMaster() != null
+                        && mPlanoGramMasterHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     switchFragment(MENU_DIGITIAL_SELLER, menuItem.getMenuName());
@@ -1814,6 +1817,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("ScreenCode", fragmentName);
                 bndl.putString("FromInit", fragmentName);
+                bndl.putString("screentitle", menuName);
                 fragment = new DigitalContentDisplayFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
