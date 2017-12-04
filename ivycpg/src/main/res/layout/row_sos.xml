@@ -27,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:contentDescription="@string/audit" />
 
         </LinearLayout>
 
@@ -38,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:gravity="left"
+            android:gravity="start"
             android:maxLines="1"
             android:padding="@dimen/target_top_margin"
             android:text="@string/brand" />
@@ -51,7 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.8"
             android:gravity="center"
-            android:paddingLeft="@dimen/dimen_2dp"
+            android:paddingLeft="@dimen/dimen_1dp"
+            android:paddingRight="@dimen/dimen_1dp"
             android:text="@string/zero" />
 
         <LinearLayout
@@ -129,6 +131,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/target_top_margin"
         android:layout_marginLeft="@dimen/target_top_margin"
         android:orientation="horizontal">
 
@@ -136,6 +139,7 @@
             android:id="@+id/spnReason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
@@ -149,11 +153,11 @@
             android:textColor="@color/Black"
             android:textSize="@dimen/list_item_primary_text_size"
             android:visibility="gone"
-            tools:text="rg tgerg dfgdfgdf g"
+            tools:text=""
             android:hint="@string/remark_hint"
             android:layout_alignTop="@+id/btn_photo"
             android:layout_toRightOf="@+id/spnReason"
-
+            android:layout_toEndOf="@+id/spnReason"
             android:layout_alignBottom="@+id/btn_photo"
             android:layout_toLeftOf="@+id/btn_photo"
             android:layout_toStartOf="@+id/btn_photo"
@@ -165,10 +169,13 @@
             android:layout_height="@dimen/icon"
             android:layout_gravity="end|center_vertical"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/ic_camera_right_margin"
+            android:layout_marginEnd="@dimen/ic_camera_right_margin"
             android:padding="@dimen/ic_camera_right_padding"
             android:gravity="center"
+            android:contentDescription="@string/photo"
             android:src="@drawable/ic_photo_camera_blue_24dp" />
 
     </RelativeLayout>

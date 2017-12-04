@@ -21,6 +21,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,24 +55,8 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         ImageView pdt_image_details = (ImageView) findViewById(R.id.pdt_image_details);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
-                File prd = new File(getExternalFilesDir(
-                        Environment.DIRECTORY_DOWNLOADS)
-                        + "/"
-                        + bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid()
-                        + DataMembers.DIGITAL_CONTENT
-                        + "/"
-                        + DataMembers.CATALOG + "/" + bmodel.selectedPdt.getProductCode() + ".png");
-                if (!prd.exists()) {
-                    prd = new File(getExternalFilesDir(
-                            Environment.DIRECTORY_DOWNLOADS)
-                            + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid()
-                            + DataMembers.DIGITAL_CONTENT
-                            + "/"
-                            + DataMembers.CATALOG + "/" + bmodel.selectedPdt.getProductCode() + ".jpg");
-                }
+
+                File prd = new File(getImageFilePath(bmodel.selectedPdt.getProductCode()));
                 Glide.with(getApplicationContext())
                         .load(prd)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
@@ -118,6 +103,51 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Method used to get image file from sdcard
+     *
+     * @param fileName
+     * @return
+     */
+    public String getImageFilePath(final String fileName) {
+
+        File file = new File(getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS)
+                + "/"
+                + bmodel.userMasterHelper.getUserMasterBO()
+                .getUserid()
+                + DataMembers.DIGITAL_CONTENT
+                + "/"
+                + DataMembers.CATALOG);
+
+        File[] files = file.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.isDirectory()) {
+                    return false;
+                }
+
+                String name = pathname.getName();
+                int lastIndex = name.lastIndexOf('.');
+                boolean isFileAvilable = name.startsWith(fileName);
+
+                if (lastIndex < 0 && !isFileAvilable) {
+                    return false;
+                }
+                return (name.substring(lastIndex).equalsIgnoreCase(".png") ||
+                        name.substring(lastIndex).equalsIgnoreCase(".jpg"))
+                        && isFileAvilable;
+            }
+        });
+
+        if (files != null && files.length > 0) {
+            return files[0].getAbsolutePath();
+        }
+
+        return "";
     }
 
 }

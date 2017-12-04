@@ -63,6 +63,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2230,24 +2231,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (holder.pdt_image != null) {
                 if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
                     if (isExternalStorageAvailable()) {
-                        File prd = new File(getExternalFilesDir(
-                                Environment.DIRECTORY_DOWNLOADS)
-                                + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid()
-                                + DataMembers.DIGITAL_CONTENT
-                                + "/"
-                                + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".png");
-                        if (!prd.exists()) {
-                            prd = new File(getExternalFilesDir(
-                                    Environment.DIRECTORY_DOWNLOADS)
-                                    + "/"
-                                    + bmodel.userMasterHelper.getUserMasterBO()
-                                    .getUserid()
-                                    + DataMembers.DIGITAL_CONTENT
-                                    + "/"
-                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg");
-                        }
+                        File prd = new File(getImageFilePath(holder.productObj.getProductCode()));
+
                         Glide.with(getApplicationContext())
                                 .load(prd)
                                 .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
@@ -2255,7 +2240,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                                 .into(holder.pdt_image);
                     }
-
                 } else {
                     holder.pdt_image.setImageResource(R.drawable.no_image_available);
                 }
@@ -2586,4 +2570,50 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             return false;
         }
     }
+
+    /**
+     * Method used to get image file from sdcard
+     *
+     * @param fileName
+     * @return
+     */
+    public String getImageFilePath(final String fileName) {
+
+        File file = new File(getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS)
+                + "/"
+                + bmodel.userMasterHelper.getUserMasterBO()
+                .getUserid()
+                + DataMembers.DIGITAL_CONTENT
+                + "/"
+                + DataMembers.CATALOG);
+
+        File[] files = file.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.isDirectory()) {
+                    return false;
+                }
+
+                String name = pathname.getName();
+                int lastIndex = name.lastIndexOf('.');
+                boolean isFileAvilable = name.startsWith(fileName);
+
+                if (lastIndex < 0 && !isFileAvilable) {
+                    return false;
+                }
+                return (name.substring(lastIndex).equalsIgnoreCase(".png") ||
+                        name.substring(lastIndex).equalsIgnoreCase(".jpg"))
+                        && isFileAvilable;
+            }
+        });
+
+        if (files != null && files.length > 0) {
+            return files[0].getAbsolutePath();
+        }
+
+        return "";
+    }
+
 }

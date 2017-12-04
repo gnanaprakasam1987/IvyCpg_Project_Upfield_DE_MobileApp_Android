@@ -29,20 +29,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.countersales.bo.CounterSaleBO;
+import com.ivy.cpg.view.asset.AssetTrackingHelper;
+import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.asset.AssetTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CounterPlanogramActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanogramActivity;
-import com.ivy.cpg.asset.PosmTrackingActivity;
 import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;

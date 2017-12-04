@@ -71,6 +71,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -106,6 +107,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
 
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayList<ProductMasterBO> mylist;
@@ -151,6 +153,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
 
         initializeViews(view);
 
@@ -2075,7 +2079,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    bmodel.mPriceTrackingHelper.savePriceTransaction(mylist);
+                    priceTrackingHelper.savePriceTransaction(mylist);
 
                 // save near expiry
                 bmodel.saveNearExpiry();
