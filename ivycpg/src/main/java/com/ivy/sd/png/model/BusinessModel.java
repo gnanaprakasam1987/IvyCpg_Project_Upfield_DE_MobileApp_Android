@@ -11736,6 +11736,49 @@ public class BusinessModel extends Application {
         return ((value + "").contains("E")
                 ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
     }
+
+
+    /**
+     * This method will called to planeDeviateReason
+     * reason.
+     */
+    public void savePlaneDiveateReason(NonproductivereasonBO outlet, String remarks) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            String values;
+            db.createDataBase();
+            db.openDataBase();
+
+            // uid = distid+uid+hh:mm
+
+            String id = QT(userMasterHelper.getUserMasterBO()
+                    .getDistributorid()
+                    + ""
+                    + userMasterHelper.getUserMasterBO().getUserid()
+                    + ""
+                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+
+            db.deleteSQL(
+                    "NonFieldActivity",
+                    "ReasonId=" + QT(outlet.getReasonid())
+                            + " and ReasonTypes="
+                            + QT(getStandardListId(outlet.getReasontype())), false);
+
+            String columns = "Uid,UserId,Date,ReasonId,Remarks,DistributorId";
+
+            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid()+"") + ","
+                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
+                    + "," + QT(remarks)+
+                   "," + getRetailerMasterBO().getDistributorId();
+
+            db.insertSQL("NonFieldActivity", columns, values);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 }
 
 

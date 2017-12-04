@@ -35,6 +35,7 @@ public class ReasonHelper {
     private ArrayList<ReasonMaster> reasonList = new ArrayList<>();
     private static ReasonHelper instance = null;
     private ArrayList<ReasonMaster> assetReasonsBasedOnType;
+    private ArrayList<ReasonMaster> reasonPlaneDeviationMaster;
 
     private ReasonHelper(Context context) {
         this.context = context;
@@ -221,6 +222,35 @@ public class ReasonHelper {
         db.closeDB();
     }
 
+
+    public void downloadPlaneDeviateReasonMaster(String listType) {
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType ="+listType;
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                reasonPlaneDeviationMaster = null;
+                reasonPlaneDeviationMaster = new ArrayList<>();
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reasonPlaneDeviationMaster.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+    }
+
+
+
+
     public void downloadNonProductiveReasonMaster() {
         ReasonMaster reason;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -272,6 +302,14 @@ public class ReasonHelper {
     private void setNonVisitReasonMaster(
             ArrayList<ReasonMaster> reasonNonProductiveMaster) {
         this.reasonNonVisitMaster = reasonNonProductiveMaster;
+    }
+
+    public ArrayList<ReasonMaster> getReasonPlaneDeviationMaster() {
+        return reasonPlaneDeviationMaster;
+    }
+
+    private void setReasonPlaneDeviationMaster(ArrayList<ReasonMaster> reasonPlaneDeviationMaster) {
+        this.reasonPlaneDeviationMaster = reasonPlaneDeviationMaster;
     }
 
     private void setDeviatedReturnMaster(
