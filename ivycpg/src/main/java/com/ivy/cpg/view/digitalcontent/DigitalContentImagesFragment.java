@@ -205,12 +205,12 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
             if (viewType == TYPE_ITEM) {
                 //inflate your layout and pass it to view holder
                 View v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.activity_digital_content_display_recyclerview_row, parent, false);
+                        .inflate(R.layout.row_digital_content, parent, false);
                 return new VHItem(v);
             } else if (viewType == TYPE_HEADER) {
                 //inflate your layout and pass it to view holder
                 return new VHHeader(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.activity_digital_content_header, parent, false));
+                        .inflate(R.layout.row_digital_content_header, parent, false));
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
 

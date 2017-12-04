@@ -26,7 +26,7 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_digital_content_display_recyclerview);
+        setContentView(R.layout.activity_digital_content);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
