@@ -5,13 +5,16 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.os.AsyncTask;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 /**
@@ -38,6 +41,33 @@ public class LoginHelper {
             instance = new LoginHelper(context);
         }
         return instance;
+    }
+
+    public String getSupportNo() {
+        DBUtil db = null;
+        String suppot_no = "";
+
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select listname from standardlistmaster ");
+            sb.append("where listtype= 'HELPLINE_TYPE' and ListCode = 'PHONE'");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    suppot_no = c.getString(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+            db.closeDB();
+        }
+        return suppot_no;
     }
 
     public void onGCMRegistration(){

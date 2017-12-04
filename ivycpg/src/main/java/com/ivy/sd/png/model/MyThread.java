@@ -3,6 +3,7 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
+import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
@@ -13,7 +14,6 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.LoginScreen;
 import com.ivy.sd.png.view.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;

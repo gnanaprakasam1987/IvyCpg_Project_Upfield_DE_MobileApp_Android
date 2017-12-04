@@ -60,6 +60,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
+import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -177,7 +178,6 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InvoicePrintZebra;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.LoginScreen;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
@@ -10631,7 +10631,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public String getSupportNo() {
+    /*public String getSupportNo() {
         DBUtil db = null;
         String suppot_no = "";
 
@@ -10656,7 +10656,7 @@ public class BusinessModel extends Application {
             db.closeDB();
         }
         return suppot_no;
-    }
+    }*/
 
     // Download bank details
     public void downloadBankDetails() {

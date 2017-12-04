@@ -1,17 +1,14 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.login;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,10 +48,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
-import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -67,39 +61,34 @@ import com.ivy.sd.png.model.DownloaderThreadCatalog;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.About;
+import com.ivy.sd.png.view.AttendanceActivity;
+import com.ivy.sd.png.view.ChangePasswordActivity;
+import com.ivy.sd.png.view.DistributorSelectionActivity;
+import com.ivy.sd.png.view.PasswordLockDialogFragment;
+import com.ivy.sd.png.view.ResetPasswordDialog;
+import com.ivy.sd.png.view.UserSettingsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
-        ApplicationConfigs {
+        ApplicationConfigs, LoginContractor.LoginView {
 
     private BusinessModel bmodel;
     private EditText editTextUserName, editTextPassword;
@@ -113,7 +102,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     // Used for File downoad
     private ProgressDialog progressDialog;
     private boolean bool = false;
-    private String initialLanguage = "en";
+    //private String initialLanguage = "en";
 
     private MyReceiver receiver;
     private SharedPreferences mLastSyncSharedPref;
@@ -124,7 +113,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     private int mIterateCount;
     private TextView mForgotPasswordTV;
     LinearLayout ll_footer;
-    private LoginHelper loginHelper;
+    //private LoginHelper loginHelper;
+
+    private LoginPresenterImpl loginPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,91 +128,86 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        loginHelper = LoginHelper.getInstance(this);
-
-        bmodel.configurationMasterHelper.loadConfigurationForLoginScreen();
-        bmodel.configurationMasterHelper.loadPasswordConfiguration();
-
-
-        /* Set default language */
-        SharedPreferences sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        Configuration config = new Configuration();
-        Locale locale = config.locale;
-        if (!Locale.getDefault().equals(
-                sharedPrefs.getString("languagePref", LANGUAGE))) {
-            initialLanguage = sharedPrefs.getString("languagePref", LANGUAGE);
-            locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
-            Locale.setDefault(locale);
-            config.locale = locale;
-            getBaseContext().getResources().updateConfiguration(config,
-                    getBaseContext().getResources().getDisplayMetrics());
-
-        }
-
-
-        // Getting back date
-        DataMembers.backDate = sharedPrefs.getString("backDate", "");
-
-
-        mLastSyncSharedPref = getSharedPreferences("lastSync", MODE_PRIVATE);
-        mPasswordLockCountPref = getSharedPreferences("passwordlock", MODE_PRIVATE);
-        SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
-        edt.putInt("lockcount", mPasswordLockCountPref.getInt("lockcount", 0));
-
-        edt.apply();
         setContentView(R.layout.loginscreen);
 
-         /* Check the date if expiry is enabled.*/
+        /* Check the date if expiry is enabled.*/
         if (ApplicationConfigs.expiryEnable) {
             if ((SDUtil.compareDate(ApplicationConfigs.expiryDate,
                     SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") < 0))
                 finish();
         }
 
+        loginPresenter = new LoginPresenterImpl(getApplicationContext());
+        loginPresenter.setView(this);
+
+        loginPresenter.loadInitialData();
+
         thisActivity = this;
         downloaderThread = null;
         progressDialog = null;
 
-        /* Show Forget password dialog.*/
-        syncDone = bmodel.userMasterHelper.getSyncStatus();
-        bmodel.userMasterHelper.downloadDistributionDetails();
         mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
         mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        if (syncDone) {
-            if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
-                bmodel.synchronizationHelper.setEncryptType();
+        editTextUserName = (EditText) findViewById(R.id.EditText011);
+        editTextPassword = (EditText) findViewById(R.id.EditText022);
+        editTextPassword.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editTextUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-            bmodel.configurationMasterHelper.downloadChangepasswordConfig();
-            if (bmodel.configurationMasterHelper.SHOW_FORGET_PASSWORD) {
+        Button buttonLogin = (Button) findViewById(R.id.loginButton);
+        buttonLogin.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-                mForgotPasswordTV.setVisibility(View.VISIBLE);
+        loginPresenter.getSupportNo();
 
-            }
-        }
+        updateImageViews();
 
-        mForgotPasswordTV.setOnClickListener(new OnClickListener() {
+        buttonLogin.setOnClickListener(this);
+
+        ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
+        btn_setting.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                if (!editTextUserName.getText().toString().equals("")) {
-                    bmodel.userNameTemp = editTextUserName.getText().toString();
-                    new ForgetPassword().execute();
-                } else {
-                    editTextUserName.setError(getResources().getString(R.string.enter_username));
-//                    Toast.makeText(LoginScreen.this, getResources().getString(R.string.enter_username), Toast.LENGTH_SHORT).show();
-                }
+                Intent i = new Intent(LoginScreen.this,
+                        UserSettingsActivity.class);
+                i.putExtra("isFromLogin", true);
+                startActivity(i);
+
             }
         });
 
-        /* Display customer support number on the login screen. */
-        String supportNo = bmodel.getSupportNo();
-        TextView support = (TextView) findViewById(R.id.customerSupport);
-        if (supportNo.length() > 0)
-            support.setText(supportNo);
-        else
-            support.setVisibility(View.GONE);
+        /* Display version information on the login screen. */
+        TextView version = (TextView) findViewById(R.id.version);
+        version.setText(getResources().getString(R.string.version)
+                + bmodel.getApplicationVersionName());
+        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+        ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
+        ll_footer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(LoginScreen.this, About.class));
+
+            }
+        });
+
+        loginPresenter.checkDB();
+
+        /* Copy Datawedgi Profile for Motorola barcode scanner.*/
+        if (ApplicationConfigs.hasMotoBarcodeScanner)
+            loginPresenter.copyAssetsProfile();
 
 
+        /* Register reciver to receive downlaod status. */
+        IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new MyReceiver();
+        registerReceiver(receiver, filter);
+
+        loginPresenter.assignServerUrl();
+    }
+
+    private void updateImageViews() {
         /* Update login screen background image*/
         try {
             RelativeLayout bg = (RelativeLayout) findViewById(R.id.loginbackground);
@@ -282,150 +268,44 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         } catch (Exception e) {
             Commons.printException(e);
         }
-
-
-        editTextUserName = (EditText) findViewById(R.id.EditText011);
-        editTextPassword = (EditText) findViewById(R.id.EditText022);
-        editTextPassword.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        editTextUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        Button buttonLogin = (Button) findViewById(R.id.loginButton);
-        buttonLogin.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
-        buttonLogin.setOnClickListener(this);
-
-        ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
-        btn_setting.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(LoginScreen.this,
-                        UserSettingsActivity.class);
-                i.putExtra("isFromLogin", true);
-                startActivity(i);
-
-            }
-        });
-
-       /* *//* Display version information on the login screen. */
-        TextView version = (TextView) findViewById(R.id.version);
-        version.setText(getResources().getString(R.string.version)
-                + bmodel.getApplicationVersionName());
-        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
-        ll_footer.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(LoginScreen.this, About.class));
-
-            }
-        });
-
-        /* Enable "Network Provider Date/Time". */
-        bmodel.useNetworkProvidedValues();
-
-        if (bmodel.synchronizationHelper.isExternalStorageAvailable()) {
-            if (syncDone) {
-                editTextUserName.setText(bmodel.userMasterHelper
-                        .getUserMasterBO().getLoginName());
-                editTextUserName.setEnabled(false);
-                editTextPassword.requestFocus();
-            } else {
-                try {
-                    File backupDB = new File(
-                            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                    + "/pandg/" + DataMembers.DB_NAME);
-                    if (backupDB.exists()) {
-                        new RestoreDB().execute();
-                    }
-                } catch (Exception e) {
-                }
-            }
-        } else {
-            bmodel.showAlert(getResources().getString(R.string.external_storage_not_avail), 0);
-            finish();
-        }
-
-
-
-        /* Copy Datawedgi Profile for Motorola barcode scanner.*/
-        if (ApplicationConfigs.hasMotoBarcodeScanner)
-            new AsyncCopyProfile().execute();
-
-        bmodel.synchronizationHelper.loadErrorCode();
-
-        /* Register reciver to receive downlaod status. */
-        IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new MyReceiver();
-        registerReceiver(receiver, filter);
-
-        // Assign server url
-        if (ApplicationConfigs.withActivation) {
-            DataMembers.SERVER_URL = PreferenceManager
-                    .getDefaultSharedPreferences(this).getString("appUrlNew", "");
-            DataMembers.ACTIVATION_KEY = PreferenceManager
-                    .getDefaultSharedPreferences(this).getString("activationKey", "");
-        }
-
-         /* Display application Phase if the environment is other than live.*/
-        String phase = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString("application", "");
-        if (phase.length() > 0)
-            if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
-                    .matcher(phase).find()) {
-                bmodel.synchronizationHelper.isInternalActivation = true;
-            }
     }
 
-
     @Override
-    protected void onResume() {
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        super.onResume();
+    public void onCreateDialog() {
 
-        /** When language preference is changed, recreate the activity.**/
-        SharedPreferences sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
-                LANGUAGE))) {
-            reload();
-        }
+        new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                Intent myIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(myIntent);
 
-        if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
-            if (!bmodel.locationUtil.isGPSProviderEnabled()) {
-                Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-                if (resultCode == ConnectionResult.SUCCESS) {
-                    bmodel.requestLocation(this);
-                } else {
-                    showDialog(0);
-                }
             }
-        }
+        }).show();
 
     }
 
     @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
+    public void requestLocation() {
+        bmodel.requestLocation(this);
+    }
 
-            case 0:
-                new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-                        Intent myIntent = new Intent(
-                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
+    @Override
+    public void goToChangePwd() {
+        startActivity(new Intent(LoginScreen.this,
+                ChangePasswordActivity.class));
+    }
 
-                    }
-                }).show();
-                break;
+    @Override
+    public void goToHomeScreen() {
+        BusinessModel.loadActivity(LoginScreen.this,
+                DataMembers.actHomeScreen);
+    }
 
-        }
-        return null;
+    @Override
+    public void goToAttendance() {
+        startActivity(new Intent(LoginScreen.this,
+                AttendanceActivity.class));
     }
 
     public void onClick(View comp) {
@@ -450,7 +330,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 int i = comp.getId();
 
                 if (i == R.id.loginButton) {
-                    if (syncDone) {
+                    loginPresenter.onLoginClick();
+                    /*if (syncDone) {
                         if (ApplicationConfigs.checkUTCTime && bmodel.isOnline()) {
                             new DownloadUTCTime().execute();
                         } else {
@@ -479,7 +360,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             bmodel.showAlert(getResources().getString(R.string.download_url_empty), 0);
                             alertDialog.dismiss();
                         }
-                    }
+                    }*/
                 } else {
                     bool = false;
                 }
@@ -491,7 +372,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     }
 
-    private void checkLogin() {
+    /*private void checkLogin() {
         if (bmodel.configurationMasterHelper.SHOW_CHANGE_PASSWORD) {
             String createdDate = bmodel.synchronizationHelper.getPasswordCreatedDate();
             if (createdDate != null && !createdDate.equals("")) {
@@ -533,7 +414,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             BusinessModel.loadActivity(LoginScreen.this,
                     DataMembers.actHomeScreen);
         }
-    }
+    }*/
 
     public Handler getHandler() {
         return handler;
@@ -547,7 +428,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 case DataMembers.NOTIFY_USEREXIST:
                     if (alertDialog != null)
                         alertDialog.dismiss();
-                    checkLogin();
+                    loginPresenter.checkLogin();
                     finish();
                     break;
                 case DataMembers.NOTIFY_NOT_USEREXIST:
@@ -717,7 +598,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             Commons.printException(e);
                         }
                     } else {
-                        checkLogin();
+                        loginPresenter.checkLogin();
                         finish();
                         System.gc();
                     }
@@ -727,7 +608,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     dismissCurrentProgressDialog();
                     if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
                         new CatalogImagesDownload().execute();
-                    checkLogin();
+                    loginPresenter.checkLogin();
                     finish();
                     System.gc();
                     break;
@@ -792,7 +673,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                                         .getUserid(), transferUtility);
                         downloaderThread.start();
                     } else {
-                        checkLogin();
+                        loginPresenter.checkLogin();
                         finish();
                         System.gc();
                     }
@@ -809,7 +690,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
                         new CatalogImagesDownload().execute();
                     finish();
-                    checkLogin();
+                    loginPresenter.checkLogin();
                     break;
 
                 case DataMembers.THIRD_PARTY_INSTALLATION_ERROR:
@@ -828,7 +709,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         dismissCurrentProgressDialog();
                         displayMessage(errorMessage);
                     }
-                    checkLogin();
+                    loginPresenter.checkLogin();
                     finish();
                     break;
 
@@ -879,7 +760,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     }
 
-    private void reload() {
+    @Override
+    public void reload() {
         Intent intent = getIntent();
         overridePendingTransition(0, 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -887,6 +769,32 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
         overridePendingTransition(0, 0);
         startActivity(intent);
+    }
+
+    @Override
+    public void setSupportNoTV(String supportNo) {
+        /* Display customer support number on the login screen. */
+        TextView support = (TextView) findViewById(R.id.customerSupport);
+        if (supportNo.length() > 0)
+            support.setText(supportNo);
+        else
+            support.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void retrieveDBData() {
+        editTextUserName.setText(bmodel.userMasterHelper
+                .getUserMasterBO().getLoginName());
+        editTextUserName.setEnabled(false);
+        editTextPassword.requestFocus();
+    }
+
+    @Override
+    public void showAlert(String msg, boolean isFinish) {
+        bmodel.showAlert(msg, 0);
+        if (isFinish) {
+            finish();
+        }
     }
 
     @Override
@@ -902,7 +810,24 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         return true;
     }
 
-    class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
+    @Override
+    public void showForgotPassword() {
+        mForgotPasswordTV.setVisibility(View.VISIBLE);
+        mForgotPasswordTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!editTextUserName.getText().toString().equals("")) {
+                    bmodel.userNameTemp = editTextUserName.getText().toString();
+                    new ForgetPassword().execute();
+                } else {
+                    editTextUserName.setError(getResources().getString(R.string.enter_username));
+//                    Toast.makeText(LoginScreen.this, getResources().getString(R.string.enter_username), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /*class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
 
         private ProgressDialog progressDialogue;
 
@@ -945,9 +870,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 }
             }
         }
-    }
+    }*/
 
-    public class AsyncCopyProfile extends AsyncTask<String, Void, String> {
+    /*public class AsyncCopyProfile extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -1013,7 +938,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 String.class, int.class, int.class, int.class);
         setPermissions.invoke(null, path.getAbsolutePath(),
                 mode, -1, -1);
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -1121,7 +1046,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
 
-    private class DownloadUTCTime extends
+    /*private class DownloadUTCTime extends
             AsyncTask<Integer, Integer, Integer> {
 
         private int UTCflag;
@@ -1163,7 +1088,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 new MyThread(LoginScreen.this, DataMembers.LOCAL_LOGIN).start();
             }
         }
-    }
+    }*/
 
     private void clearAmazonDownload() {
         if (transferUtility != null) {
@@ -1318,7 +1243,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         return isReset;
     }
 
-    public static long getDifferenceDays(String firstDate, String secondDate,
+    /*public static long getDifferenceDays(String firstDate, String secondDate,
                                          String format) {
         long diff = 0;
         SimpleDateFormat sf = new SimpleDateFormat(format);
@@ -1328,12 +1253,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             Commons.printException(e);
         }
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-    }
+    }*/
 
     /**
      * class is used to Authenticate application ang get token for Authorization
      */
-    class Authentication extends AsyncTask<String, String, String> {
+    /*class Authentication extends AsyncTask<String, String, String> {
         JSONObject jsonObject;
         boolean changeDeviceId;
 
@@ -1428,9 +1353,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             }
 
         }
-    }
-
-    private void showDialog() {
+    }*/
+    @Override
+    public void showDialog() {
+        bool = false;
         new CommonDialog(getApplicationContext(), LoginScreen.this,
                 getResources().getString(R.string.deviceId_change_msg_title),
                 getResources().getString(R.string.deviceId_change_msg),
@@ -1440,7 +1366,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     @Override
                     public void onPositiveButtonClick() {
 
-                        new Authentication(true).execute();
+                        loginPresenter.callAuthentication(true);
 
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -1887,7 +1813,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 downloaderThread.start();
             } else {
 
-                checkLogin();
+                loginPresenter.checkLogin();
                 finish();
                 System.gc();
 
@@ -2056,5 +1982,48 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         builder.setCancelable(false);
     }
 
+
+    @Override
+    public void showProgressDialog(String msg) {
+        builder = new AlertDialog.Builder(LoginScreen.this);
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void setAlertDialogMessage(String msg) {
+        if (alertDialog != null) {
+            alertDialog.setMessage(msg);
+        }
+    }
+
+    @Override
+    public void sendMessageToHandler(int msg) {
+        this.getHandler().sendEmptyMessage(msg);
+    }
+
+    @Override
+    public void threadActions(int action) {
+        new MyThread(LoginScreen.this, action).start();
+    }
+
+    @Override
+    public void enableGPSDialog() {
+        new CommonDialog(getApplicationContext(), LoginScreen.this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+
+            }
+        }).show();
+        bool = false;
+    }
 }
 
