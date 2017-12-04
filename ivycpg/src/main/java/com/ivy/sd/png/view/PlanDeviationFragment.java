@@ -50,6 +50,15 @@ public class PlanDeviationFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
+        //Set Screen Title
+        try {
+            if (getArguments().getString("screentitle") == null)
+                setScreenTitle(bmodel.getMenuName("MENU_NON_FIELD"));
+            else
+                setScreenTitle(getArguments().getString("screentitle"));
+        } catch (Exception e) {
+        }
+
         reason_recycler = (RecyclerView) rootView.findViewById(R.id.reason_recycler);
         saveBtn = (Button) rootView.findViewById(R.id.add_reason);
 

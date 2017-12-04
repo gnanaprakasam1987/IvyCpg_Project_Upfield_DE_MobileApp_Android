@@ -1081,7 +1081,8 @@ SynchronizationHelper {
                     "union select count(uid) from CS_GroomingHeader where upload='N'" +
                     "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
-                    "union select count(uid) from AttendanceTimeDetails where upload='N'";
+                    "union select count(uid) from AttendanceTimeDetails where upload='N'" +
+                    "union select count(UID) from NonFieldActivity where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {

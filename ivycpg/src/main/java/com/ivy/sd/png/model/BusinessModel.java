@@ -11747,15 +11747,18 @@ public class BusinessModel extends Application {
                     + userMasterHelper.getUserMasterBO().getUserid() + " AND Upload ='N'");
 
             if (c != null) {
-
-                id = c.getString(0);
-
+                if (c.getCount() > 0)
+                    while (c.moveToNext()) {
+                        id = c.getString(0);
+                        break;
+                    }
             }
             c.close();
 
-            db.deleteSQL(
-                    "NonFieldActivity",
-                    "Uid=" + QT(id), false);
+            if (!id.equals(""))
+                db.deleteSQL(
+                        "NonFieldActivity",
+                        "Uid=" + QT(id), false);
 
 
             id = QT(userMasterHelper.getUserMasterBO()
@@ -11766,12 +11769,12 @@ public class BusinessModel extends Application {
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
 
-            String columns = "Uid,UserId,Date,ReasonId,Remarks,DistributorId,Upload";
+            String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
 
             values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
                     + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
                     + "," + QT(remarks) +
-                    "," + getRetailerMasterBO().getDistributorId() + "," + "Y";
+                    "," + getRetailerMasterBO().getDistributorId();
 
             db.insertSQL("NonFieldActivity", columns, values);
 

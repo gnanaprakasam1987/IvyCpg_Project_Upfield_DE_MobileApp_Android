@@ -50,7 +50,7 @@
         <LinearLayout
             android:id="@+id/reason_btns"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_40dp"
+            android:layout_height="@dimen/footer_height"
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:orientation="horizontal">
