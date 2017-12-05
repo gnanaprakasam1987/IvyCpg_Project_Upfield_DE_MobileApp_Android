@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -140,6 +141,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
 
         viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+        productName = (TextView) view.findViewById(R.id.productName);
+        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
         mBtn_Search = (Button) view.findViewById(R.id.btn_search);
@@ -218,8 +221,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 return;
         }
 
-        (view.findViewById(R.id.calcdot))
-                .setVisibility(View.VISIBLE);
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
@@ -664,6 +665,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         return true;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_actionbar_with_filter, menu);
+    }
 
 
     @Override
