@@ -301,7 +301,7 @@ public class BusinessModel extends Application {
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
     public OrderSplitHelper orderSplitHelper = null;
-  //  public PriceTrackingHelper mPriceTrackingHelper;
+    //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -6904,20 +6904,19 @@ public class BusinessModel extends Application {
                 }
             }
 
-                String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID());
-                Cursor c = db.selectSQL(query);
-                if (c.getCount() > 0) {
-                    if (c.moveToFirst()) {
-                        timeStampid = c.getString(0);
+            String query = "select max(VisitID) from OutletTimestamp where retailerid="
+                    + QT(getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    timeStampid = c.getString(0);
 
-                        if (outletTimeStampHelper.isJointCall(userMasterHelper
-                                .getUserMasterBO().getJoinCallUserList())) {
-                            flag = 1;
-                        }
+                    if (outletTimeStampHelper.isJointCall(userMasterHelper
+                            .getUserMasterBO().getJoinCallUserList())) {
+                        flag = 1;
                     }
                 }
-
+            }
 
 
             String id = userMasterHelper.getUserMasterBO().getUserid()
@@ -8245,6 +8244,7 @@ public class BusinessModel extends Application {
             }
         }
     }
+
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
         try {
@@ -11726,6 +11726,62 @@ public class BusinessModel extends Application {
     public String getWithoutExponential(Double value) {
         return ((value + "").contains("E")
                 ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
+    }
+
+
+    /**
+     * This method will called to planeDeviateReason
+     * reason.
+     */
+    public void savePlaneDiveateReason(NonproductivereasonBO outlet, String remarks) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            String values;
+            db.createDataBase();
+            db.openDataBase();
+
+            // uid = distid+uid+hh:mm
+            String id = "";
+            Cursor c = db.selectSQL("Select Uid from NonFieldActivity where UserId="
+                    + userMasterHelper.getUserMasterBO().getUserid() + " AND Upload ='N'");
+
+            if (c != null) {
+                if (c.getCount() > 0)
+                    while (c.moveToNext()) {
+                        id = c.getString(0);
+                        break;
+                    }
+            }
+            c.close();
+
+            if (!id.equals(""))
+                db.deleteSQL(
+                        "NonFieldActivity",
+                        "Uid=" + QT(id), false);
+
+
+            id = QT(userMasterHelper.getUserMasterBO()
+                    .getDistributorid()
+                    + ""
+                    + userMasterHelper.getUserMasterBO().getUserid()
+                    + ""
+                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+
+
+            String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
+
+            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
+                    + "," + QT(remarks) +
+                    "," + getRetailerMasterBO().getDistributorId();
+
+            db.insertSQL("NonFieldActivity", columns, values);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }
 

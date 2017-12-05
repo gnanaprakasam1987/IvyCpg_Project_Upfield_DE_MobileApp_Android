@@ -145,6 +145,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
+    private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
 
     private String roadTitle;
     private boolean isClicked;
@@ -252,6 +253,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
+        menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
@@ -1421,6 +1423,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             i.putExtra("screentitle", menuItem.getMenuName());
             startActivity(i);
             getActivity().finish();
+        } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
+            bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
+            switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
         }
 
           /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
@@ -1520,6 +1525,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_GROOM_CS);
         AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
                 .findFragmentByTag(MENU_JOINT_ACK);
+        PlanDeviationFragment planDeviationFragment = (PlanDeviationFragment) fm
+                .findFragmentByTag(MENU_NON_FIELD);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()) {
@@ -1612,6 +1619,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
                 && acknowledgementFragment.isVisible()) {
             return;
+        } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
+                && planDeviationFragment.isVisible()) {
+            return;
         }
 
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
@@ -1676,6 +1686,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(groomingFragment);
         if (acknowledgementFragment != null)
             ft.remove(acknowledgementFragment);
+        if (planDeviationFragment != null)
+            ft.remove(planDeviationFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -1941,6 +1953,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_GROOM_CS);
+                break;
+
+            case MENU_NON_FIELD:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new PlanDeviationFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_NON_FIELD);
                 break;
         }
         ft.commit();
