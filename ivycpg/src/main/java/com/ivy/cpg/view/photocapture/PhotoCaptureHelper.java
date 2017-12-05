@@ -3,6 +3,7 @@ package com.ivy.cpg.view.photocapture;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.net.Uri;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
@@ -12,6 +13,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -407,6 +409,11 @@ public class PhotoCaptureHelper {
     }
 
 
+    /**
+     * Delete image from transaction table
+     *
+     * @param ImageName Image name
+     */
     public void deleteImageDetailsFormTable(String ImageName) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -421,5 +428,27 @@ public class PhotoCaptureHelper {
         }
     }
 
+    /**
+     * To check file availability
+     *
+     * @param path File path
+     * @return Availability
+     */
+    public boolean isImagePresent(String path) {
+        File f = new File(path);
+        return f.exists();
+    }
+
+    /**
+     * Getting file URI
+     *
+     * @param path File path
+     * @return URI
+     */
+    public Uri getUriFromFile(String path) {
+        File f = new File(path);
+        return Uri.fromFile(f);
+
+    }
 
 }

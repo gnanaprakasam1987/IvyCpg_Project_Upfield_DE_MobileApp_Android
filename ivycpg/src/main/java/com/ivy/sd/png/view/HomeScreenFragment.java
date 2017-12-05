@@ -59,7 +59,6 @@ import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
-import com.ivy.cpg.view.planogram.PlanogramMasterHelper;
 import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.ConfigData;
@@ -468,9 +467,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
-                Uri uri = mPlanoGramMasterHelper
-                        .getUriFromFile(photoPath + "/" + imageFileName);
+                Uri uri = bmodel.getUriFromFile(photoPath + "/" + imageFileName);
                 bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                 bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                 profileImageView.invalidate();

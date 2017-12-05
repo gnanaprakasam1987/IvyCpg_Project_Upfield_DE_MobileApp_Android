@@ -89,14 +89,14 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
     private String calledBy = "0";
     private boolean isDialogPopup;
     private int counterId = -1;
-    PlanogramMasterHelper mPlanoGramMasterHelper;
+    PlanogramHelper mPlanoGramHelper;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
+        mPlanoGramHelper = PlanogramHelper.getInstance(getActivity());
 
     }
 
@@ -116,7 +116,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         counterId = extras.getInt("counterId");
 
         // download data for planogram
-        vPlanogram = mPlanoGramMasterHelper.getCsPlanogramMaster();
+        vPlanogram = mPlanoGramHelper.getCsPlanogramMaster();
         txt_pgtfilterName = (TextView) view.findViewById(R.id.txt_pgfiltername);
         reason_Layout = (LinearLayout) view.findViewById(R.id.reason_layout);
         aduit_Layout = (LinearLayout) view.findViewById(R.id.aduit_layout);
@@ -143,11 +143,6 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         rdNo = (RadioButton) view.findViewById(R.id.no);
         rdYes.setEnabled(false);
         rdNo.setEnabled(false);
-        /*
-         * if(bmodel.configurationMasterHelper.PLANO_IMG_ADHE_VALIDATE) {
-		 * rdYes.setEnabled(false); rdNo.setEnabled(false); } else {
-		 * rdYes.setEnabled(true); rdNo.setEnabled(true); }
-		 */
         isDialogPopup = false;
         photoNamePath = HomeScreenFragment.photoPath + "/";
 
@@ -161,7 +156,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 // TODO Auto-generated method stub
                 if (isChecked == true) {
                     rdNo.setChecked(false);
-                    mPlanoGramMasterHelper.setCSImageAdherence(
+                    mPlanoGramHelper.setCSImageAdherence(
                             "1" , selectedImageId);
                     reason_Layout.setVisibility(View.GONE);
                 }
@@ -176,7 +171,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 // TODO Auto-generated method stub
                 if (isChecked == true) {
                     rdYes.setChecked(false);
-                    mPlanoGramMasterHelper.setCSImageAdherence(
+                    mPlanoGramHelper.setCSImageAdherence(
                             "0" , selectedImageId);
                     reason_Layout.setVisibility(View.VISIBLE);
                 }
@@ -193,7 +188,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                                                int arg2, long arg3) {
                         ReasonMaster reString = (ReasonMaster) arg0
                                 .getSelectedItem();
-                        mPlanoGramMasterHelper.setCSImageAdherenceReason(
+                        mPlanoGramHelper.setCSImageAdherenceReason(
                                 reString.getReasonID() , selectedImageId);
 
                     }
@@ -206,8 +201,8 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 });
 
         // chooseFilterHeading();
-        selectedImageId = mPlanoGramMasterHelper.getCsPlanogramMaster().get(0).getImageId();
-        selectedImageName = mPlanoGramMasterHelper.getCsPlanogramMaster().get(0).getImageName();
+        selectedImageId = mPlanoGramHelper.getCsPlanogramMaster().get(0).getImageId();
+        selectedImageName = mPlanoGramHelper.getCsPlanogramMaster().get(0).getImageName();
 
         if (savedInstanceState != null) {
             selectedImageId = savedInstanceState.getInt("id");
@@ -263,7 +258,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle(bmodel.mSelectedActivityName);
+        setScreenTitle(mPlanoGramHelper.mSelectedActivityName);
 
     }
 
@@ -279,7 +274,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         super.onResume();
         // / if statement to make sure the alert is displayed only for the first
         // time
-        if (mPlanoGramMasterHelper.getCsPlanogramMaster().size() != 1)
+        if (mPlanoGramHelper.getCsPlanogramMaster().size() != 1)
             if (isDialogPopup)
                 showImageFilter();
 
@@ -304,9 +299,8 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 if (!planogramBO.getPlanogramCameraImgName().equals("")) {
                     String path = photoNamePath
                             + planogramBO.getPlanogramCameraImgName();
-                    Commons.print("image path " + path);
-                    if (mPlanoGramMasterHelper.isImagePresent(path)) {
-                        Uri uri = mPlanoGramMasterHelper
+                    if (bmodel.isImagePresent(path)) {
+                        Uri uri = bmodel
                                 .getUriFromFile(path);
                         imgCameraPath = path;
                         imgFromCamera.setImageURI(uri);
@@ -515,7 +509,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
 	/*
      * private void chooseFilterHeading() {
 	 * 
-	 * Vector<ChildLevelBo> items = mPlanoGramMasterHelper
+	 * Vector<ChildLevelBo> items = mPlanoGramHelper
 	 * .getLevelMaster(); if (items == null) { return; }
 	 * 
 	 * if (filterId != 0) return;
@@ -528,7 +522,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
     public void searchAndUpdateImage() {
         String path = imageFileName;
         Commons.print(TAG+  ",Img " +  imageFileName);
-        mPlanoGramMasterHelper.setCSImagePath(path, selectedImageId);
+        mPlanoGramHelper.setCSImagePath(path, selectedImageId);
 
         enableAdherence();
         clearImageViews();
@@ -560,7 +554,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
             // for category
 
             // locSelectionId =
-            // mPlanoGramMasterHelper.showFirstFilterName(filterId);
+            // mPlanoGramHelper.showFirstFilterName(filterId);
             setImagefromServer(selectedImageId);
             setImagefromCamera(selectedImageId);
             // }
@@ -602,13 +596,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_next) {
             nextButtonClick();
             return true;
-        }else if (i == R.id.menu_photo) {/*
-			 * if (bmodel.getNoOfImages()) { Toast.makeText( getActivity(),
-			 * getResources() .getString( R.string.
-			 * its_highly_recommend_you_to_upload_the_images_before_capturing_new_image
-			 * ), Toast.LENGTH_SHORT).show(); } else
-			 */
-            // if (mSelectedLocationId == locSelectionId) {
+        } else if (i == R.id.menu_photo) {
             try {
                 for (final CounterPlanogramBO planogramBO : vPlanogram) {
                     if (planogramBO.getImageId() == selectedImageId) {
@@ -683,8 +671,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 if(counterId > 0) {
-                    mPlanoGramMasterHelper.savePhotocapture(counterId);
-                    //bmodel.saveModuleCompletion(CSHomeScreen.MENU_COUNTER_PLANOGRAM);
+                    mPlanoGramHelper.savePhotocapture(counterId);
                 }
                 return Boolean.TRUE;
             } catch (Exception e) {

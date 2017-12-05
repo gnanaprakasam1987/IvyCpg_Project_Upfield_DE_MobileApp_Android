@@ -35,7 +35,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.planogram.CounterPlanogramActivity;
 import com.ivy.cpg.view.planogram.PlanogramActivity;
-import com.ivy.cpg.view.planogram.PlanogramMasterHelper;
+import com.ivy.cpg.view.planogram.PlanogramHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -497,13 +497,14 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 try {
-                    PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(getActivity());
+                    mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
+                    mPlanoGramHelper.loadConfigurations();
                     int counterId = bmodel.getCounterId();
-                    mPlanoGramMasterHelper.downloadCounterPlanogram(counterId);
-                    mPlanoGramMasterHelper.loadPlanoGramInEditMode("0", counterId);
+                    mPlanoGramHelper.downloadCounterPlanogram(counterId);
+                    mPlanoGramHelper.loadPlanoGramInEditMode("0", counterId);
 
-                    if (mPlanoGramMasterHelper.getCsPlanogramMaster() != null && mPlanoGramMasterHelper.getCsPlanogramMaster().size() > 0) {
+                    if (mPlanoGramHelper.getCsPlanogramMaster() != null && mPlanoGramHelper.getCsPlanogramMaster().size() > 0) {
                         Intent in = new Intent(getActivity(),
                                 CounterPlanogramActivity.class);
                         in.putExtra("from", "3");
@@ -563,20 +564,17 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
-
-                bmodel.mSelectedActivityName = menu.getMenuName();
+                PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(getActivity());
+                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                 bmodel.productHelper.downloadProductFilter(MENU_PLANOGRAM_CS);
-                mPlanoGramMasterHelper.downloadlevels(MENU_PLANOGRAM_CS,
+                mPlanoGramHelper.downloadlevels(MENU_PLANOGRAM_CS,
                         bmodel.retailerMasterBO.getRetailerID());
-                bmodel.productHelper.loadData(MENU_PLANOGRAM_CS);
-                /*mPlanoGramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
-                        bmodel.retailerMasterBO.getRetailerID());*/
-                //bmodel.productHelper.downloadPlanogramProdutLocations(MENU_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID());
-                mPlanoGramMasterHelper
+                mPlanoGramHelper.loadData(MENU_PLANOGRAM_CS);
+                mPlanoGramHelper
                         .loadPlanoGramInEditMode(bmodel.retailerMasterBO
                                 .getRetailerID());
-                if (mPlanoGramMasterHelper.getPlanogramMaster() != null && mPlanoGramMasterHelper.getPlanogramMaster().size() > 0) {
+                if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());

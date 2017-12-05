@@ -34,7 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.planogram.PlanogramActivity;
-import com.ivy.cpg.view.planogram.PlanogramMasterHelper;
+import com.ivy.cpg.view.planogram.PlanogramHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -305,14 +305,13 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 break;
             case MENU_VAN_PLANOGRAM:
-                bmodel.mSelectedActivityName = menuItem.getMenuName();
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                mPlanoGramMasterHelper
-                        .downloadlevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramMasterHelper.downloadPlanogram(MENU_VAN_PLANOGRAM
-                        , false, false, false, 0, 0);
-                bmodel.productHelper.downloadPlanogramProdutLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramMasterHelper.loadPlanoGramInEditMode("0");
+                PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(this);
+                mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
+                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.downloadlevels(MENU_VAN_PLANOGRAM, "0");
+                mPlanoGramHelper.downloadPlanogram(MENU_VAN_PLANOGRAM, false, false, false, 0, 0);
+                mPlanoGramHelper.downloadPlanogramProdutLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.loadPlanoGramInEditMode("0");
                 if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
                             PlanogramActivity.class);

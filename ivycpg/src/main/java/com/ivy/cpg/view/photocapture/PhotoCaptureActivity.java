@@ -25,7 +25,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.planogram.PlanogramMasterHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -420,9 +419,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 && !t.getInStoreLocations().get(mSelectedItem).getImageName().equals("")) {
                             String path = HomeScreenFragment.folder.getPath() + "/"
                                     + t.getInStoreLocations().get(mSelectedItem).getImageName();
-                            PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                            if (mPlanoGramMasterHelper.isImagePresent(path)) {
-                                Uri uri = mPlanoGramMasterHelper
+                            if (mPhotoCaptureHelper.isImagePresent(path)) {
+                                Uri uri = mPhotoCaptureHelper
                                         .getUriFromFile(path);
                                 imgViewImage.setImageURI(uri);
 

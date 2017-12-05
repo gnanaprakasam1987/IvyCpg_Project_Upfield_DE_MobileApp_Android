@@ -1052,9 +1052,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE = "PRICE_RETAINVW";
 
-    private static final String CODE_LOCATION_WISE_PLANOGRAM = "FUN39";
-    public boolean IS_LOCATION_WISE_PLANOGRAM;
-
     private static final String CODE_DAY_WISE_RETAILER_WALKINGSEQ = "FUN40";
     public boolean IS_DAY_WISE_RETAILER_WALKINGSEQ;
 

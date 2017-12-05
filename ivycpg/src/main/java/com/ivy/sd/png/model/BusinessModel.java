@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -67,7 +68,6 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.planogram.PlanogramMasterHelper;
 import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.lib.base64.Base64;
@@ -287,7 +287,6 @@ public class BusinessModel extends Application {
     public LocationUtil locationUtil;
     public OutletTimeStampHelper outletTimeStampHelper;
     public RemarksHelper remarksHelper;
-    public PlanogramMasterHelper planogramMasterHelper;
     public ReasonHelper reasonHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
@@ -443,7 +442,6 @@ public class BusinessModel extends Application {
         locationUtil = LocationUtil.getInstance(this);
         outletTimeStampHelper = OutletTimeStampHelper.getInstance(this);
         remarksHelper = RemarksHelper.getInstance();
-        planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
@@ -11669,6 +11667,30 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
+    /**
+     * To check file availability
+     *
+     * @param path File path
+     * @return Availability
+     */
+    public boolean isImagePresent(String path) {
+        File f = new File(path);
+        return f.exists();
+    }
+
+    /**
+     * Getting file URI
+     *
+     * @param path File path
+     * @return URI
+     */
+    public Uri getUriFromFile(String path) {
+        File f = new File(path);
+        return Uri.fromFile(f);
+
+    }
+
 }
 
 

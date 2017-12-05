@@ -2,43 +2,77 @@ package com.ivy.cpg.view.planogram;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ParentLevelBo;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import java.io.File;
 import java.util.Vector;
 
-public class PlanogramMasterHelper {
+public class PlanogramHelper {
 
     private final Context context;
     private final BusinessModel bmodel;
-    private static PlanogramMasterHelper instance = null;
+    private static PlanogramHelper instance = null;
     private Vector<PlanogramBO> planogramMaster;
     private Vector<CounterPlanogramBO> csPlanogramMaster;
     private Vector<ParentLevelBo> mParentLevelBo;
     private Vector<ChildLevelBo> mChildLevelBo;
+    private Vector<StandardListBO> mLocationList;
+    public String mSelectedActivityName;
+
+    private static final String CODE_LOCATION_WISE_PLANOGRAM = "FUN39";
+    public boolean IS_LOCATION_WISE_PLANOGRAM;
 
 
-
-    private PlanogramMasterHelper(Context context) {
+    private PlanogramHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        bmodel = (BusinessModel) context.getApplicationContext();
     }
 
-    public static PlanogramMasterHelper getInstance(Context context) {
+    public static PlanogramHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new PlanogramMasterHelper(context);
+            instance = new PlanogramHelper(context);
         }
         return instance;
+    }
+
+    public void loadConfigurations() {
+        try {
+
+            IS_LOCATION_WISE_PLANOGRAM = false;
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT hhtCode, RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " WHERE flag='1'";
+
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(CODE_LOCATION_WISE_PLANOGRAM))
+                        IS_LOCATION_WISE_PLANOGRAM = true;
+                }
+                c.close();
+            }
+            db.closeDB();
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
     }
 
     public void downloadlevels(String moduleName, String retailerId) {
@@ -295,7 +329,7 @@ public class PlanogramMasterHelper {
             db.closeDB();
 
             if (("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)))
-                bmodel.productHelper.downloadPlanogramProdutLocations(moduleName, null, query1);
+                downloadPlanogramProdutLocations(moduleName, null, query1);
         } catch (Exception e) {
             Commons.printException("" + e);
             db.closeDB();
@@ -457,7 +491,7 @@ public class PlanogramMasterHelper {
         for (int i = 0; i < siz; ++i) {
             planogram = getPlanogramMaster().get(i);
             if (planogram.getPid() == planogramPId &&
-                    (!bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
                 planogram.setPlanogramCameraImgName(imageName);
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
@@ -491,16 +525,7 @@ public class PlanogramMasterHelper {
 
     }
 
-    public boolean isImagePresent(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
 
-    public Uri getUriFromFile(String path) {
-        File f = new File(path);
-        return Uri.fromFile(f);
-
-    }
 
     public void setImagePath(int pID, String imagepath, int locationid) {
         PlanogramBO planogrambo;
@@ -509,7 +534,7 @@ public class PlanogramMasterHelper {
             return;
         for (int i = 0; i < siz; ++i) {
             planogrambo = getPlanogramMaster().get(i);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
+            if ((planogrambo.getPid() == pID || IS_LOCATION_WISE_PLANOGRAM)
                     && planogrambo.getLocationID() == locationid) {
                 planogrambo.setPlanogramCameraImgName(imagepath);
                 getPlanogramMaster().setElementAt(planogrambo, i);
@@ -541,7 +566,7 @@ public class PlanogramMasterHelper {
         for (int i = 0; i < siz; ++i) {
             planogrambo = getPlanogramMaster().get(i);
             Commons.print("pid" + pID + " locid=" + locID);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
+            if ((planogrambo.getPid() == pID || IS_LOCATION_WISE_PLANOGRAM)
                     && (planogrambo.getLocationID() == locID)) {
                 planogrambo.setAdherence(adherence);
                 getPlanogramMaster().setElementAt(planogrambo, i);
@@ -745,22 +770,6 @@ public class PlanogramMasterHelper {
         }
     }
 
-    public void setImageAdherenceReason(int pID, String adherence, int locID) {
-        PlanogramBO planogrambo;
-        int siz = getPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getPlanogramMaster().get(i);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
-                    && planogrambo.getLocationID() == locID) {
-                planogrambo.setReasonID(adherence);
-                getPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
     public void setCSImageAdherenceReason(String adherence, int imageId) {
         CounterPlanogramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
@@ -826,6 +835,125 @@ public class PlanogramMasterHelper {
                 + " SET  ImageName =" + QT("") + ",ImageName=" + QT("") + " where ImageName LIKE"
                 + QT(imgName + "%"));
         db.closeDB();
+    }
+
+
+    public void loadData(String menuname) {
+        try {
+            int level;
+            level = bmodel.productHelper.getRetailerlevel(menuname);
+            if (menuname.equals("MENU_PLANOGRAM")) {
+                switch (level) {
+                    case 1:
+                        downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);
+                        break;
+                    case 2:
+                        downloadPlanogram("MENU_PLANOGRAM", false, true, false, 0, 0);
+                        break;
+                    case 3:
+                        downloadPlanogram("MENU_PLANOGRAM", false, false, true, 0, 0);
+                        break;
+                    case 4:
+                        downloadPlanogram("MENU_PLANOGRAM", false, false, false, bmodel.productHelper.locid, 0);
+                        break;
+                    case 5:
+                        downloadPlanogram("MENU_PLANOGRAM", false, false, false, 0, bmodel.productHelper.chid);
+                        break;
+                    case 6:
+                        downloadPlanogram("MENU_PLANOGRAM", false, false, false, bmodel.productHelper.locid, bmodel.productHelper.chid);
+                        break;
+                    case -1:
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else if (menuname.equals("MENU_PLANOGRAM_CS")) {
+                switch (level) {
+                    case 1:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
+                        break;
+                    case 2:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
+                        break;
+                    case 3:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
+                        break;
+                    case 4:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, bmodel.productHelper.locid, 0);
+                        break;
+                    case 5:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, bmodel.productHelper.chid);
+                        break;
+                    case 6:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, bmodel.productHelper.locid, bmodel.productHelper.chid);
+                        break;
+
+                    default:
+                        downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public Vector<StandardListBO> getInStoreLocation() {
+        return mLocationList;
+    }
+
+    /**
+     * Download Module Locations
+     */
+    public void downloadPlanogramProdutLocations(String moduleName, String retailer, String query1) {
+        try {
+
+            mLocationList = new Vector<>();
+            StandardListBO locations;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
+                    + " FROM StandardListMaster SL";
+
+            if (moduleName.equals("MENU_PLANOGRAM")) {
+                sql1 += " inner join PlanogramMapping MP on MP.StoreLocId=SL.ListId"
+                        + " inner join PlanogramMaster P on P.HId=MP.HId"
+                        + " where " + query1
+                        + " SL.Listtype='PL'"
+                        + " ORDER BY SL.ListId";
+            } else if (moduleName.equals("MENU_VAN_PLANOGRAM")) {
+                sql1 += " inner join PlanogramMapping PM on PM.StoreLocId=sl.listcode"
+                        + " inner join PlanogramMaster P on P.HId=PM.HId"
+                        + " where SL.Listtype='SL' and PM.RetailerId= " + bmodel.QT(retailer)
+                        + " ORDER BY SL.ListId";
+            } else {
+                sql1 += " where SL.Listtype='PL' ORDER BY SL.ListId";
+            }
+
+            Cursor c = db.selectSQL(sql1);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    locations = new StandardListBO();
+                    locations.setListID(c.getString(0));
+                    locations.setListName(c.getString(1));
+                    mLocationList.add(locations);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            if (mLocationList.size() == 0) {
+                locations = new StandardListBO();
+                locations.setListID("0");
+                locations.setListName("Store");
+                mLocationList.add(locations);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("Download Location", e);
+        }
+
     }
 
 }
