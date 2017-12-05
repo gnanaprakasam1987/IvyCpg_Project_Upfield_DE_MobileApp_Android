@@ -52,7 +52,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gall);
+        setContentView(R.layout.gallery);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -241,7 +241,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
         // super.onBackPressed();
 
         // finish();
-        // bmodel.loadActivity(gall.this, DataMembers.actPhotocapture);
+        // bmodel.loadActivity(gallery.this, DataMembers.actPhotocapture);
 
     }
 

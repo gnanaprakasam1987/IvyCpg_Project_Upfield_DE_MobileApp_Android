@@ -5954,19 +5954,6 @@ public class BusinessModel extends Application {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public void deleteImageDetailsFormTable(String ImageName) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            db.deleteSQL(DataMembers.tbl_PhotoCapture, "imgName="
-                    + QT(ImageName), false); // QT(ImageName));
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
 
     public void deleteAdhocImageDetailsFormTable(String ImageName) {
