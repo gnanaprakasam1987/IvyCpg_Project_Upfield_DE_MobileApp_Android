@@ -2361,7 +2361,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
 
+                    bmodel.productHelper.downloadSalesReturnProducts();
+                    //if(bmodel.configurationMasterHelper.IS_PRD_CNT_DIFF_SR)
+                    bmodel.productHelper.downloadSalesReturnSKUs();
+
+
                     bmodel.productHelper.cloneReasonMaster();
+
+                    Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
+
                     SalesReturnHelper.getInstance(this).loadSalesReturnConfigurations();
                     SalesReturnHelper.getInstance(this).clearSalesReturnTable();
 
@@ -2378,8 +2386,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
                     Intent intent = new Intent(HomeScreenTwo.this,
-                            SalesReturnWithActionBar.class);
+                            SalesReturnActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                    intent.putExtra("screentitle", menu.getMenuName());
                     startActivity(intent);
                     finish();
                 } else {

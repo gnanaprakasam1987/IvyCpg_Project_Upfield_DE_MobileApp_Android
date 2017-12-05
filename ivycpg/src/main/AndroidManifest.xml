@@ -407,26 +407,10 @@
             android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnWithActionBar"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.ivy.sd.png.view.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.ivy.sd.png.view.van.LoadManagementScreen"
@@ -550,6 +534,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.price.PriceTrackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.price.PriceTrackCompActivity"
