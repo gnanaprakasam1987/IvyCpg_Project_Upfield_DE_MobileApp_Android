@@ -356,7 +356,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(prodList.size()>0) {
+                        if (prodList.size() > 0) {
                             galRecyclerAdapter.notifyDataSetChanged();
                         }
                     }

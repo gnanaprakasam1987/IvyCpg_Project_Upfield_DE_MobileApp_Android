@@ -126,7 +126,6 @@ import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
-import com.ivy.sd.png.provider.NearExpiryTrackingHelper;
 import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
@@ -259,8 +258,7 @@ public class BusinessModel extends Application {
     public boolean endjourneyclicked;
     public String mSelectedActivityName = new String();
     public String mSelectedActivityConfigCode = new String();
-    // To retain the Selected filter across the module
-    public int mSFSelectedFilter = -1;
+
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
@@ -272,7 +270,6 @@ public class BusinessModel extends Application {
     public SubChannelMasterHelper subChannelMasterHelper;
     public ConfigurationMasterHelper configurationMasterHelper;
     public ProductHelper productHelper;
-    public NearExpiryTrackingHelper mNearExpiryTrackingHelper;
     public UserMasterHelper userMasterHelper;
     public ActivationHelper activationHelper;
     public SBDMerchandisingHelper sbdMerchandisingHelper;
@@ -431,7 +428,6 @@ public class BusinessModel extends Application {
         configurationMasterHelper = ConfigurationMasterHelper.getInstance(this);
         productHelper = ProductHelper.getInstance(this);
         userMasterHelper = UserMasterHelper.getInstance(this);
-        mNearExpiryTrackingHelper = NearExpiryTrackingHelper.getInstance(this);
         activationHelper = ActivationHelper.getInstance(this);
         sbdMerchandisingHelper = SBDMerchandisingHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);

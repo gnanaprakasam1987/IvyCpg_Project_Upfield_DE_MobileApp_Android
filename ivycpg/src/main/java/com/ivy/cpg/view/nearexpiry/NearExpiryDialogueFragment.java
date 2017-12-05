@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.nearexpiry;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -42,7 +42,7 @@ import java.util.Vector;
 public class NearExpiryDialogueFragment extends DialogFragment implements
         View.OnClickListener {
 
-    private BusinessModel bmodel;
+    private BusinessModel mBModel;
     private EditText QUANTITY;
 
     private Button date1;
@@ -85,6 +85,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     private String mOrderTitle = " ";
     private TextView tvtitle;
 
+    NearExpiryTrackingHelper mNearExpiryHelper;
+
     @SuppressLint("NewApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,11 +95,13 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
 
+        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
+
         View view = inflater.inflate(R.layout.dialog_nearexpiry, container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
         Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
-        btn_ok.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_ok.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         btn_ok.setOnClickListener(this);
         getActivity().setFinishOnTouchOutside(false);
@@ -123,7 +127,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         Bundle mArgs = getArguments();
         final String pid = mArgs.getString("PID");
 
-        Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> items = mBModel.productHelper.getProductMaster();
 
         for (int i = 0; i < items.size(); ++i) {
             ProductMasterBO sku = items.elementAt(i);
@@ -135,9 +139,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
         if (getView() != null) {
             tvtitle = (TextView) getView().findViewById(R.id.nearexpirybutton);
-            tvtitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            tvtitle.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             TextView skuName = (TextView) getView().findViewById(R.id.tvskuname);
-            skuName.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+            skuName.setTypeface(mBModel.configurationMasterHelper.getProductNameFont());
             skuName.setText(mSKUBO.getProductName());
         }
     }
@@ -373,210 +377,210 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getBaseContext());
                 row = inflater.inflate(R.layout.dialog_enter_expiry, parent, false);
                 date1 = (Button) row.findViewById(R.id.datePicker1);
-                date1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 CA1 = (EditText) row.findViewById(R.id.ca1);
                 PC1 = (EditText) row.findViewById(R.id.pc1);
                 OU1 = (EditText) row.findViewById(R.id.ou1);
-                CA1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece = (TextView) row.findViewById(R.id.tv_piece);
                 TextView tv_case = (TextView) row.findViewById(R.id.tv_case);
                 TextView tv_outer = (TextView) row.findViewById(R.id.tv_outer);
-                tv_piece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date1.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getDate());
 
-                datec1 = bmodel.mNearExpiryTrackingHelper
+                datec1 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(0).getDate());
 
                 CA1.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getNearexpCA());
                 PC1.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getNearexpPC());
                 OU1.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getNearexpOU());
 
                 date2 = (Button) row.findViewById(R.id.datePicker2);
-                date2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA2 = (EditText) row.findViewById(R.id.ca2);
                 PC2 = (EditText) row.findViewById(R.id.pc2);
                 OU2 = (EditText) row.findViewById(R.id.ou2);
-                CA2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece2 = (TextView) row.findViewById(R.id.tv_piece2);
                 TextView tv_case2 = (TextView) row.findViewById(R.id.tv_case2);
                 TextView tv_outer2 = (TextView) row.findViewById(R.id.tv_outer2);
-                tv_piece2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date2.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getDate());
-                datec2 = bmodel.mNearExpiryTrackingHelper
+                datec2 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(1).getDate());
 
                 CA2.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getNearexpCA());
                 PC2.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getNearexpPC());
                 OU2.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getNearexpOU());
 
                 date3 = (Button) row.findViewById(R.id.datePicker3);
-                date3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA3 = (EditText) row.findViewById(R.id.ca3);
                 PC3 = (EditText) row.findViewById(R.id.pc3);
                 OU3 = (EditText) row.findViewById(R.id.ou3);
-                CA3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece3 = (TextView) row.findViewById(R.id.tv_piece3);
                 TextView tv_case3 = (TextView) row.findViewById(R.id.tv_case3);
                 TextView tv_outer3 = (TextView) row.findViewById(R.id.tv_outer3);
-                tv_piece3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date3.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getDate());
-                datec3 = bmodel.mNearExpiryTrackingHelper
+                datec3 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(2).getDate());
 
                 CA3.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getNearexpCA());
                 PC3.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getNearexpPC());
                 OU3.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getNearexpOU());
 
                 date4 = (Button) row.findViewById(R.id.datePicker4);
-                date4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA4 = (EditText) row.findViewById(R.id.ca4);
                 PC4 = (EditText) row.findViewById(R.id.pc4);
                 OU4 = (EditText) row.findViewById(R.id.ou4);
-                CA4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece4 = (TextView) row.findViewById(R.id.tv_piece4);
                 TextView tv_case4 = (TextView) row.findViewById(R.id.tv_case4);
                 TextView tv_outer4 = (TextView) row.findViewById(R.id.tv_outer4);
-                tv_piece4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer4.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date4.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getDate());
 
-                datec4 = bmodel.mNearExpiryTrackingHelper
+                datec4 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(3).getDate());
                 CA4.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getNearexpCA());
                 PC4.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getNearexpPC());
                 OU4.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getNearexpOU());
 
                 date5 = (Button) row.findViewById(R.id.datePicker5);
-                date5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA5 = (EditText) row.findViewById(R.id.ca5);
                 PC5 = (EditText) row.findViewById(R.id.pc5);
                 OU5 = (EditText) row.findViewById(R.id.ou5);
-                CA5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece5 = (TextView) row.findViewById(R.id.tv_piece5);
                 TextView tv_case5 = (TextView) row.findViewById(R.id.tv_case5);
                 TextView tv_outer5 = (TextView) row.findViewById(R.id.tv_outer5);
-                tv_piece5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer5.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date5.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getDate());
-                datec5 = bmodel.mNearExpiryTrackingHelper
+                datec5 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(4).getDate());
                 CA5.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getNearexpCA());
                 PC5.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getNearexpPC());
                 OU5.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getNearexpOU());
 
                 date6 = (Button) row.findViewById(R.id.datePicker6);
-                date6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 CA6 = (EditText) row.findViewById(R.id.ca6);
                 PC6 = (EditText) row.findViewById(R.id.pc6);
                 OU6 = (EditText) row.findViewById(R.id.ou6);
-                CA6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                CA6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                PC6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                OU6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 TextView tv_piece6 = (TextView) row.findViewById(R.id.tv_piece6);
                 TextView tv_case6 = (TextView) row.findViewById(R.id.tv_case6);
                 TextView tv_outer6 = (TextView) row.findViewById(R.id.tv_outer6);
-                tv_piece6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer6.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_piece6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_case6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_outer6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 date6.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(5).getDate());
-                datec6 = bmodel.mNearExpiryTrackingHelper
+                datec6 = mNearExpiryHelper
                         .changeMonthNameToNommddyyyy(mSKUBO
                                 .getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .getNearexpiryDate().get(5).getDate());
                 CA6.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(5).getNearexpCA());
                 PC6.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(5).getNearexpPC());
                 OU6.setText(mSKUBO.getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(5).getNearexpOU());
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (!mBModel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     PC1.setVisibility(View.GONE);
                     PC2.setVisibility(View.GONE);
                     PC3.setVisibility(View.GONE);
@@ -591,11 +595,11 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     tv_piece6.setVisibility(View.GONE);
 
                 } else {
-                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                    if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.tv_piece).getTag()) != null) {
-                        mOrderTitle = bmodel.labelsMasterHelper.applyLabels(row
+                        mOrderTitle = mBModel.labelsMasterHelper.applyLabels(row
                                 .findViewById(R.id.tv_piece).getTag());
-                        String title = bmodel.labelsMasterHelper.applyLabels(row
+                        String title = mBModel.labelsMasterHelper.applyLabels(row
                                 .findViewById(R.id.tv_piece).getTag());
                         tv_piece.setText(title);
                         tv_piece2.setText(title);
@@ -624,7 +628,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 }
 
 
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (!mBModel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     OU1.setVisibility(View.GONE);
                     OU2.setVisibility(View.GONE);
                     OU3.setVisibility(View.GONE);
@@ -640,11 +644,11 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                 } else {
                     if (!" ".equals(mOrderTitle)) {
-                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_outer).getTag()) != null) {
-                            mOrderTitle = mOrderTitle + "," + bmodel.labelsMasterHelper.applyLabels(row
+                            mOrderTitle = mOrderTitle + "," + mBModel.labelsMasterHelper.applyLabels(row
                                     .findViewById(R.id.tv_outer).getTag());
-                            String title = bmodel.labelsMasterHelper.applyLabels(row
+                            String title = mBModel.labelsMasterHelper.applyLabels(row
                                     .findViewById(R.id.tv_outer).getTag());
                             tv_outer.setText(title);
                             tv_outer2.setText(title);
@@ -675,7 +679,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 }
 
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (!mBModel.configurationMasterHelper.SHOW_ORDER_CASE) {
                     CA1.setVisibility(View.GONE);
                     CA2.setVisibility(View.GONE);
                     CA3.setVisibility(View.GONE);
@@ -691,11 +695,11 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                 } else {
                     if (!" ".equals(mOrderTitle)) {
-                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_case).getTag()) != null) {
-                            mOrderTitle = mOrderTitle + "," + bmodel.labelsMasterHelper.applyLabels(row
+                            mOrderTitle = mOrderTitle + "," + mBModel.labelsMasterHelper.applyLabels(row
                                     .findViewById(R.id.tv_case).getTag());
-                            String title = bmodel.labelsMasterHelper.applyLabels(row
+                            String title = mBModel.labelsMasterHelper.applyLabels(row
                                     .findViewById(R.id.tv_case).getTag());
                             tv_case.setText(title);
                             tv_case2.setText(title);
@@ -725,7 +729,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     CA6.setEnabled(true);
                 }
 
-                if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+                if (mBModel.configurationMasterHelper.IS_TEAMLEAD && mBModel.configurationMasterHelper.IS_AUDIT_USER) {
                     PC1.setEnabled(false);
                     PC2.setEnabled(false);
                     PC3.setEnabled(false);
@@ -756,8 +760,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                 }
 
-                String strTitle = bmodel.mSelectedActivityName
-                        + bmodel.mNearExpiryTrackingHelper.mSelectedLocationName + "("
+                String strTitle = mBModel.mSelectedActivityName
+                        + mNearExpiryHelper.mSelectedLocationName + "("
                         + mOrderTitle + ")";
                 tvtitle.setText(strTitle);
 
@@ -768,7 +772,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date1.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -785,19 +789,19 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
 
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
-                                        datec1 = bmodel.mNearExpiryTrackingHelper
+                                        datec1 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date1", datec1)) {
-                                            date1.setText(bmodel.mNearExpiryTrackingHelper
+                                            date1.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
                                             date = date1.getText().toString();
 
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(0)
                                                     .setDate(date);
                                         } else {
@@ -837,7 +841,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         if (!"0".equals(s)) {
 
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
                                     .setNearexpCA(s.toString());
 
@@ -876,7 +880,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
                                     .setNearexpPC(s.toString());
 
@@ -914,7 +918,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
                                     .setNearexpOU(s.toString());
 
@@ -937,7 +941,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date2.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -954,19 +958,19 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
 
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
 
-                                        datec2 = bmodel.mNearExpiryTrackingHelper
+                                        datec2 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date2", datec2)) {
-                                            date2.setText(bmodel.mNearExpiryTrackingHelper
+                                            date2.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
                                             date = date2.getText().toString();
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(1)
                                                     .setDate(date);
                                         } else {
@@ -1005,7 +1009,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
                                     .setNearexpCA(s.toString());
 
@@ -1043,7 +1047,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
                                     .setNearexpPC(s.toString());
 
@@ -1081,7 +1085,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
                                     .setNearexpOU(s.toString());
 
@@ -1104,7 +1108,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date3.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -1122,19 +1126,19 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
 
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
 
-                                        datec3 = bmodel.mNearExpiryTrackingHelper
+                                        datec3 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date3", datec3)) {
-                                            date3.setText(bmodel.mNearExpiryTrackingHelper
+                                            date3.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
                                             date = date3.getText().toString();
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(2)
                                                     .setDate(date);
                                         } else {
@@ -1173,7 +1177,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
                                     .setNearexpCA(s.toString());
 
@@ -1211,7 +1215,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
                                     .setNearexpPC(s.toString());
 
@@ -1249,7 +1253,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
                                     .setNearexpOU(s.toString());
                         }
@@ -1270,7 +1274,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date4.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -1287,19 +1291,19 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     @Override
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
 
-                                        datec4 = bmodel.mNearExpiryTrackingHelper
+                                        datec4 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date4", datec4)) {
-                                            date4.setText(bmodel.mNearExpiryTrackingHelper
+                                            date4.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
                                             date = date4.getText().toString();
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(3)
                                                     .setDate(date);
                                         } else {
@@ -1338,7 +1342,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
                                     .setNearexpCA(s.toString());
 
@@ -1376,7 +1380,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
                                     .setNearexpPC(s.toString());
 
@@ -1414,7 +1418,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
                                     .setNearexpOU(s.toString());
 
@@ -1437,7 +1441,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date5.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -1454,21 +1458,21 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     @Override
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
 
-                                        datec5 = bmodel.mNearExpiryTrackingHelper
+                                        datec5 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date5", datec5)) {
 
-                                            date5.setText(bmodel.mNearExpiryTrackingHelper
+                                            date5.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
 
                                             date = date5.getText().toString();
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(4)
                                                     .setDate(date);
                                         } else {
@@ -1507,7 +1511,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
                                     .setNearexpCA(s.toString());
                         }
@@ -1543,7 +1547,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
                                     .setNearexpPC(s.toString());
                         }
@@ -1579,7 +1583,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
                                     .setNearexpOU(s.toString());
                         }
@@ -1600,7 +1604,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                         String boDate = date6.getText().toString();
 
-                        String formatDate = bmodel.mNearExpiryTrackingHelper
+                        String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
                         int day = Integer.parseInt(formatDate.substring(8, 10));
@@ -1617,19 +1621,19 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                     @Override
                                     public void onDateSet(DatePicker view, int year,
                                                           int monthOfYear, int dayOfMonth) {
-                                        String datef = bmodel.mNearExpiryTrackingHelper
+                                        String datef = mNearExpiryHelper
                                                 .dateformat(year, monthOfYear,
                                                         dayOfMonth);
 
-                                        datec6 = bmodel.mNearExpiryTrackingHelper
+                                        datec6 = mNearExpiryHelper
                                                 .changeDate(datef);
 
                                         if (checkToDate("date6", datec6)) {
-                                            date6.setText(bmodel.mNearExpiryTrackingHelper
+                                            date6.setText(mNearExpiryHelper
                                                     .changeMonthNoToName(datef));
                                             date = date6.getText().toString();
                                             mSKUBO.getLocations()
-                                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                                     .getNearexpiryDate().get(5)
                                                     .setDate(date);
                                         } else {
@@ -1669,7 +1673,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)
                                     .setNearexpCA(s.toString());
                         }
@@ -1706,7 +1710,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
                         if (!"0".equals(s)) {
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)
                                     .setNearexpPC(s.toString());
                         }
@@ -1745,7 +1749,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         if (!"0".equals(s)) {
 
                             mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)
                                     .setNearexpOU(s.toString());
                         }
