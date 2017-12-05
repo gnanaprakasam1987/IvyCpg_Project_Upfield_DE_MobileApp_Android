@@ -56,6 +56,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -106,6 +107,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
 
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayList<ProductMasterBO> mylist;
@@ -151,6 +153,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
 
         initializeViews(view);
 
@@ -2075,7 +2079,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    bmodel.mPriceTrackingHelper.savePriceTransaction(mylist);
+                    priceTrackingHelper.savePriceTransaction(mylist);
 
                 // save near expiry
                 bmodel.saveNearExpiry();

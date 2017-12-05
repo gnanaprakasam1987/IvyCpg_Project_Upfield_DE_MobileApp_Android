@@ -31,15 +31,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
+import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
+import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.PhotoCaptureLocationBO;
-import com.ivy.sd.png.bo.PhotoCaptureProductBO;
-import com.ivy.sd.png.bo.PhotoTypeMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PhotoCaptureHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -50,6 +50,8 @@ import java.util.HashMap;
 public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickListener {
 
     private BusinessModel mBModel;
+    private PhotoCaptureHelper mPhotoCaptureHelper;
+
     protected RecyclerView recyclerView;
     protected TextView toolBarTitle;
 
@@ -60,24 +62,20 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected HashMap<String, ArrayList<String>> mImageListByProductName;
     protected HashMap<String, ArrayList<String>> mPhotoTypeListByProductName;
     protected HashMap<String, ArrayList<String>> mLocationListByProductName;
+    protected HashMap<String, String> mInStoreLocationNameById;
     protected GalRecyclerAdapter galRecyclerAdapter;
-    protected ArrayList<String> imgPathShare=new ArrayList<>();
-    protected ArrayList<String> imgPathDelete=new ArrayList<>();
-    protected ArrayList<File> imgFileDelete=new ArrayList<>();
-    protected HashMap<String, String> mInStoreLocationNameById = new HashMap<>();
+    protected ArrayList<String> imgPathShare;
+    protected ArrayList<String> imgPathDelete;
+    protected ArrayList<File> imgFileDelete;
 
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gall);
+        setContentView(R.layout.gallery);
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
-
-        mBModel.loadPhotoCapturedDetailsSelectedRetailer();
+        mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null)
@@ -106,6 +104,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         loadGrid();
+
         // To get the device screen width and height
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -194,20 +193,22 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
             mImageListByProductName = new HashMap<>();
             mPhotoTypeListByProductName = new HashMap<>();
             mLocationListByProductName = new HashMap<>();
+            mInStoreLocationNameById = new HashMap<>();
 
-            for (PhotoCaptureLocationBO temp : PhotoCaptureHelper.getInstance(getApplicationContext()).getLocations()) {
+            for (PhotoCaptureLocationBO temp : mPhotoCaptureHelper.getLocations()) {
                 mInStoreLocationNameById.put(String.valueOf(temp.getLocationId()), temp.getLocationName());
 
             }
 
-            for (PhotoTypeMasterBO photoTypeBo : PhotoCaptureHelper.getInstance(getApplicationContext()).getPhotoTypeMaster()) {
+            for (PhotoTypeMasterBO photoTypeBo : mPhotoCaptureHelper.getPhotoTypeMaster()) {
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
 
                 for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
                     for (PhotoCaptureLocationBO lbo : mPhotoCapture.getInStoreLocations()) {
+
                         if (lbo.getImagePath() != null && !lbo.getImagePath().isEmpty()) {
-                            System.out.println(photoTypeBo.getPhotoTypeDesc() + ":" + lbo.getProductName() + " : " + lbo.getLocationId() + " : " + lbo.getLotCode() + " : " + lbo.getImagePath());
+
                             if (prodList.size() > 0) {
                                 if (!prodList.contains(lbo.getProductName())) {
                                     prodList.add(lbo.getProductName());
@@ -239,8 +240,10 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                     }
                 }
             }
+
             galRecyclerAdapter = new GalRecyclerAdapter();
             recyclerView.setAdapter(galRecyclerAdapter);
+
         } catch (Exception e) {
             Commons.printException(e);
             Toast.makeText(
@@ -275,7 +278,6 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected void onDestroy() {
         super.onDestroy();
         unbindDrawables(findViewById(R.id.root));
-        // force the garbage collector to run
         System.gc();
     }
 
@@ -285,21 +287,26 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
      * @param view Root view
      */
     private void unbindDrawables(View view) {
-        if (view.getBackground() != null) {
-            view.getBackground().setCallback(null);
-        }
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                unbindDrawables(((ViewGroup) view).getChildAt(i));
+        if (view != null) {
+            if (view.getBackground() != null) {
+                view.getBackground().setCallback(null);
             }
-            try {
-                ((ViewGroup) view).removeAllViews();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (view instanceof ViewGroup) {
+                for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                    unbindDrawables(((ViewGroup) view).getChildAt(i));
+                }
+                try {
+                    ((ViewGroup) view).removeAllViews();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
             }
         }
     }
 
+    /**
+     * Gallery Adapter
+     */
     private class GalRecyclerAdapter extends RecyclerView.Adapter<GalRecyclerAdapter.MyViewHolder> {
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -339,16 +346,17 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
 
     }
 
-    protected void showAlertDialog()
-    {
+    /**
+     * Alert dialog to select image
+     */
+    protected void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(Gallery.this)
                 .setTitle("Please Select the Images and Try again!!!")
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(prodList.size()>0)
-                        {
+                        if (prodList.size() > 0) {
                             galRecyclerAdapter.notifyDataSetChanged();
                         }
                     }
@@ -363,7 +371,12 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         mBModel.applyAlertDialogTheme(builder);
     }
 
-    /* showDeleteAlertDialog( path of the image, image file) */
+    /**
+     * Alert dialog to confirm delete operation
+     *
+     * @param imagePathArray Image path(Full Name) list
+     * @param imageFileArray Image file list
+     */
     private void showDeleteAlertDialog(final ArrayList<String> imagePathArray, final ArrayList<File> imageFileArray)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(Gallery.this)
@@ -394,10 +407,11 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                     }
 
                                     if (imageFileArray.get(i).delete()) {
-                                        mBModel.deleteImageDetailsFormTable(imagePathArray.get(i));
+                                        mPhotoCaptureHelper.deleteImageDetailsFormTable(imagePathArray.get(i));
                                         mBModel.photocount--;
                                     }
                                 }
+
                                 loadGrid();
                                 isPhotoDelete = true;
                             }

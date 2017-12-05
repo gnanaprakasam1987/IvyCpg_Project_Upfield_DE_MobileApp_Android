@@ -1081,7 +1081,8 @@ SynchronizationHelper {
                     "union select count(uid) from CS_GroomingHeader where upload='N'" +
                     "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
-                    "union select count(uid) from AttendanceTimeDetails where upload='N'";
+                    "union select count(uid) from AttendanceTimeDetails where upload='N'" +
+                    "union select count(UID) from NonFieldActivity where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -3938,7 +3939,6 @@ SynchronizationHelper {
             db.closeDB();
         }
 
-
     }
 
     public void downloadAbsenteesRetailer(ArrayList<TeamLeadBO> absenteesList) {
@@ -4408,8 +4408,6 @@ SynchronizationHelper {
         } else {
             isPwd = password.equals(bmodel.userMasterHelper.getUserMasterBO().getPassword());
         }
-
-
         return (isUser && isPwd);
     }
 
@@ -4522,37 +4520,33 @@ SynchronizationHelper {
         // If usermaster get updated
         bmodel.userMasterHelper.downloadUserDetails();
         bmodel.userMasterHelper.downloadDistributionDetails();
+        // Common Configuration download
         bmodel.configurationMasterHelper.downloadConfig();
+        // Preseller or Van Seller Configuration Download
         bmodel.configurationMasterHelper.downloadIndicativeOrderConfig();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         bmodel.configurationMasterHelper.downloadQDVP3ScoreConfig(StandardListMasterConstants.VISITCONFIG_COVERAGE);
+
+        //download retailer row view configution in Visit or planning screen
         bmodel.mRetailerHelper.setVisitPlanning(bmodel.configurationMasterHelper
                 .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_PLANNING));
         bmodel.mRetailerHelper.setVisitCoverage(bmodel.configurationMasterHelper
                 .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_COVERAGE));
 
         bmodel.configurationMasterHelper.getPrinterConfig();
+
         if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            // bmodel.synchronizationHelper.deletePreviousDayOrderHistory();
             bmodel.synchronizationHelper.backUpPreviousDayOrder();
-            bmodel.synchronizationHelper.deleteOrderHistory();
-        } else {
-            bmodel.synchronizationHelper.deleteOrderHistory();
+
         }
+        bmodel.synchronizationHelper.deleteOrderHistory();
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
         }
+
         bmodel.updateRetailerMasterBySBDAcheived(false);
         bmodel.updateRetailerMasterBySBDMerchAcheived(false);
-        bmodel.updateRetailerMasterSBDCount();
-        // bmodel.sbdMerchandisingHelper.generateMerchandisingreport();
-        // if
-        // (!bmodel.configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY)
         bmodel.UpdateRetailermasterIsGoldStore();
-        // Update DTPTable
-
-        bmodel.updateOderdetailRetailId();
 
         bmodel.configurationMasterHelper.downloadRetailerProperty();
         bmodel.downloadRetailerMaster();
@@ -4560,18 +4554,14 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.CALC_QDVP3)
             bmodel.updateSurveyScoreHistoryRetailerWise();
 
-        // Update Initiative coverage Tab;e
+        // Update Initiative coverage Table
         if (bmodel.configurationMasterHelper.IS_INITIATIVE
                 && !bmodel.configurationMasterHelper.SHOW_ALL_ROUTES)
             bmodel.initiativeHelper.generateInitiativeCoverageReport();
 
         // Code moved from DOWNLOAD
-
         bmodel.beatMasterHealper.downloadBeats();
-
         bmodel.channelMasterHelper.downloadChannel();
-
-        // bmodel.downloadProducts();
 
         bmodel.reasonHelper.downloadDeviatedReason();
         bmodel.reasonHelper.downloadNonVisitReasonMaster();
@@ -4583,18 +4573,17 @@ SynchronizationHelper {
                         .downloadSOBuffer() / (float) 100));
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
-        // bmodel.posmCarryTot = bmodel.getPOSMToCarryCount();
-        //bmodel.getRetailerMasterBO().setOtpActivatedDate("");
+        //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();
 
+        //credintote updatation and loading
         bmodel.collectionHelper.updateCreditNoteACtualAmt();
         bmodel.collectionHelper.loadCreditNote();
+
         bmodel.reasonHelper.downloadReasons();
-//		bmodel.initiativeHelper
-//				.downloadInitiativeandInsertinRetailerInfoMaster();
         bmodel.updateIsTodayAndIsVanSalesInRetailerMasterInfo();
-        // bmodel.getimageDownloadURL();
         bmodel.productHelper.downloadOrdeType();
+
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())

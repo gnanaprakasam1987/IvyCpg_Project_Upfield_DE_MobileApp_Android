@@ -35,6 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -54,6 +55,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
         BrandDialogInterface {
 
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
 
     // Drawer Implimentation
     private DrawerLayout mDrawerLayout;
@@ -98,9 +100,9 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
 		 * (bmodel.mPriceChangeCheckHelper.mSelectedParentFilter == 0)
 		 * bmodel.mPriceChangeCheckHelper.mSelectedParentFilter = -1; }
 		 */
-
-        if (bmodel.mPriceTrackingHelper.mSelectedFilter == 0)
-            bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        if (priceTrackingHelper.mSelectedFilter == 0)
+            priceTrackingHelper.mSelectedFilter = -1;
     }
 
     @Override
@@ -288,9 +290,9 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
 
-        if(getView().findViewById(R.id.calcdot)!=null)
-         (getView().findViewById(R.id.calcdot))
-                .setVisibility(View.VISIBLE);
+        if (getView().findViewById(R.id.calcdot) != null)
+            (getView().findViewById(R.id.calcdot))
+                    .setVisibility(View.VISIBLE);
 
         lv = (ListView) getView().findViewById(R.id.list);
         lv.setCacheColorHint(0);
@@ -360,8 +362,8 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Void... arg0) {
             try {
                 bmodel.mEmptyReconciliationhelper.saveTransaction();
-				/*
-				 * bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                /*
+                 * bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
 				 * .now(SDUtil.TIME)); bmodel.updateIsVisitedFlag();
 				 */
 
@@ -425,9 +427,9 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
 
         if (strBarCodeSearch.equalsIgnoreCase("ALL")) {
             for (ProductMasterBO sku : items) {
-                if (bmodel.mPriceTrackingHelper.mSelectedFilter == sku
+                if (priceTrackingHelper.mSelectedFilter == sku
                         .getParentid()
-                        || bmodel.mPriceTrackingHelper.mSelectedFilter == -1)
+                        || priceTrackingHelper.mSelectedFilter == -1)
                     mylist.add(sku);
             }
         } else {
@@ -599,7 +601,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     }
 
     public void eff() {
-        String s =  QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else
@@ -620,7 +622,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         strBarCodeSearch = "ALL";
-        bmodel.mPriceTrackingHelper.mSelectedFilter = id;
+        priceTrackingHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
         onLoadModule();
     }
@@ -645,8 +647,9 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
+
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 

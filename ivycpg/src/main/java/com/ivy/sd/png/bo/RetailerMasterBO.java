@@ -138,7 +138,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String IsVisited;
     private int sbdMerchTarget;
     private int sbdMerchAcheived;
-    private int sbdDistCount;
     private int sbdMerchInitTarget;
     private int sbdMerchInitAcheived;
     private String LastVisitStatus;
@@ -455,14 +454,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSbdDistStock(int sbdDistStock) {
         this.sbdDistStock = sbdDistStock;
-    }
-
-    public int getSbdDistCount() {
-        return sbdDistCount;
-    }
-
-    public void setSbdDistCount(int sbdMerchCount) {
-        this.sbdDistCount = sbdMerchCount;
     }
 
     public int getIsGoldStore() {

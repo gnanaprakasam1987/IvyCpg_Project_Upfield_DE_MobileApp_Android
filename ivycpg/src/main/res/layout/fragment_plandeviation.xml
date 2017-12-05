@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/WHITE"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/reason_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
+        android:gravity="left"
+        android:padding="@dimen/profile_header_txt_layout_marginleft"
+        android:text="@string/select_reason"
+        android:textColor="?attr/colorAccent"
+        android:textSize="@dimen/font_micro_small"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/profile_history_20dp"
+        android:layout_marginLeft="@dimen/profile_history_25dp"
+        android:layout_marginRight="@dimen/profile_history_25dp"
+        android:layout_marginTop="@dimen/profile_history_10dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reason_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/reason_view"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/list_margin"
+            android:scrollbars="vertical"
+            android:overScrollMode="never" />
+
+        <View
+            android:id="@+id/reason_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/reason_btns"
+            android:layout_gravity="center"
+            android:background="@color/GRAY"
+            android:layout_marginBottom="@dimen/dimens_10dp"
+            android:src="@drawable/downloadsuccess" />
+
+        <LinearLayout
+            android:id="@+id/reason_btns"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/footer_height"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/add_reason"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:onClick="onClick"
+                android:text="@string/save"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

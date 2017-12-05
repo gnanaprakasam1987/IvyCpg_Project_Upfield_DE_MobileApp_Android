@@ -321,13 +321,7 @@ public class ConfigurationMasterHelper {
     // End Time
     private static final String CODE_END_TIME = "ENDTIME";
     private static final String CODE_DROPSIZE = "DROPSIZE";
-    private static final String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
     private static final String CODE_STOCK_COMPETITOR = "STOCK_COMPETITOR";
-    private static final String CODE_PRICE_CHNAGED = "PRICE_CHANGED";
-    private static final String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
-    private static final String CODE_PRICE_MINMAX = "PRICE_MINMAX";
-    private static final String CODE_PRICE_SRP = "PRICE_SRP";
-    private static final String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
     private static final String CODE_SURVEY_ANSWER_ALL = "SURVEY02";
     private static final String CODE_SURVEY_ANSWER_MANDATORY = "SURVEY03";
     private static final String CODE_APPLY_PRODUCT_TAX = "TAXINPROD";
@@ -449,6 +443,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_FILTER_TOP = "FUN61";
     public boolean IS_TOP_ORDER_FILTER;
 
+    private static final String CODE_SHOW_ONLY_SERVER_TASK = "FUN63";
+    public boolean IS_SHOW_ONLY_SERVER_TASK;
     /**
      * RoadActivity config *
      */
@@ -716,8 +712,7 @@ public class ConfigurationMasterHelper {
     public int raPhotoCount;
     public int photopercent = 80;
     public int globalSeqId = 0;
-    public int sosDigits = 4;
-    public int sodDigits = 4;
+
     public int refreshMin = 5;
     public int tempOrderInterval = 10;
     public static String outDateFormat = "MM/dd/yyyy";//default date format
@@ -773,23 +768,11 @@ public class ConfigurationMasterHelper {
     public boolean ISUPLOADUSERLOC = false;
     public boolean IS_SHOW_DROPSIZE = false;
     public int DROPSIZE_ORDER_TYPE;
-    // 0 - product ,1 - Competitor product , 2 - Product & Competitior product
-    public int LOAD_PRICE_COMPETITOR = 0;
-    public boolean IS_LOAD_PRICE_COMPETITOR = false;
 
     public int LOAD_STOCK_COMPETITOR = 0;
     public int LOAD_MAX_DELIVERY_DATE = 0;
     public String LOAD_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
-    public boolean IS_SHOW_PRICE_CHANGED = false;
-    public boolean IS_SHOW_PRICE_COMPLIANCE = false;
-    public boolean IS_SHOW_PRICE_MINMAX = false;
-    public boolean IS_SHOW_PRICE_SRP = false;
-    public boolean IS_SHOW_PRICE_LASTVP = false;
-    public boolean SHOW_PRICE_CA;
-    public boolean SHOW_PRICE_PC;
-    public boolean SHOW_PRICE_OU;
-    public boolean SHOW_DEFAULT_LAST_VISIT_PRICE;
     public boolean IS_SURVEY_ANSWER_ALL;
     public boolean IS_SURVEY_ANSWER_MANDATORY;
     public boolean IS_APPLY_PRODUCT_TAX;
@@ -1057,8 +1040,8 @@ public class ConfigurationMasterHelper {
 
     public boolean IS_SOS_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_SOS_RETAIN_LAST_VISIT_TRAN = "SOS02";
-    public static final String CODE_SOS_DIGITS = "SOS03";
-    public static final String CODE_SOD_DIGITS = "SOD01";
+
+
     public static final String CODE_PERRPT_REFRESH = "PERFRPTSYNC";
 
     public boolean IS_SF_NORM_CHECK;
@@ -1068,9 +1051,6 @@ public class ConfigurationMasterHelper {
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
-
-    public boolean IS_SHOW_PREV_MRP_IN_PRICE;
-    public static final String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
 
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE = "PRICE_RETAINVW";
@@ -1436,14 +1416,7 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             db.closeDB();
-
             loadOrderAndStockConfiguration(0);
-            loadOrderSummaryDetailConfig();
-            loadPriceUOMConfiguration(0);
-            loadDeliveryUOMConfiguration();
-            loadProfileHistoryConfiguration();
-            if (IS_CNT01)
-                bmodel.mAttendanceHelper.loadChildUserList();
             getDateFormat();
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
@@ -1766,13 +1739,8 @@ public class ConfigurationMasterHelper {
         this.HIDE_STOCK_APPLY_BUTTON = hashMapHHTModuleConfig.get(CODE_HIDE_STOCK_APPLY_BUTTON) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_STOCK_APPLY_BUTTON) : false;
         this.SHOW_PRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) : false;
         this.SHOW_GROUPPRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) : false;
-        this.IS_SHOW_PRICE_CHANGED = hashMapHHTModuleConfig.get(CODE_PRICE_CHNAGED) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_CHNAGED) : false;
-        this.IS_SHOW_PRICE_SRP = hashMapHHTModuleConfig.get(CODE_PRICE_SRP) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_SRP) : false;
-        this.IS_SHOW_PRICE_LASTVP = hashMapHHTModuleConfig.get(CODE_PRICE_LASTVP) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_LASTVP) : false;
-        this.IS_SHOW_PRICE_COMPLIANCE = hashMapHHTModuleConfig.get(CODE_PRICE_COMPLIANCE) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_COMPLIANCE) : false;
         this.IS_SHOW_SELLER_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) : false;
         this.IS_VALIDATE_CREDIT_DAYS = hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) : false;
-        this.IS_SHOW_PRICE_MINMAX = hashMapHHTModuleConfig.get(CODE_PRICE_MINMAX) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_MINMAX) : false;
         this.SHOW_UNIT_PRICE = hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) : false;
 
         this.SHOW_CROWN_MANAGMENT = hashMapHHTModuleConfig.get(CODE_SHOW_CROWN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CROWN) : false;
@@ -2001,10 +1969,7 @@ public class ConfigurationMasterHelper {
         this.ROUND_DECIMAL_COUNT = hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) != null ? hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) : 0;
         this.photopercent = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) : 80;
         this.globalSeqId = hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) : 0;
-        this.sosDigits = hashMapHHTModuleOrder.get(CODE_SOS_DIGITS) != null ? hashMapHHTModuleOrder.get(CODE_SOS_DIGITS) : 4;
-        this.sosDigits = this.sosDigits > 4 ? 4 : this.sosDigits;
-        this.sodDigits = hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) != null ? hashMapHHTModuleOrder.get(CODE_SOD_DIGITS) : 4;
-        this.sodDigits = this.sodDigits > 4 ? 4 : this.sodDigits;
+
 
         this.refreshMin = hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) != null ? hashMapHHTModuleOrder.get(CODE_PERRPT_REFRESH) : 5;
         this.refreshMin = this.refreshMin > 5 ? this.refreshMin : 5;
@@ -2034,7 +1999,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRICECHECK_IN_STOCKCHECK = hashMapHHTModuleConfig.get(CODE_IS_PRICECHECK_IN_STOCKCHECK) != null ? hashMapHHTModuleConfig.get(CODE_IS_PRICECHECK_IN_STOCKCHECK) : false;
         this.IS_DIST_SELECT_BY_SUPPLIER = hashMapHHTModuleConfig.get(CODE_DIST_SELECT_BY_SUPPLIER) != null ? hashMapHHTModuleConfig.get(CODE_DIST_SELECT_BY_SUPPLIER) : false;
         this.IS_PRINT_CREDIT_NOTE_REPORT = hashMapHHTModuleConfig.get(CODE_PRINT_CREDIT_NOTE_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_CREDIT_NOTE_REPORT) : false;
-        this.IS_SHOW_PREV_MRP_IN_PRICE = hashMapHHTModuleConfig.get(CODE_SHOW_PREV_MRP_IN_PRICE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PREV_MRP_IN_PRICE) : false;
         this.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE = hashMapHHTModuleConfig.get(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE) : false;
         this.IS_EOD_COLUMNS_AVALIABLE = hashMapHHTModuleConfig.get(CODE_EOD_COLUMNS) != null ? hashMapHHTModuleConfig.get(CODE_EOD_COLUMNS) : false;
         this.IS_LOCATION_WISE_PLANOGRAM = hashMapHHTModuleConfig.get(CODE_LOCATION_WISE_PLANOGRAM) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WISE_PLANOGRAM) : false;
@@ -2162,7 +2126,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
-
+        this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
     }
 
     private void getTaxModel(String hhtCode) {
@@ -2684,75 +2648,6 @@ public class ConfigurationMasterHelper {
         return config;
     }
 
-    public void loadPriceUOMConfiguration(int subChannelId) {
-        try {
-
-            SHOW_PRICE_PC = false;
-            SHOW_PRICE_OU = false;
-            SHOW_PRICE_CA = false;
-
-            String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            String sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='PRICE_UOM' and Flag=1 and subchannelid=" + subChannelId;
-            Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    codeValue = c.getString(0);
-                }
-            } else {
-                sql = "select RField from "
-                        + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode='PRICE_UOM' and Flag=1 and subchannelid=0";
-                c = db.selectSQL(sql);
-                if (c != null && c.getCount() != 0) {
-                    if (c.moveToNext()) {
-                        codeValue = c.getString(0);
-                    }
-                }
-            }
-
-            if (codeValue != null) {
-                String codeSplit[] = codeValue.split(",");
-                for (String temp : codeSplit) {
-                    switch (temp) {
-                        case "OP":
-                            SHOW_PRICE_PC = true;
-                            break;
-                        case "OO":
-                            SHOW_PRICE_OU = true;
-                            break;
-                        case "OC":
-                            SHOW_PRICE_CA = true;
-                            break;
-                    }
-
-                }
-            }
-
-            sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='PRICE_LAST_VP' and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    final int value = c.getInt(0);
-                    if (value == 1) {
-                        SHOW_DEFAULT_LAST_VISIT_PRICE = true;
-                    }
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     public void loadDeliveryUOMConfiguration() {
         try {
 
@@ -3051,8 +2946,6 @@ public class ConfigurationMasterHelper {
             SHOW_INV_DASH = false;
             SHOW_SMP_DASH = false;
 
-            LOAD_PRICE_COMPETITOR = 0;
-            IS_LOAD_PRICE_COMPETITOR = false;
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
             LOAD_MAX_DELIVERY_DATE = 0;
@@ -3382,19 +3275,6 @@ public class ConfigurationMasterHelper {
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and Flag=1";
-
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-
-                    LOAD_PRICE_COMPETITOR = c.getInt(0);
-                    IS_LOAD_PRICE_COMPETITOR = true;
-                }
-                c.close();
-            }
-
-            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_STOCK_COMPETITOR) + " and Flag=1";
 
             c = db.selectSQL(sql);
@@ -3662,7 +3542,7 @@ public class ConfigurationMasterHelper {
 
     }
 
-    private void loadOrderSummaryDetailConfig() {
+    public void loadOrderSummaryDetailConfig() {
         SHOW_ORD_SUMMARY_PRICEOFF = false;
         SHOW_ORD_SUMMARY_DISC1 = false;
         SHOW_ORD_SUMMARY_DISC2 = false;

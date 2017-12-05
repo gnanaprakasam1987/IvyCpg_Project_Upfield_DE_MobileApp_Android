@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/nearexpiry_tracking_fragment"
-        android:name="com.ivy.sd.png.view.NearExpiryTrackingFragment"
+        android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

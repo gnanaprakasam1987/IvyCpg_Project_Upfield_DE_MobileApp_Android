@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.ivy.countersales.CS_sale_summary;
 import com.ivy.countersales.CSsale;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -255,7 +256,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 //                    finish();
                 } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                     Intent i = new Intent(SchemeApply.this,
-                            DigitalContentDisplay.class);
+                            DigitalContentActivity.class);
                     i.putExtra("FromInit", "Initiative");
                     i.putExtra("ScreenCode", screenCode);
                     startActivity(i);

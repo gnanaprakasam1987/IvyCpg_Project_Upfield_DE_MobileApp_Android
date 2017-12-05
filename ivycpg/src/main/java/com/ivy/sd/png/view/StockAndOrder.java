@@ -64,6 +64,8 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -73,7 +75,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -3980,9 +3981,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             finish();
         } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
-            bmodel.planogramMasterHelper.downloadDigitalContent("RETAILER");
+            DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
+            mDigitalContentHelper.downloadDigitalContent("RETAILER");
             Intent i = new Intent(StockAndOrder.this,
-                    DigitalContentDisplay.class);
+                    DigitalContentActivity.class);
             i.putExtra("ScreenCode", screenCode);
             i.putExtra("FromInit", "Initiative");
             startActivity(i);

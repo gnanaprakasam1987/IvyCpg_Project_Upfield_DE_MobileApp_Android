@@ -1,0 +1,837 @@
+package com.ivy.cpg.view.digitalcontent;
+
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+import com.ivy.countersales.CSHomeScreenFragment;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.DigitalContentBO;
+import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BrandDialogInterface;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.sd.png.view.CrownReturnActivity;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.sd.png.view.SchemeApply;
+import com.ivy.sd.png.view.StockAndOrder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+
+public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface {
+
+    private BusinessModel mBModel;
+    DigitalContentHelper mDigitalContentHelper;
+
+    private ArrayList<DigitalContentBO> mDigitalContentList;
+
+    private DrawerLayout mDrawerLayout;
+    private TabLayout tabLayout;
+    private View view;
+    private ViewPager viewPager = null;
+    private PagerAdapter adapter = null;
+
+    private int mSelectedTab = 0;
+    private static final String BRAND = "Brand";
+    private boolean isClicked = false;
+    public int mScreenWidth = 0, mScreenHeight = 0;
+    private int isImg = 1, isAudio = 2, isVideo = 3, isXls = 4, isPDF = 5, isOthers = 6;
+    private int mImgCount = 0, mAudioCount = 0, mVideoCount = 0, mXlsCount = 0, mPDFCount = 0, mOthersCount = 0;
+    private String calledFrom = "", screenCode = "MENU_STK_ORD";
+    private final String MENU_Init = "Initiative";
+    private String mScreenTitle = "Digital Content";
+    private static final String MENU_DGT_SW = "MENU_DGT_SW";
+    private static final String MENU_DGT = "MENU_DGT";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.fragment_digital_content, container, false);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        mScreenWidth = displaymetrics.widthPixels;
+        mScreenHeight = displaymetrics.heightPixels;
+
+        Bundle extras = getArguments();
+        if (extras == null) {
+            extras = getActivity().getIntent().getExtras();
+        }
+        if (extras != null) {
+            screenCode = extras.getString("ScreenCode");
+            calledFrom = extras.getString("FromInit");
+            screenCode = screenCode != null ? screenCode : "";
+            calledFrom = calledFrom != null ? calledFrom : "Digi";
+        }
+
+        if (calledFrom != null && calledFrom.equals("DigiCS")) {
+            mBModel.productHelper.downloadProductFilter(CSHomeScreenFragment.MENU_DGT_CS);
+        } else if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
+            mBModel.productHelper.downloadProductFilter(MENU_DGT_SW);
+        } else {
+            mBModel.productHelper.downloadProductFilter(MENU_DGT);
+        }
+
+        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        // Set title to action bar
+        if (extras != null) {
+            mScreenTitle = extras.getString("mScreenTitle");
+        }
+        //If this screen is called from Menu item or Order flow..
+        if (screenCode.equals("MENU_STK_ORD")
+                || screenCode.equals("MENU_ORDER") || calledFrom.equals("Digi"))
+            mScreenTitle = mBModel.configurationMasterHelper
+                    .getHomescreentwomenutitle(MENU_DGT);
+
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+                mDrawerLayout,
+                R.string.ok,
+                R.string.close
+        ) {
+            public void onDrawerClosed(View view) {
+
+                if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                    setScreenTitle(mScreenTitle);
+                    getActivity().supportInvalidateOptionsMenu();
+                }
+            }
+
+            public void onDrawerOpened(View drawerView) {
+
+                if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                    setScreenTitle(getResources().getString(R.string.filter));
+                    getActivity().supportInvalidateOptionsMenu();
+                }
+            }
+        };
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+
+        new LoadAsyncTask(-1).execute();
+
+        LinearLayout footer = (LinearLayout) view.findViewById(R.id.footer);
+        footer.setVisibility(View.VISIBLE);
+        Button btnClose = (Button) view.findViewById(R.id.btn_close);
+        if (mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
+            btnClose.setVisibility(View.VISIBLE);
+
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                            "", getActivity().getResources().getString(R.string.move_next_activity),
+                            false, getActivity().getResources().getString(R.string.ok),
+                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+                            Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                            Bundle extras = getActivity().getIntent().getExtras();
+                            if (extras != null) {
+                                intent.putExtra("IsMoveNextActivity", true);
+                                intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                            }
+
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }, new CommonDialog.negativeOnClickListener() {
+                        @Override
+                        public void onNegativeButtonClick() {
+
+                        }
+                    }).show();
+
+                }
+            });
+        } else {
+            btnClose.setVisibility(View.GONE);
+        }
+        Button btn_next = (Button) view.findViewById(R.id.btn_next);
+        if (MENU_Init.equals(calledFrom)) {
+            btn_next.setVisibility(View.VISIBLE);
+            btn_next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    click(2);
+                }
+            });
+        } else {
+            btn_next.setVisibility(View.GONE);
+        }
+        if (!mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY && !MENU_Init.equals(calledFrom)) {
+            footer.setVisibility(View.GONE);
+        }
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isClicked = false;
+
+        mScreenTitle = mBModel.labelsMasterHelper
+                .applyLabels((Object) "menu_dgt");
+
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(mScreenTitle);
+
+            //For Other Digital content fragments
+            mDigitalContentHelper.mSelectedActivityName = mScreenTitle;
+        }
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_only_next, menu);
+
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+        menu.findItem(R.id.menu_next).setVisible(false);
+
+        if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0 || (mBModel.productHelper.getRetailerModuleChildLevelBO() != null && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)) {
+            menu.findItem(R.id.menu_product_filter).setVisible(true);
+        } else
+            menu.findItem(R.id.menu_product_filter).setVisible(false);
+
+        menu.findItem(R.id.menu_product_filter).setVisible(false);
+
+        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+            menu.findItem(R.id.menu_fivefilter).setVisible(true);
+        }
+
+        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            for (Integer id : mSelectedIdByLevelId.keySet()) {
+                if (mSelectedIdByLevelId.get(id) > 0) {
+                    menu.findItem(R.id.menu_fivefilter).setIcon(
+                            R.drawable.ic_action_filter_select);
+                    break;
+                }
+            }
+        }
+        if (calledFrom.equalsIgnoreCase("MENU_DGT_SW") || calledFrom.equalsIgnoreCase("DigiCS")) {
+            menu.findItem(R.id.menu_product_filter).setVisible(false);
+            menu.findItem(R.id.menu_fivefilter).setVisible(false);
+        }
+
+        if (drawerOpen) {
+            menu.clear();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
+            } else {
+
+                if (screenCode.equals("MENU_DGT_SW")) {
+                    Intent intent = new Intent(getActivity(),
+                            HomeScreenActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                } else
+                    click(1);
+            }
+            return true;
+        } else if (i == R.id.menu_next) {
+            click(2);
+            return true;
+        } else if (i == R.id.menu_product_filter) {
+            productFilterClickedFragment();
+            return true;
+        } else if (i == R.id.menu_fivefilter) {
+            FiveFilterFragment();
+            return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    /**
+     * Method used to call Five level filter.
+     */
+    private void FiveFilterFragment() {
+        try {
+
+            if (tabLayout != null) {
+                mSelectedTab = tabLayout.getSelectedTabPosition();
+            }
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
+                    .findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    mBModel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            // set Fragment class Arguments
+            FilterFiveFragment<Object> mFragment = new FilterFiveFragment<>();
+            mFragment.setArguments(bundle);
+
+            ft.replace(R.id.right_drawer, mFragment, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.print("" + e);
+        }
+    }
+
+    /**
+     * productFilterClickedFragment for calling filter fragment
+     */
+    private void productFilterClickedFragment() {
+        try {
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            android.support.v4.app.FragmentManager fm = getActivity()
+                    .getSupportFragmentManager();
+            FilterFragment<?> frag = (FilterFragment<?>) fm
+                    .findFragmentByTag("filter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putString("filterName", BRAND);
+            bundle.putString("filterHeader", mBModel.productHelper
+                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
+            bundle.putSerializable("serilizeContent",
+                    mBModel.productHelper.getRetailerModuleChildLevelBO());
+
+            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
+
+                bundle.putBoolean("isFormBrand", true);
+
+                bundle.putString("pfilterHeader", mBModel.productHelper
+                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
+
+                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
+                        .getRetailerModuleParentLeveBO());
+            } else {
+                bundle.putBoolean("isFormBrand", false);
+            }
+
+            // set Fragment class Arguments
+            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+            FilterFragment<?> mFragment = new FilterFragment(mSelectedFilterMap);
+            mFragment.setArguments(bundle);
+            ft.add(R.id.right_drawer, mFragment, "filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
+    /**
+     * Click action
+     *
+     * @param action Action type
+     */
+    public void click(int action) {
+        if (!isClicked) {
+            isClicked = true;
+            if (action == 1) {
+
+                mDigitalContentHelper.setIsDigitalContent();
+                mDigitalContentHelper.setDigitalContentInDB();
+                mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
+
+                switch (calledFrom) {
+                    case MENU_Init:
+
+                        if (mBModel.configurationMasterHelper.IS_INITIATIVE) {
+                            mBModel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil
+                                            .now(SDUtil.TIME));
+                            Intent intent = new Intent(getActivity(),
+                                    InitiativeActivity.class);
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if (mBModel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
+                            Intent init = new Intent(getActivity(),
+                                    OrderDiscount.class);
+                            init.putExtra("ScreenCode", screenCode);
+                            startActivity(init);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if (mBModel.configurationMasterHelper.IS_SCHEME_ON
+                                && mBModel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+                            Intent init = new Intent(getActivity(),
+                                    SchemeApply.class);
+                            init.putExtra("ScreenCode", screenCode);
+                            startActivity(init);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            getActivity().finish();
+                        } else if ((mBModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || mBModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
+                                && mBModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                            Intent intent = new Intent(getActivity(),
+                                    CrownReturnActivity.class);
+                            intent.putExtra("OrderFlag", "Nothing");
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        } else {
+                            mBModel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil
+                                            .now(SDUtil.TIME));
+                            Intent intent;
+                            if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
+                                intent = new Intent(getActivity(), CatalogOrder.class);
+                            } else {
+                                intent = new Intent(getActivity(), StockAndOrder.class);
+                            }
+                            intent.putExtra("OrderFlag", "Nothing");
+                            intent.putExtra("ScreenCode", screenCode);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        }
+
+                        break;
+                    case "Digi": {
+                        mBModel.outletTimeStampHelper
+                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        Intent intent = new Intent(getActivity(),
+                                HomeScreenTwo.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                        break;
+                    }
+                    case "DigiCS": {
+                        Intent intent = new Intent(getActivity(),
+                                HomeScreenActivity.class).putExtra("menuCode", "MENU_COUNTER");
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        getActivity().finish();
+                        break;
+                    }
+                }
+            } else if (action == 2) {
+                mDigitalContentHelper.setIsDigitalContent();
+                mDigitalContentHelper.setDigitalContentInDB();
+                mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
+                Intent i = new Intent(getActivity(),
+                        OrderSummary.class);
+                i.putExtra("ScreenCode", screenCode);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                getActivity().finish();
+            }
+        }
+    }
+
+    @Override
+    public void updateMultiSelectionBrand(List<String> mFilterName,
+                                          List<Integer> mFilterId) {
+    }
+
+    @Override
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
+    }
+
+    @Override
+    public void updateBrandText(String mFilterText, int pid) {
+        // Close the drawer
+        mDrawerLayout.closeDrawers();
+        new LoadAsyncTask(pid).execute();
+
+
+    }
+
+    @Override
+    public void updateGeneralText(String mFilterText) {
+
+
+    }
+
+    @Override
+    public void updateCancel() {
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void loadStartVisit() {
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
+    }
+
+    public HashMap<Integer, Integer> mSelectedIdByLevelId;
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+        mDrawerLayout.closeDrawers();
+
+        if (mParentIdList != null) {
+            if (mParentIdList.size() > 0) {
+                new LoadAsyncTask(mParentIdList).execute();
+            } else {
+                new LoadAsyncTask(-1).execute();
+            }
+        } else {
+            new LoadAsyncTask(-1).execute();
+        }
+
+
+    }
+
+    /**
+     * Load images in the view
+     */
+    class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private ProgressDialog progressDialogue;
+        private int pid;
+        Vector<LevelBO> mParentIdList;
+        Vector<DigitalContentBO> items;
+        int size;
+        ArrayList<DigitalContentBO> mImageList;
+
+        private LoadAsyncTask(int pid) {
+            super();
+            this.pid = pid;
+        }
+
+        private LoadAsyncTask(Vector<LevelBO> mParentIdList) {
+            super();
+            this.mParentIdList = new Vector<>(mParentIdList);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                mDigitalContentList = new ArrayList<>();
+                mImageList = new ArrayList<>();
+                items = mDigitalContentHelper.getDigitalMaster();
+                if (items == null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            mBModel.showAlert(getResources().getString(R.string.no_data_exists),
+                                    0);
+                        }
+                    });
+                    return false;
+                }
+                size = items.size();
+
+		/*
+          add extension of image types in mImageList
+		  other types in mDigitalContentList
+		*/
+                if (mParentIdList != null && mParentIdList.size() > 0) {
+                    for (int k = 0; k < mParentIdList.size(); k++) {
+                        pid = mParentIdList.get(k).getParentID();
+                        loadDigitalContentByType(pid);
+                    }
+                } else {
+                    loadDigitalContentByType(-1);
+                }
+
+
+
+       /*
+         * loop through the mImageList size
+         * check the loop count is less than mDigitalContentList size
+         * if yes add the mImageList element to the loop count position
+           * increase loop count to 5
+         * if no add the mImageList element at end of mDigitalContentList.
+        */
+                int loopCount = 0;
+                mImgCount = 0;
+                for (int j = 0; j < mImageList.size(); j++) {
+                    int mSize = mDigitalContentList.size();
+                    if (loopCount < mSize) {
+                        if (mImageList.get(j).isLessimagewidth())//compares image width to screen width
+                        {
+                            mDigitalContentList.add(mImageList.get(j));
+                        } else {
+                            mDigitalContentList.add(loopCount, mImageList.get(j));
+                            loopCount += 5;
+                        }
+                    } else {
+                        mDigitalContentList.add(mImageList.get(j));
+                    }
+                }
+                //for sorting types of files in group
+                Collections.sort(mDigitalContentList, DigitalContentBO.imgFileCompartor);
+                mDigitalContentHelper.setFilteredDigitalMaster(mDigitalContentList);
+
+
+                if (mDigitalContentList.size() > 0) {
+                    for (int i = 0; i < mDigitalContentList.size(); i++) {
+                        if (mDigitalContentList.get(i).getImgFlag() == isImg)
+                            mImgCount++;
+                        else if (mDigitalContentList.get(i).getImgFlag() == isAudio)
+                            mAudioCount++;
+                        else if (mDigitalContentList.get(i).getImgFlag() == isVideo)
+                            mVideoCount++;
+                        else if (mDigitalContentList.get(i).getImgFlag() == isXls)
+                            mXlsCount++;
+                        else if (mDigitalContentList.get(i).getImgFlag() == isPDF)
+                            mPDFCount++;
+                        else
+                            mOthersCount++;
+                    }
+                }
+
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+
+        }
+
+        protected void onPreExecute() {
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.loading),
+                    true, false);
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            // result is the value returned from doInBackground
+
+            progressDialogue.dismiss();
+            if (mDigitalContentList.size() > 0) {
+
+                if (tabLayout != null) {
+                    tabLayout.removeAllTabs();
+                }
+
+                tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+
+                tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+                viewPager = (ViewPager) view.findViewById(R.id.pager);
+                adapter = new PagerAdapter
+                        (getChildFragmentManager());
+                if (mImgCount > 0)
+                    adapter.addFragment(new DigitalContentImagesFragment(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
+                if (mAudioCount > 0)
+                    adapter.addFragment(new DigitalContentAudioFragment(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
+                if (mVideoCount > 0)
+                    adapter.addFragment(new DigitalContentVideoFragment(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
+                if (mXlsCount > 0)
+                    adapter.addFragment(new DigitalContentXlsFragment(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
+                if (mPDFCount > 0)
+                    adapter.addFragment(new DigitalContentPdfFragment(), getResources().getString(R.string.tab_text_pdf) + ":" + mPDFCount);
+                if (mOthersCount > 0)
+                    adapter.addFragment(new DigitalContentOthersFragment(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
+
+            }
+
+            if (viewPager != null && adapter != null) {
+                viewPager.setAdapter(adapter);
+                tabLayout.setupWithViewPager(viewPager);
+                viewPager.setCurrentItem(mSelectedTab);
+            }
+
+
+        }
+
+        /**
+         * Preparing list based on digital content type
+         *
+         * @param pid
+         */
+        private void loadDigitalContentByType(int pid) {
+            for (int i = 0; i < size; ++i) {
+                DigitalContentBO ret = items.elementAt(i);
+                if (ret.getProductID() == pid || pid == -1) {
+                    if ((ret.getFileName().endsWith(".png") || ret.getFileName().endsWith(".jpeg")
+                            || ret.getFileName().endsWith(".jpg") || ret.getFileName().endsWith(".JPG")
+                            || ret.getFileName().endsWith(".PNG"))) {
+
+                        ret.setTextbgcolor(1073741824); //decimal code of 40% of black
+                        ret.setTextcolor(Color.BLACK);
+
+                        ret.setImgFlag(isImg);
+                        mImageList.add(ret);
+
+                    } else {
+                        if (ret.getFileName().endsWith("xls")
+                                || ret.getFileName().endsWith("xlsx")) {
+                            ret.setTextbgcolor(1713404746); //decimal code of 40% of green
+                            ret.setImgFlag(isXls);
+                        } else {
+                            ret.setTextbgcolor(1724731969); //decimal code of 40% of red
+                            if (ret.getFileName().endsWith("pdf"))
+                                ret.setImgFlag(isPDF);
+                            else if (ret.getFileName().endsWith(".mp4")
+                                    || ret.getFileName().endsWith("3gp"))
+                                ret.setImgFlag(isVideo);
+                            else if (ret.getFileName().endsWith(".mp3")
+                                    || ret.getFileName().endsWith(".wma")
+                                    || ret.getFileName().endsWith(".wav")
+                                    || ret.getFileName().endsWith(".ogg"))
+                                ret.setImgFlag(isAudio);
+                            else
+                                ret.setImgFlag(isOthers);
+                        }
+                        ret.setTextcolor(Color.WHITE);
+
+                        mDigitalContentList.add(ret);
+
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Loading separate fragment for all digital content types
+     */
+    public class PagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        private PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbindDrawables(view.findViewById(R.id.root));
+    }
+
+    private void unbindDrawables(View view) {
+        if (view != null) {
+            if (view.getBackground() != null) {
+                view.getBackground().setCallback(null);
+            }
+            if (view instanceof ViewGroup) {
+                for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                    unbindDrawables(((ViewGroup) view).getChildAt(i));
+                }
+                try {
+                    if (!(view instanceof AdapterView<?>))
+                        ((ViewGroup) view).removeAllViews();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+        }
+    }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
+}

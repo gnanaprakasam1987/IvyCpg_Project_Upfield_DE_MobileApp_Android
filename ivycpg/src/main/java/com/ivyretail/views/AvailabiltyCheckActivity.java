@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -60,7 +61,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     // Adapter used for Load Reason
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private Button btnSave;
-
+    private PriceTrackingHelper priceTrackingHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
+        priceTrackingHelper = PriceTrackingHelper.getInstance(this);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
@@ -297,7 +299,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((LinearLayout) findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             }
-            if (!bmodel.configurationMasterHelper.IS_SHOW_PRICE_CHANGED) {
+            if (!priceTrackingHelper.SHOW_PRICE_CHANGED) {
                 ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             } else {
                 ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.VISIBLE);
@@ -1316,7 +1318,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    bmodel.mPriceTrackingHelper.savePriceTransaction(mProductMasterBO);
+                    priceTrackingHelper.savePriceTransaction(mProductMasterBO);
 
                 // save near expiry
                 bmodel.saveNearExpiry();

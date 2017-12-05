@@ -2087,6 +2087,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             finish();
             return true;
         } else if (i1 == R.id.menu_summary_dialog) {
+            bmodel.configurationMasterHelper.loadOrderSummaryDetailConfig();
             FragmentManager fm = getSupportFragmentManager();
             OrderSummaryDialogFragment dialogFragment = new OrderSummaryDialogFragment();
             Bundle bundle = new Bundle();

@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -39,6 +40,7 @@ import java.util.Vector;
  */
 public class CurrentStockBatchViewFragment extends IvyBaseFragment implements BrandDialogInterface {
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
     // Drawer Implimentation
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -67,8 +69,10 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 		 * bmodel.mPriceChangeCheckHelper.mSelectedParentFilter = -1; }
 		 */
 
-        if (bmodel.mPriceTrackingHelper.mSelectedFilter == 0)
-            bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+
+        if (priceTrackingHelper.mSelectedFilter == 0)
+            priceTrackingHelper.mSelectedFilter = -1;
 
     }
 

@@ -31,7 +31,8 @@
     </screenName>
     <screenName name="com.ivy.sd.png.view.OrderSplitMasterScreen">Order Split</screenName>
     <screenName name="com.ivy.sd.png.view.JoinCallActivity">Join Call</screenName>
-    <screenName name="com.ivy.sd.png.view.DigitalContentDisplay">Digital Content</screenName>
+    <screenName name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity">Digital Content
+    </screenName>
     <screenName name="com.ivy.sd.png.view.RoadActivity">RoadActivity Screen</screenName>
     <screenName name="com.ivy.sd.png.view.OrderFullfillmentRetailerSelection">Order Fulfilment -
         RetailerSelection
@@ -51,7 +52,7 @@
     <screenName name="com.ivy.sd.png.view.OrderNewOutlet">OrderNewOutlet</screenName>
     <screenName name="com.ivy.sd.png.view.OpportunityNewOutlet">Opportunity</screenName>
     <screenName name="com.ivy.sd.png.view.Task">Task</screenName>
-    <screenName name="com.ivy.sd.png.view.PhotoCaptureActivity">Photo Capture</screenName>
+    <screenName name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity">Photo Capture</screenName>
     <screenName name="com.ivy.sd.png.view.CollectionScreen">Collection</screenName>
     <screenName name="com.ivy.sd.png.view.SalesReturnFragment">Sales Return</screenName>
     <screenName name="com.ivy.sd.png.view.PlanogramActivity">Planogram</screenName>
