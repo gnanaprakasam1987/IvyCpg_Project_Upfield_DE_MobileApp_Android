@@ -35,6 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -43,7 +44,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper.SKUTypeBO;
-import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
