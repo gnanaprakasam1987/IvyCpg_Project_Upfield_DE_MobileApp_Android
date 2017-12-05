@@ -799,7 +799,8 @@
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.sd.png.view.PlanDeviationActivity"
+        <activity
+            android:name="com.ivy.sd.png.view.PlanDeviationActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 
