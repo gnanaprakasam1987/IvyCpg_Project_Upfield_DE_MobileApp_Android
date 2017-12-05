@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,27 +14,28 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * The Class DigitalContentDisplay is used to show digital images Two types of
+ * The Class DigitalContentActivity is used to show digital images Two types of
  * digital content( Seller wise and Retailer wise), both types same screen is
  * using Screen able to view (Images, Audio & Video, Excel, Power point) Product
  * filter for this Screen
  *
  * @author gnanaprakasam.d
  */
-public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class DigitalContentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
 
-    private Toolbar toolbar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_digital_content_display_recyclerview);
+        setContentView(R.layout.activity_digital_content);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+            }
         }
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
@@ -42,63 +43,58 @@ public class DigitalContentDisplay extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        dcdf.updateBrandText(mFilterText, id);
+        mFragment.updateBrandText(mFilterText, id);
     }
 
     @Override
     public void updateGeneralText(String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        dcdf.updateGeneralText(mFilterText);
+        mFragment.updateGeneralText(mFilterText);
     }
 
     @Override
     public void updateCancel() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        dcdf.updateCancel();
+        mFragment.updateCancel();
     }
 
     @Override
     public void loadStartVisit() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TODO Auto-generated method stub
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        dcdf.updateFromFiveLevelFilter(mParentIdList);
+        mFragment.updateFromFiveLevelFilter(mParentIdList);
 
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        // TODO Auto-generated method stub
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentDisplayFragment dcdf = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        dcdf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+        mFragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
 }

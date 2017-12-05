@@ -78,7 +78,7 @@ public class PhotoCaptureHelper {
 
 
     /**
-     * Download the photo types from StandardListmaster of type PHOTO_TYPE
+     * Download the photo types from StandardListMaster of type PHOTO_TYPE
      */
     public void downloadPhotoTypeMaster() {
         try {
@@ -189,8 +189,8 @@ public class PhotoCaptureHelper {
             for (PhotoTypeMasterBO photoTypeBo : getPhotoTypeMaster()) {
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
-                for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
-                    for (PhotoCaptureLocationBO lbo : phcapture.getInStoreLocations())
+                for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
+                    for (PhotoCaptureLocationBO lbo : mPhotoCapture.getInStoreLocations())
                         if (!"".equals(lbo.getImagePath())) {
 
                             StringBuilder sBuffer = new StringBuilder();
@@ -268,9 +268,9 @@ public class PhotoCaptureHelper {
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
                         .getPhotoCaptureProductList();
                 if (photoTypeBo.getPhotoTypeId() == typeId)
-                    for (PhotoCaptureProductBO phcapture : tempPhotoBo) {
-                        if (phcapture.getProductID() == productId)
-                            for (PhotoCaptureLocationBO lbo : phcapture.getInStoreLocations())
+                    for (PhotoCaptureProductBO mPhotoCapture : tempPhotoBo) {
+                        if (mPhotoCapture.getProductID() == productId)
+                            for (PhotoCaptureLocationBO lbo : mPhotoCapture.getInStoreLocations())
                                 if (!"".equals(lbo.getImagePath())) {
                                     return true;
 
@@ -404,6 +404,21 @@ public class PhotoCaptureHelper {
         for (PhotoCaptureLocationBO item : list)
             clone.add(new PhotoCaptureLocationBO(item));
         return clone;
+    }
+
+
+    public void deleteImageDetailsFormTable(String ImageName) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_PhotoCapture, "imgName="
+                    + QT(ImageName), false);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 

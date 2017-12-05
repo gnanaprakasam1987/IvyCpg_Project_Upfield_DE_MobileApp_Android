@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1230"
+    android:versionCode="1240"
     android:versionName="123.0.483">
 
     <supports-screens
@@ -190,7 +190,7 @@
             android:name="com.ivy.sd.png.view.NonVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplayNew"
+            android:name="com.ivy.cpg.view.digitalcontent.StoreWiseGallery"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
@@ -357,7 +357,7 @@
             android:name="com.ivy.sd.png.view.reports.Orderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplay"
+            android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
@@ -799,6 +799,8 @@
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.sd.png.view.PlanDeviationActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

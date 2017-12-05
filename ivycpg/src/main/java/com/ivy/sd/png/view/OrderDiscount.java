@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -594,7 +595,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 //                finish();
             } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                 Intent i = new Intent(OrderDiscount.this,
-                        DigitalContentDisplay.class);
+                        DigitalContentActivity.class);
                 i.putExtra("FromInit", "Initiative");
                 i.putExtra("ScreenCode", screenCode);
                 startActivity(i);
