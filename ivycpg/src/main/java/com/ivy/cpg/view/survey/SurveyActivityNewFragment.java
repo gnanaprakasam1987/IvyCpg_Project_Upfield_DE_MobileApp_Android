@@ -1,4 +1,4 @@
-package com.ivy.sd.png.survey;
+package com.ivy.cpg.view.survey;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -71,7 +71,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SurveyHelperNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -151,6 +150,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private String childUserName = "";
     private boolean isFromChild;
     protected Boolean isMultiPhotoCaptureEnabled = false;
+    private SurveyHelperNew surveyHelperNew;
 
     @Override
     public void onAttach(Context context) {
@@ -158,6 +158,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        surveyHelperNew = SurveyHelperNew.getInstance(context);
     }
 
     @Override
@@ -325,7 +327,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        if (bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+        if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled = true;
         //condition to check CNT01
         if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
@@ -348,12 +350,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         if (isFromDragDrop == -1) {
             if (!mFrom.equalsIgnoreCase("HomeScreenTwo"))
-                bmodel.mSurveyHelperNew
+                surveyHelperNew
                         .loadSurveyAnswers(0);
         }
         //  isFromDragDrop=-1;
 
-        bmodel.mSurveyHelperNew.mSelectedFilter = -1;
+        surveyHelperNew.mSelectedFilter = -1;
 
         path = "/" + "Survey" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                 .replace("/", "") + "/"
@@ -364,7 +366,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 tabLayout.removeAllTabs();
             }
 
-        tabCount = bmodel.mSurveyHelperNew.getSurvey().size();
+        tabCount = surveyHelperNew.getSurvey().size();
 
         float scale = getContext().getResources().getDisplayMetrics().widthPixels;
         scale = scale / tabCount;
@@ -378,11 +380,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
             tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             tabOne.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            tabOne.setText(bmodel.mSurveyHelperNew.getSurvey().get(i)
+            tabOne.setText(surveyHelperNew.getSurvey().get(i)
                     .getSurveyName());
             TabLayout.Tab tab = tabLayout.newTab().setCustomView(tabOne);
             tab.setTag(""
-                    + bmodel.mSurveyHelperNew.getSurvey().get(i)
+                    + surveyHelperNew.getSurvey().get(i)
                     .getSurveyID());
 
             if (tabLayout != null) {
@@ -398,7 +400,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             tabLayout.getTabAt(tabPos).select();
         }
 
-        bmodel.mSurveyHelperNew.highlightQuest = false;
+        surveyHelperNew.highlightQuest = false;
         // configure filter
         mSelectedFilterMap.put("Category", "All");
         mSelectedFilterMap.put("Brand", "All");
@@ -420,7 +422,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             for (UserMasterBO user : bmodel.userMasterHelper.getUserMasterBO()
                     .getJoinCallUserList()) {
                 if (user.getIsJointCall() == 1) {
-                    bmodel.mSurveyHelperNew.mSelectedSuperVisiorID = user
+                    surveyHelperNew.mSelectedSuperVisiorID = user
                             .getUserid();
                     break;
                 }
@@ -460,8 +462,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
      */
     private boolean hasQuestionWithWeightSetInOverAllSurvey() {
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            /*if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey) {*/
+        for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
 
             ArrayList<QuestionBO> questionsList = sBO.getQuestions();
             int questionsCount;
@@ -509,7 +510,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (bonusScoreAchieved > surveyBO.getMaxBonusScore())
             bonusScoreAchieved = surveyBO.getMaxBonusScore();
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
             if (sBO.getSurveyID() == mQuestions.get(0).getSurveyid()) {
                 sBO.setAchievedScore(achievedScoreWithoutBonus + bonusScoreAchieved);
                 sBO.setTargtScore(targetScore);
@@ -530,7 +531,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         float achievedScoreOverAllWithoutBonus = 0;
         float targetScoreOverAll = 0;
         float bonusScoreAchievedOverAll = 0;
-        for (SurveyBO surveyBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO surveyBO : surveyHelperNew.getSurvey()) {
             float bonusScoreAchieved = 0;
             ArrayList<QuestionBO> moduleQuestList = surveyBO.getQuestions();
             int questionsCount = moduleQuestList.size();
@@ -567,7 +568,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         ArrayList<QuestionBO> items = new ArrayList<>();
 
-        for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
             if (surBO.getSurveyID() == mSelectedSurveyId)
                 items = surBO.getQuestions();
 
@@ -633,23 +634,23 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         TextView text = (TextView) tab.getCustomView();
         text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        bmodel.mSurveyHelperNew.mSelectedSurvey = Integer.parseInt(tab.getTag()
+        surveyHelperNew.mSelectedSurvey = Integer.parseInt(tab.getTag()
                 .toString());
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey) {
+        for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
+            if (sBO.getSurveyID() == surveyHelperNew.mSelectedSurvey) {
                 surveyBO = sBO;
             }
         }
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mFinalParentIdList != null) {
-            loadQuestionFromFiveLevelFilter(bmodel.mSurveyHelperNew.mSelectedSurvey, mFinalParentIdList);
+            loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFinalParentIdList);
         } else {
-            onLoadQuestion(bmodel.mSurveyHelperNew.mSelectedSurvey,
-                    bmodel.mSurveyHelperNew.mSelectedFilter);
+            onLoadQuestion(surveyHelperNew.mSelectedSurvey,
+                    surveyHelperNew.mSelectedFilter);
         }
         /* Show or hide footer which display survey score and overall score*/
-        if (bmodel.configurationMasterHelper.SHOW_TOTAL_SCORE_IN_SURVEY) {
+        if (surveyHelperNew.SHOW_TOTAL_SCORE_IN_SURVEY) {
 
             // Sometime, one survey may have score but other survey may not.
             // So we are checking data before displaying score.
@@ -686,9 +687,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (view == saveButton) {
             if (!checkClicked) {
                 checkClicked = true;
-                if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_ALL) {
-                    if (bmodel.mSurveyHelperNew.isAllAnswered()) {
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+                    if (surveyHelperNew.isAllAnswered()) {
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
                             bmodel.showAlert(
@@ -702,10 +703,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                         R.string.pleaseanswerallthequestions), 0);
                         checkClicked = false;
                     }
-                } else if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY) {
-                    if (bmodel.mSurveyHelperNew.isMandatoryQuestionAnswered()) {
+                } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
+                    if (surveyHelperNew.isMandatoryQuestionAnswered()) {
 
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
 
@@ -727,8 +728,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 } else {
 
 
-                    if (bmodel.mSurveyHelperNew.hasDataToSave()) {
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                    if (surveyHelperNew.hasDataToSave()) {
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
                             bmodel.showAlert(
@@ -852,7 +853,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         intent.putExtra("BrandId", holder.questionBO.getBrandID());
                         intent.putExtra("QuestiionId", holder.questionBO.getQuestionID());
                         intent.putExtra("QuestionDesc", holder.questionBO.getQuestionDescription());
-                        intent.putExtra("SurveyId", bmodel.mSurveyHelperNew.mSelectedSurvey);
+                        intent.putExtra("SurveyId", surveyHelperNew.mSelectedSurvey);
                         startActivityForResult(intent, DRAG_AND_DROP);
                     }
                 });
@@ -884,7 +885,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             holder.questionNO.setText(strQuestionNo);
             holder.questionTV.setText(holder.questionBO.getQuestionDescription());
 
-            if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
+            if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
                 if (holder.questionBO.getIsMandatory() == 1 && holder.questionBO.isMandatoryQuestNotAnswered()) {
                     holder.mandatoryView.setVisibility(View.VISIBLE);
                 } else {
@@ -911,7 +912,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.minPhoto.setText("0 Photo  required");
 
 
-            if (holder.questionBO.getIsScore() == 1 && bmodel.configurationMasterHelper.SHOW_SCORE_IN_SURVEY) {
+            if (holder.questionBO.getIsScore() == 1 && surveyHelperNew.SHOW_SCORE_IN_SURVEY) {
                 holder.QscoreTV.setVisibility(View.VISIBLE);
                 holder.isScoreAvailable = true;
             } else {
@@ -945,7 +946,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_DRAGDROP_IN_SURVEY) {
+            if (!surveyHelperNew.SHOW_DRAGDROP_IN_SURVEY) {
                 //Drag and Drop Functionality Disabled
                 holder.camIndicatorLty.setVisibility(View.GONE);
                 holder.dragBtn.setVisibility(View.GONE);
@@ -986,7 +987,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.right_container.setVisibility(View.GONE);
             }
 
-            if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY
+            if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY
                     && holder.questionBO.getIsMandatory() == 1)
                 holder.imp.setVisibility(View.VISIBLE);
             else
@@ -1574,8 +1575,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         ArrayList<QuestionBO> items = new ArrayList<>();
 
-        for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (surBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey) {
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+            if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey) {
                 items = surBO.getQuestions();
                 break;
             }
@@ -1592,8 +1593,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private void checkQID(int qid) {
         boolean notExsist = false;
         ArrayList<QuestionBO> items = new ArrayList<>();
-        for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (surBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey)
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+            if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey)
                 items = surBO.getQuestions();
 
 
@@ -1607,9 +1608,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
 
         if (!notExsist) {
-            for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-                if (surBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey)
-                    surBO.getQuestions().addAll(bmodel.mSurveyHelperNew.addDepQuestionDetailsToSurvey(bmodel.mSurveyHelperNew.mSelectedSurvey, qid));
+            for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+                if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey)
+                    surBO.getQuestions().addAll(surveyHelperNew.addDepQuestionDetailsToSurvey(surveyHelperNew.mSelectedSurvey, qid));
             }
         }
     }
@@ -1619,8 +1620,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         try {
             ArrayList<QuestionBO> items = new ArrayList<>();
 
-            for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-                if (surBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey)
+            for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+                if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey)
                     items = surBO.getQuestions();
 
             }
@@ -1718,7 +1719,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 else
                     minPhoto.setText("0 Photo  required");
 
-                if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
+                if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
                     if (questBO.getIsMandatory() == 1 && questBO.isMandatoryQuestNotAnswered()) {
                         mandatoryView.setVisibility(View.VISIBLE);
                     } else {
@@ -1735,7 +1736,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
 
 
-                if (questBO.getIsScore() == 1 && bmodel.configurationMasterHelper.SHOW_SCORE_IN_SURVEY) {
+                if (questBO.getIsScore() == 1 && surveyHelperNew.SHOW_SCORE_IN_SURVEY) {
                     isScoreAvailable = true;
                     QscoreTV.setVisibility(View.VISIBLE);
                 } else {
@@ -1758,7 +1759,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     right_container.setVisibility(View.GONE);
                 }
 
-                if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY
+                if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY
                         && questBO.getIsMandatory() == 1)
                     imp.setVisibility(View.VISIBLE);
                 else
@@ -2021,23 +2022,18 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY && bmodel.productHelper.isFilterAvaiable(mMenuCode))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
-     /*   else if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
-        }*/
-
-
-        if (bmodel.configurationMasterHelper.SHOW_SMS_IN_SURVEY
+        if (surveyHelperNew.SHOW_SMS_IN_SURVEY
                 && bmodel.mSelectedActivityConfigCode
-                .equalsIgnoreCase(bmodel.configurationMasterHelper.smsmenutype))
+                .equalsIgnoreCase(surveyHelperNew.smsmenutype))
             menu.findItem(R.id.menu_msg).setVisible(true);
         else
             menu.findItem(R.id.menu_msg).setVisible(false);
         Commons.print("sms"
-                + bmodel.configurationMasterHelper.SHOW_SMS_IN_SURVEY
+                + surveyHelperNew.SHOW_SMS_IN_SURVEY
                 + bmodel.mSelectedActivityName);
-        if (bmodel.configurationMasterHelper.SHOW_PHOTOCAPTURE_IN_SURVEY
+        if (surveyHelperNew.SHOW_PHOTOCAPTURE_IN_SURVEY
                 && bmodel.mSelectedActivityConfigCode
-                .equalsIgnoreCase(bmodel.configurationMasterHelper.photocapturemenutype))
+                .equalsIgnoreCase(surveyHelperNew.photocapturemenutype))
             menu.findItem(R.id.menu_photo_capture).setVisible(true);
         else
             menu.findItem(R.id.menu_photo_capture).setVisible(false);
@@ -2084,9 +2080,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         } else if (i == R.id.menu_save) {
             if (!checkClicked) {
                 checkClicked = true;
-                if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_ALL) {
-                    if (bmodel.mSurveyHelperNew.isAllAnswered()) {
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+                    if (surveyHelperNew.isAllAnswered()) {
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
                             bmodel.showAlert(
@@ -2100,10 +2096,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                         R.string.pleaseanswerallthequestions), 0);
                         checkClicked = false;
                     }
-                } else if (bmodel.configurationMasterHelper.IS_SURVEY_ANSWER_MANDATORY) {
-                    if (bmodel.mSurveyHelperNew.isMandatoryQuestionAnswered()) {
+                } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
+                    if (surveyHelperNew.isMandatoryQuestionAnswered()) {
 
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
 
@@ -2125,8 +2121,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 } else {
 
 
-                    if (bmodel.mSurveyHelperNew.hasDataToSave()) {
-                        if (bmodel.mSurveyHelperNew.hasPhotoToSave())
+                    if (surveyHelperNew.hasDataToSave()) {
+                        if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
                             bmodel.showAlert(
@@ -2154,7 +2150,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             FiveFilterFragment();
             return true;
         } else if (i == R.id.menu_msg) {
-            bmodel.mSurveyHelperNew.remarkDone = "Y";
+            surveyHelperNew.remarkDone = "Y";
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.append("There is a Potential Order for ");
             strBuilder.append(bmodel.retailerMasterBO.getRetailerName().trim());
@@ -2232,7 +2228,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         UserMasterBO selectedId = supervisiorAdapter
                                 .getItem(item);
                         selecteditem = item;
-                        bmodel.mSurveyHelperNew.mSelectedSuperVisiorID = selectedId
+                        surveyHelperNew.mSelectedSuperVisiorID = selectedId
                                 .getUserid();
                         new LoadSuperVisorSurveyAnswer().execute();
 
@@ -2253,8 +2249,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.mSurveyHelperNew
-                        .loadSuperVisorSurveyAnswers(bmodel.mSurveyHelperNew.mSelectedSuperVisiorID);
+                surveyHelperNew
+                        .loadSuperVisorSurveyAnswers(surveyHelperNew.mSelectedSuperVisiorID);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -2279,8 +2275,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             alertDialog.dismiss();
-            onLoadQuestion(bmodel.mSurveyHelperNew.mSelectedSurvey,
-                    bmodel.mSurveyHelperNew.mSelectedFilter);
+            onLoadQuestion(surveyHelperNew.mSelectedSurvey,
+                    surveyHelperNew.mSelectedFilter);
         }
 
     }
@@ -2334,10 +2330,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        bmodel.mSurveyHelperNew.mSelectedFilter = id;
+        surveyHelperNew.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
-        onLoadQuestion(bmodel.mSurveyHelperNew.mSelectedSurvey,
-                bmodel.mSurveyHelperNew.mSelectedFilter);
+        onLoadQuestion(surveyHelperNew.mSelectedSurvey,
+                surveyHelperNew.mSelectedFilter);
 
     }
 
@@ -2352,11 +2348,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         protected Boolean doInBackground(String... arg0) {
             try {
                 if ("MENU_NEW_RET".equals(mMenuCode)) {
-                    bmodel.mSurveyHelperNew.saveAnswerNewRetailer(mMenuCode, screenMode);
+                    surveyHelperNew.saveAnswerNewRetailer(mMenuCode, screenMode);
 
                 } else {
-                    bmodel.mSurveyHelperNew.deleteUnusedImages();
-                    bmodel.mSurveyHelperNew.saveAnswer(mMenuCode);
+                    surveyHelperNew.deleteUnusedImages();
+                    surveyHelperNew.saveAnswer(mMenuCode);
                 }
                 bmodel.updateIsVisitedFlag();
                 bmodel.saveModuleCompletion(mMenuCode);
@@ -2389,7 +2385,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             Log.e("Result", String.valueOf(result));
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
             alertDialog.dismiss();
-            bmodel.mSurveyHelperNew.remarkDone = "N";
+            surveyHelperNew.remarkDone = "N";
             checkClicked = false;
 
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
@@ -2526,7 +2522,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         loadQuestionFromFiveLevelFilter(
-                bmodel.mSurveyHelperNew.mSelectedSurvey,
+                surveyHelperNew.mSelectedSurvey,
 
                 mParentIdList);
 
@@ -2537,7 +2533,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         loadQuestionFromFiveLevelFilter(
-                bmodel.mSurveyHelperNew.mSelectedSurvey,
+                surveyHelperNew.mSelectedSurvey,
 
                 mParentIdList);
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
@@ -2553,8 +2549,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         ArrayList<QuestionBO> items = new ArrayList<>();
 
-        for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (surBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey)
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+            if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey)
                 items = surBO.getQuestions();
 
         }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.ivy.sd.png.survey.AnswerBO;
+import com.ivy.cpg.view.survey.AnswerBO;
 
 import java.util.ArrayList;
 

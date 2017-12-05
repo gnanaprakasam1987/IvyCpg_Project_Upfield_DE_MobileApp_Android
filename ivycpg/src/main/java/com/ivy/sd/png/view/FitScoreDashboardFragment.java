@@ -43,7 +43,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.survey.QuestionBO;
+import com.ivy.cpg.view.survey.QuestionBO;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;

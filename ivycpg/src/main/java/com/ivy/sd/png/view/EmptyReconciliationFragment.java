@@ -43,7 +43,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper.SKUTypeBO;
-import com.ivy.cpg.price.PriceTrackingHelper;
+import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
