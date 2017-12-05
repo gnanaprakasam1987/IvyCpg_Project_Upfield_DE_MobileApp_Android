@@ -1,7 +1,9 @@
 package com.ivy.sd.png.view;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -10,24 +12,36 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SalesReturnReasonBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -37,14 +51,18 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import android.widget.TextView.OnEditorActionListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class SalesReturnWithActionBar extends ToolBarwithFilter implements
-        BrandDialogInterface, OnEditorActionListener {
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+public class SalesReturnFragment extends IvyBaseFragment implements
+        BrandDialogInterface, OnClickListener, OnEditorActionListener {
 
     private static final int SALES_RET_SUMMARY = 1;
     private static final int SALES_ENTRY = 2;
@@ -53,71 +71,135 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     private SalesReturnHelper salesReturnHelper;
     private String BRAND_STRING = "Brand";
     private TextView pnametitle;
+    private View view;
+    private DrawerLayout mDrawerLayout;
+    private BusinessModel bmodel;
+    FrameLayout drawer;
+    private ViewFlipper viewFlipper;
+    private ArrayList<ProductMasterBO> mylist;
+    private ArrayList<String> fiveFilter_productIDs;
+    private Vector<ProductMasterBO> items;
+    private String brandbutton;
+    private String generalbutton;
+    private int mSelectedBrandID = 0;
+    private static final String BRAND = "Brand";
+    private static final String GENERAL = "General";
+    private Button mBtn_Search, mBtn_clear;
+    private HashMap<Integer, Integer> mSelectedIdByLevelId;
+    public ListView lvwplist;
+    public String strBarCodeSearch = "ALL";
+    public EditText mEdt_searchproductName;
+    public TextView totalValueText, lpcText, productName;
+    Button btn_next;
+    public String mSelectedFilter;
+    private ArrayList<String> mSearchTypeArray = new ArrayList<>();
+    Button mBtnFilterPopup;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        // include List Header
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ListHeader);
-        LayoutInflater layoutInflater = (LayoutInflater) this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final ViewGroup nullParent = null;
-        ll.addView(layoutInflater.inflate(
-                R.layout.include_salesreturn_list_header, nullParent));
+        view = inflater.inflate(R.layout.fragment_salesreturn_header, container,
+                false);
+        mDrawerLayout = (DrawerLayout) view.findViewById(
+                R.id.drawer_layout);
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        salesReturnHelper = SalesReturnHelper.getInstance(this);
+        //setting drawer width equal to scren width
+        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
 
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BusinessModel.getInstance().trackScreenView("Sales Return");
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        setHasOptionsMenu(true);
+        bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+    }
+
+
+    @Override
+    public void onStart() {
+
+        super.onStart();
+
+        getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
+
+        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+
+        mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
+        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+
+        mBtn_Search.setOnClickListener(this);
+        mBtnFilterPopup.setOnClickListener(this);
+        mBtn_clear.setOnClickListener(this);
+        mBtn_clear.setOnEditorActionListener(this);
+        mEdt_searchproductName.setOnEditorActionListener(this);
+        lvwplist = (ListView) view.findViewById(R.id.list);
+        lvwplist.setCacheColorHint(0);
+
+        totalValueText = (TextView) view.findViewById(R.id.totalValue);
+        lpcText = (TextView) view.findViewById(R.id.lcp);
+
+        lpcText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        totalValueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.totalTitle).getTag()) != null)
-                ((TextView) findViewById(R.id.totalTitle))
+                ((TextView) view.findViewById(R.id.totalTitle))
                         .setText(bmodel.labelsMasterHelper
-                                .applyLabels(findViewById(R.id.totalTitle)
+                                .applyLabels(view.findViewById(R.id.totalTitle)
                                         .getTag()));
         } catch (Exception e) {
             Commons.printException(e);
         }
 
-        pnametitle = (TextView) findViewById(R.id.tvProductNameTitle);
-        ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        pnametitle = (TextView) view.findViewById(R.id.tvProductNameTitle);
+        ((TextView) view.findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        mDrawerToggle = new ActionBarDrawerToggle(
-                SalesReturnWithActionBar.this, mDrawerLayout,
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(), mDrawerLayout,
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                if (getSupportActionBar() != null) {
+                if (getActionBar() != null) {
                     setScreenTitle(bmodel.configurationMasterHelper
                             .getHomescreentwomenutitle(StandardListMasterConstants.MENU_SALES_RET));
                 }
 
-                supportInvalidateOptionsMenu();
+                getActivity().supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (getSupportActionBar() != null) {
+                if (getActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
                 }
 
-                supportInvalidateOptionsMenu();
+                getActivity().supportInvalidateOptionsMenu();
             }
         };
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        setActionBarTitle(bmodel.configurationMasterHelper
-                .getHomescreentwomenutitle(StandardListMasterConstants.MENU_SALES_RET));
-
-
-        hideSpecialFilter();
-        hideLocationButton();
 
         updateBrandText(BRAND_STRING, -1);
 
@@ -128,51 +210,196 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 Vector<ChildLevelBo> items = bmodel.productHelper.getChildLevelBo();
                 siz = items.size();
             } catch (Exception nulle) {
-                Toast.makeText(this, "Session out. Login again.",
+                Toast.makeText(getActivity(), "Session out. Login again.",
                         Toast.LENGTH_SHORT).show();
                 Commons.printException(nulle);
-                finish();
             }
             if (siz == 0)
                 return;
         }
 
-        onKeyInvisibleSub();
+        (view.findViewById(R.id.calcdot))
+                .setVisibility(View.VISIBLE);
 
-        mBtn_next.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onNextButtonClick();
-            }
-        });
         mDrawerLayout.closeDrawer(GravityCompat.END);
+
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add("Product Name");
+        mSearchTypeArray.add("GCAS Code");
+        mSearchTypeArray.add("BarCode");
+
+        btn_next = (Button) view.findViewById(R.id.btn_save);
+        btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_next.setOnClickListener(this);
+
+        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Commons.print("OnResume Called");
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        salesReturnHelper = SalesReturnHelper.getInstance(this);
-    }
 
     public void refreshList() {
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
         pnametitle.setText(strPname);
-        lvwplist.setAdapter(new MyAdapter(mylist));
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        salesReturnHelper = SalesReturnHelper.getInstance(this);
+        MyAdapter lvwplist = new MyAdapter(mylist);
+        salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
     }
 
+    @Override
+    public void onClick(View v) {
+        Button vw = (Button) v;
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        if (vw == mBtn_Search) {
+            viewFlipper.showNext();
+        } else if (vw == mBtn_clear) {
+            if (mEdt_searchproductName.getText().length() > 0)
+                mEdt_searchproductName.setText("");
+            loadProductList();
+
+            try {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        } else if (vw == mBtnFilterPopup) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                    getActivity(),
+                    android.R.layout.select_dialog_singlechoice,
+                    mSearchTypeArray);
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+                    });
+            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
+                    .getProductFilter());
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+
+                    });
+            builderSingle.setPositiveButton(
+                    getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                        }
+                    });
+            bmodel.applyAlertDialogTheme(builderSingle);
+
+        } else if (vw == btn_next) {
+            onNextButtonClick();
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
+        if (arg1 == EditorInfo.IME_ACTION_DONE) {
+            if (arg0.getText().length() > 0) {
+                getActivity().supportInvalidateOptionsMenu();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mEdt_searchproductName.getWindowToken(), 0);
+            }
+            loadSearchedList();
+            return true;
+        }
+        return false;
+    }
+
+    public void loadSearchedList() {
+        ProductMasterBO ret;
+        if (mEdt_searchproductName.getText().length() >= 3) {
+            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+            if (items == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.no_products_exists),
+                        0);
+                return;
+            }
+            int siz = items.size();
+            Commons.print("siz" + siz);
+            mylist = new ArrayList<>();
+            mSelectedFilter = bmodel.getProductFilter();
+            for (int i = 0; i < siz; ++i) {
+                ret = items.elementAt(i);
+                if (mSelectedFilter.equals(getResources().getString(
+                        R.string.order_dialog_barcode))) {
+                    if (ret.getBarCode() != null && ret.getBarCode()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+
+                        Commons.print("siz Barcode : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
+                    }
+                } else if (mSelectedFilter.equals(getResources().getString(
+                        R.string.order_gcas))) {
+                    if (ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+
+                        Commons.print("siz GCASCode : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
+                    }
+                } else if (mSelectedFilter.equals(getResources().getString(
+                        R.string.product_name))) {
+                    Commons.print("siz product_name : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
+                    if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+
+                    }
+                }
+            }
+            refreshList();
+        } else {
+            Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+    private void loadProductList() {
+        try {
+            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+
+            int siz = items.size();
+            mylist = new ArrayList<>();
+            for (int i = 0; i < siz; ++i) {
+                ProductMasterBO ret = items.elementAt(i);
+                if (ret.getIsSaleable() == 1) {
+                    if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        mylist.add(ret);
+
+                }
+            }
+            refreshList();
+            updateValue();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
     class MyAdapter extends ArrayAdapter<ProductMasterBO> {
 
@@ -181,7 +408,7 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
 
         MyAdapter(ArrayList<ProductMasterBO> items) {
 
-            super(SalesReturnWithActionBar.this, R.layout.row_salesreturn,
+            super(getActivity(), R.layout.row_salesreturn,
                     items);
             this.items = items;
         }
@@ -203,7 +430,8 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             productMasterBO = items.get(position);
             View row = convertView;
             if (row == null) {
-                LayoutInflater inflater = getLayoutInflater();
+                LayoutInflater inflater = LayoutInflater.from(getActivity()
+                        .getBaseContext());
 
                 row = inflater.inflate(R.layout.row_salesreturn, parent, false);
 
@@ -226,10 +454,10 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
 
                         if (viewFlipper.getDisplayedChild() != 0) {
                            /* viewFlipper.setInAnimation(
-                                    SalesReturnWithActionBar.this,
+                                    SalesReturnFragment.this,
                                     R.anim.in_from_left);
                             viewFlipper.setOutAnimation(
-                                    SalesReturnWithActionBar.this,
+                                    SalesReturnFragment.this,
                                     R.anim.out_to_left);*/
                             viewFlipper.showPrevious();
                         }
@@ -266,9 +494,9 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             String strTotal = Integer.toString(total);
             holder.total.setText(strTotal);
             if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(SalesReturnWithActionBar.this, R.color.list_even_item_bg));
+                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
             } else {
-                row.setBackgroundColor(ContextCompat.getColor(SalesReturnWithActionBar.this, R.color.list_odd_item_bg));
+                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
             }
             return row;
         }
@@ -332,12 +560,11 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         totalValueText.setText(strTotalValue);
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case 0:
 //                CommonDialog dialog=
-                new CommonDialog(getApplicationContext(), this, "", getResources().getString(
+                new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
                         R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
@@ -346,9 +573,9 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(SDUtil
                                         .now(SDUtil.TIME));
-                        finish();
+                        getActivity().finish();
                         BusinessModel.loadActivity(
-                                SalesReturnWithActionBar.this,
+                                getActivity(),
                                 DataMembers.actHomeScreenTwo);
                                     /* User clicked OK so do some stuff */
                     }
@@ -364,24 +591,23 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         return null;
     }
 
-    @Override
     public void onNextButtonClick() {
         if (salesReturnHelper.hasSalesReturn()) {
             if (!isValidData()) {
-                Toast.makeText(this, "Replace quantity should not exceed Return quantity", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Replace quantity should not exceed Return quantity", Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (bmodel.configurationMasterHelper.CHECK_MRP_VALUE) {
                 if (!isValidMRP()) {
-                    Toast.makeText(this, "Please enter MRP Value", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Please enter MRP Value", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
             salesReturnHelper.setLpcValue((String) lpcText.getText());
             salesReturnHelper.setReturnValue(totalvalue);
 
-            Intent init = new Intent(SalesReturnWithActionBar.this,
+            Intent init = new Intent(getActivity(),
                     SalesReturnSummery.class);
             startActivityForResult(init, SALES_RET_SUMMARY);
 
@@ -438,29 +664,39 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         return true;
     }
 
-    private void enableDot() {
-        SalesReturnWithActionBar.super.onDotBtnEnable();
-    }
 
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         if (!bmodel.configurationMasterHelper.SHOW_REMARKS_SAL_RET) {
-            hideRemarksButton();
             menu.findItem(R.id.menu_remarks).setVisible(false);
         } else
             menu.findItem(R.id.menu_remarks).setVisible(true);
-        hideShemeButton();
+        menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
         menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
         menu.findItem(R.id.menu_next).setIcon(
                 R.drawable.ic_action_navigation_next_item);
         menu.findItem(R.id.menu_next).setVisible(false);
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
+        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            for (Integer id : mSelectedIdByLevelId.keySet()) {
+                if (mSelectedIdByLevelId.get(id) > 0) {
+                    menu.findItem(R.id.menu_fivefilter).setIcon(
+                            R.drawable.ic_action_filter_select);
+                    break;
+                }
+            }
+        }
+        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null && !bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+            menu.findItem(R.id.menu_competitor_filter).setIcon(
+                    R.drawable.ic_action_filter_select);
+
+        }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -479,14 +715,16 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
 
+
+
     @Override
-    public void onNoteButtonClick() {
-        super.onNoteButtonClick();
-        FragmentTransaction ft = (this)
-                .getSupportFragmentManager().beginTransaction();
-        RemarksDialog dialog = new RemarksDialog(StandardListMasterConstants.MENU_SALES_RET);
-        dialog.setCancelable(false);
-        dialog.show(ft, "sl_ret_remark");
+    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
+
+    }
+
+    @Override
+    public void updateMultiSelectionCategory(List<Integer> mCategory) {
+
     }
 
     @Override
@@ -556,62 +794,6 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || ("ALL").equals(strBarCodeSearch)) {
 
-                    if (isSpecialFilter_enabled) {
-                        if ((bid == ret.getParentid() || bid == -1) && ret.getIsSaleable() == 1) {
-                            if (generaltxt.equals(mSbd) && ret.isRPS()) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mOrdered)
-                                    && (ret.getOrderedPcsQty() > 0
-                                    || ret.getOrderedCaseQty() > 0 || ret
-                                    .getOrderedOuterQty() > 0)) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mPurchased)
-                                    && ret.getIsPurchased() == 1) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mInitiative)
-                                    && ret.getIsInitiativeProduct() == 1) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mCommon)
-                                    && applyCommonFilterConfig(ret)) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mSbdGaps)
-                                    && (ret.isRPS() && !ret.isSBDAcheived())) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(GENERAL)) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mInStock)
-                                    && ret.getWSIH() > 0) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mOnAllocation)
-                                    && ret.getSIH() > 0
-                                    && ret.isAllocation() == 1
-                                    && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mPromo)
-                                    && ret.isPromo()) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mMustSell)
-                                    && ret.getIsMustSell() == 1) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mFocusBrand)
-                                    && ret.getIsFocusBrand() == 1) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mFocusBrand2)
-                                    && ret.getIsFocusBrand2() == 1) {
-                                mylist.add(ret);
-
-                            } else if (generaltxt.equals(msih)
-                                    && ret.getSIH() > 0) {
-                                mylist.add(ret);
-
-                            } else if (generaltxt.equals(mOOS)
-                                    && ret.getOos() == 0) {
-                                mylist.add(ret);
-                            } else if (generaltxt.equals(mDiscount) && ret.getIsDiscountable() == 1) {
-                                mylist.add(ret);
-                            }
-                        }
-                    } else {
                         if (bid == -1 && ret.getIsSaleable() == 1) {
                             if (mFilterText.equals(BRAND_STRING)) {
                                 mylist.add(ret);
@@ -620,7 +802,6 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                             mylist.add(ret);
                         }
 
-                    }
                 }
             }
             refreshList();
@@ -630,19 +811,43 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
         }
     }
 
+    @Override
+    public void updateGeneralText(String mFilterText) {
+        fiveFilter_productIDs = null;
+        generalbutton = mFilterText;
+        if (mSelectedIdByLevelId != null)
+            mSelectedIdByLevelId.clear();
+
+        updateBrandText(BRAND, -1);
+    }
+
+    @Override
+    public void updateCancel() {
+
+    }
+
+    @Override
+    public void loadStartVisit() {
+
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
+    }
+
     private void showCustomDialog() {
 
-        new CommonDialog(getApplicationContext(), this, "", getResources().getString(
+        new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
                 R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 salesReturnHelper.clearSalesReturnTable();
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                BusinessModel.loadActivity(SalesReturnWithActionBar.this,
-                        DataMembers.actHomeScreenTwo);
-                finish();
-                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                startActivity(intent);
+                getActivity().finish();
             }
         }, new CommonDialog.negativeOnClickListener() {
             @Override
@@ -699,18 +904,18 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
     }
 
     private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
-        Intent intent = new Intent(SalesReturnWithActionBar.this,
+        Intent intent = new Intent(getActivity(),
                 SalesReturnEntryActivity.class);
         intent.putExtra("pid", productId);
         intent.putExtra("position", holderPostion);
         intent.putExtra("top", holderTop);
 
-        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
-        ActivityCompat.startActivityForResult(this, intent, SALES_ENTRY, opts.toBundle());
+        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
+        ActivityCompat.startActivityForResult(getActivity(), intent, SALES_ENTRY, opts.toBundle());
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == SALES_RET_SUMMARY) {
             // Make sure the request was successful
@@ -721,22 +926,22 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
                 BusinessModel.loadActivity(this,
                         DataMembers.actHomeScreenTwo);*/
 
-                Intent intent = new Intent(this, HomeScreenTwo.class);
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
-                Bundle extras = getIntent().getExtras();
+                Bundle extras = getActivity().getIntent().getExtras();
                 if (extras != null) {
                     intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                     intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                 }
 
                 startActivity(intent);
-                finish();
+                getActivity().finish();
             }
         }
 
         if (requestCode == SALES_ENTRY) {
             if (resultCode == RESULT_OK) {
-                overridePendingTransition(0, R.anim.zoom_exit);
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
                 updateValue();
                 refreshList();
                 Bundle extras = data.getExtras();
@@ -747,4 +952,5 @@ public class SalesReturnWithActionBar extends ToolBarwithFilter implements
             }
         }
     }
+
 }

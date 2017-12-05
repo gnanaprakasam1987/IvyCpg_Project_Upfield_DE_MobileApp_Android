@@ -2370,7 +2370,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
                     Intent intent = new Intent(HomeScreenTwo.this,
-                            SalesReturnWithActionBar.class);
+                            SalesReturnActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     startActivity(intent);
                     finish();
