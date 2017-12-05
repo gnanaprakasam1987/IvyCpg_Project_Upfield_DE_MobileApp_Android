@@ -57,6 +57,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.ConfigData;
@@ -73,6 +75,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.survey.SurveyActivityNewFragment;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -465,7 +468,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                Uri uri = bmodel.planogramMasterHelper
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
+                Uri uri = mPlanoGramMasterHelper
                         .getUriFromFile(photoPath + "/" + imageFileName);
                 bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                 bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
@@ -1237,9 +1241,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.planogramMasterHelper.downloadDigitalContent("SELLER");
-                if (bmodel.planogramMasterHelper.getDigitalMaster() != null
-                        && bmodel.planogramMasterHelper.getDigitalMaster()
+                DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
+                mDigitalContentHelper.downloadDigitalContent("SELLER");
+                if (mDigitalContentHelper.getDigitalMaster() != null
+                        && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     switchFragment(MENU_DIGITIAL_SELLER, menuItem.getMenuName());
@@ -1484,7 +1489,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         EmptyReconciliationFragment mEmptyReconFragment = (EmptyReconciliationFragment) fm
                 .findFragmentByTag(MENU_EMPTY_RECONCILIATION);
 
-        DigitalContentDisplayFragment mDigitalContentFragment = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mDigitalContentFragment = (DigitalContentFragment) fm
                 .findFragmentByTag(MENU_DIGITIAL_SELLER);
         RoadFragment mRoadFragment = (RoadFragment) fm
                 .findFragmentByTag(MENU_ROAD_ACTIVITY);
@@ -1826,7 +1831,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("ScreenCode", fragmentName);
                 bndl.putString("FromInit", fragmentName);
-                fragment = new DigitalContentDisplayFragment();
+                bndl.putString("screentitle", menuName);
+                fragment = new DigitalContentFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DIGITIAL_SELLER);
@@ -2011,7 +2017,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         EmptyReconciliationFragment mEmptyReconFragment = (EmptyReconciliationFragment) fm
                 .findFragmentByTag(MENU_EMPTY_RECONCILIATION);
 
-        DigitalContentDisplayFragment mDigitalContentFragment = (DigitalContentDisplayFragment) fm
+        DigitalContentFragment mDigitalContentFragment = (DigitalContentFragment) fm
                 .findFragmentByTag(MENU_DIGITIAL_SELLER);
         RoadFragment mRoadFragment = (RoadFragment) fm
                 .findFragmentByTag(MENU_ROAD_ACTIVITY);

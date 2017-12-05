@@ -1867,11 +1867,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     bmodel.productHelper.downloadDiscountIdListByTypeId();
                 }
 
-                // Download the Digital Content for Retailer wise, if that
-                if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER)
-                    bmodel.planogramMasterHelper
-                            .downloadDigitalContent("RETAILER");
-
                 if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
                     bmodel.productHelper.downloadDocketPricing();
                 }

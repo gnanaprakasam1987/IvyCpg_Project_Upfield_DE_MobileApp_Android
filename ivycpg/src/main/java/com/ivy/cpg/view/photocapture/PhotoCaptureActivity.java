@@ -31,6 +31,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
@@ -420,8 +421,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 && !t.getInStoreLocations().get(mSelectedItem).getImageName().equals("")) {
                             String path = HomeScreenFragment.folder.getPath() + "/"
                                     + t.getInStoreLocations().get(mSelectedItem).getImageName();
-                            if (mBModel.planogramMasterHelper.isImagePresent(path)) {
-                                Uri uri = mBModel.planogramMasterHelper
+                            PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
+                            if (mPlanoGramMasterHelper.isImagePresent(path)) {
+                                Uri uri = mPlanoGramMasterHelper
                                         .getUriFromFile(path);
                                 imgViewImage.setImageURI(uri);
 

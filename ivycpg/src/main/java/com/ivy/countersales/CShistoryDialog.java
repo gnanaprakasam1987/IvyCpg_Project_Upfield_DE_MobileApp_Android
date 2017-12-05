@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -28,15 +26,11 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.profile.HorizontalDividerItemDecoration;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
 /**
  * Created by rajkumar.s on 29-03-2016.
@@ -312,12 +306,12 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
                         boolean is7InchTablet = context.getResources().getConfiguration()
                                 .isLayoutSizeAtLeast(sizeLarge);
                         if (is7InchTablet) {
-                            gridlaymanager = new GridLayoutManager(context, 3);
+                            mGridLayoutManager = new GridLayoutManager(context, 3);
                         } else {
-                            gridlaymanager = new GridLayoutManager(context, 2);
+                            mGridLayoutManager = new GridLayoutManager(context, 2);
                         }
 
-                        recyclerView.setLayoutManager(gridlaymanager);
+                        recyclerView.setLayoutManager(mGridLayoutManager);
                         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(context).size(1).color(Color.parseColor("#EEEEEE")).margin(22, 22).build());
                     }
                     for (int j = 0; j < values.length(); j++) {

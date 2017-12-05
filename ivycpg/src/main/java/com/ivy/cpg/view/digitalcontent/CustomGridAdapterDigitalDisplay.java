@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -18,22 +18,22 @@ import java.util.Collections;
 
 class CustomGridAdapterDigitalDisplay extends RecyclerView.Adapter<CustomGridAdapterDigitalDisplay.ViewHolder> {
     private Context context;
-    private ArrayList<ImageBO> items, allimages;
-    private DigitalContentDisplayNew ob;
+    private ArrayList<ImageBO> items, mAllImagesList;
+    private StoreWiseGallery ob;
     private TextView selected_folder;
-    private RecyclerView detailedgrid;
+    private RecyclerView mDetailGridView;
 
-    public CustomGridAdapterDigitalDisplay(Context context, ArrayList<ImageBO> im, DigitalContentDisplayNew ob2
-            , TextView selected_folder, RecyclerView detailedgrid,
-                                           ArrayList<ImageBO> allimages) {
+    public CustomGridAdapterDigitalDisplay(Context context, ArrayList<ImageBO> im, StoreWiseGallery ob2
+            , TextView selected_folder, RecyclerView mDetailGridView,
+                                           ArrayList<ImageBO> mAllImagesList) {
 
         this.context = context;
         this.items = im;
         ob = ob2;
         this.selected_folder = selected_folder;
-        this.detailedgrid = detailedgrid;
-        this.allimages = allimages;
-        Collections.sort(allimages);
+        this.mDetailGridView = mDetailGridView;
+        this.mAllImagesList = mAllImagesList;
+        Collections.sort(mAllImagesList);
     }
 
 
@@ -41,9 +41,8 @@ class CustomGridAdapterDigitalDisplay extends RecyclerView.Adapter<CustomGridAda
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_store_wise_gallery_row, parent, false);
-        ViewHolder vh = new ViewHolder(v);
 
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -51,31 +50,31 @@ class CustomGridAdapterDigitalDisplay extends RecyclerView.Adapter<CustomGridAda
         holder.bo = items.get(position);
         holder.imageView.setImageBitmap(holder.bo.getFilebitmap());
         holder.closePRODNAME.setText(holder.bo.getImageDirectory());
-        holder.counttxtview.setText(holder.bo.getCount());
+        holder.text_count.setText(holder.bo.getCount());
 
-        showSelecetdDirectory(items.get(0).getImageDirectory());
+        showSelectedDirectory(items.get(0).getImageDirectory());
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSelecetdDirectory(holder.bo.getImageDirectory());
+                showSelectedDirectory(holder.bo.getImageDirectory());
 
             }
         });
 
     }
 
-    private void showSelecetdDirectory(String Directory) {
+    private void showSelectedDirectory(String Directory) {
         selected_folder.setText(Directory);
 
         ArrayList<ImageBO> filteredList = new ArrayList<>();
-        for (int i = 0; i < allimages.size(); i++) {
-            if (allimages.get(i).getImageDirectory().equals(Directory)) {
-                filteredList.add(allimages.get(i));
+        for (int i = 0; i < mAllImagesList.size(); i++) {
+            if (mAllImagesList.get(i).getImageDirectory().equals(Directory)) {
+                filteredList.add(mAllImagesList.get(i));
             }
         }
 
-        detailedgrid.setAdapter(new CustomGridAdapter(context, filteredList, ob));
+        mDetailGridView.setAdapter(new CustomGridAdapter(context, filteredList, ob));
 
     }
 
@@ -89,18 +88,18 @@ class CustomGridAdapterDigitalDisplay extends RecyclerView.Adapter<CustomGridAda
 
         ImageBO bo;
         ImageView imageView;
-        TextView closePRODNAME, counttxtview;
+        TextView closePRODNAME, text_count;
         CardView cardview;
-        LinearLayout txtlayout;
+        LinearLayout text_layout;
 
         public ViewHolder(View v) {
             super(v);
             imageView = (ImageView) v.
                     findViewById(R.id.icon);
-            counttxtview = (TextView) v.findViewById(R.id.counttxtview);
+            text_count = (TextView) v.findViewById(R.id.counttxtview);
             closePRODNAME = (TextView) v.findViewById(R.id.closePRODNAME);
             cardview = (CardView) v.findViewById(R.id.cardview);
-            txtlayout = (LinearLayout) v.findViewById(R.id.txtlayout);
+            text_layout = (LinearLayout) v.findViewById(R.id.txtlayout);
         }
 
 

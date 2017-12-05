@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -460,7 +461,7 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
 //                finish();
             } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                 Intent i = new Intent(BatchAllocation.this,
-                        DigitalContentDisplay.class);
+                        DigitalContentActivity.class);
                 i.putExtra("ScreenCode", screenCode);
                 i.putExtra("FromInit", "Initiative");
                 startActivity(i);

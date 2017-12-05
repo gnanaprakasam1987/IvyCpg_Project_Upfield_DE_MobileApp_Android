@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,15 +11,16 @@ import android.widget.ImageView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ImageBO;
+import com.ivy.sd.png.view.ViewImage;
 
 import java.util.ArrayList;
 
 public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.ViewHolder> {
 	private Context context;
 	private final ArrayList<ImageBO> items;
-	private DigitalContentDisplayNew ob;
+    private StoreWiseGallery ob;
 
-	public CustomGridAdapter(Context context,ArrayList<ImageBO> im,DigitalContentDisplayNew ob2) {
+    public CustomGridAdapter(Context context, ArrayList<ImageBO> im, StoreWiseGallery ob2) {
 
 		this.context = context;
 		this.items = im;
@@ -33,9 +34,8 @@ public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.Vi
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.grid_item, parent, false);
-		ViewHolder vh = new ViewHolder(v);
 
-		return vh;
+		return new ViewHolder(v);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.Vi
 
 				i.putExtra("position", position);
 
-				ob.statingactivity(i);
+                ob.startingActivity(i);
 
 			}
 		});
