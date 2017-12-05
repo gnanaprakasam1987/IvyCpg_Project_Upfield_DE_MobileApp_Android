@@ -2352,7 +2352,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                     bmodel.productHelper.cloneReasonMaster();
 
-                    Commons.print("Sales Return Prod Size<><><><<>"+bmodel.productHelper.getSalesReturnProducts().size());
+                    Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
 
                     SalesReturnHelper.getInstance(this).loadSalesReturnConfigurations();
                     SalesReturnHelper.getInstance(this).clearSalesReturnTable();
@@ -2372,6 +2372,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     Intent intent = new Intent(HomeScreenTwo.this,
                             SalesReturnActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                    intent.putExtra("screentitle", menu.getMenuName());
                     startActivity(intent);
                     finish();
                 } else {
@@ -2567,7 +2568,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
-                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+                AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
                 assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
 
@@ -3300,7 +3301,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     bnd.putString("screentitle", menu.getMenuName());
                     bnd.putString("retid", bmodel.getRetailerMasterBO().getRetailerID());
                     bnd.putBoolean("isFromHomeScreenTwo", true);
-                    bnd.putString("menuCode",menu.getConfigCode());
+                    bnd.putString("menuCode", menu.getConfigCode());
                     i.putExtras(bnd);
 //                    i.putExtra("screentitle", menu.getMenuName());
 //                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
@@ -3339,7 +3340,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 i.putExtra("screentitle", menu.getMenuName());
                 i.putExtra("isFromHomeScreenTwo", true);
-                i.putExtra("menuCode",menu.getConfigCode());
+                i.putExtra("menuCode", menu.getConfigCode());
                 i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3403,7 +3404,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     FitScoreDashboardActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.putExtra("screentitle", menu.getMenuName());
-            i.putExtra("menuCode",menu.getConfigCode());
+            i.putExtra("menuCode", menu.getConfigCode());
             startActivity(i);
             finish();
         } else {
@@ -3990,7 +3991,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
             bmodel.configurationMasterHelper.IS_GST = flag;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG= flag;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = flag;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
 //            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;
         } else {

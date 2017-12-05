@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,10 +29,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -51,8 +49,6 @@ import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.StandardListMasterConstants;
-import android.widget.TextView.OnEditorActionListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +91,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     public String mSelectedFilter;
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     Button mBtnFilterPopup;
+    private String screenTitle = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,6 +108,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
+        screenTitle = getActivity().getIntent().getStringExtra("screentitle");
+
+
+
 
         return view;
     }
@@ -173,10 +174,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         } catch (Exception e) {
             Commons.printException(e);
         }
+        setScreenTitle(screenTitle);
 
         pnametitle = (TextView) view.findViewById(R.id.tvProductNameTitle);
         ((TextView) view.findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(), mDrawerLayout,
@@ -185,8 +188,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         ) {
             public void onDrawerClosed(View view) {
                 if (getActionBar() != null) {
-                    setScreenTitle(bmodel.configurationMasterHelper
-                            .getHomescreentwomenutitle(StandardListMasterConstants.MENU_SALES_RET));
+                    setScreenTitle(screenTitle);
                 }
 
                 getActivity().supportInvalidateOptionsMenu();
@@ -246,7 +248,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
         pnametitle.setText(strPname);
-        MyAdapter lvwplist = new MyAdapter(mylist);
+        // MyAdapter lvwplist = new MyAdapter(mylist);
+        lvwplist.setAdapter(new MyAdapter(mylist));
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
     }
 
@@ -381,6 +384,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     .show();
         }
     }
+
     private void loadProductList() {
         try {
             Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
@@ -425,6 +429,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         public int getCount() {
             return items.size();
         }
+
 
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
@@ -678,15 +683,28 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         if (!bmodel.configurationMasterHelper.SHOW_REMARKS_SAL_RET) {
             menu.findItem(R.id.menu_remarks).setVisible(false);
-        } else
+        } else {
             menu.findItem(R.id.menu_remarks).setVisible(true);
+            menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
+        }
+
+        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+            menu.findItem(R.id.menu_fivefilter).setVisible(true);
+            menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
+        } else {
+            menu.findItem(R.id.menu_fivefilter).setVisible(false);
+        }
         menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
         menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
+        menu.findItem(R.id.menu_product_filter).setVisible(false);
+        menu.findItem(R.id.menu_sih_apply).setVisible(false);
         menu.findItem(R.id.menu_next).setIcon(
                 R.drawable.ic_action_navigation_next_item);
         menu.findItem(R.id.menu_next).setVisible(false);
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
+
+
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
@@ -696,11 +714,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 }
             }
         }
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null && !bmodel.isMapEmpty(mSelectedIdByLevelId)) {
-            menu.findItem(R.id.menu_competitor_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
 
-        }
+        if (drawerOpen)
+            menu.clear();
+
+
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -713,13 +731,43 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 else
                     showCustomDialog();
                 return true;
+
+            case R.id.menu_fivefilter:
+                FiveFilterFragment();
+                return true;
+
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void FiveFilterFragment() {
+        try {
 
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
+                    .findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    bmodel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            // set Fragmentclass Arguments
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
+            fragobj.setArguments(bundle);
+            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
 
     @Override
@@ -750,7 +798,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
             //items = getProducts();
             items = bmodel.productHelper.getSalesReturnProducts();
-            Commons.print("AS<><><><"+bmodel.productHelper.getSalesReturnProducts().size());
+            Commons.print("AS<><><><" + bmodel.productHelper.getSalesReturnProducts().size());
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -799,13 +847,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || ("ALL").equals(strBarCodeSearch)) {
 
-                        if (bid == -1 && ret.getIsSaleable() == 1) {
-                            if (mFilterText.equals(BRAND_STRING)) {
-                                mylist.add(ret);
-                            }
-                        } else if (bid == ret.getParentid() && ret.getIsSaleable() == 1) {
+                    if (bid == -1 && ret.getIsSaleable() == 1) {
+                        if (mFilterText.equals(BRAND_STRING)) {
                             mylist.add(ret);
                         }
+                    } else if (bid == ret.getParentid() && ret.getIsSaleable() == 1) {
+                        mylist.add(ret);
+                    }
 
                 }
             }
@@ -890,14 +938,18 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (ProductMasterBO productBO : items) {
-                    if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
-                        mylist.add(productBO);
-                        fiveFilter_productIDs.add(productBO.getProductID());
-                    }
+            if (!mFilterText.isEmpty()) {
+                for (LevelBO levelBO : mParentIdList) {
+                    for (ProductMasterBO productBO : items) {
+                        if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
+                        }
 
+                    }
                 }
+            } else {
+                updateBrandText(BRAND, -1);
             }
         }
 
@@ -937,6 +989,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 if (extras != null) {
                     intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                     intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+
                 }
 
                 startActivity(intent);

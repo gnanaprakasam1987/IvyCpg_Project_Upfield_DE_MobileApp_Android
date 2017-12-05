@@ -290,7 +290,7 @@ public class SalesReturnHelper {
                     + QT(bmodel.getSaleReturnNote()) + ","
                     + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
-                    + bmodel.retailerMasterBO.getDistributorId()+ ","
+                    + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId();
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -692,21 +692,24 @@ public class SalesReturnHelper {
         if (productBO != null) {
             for (SalesReturnReasonBO bo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
                 if (bo.getReasonID().equals(condition)) {
-                    bo.setCaseSize(productBO.getCaseSize());
-                    bo.setOuterSize(productBO.getOutersize());
-                    bo.setProductShortName(productBO.getProductShortName());
-                    bo.setOldMrp(productBO.getMRP());
-                    bo.setSrpedit(productBO.getSrp());
-                    bo.setPieceQty(pqty);
-                    bo.setCaseQty(cqty);
-                    bo.setOuterQty(oqty);
-                    bo.setOldMrp(oldmrp);
-                    bo.setMfgDate(mfgDate);
-                    bo.setExpDate(expDate);
-                    bo.setInvoiceno(invoiceNo);
-                    bo.setSrpedit(srpEdited);
-                    bo.setLotNumber(lotNo);
-                    productBO.getSalesReturnReasonList().add(bo);
+                    SalesReturnReasonBO reasonBo = new SalesReturnReasonBO();
+                    reasonBo.setReasonDesc(bo.getReasonDesc());
+                    reasonBo.setReasonID(bo.getReasonID());
+                    reasonBo.setCaseSize(productBO.getCaseSize());
+                    reasonBo.setOuterSize(productBO.getOutersize());
+                    reasonBo.setProductShortName(productBO.getProductShortName());
+                    reasonBo.setOldMrp(productBO.getMRP());
+                    reasonBo.setSrpedit(productBO.getSrp());
+                    reasonBo.setPieceQty(pqty);
+                    reasonBo.setCaseQty(cqty);
+                    reasonBo.setOuterQty(oqty);
+                    reasonBo.setOldMrp(oldmrp);
+                    reasonBo.setMfgDate(mfgDate);
+                    reasonBo.setExpDate(expDate);
+                    reasonBo.setInvoiceno(invoiceNo);
+                    reasonBo.setSrpedit(srpEdited);
+                    reasonBo.setLotNumber(lotNo);
+                    productBO.getSalesReturnReasonList().add(reasonBo);
                     return;
                 }
             }

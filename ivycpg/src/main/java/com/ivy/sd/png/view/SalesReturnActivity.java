@@ -29,6 +29,8 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
