@@ -33,12 +33,7 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
-    public void numberPressed(View v) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SalesReturnFragment fragment = (SalesReturnFragment) fm
-                .findFragmentById(R.id.sales_return_fragment);
-        fragment.numberPressed(v);
-    }
+   
 
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
