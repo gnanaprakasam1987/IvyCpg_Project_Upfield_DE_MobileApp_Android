@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.planogram;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +8,7 @@ import android.widget.Toast;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
-import com.ivy.sd.png.bo.CounterPlanogramBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
-import com.ivy.sd.png.bo.PlanogramBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;

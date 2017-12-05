@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.planogram;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
