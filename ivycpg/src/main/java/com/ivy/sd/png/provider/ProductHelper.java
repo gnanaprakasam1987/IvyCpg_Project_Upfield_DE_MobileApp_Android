@@ -6297,26 +6297,27 @@ public class ProductHelper {
     public void loadData(String menuname) {
         try {
             int level;
+            PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(mContext);
             level = getRetailerlevel(menuname);
             if (menuname.equals("MENU_PLANOGRAM")) {
                 switch (level) {
                     case 1:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);
                         break;
                     case 2:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, true, false, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, true, false, 0, 0);
                         break;
                     case 3:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, true, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, true, 0, 0);
                         break;
                     case 4:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, 0);
                         break;
                     case 5:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, 0, chid);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, 0, chid);
                         break;
                     case 6:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, chid);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, chid);
                         break;
                     case -1:
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
@@ -6325,29 +6326,29 @@ public class ProductHelper {
             } else if (menuname.equals("MENU_PLANOGRAM_CS")) {
                 switch (level) {
                     case 1:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
                         break;
                     case 2:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
                         break;
                     case 3:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
                         break;
                     case 4:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, 0);
                         break;
                     case 5:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, chid);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, chid);
                         break;
                     case 6:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, chid);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, chid);
                         break;
 //                    case -1:
 //                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
 //                        break;
 
                     default:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
+                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
                         break;
                 }
             }

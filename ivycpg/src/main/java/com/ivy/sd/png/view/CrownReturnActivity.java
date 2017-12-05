@@ -38,6 +38,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -701,7 +702,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 //            finish();
         } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
             Intent i = new Intent(CrownReturnActivity.this,
-                    DigitalContentDisplay.class);
+                    DigitalContentActivity.class);
             i.putExtra("ScreenCode", screenCode);
             i.putExtra("FromInit", "Initiative");
             startActivity(i);

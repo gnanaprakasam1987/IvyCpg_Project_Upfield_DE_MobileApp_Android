@@ -61,6 +61,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.price.PriceTrackingHelper;
 import com.ivy.sd.png.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -92,6 +93,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private EditText mEdt_searchproductName;
     private String append = "";
     private BusinessModel bmodel;
+    private PriceTrackingHelper priceTrackingHelper;
     // HashMap used to set Selected Filter name and ID
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     // Get SKUBO Total List
@@ -134,6 +136,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
 
         try {
             isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
@@ -1314,7 +1317,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    bmodel.mPriceTrackingHelper.savePriceTransaction(mylist);
+                    priceTrackingHelper.savePriceTransaction(mylist);
 
                 // save near expiry
                 bmodel.saveNearExpiry();

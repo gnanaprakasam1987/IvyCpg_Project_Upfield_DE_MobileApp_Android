@@ -52,6 +52,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -99,13 +100,14 @@ public class PlanogramFragment extends IvyBaseFragment implements
     private Vector<LevelBO> parentidList;
     private ArrayList<Integer> mAttributeProducts;
     private String filtertext;
+    PlanogramMasterHelper mPlanoGramMasterHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
+        mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
     }
 
     @Override
@@ -118,7 +120,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
         bmodel.setContext(getActivity());
 
         // download data for planogram
-        vPlanogram = bmodel.planogramMasterHelper.getPlanogramMaster();
+        vPlanogram = mPlanoGramMasterHelper.getPlanogramMaster();
         plano_recycler = (RecyclerView) view.findViewById(R.id.plano_recycler);
         plano_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         Button btnSave = (Button) view.findViewById(R.id.saveButton);
@@ -435,7 +437,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
     /*private void searchAndUpdateImage() {
         String path = imageFileName;
-        bmodel.planogramMasterHelper.setImagePath(selectedCategory, path,
+        mPlanoGramMasterHelper.setImagePath(selectedCategory, path,
                 locSelectionId);
 
         enableAdherence();
@@ -459,7 +461,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
             selectedCategory = bid;
 
             vPlanogram = new Vector<>();
-            Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
+            Vector<PlanogramBO> items = mPlanoGramMasterHelper.getPlanogramMaster();
             for (final PlanogramBO planogramBO : items) {
                 if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM
                         && planogramBO.getLocationID() == locSelectionId) {
@@ -693,24 +695,24 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
             Bundle bundle = new Bundle();
             bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", bmodel.planogramMasterHelper
+            bundle.putString("filterHeader", mPlanoGramMasterHelper
                     .getmChildLevelBo().get(0).getProductLevel());
             bundle.putBoolean("ishideAll", true);
             bundle.putSerializable("serilizeContent",
-                    bmodel.planogramMasterHelper.getmChildLevelBo());
+                    mPlanoGramMasterHelper.getmChildLevelBo());
 
-            if (bmodel.planogramMasterHelper.getmParentLevelBo() != null
-                    && bmodel.planogramMasterHelper.getmParentLevelBo()
+            if (mPlanoGramMasterHelper.getmParentLevelBo() != null
+                    && mPlanoGramMasterHelper.getmParentLevelBo()
                     .size() > 0) {
 
                 bundle.putBoolean("isFormBrand", true);
 
                 bundle.putString("pfilterHeader",
-                        bmodel.planogramMasterHelper.getmParentLevelBo()
+                        mPlanoGramMasterHelper.getmParentLevelBo()
                                 .get(0).getPl_productLevel());
 
                 bmodel.productHelper
-                        .setPlevelMaster(bmodel.planogramMasterHelper
+                        .setPlevelMaster(mPlanoGramMasterHelper
                                 .getmParentLevelBo());
             } else
                 bundle.putBoolean("isFormBrand", false);
@@ -733,7 +735,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.planogramMasterHelper.savePhotocapture();
+                mPlanoGramMasterHelper.savePhotocapture();
                 if (calledBy != null && !"3".equals(calledBy))
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM);
                 return Boolean.TRUE;
@@ -923,7 +925,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
 
 
-                        bmodel.planogramMasterHelper
+                        mPlanoGramMasterHelper
                                 .deleteImageName(planogramBO.getPlanogramCameraImgName());
                         bmodel.competitorTrackingHelper.deleteFiles(
                                 HomeScreenFragment.folder.getPath(), planogramBO.getPlanogramCameraImgName());
@@ -1091,7 +1093,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
                     if (!"".equals(holder.planoObj.getPlanogramCameraImgName())) {
                         String path = photoNamePath
                                 + holder.planoObj.getPlanogramCameraImgName();
-                        if (bmodel.planogramMasterHelper.isImagePresent(path)) {
+                        if (mPlanoGramMasterHelper.isImagePresent(path)) {
                             showFileDeleteAlert(imageFileName, holder.planoObj);
                         }else {
                             setCameraImage(holder.planoObj);
@@ -1118,7 +1120,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
                     if (!"".equals(holder.planoObj.getPlanogramCameraImgName())) {
                         String path = photoNamePath
                                 + holder.planoObj.getPlanogramCameraImgName();
-                        if (bmodel.planogramMasterHelper.isImagePresent(path)) {
+                        if (mPlanoGramMasterHelper.isImagePresent(path)) {
                             showFileDeleteAlert(imageFileName, holder.planoObj);
                         }else {
                             setCameraImage(holder.planoObj);
@@ -1174,8 +1176,8 @@ public class PlanogramFragment extends IvyBaseFragment implements
                 if (!"".equals(planoObj.getPlanogramCameraImgName())) {
                     String path = photoNamePath
                             + planoObj.getPlanogramCameraImgName();
-                    if (bmodel.planogramMasterHelper.isImagePresent(path)) {
-                        Uri uri = bmodel.planogramMasterHelper
+                    if (mPlanoGramMasterHelper.isImagePresent(path)) {
+                        Uri uri = mPlanoGramMasterHelper
                                 .getUriFromFile(path);
                         ivCamera.setVisibility(View.VISIBLE);
                         ivCamera.invalidate();
@@ -1279,7 +1281,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
+        Vector<PlanogramBO> items = mPlanoGramMasterHelper.getPlanogramMaster();
 
         vPlanogram = new Vector<>();
 
@@ -1302,7 +1304,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Vector<PlanogramBO> items = bmodel.planogramMasterHelper.getPlanogramMaster();
+        Vector<PlanogramBO> items = mPlanoGramMasterHelper.getPlanogramMaster();
         this.parentidList = mParentIdList;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         this.mAttributeProducts = mAttributeProducts;

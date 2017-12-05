@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -85,7 +86,7 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
             public void onClick(View v) {
                     if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                         Intent i = new Intent(InitiativeActivity.this,
-                                DigitalContentDisplay.class);
+                                DigitalContentActivity.class);
                         i.putExtra("ScreenCode", screenCode);
                         i.putExtra("FromInit", "Initiative");
                         startActivity(i);
