@@ -255,7 +255,7 @@
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleStockCheckFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NearExpiryTrackingActivity"
+            android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivyretail.views.CompetitorTrackingActivity"

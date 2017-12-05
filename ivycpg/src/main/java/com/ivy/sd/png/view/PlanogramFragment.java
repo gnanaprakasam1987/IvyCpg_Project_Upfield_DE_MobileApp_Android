@@ -77,7 +77,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
     private Vector<PlanogramBO> vPlanogram = new Vector<>();
 
     private String filter_Heading;
-    private int filterId;
+    private int filterId = 0;
     private ArrayAdapter<StandardListBO> locationAdapter;
     private int selecteditem;
     private int locSelectionId = -1;
@@ -273,17 +273,10 @@ public class PlanogramFragment extends IvyBaseFragment implements
                         updateGeneralText(GENERAL);
                     }
                 } else {
-                    if (bmodel.mSFSelectedFilter == -1)
-                        if (selectedCategory == 0)
-                            bmodel.mSFSelectedFilter = mPlanoGramMasterHelper
-                                    .getmChildLevelBo().get(0).getProductid();
-                        else
-                            bmodel.mSFSelectedFilter = mPlanoGramMasterHelper
-                                    .getmParentLevelBo().get(0).getPl_productid();
 
                     mSelectedFilterMap.put("Brand",
-                            String.valueOf(bmodel.mSFSelectedFilter));
-                    updateBrandText(BRAND, bmodel.mSFSelectedFilter);
+                            String.valueOf(filterId));
+                    updateBrandText(BRAND, filterId);
                     productFilterClickedFragment();
                 }
 
@@ -466,7 +459,6 @@ public class PlanogramFragment extends IvyBaseFragment implements
             filterId = bid;
 
             selectedCategory = bid;
-            bmodel.mSFSelectedFilter = bid;
 
             vPlanogram = new Vector<>();
             Vector<PlanogramBO> items = mPlanoGramMasterHelper.getPlanogramMaster();
@@ -492,7 +484,7 @@ public class PlanogramFragment extends IvyBaseFragment implements
         generalbutton = mFilterText;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
-        updateBrandText(BRAND, bmodel.mSFSelectedFilter);
+        updateBrandText(BRAND, filterId);
     }
 
     @Override

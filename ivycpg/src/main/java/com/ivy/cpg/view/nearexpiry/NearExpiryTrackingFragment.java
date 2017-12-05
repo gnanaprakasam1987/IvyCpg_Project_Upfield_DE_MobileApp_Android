@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.nearexpiry;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +41,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,11 +53,12 @@ import java.util.Vector;
 
 public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         BrandDialogInterface {
-    // By Default Select All
+
+
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
     private final String strBarCodeSearch = "ALL";
-    private BusinessModel bmodel;
+    private BusinessModel mBModel;
     private DrawerLayout mDrawerLayout;
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private Vector<ProductMasterBO> myList;
@@ -67,6 +73,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private NearExpiryDialogueFragment dialog;
     private boolean isFromChild;
 
+    NearExpiryTrackingHelper mNearExpiryHelper;
     public NearExpiryDialogueFragment getDialog() {
         return dialog;
     }
@@ -95,14 +102,15 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
     }
 
     @Override
     public void onStart() {
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
         // set a custom shadow that overlays the main content when the drawer
         // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -118,7 +126,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
-        setScreenTitle(bmodel.mSelectedActivityName);
+        setScreenTitle(mNearExpiryHelper.mSelectedActivityName);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -130,7 +138,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             public void onDrawerClosed(View view) {
 
                 if (actionBar != null) {
-                    setScreenTitle(bmodel.mSelectedActivityName);
+                    setScreenTitle(mNearExpiryHelper.mSelectedActivityName);
                 }
 
                 getActivity().supportInvalidateOptionsMenu();
@@ -151,54 +159,20 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             lvwplist.setCacheColorHint(0);
         }
         tvSelectedFilter = (TextView) getView().findViewById(R.id.sku);
-        tvSelectedFilter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvSelectedFilter.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView tvcalendar = (TextView) getView().findViewById(R.id.opencalendar);
-        tvcalendar.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvcalendar.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView tvaudit = (TextView) getView().findViewById(R.id.audit);
-        tvaudit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvaudit.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView tvpiece = (TextView) getView().findViewById(R.id.tvpiece);
         TextView tvouter = (TextView) getView().findViewById(R.id.tvouter);
         TextView tvcase = (TextView) getView().findViewById(R.id.tvcase);
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
+        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
             tvaudit.setVisibility(View.VISIBLE);
 
         }
 
-       /* if (!bmodel.configurationMasterHelper.SHOW_BARCODE) {
-            getView().findViewById(R.id.productBarcodetitle).setVisibility(
-                    View.GONE);
-        } else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(getView()
-                        .findViewById(R.id.productBarcodetitle).getTag()) != null)
-                    ((TextView) getView()
-                            .findViewById(R.id.productBarcodetitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
-                                            R.id.productBarcodetitle).getTag()));
-            } catch (Exception e) {
-                Commons.printException(""+e);
-            }
-        }*/
-
-        /*if (!bmodel.configurationMasterHelper.SHOW_PRODUCT_CODE) {
-            getView().findViewById(R.id.productcodtitle).setVisibility(
-                    View.GONE);
-        } else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(getView()
-                        .findViewById(R.id.productcodtitle).getTag()) != null)
-                    ((TextView) getView().findViewById(R.id.productcodtitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
-                                            R.id.productcodtitle).getTag()));
-            } catch (Exception e) {
-                Commons.printException(""+e);
-            }
-        }*/
-
-        //LinearLayout layout_keypad = (LinearLayout) getView().findViewById(R.id.footer);
 
         tvcalendar.setVisibility(View.VISIBLE);
         //layout_keypad.setVisibility(View.GONE);
@@ -211,30 +185,30 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 android.R.layout.select_dialog_singlechoice);
 
 
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
-            bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
-            bmodel.mNearExpiryTrackingHelper.mSelectedLocationName = " -"
-                    + bmodel.productHelper.getInStoreLocation()
-                    .get(bmodel.productHelper.getmSelectedGLobalLocationIndex()).getListName();
+        if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mNearExpiryHelper.mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
+            mNearExpiryHelper.mSelectedLocationName = " -"
+                    + mBModel.productHelper.getInStoreLocation()
+                    .get(mBModel.productHelper.getmSelectedGLobalLocationIndex()).getListName();
         }
 
         lvwplist.setLongClickable(true);
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mSelectedFilterMap.put("Brand",
-                String.valueOf(bmodel.mSFSelectedFilter));
+       /* mSelectedFilterMap.put("Brand",
+                String.valueOf(mBModel.mSFSelectedFilter));*/
         updateGeneralText(GENERAL);
-        updateBrandText(BRAND, bmodel.mSFSelectedFilter);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+        updateBrandText(BRAND, -1);
+        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
         else
             productFilterClickedFragment();
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
         Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-        btn_save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,8 +226,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         BusinessModel.getInstance().trackScreenView("Near Expiry Tracking");
         // if statement to make sure the alert is displayed
         // only for the first time
-        if (bmodel.productHelper.getInStoreLocation().size() > 1 && !isAlertShowed) {
-            if (!bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+        if (mBModel.productHelper.getInStoreLocation().size() > 1 && !isAlertShowed) {
+            if (!mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
                 showLocationFilterAlert();
                 isAlertShowed = true;
             }
@@ -272,15 +246,14 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
         try {
             boolean drawerOpen = false;
-            boolean navDrawerOpen = false;
 
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (bmodel.productHelper.getInStoreLocation().size() < 2)
+                if (mBModel.productHelper.getInStoreLocation().size() < 2)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
@@ -291,12 +264,12 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_next).setVisible(false);
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
           /*else
                 menu.findItem(R.id.menu_product_filter).setVisible(true);*/
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -305,7 +278,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (drawerOpen || navDrawerOpen)
+            if (drawerOpen)
                 menu.clear();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -319,7 +292,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
@@ -330,7 +303,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
-        } else if (i == R.id.menu_location_filter && bmodel.productHelper.getInStoreLocation().size() > 1) {
+        } else if (i == R.id.menu_location_filter && mBModel.productHelper.getInStoreLocation().size() > 1) {
             showLocationFilterAlert();
             return true;
         } else if (i == R.id.menu_next) {
@@ -356,7 +329,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private void nextButtonClick() {
         try {
 
-            if (bmodel.mNearExpiryTrackingHelper.checkDataToSave())
+            if (mNearExpiryHelper.checkDataToSave())
                 new SaveAsyncTask().execute();
             else
                 Toast.makeText(getActivity(),
@@ -373,20 +346,20 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(null);
         builder.setSingleChoiceItems(mLocationAdapter,
-                bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex,
+                mNearExpiryHelper.mSelectedLocationIndex,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex = item;
-                        bmodel.mNearExpiryTrackingHelper.mSelectedLocationName = " -"
-                                + bmodel.productHelper.getInStoreLocation()
+                        mNearExpiryHelper.mSelectedLocationIndex = item;
+                        mNearExpiryHelper.mSelectedLocationName = " -"
+                                + mBModel.productHelper.getInStoreLocation()
                                 .get(item).getListName();
                         dialog.dismiss();
                         lvwplist.invalidateViews();
                     }
                 });
 
-        bmodel.applyAlertDialogTheme(builder);
+        mBModel.applyAlertDialogTheme(builder);
     }
 
 
@@ -407,25 +380,25 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             bundle.putString("filterName", BRAND);
             bundle.putString("isFrom", "NearExpiry");
 
-            if (bmodel.productHelper.getRetailerModuleChildLevelBO().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
+            if (mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)
+                bundle.putString("filterHeader", mBModel.productHelper
                         .getRetailerModuleChildLevelBO().get(0).getProductLevel());
             else
-                bundle.putString("filterHeader", bmodel.productHelper
+                bundle.putString("filterHeader", mBModel.productHelper
                         .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
 
             bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
+                    mBModel.productHelper.getRetailerModuleChildLevelBO());
 
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleChildLevelBO().size() > 0) {
+            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
+                    && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0) {
 
                 bundle.putBoolean("isFormBrand", true);
 
-                bundle.putString("pfilterHeader", bmodel.productHelper
+                bundle.putString("pfilterHeader", mBModel.productHelper
                         .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
 
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
+                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
                         .getRetailerModuleParentLeveBO());
             } else {
                 bundle.putBoolean("isFormBrand", false);
@@ -474,7 +447,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             View row = convertView;
             if (row == null) {
@@ -488,10 +462,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
                 holder.mBarCode = (TextView) row
                         .findViewById(R.id.barcode);
-                holder.mBarCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.mBarCode.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 holder.mSKU = (TextView) row.findViewById(R.id.sku);
-                holder.mSKU.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.mSKU.setTypeface(mBModel.configurationMasterHelper.getProductNameFont());
 
                 holder.rlCalendar = (LinearLayout) row
                         .findViewById(R.id.rl_calendar);
@@ -505,7 +479,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_audit);
                 holder.productCodeTV = (TextView) row
                         .findViewById(R.id.product_code);
-                holder.productCodeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.productCodeTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -513,26 +487,26 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     public void onClick(View view) {
 
                         if (holder.mSKUBO.getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 2) {
+                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 2) {
 
                             holder.mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).setAudit(1);
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(1);
                             holder.audit
                                     .setImageResource(R.drawable.ic_audit_yes);
 
                         } else if (holder.mSKUBO.getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 1) {
+                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 1) {
 
                             holder.mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).setAudit(0);
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(0);
                             holder.audit
                                     .setImageResource(R.drawable.ic_audit_no);
 
                         } else if (holder.mSKUBO.getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 0) {
+                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 0) {
 
                             holder.mSKUBO.getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).setAudit(2);
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(2);
                             holder.audit
                                     .setImageResource(R.drawable.ic_audit_none);
                         }
@@ -540,7 +514,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 });
 
-                if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+                if (mBModel.configurationMasterHelper.IS_TEAMLEAD && mBModel.configurationMasterHelper.IS_AUDIT_USER) {
                     holder.audit.setVisibility(View.VISIBLE);
 
                 }
@@ -577,13 +551,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
 
             if (holder.mSKUBO.getLocations()
-                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 2)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 2)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
             else if (holder.mSKUBO.getLocations()
-                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 1)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 1)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
             else if (holder.mSKUBO.getLocations()
-                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex).getAudit() == 0)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 0)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             if (holder.mSKUBO.getBarCode() == null
@@ -593,10 +567,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 holder.mBarCode.setText(holder.mSKUBO.getBarCode());
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_BARCODE) {
+            if (!mBModel.configurationMasterHelper.SHOW_BARCODE) {
                 holder.mBarCode.setVisibility(View.GONE);
             }
-            if (!bmodel.configurationMasterHelper.SHOW_PRODUCT_CODE) {
+            if (!mBModel.configurationMasterHelper.SHOW_PRODUCT_CODE) {
                 holder.productCodeTV.setVisibility(View.GONE);
             }
             holder.mSKU.setText(holder.mSKUBO.getProductName());
@@ -605,7 +579,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
             if (holder.mSKUBO
                     .getLocations()
-                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                     .isHasData())
                 holder.mCalendar.setImageResource(R.drawable.ic_date_picker_blue);
             else {
@@ -625,36 +599,36 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
     private void checkDataForColor(String pid) {
 
-        for (ProductMasterBO skubo : bmodel.productHelper.getProductMaster()) {
+        for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
 
             if (skubo.getProductID().equals(pid)) {
 
                 for (int k = 0; k < (skubo
                         .getLocations()
-                        .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().size()); k++) {
                     if ((!"0"
                             .equals(skubo
                                     .getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(k).getNearexpPC()))
                             || (!"0"
                             .equals(skubo
                                     .getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(k).getNearexpOU()))
                             || (!"0"
                             .equals(skubo
                                     .getLocations()
-                                    .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(k).getNearexpCA()))) {
                         skubo.getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .setHasData(true);
                         break;
                     } else {
                         skubo.getLocations()
-                                .get(bmodel.mNearExpiryTrackingHelper.mSelectedLocationIndex)
+                                .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .setHasData(false);
                     }
 
@@ -672,11 +646,11 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                bmodel.mNearExpiryTrackingHelper.saveSKUTracking();
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                mNearExpiryHelper.saveSKUTracking();
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                bmodel.updateIsVisitedFlag();
+                mBModel.updateIsVisitedFlag();
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -719,7 +693,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
                         Bundle extras = getActivity().getIntent().getExtras();
                         if (extras != null) {
-                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
 
@@ -744,11 +718,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
             // Close the drawer
             mDrawerLayout.closeDrawers();
-            bmodel.mSFSelectedFilter = mBid;
-            Vector<ProductMasterBO> items = bmodel.productHelper
+            Vector<ProductMasterBO> items = mBModel.productHelper
                     .getProductMaster();
             if (items == null) {
-                bmodel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(R.string.no_products_exists),
                         0);
                 return;
@@ -794,10 +767,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
     private void updatebrandtext(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         try {
-            Vector<ProductMasterBO> items = bmodel.productHelper
+            Vector<ProductMasterBO> items = mBModel.productHelper
                     .getProductMaster();
             if (items == null) {
-                bmodel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(R.string.no_products_exists),
                         0);
                 return;
@@ -872,7 +845,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
-            bmodel.showAlert(
+            mBModel.showAlert(
                     getResources().getString(R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -934,7 +907,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
+                    mBModel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
             // set Fragmentclass Arguments

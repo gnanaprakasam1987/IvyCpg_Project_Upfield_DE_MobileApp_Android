@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -26,7 +27,6 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
-import com.ivy.sd.png.bo.NearExpiryDateBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SalesReturnReasonBO;

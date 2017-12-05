@@ -45,6 +45,8 @@ import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
+import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -1490,7 +1492,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
                                 && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
-                            bmodel.mNearExpiryTrackingHelper.loadSKUTracking(true);
+                            NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
+                            mNearExpiryHelper.loadSKUTracking(true);
                         }
 
                         if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
@@ -2614,25 +2617,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
+
+                NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
+
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         SDUtil.now(SDUtil.DATE_GLOBAL), SDUtil.now(SDUtil.TIME),
                         MENU_NEAREXPIRY);
-                bmodel.mSelectedActivityName = menu.getMenuName();
-
-                /*if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_NEAREXPIRY);
-                    bmodel.productHelper
-                            .downloadProductsWithFiveLevelFilter(MENU_NEAREXPIRY);
-                } else {
-                    bmodel.productHelper.downloadProductFilter(MENU_NEAREXPIRY);
-                    bmodel.productHelper.downloadProducts(MENU_NEAREXPIRY);
-                }*/
+                mNearExpiryHelper.mSelectedActivityName = menu.getMenuName();
 
                 bmodel.productHelper.downloadInStoreLocations();
-                bmodel.mNearExpiryTrackingHelper.loadSKUTracking(false);
-                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !bmodel.mNearExpiryTrackingHelper.hasAlreadySKUTrackingDone()) {
-                    bmodel.mNearExpiryTrackingHelper.loadLastVisitSKUTracking();
+                mNearExpiryHelper.loadSKUTracking(false);
+
+                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone()) {
+                    mNearExpiryHelper.loadLastVisitSKUTracking();
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_NEAREXPIRY), 1);
@@ -2644,6 +2641,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     intent.putExtra("isFromChild", isFromChild);
                 startActivity(intent);
                 finish();
+
             } else {
                 Toast.makeText(
                         this,
@@ -2718,8 +2716,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 mPlanoGramMasterHelper.downloadlevels(MENU_PLANOGRAM,
                         bmodel.retailerMasterBO.getRetailerID());
                 bmodel.productHelper.loadData(MENU_PLANOGRAM);
-                bmodel.mSFSelectedFilter = -1;
-                /*mPlanoGramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
+               /*mPlanoGramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
                         bmodel.retailerMasterBO.getRetailerID());*/
                 //bmodel.productHelper.downloadPlanogramProdutLocations(MENU_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID());
                 mPlanoGramMasterHelper
