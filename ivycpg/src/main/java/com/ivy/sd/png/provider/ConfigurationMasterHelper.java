@@ -599,7 +599,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REMARKS_STK_CHK;
     // Added in 45 version
     public boolean SHOW_REMARKS_SAL_RET;
-    public boolean SHOW_DASH_HOME;
     public boolean SHOW_LOCATION_PASSWORD_DIALOG;
     public boolean IS_SURVEY_ONCE;
 
@@ -1095,11 +1094,6 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_MAX_CREDIT_DAYS = "MAX_CREDIT_DAYS";
     public int MAX_CREDIT_DAYS = 90;
-
-    private static final String CODE_PWD_LOCK = "FUN46";
-    private static final String CODE_MAXIMUM_ATTEMPTCOUNT = "Max_Login_Attempt_count";
-    public int MAXIMUM_ATTEMPT_COUNT = 0;
-    public boolean IS_PASSWORD_LOCK;
 
     private static final String CODE_ALLOW_BACK_DATE = "FUN47";
     public boolean ALLOW_BACK_DATE;
@@ -1665,7 +1659,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_REMARKS_STK_ORD = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) : false;
         this.SHOW_REMARKS_STK_CHK = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) : false;
         this.SHOW_REMARKS_SAL_RET = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) : false;
-        this.SHOW_DASH_HOME = hashMapHHTModuleConfig.get(CODE_SHOW_DASH_HOME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DASH_HOME) : false;
         this.SHOW_LOCATION_PASSWORD_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) : false;
         this.SHOW_CHART_DASH = hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) : false;
         this.SHOW_LINK_DASH_SKUTGT = hashMapHHTModuleConfig.get(CODE_SHOW_LINK_DASH_SKUTGT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LINK_DASH_SKUTGT) : false;
@@ -4448,30 +4441,6 @@ public class ConfigurationMasterHelper {
         }
     }
 
-    public void downloadChangepasswordConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        try {
-            db.openDataBase();
-
-            String query = "select Flag from hhtmodulemaster where hhtcode='PWD02'";
-            Cursor c = db.selectSQL(query);
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int flag = c.getInt(0);
-                    if (flag == 1) {
-                        this.SHOW_FORGET_PASSWORD = true;
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     public int getMVPTheme() {
         MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4812,123 +4781,6 @@ public class ConfigurationMasterHelper {
             Commons.printException("" + e);
         }
         return flag;
-    }
-
-    public void loadConfigurationForLoginScreen() {
-        DBUtil db = null;
-        db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb = null;
-        try {
-            SHOW_GPS_ENABLE_DIALOG = false;
-            SHOW_DASH_HOME = false;
-            SHOW_ATTENDANCE = false;
-            IS_CLEAR_DATA = false;
-
-            sb = new StringBuffer();
-            sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE (hhtcode = ");
-            sb.append(bmodel.QT(CODE_GPS_ENABLE));
-            sb.append(" OR hhtcode = ");
-            sb.append(bmodel.QT("ATTENDANCE"));
-            sb.append(" OR hhtcode = ");
-            sb.append(bmodel.QT(CODE_SHOW_DASH_HOME));
-            sb.append(" OR hhtcode = ");
-            sb.append(bmodel.QT(CODE_CLEAR_DATA));
-            sb.append(") AND Flag = 1");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    if (c.getString(0).equalsIgnoreCase(CODE_GPS_ENABLE)) {
-                        SHOW_GPS_ENABLE_DIALOG = true;
-                    } else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_DASH_HOME)) {
-                        SHOW_DASH_HOME = true;
-                    } else if (c.getString(0).equalsIgnoreCase("ATTENDANCE")) {
-                        SHOW_ATTENDANCE = true;
-                    } else if (c.getString(0).equalsIgnoreCase(CODE_CLEAR_DATA)) {
-                        IS_CLEAR_DATA = true;
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            db.closeDB();
-        }
-    }
-
-    public void loadPasswordConfiguration() {
-        DBUtil db = null;
-        db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb = null;
-        try {
-            sb = new StringBuffer();
-            sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_PWD_LOCK));
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    int value = c.getInt(0);
-                    if (value == 1) {
-                        sb = new StringBuffer();
-                        sb.append("select RField from hhtmodulemaster where hhtcode =");
-                        sb.append(bmodel.QT(CODE_MAXIMUM_ATTEMPTCOUNT));
-                        sb.append(" and Flag=1");
-                        c = db.selectSQL(sb.toString());
-                        if (c.getCount() > 0) {
-                            if (c.moveToNext()) {
-
-                                MAXIMUM_ATTEMPT_COUNT = c.getInt(0);
-
-                            }
-                        }
-                        if (MAXIMUM_ATTEMPT_COUNT > 0) {
-                            int listid = getActivtyType("RESET_PWD");
-                            if (listid != 0)
-                                IS_PASSWORD_LOCK = true;
-                        }
-                    }
-                }
-            }
-
-
-            SHOW_CHANGE_PASSWORD = false;
-            SHOW_FORGET_PASSWORD = false;
-
-            sb = new StringBuffer();
-            sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE (hhtcode = ");
-            sb.append(bmodel.QT(CODE_CHANGE_PASSWORD));
-            sb.append(" OR hhtcode = ");
-            sb.append(bmodel.QT(CODE_FORGET_PWD));
-            sb.append(") AND Flag = 1");
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    if (c.getString(0).equalsIgnoreCase(CODE_CHANGE_PASSWORD)) {
-                        SHOW_CHANGE_PASSWORD = true;
-                    } else if (c.getString(0).equalsIgnoreCase(CODE_FORGET_PWD)) {
-                        SHOW_FORGET_PASSWORD = true;
-                    }
-                }
-            }
-
-            IS_PASSWORD_ENCRIPTED = false;
-
-            sb = new StringBuffer();
-            sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE hhtcode = ");
-            sb.append(bmodel.QT(CODE_IS_PWD_ENCRIPTED));
-            sb.append(" AND Flag = 1");
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    IS_PASSWORD_ENCRIPTED = true;
-                }
-            }
-
-        } catch (Exception e) {
-            db.closeDB();
-        }
     }
 
     public int getActivtyType(String code) {

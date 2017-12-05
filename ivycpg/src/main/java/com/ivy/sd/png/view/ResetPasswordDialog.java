@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -173,7 +174,7 @@ public class ResetPasswordDialog extends Dialog {
         protected Integer doInBackground(Integer... params) {
             try {
                 int listid = 0;
-                if (bmodel.configurationMasterHelper.IS_PASSWORD_LOCK) {
+                if (LoginHelper.getInstance(ctx).IS_PASSWORD_LOCK) {
                     listid = bmodel.configurationMasterHelper.getActivtyType("RESET_PWD");
                 } else {
                     listid = bmodel.configurationMasterHelper.getActivtyType("FP");
@@ -245,7 +246,7 @@ public class ResetPasswordDialog extends Dialog {
                                 R.string.communication_error_please_try_again),
                         0);
             } else if (result == 1) {
-                if (bmodel.configurationMasterHelper.IS_PASSWORD_LOCK) {
+                if (LoginHelper.getInstance(ctx).IS_PASSWORD_LOCK) {
                     SharedPreferences mPasswordLockCountPref = ctx.getSharedPreferences("passwordlock", ctx.MODE_PRIVATE);
                     SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
                     edt.putInt("passwordlock", 0);

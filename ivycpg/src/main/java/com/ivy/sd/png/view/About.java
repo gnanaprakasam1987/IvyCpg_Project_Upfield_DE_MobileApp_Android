@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.util.Commons;
 
 public class About extends AppCompatActivity {

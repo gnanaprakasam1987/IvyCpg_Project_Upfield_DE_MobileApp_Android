@@ -7,31 +7,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -42,16 +34,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -65,7 +50,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.About;
 import com.ivy.sd.png.view.AttendanceActivity;
 import com.ivy.sd.png.view.ChangePasswordActivity;
@@ -74,15 +58,10 @@ import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.sd.png.view.ResetPasswordDialog;
 import com.ivy.sd.png.view.UserSettingsActivity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
 
 import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 
@@ -90,39 +69,26 @@ import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
         ApplicationConfigs, LoginContractor.LoginView {
 
-    private BusinessModel bmodel;
+    private BusinessModel businessModel;
     private EditText editTextUserName, editTextPassword;
-    private boolean syncDone;
-    private LoginScreen thisActivity;
-    private Thread downloaderThread;
 
-    private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
-    // Used for File downoad
+    // Used for File download
     private ProgressDialog progressDialog;
     private boolean bool = false;
-    //private String initialLanguage = "en";
 
     private MyReceiver receiver;
-    private SharedPreferences mLastSyncSharedPref;
-    public SharedPreferences mPasswordLockCountPref;
 
-    private TransferUtility transferUtility;
-    private int mTotalRetailerCount = 0;
-    private int mIterateCount;
     private TextView mForgotPasswordTV;
-    LinearLayout ll_footer;
-    //private LoginHelper loginHelper;
 
-    private LoginPresenterImpl loginPresenter;
+    public LoginPresenterImpl loginPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        businessModel = (BusinessModel) getApplicationContext();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -142,19 +108,17 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
         loginPresenter.loadInitialData();
 
-        thisActivity = this;
-        downloaderThread = null;
-        progressDialog = null;
+        //progressDialog = null;
 
         mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
-        mForgotPasswordTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mForgotPasswordTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         editTextUserName = (EditText) findViewById(R.id.EditText011);
         editTextPassword = (EditText) findViewById(R.id.EditText022);
-        editTextPassword.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        editTextUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editTextUserName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         Button buttonLogin = (Button) findViewById(R.id.loginButton);
-        buttonLogin.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         loginPresenter.getSupportNo();
 
@@ -178,10 +142,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
         version.setText(getResources().getString(R.string.version)
-                + bmodel.getApplicationVersionName());
-        version.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                + businessModel.getApplicationVersionName());
+        version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
+        LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
         ll_footer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +162,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             loginPresenter.copyAssetsProfile();
 
 
-        /* Register reciver to receive downlaod status. */
+        /* Register receiver to receive download status. */
         IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new MyReceiver();
@@ -214,7 +178,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             File f = new File(
                     getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                             + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
+                            + businessModel.userMasterHelper.getUserMasterBO()
                             .getUserid() + "APP");
             if (f.isDirectory()) {
                 File files[] = f.listFiles(new FilenameFilter() {
@@ -248,7 +212,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             File f = new File(
                     getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                             + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
+                            + businessModel.userMasterHelper.getUserMasterBO()
                             .getUserid() + "APP");
             if (f.isDirectory()) {
                 File files[] = f.listFiles(new FilenameFilter() {
@@ -271,7 +235,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     @Override
-    public void onCreateDialog() {
+    public void showGPSDialog() {
 
         new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
             @Override
@@ -282,18 +246,31 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
             }
         }).show();
-
+        bool = false;
     }
 
     @Override
     public void requestLocation() {
-        bmodel.requestLocation(this);
+        businessModel.requestLocation(this);
     }
 
     @Override
     public void goToChangePwd() {
         startActivity(new Intent(LoginScreen.this,
                 ChangePasswordActivity.class));
+    }
+
+    @Override
+    public void resetPassword() {
+        editTextUserName.setText("");
+        editTextPassword.setText("");
+        editTextUserName.requestFocus();
+        bool = false;
+        Intent in = new Intent(
+                LoginScreen.this,
+                ChangePasswordActivity.class);
+        in.putExtra("resetpassword", true);
+        startActivity(in);
     }
 
     @Override
@@ -312,55 +289,23 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         if (!bool) {
             bool = true;
             try {
-                bmodel.userNameTemp = (editTextUserName.getText().toString());
-                bmodel.passwordTemp = (editTextPassword.getText().toString());
+                businessModel.userNameTemp = (editTextUserName.getText().toString());
+                businessModel.passwordTemp = (editTextPassword.getText().toString());
 
-                if (bmodel.userNameTemp.equals("")) {
+                if (businessModel.userNameTemp.equals("")) {
                     editTextUserName.requestFocus();
                     editTextUserName.setError(getResources().getString(R.string.enter_username));
                     bool = false;
                     return;
-                } else if (bmodel.passwordTemp.equals("")) {
+                } else if (businessModel.passwordTemp.equals("")) {
                     editTextPassword.requestFocus();
                     editTextPassword.setError(getResources().getString(R.string.enter_password));
                     bool = false;
                     return;
                 }
 
-                int i = comp.getId();
-
-                if (i == R.id.loginButton) {
+                if (comp.getId() == R.id.loginButton) {
                     loginPresenter.onLoginClick();
-                    /*if (syncDone) {
-                        if (ApplicationConfigs.checkUTCTime && bmodel.isOnline()) {
-                            new DownloadUTCTime().execute();
-                        } else {
-                            builder = new AlertDialog.Builder(LoginScreen.this);
-                            customProgressDialog(builder, getResources().getString(R.string.loading_data));
-                            alertDialog = builder.create();
-                            alertDialog.show();
-                            //handle password lock in off line based on reached maximum_attempt_count compare with mPasswordLockCountPref count
-                            int count = mPasswordLockCountPref.getInt("passwordlock", 0);
-                            if (count + 1 == bmodel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT)
-                                this.getHandler().sendEmptyMessage(
-                                        DataMembers.NOTIFY_NOT_USEREXIST);
-                            else
-                                new MyThread(LoginScreen.this, DataMembers.LOCAL_LOGIN).start();
-                        }
-                    } else {
-                        builder = new AlertDialog.Builder(LoginScreen.this);
-                        customProgressDialog(builder, getResources().getString(R.string.auth_and_downloading_masters));
-                        alertDialog = builder.create();
-                        alertDialog.show();
-
-                        if (!DataMembers.SERVER_URL.equals("")) {
-                            mIterateCount = bmodel.synchronizationHelper.getmRetailerWiseIterateCount();
-                            new Authentication(false).execute();
-                        } else {
-                            bmodel.showAlert(getResources().getString(R.string.download_url_empty), 0);
-                            alertDialog.dismiss();
-                        }
-                    }*/
                 } else {
                     bool = false;
                 }
@@ -372,79 +317,32 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     }
 
-    /*private void checkLogin() {
-        if (bmodel.configurationMasterHelper.SHOW_CHANGE_PASSWORD) {
-            String createdDate = bmodel.synchronizationHelper.getPasswordCreatedDate();
-            if (createdDate != null && !createdDate.equals("")) {
-                int result = SDUtil.compareDate(bmodel.configurationMasterHelper.getPasswordExpiryDate(createdDate), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
-                if (result == -1) {
-                    startActivity(new Intent(LoginScreen.this,
-                            ChangePasswordActivity.class));
-                } else {
-                    checkAttendance();
-                    //used for showing password expiring date
-                    int days = (int) getDifferenceDays(bmodel.configurationMasterHelper.getPasswordExpiryDate(createdDate),
-                            bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
-                    Commons.print("Password Expiry in " + days + " days");
-                    if (days < (bmodel.configurationMasterHelper.PSWD_EXPIRY * 0.2)) {
-                        Resources res = getResources();
-                        bmodel.showAlert(res.getQuantityString(R.plurals.password_expires, days, days), 0);
-                    }
-                }
-            } else {
-                checkAttendance();
-            }
-        } else {
-            checkAttendance();
-        }
-    }
-
-    private void checkAttendance() {
-        if (bmodel.configurationMasterHelper.SHOW_ATTENDANCE) {
-            if (bmodel.mAttendanceHelper.loadAttendanceMaster()) {
-                bmodel.loadDashBordHome();
-                BusinessModel.loadActivity(LoginScreen.this,
-                        DataMembers.actHomeScreen);
-            } else {
-                startActivity(new Intent(LoginScreen.this,
-                        AttendanceActivity.class));
-            }
-        } else {
-            bmodel.loadDashBordHome();
-            BusinessModel.loadActivity(LoginScreen.this,
-                    DataMembers.actHomeScreen);
-        }
-    }*/
-
     public Handler getHandler() {
         return handler;
     }
 
-    private Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            bmodel = (BusinessModel) getApplicationContext();
+            businessModel = (BusinessModel) getApplicationContext();
             bool = false;
             switch (msg.what) {
                 case DataMembers.NOTIFY_USEREXIST:
-                    if (alertDialog != null)
-                        alertDialog.dismiss();
+                    dismissProgressDialog();
                     loginPresenter.checkLogin();
                     finish();
                     break;
                 case DataMembers.NOTIFY_NOT_USEREXIST:
-                    if (!bmodel.configurationMasterHelper.IS_PASSWORD_LOCK) {
-                        if (alertDialog != null)
-                            alertDialog.dismiss();
+                    if (!LoginHelper.getInstance(getApplicationContext()).IS_PASSWORD_LOCK) {
+                        dismissProgressDialog();
                         editTextPassword.setText("");
-                        bmodel.showAlert(
+                        showAlert(
                                 getResources().getString(
-                                        R.string.please_check_username_and_password), 0);
+                                        R.string.please_check_username_and_password), false);
                     } else {
-                        int count = mPasswordLockCountPref.getInt("passwordlock", 0);
+                        int count = loginPresenter.getPasswordLockCount();
                         mForgotPasswordTV.setVisibility(View.VISIBLE);
-                        if (count + 1 == bmodel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT) {
-                            if (alertDialog != null)
-                                alertDialog.dismiss();
+                        if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
+                            dismissProgressDialog();
                             FragmentManager fm = getSupportFragmentManager();
                             PasswordLockDialogFragment dialogFragment = new PasswordLockDialogFragment();
                             Bundle bundle = new Bundle();
@@ -453,27 +351,24 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             dialogFragment.setArguments(bundle);
                             dialogFragment.show(fm, "Sample Fragment");
                         } else {
-                            SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
-                            edt.putInt("passwordlock", count + 1);
-                            edt.apply();
-                            if (alertDialog != null)
-                                alertDialog.dismiss();
+                            loginPresenter.applyPasswordLockCountPref();
+                            dismissProgressDialog();
                             editTextPassword.setText("");
-                            bmodel.showAlert(
+                            showAlert(
                                     getResources().getString(
-                                            R.string.please_check_username_and_password), 0);
-                            Toast.makeText(LoginScreen.this, "Remaining Password Count " + (bmodel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT - (count + 1)), Toast.LENGTH_SHORT).show();
+                                            R.string.please_check_username_and_password), false);
+                            Toast.makeText(LoginScreen.this, "Remaining Password Count " + (LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT - (count + 1)), Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
                 case DataMembers.NOTIFY_UPDATE:
-                    setMessageInProgressDialog(builder, msg.obj.toString());
+                    showProgressDialog(msg.obj.toString());
                     break;
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
+                    dismissProgressDialog();
+                    showAlert(
                             getResources()
-                                    .getString(R.string.no_network_connection), 0);
+                                    .getString(R.string.no_network_connection), false);
                     break;
 
                 default:
@@ -487,7 +382,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
      * This is the Handler for this activity. It will receive messages from the
      * DownloaderThread and make the necessary updates to the UI.
      */
-    private Handler activityHandler = new Handler() {
+    private final Handler activityHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             /*
@@ -516,25 +411,14 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             tUrl += "...";
                             url = tUrl;
                         }
-                        String pdTitle = thisActivity
-                                .getString(R.string.progress_dialog_title_connecting);
-                        String pdMsg = thisActivity
-                                .getString(R.string.progress_dialog_message_prefix_connecting);
-                        pdMsg += " " + url;
 
                         dismissCurrentProgressDialog();
-                        progressDialog = new ProgressDialog(thisActivity);
-                        progressDialog.setTitle(pdTitle);
-                        progressDialog.setMessage(pdMsg);
-                        progressDialog
-                                .setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressDialog.setIndeterminate(true);
-                        // set the message to be sent when this dialog is canceled
-                        Message newMsg = Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED);
-                        progressDialog.setCancelMessage(newMsg);
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
+
+
+                        callProgressDialog(getApplicationContext()
+                                .getString(R.string.progress_dialog_title_connecting), getApplicationContext()
+                                .getString(R.string.progress_dialog_message_prefix_connecting) + " " + url, 0, Message.obtain(this,
+                                DataMembers.MESSAGE_DOWNLOAD_CANCELED));
                     }
                     break;
             /*
@@ -549,29 +433,14 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 case DataMembers.MESSAGE_DOWNLOAD_STARTED:
                     // obj will contain a String representing the file name
                     if (msg.obj != null && msg.obj instanceof String) {
-                        int maxValue = msg.arg1;
                         String fileName = (String) msg.obj;
-                        String pdTitle = thisActivity
-                                .getString(R.string.progress_dialog_title_downloading);
-                        String pdMsg = thisActivity
-                                .getString(R.string.progress_dialog_message_prefix_downloading);
-                        pdMsg += " " + fileName;
 
                         dismissCurrentProgressDialog();
-                        progressDialog = new ProgressDialog(thisActivity);
-                        progressDialog.setTitle(pdTitle);
-                        progressDialog.setMessage(pdMsg);
-                        progressDialog
-                                .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        progressDialog.setProgress(0);
-                        progressDialog.setMax(maxValue);
-                        // set the message to be sent when this dialog is canceled
-                        Message newMsg = Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED);
-                        progressDialog.setCancelMessage(newMsg);
-                        progressDialog.setCancelable(true);
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
+                        callProgressDialog(getApplicationContext()
+                                        .getString(R.string.progress_dialog_title_downloading), getApplicationContext()
+                                        .getString(R.string.progress_dialog_message_prefix_downloading) + " " + fileName,
+                                msg.arg1, Message.obtain(this,
+                                        DataMembers.MESSAGE_DOWNLOAD_CANCELED));
                     }
                     break;
 
@@ -582,9 +451,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        bmodel.deleteAllValues();
-                        bmodel.activationHelper.clearAppUrl();
-                        bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues();
+                        businessModel.activationHelper.clearAppUrl();
+                        businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setDataAndType(
@@ -599,18 +468,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         }
                     } else {
                         loginPresenter.checkLogin();
-                        finish();
-                        System.gc();
+                        finishActivity();
                     }
                     break;
 
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
-                    if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
-                        new CatalogImagesDownload().execute();
+                    if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
+                        loginPresenter.callCatalogImageDownload();
                     loginPresenter.checkLogin();
-                    finish();
-                    System.gc();
+                    finishActivity();
                     break;
 
 			/*
@@ -619,14 +486,11 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 			 * Toast that says download is complete.
 			 */
                 case DataMembers.MESSAGE_DOWNLOAD_CANCELED:
-                   /* if (downloaderThread != null) {
-                        downloaderThread.interrupt();
-                    }*/
-                    clearAmazonDownload();
+                    loginPresenter.clearAmazonDownload();
                     dismissCurrentProgressDialog();
-                    displayMessage(getString(R.string.user_message_download_canceled));
-                    finish();
-                    bmodel.loadDashBordHome();
+                    showAlert(getString(R.string.user_message_download_canceled), true);
+                    //finish();
+                    //businessModel.loadDashBordHome();
                     BusinessModel.loadActivity(LoginScreen.this,
                             DataMembers.actHomeScreen);
 
@@ -643,18 +507,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
                         dismissCurrentProgressDialog();
-                        displayMessage(errorMessage);
+                        showAlert(errorMessage, false);
                     }
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
                         try {
-                            DBUtil db = new DBUtil(thisActivity, DataMembers.DB_NAME,
-                                    DataMembers.DB_PATH);
-                            db.createDataBase();
-                            db.openDataBase();
-                            db.deleteSQL(DataMembers.tbl_userMaster, null, true);
-                            db.closeDB();
-                            startActivity(new Intent(thisActivity, LoginScreen.class));
+                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster();
+                            startActivity(new Intent(LoginScreen.this, LoginScreen.class));
                             finish();
                             break;
                         } catch (Exception e) {
@@ -664,18 +523,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
                     finish();
 
-                    if (bmodel.isDigitalContentAvailable()) {
-                        bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                        initializeTransferUtility();
-                        downloaderThread = new DownloaderThreadNew(thisActivity,
-                                activityHandler, bmodel.getDigitalContentURLS(),
-                                bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid(), transferUtility);
-                        downloaderThread.start();
+                    if (businessModel.isDigitalContentAvailable()) {
+                        businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                        loginPresenter.initializeTransferUtility();
+                        loginPresenter.downloadDigitalContents();
                     } else {
                         loginPresenter.checkLogin();
-                        finish();
-                        System.gc();
+                        finishActivity();
                     }
 
                     break;
@@ -685,10 +539,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
                         dismissCurrentProgressDialog();
-                        displayMessage(errorMessage);
+                        showAlert(errorMessage, false);
                     }
-                    if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
-                        new CatalogImagesDownload().execute();
+                    if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
+                        loginPresenter.callCatalogImageDownload();
                     finish();
                     loginPresenter.checkLogin();
                     break;
@@ -698,7 +552,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
                         dismissCurrentProgressDialog();
-                        displayMessage(errorMessage);
+                        showAlert(errorMessage, false);
                     }
                     break;
 
@@ -707,7 +561,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
                         dismissCurrentProgressDialog();
-                        displayMessage(errorMessage);
+                        showAlert(errorMessage, false);
                     }
                     loginPresenter.checkLogin();
                     finish();
@@ -731,18 +585,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         }
     }
 
-    /**
-     * Displays a message to the user, in the form of a Toast.
-     *
-     * @param message Message to be displayed.
-     */
-    public void displayMessage(String message) {
-        if (message != null) {
-            bmodel.showAlert(message, 0);
-//            Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == R.id.menu_settings) {
@@ -753,11 +595,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         return true;
     }
 
-
     @Override
-    protected void onPause() {
-        super.onPause();
-
+    public void finishActivity() {
+        finish();
+        System.gc();
     }
 
     @Override
@@ -783,7 +624,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     @Override
     public void retrieveDBData() {
-        editTextUserName.setText(bmodel.userMasterHelper
+        editTextUserName.setText(businessModel.userMasterHelper
                 .getUserMasterBO().getLoginName());
         editTextUserName.setEnabled(false);
         editTextPassword.requestFocus();
@@ -791,7 +632,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     @Override
     public void showAlert(String msg, boolean isFinish) {
-        bmodel.showAlert(msg, 0);
+        businessModel.showAlert(msg, 0);
         if (isFinish) {
             finish();
         }
@@ -817,139 +658,24 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             @Override
             public void onClick(View v) {
                 if (!editTextUserName.getText().toString().equals("")) {
-                    bmodel.userNameTemp = editTextUserName.getText().toString();
-                    new ForgetPassword().execute();
+                    businessModel.userNameTemp = editTextUserName.getText().toString();
+                    loginPresenter.callForgetPassword();
                 } else {
                     editTextUserName.setError(getResources().getString(R.string.enter_username));
-//                    Toast.makeText(LoginScreen.this, getResources().getString(R.string.enter_username), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    /*class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
-
-        private ProgressDialog progressDialogue;
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(LoginScreen.this,
-                    DataMembers.SD,
-                    getResources().getString(R.string.Restoring_database),
-                    true, false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            if (bmodel.synchronizationHelper.reStoreDB()) {
-                return true;
-
-            } else {
-                return false;
-            }
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-            progressDialogue.dismiss();
-            if (result) {
-                bmodel.showAlert(getResources().getString(R.string.database_restored), 0);
-                syncDone = bmodel.userMasterHelper.getSyncStatus();
-                bmodel.userMasterHelper.downloadDistributionDetails();
-                if (syncDone) {
-                    editTextUserName.setText(bmodel.userMasterHelper
-                            .getUserMasterBO().getLoginName());
-                    editTextUserName.setEnabled(false);
-                    editTextPassword.requestFocus();
-
-                } else {
-                    bmodel.showAlert(getResources().getString(R.string.database_not_restored), 0);
-                }
-            }
-        }
-    }*/
-
-    /*public class AsyncCopyProfile extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            try {
-                copyAssets();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                Commons.printException(e);
-            }
-            return null;
-        }
-
-    }
-
-    private void copyAssets() {
-        AssetManager assetManager = getAssets();
-        String[] files = {"datawedge.db"};
-        for (String filename : files) {
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-                in = assetManager.open(filename);
-                File outFile = new File(
-                        "/enterprise/device/settings/datawedge/autoimport/",
-                        "datawedge.db");
-
-                outFile.setExecutable(true);
-                outFile.setReadable(true);
-                outFile.setWritable(true);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-                try {
-                    chmod(outFile, 0666);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    Commons.printException(e);
-                }
-                in.close();
-                in = null;
-                out.flush();
-                out.close();
-                out = null;
-
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-
-            out.write(buffer, 0, read);
-        }
-    }
-
-    //
-    private void chmod(File path, int mode) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Class fileUtils = Class.forName("android.os.FileUtils");
-        Method setPermissions = fileUtils.getMethod("setPermissions",
-                String.class, int.class, int.class, int.class);
-        setPermissions.invoke(null, path.getAbsolutePath(),
-                mode, -1, -1);
-    }*/
-
     @Override
     public void onBackPressed() {
-        BusinessModel.loginFlag = false;
         super.onBackPressed();
         finish();
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
+    /*public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-    }
+    }*/
 
     public class MyReceiver extends BroadcastReceiver {
         public static final String PROCESS_RESPONSE = "com.ivy.intent.action.LOGIN";
@@ -962,34 +688,21 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     private void updateReceiver(Intent intent) {
         Bundle bundle = intent.getExtras();
-        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
-        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
-        int updateTableCount = bundle.getInt("updateCount");
-        int totalTableCount = bundle.getInt("totalCount");
+        int method = bundle != null ? bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0) : 0;
+        String errorCode = bundle != null ? bundle.getString(SynchronizationHelper.ERROR_CODE) : null;
+        int updateTableCount = bundle != null ? bundle.getInt("updateCount") : 0;
+        int totalTableCount = bundle != null ? bundle.getInt("totalCount") : 0;
         switch (method) {
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
                 if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
                         && (totalTableCount == updateTableCount)) {
-                    //outelet Performac
-                    if (bmodel.reportHelper.getPerformRptUrl().length() > 0) {
-                        SharedPreferences.Editor editor = PreferenceManager
-                                .getDefaultSharedPreferences(this)
-                                .edit();
-                        editor.putString("rpt_dwntime",
-                                SDUtil.now(SDUtil.DATE_TIME_NEW));
-                        editor.apply();
-                    }
-                    new UpdateFinish().execute();
+                    loginPresenter.applyOutletPerformancePref();
+                    loginPresenter.callUpdateFinish();
                 } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
-                        SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                bmodel.configurationMasterHelper.outDateFormat));
-                        edt.putString("time", SDUtil.now(SDUtil.TIME));
-                        edt.apply();
+                        loginPresenter.applyLastSyncPref();
                     }
                 } else {
                     reDownloadAlert(bundle);
@@ -1001,15 +714,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
-                        SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                bmodel.configurationMasterHelper.outDateFormat));
-                        edt.putString("time", SDUtil.now(SDUtil.TIME));
-                        edt.apply();
+                        loginPresenter.applyLastSyncPref();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    new UpdateDistributorFinish().execute();
+                    loginPresenter.callDistributorFinish();
                 } else {
                     reDownloadAlert(bundle);
                     break;
@@ -1020,15 +728,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
-                        SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                bmodel.configurationMasterHelper.outDateFormat));
-                        edt.putString("time", SDUtil.now(SDUtil.TIME));
-                        edt.apply();
+                        loginPresenter.applyLastSyncPref();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    new UpdateRetailerFinish().execute();
+                    loginPresenter.callRetailerFinish();
                 } else {
                     reDownloadAlert(bundle);
                     break;
@@ -1046,314 +749,22 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
 
-    /*private class DownloadUTCTime extends
-            AsyncTask<Integer, Integer, Integer> {
-
-        private int UTCflag;
-
-        protected void onPreExecute() {
-            alertDialog = new ProgressDialog(LoginScreen.this);
-            alertDialog.setMessage(getResources().getString(R.string.checking_time));
-            alertDialog.setCancelable(false);
-            alertDialog.show();
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            try {
-                UTCflag = bmodel.synchronizationHelper.getUTCDateTimeNew("/UTCDateTime");
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            return UTCflag;
-        }
-
-        protected void onPostExecute(Integer result) {
-            if (UTCflag == 2) {
-                alertDialog.dismiss();
-
-                new CommonDialog(getApplicationContext(), LoginScreen.this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-
-                    }
-                }).show();
-                bool = false;
-            } else {
-                alertDialog.setMessage(getResources().getString(R.string.loading_data));
-                new MyThread(LoginScreen.this, DataMembers.LOCAL_LOGIN).start();
-            }
-        }
-    }*/
-
-    private void clearAmazonDownload() {
-        if (transferUtility != null) {
-            transferUtility.cancelAllWithType(TransferType.DOWNLOAD);
-        }
-    }
-
-    private void initializeTransferUtility() {
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        transferUtility = new TransferUtility(s3, getApplicationContext());
-    }
-
-    private class DeleteTables extends
-            AsyncTask<Integer, Integer, Integer> {
-        boolean isDownloaded;
-
-        DeleteTables() {
-
-        }
-
-        DeleteTables(boolean isDownloaded) {
-            this.isDownloaded = isDownloaded;
-        }
-
-
-        protected void onPreExecute() {
-
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            bmodel.synchronizationHelper.deleteTables(false);
-            return 0;
-        }
-
-        protected void onPostExecute(Integer result) {
-            if (isDownloaded) {
-                final ArrayList<String> urlList = bmodel.synchronizationHelper
-                        .getUrlList();
-                if (urlList.size() > 0) {
-                    bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
-                } else {
-                    bmodel.showAlert(getResources().getString(R.string.no_data_download), 0);
-                    alertDialog.dismiss();
-                    bool = false;
-                }
-            }
-        }
-    }
-
-    class CheckNewVersionTask extends AsyncTask<Integer, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                if (bmodel.isOnline()) {
-                    bmodel.synchronizationHelper.updateAuthenticateToken();
-                    return bmodel.synchronizationHelper.checkForAutoUpdate();
-                } else
-                    return Boolean.FALSE;
-
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            return Boolean.FALSE;
-        }
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(LoginScreen.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.checking_new_version));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            if (!result) {
-                if (isPasswordReset()) {
-                    alertDialog.dismiss();
-                    editTextUserName.setText("");
-                    editTextPassword.setText("");
-                    editTextUserName.requestFocus();
-                    bool = false;
-                    Intent in = new Intent(
-                            thisActivity,
-                            ChangePasswordActivity.class);
-                    in.putExtra("resetpassword", true);
-                    startActivity(in);
-                } else {
-                    bmodel.synchronizationHelper.deleteUrlDownloadMaster();
-                    new UrlDownloadData().execute();
-                }
-
-            } else {
-                bool = false;
-                alertDialog.dismiss();
-                showAlertOk(
-                        getResources().getString(R.string.update_available),
-                        DataMembers.NOTIFY_AUTOUPDATE_FOUND);
-            }
-
-        }
-
-    }
-
-    public void showAlertOk(String msg, int id) {
-        final int idd = id;
+    @Override
+    public void showAppUpdateAlert(String msg) {
 
         new CommonDialog(getApplicationContext(), this, "", msg, false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                if (idd == DataMembers.NOTIFY_AUTOUPDATE_FOUND) {
-                    Commons.printInformation(bmodel.getUpdateURL());
-                    downloaderThread = new DownloaderThread(
-                            thisActivity, activityHandler, bmodel
-                            .getUpdateURL(), false,
-                            DownloaderThread.APK_DOWNLOAD);
-                    downloaderThread.start();
-                }
+                Commons.printInformation(businessModel.getUpdateURL());
+                Thread downloaderThread = new DownloaderThread(
+                        LoginScreen.this, activityHandler, businessModel
+                        .getUpdateURL(), false,
+                        DownloaderThread.APK_DOWNLOAD);
+                downloaderThread.start();
             }
         }).show();
     }
 
-    public boolean isPasswordReset() {
-        boolean isReset = false;
-        try {
-            DBUtil db = new DBUtil(thisActivity, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db.selectSQL("select IsResetPassword from usermaster where loginid ='" + bmodel.userNameTemp + "' COLLATE NOCASE");
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    isReset = c.getInt(0) > 0;
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return isReset;
-    }
-
-    /*public static long getDifferenceDays(String firstDate, String secondDate,
-                                         String format) {
-        long diff = 0;
-        SimpleDateFormat sf = new SimpleDateFormat(format);
-        try {
-            diff = sf.parse(firstDate).getTime() - sf.parse(secondDate).getTime();
-        } catch (ParseException e) {
-            Commons.printException(e);
-        }
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-    }*/
-
-    /**
-     * class is used to Authenticate application ang get token for Authorization
-     */
-    /*class Authentication extends AsyncTask<String, String, String> {
-        JSONObject jsonObject;
-        boolean changeDeviceId;
-
-        public Authentication(boolean changeDeviceId) {
-            this.changeDeviceId = changeDeviceId;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("LoginId", bmodel.userNameTemp);
-                jsonObj.put("Password", bmodel.passwordTemp);
-                jsonObj.put(SynchronizationHelper.VERSION_CODE,
-                        bmodel.getApplicationVersionNumber());
-
-                jsonObj.put("Model", Build.MODEL);
-                jsonObj.put("Platform", "Android");
-                jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
-                jsonObj.put("FirmWare", "");
-                jsonObj.put("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
-                jsonObj.put("RegistrationId", bmodel.regid);
-                jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
-                if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
-                    jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
-                jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
-                        Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-                jsonObj.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME,
-                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                if (!DataMembers.backDate.isEmpty())
-                    jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
-                            SDUtil.now(SDUtil.DATE_TIME_NEW));
-                this.jsonObject = jsonObj;
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String LoginResponse = bmodel.synchronizationHelper.userAuthenticate(jsonObject, changeDeviceId);
-            try {
-                JSONObject jsonObject = new JSONObject(LoginResponse);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, false);
-                            bmodel.userMasterHelper.downloadUserDetails();
-                            bmodel.userMasterHelper.downloadDistributionDetails();
-                        }
-                        return errorCode;
-                    }
-                }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
-            }
-            return "E01";
-        }
-
-        @Override
-        protected void onPostExecute(String output) {
-            super.onPostExecute(output);
-            alertDialog.dismiss();
-            if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                new CheckNewVersionTask().execute();
-            } else {
-                bool = false;
-
-                if (output.equals("E27")) {
-                    showDialog();
-                } else {
-                    if (output.equals("E25")) {
-                        mForgotPasswordTV.setVisibility(View.VISIBLE);
-
-                    }
-
-                    String ErrorMessage = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(output);
-
-                    if (ErrorMessage != null) {
-                        bmodel.showAlert(ErrorMessage, 0);
-                    } else
-                        bmodel.showAlert("Connection Exception ", 0);
-                }
-
-
-            }
-
-        }
-    }*/
     @Override
     public void showDialog() {
         bool = false;
@@ -1379,620 +790,66 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     /**
-     * UrlDownload Data class is download master mapping url from server
-     * and insert into sqlite file
-     */
-    class UrlDownloadData extends AsyncTask<String, String, String> {
-        JSONObject jsonObject = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.URLDOWNLOAD_MASTER_APPEND_URL, jsonObject);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
-                            bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
-                        }
-                        return errorCode;
-                    }
-                }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
-            }
-            return "E01";
-        }
-
-        @Override
-        protected void onPostExecute(String errorCode) {
-            super.onPostExecute(errorCode);
-            if (errorCode
-                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                new DeleteTables(true).execute();
-            } else {
-                new DeleteTables().execute();
-                String errorMessage = bmodel.synchronizationHelper
-                        .getErrormessageByErrorCode().get(errorCode);
-                if (errorMessage != null) {
-                    bmodel.showAlert(errorMessage, 0);
-                }
-                alertDialog.dismiss();
-                bool = false;
-            }
-        }
-    }
-
-    /**
-     * After download all data send acknowledge to server using this class
-     */
-    public class UpdateFinish extends AsyncTask<String, String, String> {
-        JSONObject json = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            json = bmodel.synchronizationHelper.getCommonJsonObject();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
-                        String errorCode = jsonObject.getString(key);
-                        bmodel.configurationMasterHelper.isDistributorWiseDownload();
-                        bmodel.configurationMasterHelper.downloadConfigForLoadLastVisit();
-                        return errorCode;
-                    }
-                }
-                return "1";
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-            return "1";
-
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-            callNextTask(next_method);
-
-        }
-    }
-
-    private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
-
-        bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-
-        if (bmodel.synchronizationHelper.getUrlList().size() > 0) {
-            if (isDistributorWise) {
-                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
-            } else {
-                bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
-            }
-        } else {
-            //on demand url not available
-            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-            callNextTask(next_method);
-        }
-
-    }
-
-    /**
-     * Distributor wise master will be downloaded if configuration enable.
-     * This class is initiate distributor wise master download.we will send all
-     * distributor id with userid and version code  to server.
-     */
-    class InitiateDistributorDownload extends AsyncTask<String, String, String> {
-        JSONObject json;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-
-                if (alertDialog != null) {
-                    builder = new AlertDialog.Builder(LoginScreen.this);
-
-                    customProgressDialog(builder, getResources().getString(R.string.loading));
-                    alertDialog = builder.create();
-                    alertDialog.show();
-                }
-
-                ArrayList<DistributorMasterBO> distributorList = bmodel.distributorMasterHelper.getDistributors();
-                json = bmodel.synchronizationHelper.getCommonJsonObject();
-                JSONArray jsonArray = new JSONArray();
-                for (DistributorMasterBO distributorBO : distributorList) {
-                    if (distributorBO.isChecked()) {
-                        jsonArray.put(distributorBO.getDId());
-
-                        //update distributorid in usermaster
-                        bmodel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(), distributorBO.getDName());
-                    }
-                }
-                json.put("DistributorIds", jsonArray);
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
-                        return jsonObject.getString(key);
-                    }
-                }
-                return "0";
-            } catch (JSONException jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-            return "0";
-        }
-
-        @Override
-        protected void onPostExecute(String errorCode) {
-            super.onPostExecute(errorCode);
-            if (errorCode.equals("1")) {
-                downloadOnDemandMasterUrl(true);
-            }
-        }
-    }
-
-    /**
-     * After download all distributore wise data send acknowledge to server using this class
-     */
-    class UpdateDistributorFinish extends AsyncTask<String, String, String> {
-        JSONObject json = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-                json = bmodel.synchronizationHelper.getCommonJsonObject();
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
-                        return jsonObject.getString(key);
-                    }
-                }
-                return "1";
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-            return "1";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-            callNextTask(next_method);
-
-        }
-    }
-
-    /**
-     * Retailer wise Last visit transaction  data will be downloaded for following module
-     * (Price check,Near Expiry,Stock check,Survey,promotion )if configuration enable.
-     * This class is initiate retailer  wise last visit  download.we will send all
-     * retailerid with userid and version code  to server.
-     */
-    class InitiateRetailerDownload extends AsyncTask<String, String, String> {
-        JSONObject json;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-
-                if (mTotalRetailerCount == 0) {
-                    mTotalRetailerCount = bmodel.synchronizationHelper.getTotalRetailersCount();
-                    mIterateCount = mTotalRetailerCount / SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
-                    final int remainder = mTotalRetailerCount % SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
-                    if (remainder > 0) mIterateCount = mIterateCount + 1;
-
-                    bmodel.synchronizationHelper.setRetailerwiseTotalIterateCount(mIterateCount);
-                    bmodel.synchronizationHelper.setmRetailerWiseIterateCount(mIterateCount);
-                }
-                final ArrayList<RetailerMasterBO> retailerIds = bmodel.synchronizationHelper.getRetailerIdsForDownloadTranSactionData(mIterateCount - 1);
-                mIterateCount--;
-
-                json = bmodel.synchronizationHelper.getCommonJsonObject();
-                JSONArray jsonArray = new JSONArray();
-                for (RetailerMasterBO retailerMasterBO : retailerIds) {
-                    jsonArray.put(retailerMasterBO.getRetailerID());
-                }
-                json.put("RetailerIds", jsonArray);
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
-                        return jsonObject.getString(key);
-                    }
-                }
-                return "0";
-            } catch (JSONException jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-            return "0";
-        }
-
-        @Override
-        protected void onPostExecute(String errorCode) {
-            super.onPostExecute(errorCode);
-            if (errorCode.equals("1")) {
-                //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                bmodel.synchronizationHelper.downloadTransactionUrl();
-                if (bmodel.synchronizationHelper.getUrlList() != null && bmodel.synchronizationHelper.getUrlList().size() > 0) {
-                    bmodel.synchronizationHelper.downloadLastVisitTranAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, 1);
-                } else {
-                    bmodel.synchronizationHelper.isLastVisitTranDownloadDone = true;
-                    SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-                    callNextTask(next_method);
-                }
-            } else {
-                bmodel.synchronizationHelper.isLastVisitTranDownloadDone = true;
-                SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-                callNextTask(next_method);
-            }
-        }
-    }
-
-    /**
-     * After download all retailer wise last visit data send acknowledge to server using this class
-     */
-    class UpdateRetailerFinish extends AsyncTask<String, String, String> {
-        JSONObject json = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-                json = bmodel.synchronizationHelper.getCommonJsonObject();
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
-                        return jsonObject.getString(key);
-                    }
-                }
-                return "1";
-            } catch (Exception jsonException) {
-                Commons.print(jsonException.getMessage());
-            }
-            return "1";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (mIterateCount <= 0) {
-                SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-                callNextTask(next_method);
-            } else {
-                new InitiateRetailerDownload().execute();
-            }
-        }
-    }
-
-    /**
-     * download stock from stockinhandmaster web api
-     */
-    class SihDownloadTask extends AsyncTask<String, String, String> {
-        JSONObject json = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            json = bmodel.synchronizationHelper.getCommonJsonObject();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.synchronizationHelper.getSIHUrl(), json);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
-
-                        }
-                        return errorCode;
-                    }
-                }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
-            }
-            return "E01";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-            callNextTask(next_method);
-        }
-    }
-
-    /**
-     * After download all data from server using this method to  update data from temprorary table to
-     * maing table and load data from sqlite and update in objects
-     */
-    class LoadData extends AsyncTask<String, String, SynchronizationHelper.NEXT_METHOD> {
-
-
-        @Override
-        protected SynchronizationHelper.NEXT_METHOD doInBackground(String... params) {
-            SynchronizationHelper.NEXT_METHOD next_method = bmodel.synchronizationHelper.checkNextSyncMethod();
-            if (next_method == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE || next_method == SynchronizationHelper.NEXT_METHOD.DEFAULT) {
-                final long startTime = System.nanoTime();
-                bmodel.synchronizationHelper
-                        .updateProductAndRetailerMaster();
-                bmodel.synchronizationHelper.loadMethodsNew();
-                long endTime = (System.nanoTime() - startTime) / 1000000;
-                bmodel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");
-            }
-            return next_method;
-        }
-
-        @Override
-        protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
-            super.onPostExecute(response);
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-            if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
-                bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
-                downloaderThread = new DownloaderThreadNew(thisActivity,
-                        activityHandler, bmodel.getDigitalContentURLS(),
-                        bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid(), transferUtility);
-                downloaderThread.start();
-            } else {
-
-                loginPresenter.checkLogin();
-                finish();
-                System.gc();
-
-            }
-        }
-    }
-
-    /**
-     * call the next method from given response
-     *
-     * @param response - Next method to call
-     */
-    private void callNextTask(SynchronizationHelper.NEXT_METHOD response) {
-        if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
-
-            bmodel.distributorMasterHelper.downloadDistributorsList();
-            if (bmodel.distributorMasterHelper.getDistributors().size() > 0) {
-                if (alertDialog != null) {
-                    alertDialog.dismiss();
-                }
-                // new InitiateDistributorDownload().execute();
-                Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
-                intent.putExtra("isFromLogin", true);
-                startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
-            } else {
-                //No distributors, so downloading on demand url without distributor selection.
-                downloadOnDemandMasterUrl(false);
-            }
-
-        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
-            downloadOnDemandMasterUrl(false);
-        } else if (response == SynchronizationHelper.NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD) {
-            new InitiateRetailerDownload().execute();
-        } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
-            new SihDownloadTask().execute();
-        } else if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE
-                || response == SynchronizationHelper.NEXT_METHOD.DEFAULT) {
-            new LoadData().execute();
-        }
-    }
-
-    /**
-     * Server error is coming like 404 error  and IsMantory is 1 for corresponding url delete
-     * all table and show alert message to please redownload
+     * Server error is coming like 404 error  and IsMandatory is 1 for corresponding url delete
+     * all table and show alert message to please re download
      *
      * @param bundle - bundle
      */
     private void reDownloadAlert(Bundle bundle) {
-        String errorDownlodCode = bundle
+        String errorDownloadCode = bundle
                 .getString(SynchronizationHelper.ERROR_CODE);
-        String errorDownloadMessage = bmodel.synchronizationHelper
-                .getErrormessageByErrorCode().get(errorDownlodCode);
-        if (errorDownloadMessage != null) {
-            bmodel.showAlert(errorDownloadMessage, 0);
-        }
-        new DeleteTables().execute();
+        String errorDownloadMessage = businessModel.synchronizationHelper
+                .getErrormessageByErrorCode().get(errorDownloadCode);
+        loginPresenter.deleteTables(false);
 
-        alertDialog.dismiss();
-        bmodel.showAlert(getResources().getString(R.string.please_redownload_data), 0);
+        dismissProgressDialog();
+
         editTextPassword.setText("");
         editTextUserName.setText("");
         editTextUserName.requestFocus();
         bool = false;
+        if (errorDownloadMessage != null) {
+            showAlert(errorDownloadMessage, false);
+        } else {
+            showAlert(getResources().getString(R.string.please_redownload_data), false);
+        }
     }
 
-    class ForgetPassword extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            final String token = bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword();
-            return token;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (!s.equals("")) {
-                ResetPasswordDialog dialog = new ResetPasswordDialog(LoginScreen.this);
-                dialog.show();
-            } else {
-                bmodel.showAlert(getResources().getString(R.string.token_expired), 0);
-            }
-        }
+    @Override
+    public void callResetPassword() {
+        ResetPasswordDialog dialog = new ResetPasswordDialog(LoginScreen.this);
+        dialog.show();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    new InitiateDistributorDownload().execute();
+                    loginPresenter.callDistributorDownload();
                 }
         }
     }
 
-    public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
-
-        ArrayList<S3ObjectSummary> filesList = new ArrayList<>();
-
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            try {
-                if (android.os.Build.VERSION.SDK_INT > 9) {
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-
-                    bmodel.getimageDownloadURL();
-                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                    initializeTransferUtility();
-
-                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                            ConfigurationMasterHelper.SECRET_KEY);
-                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-
-                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
-                    List<S3ObjectSummary> files = listing.getObjectSummaries();
-
-                    while (listing.isTruncated()) {
-                        listing = s3.listNextBatchOfObjects(listing);
-                        files.addAll(listing.getObjectSummaries());
-                    }
-
-                    if (files != null && files.size() > 0) {
-
-                        bmodel.synchronizationHelper.insertImageDetails(files);
-                        filesList = new ArrayList<>();
-                        for (int i = 0; i < files.size(); i++) {
-                            S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
-                            s3ObjectSummary.setBucketName(DataMembers.CATALOG);
-                            s3ObjectSummary.setKey(files.get(i).getKey());
-                            s3ObjectSummary.setETag("R");
-                            filesList.add(s3ObjectSummary);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                Commons.printException(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-            Thread downloaderThread = new DownloaderThreadCatalog(LoginScreen.this,
-                    activityHandlerCatalog, filesList,
-                    bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid(), transferUtility);
-            downloaderThread.start();
-
-        }
+    @Override
+    public void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility) {
+        Thread downloaderThread = new DownloaderThreadCatalog(LoginScreen.this,
+                activityHandlerCatalog, imgUrls,
+                businessModel.userMasterHelper.getUserMasterBO()
+                        .getUserid(), transferUtility);
+        downloaderThread.start();
     }
-
-    private void setMessageInProgressDialog(AlertDialog.Builder builder, String message) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                (ViewGroup) findViewById(R.id.layout_root));
-        TextView messagetv = (TextView) layout.findViewById(R.id.text);
-        messagetv.setText(message);
-        builder.setView(layout);
-        builder.setCancelable(false);
-    }
-
 
     @Override
     public void showProgressDialog(String msg) {
-        builder = new AlertDialog.Builder(LoginScreen.this);
-        customProgressDialog(builder, getResources().getString(R.string.loading_data));
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginScreen.this);
+        customProgressDialog(builder, msg);
         alertDialog = builder.create();
         alertDialog.show();
     }
 
     @Override
     public void dismissProgressDialog() {
+        bool = false;
         if (alertDialog != null) {
             alertDialog.dismiss();
         }
@@ -2006,24 +863,51 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     @Override
-    public void sendMessageToHandler(int msg) {
-        this.getHandler().sendEmptyMessage(msg);
+    public void sendMessageToHandler() {
+        this.getHandler().sendEmptyMessage(DataMembers.NOTIFY_NOT_USEREXIST);
     }
 
     @Override
-    public void threadActions(int action) {
-        new MyThread(LoginScreen.this, action).start();
+    public void threadActions() {
+        new MyThread(LoginScreen.this, DataMembers.LOCAL_LOGIN).start();
     }
 
     @Override
-    public void enableGPSDialog() {
-        new CommonDialog(getApplicationContext(), LoginScreen.this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
+    public void goToDistributorSelection() {
+        Intent intent = new Intent(LoginScreen.this, DistributorSelectionActivity.class);
+        intent.putExtra("isFromLogin", true);
+        startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
+    }
 
-            }
-        }).show();
-        bool = false;
+    @Override
+    public void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility) {
+        Thread downloaderThread = new DownloaderThreadNew(LoginScreen.this,
+                activityHandler, imgUrls,
+                businessModel.userMasterHelper.getUserMasterBO()
+                        .getUserid(), transferUtility);
+        downloaderThread.start();
+    }
+
+    private void callProgressDialog(String title, String message, int maxValue, Message newMsg) {
+        progressDialog = new ProgressDialog(LoginScreen.this);
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(message);
+
+        if (maxValue != 0) {
+            progressDialog
+                    .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setProgress(0);
+            progressDialog.setMax(maxValue);
+        } else {
+            progressDialog
+                    .setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+        }
+        // set the message to be sent when this dialog is canceled
+        progressDialog.setCancelMessage(newMsg);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
     }
 }
 

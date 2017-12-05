@@ -68,7 +68,6 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -138,6 +137,7 @@ SynchronizationHelper {
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
     public String dataMissedTable = "";
+    public String passwordType;
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -435,44 +435,6 @@ SynchronizationHelper {
             return false;
         }
 
-    }
-
-    /**
-     * This method will restore the database saved in External storage into
-     * applicaiton.
-     *
-     * @return true - succesfull and false - failed
-     */
-    public boolean reStoreDB() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-            if (sd.canRead()) {
-                String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
-                        + DataMembers.DB_NAME;
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/pandg/" + DataMembers.DB_NAME);
-
-                Commons.print("SYNC," + "backup" + backupDB);
-
-                if (backupDB.exists()) {
-                    FileChannel src = new FileInputStream(backupDB)
-                            .getChannel();
-                    FileChannel dst = new FileOutputStream(currentDB)
-                            .getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("Synchronisation," + e + "");
-        }
-
-        return false;
     }
 
     /**
@@ -4400,7 +4362,7 @@ SynchronizationHelper {
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
-            if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getPassword());
             else
                 isPwd = BCrypt.checkpw(password, bmodel.userMasterHelper.getUserMasterBO().getPassword());
@@ -4422,7 +4384,7 @@ SynchronizationHelper {
         boolean isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
         boolean isPwd;
         if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
-            if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
             else
                 isPwd = BCrypt.checkpw(password, jointCallUser.getPassword());
@@ -4434,7 +4396,7 @@ SynchronizationHelper {
     }
 
     public String encryptPassword(String pwd) {
-        if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+        if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
             return SDUtil.convertIntoMD5hashAndBase64(pwd);
         else
             return BCrypt.hashpw(pwd, BCrypt.gensalt());
@@ -4459,7 +4421,7 @@ SynchronizationHelper {
             }
             db.closeDB();
 
-            bmodel.passwordType = type;
+            passwordType = type;
         } catch (SQLException e) {
             Commons.printException("" + e);
         }

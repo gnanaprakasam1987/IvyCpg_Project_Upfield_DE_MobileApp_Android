@@ -1,6 +1,5 @@
 package com.ivy.cpg.login;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -8,20 +7,31 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.LoginHelper;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +44,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -43,16 +55,19 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
 
 /**
- * Created by ivyuser on 4/12/17.
+ * Created by dharmapriya.k on 4/12/17.
  */
 
 public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
-    private Context context;
-    private BusinessModel businessModel;
-    LoginContractor.LoginView loginView;
-    private LoginHelper loginHelper;
+    private final Context context;
+    private final BusinessModel businessModel;
+    private LoginContractor.LoginView loginView;
+    private final LoginHelper loginHelper;
     private boolean syncDone;
-    private SharedPreferences mPasswordLockCountPref;
+    public SharedPreferences mPasswordLockCountPref;
+    private SharedPreferences mLastSyncSharedPref;
+    private int mIterateCount = 0;
+    private TransferUtility transferUtility;
 
     public LoginPresenterImpl(Context context) {
         this.context = context;
@@ -68,21 +83,15 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     @Override
     public void loadInitialData() {
-        /* Show Forget password dialog.*/
-
         syncDone = businessModel.userMasterHelper.getSyncStatus();
         if (syncDone) {
-            businessModel.configurationMasterHelper.loadConfigurationForLoginScreen();
-            businessModel.configurationMasterHelper.loadPasswordConfiguration();
+            loginHelper.loadPasswordConfiguration();
             businessModel.userMasterHelper.downloadDistributionDetails();
             if (businessModel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
                 businessModel.synchronizationHelper.setEncryptType();
 
-            businessModel.configurationMasterHelper.downloadChangepasswordConfig();
             if (businessModel.configurationMasterHelper.SHOW_FORGET_PASSWORD) {
-
                 loginView.showForgotPassword();
-
             }
         }
         businessModel.synchronizationHelper.loadErrorCode();
@@ -104,21 +113,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
         // Getting back date
         DataMembers.backDate = sharedPrefs.getString("backDate", "");
-        /** When language preference is changed, recreate the activity.**/
 
+        // When language preference is changed, recreate the activity.
         if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
                 LANGUAGE))) {
             loginView.reload();
         }
 
-        /* Enable "Network Provider Date/Time". */
-        businessModel.useNetworkProvidedValues();
-
-        //mLastSyncSharedPref = context.getSharedPreferences("lastSync", MODE_PRIVATE);
+        mLastSyncSharedPref = context.getSharedPreferences("lastSync", MODE_PRIVATE);
         mPasswordLockCountPref = context.getSharedPreferences("passwordlock", MODE_PRIVATE);
         SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
         edt.putInt("lockcount", mPasswordLockCountPref.getInt("lockcount", 0));
-
         edt.apply();
 
         if (businessModel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
@@ -128,10 +133,32 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 if (resultCode == ConnectionResult.SUCCESS) {
                     loginView.requestLocation();
                 } else {
-                    loginView.onCreateDialog();
+                    loginView.showGPSDialog();
                 }
             }
         }
+    }
+
+    @Override
+    public void applyLastSyncPref() {
+        SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
+        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+                SDUtil.now(SDUtil.DATE_GLOBAL),
+                ConfigurationMasterHelper.outDateFormat));
+        edt.putString("time", SDUtil.now(SDUtil.TIME));
+        edt.apply();
+    }
+
+    @Override
+    public void applyPasswordLockCountPref() {
+        SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
+        edt.putInt("passwordlock", (getPasswordLockCount() + 1));
+        edt.apply();
+    }
+
+    @Override
+    public int getPasswordLockCount() {
+        return mPasswordLockCountPref.getInt("passwordlock", 0);
     }
 
     @Override
@@ -153,6 +180,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         new RestoreDB().execute();
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -162,28 +190,18 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
 
-        private ProgressDialog progressDialogue;
-
+        @Override
         protected void onPreExecute() {
             loginView.showProgressDialog(context.getResources().getString(R.string.Restoring_database));
         }
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            if (businessModel.synchronizationHelper.reStoreDB()) {
-                return true;
-
-            } else {
-                return false;
-            }
+            return loginHelper.reStoreDB();
         }
 
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
+        @Override
         protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
             loginView.dismissProgressDialog();
             if (result) {
                 loginView.showAlert(context.getResources().getString(R.string.database_restored), false);
@@ -207,11 +225,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
             try {
                 copyAssets();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 Commons.printException(e);
             }
             return null;
@@ -219,12 +235,15 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     }
 
+    /**
+     *
+     */
     private void copyAssets() {
         AssetManager assetManager = context.getAssets();
         String[] files = {"datawedge.db"};
         for (String filename : files) {
-            InputStream in = null;
-            OutputStream out = null;
+            InputStream in;
+            OutputStream out;
             try {
                 in = assetManager.open(filename);
                 File outFile = new File(
@@ -237,18 +256,16 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 out = new FileOutputStream(outFile);
                 copyFile(in, out);
                 try {
-                    chmod(outFile, 0666);
+                    chmod(outFile);
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     Commons.printException(e);
                 }
                 in.close();
-                in = null;
                 out.flush();
                 out.close();
-                out = null;
 
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -263,12 +280,13 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     //
-    private void chmod(File path, int mode) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private void chmod(File path) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
         Class fileUtils = Class.forName("android.os.FileUtils");
         Method setPermissions = fileUtils.getMethod("setPermissions",
                 String.class, int.class, int.class, int.class);
         setPermissions.invoke(null, path.getAbsolutePath(),
-                mode, -1, -1);
+                0666, -1, -1);
     }
 
     @Override
@@ -284,7 +302,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
          /* Display application Phase if the environment is other than live.*/
         String phase = PreferenceManager.getDefaultSharedPreferences(context)
                 .getString("application", "");
-        if (phase.length() > 0)
+        if (!phase.equals(""))
             if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
                     .matcher(phase).find()) {
                 businessModel.synchronizationHelper.isInternalActivation = true;
@@ -304,8 +322,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     checkAttendance();
                     //used for showing password expiring date
                     int days = (int) getDifferenceDays(businessModel.configurationMasterHelper.getPasswordExpiryDate(createdDate),
-                            businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
-                    Commons.print("Password Expiry in " + days + " days");
+                            businessModel.userMasterHelper.getUserMasterBO().getDownloadDate());
                     if (days < (businessModel.configurationMasterHelper.PSWD_EXPIRY * 0.2)) {
                         loginView.showAlert(context.getResources().getQuantityString(R.plurals.password_expires, days, days), false);
                     }
@@ -318,10 +335,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
-    public static long getDifferenceDays(String firstDate, String secondDate,
-                                         String format) {
+    private static long getDifferenceDays(String firstDate, String secondDate) {
         long diff = 0;
-        SimpleDateFormat sf = new SimpleDateFormat(format);
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd");
         try {
             diff = sf.parse(firstDate).getTime() - sf.parse(secondDate).getTime();
         } catch (ParseException e) {
@@ -333,13 +349,11 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private void checkAttendance() {
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
             if (businessModel.mAttendanceHelper.loadAttendanceMaster()) {
-                businessModel.loadDashBordHome();
                 loginView.goToHomeScreen();
             } else {
                 loginView.goToAttendance();
             }
         } else {
-            businessModel.loadDashBordHome();
             loginView.goToHomeScreen();
         }
     }
@@ -352,22 +366,26 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             } else {
                 loginView.showProgressDialog(context.getResources().getString(R.string.loading_data));
 
-                //handle password lock in off line based on reached maximum_attempt_count compare with mPasswordLockCountPref count
+                //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
                 int count = mPasswordLockCountPref.getInt("passwordlock", 0);
-                if (count + 1 == businessModel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT)
-                    loginView.sendMessageToHandler(DataMembers.NOTIFY_NOT_USEREXIST);
+                if (count + 1 == loginHelper.MAXIMUM_ATTEMPT_COUNT)
+                    loginView.sendMessageToHandler();
                 else
-                    loginView.threadActions(DataMembers.LOCAL_LOGIN);
+                    loginView.threadActions();
             }
         } else {
-            loginView.showProgressDialog(context.getResources().getString(R.string.auth_and_downloading_masters));
+            if (businessModel.isOnline()) {
+                loginView.showProgressDialog(context.getResources().getString(R.string.auth_and_downloading_masters));
 
-            if (!DataMembers.SERVER_URL.equals("")) {
-                loginView.mIterateCount.M_ITERATE_COUNT = businessModel.synchronizationHelper.getmRetailerWiseIterateCount();
-                callAuthentication(false);
+                if (!DataMembers.SERVER_URL.equals("")) {
+                    mIterateCount = businessModel.synchronizationHelper.getmRetailerWiseIterateCount();
+                    callAuthentication(false);
+                } else {
+                    loginView.showAlert(context.getResources().getString(R.string.download_url_empty), false);
+                    loginView.dismissProgressDialog();
+                }
             } else {
-                loginView.showAlert(context.getResources().getString(R.string.download_url_empty), false);
-                loginView.dismissProgressDialog();
+                loginView.showAlert(context.getResources().getString(R.string.please_connect_to_internet), false);
             }
         }
     }
@@ -381,38 +399,31 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private class DownloadUTCTime extends
             AsyncTask<Integer, Integer, Integer> {
 
-        private int UTCflag;
 
+        @Override
         protected void onPreExecute() {
-            /*alertDialog = new ProgressDialog(LoginScreen.this);
-            alertDialog.setMessage(getResources().getString(R.string.checking_time));
-            alertDialog.setCancelable(false);
-            alertDialog.show();*/
             loginView.dismissProgressDialog();
             loginView.showProgressDialog(context.getResources().getString(R.string.checking_time));
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
         }
 
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                UTCflag = businessModel.synchronizationHelper.getUTCDateTimeNew("/UTCDateTime");
+                return businessModel.synchronizationHelper.getUTCDateTimeNew("/UTCDateTime");
             } catch (Exception e) {
                 Commons.printException(e);
             }
-            return UTCflag;
+            return 1;
         }
 
+        @Override
         protected void onPostExecute(Integer result) {
-            if (UTCflag == 2) {
+            if (result == 2) {
                 loginView.dismissProgressDialog();
-                loginView.enableGPSDialog();
+                loginView.showGPSDialog();
             } else {
                 loginView.setAlertDialogMessage(context.getResources().getString(R.string.loading_data));
-                loginView.threadActions(DataMembers.LOCAL_LOGIN);
+                loginView.threadActions();
             }
         }
     }
@@ -422,7 +433,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
      */
     class Authentication extends AsyncTask<String, String, String> {
         JSONObject jsonObject;
-        boolean changeDeviceId;
+        final boolean changeDeviceId;
 
         public Authentication(boolean changeDeviceId) {
             this.changeDeviceId = changeDeviceId;
@@ -491,7 +502,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             super.onPostExecute(output);
             loginView.dismissProgressDialog();
             if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                new LoginScreen.CheckNewVersionTask().execute();
+                new CheckNewVersionTask().execute();
             } else {
                 if (output.equals("E27")) {
                     loginView.showDialog();
@@ -513,5 +524,665 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             }
 
         }
+    }
+
+    class CheckNewVersionTask extends AsyncTask<Integer, Integer, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                if (businessModel.isOnline()) {
+                    businessModel.synchronizationHelper.updateAuthenticateToken();
+                    return businessModel.synchronizationHelper.checkForAutoUpdate();
+                } else
+                    return Boolean.FALSE;
+
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            return Boolean.FALSE;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loginView.showProgressDialog(context.getResources().getString(R.string.checking_new_version));
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!result) {
+                if (loginHelper.isPasswordReset()) {
+                    loginView.dismissProgressDialog();
+                    loginView.resetPassword();
+                } else {
+                    businessModel.synchronizationHelper.deleteUrlDownloadMaster();
+                    new UrlDownloadData().execute();
+                }
+
+            } else {
+                loginView.dismissProgressDialog();
+                loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+            }
+
+        }
+
+    }
+
+    /**
+     * UrlDownload Data class is download master mapping url from server
+     * and insert into sqlite file
+     */
+    class UrlDownloadData extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            jsonObject = businessModel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.URLDOWNLOAD_MASTER_APPEND_URL
+                    , jsonObject);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            businessModel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, true);
+                            businessModel.synchronizationHelper.loadMasterUrlFromDB(true);
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            if (errorCode
+                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                deleteTables(true);
+            } else {
+                deleteTables(false);
+                String errorMessage = businessModel.synchronizationHelper
+                        .getErrormessageByErrorCode().get(errorCode);
+                if (errorMessage != null) {
+                    loginView.showAlert(errorMessage, false);
+                }
+                loginView.dismissProgressDialog();
+            }
+        }
+    }
+
+    @Override
+    public void deleteTables(boolean isDownloaded) {
+        new DeleteTables(isDownloaded).execute();
+    }
+
+    private class DeleteTables extends
+            AsyncTask<Integer, Integer, Integer> {
+
+        final boolean isDownloaded;
+
+
+        DeleteTables(boolean isDownloaded) {
+            this.isDownloaded = isDownloaded;
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            businessModel.synchronizationHelper.deleteTables(false);
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (isDownloaded) {
+                if (businessModel.synchronizationHelper
+                        .getUrlList().size() > 0) {
+                    businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+                } else {
+                    loginView.showAlert(context.getResources().getString(R.string.no_data_download), false);
+                    loginView.dismissProgressDialog();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void callUpdateFinish() {
+        new UpdateFinish().execute();
+    }
+
+    /**
+     * After download all data send acknowledge to server using this class
+     */
+    public class UpdateFinish extends AsyncTask<String, String, String> {
+        JSONObject json = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            json = businessModel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
+                        String errorCode = jsonObject.getString(key);
+                        businessModel.configurationMasterHelper.isDistributorWiseDownload();
+                        businessModel.configurationMasterHelper.downloadConfigForLoadLastVisit();
+                        return errorCode;
+                    }
+                }
+                return "1";
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "1";
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
+
+        }
+    }
+
+    private void callNextTask(SynchronizationHelper.NEXT_METHOD response) {
+        if (response == SynchronizationHelper.NEXT_METHOD.DISTRIBUTOR_DOWNLOAD) {
+
+            businessModel.distributorMasterHelper.downloadDistributorsList();
+            if (businessModel.distributorMasterHelper.getDistributors().size() > 0) {
+                loginView.dismissProgressDialog();
+                loginView.goToDistributorSelection();
+            } else {
+                //No distributors, so downloading on demand url without distributor selection.
+                downloadOnDemandMasterUrl(false);
+            }
+
+        } else if (response == SynchronizationHelper.NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD) {
+            downloadOnDemandMasterUrl(false);
+        } else if (response == SynchronizationHelper.NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD) {
+            new InitiateRetailerDownload().execute();
+        } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
+            new SihDownloadTask().execute();
+        } else if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE
+                || response == SynchronizationHelper.NEXT_METHOD.DEFAULT) {
+            new LoadData().execute();
+        }
+    }
+
+    private void downloadOnDemandMasterUrl(boolean isDistributorWise) {
+
+        businessModel.synchronizationHelper.loadMasterUrlFromDB(false);
+
+        if (businessModel.synchronizationHelper.getUrlList().size() > 0) {
+            if (isDistributorWise) {
+                businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN,
+                        SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+            } else {
+                businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN,
+                        SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+            }
+        } else {
+            //on demand url not available
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
+        }
+
+    }
+
+    /**
+     * Retailer wise Last visit transaction  data will be downloaded for following module
+     * (Price check,Near Expiry,Stock check,Survey,promotion )if configuration enable.
+     * This class is initiate retailer  wise last visit  download.we will send all
+     * retailerid with userid and version code  to server.
+     */
+    class InitiateRetailerDownload extends AsyncTask<String, String, String> {
+        JSONObject json;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            int mTotalRetailerCount;
+            try {
+
+                //if (mTotalRetailerCount == 0) {
+                mTotalRetailerCount = businessModel.synchronizationHelper.getTotalRetailersCount();
+                mIterateCount = mTotalRetailerCount / SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
+                final int remainder = mTotalRetailerCount % SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
+                if (remainder > 0) mIterateCount = mIterateCount + 1;
+
+                businessModel.synchronizationHelper.setRetailerwiseTotalIterateCount(mIterateCount);
+                businessModel.synchronizationHelper.setmRetailerWiseIterateCount(mIterateCount);
+                //}
+                final ArrayList<RetailerMasterBO> retailerIds = businessModel.synchronizationHelper.getRetailerIdsForDownloadTranSactionData(mIterateCount - 1);
+                mIterateCount--;
+
+                json = businessModel.synchronizationHelper.getCommonJsonObject();
+                JSONArray jsonArray = new JSONArray();
+                for (RetailerMasterBO retailerMasterBO : retailerIds) {
+                    jsonArray.put(retailerMasterBO.getRetailerID());
+                }
+                json.put("RetailerIds", jsonArray);
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
+                        return jsonObject.getString(key);
+                    }
+                }
+                return "0";
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "0";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            if (errorCode.equals("1")) {
+                //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
+                businessModel.synchronizationHelper.downloadTransactionUrl();
+                if (businessModel.synchronizationHelper.getUrlList() != null && businessModel.synchronizationHelper.getUrlList().size() > 0) {
+                    businessModel.synchronizationHelper.downloadLastVisitTranAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, 1);
+                } else {
+                    businessModel.synchronizationHelper.isLastVisitTranDownloadDone = true;
+                    SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+                    callNextTask(next_method);
+                }
+            } else {
+                businessModel.synchronizationHelper.isLastVisitTranDownloadDone = true;
+                SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+                callNextTask(next_method);
+            }
+        }
+    }
+
+    /**
+     * download stock from stockinhandmaster web api
+     */
+    class SihDownloadTask extends AsyncTask<String, String, String> {
+        JSONObject json = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            json = businessModel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(businessModel.synchronizationHelper.getSIHUrl(), json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            businessModel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, true);
+
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
+        }
+    }
+
+    /**
+     * After download all data from server using this method to  update data from temporary table to
+     * main table and load data from sqlite and update in objects
+     */
+    class LoadData extends AsyncTask<String, String, SynchronizationHelper.NEXT_METHOD> {
+
+
+        @Override
+        protected SynchronizationHelper.NEXT_METHOD doInBackground(String... params) {
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            if (next_method == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE || next_method == SynchronizationHelper.NEXT_METHOD.DEFAULT) {
+                final long startTime = System.nanoTime();
+                businessModel.synchronizationHelper
+                        .updateProductAndRetailerMaster();
+                businessModel.synchronizationHelper.loadMethodsNew();
+                long endTime = (System.nanoTime() - startTime) / 1000000;
+                businessModel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");
+            }
+            return next_method;
+        }
+
+        @Override
+        protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
+            super.onPostExecute(response);
+            loginView.dismissProgressDialog();
+            if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
+                businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                initializeTransferUtility();
+                downloadDigitalContents();
+            } else {
+
+                checkLogin();
+                loginView.finishActivity();
+
+            }
+        }
+    }
+
+    public void downloadDigitalContents() {
+        loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);
+    }
+
+    public void initializeTransferUtility() {
+        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                ConfigurationMasterHelper.SECRET_KEY);
+        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        transferUtility = new TransferUtility(s3, context);
+    }
+
+    public void callDistributorDownload() {
+        new InitiateDistributorDownload().execute();
+    }
+
+    /**
+     * Distributor wise master will be downloaded if configuration enable.
+     * This class is initiate distributor wise master download.we will send all
+     * distributor id with userid and version code  to server.
+     */
+    class InitiateDistributorDownload extends AsyncTask<String, String, String> {
+        JSONObject json;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            try {
+
+                loginView.showProgressDialog(context.getResources().getString(R.string.loading));
+
+                ArrayList<DistributorMasterBO> distributorList = businessModel.distributorMasterHelper.getDistributors();
+                json = businessModel.synchronizationHelper.getCommonJsonObject();
+                JSONArray jsonArray = new JSONArray();
+                for (DistributorMasterBO distributorBO : distributorList) {
+                    if (distributorBO.isChecked()) {
+                        jsonArray.put(distributorBO.getDId());
+
+                        //update distributorid in usermaster
+                        businessModel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(), distributorBO.getDName());
+                    }
+                }
+                json.put("DistributorIds", jsonArray);
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.INCREMENTAL_SYNC_INITIATE_URL, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
+                        return jsonObject.getString(key);
+                    }
+                }
+                return "0";
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "0";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            if (errorCode.equals("1")) {
+                downloadOnDemandMasterUrl(true);
+            }
+        }
+    }
+
+    public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
+
+        ArrayList<S3ObjectSummary> filesList = new ArrayList<>();
+
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
+                businessModel.getimageDownloadURL();
+                businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                initializeTransferUtility();
+
+                BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                        ConfigurationMasterHelper.SECRET_KEY);
+                AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+
+                ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
+                List<S3ObjectSummary> files = listing.getObjectSummaries();
+
+                while (listing.isTruncated()) {
+                    listing = s3.listNextBatchOfObjects(listing);
+                    files.addAll(listing.getObjectSummaries());
+                }
+
+                if (files != null && files.size() > 0) {
+
+                    businessModel.synchronizationHelper.insertImageDetails(files);
+                    filesList = new ArrayList<>();
+                    for (int i = 0; i < files.size(); i++) {
+                        S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
+                        s3ObjectSummary.setBucketName(DataMembers.CATALOG);
+                        s3ObjectSummary.setKey(files.get(i).getKey());
+                        s3ObjectSummary.setETag("R");
+                        filesList.add(s3ObjectSummary);
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            loginView.callCatalogImageDownload(filesList, transferUtility);
+        }
+    }
+
+    public void callCatalogImageDownload() {
+        new CatalogImagesDownload().execute();
+    }
+
+    /**
+     * After download all distributor wise data send acknowledge to server using this class
+     */
+    class UpdateDistributorFinish extends AsyncTask<String, String, String> {
+        JSONObject json = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            try {
+                json = businessModel.synchronizationHelper.getCommonJsonObject();
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
+                        return jsonObject.getString(key);
+                    }
+                }
+                return "1";
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "1";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
+
+        }
+    }
+
+    public void callDistributorFinish() {
+        new UpdateDistributorFinish().execute();
+    }
+
+    public void callRetailerFinish() {
+        new UpdateRetailerFinish().execute();
+    }
+
+    public void clearAmazonDownload() {
+        if (transferUtility != null) {
+            transferUtility.cancelAllWithType(TransferType.DOWNLOAD);
+        }
+    }
+
+    /**
+     * After download all retailer wise last visit data send acknowledge to server using this class
+     */
+    class UpdateRetailerFinish extends AsyncTask<String, String, String> {
+        JSONObject json = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            try {
+                json = businessModel.synchronizationHelper.getCommonJsonObject();
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = businessModel.synchronizationHelper.sendPostMethod(SynchronizationHelper.UPDATE_FINISH_URL, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.VOLLEY_RESPONSE)) {
+                        return jsonObject.getString(key);
+                    }
+                }
+                return "1";
+            } catch (Exception jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "1";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (mIterateCount <= 0) {
+                SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+                callNextTask(next_method);
+            } else {
+                new InitiateRetailerDownload().execute();
+            }
+        }
+    }
+
+    public void applyOutletPerformancePref() {
+        //outlet Performance
+        if (businessModel.reportHelper.getPerformRptUrl().length() > 0) {
+            SharedPreferences.Editor editor = PreferenceManager
+                    .getDefaultSharedPreferences(context)
+                    .edit();
+            editor.putString("rpt_dwntime",
+                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+            editor.apply();
+        }
+    }
+
+    class ForgetPassword extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            return businessModel.synchronizationHelper.updateAuthenticateTokenWithoutPassword();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (!s.equals("")) {
+                loginView.callResetPassword();
+            } else {
+                loginView.showAlert(context.getResources().getString(R.string.token_expired), false);
+            }
+        }
+    }
+
+    public void callForgetPassword() {
+        new ForgetPassword().execute();
     }
 }

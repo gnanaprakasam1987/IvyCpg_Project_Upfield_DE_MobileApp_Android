@@ -53,6 +53,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1447,7 +1448,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     // Here Code to call dwnloaded apk.
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        bmodel.deleteAllValues();
+                        LoginHelper.getInstance(getActivity()).deleteAllValues();
                         bmodel.activationHelper.clearAppUrl();
                         bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {

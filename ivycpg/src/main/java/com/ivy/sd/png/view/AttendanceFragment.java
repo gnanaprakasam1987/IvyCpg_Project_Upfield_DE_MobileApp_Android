@@ -352,7 +352,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
 
                         if (idd == 1) {
                             if (bmodel.configurationMasterHelper.SHOW_ATTENDANCE) {
-                                bmodel.loadDashBordHome();
+                                //bmodel.loadDashBordHome();
                                 BusinessModel.loadActivity(
                                         getActivity(),
                                         DataMembers.actHomeScreen);

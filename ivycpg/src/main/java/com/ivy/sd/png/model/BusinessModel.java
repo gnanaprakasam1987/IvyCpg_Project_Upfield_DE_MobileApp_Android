@@ -60,6 +60,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
@@ -122,7 +123,6 @@ import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.LeaveApprovalHelper;
-import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -170,7 +170,6 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
-import com.ivy.sd.png.view.DashBoardActivity;
 import com.ivy.sd.png.view.DigitalContentDisplay;
 import com.ivy.sd.png.view.Gallery;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -235,17 +234,15 @@ public class BusinessModel extends Application {
     // to show the time taken on call analysis
 
     public static final String PREFS_NAME = "PRINT";
-    public static boolean loginFlag;
     public static String selectedDownloadRetailerID = "";
     public static int selectedDownloadUserID = 0;
-    public static boolean dashHomeStatic;
+    //public static boolean dashHomeStatic;
     private static String dasHomeTitle;
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     public String invoiceDisount;
     //public boolean filtershowall = false;
     public String userNameTemp, passwordTemp;
-    public String passwordType;
     public RetailerMasterBO retailerMasterBO;
     public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
@@ -527,15 +524,15 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, LoginScreen.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actHomeScreen)) {
-            if (dashHomeStatic) {
+            /*if (dashHomeStatic) {
                 myIntent = new Intent(ctxx, DashBoardActivity.class);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 myIntent.putExtra("screentitle", dasHomeTitle);
                 ctxx.startActivityForResult(myIntent, 0);
-            } else {
+            } else {*/
                 myIntent = new Intent(ctxx, HomeScreenActivity.class);
                 ctxx.startActivityForResult(myIntent, 0);
-            }
+            //}
         } else if (act.equals(DataMembers.actPlanning)) {
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
             myIntent.putExtra("menuCode", "MENU_VISIT");
@@ -4698,19 +4695,6 @@ public class BusinessModel extends Application {
 
     }
 
-    public void loadDashBordHome() {
-        Vector<ConfigureBO> menuDB = configurationMasterHelper
-                .downloadMainMenu();
-        for (ConfigureBO conf : menuDB) {
-            if (conf.getConfigCode().equalsIgnoreCase(
-                    StandardListMasterConstants.MENU_DASH)) {
-                dasHomeTitle = conf.getMenuName();
-                break;
-            }
-        }
-        dashHomeStatic = configurationMasterHelper.SHOW_DASH_HOME;
-    }
-
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
@@ -5307,26 +5291,7 @@ public class BusinessModel extends Application {
         return key;
     }
 
-    /**
-     * deleteAllValues will be called before updating the apk. This method will
-     * delete the database completely and also update AutoUpdate shared
-     * preference.
-     */
-    public void deleteAllValues() {
 
-        try {
-            this.deleteDatabase(DataMembers.DB_NAME);
-            synchronizationHelper.deleteDBFromSD();
-            SharedPreferences pref = this.getSharedPreferences("autoupdate",
-                    MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = pref.edit();
-            prefsEditor.putString("URL", "");
-            prefsEditor.putString("isUpdateExist", "False");
-            prefsEditor.apply();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
 
     public HashMap<String, String> getDigitalContentURLS() {

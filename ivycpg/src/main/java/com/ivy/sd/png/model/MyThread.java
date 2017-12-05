@@ -3,6 +3,7 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
@@ -50,10 +51,10 @@ public class MyThread extends Thread {
 
         if (opt == DataMembers.LOCAL_LOGIN) {
             LoginScreen frm = (LoginScreen) ctx;
-            int count = frm.mPasswordLockCountPref.getInt("passwordlock", 0);
+            int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
             if (bmodel.synchronizationHelper.validateUser(
                     bmodel.userNameTemp.toLowerCase(Locale.US),
-                    bmodel.passwordTemp) && count + 1 != bmodel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT) {
+                    bmodel.passwordTemp) && count + 1 != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT) {
                 // If usermaster get updated
                 bmodel.userMasterHelper.downloadUserDetails();
                 bmodel.userMasterHelper.downloadDistributionDetails();

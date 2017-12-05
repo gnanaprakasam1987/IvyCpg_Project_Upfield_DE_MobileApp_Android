@@ -1,7 +1,13 @@
 package com.ivy.cpg.login;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
- * Created by ivyuser on 4/12/17.
+ * Created by dharmapriya.k on 4/12/17.
  */
 
 public interface LoginContractor {
@@ -23,6 +29,16 @@ public interface LoginContractor {
         void onLoginClick();
 
         void callAuthentication(boolean isDeviceChanged);
+
+        void deleteTables(boolean isDownloaded);
+
+        void applyLastSyncPref();
+
+        void applyPasswordLockCountPref();
+
+        int getPasswordLockCount();
+
+        void callUpdateFinish();
     }
 
     interface LoginView {
@@ -40,7 +56,7 @@ public interface LoginContractor {
 
         void dismissProgressDialog();
 
-        void onCreateDialog();
+        void showGPSDialog();
 
         void requestLocation();
 
@@ -52,12 +68,24 @@ public interface LoginContractor {
 
         void setAlertDialogMessage(String msg);
 
-        void enableGPSDialog();
+        void sendMessageToHandler();
 
-        void sendMessageToHandler(int msg);
-
-        void threadActions(int action);
+        void threadActions();
 
         void showDialog();
+
+        void resetPassword();
+
+        void showAppUpdateAlert(String msg);
+
+        void goToDistributorSelection();
+
+        void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
+
+        void finishActivity();
+
+        void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility);
+
+        void callResetPassword();
     }
 }
