@@ -33,6 +33,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.planogram.PlanoGramActivity;
+import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -42,14 +44,12 @@ import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.PlanogramActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -305,17 +305,16 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 break;
             case MENU_VAN_PLANOGRAM:
-                bmodel.mSelectedActivityName = menuItem.getMenuName();
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                mPlanoGramMasterHelper
-                        .downloadlevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramMasterHelper.downloadPlanogram(MENU_VAN_PLANOGRAM
-                        , false, false, false, 0, 0);
-                bmodel.productHelper.downloadPlanogramProdutLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramMasterHelper.loadPlanoGramInEditMode("0");
+                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
+                mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
+                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.downloadLevels(MENU_VAN_PLANOGRAM, "0");
+                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM, false, false, false, 0, 0);
+                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.loadPlanoGramInEditMode("0");
                 if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
-                            PlanogramActivity.class);
+                            PlanoGramActivity.class);
                     in.putExtra("from", "1");
                     startActivity(in);
                     finish();

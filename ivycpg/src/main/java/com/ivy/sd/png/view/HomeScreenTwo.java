@@ -47,8 +47,11 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
+import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
+import com.ivy.cpg.view.planogram.PlanoGramActivity;
+import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.price.PriceTrackActivity;
 import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
@@ -76,7 +79,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -2727,33 +2729,31 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
 
-                bmodel.mSelectedActivityName = menu.getMenuName();
+                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
+
+                mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
+                mPlanoGramHelper.loadConfigurations();
                 chooseFilterType(MENU_PLANOGRAM);
-                mPlanoGramMasterHelper.downloadlevels(MENU_PLANOGRAM,
-                        bmodel.retailerMasterBO.getRetailerID());
-                bmodel.productHelper.loadData(MENU_PLANOGRAM);
-               /*mPlanoGramMasterHelper.downloadPlanogram(MENU_PLANOGRAM,
-                        bmodel.retailerMasterBO.getRetailerID());*/
-                //bmodel.productHelper.downloadPlanogramProdutLocations(MENU_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID());
-                mPlanoGramMasterHelper
-                        .loadPlanoGramInEditMode(bmodel.retailerMasterBO
-                                .getRetailerID());
+                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM, bmodel.retailerMasterBO.getRetailerID());
+                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM);
+                mPlanoGramHelper.loadPlanoGramInEditMode(bmodel.retailerMasterBO.getRetailerID());
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_PLANOGRAM);
 
-                if (mPlanoGramMasterHelper.getPlanogramMaster() != null && mPlanoGramMasterHelper.getPlanogramMaster().size() > 0) {
+                if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
                     Intent in = new Intent(HomeScreenTwo.this,
-                            PlanogramActivity.class);
+                            PlanoGramActivity.class);
                     in.putExtra("from", "2");
                     in.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
                         in.putExtra("isFromChild", isFromChild);
                     startActivity(in);
                     finish();
+
                 } else {
                     dataNotMapped();
                     isCreated = false;

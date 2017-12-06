@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.photocapture;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -31,10 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
@@ -58,7 +54,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     private int width, height;
     public static boolean isPhotoDelete = false;
 
-    protected  ArrayList<String> prodList;
+    protected ArrayList<String> prodList;
     protected HashMap<String, ArrayList<String>> mImageListByProductName;
     protected HashMap<String, ArrayList<String>> mPhotoTypeListByProductName;
     protected HashMap<String, ArrayList<String>> mLocationListByProductName;
@@ -119,17 +115,13 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         if (i == android.R.id.home) {
             finish();
             return true;
-        }
-        else if(i==R.id.menu_gallery_share)
-        {
-            if(imgPathShare.size()>0)
+        } else if (i == R.id.menu_gallery_share) {
+            if (imgPathShare.size() > 0)
                 shareTheImages(imgPathShare);
             else
                 showAlertDialog();
-        }
-        else if(i==R.id.menu_gallery_delete)
-        {
-            if(imgPathDelete.size()>0 && imgFileDelete.size()>0)
+        } else if (i == R.id.menu_gallery_delete) {
+            if (imgPathDelete.size() > 0 && imgFileDelete.size() > 0)
                 showDeleteAlertDialog(imgPathDelete, imgFileDelete);
             else
                 showAlertDialog();
@@ -139,12 +131,10 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
 
     //Update the screen title based on the selection of images
     @SuppressLint("SetTextI18n")
-    protected void setSelectionScreenTitle(int count)
-    {
-        if(count>0) {
+    protected void setSelectionScreenTitle(int count) {
+        if (count > 0) {
             toolBarTitle.setText(count + " selected");
-        }
-        else {
+        } else {
             toolBarTitle.setText("My Gallery");
         }
         invalidateOptionsMenu();
@@ -158,7 +148,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         intent.setType("image/*");
         ArrayList<Uri> files = new ArrayList<>();
         /* List of the files you want to send */
-        for(String path : imagePathArray) {
+        for (String path : imagePathArray) {
             File file = new File(path);
             Uri uri = Uri.fromFile(file);
             files.add(uri);
@@ -176,8 +166,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(imgPathShare.size()==0 && imgPathDelete.size()==0 && imgFileDelete.size()==0)
-        {
+        if (imgPathShare.size() == 0 && imgPathDelete.size() == 0 && imgFileDelete.size() == 0) {
             menu.removeItem(R.id.menu_gallery_share);
             menu.removeItem(R.id.menu_gallery_delete);
         }
@@ -187,9 +176,9 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     private void loadGrid() {
         try {
             prodList = new ArrayList<>();
-            imgPathShare=new ArrayList<>();
-            imgPathDelete=new ArrayList<>();
-            imgFileDelete=new ArrayList<>();
+            imgPathShare = new ArrayList<>();
+            imgPathDelete = new ArrayList<>();
+            imgFileDelete = new ArrayList<>();
             mImageListByProductName = new HashMap<>();
             mPhotoTypeListByProductName = new HashMap<>();
             mLocationListByProductName = new HashMap<>();
@@ -260,7 +249,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         CheckBox CBSelect;
         Button check;
         int id;
-        TextView  type_loc_txt, loc_txt;
+        TextView type_loc_txt, loc_txt;
     }
 
     @Override
@@ -377,8 +366,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
      * @param imagePathArray Image path(Full Name) list
      * @param imageFileArray Image file list
      */
-    private void showDeleteAlertDialog(final ArrayList<String> imagePathArray, final ArrayList<File> imageFileArray)
-    {
+    private void showDeleteAlertDialog(final ArrayList<String> imagePathArray, final ArrayList<File> imageFileArray) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Gallery.this)
                 .setTitle(
                         getResources().getString(
@@ -389,7 +377,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
 
-                                for(int i=0;i<imagePathArray.size();i++) {
+                                for (int i = 0; i < imagePathArray.size(); i++) {
                                     for (PhotoTypeMasterBO tempTypeBO : PhotoCaptureHelper.getInstance(getApplicationContext()).getPhotoTypeMaster()) {
                                         ArrayList<PhotoCaptureProductBO> tempCaptureBO = tempTypeBO
                                                 .getPhotoCaptureProductList();
@@ -465,8 +453,8 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                         .findViewById(R.id.type_loc_txt);
                 holder.loc_txt = (TextView) convertView
                         .findViewById(R.id.loc_txt);
-                holder.RLCheckBg=(RelativeLayout)convertView.findViewById(R.id.layout_share_select);
-                holder.CBSelect=(CheckBox)convertView.findViewById(R.id.check_share_select);
+                holder.RLCheckBg = (RelativeLayout) convertView.findViewById(R.id.layout_share_select);
+                holder.CBSelect = (CheckBox) convertView.findViewById(R.id.check_share_select);
 
                 holder.type_loc_txt.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.loc_txt.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -474,7 +462,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 holder.RLCheckBg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(holder.CBSelect.isChecked())
+                        if (holder.CBSelect.isChecked())
                             holder.CBSelect.setChecked(false);
                         else
                             holder.CBSelect.setChecked(true);
@@ -484,22 +472,18 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                 holder.CBSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        String imagePath=getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                                + DataMembers.photoFolderName + "/" +imgArrList.get(position);
-                        if(isChecked)
-                        {
-                            holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(getResources(),R.color.shelfs_bg_semi_transperant,null));
+                        String imagePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                                + DataMembers.photoFolderName + "/" + imgArrList.get(position);
+                        if (isChecked) {
+                            holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.shelfs_bg_semi_transperant, null));
                             imgPathShare.add(imagePath);
                             imgPathDelete.add(imgArrList.get(position));
                             imgFileDelete.add(new File(imagePath));
                             setSelectionScreenTitle(imgPathShare.size());
-                        }
-                        else
-                        {
+                        } else {
                             holder.RLCheckBg.setBackgroundResource(0);
-                            if(imgPathShare.contains(imagePath))
-                            {
-                                int index=imgPathShare.indexOf(imagePath);
+                            if (imgPathShare.contains(imagePath)) {
+                                int index = imgPathShare.indexOf(imagePath);
                                 imgPathShare.remove(index);
                                 imgPathDelete.remove(index);
                                 imgFileDelete.remove(index);
@@ -522,7 +506,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                             + DataMembers.photoFolderName + "/" + imgArrList.get(position))
                     .centerCrop()
                     .error(R.drawable.no_image_available)
-                    .override(width/2, height/4)
+                    .override(width / 2, height / 4)
                     .into(holder.prod_img);
 
             return convertView;

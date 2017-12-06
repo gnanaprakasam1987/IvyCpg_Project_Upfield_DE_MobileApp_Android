@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -65,6 +66,7 @@ import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -134,7 +136,6 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
-import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
@@ -169,7 +170,7 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
-import com.ivy.sd.png.view.Gallery;
+import com.ivy.sd.png.view.DashBoardActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -258,6 +259,9 @@ public class BusinessModel extends Application {
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
+
+    public static String photoPath;
+
     public InitiativeHelper initiativeHelper;
     public TargetPlanHelper targetPlanHelper;
     public BeatMasterHelper beatMasterHealper;
@@ -281,7 +285,6 @@ public class BusinessModel extends Application {
     public LocationUtil locationUtil;
     public OutletTimeStampHelper outletTimeStampHelper;
     public RemarksHelper remarksHelper;
-    public PlanogramMasterHelper planogramMasterHelper;
     public ReasonHelper reasonHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
@@ -437,7 +440,6 @@ public class BusinessModel extends Application {
         locationUtil = LocationUtil.getInstance(this);
         outletTimeStampHelper = OutletTimeStampHelper.getInstance(this);
         remarksHelper = RemarksHelper.getInstance();
-        planogramMasterHelper = PlanogramMasterHelper.getInstance(this);
         reasonHelper = ReasonHelper.getInstance(this);
 
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
@@ -11631,6 +11633,30 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
+    /**
+     * To check file availability
+     *
+     * @param path File path
+     * @return Availability
+     */
+    public boolean isImagePresent(String path) {
+        File f = new File(path);
+        return f.exists();
+    }
+
+    /**
+     * Getting file URI
+     *
+     * @param path File path
+     * @return URI
+     */
+    public Uri getUriFromFile(String path) {
+        File f = new File(path);
+        return Uri.fromFile(f);
+
+    }
+
 }
 
 

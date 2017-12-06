@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -92,11 +93,8 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
-                false);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -104,6 +102,14 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             actionBar.setElevation(0);
             setScreenTitle(assetTrackingHelper.mSelectedActivityName);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
+                false);
 
         initializeViews(view);
         assetPresenter.initialLoad();

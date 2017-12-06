@@ -2,14 +2,11 @@ package com.ivy.sd.png.provider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -4359,105 +4356,6 @@ public class ProductHelper {
 
     }
 
-    /**
-     * Download Module Locations
-     */
-    public void downloadStockApply() {
-        try {
-
-            inStoreLocation = new Vector<StandardListBO>();
-            StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
-                    + " FROM StandardListMaster SL  where SL.Listtype='PL' ORDER BY SL.ListId";
-
-            Cursor c = db.selectSQL(sql1);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    locations = new StandardListBO();
-                    locations.setListID(c.getString(0));
-                    locations.setListName(c.getString(1));
-                    inStoreLocation.add(locations);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            if (inStoreLocation.size() == 0) {
-                locations = new StandardListBO();
-                locations.setListID("0");
-                locations.setListName("Store");
-                inStoreLocation.add(locations);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("Download Location", e);
-        }
-
-    }
-
-
-    /**
-     * Download Module Locations
-     */
-    public void downloadPlanogramProdutLocations(String moduleName, String retailer, String query1) {
-        try {
-
-            SharedPreferences sharedPrefs = PreferenceManager
-                    .getDefaultSharedPreferences(mContext);
-
-            inStoreLocation = new Vector<StandardListBO>();
-            StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
-                    + " FROM StandardListMaster SL";
-
-            if (moduleName.equals("MENU_PLANOGRAM")) {
-                sql1 += " inner join PlanogramMapping MP on MP.StoreLocId=SL.ListId"
-                        + " inner join PlanogramMaster P on P.HId=MP.HId"
-                        + " where " + query1
-                        + " SL.Listtype='PL'"
-                        + " ORDER BY SL.ListId";
-            } else if (moduleName.equals("MENU_VAN_PLANOGRAM")) {
-                sql1 += " inner join PlanogramMapping PM on PM.StoreLocId=sl.listcode"
-                        + " inner join PlanogramMaster P on P.HId=PM.HId"
-                        + " where SL.Listtype='SL' and PM.RetailerId= " + bmodel.QT(retailer)
-                        + " ORDER BY SL.ListId";
-            } else {
-                sql1 += " where SL.Listtype='PL' ORDER BY SL.ListId";
-            }
-
-            Cursor c = db.selectSQL(sql1);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    locations = new StandardListBO();
-                    locations.setListID(c.getString(0));
-                    locations.setListName(c.getString(1));
-                    inStoreLocation.add(locations);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            if (inStoreLocation.size() == 0) {
-                locations = new StandardListBO();
-                locations.setListID("0");
-                locations.setListName("Store");
-                inStoreLocation.add(locations);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("Download Location", e);
-        }
-
-    }
-
 
     public ArrayList<TaxBO> getTaxList() {
         if (mTaxList != null) {
@@ -6368,71 +6266,6 @@ public class ProductHelper {
         return -1;
     }
 
-
-
-
-    public void loadData(String menuname) {
-        try {
-            int level;
-            PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(mContext);
-            level = getRetailerlevel(menuname);
-            if (menuname.equals("MENU_PLANOGRAM")) {
-                switch (level) {
-                    case 1:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            } else if (menuname.equals("MENU_PLANOGRAM_CS")) {
-                switch (level) {
-                    case 1:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, chid);
-                        break;
-//                    case -1:
-//                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-//                        break;
-
-                    default:
-                        mPlanoGramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     public void downloadDistributorProductsWithFiveLevelFilter(String moduleCode) {
         productMasterById = new HashMap<String, ProductMasterBO>();

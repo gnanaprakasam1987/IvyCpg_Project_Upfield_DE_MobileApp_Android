@@ -1,49 +1,90 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.planogram;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
-import com.ivy.sd.png.bo.CounterPlanogramBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
-import com.ivy.sd.png.bo.PlanogramBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import java.io.File;
 import java.util.Vector;
 
-public class PlanogramMasterHelper {
+public class PlanoGramHelper {
 
     private final Context context;
-    private final BusinessModel bmodel;
-    private static PlanogramMasterHelper instance = null;
-    private Vector<PlanogramBO> planogramMaster;
-    private Vector<CounterPlanogramBO> csPlanogramMaster;
+    private final BusinessModel mBModel;
+    private static PlanoGramHelper instance = null;
+    private Vector<PlanoGramBO> mPlanoGramMaster;
+    private Vector<CounterPlanoGramBO> csPlanogramMaster;
     private Vector<ParentLevelBo> mParentLevelBo;
     private Vector<ChildLevelBo> mChildLevelBo;
+    private Vector<StandardListBO> mLocationList;
+    public String mSelectedActivityName;
+
+    private static final String CODE_LOCATION_WISE_PLANOGRAM = "FUN39";
+    public boolean IS_LOCATION_WISE_PLANOGRAM;
 
 
-
-    private PlanogramMasterHelper(Context context) {
+    private PlanoGramHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        mBModel = (BusinessModel) context.getApplicationContext();
     }
 
-    public static PlanogramMasterHelper getInstance(Context context) {
+    public static PlanoGramHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new PlanogramMasterHelper(context);
+            instance = new PlanoGramHelper(context);
         }
         return instance;
     }
 
-    public void downloadlevels(String moduleName, String retailerId) {
+    /**
+     * Load PlanoGram screen specific configurations
+     */
+    public void loadConfigurations() {
+        try {
+
+            IS_LOCATION_WISE_PLANOGRAM = false;
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT hhtCode, RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " WHERE flag='1'";
+
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(CODE_LOCATION_WISE_PLANOGRAM))
+                        IS_LOCATION_WISE_PLANOGRAM = true;
+                }
+                c.close();
+            }
+            db.closeDB();
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+    }
+
+    /**
+     * Download Product Levels For filter
+     *
+     * @param moduleName Module Name
+     * @param retailerId RetaILER iD
+     */
+    public void downloadLevels(String moduleName, String retailerId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -76,20 +117,20 @@ public class PlanogramMasterHelper {
                 filterCur.close();
             }
             String str = "";
-            int level = bmodel.productHelper.getRetailerlevel("MENU_PLANOGRAM");
+            int level = mBModel.productHelper.getRetailerlevel("MENU_PLANOGRAM");
             if (level == 1)
-                str = " and MP.AccId=" + bmodel.getRetailerMasterBO().getAccountid();
+                str = " and MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid();
             else if (level == 2)
                 str = " and MP.RetailerId=" + retailerId;
             else if (level == 3)
-                str = " and MP.ClassId=" + bmodel.getRetailerMasterBO().getClassid();
+                str = " and MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid();
 
             if (level == 6)
-                str = " and MP.LocId=" + bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId()) + " and MP.ChId=" + bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid());
+                str = " and MP.LocId=" + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId()) + " and MP.ChId=" + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid());
             else if (level == 4)
-                str = " and MP.LocId=" + bmodel.productHelper.getMappingLocationId(bmodel.productHelper.locid, bmodel.getRetailerMasterBO().getLocationId());
+                str = " and MP.LocId=" + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId());
             else if (level == 5)
-                str = " and MP.ChId=" + bmodel.productHelper.getMappingChannelId(bmodel.productHelper.chid, bmodel.getRetailerMasterBO().getSubchannelid());
+                str = " and MP.ChId=" + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid());
 
             if (level == -1) {
                 Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
@@ -114,7 +155,7 @@ public class PlanogramMasterHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode ='" + moduleName + "')";
@@ -153,7 +194,7 @@ public class PlanogramMasterHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode='" + moduleName + "')";
@@ -182,7 +223,7 @@ public class PlanogramMasterHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode= '" + moduleName + "')";
@@ -211,50 +252,122 @@ public class PlanogramMasterHelper {
     }
 
 
+    /**
+     * Download master based on mapping(Account wise OR Retailer wise ..)
+     *
+     * @param mMenuName Menu Name
+     */
+    public void downloadMaster(String mMenuName) {
+        try {
+            int level;
+            level = mBModel.productHelper.getRetailerlevel(mMenuName);
+            if (mMenuName.equals("MENU_PLANOGRAM")) {
+                switch (level) {
+                    case 1:
+                        downloadPlanoGram("MENU_PLANOGRAM", true, false, false, 0, 0);
+                        break;
+                    case 2:
+                        downloadPlanoGram("MENU_PLANOGRAM", false, true, false, 0, 0);
+                        break;
+                    case 3:
+                        downloadPlanoGram("MENU_PLANOGRAM", false, false, true, 0, 0);
+                        break;
+                    case 4:
+                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, mBModel.productHelper.locid, 0);
+                        break;
+                    case 5:
+                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, 0, mBModel.productHelper.chid);
+                        break;
+                    case 6:
+                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, mBModel.productHelper.locid, mBModel.productHelper.chid);
+                        break;
+                    case -1:
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else if (mMenuName.equals("MENU_PLANOGRAM_CS")) {
+                switch (level) {
+                    case 1:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
+                        break;
+                    case 2:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
+                        break;
+                    case 3:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
+                        break;
+                    case 4:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, mBModel.productHelper.locid, 0);
+                        break;
+                    case 5:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, 0, mBModel.productHelper.chid);
+                        break;
+                    case 6:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, mBModel.productHelper.locid, mBModel.productHelper.chid);
+                        break;
 
+                    default:
+                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-    public void downloadPlanogram(String moduleName, boolean isaccount, boolean isretailer, boolean isclass, int locid, int chid) {
+    /**
+     * Download PlanoGram
+     *
+     * @param moduleName  Module Name
+     * @param isAccount   Is Account Wise
+     * @param isRetailer  Is Retailer Wise
+     * @param isClass     Is Class wise
+     * @param mLocationId Location Id
+     * @param mChannelId  Channel Id
+     */
+    public void downloadPlanoGram(String moduleName, boolean isAccount, boolean isRetailer, boolean isClass, int mLocationId, int mChannelId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-            PlanogramBO planogram;
+            PlanoGramBO planogram;
             db.openDataBase();
             String query;
             String query1 = "";
-            String retailerID = "";
-            if (bmodel.getCounterRetailerId() != null && !bmodel.getCounterRetailerId().isEmpty())
-                retailerID = bmodel.getCounterRetailerId();
+            String retailerID;
+            if (mBModel.getCounterRetailerId() != null && !mBModel.getCounterRetailerId().equals("0"))
+                retailerID = mBModel.getCounterRetailerId();
             else
-                retailerID = bmodel.getRetailerMasterBO().getRetailerID();
+                retailerID = mBModel.getRetailerMasterBO().getRetailerID();
 
-            if (isaccount) {
+            if (isAccount) {
                 if (query1.isEmpty())
-                    query1 = " MP.AccId=" + bmodel.getRetailerMasterBO().getAccountid() + " and";
+                    query1 = " MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid() + " and";
                 else
-                    query1 = query1 + " MP.AccId=" + bmodel.getRetailerMasterBO().getAccountid() + " and";
+                    query1 = query1 + " MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid() + " and";
             }
-            if (isretailer) {
+            if (isRetailer) {
                 if (query1.isEmpty())
                     query1 = " MP.RetailerId=" + retailerID + " and";
                 else
                     query1 = query1 + " MP.RetailerId=" + retailerID + " and";
             }
-            if (isclass) {
+            if (isClass) {
                 if (query1.isEmpty())
-                    query1 = " MP.ClassId=" + bmodel.getRetailerMasterBO().getClassid() + " and";
+                    query1 = " MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid() + " and";
                 else
-                    query1 = query1 + " MP.ClassId=" + bmodel.getRetailerMasterBO().getClassid() + " and";
+                    query1 = query1 + " MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid() + " and";
             }
-            if (locid > 0) {
+            if (mLocationId > 0) {
                 if (query1.isEmpty())
-                    query1 = " MP.LocId=" + bmodel.productHelper.getMappingLocationId(locid, bmodel.getRetailerMasterBO().getLocationId()) + " and";
+                    query1 = " MP.LocId=" + mBModel.productHelper.getMappingLocationId(mLocationId, mBModel.getRetailerMasterBO().getLocationId()) + " and";
                 else
-                    query1 = query1 + " MP.LocId=" + bmodel.productHelper.getMappingLocationId(locid, bmodel.getRetailerMasterBO().getLocationId()) + " and";
+                    query1 = query1 + " MP.LocId=" + mBModel.productHelper.getMappingLocationId(mLocationId, mBModel.getRetailerMasterBO().getLocationId()) + " and";
             }
-            if (chid > 0) {
+            if (mChannelId > 0) {
                 if (query1.isEmpty())
-                    query1 = " MP.ChId=" + bmodel.productHelper.getMappingChannelId(chid, bmodel.getRetailerMasterBO().getSubchannelid()) + " and";
+                    query1 = " MP.ChId=" + mBModel.productHelper.getMappingChannelId(mChannelId, mBModel.getRetailerMasterBO().getSubchannelid()) + " and";
                 else
-                    query1 = query1 + " MP.ChId=" + bmodel.productHelper.getMappingChannelId(chid, bmodel.getRetailerMasterBO().getSubchannelid()) + " and";
+                    query1 = query1 + " MP.ChId=" + mBModel.productHelper.getMappingChannelId(mChannelId, mBModel.getRetailerMasterBO().getSubchannelid()) + " and";
             }
             if ("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)) {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName"
@@ -264,7 +377,7 @@ public class PlanogramMasterHelper {
                         + " LEFT JOIN StandardListMaster STM  on STM.Listid = MP.StoreLocId"
                         + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE" + query1
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName"
@@ -275,16 +388,16 @@ public class PlanogramMasterHelper {
                         + " WHERE"
                         + " MP.RID ='0'"
                         + " AND "
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                setPlanogramMaster(new Vector<PlanogramBO>());
+                setPlanogramMaster(new Vector<PlanoGramBO>());
                 while (c.moveToNext()) {
-                    planogram = new PlanogramBO();
+                    planogram = new PlanoGramBO();
                     planogram.setPid(c.getInt(0));
                     planogram.setMappingID(c.getInt(1));
                     planogram.setImageName(c.getString(3));
@@ -297,17 +410,22 @@ public class PlanogramMasterHelper {
             db.closeDB();
 
             if (("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)))
-                bmodel.productHelper.downloadPlanogramProdutLocations(moduleName, null, query1);
+                downloadPlanoGramProductLocations(moduleName, null, query1);
         } catch (Exception e) {
             Commons.printException("" + e);
             db.closeDB();
         }
     }
 
-    public void downloadCounterPlanogram(int counterId) {
+    /**
+     * Download counter planoGram
+     *
+     * @param counterId Counter Id
+     */
+    public void downloadCounterPlanoGram(int counterId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-            CounterPlanogramBO planogram;
+            CounterPlanoGramBO planogram;
             db.openDataBase();
             String query;
 
@@ -322,17 +440,17 @@ public class PlanogramMasterHelper {
                     + " AND "
                     + " st.listcode ='COUNTER'"
                     + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN P.startdate AND P.enddate";
 
 
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                setCsPlanogramMaster(new Vector<CounterPlanogramBO>());
+                setCsPlanogramMaster(new Vector<CounterPlanoGramBO>());
                 while (c.moveToNext()) {
-                    planogram = new CounterPlanogramBO();
-                    planogram.setRetailerId(bmodel.retailerMasterBO
+                    planogram = new CounterPlanoGramBO();
+                    planogram.setRetailerId(mBModel.retailerMasterBO
                             .getRetailerID());
                     planogram.setMappingID(c.getInt(0));
                     planogram.setPlanogramDesc(c.getString(1));
@@ -352,14 +470,19 @@ public class PlanogramMasterHelper {
         }
     }
 
-    public void loadPlanoGramInEditMode(String retailerId, int counterId) {
+    /**
+     * Load PlanoGram in edit mode for counter
+     *
+     * @param counterId Counter Id
+     */
+    public void loadPlanoGramInEditMode(int counterId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String tid;
-            String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
-                    + retailerId + " AND CounterId = " + counterId + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = 0"
+                    + " AND CounterId = " + counterId + " AND Date = "
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
             tid = "";
@@ -396,6 +519,11 @@ public class PlanogramMasterHelper {
         }
     }
 
+
+    /**
+     * Load PlanoGram in edit mode
+     * @param retailerId Retailer Id
+     */
     public void loadPlanoGramInEditMode(String retailerId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -403,7 +531,7 @@ public class PlanogramMasterHelper {
             String tid = "";
             String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
                     + retailerId + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor != null) {
@@ -440,18 +568,17 @@ public class PlanogramMasterHelper {
         }
     }
 
-    /**
-     * @param planogramPId planogram_pid
+    /**Set planoGram details in object
+     * @param planogramPId pid
      * @param imageName    imageName
      * @param adherence    adherence
      * @param reasonID     reasonID
      * @param locationID   location id
-     * @param --ClientID   clientId
-     * @param aduit        aduit
+     * @param isAudit        audit
      */
     private void setPlanoGramDetails(int planogramPId, String imageName,
-                                     String adherence, String reasonID, int locationID, int aduit) {
-        PlanogramBO planogram;
+                                     String adherence, String reasonID, int locationID, int isAudit) {
+        PlanoGramBO planogram;
         int siz = getPlanogramMaster().size();
         if (siz == 0)
             return;
@@ -459,20 +586,29 @@ public class PlanogramMasterHelper {
         for (int i = 0; i < siz; ++i) {
             planogram = getPlanogramMaster().get(i);
             if (planogram.getPid() == planogramPId &&
-                    (!bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
                 planogram.setPlanogramCameraImgName(imageName);
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
-                planogram.setAudit(aduit);
+                planogram.setAudit(isAudit);
                 getPlanogramMaster().setElementAt(planogram, i);
                 return;
             }
         }
     }
 
+    /**
+     * Set counter planoGram objects
+     * @param imageId Image Id
+     * @param imageName Image Name
+     * @param adherence Adherence
+     * @param reasonID Reason Id
+     * @param isAudit Audit
+     * @param counterId counter Id
+     */
     private void setCounterPlanoGramDetails(int imageId, String imageName,
-                                            String adherence, String reasonID, int aduit, int counterId) {
-        CounterPlanogramBO planogram;
+                                            String adherence, String reasonID, int isAudit, int counterId) {
+        CounterPlanoGramBO planogram;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
             return;
@@ -484,7 +620,7 @@ public class PlanogramMasterHelper {
                 planogram.setPlanogramCameraImgName(imageName);
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
-                planogram.setAudit(aduit);
+                planogram.setAudit(isAudit);
                 planogram.setCounterId(counterId);
                 getCsPlanogramMaster().setElementAt(planogram, i);
                 return;
@@ -493,67 +629,58 @@ public class PlanogramMasterHelper {
 
     }
 
-    public boolean isImagePresent(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
 
-    public Uri getUriFromFile(String path) {
-        File f = new File(path);
-        return Uri.fromFile(f);
-
-    }
-
-    public void setImagePath(int pID, String imagepath, int locationid) {
-        PlanogramBO planogrambo;
+    /**
+     * Set Image path based on selection
+     *
+     * @param pID         Product Id
+     * @param mImagePath  Image Path
+     * @param mLocationId Location Id
+     */
+    public void setImagePath(int pID, String mImagePath, int mLocationId) {
+        PlanoGramBO planogrambo;
         int siz = getPlanogramMaster().size();
         if (siz == 0)
             return;
         for (int i = 0; i < siz; ++i) {
             planogrambo = getPlanogramMaster().get(i);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
-                    && planogrambo.getLocationID() == locationid) {
-                planogrambo.setPlanogramCameraImgName(imagepath);
+            if ((planogrambo.getPid() == pID || IS_LOCATION_WISE_PLANOGRAM)
+                    && planogrambo.getLocationID() == mLocationId) {
+                planogrambo.setPlanogramCameraImgName(mImagePath);
                 getPlanogramMaster().setElementAt(planogrambo, i);
                 return;
             }
         }
     }
 
-    public void setCSImagePath(String imagepath, int imageId) {
-        CounterPlanogramBO planogrambo;
+    /**
+     * Set Image path for counter
+     *
+     * @param mImagePath Image Path
+     * @param imageId    Image Id
+     */
+    public void setCSImagePath(String mImagePath, int imageId) {
+        CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
             return;
         for (int i = 0; i < siz; ++i) {
             planogrambo = getCsPlanogramMaster().get(i);
             if (planogrambo.getImageId() == imageId) {
-                planogrambo.setPlanogramCameraImgName(imagepath);
+                planogrambo.setPlanogramCameraImgName(mImagePath);
                 getCsPlanogramMaster().setElementAt(planogrambo, i);
                 return;
             }
         }
     }
 
-    public void setImageAdherence(int pID, String adherence, int locID) {
-        PlanogramBO planogrambo;
-        int siz = getPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getPlanogramMaster().get(i);
-            Commons.print("pid" + pID + " locid=" + locID);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
-                    && (planogrambo.getLocationID() == locID)) {
-                planogrambo.setAdherence(adherence);
-                getPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
+    /**
+     * Set adherence to object by image Id
+     * @param adherence Adherence
+     * @param imageId Image Id
+     */
     public void setCSImageAdherence(String adherence, int imageId) {
-        CounterPlanogramBO planogrambo;
+        CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
             return;
@@ -567,7 +694,11 @@ public class PlanogramMasterHelper {
         }
     }
 
-    public boolean savePhotocapture() {
+    /**
+     * Save PlanoGram in transaction table
+     * @return Is Saved
+     */
+    public boolean savePlanoGram() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -580,39 +711,39 @@ public class PlanogramMasterHelper {
             String values;
             boolean isData;
             String refId = "0";
-            String imagePath = "Planogram" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+            String imagePath = "Planogram" + "/" + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                     + "/"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "/";
 
-            tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + bmodel.getRetailerMasterBO().getRetailerID() + ""
+            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid() + ""
+                    + mBModel.getRetailerMasterBO().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             headerCursor = db
                     .selectSQL("SELECT Tid, RefId FROM PlanogramHeader"
                             + " WHERE RetailerId = "
-                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + mBModel.getRetailerMasterBO().getRetailerID()
                             + " AND DistributorID = "
-                            + bmodel.getRetailerMasterBO().getDistributorId()
+                            + mBModel.getRetailerMasterBO().getDistributorId()
                             + " AND CounterId = 0"
                             + " AND Date = "
-                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 db.deleteSQL("PlanogramHeader",
-                        "Tid=" + bmodel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramDetails",
-                        "Tid=" + bmodel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
 
             // Insert Details
             isData = false;
-            for (PlanogramBO planogram : getPlanogramMaster()) {
+            for (PlanoGramBO planogram : getPlanogramMaster()) {
 
                 if (planogram.getAdherence() != null) {
                     if (planogram.getAdherence().equals("1")) {
@@ -623,7 +754,7 @@ public class PlanogramMasterHelper {
                             + QT(planogram.getPlanogramCameraImgName()) + ","
                             + QT(imagePath) + ","
                             + QT(planogram.getAdherence()) + ","
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID())
+                            + QT(mBModel.getRetailerMasterBO().getRetailerID())
                             + "," + planogram.getReasonID() + ","
                             + planogram.getLocationID() + ","
                             + planogram.getAudit() + ",0";
@@ -637,12 +768,12 @@ public class PlanogramMasterHelper {
             // Save Header if There is Data in Details
             if (isData) {
                 values = QT(tid) + ","
-                        + bmodel.getRetailerMasterBO().getRetailerID() + ","
+                        + mBModel.getRetailerMasterBO().getRetailerID() + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + QT(bmodel.getTimeZone()) + ","
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + QT(mBModel.getTimeZone()) + ","
+                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                         + "," + QT(refId) + ","
-                        + QT("") + ",0" + "," + bmodel.getRetailerMasterBO().getDistributorId();
+                        + QT("") + ",0" + "," + mBModel.getRetailerMasterBO().getDistributorId();
 
 
                 db.insertSQL("PlanogramHeader", headerColumns, values);
@@ -656,7 +787,12 @@ public class PlanogramMasterHelper {
         }
     }
 
-    public boolean savePhotocapture(int counterId) {
+    /**
+     * Save counter PlanoGram in transaction
+     * @param counterId Counter Id
+     * @return Is saved
+     */
+    public boolean saveCounterPlanoGram(int counterId) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -669,25 +805,25 @@ public class PlanogramMasterHelper {
             String values;
             boolean isData;
             String refId = "0";
-            String imagePath = "Planogram" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+            String imagePath = "Planogram" + "/" + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                     + "/"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "/";
 
-            tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + bmodel.getRetailerMasterBO().getRetailerID() + ""
+            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid() + ""
+                    + mBModel.getRetailerMasterBO().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             String query = "SELECT Tid, RefId FROM PlanogramHeader"
                     + " WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + mBModel.getRetailerMasterBO().getRetailerID()
                     + " AND DistributorID = "
-                    + bmodel.getRetailerMasterBO().getDistributorId()
+                    + mBModel.getRetailerMasterBO().getDistributorId()
                     + " AND CounterId = "
-                    + bmodel.QT(String.valueOf(counterId))
+                    + mBModel.QT(String.valueOf(counterId))
                     + " AND Date = "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
             query += " and (upload='N' OR refid!=0)";
 
             headerCursor = db
@@ -695,16 +831,16 @@ public class PlanogramMasterHelper {
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 db.deleteSQL("PlanogramHeader",
-                        "Tid=" + bmodel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramDetails",
-                        "Tid=" + bmodel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
 
             // Insert Details
             isData = false;
-            for (CounterPlanogramBO planogram : getCsPlanogramMaster()) {
+            for (CounterPlanoGramBO planogram : getCsPlanogramMaster()) {
 
                 if (planogram.getAdherence() != null) {
                     values = QT(tid) + "," + planogram.getMappingID() + ","
@@ -712,7 +848,7 @@ public class PlanogramMasterHelper {
                             + QT(planogram.getPlanogramCameraImgName()) + ","
                             + QT(imagePath) + ","
                             + QT(planogram.getAdherence()) + ","
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID())
+                            + QT(mBModel.getRetailerMasterBO().getRetailerID())
                             + "," + planogram.getReasonID() + ","
                             + 0 + ","
                             + planogram.getAudit() + ","
@@ -727,14 +863,14 @@ public class PlanogramMasterHelper {
             // Save Header if There is Data in Details
             if (isData) {
                 values = QT(tid) + ","
-                        + bmodel.getRetailerMasterBO().getRetailerID() + ","
+                        + mBModel.getRetailerMasterBO().getRetailerID() + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + QT(bmodel.getTimeZone()) + ","
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + QT(mBModel.getTimeZone()) + ","
+                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                         + "," + QT(refId) + ","
                         + QT(getCsPlanogramMaster().get(0).getType()) + ","
                         + counterId + ","
-                        + bmodel.getRetailerMasterBO().getDistributorId();
+                        + mBModel.getRetailerMasterBO().getDistributorId();
 
                 db.insertSQL("PlanogramHeader", headerColumns, values);
             }
@@ -747,31 +883,21 @@ public class PlanogramMasterHelper {
         }
     }
 
-    public void setImageAdherenceReason(int pID, String adherence, int locID) {
-        PlanogramBO planogrambo;
-        int siz = getPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getPlanogramMaster().get(i);
-            if ((planogrambo.getPid() == pID || bmodel.configurationMasterHelper.IS_LOCATION_WISE_PLANOGRAM)
-                    && planogrambo.getLocationID() == locID) {
-                planogrambo.setReasonID(adherence);
-                getPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
-    public void setCSImageAdherenceReason(String adherence, int imageId) {
-        CounterPlanogramBO planogrambo;
+    /**
+     * updating adherence reason
+     *
+     * @param mReasonId Reason Id
+     * @param imageId   Image iD
+     */
+    public void setCSImageAdherenceReason(String mReasonId, int imageId) {
+        CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
             return;
         for (int i = 0; i < siz; ++i) {
             planogrambo = getCsPlanogramMaster().get(i);
             if (imageId == planogrambo.getImageId()) {
-                planogrambo.setReasonID(adherence);
+                planogrambo.setReasonID(mReasonId);
                 getCsPlanogramMaster().setElementAt(planogrambo, i);
                 return;
             }
@@ -779,7 +905,7 @@ public class PlanogramMasterHelper {
     }
 
 
-    private String QT(String data) // Quote
+    private String QT(String data)
     {
         return "'" + data + "'";
     }
@@ -800,25 +926,29 @@ public class PlanogramMasterHelper {
         this.mChildLevelBo = mChildLevelBo;
     }
 
-    public Vector<PlanogramBO> getPlanogramMaster() {
-        return planogramMaster;
+    public Vector<PlanoGramBO> getPlanogramMaster() {
+        return mPlanoGramMaster;
     }
 
-    private void setPlanogramMaster(Vector<PlanogramBO> planogramMaster) {
-        this.planogramMaster = planogramMaster;
+    private void setPlanogramMaster(Vector<PlanoGramBO> planogramMaster) {
+        this.mPlanoGramMaster = planogramMaster;
     }
 
 
 
 
-    public Vector<CounterPlanogramBO> getCsPlanogramMaster() {
+    public Vector<CounterPlanoGramBO> getCsPlanogramMaster() {
         return csPlanogramMaster;
     }
 
-    private void setCsPlanogramMaster(Vector<CounterPlanogramBO> csPlanogramMaster) {
+    private void setCsPlanogramMaster(Vector<CounterPlanoGramBO> csPlanogramMaster) {
         this.csPlanogramMaster = csPlanogramMaster;
     }
 
+    /**
+     * Delete image from transaction table
+     * @param imgName Image name
+     */
     public void deleteImageName(String imgName) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -828,6 +958,72 @@ public class PlanogramMasterHelper {
                 + " SET  ImageName =" + QT("") + ",ImageName=" + QT("") + " where ImageName LIKE"
                 + QT(imgName + "%"));
         db.closeDB();
+    }
+
+
+
+
+    public Vector<StandardListBO> getInStoreLocation() {
+        return mLocationList;
+    }
+
+    /**
+     * Download Module Locations
+     */
+    public void downloadPlanoGramProductLocations(String moduleName, String retailer, String query1) {
+        try {
+
+            mLocationList = new Vector<>();
+            StandardListBO locations;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
+                    + " FROM StandardListMaster SL";
+
+            switch (moduleName) {
+                case "MENU_PLANOGRAM":
+                    sql1 += " inner join PlanogramMapping MP on MP.StoreLocId=SL.ListId"
+                            + " inner join PlanogramMaster P on P.HId=MP.HId"
+                            + " where " + query1
+                            + " SL.Listtype='PL'"
+                            + " ORDER BY SL.ListId";
+                    break;
+                case "MENU_VAN_PLANOGRAM":
+                    sql1 += " inner join PlanogramMapping PM on PM.StoreLocId=sl.listcode"
+                            + " inner join PlanogramMaster P on P.HId=PM.HId"
+                            + " where SL.Listtype='SL' and PM.RetailerId= " + mBModel.QT(retailer)
+                            + " ORDER BY SL.ListId";
+                    break;
+                default:
+                    sql1 += " where SL.Listtype='PL' ORDER BY SL.ListId";
+                    break;
+            }
+
+            Cursor c = db.selectSQL(sql1);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    locations = new StandardListBO();
+                    locations.setListID(c.getString(0));
+                    locations.setListName(c.getString(1));
+                    mLocationList.add(locations);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            if (mLocationList.size() == 0) {
+                locations = new StandardListBO();
+                locations.setListID("0");
+                locations.setListName("Store");
+                mLocationList.add(locations);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("Download Location", e);
+        }
+
     }
 
 }

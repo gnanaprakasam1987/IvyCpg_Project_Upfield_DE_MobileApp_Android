@@ -264,7 +264,7 @@
             android:name="com.ivyretail.views.SubCompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PlanogramActivity"
+            android:name="com.ivy.cpg.view.planogram.PlanoGramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"
@@ -390,7 +390,7 @@
             android:name="com.ivy.sd.png.view.SyncRetailerSelectActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.Gallery"
+            android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AdhocGallery"
@@ -618,7 +618,7 @@
             android:name="com.ivy.sd.png.view.NonFieldActivityTwo"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CounterPlanogramActivity"
+            android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.countersales.CustomerVisitActivity"

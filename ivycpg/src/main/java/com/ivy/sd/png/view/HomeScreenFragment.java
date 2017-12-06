@@ -78,7 +78,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
-import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -100,7 +99,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     //used to save the photo
     public static File folder;
+
     public static String photoPath;
+
     public static boolean fromHomeScreen = false;
 
     private static final String MENU_PLANNING_CONSTANT = "Day Planning";
@@ -363,7 +364,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         // image path
         photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                 + DataMembers.photoFolderName;
-        folder = new File(photoPath);
+
+        //local photopath string will be removed soon
+        BusinessModel.photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                + DataMembers.photoFolderName;
+        folder = new File(BusinessModel.photoPath);
         if (!folder.exists()) {
             folder.mkdir();
         }
@@ -470,9 +475,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
-                Uri uri = mPlanoGramMasterHelper
-                        .getUriFromFile(photoPath + "/" + imageFileName);
+                Uri uri = bmodel.getUriFromFile(photoPath + "/" + imageFileName);
                 bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                 bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                 profileImageView.invalidate();
