@@ -142,6 +142,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String mNMustSell = "Filt16";
     private final String mStock = "Filt17";
     private final String mDiscount = "Filt18";
+    private final String mSuggestedOrder = "Filt25";
 
     private boolean isSbd;
     private boolean isSbdGaps;
@@ -432,7 +433,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     updateGeneralText(GENERAL);
                 }
 
-                mBtnGuidedSelling.setVisibility(View.GONE);
+                mBtnGuidedSelling_next.setVisibility(View.GONE);
+                mBtnGuidedSelling_prev.setVisibility(View.GONE);
                 mBtnNext.setVisibility(View.VISIBLE);
             } else {
 

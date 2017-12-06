@@ -225,8 +225,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
         mBtn_clear = (Button) findViewById(R.id.btn_clear);
         mBtnNext = (Button) findViewById(R.id.btn_next);
-        mBtnGuidedSelling = (Button) findViewById(R.id.btn_guided_selling);
-        mBtnGuidedSelling.setOnClickListener(this);
 
         mBtn_Search.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
@@ -338,11 +336,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
         try {
 
-
-            if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
-                updateGuidedSellingView(true);
-
-            } else {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                     getMandatoryFilters();
                     String defaultfilter = getDefaultFilter();
@@ -372,7 +365,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                     mSelectedFilterMap.put("General", GENERAL);
                     updateGeneralText(GENERAL);
                 }
-            }
+
 
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -454,238 +447,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         tabLayout.addTab(tab);
     }
 
-    private void updateGuidedSellingView(boolean isCreateView) {
-
-        mBtnGuidedSelling.setVisibility(View.VISIBLE);
-        mBtnNext.setVisibility(View.GONE);
-
-        if (bmodel.getmGuidedSelling().size() > 0) {
-
-            boolean isAllDone = true;
-            for (GuidedSellingBO bo : bmodel.getmGuidedSelling()) {
-                if (!bo.isDone()) {
-
-
-                    //in case of specialfilter as a tab
-                    if (bo.isProductFilter() || bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                        if (isCreateView) {
-                            if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                                loadSpecialFilterView();
-                        } else {
-                            findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        findViewById(R.id.hscrl_spl_filter).setVisibility(View.GONE);
-                    }
-
-
-                    // incase of menu item
-                    if (!bo.isProductFilter()) {
-                        isFilter = false;
-                    } else {
-                        isFilter = true;
-                    }
-                    getSupportActionBar().invalidateOptionsMenu();
-                    //
-
-
-                    if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
-                        mSelectedFilterMap.put("General", GENERAL);
-                        updateGeneralText(GENERAL);
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                            selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-
-                    } else {
-
-                        mSelectedFilterMap.put("General", bo.getFilterCode());
-                        updateGeneralText(bo.getFilterCode());
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                            selectTab(bo.getFilterCode());
-
-
-                    }
-
-                    setCurrentFlag(bo);
-
-
-                    isAllDone = false;
-
-                    break;
-                }
-            }
-
-            if (isAllDone) {// in case if all guided selling logic done, all products should be loaded
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                    mSelectedFilterMap.put("General", GENERAL);
-                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                        loadSpecialFilterView();
-                        updateGeneralText(GENERAL);
-                        selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-                    } else {
-                        updateGeneralText(GENERAL);
-                    }
-                } else {
-                    mSelectedFilterMap.put("General", GENERAL);
-                    updateGeneralText(GENERAL);
-                }
-
-            }
-        } else {
-
-            mSelectedFilterMap.put("General", GENERAL);
-            updateGeneralText(GENERAL);
-        }
-
-    }
-
-    private void setCurrentFlag(GuidedSellingBO bo) {
-
-        for (GuidedSellingBO guidedSellingBO : bmodel.getmGuidedSelling()) {
-            if (bo.getSequance() == guidedSellingBO.getSequance()) {
-                guidedSellingBO.setCurrent(true);
-            } else {
-                guidedSellingBO.setCurrent(false);
-            }
-
-        }
-    }
-
-    private void updateGuidedSellingStatus(GuidedSellingBO bo) {
-        if (bo.getSubActivity().equals(mStockCode)) {
-            if (isCurrentLogicForStockDone(bo.getFilterCode(), bo.getApplyLevel())) {
-                bo.setDone(true);
-            } else
-                bo.setDone(false);
-        } else if (bo.getSubActivity().equals(mOrderCode)) {
-
-            if (isCurrentLogicForOrderDone(bo.getFilterCode(), bo.getApplyLevel())) {
-                bo.setDone(true);
-            } else
-                bo.setDone(false);
-        } else {
-            // To skip,in case of other codes mapped
-            bo.setDone(true);
-        }
-
-    }
-
-    private boolean isCurrentLogicForStockDone(String filterCode, String applyLevel) {
-        if (filterCode.equals("ALL")) {
-            if (applyLevel.equals("ALL")) {
-                for (ProductMasterBO product : getTaggedProducts()) {
-                    for (int j = 0; j < product.getLocations().size(); j++) {
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            } else {
-                //ANY
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : getTaggedProducts()) {
-
-                    for (int j = 0; j < product.getLocations().size(); j++) {
-                        isStockChecked = false;
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                            return true;
-                        }
-                    }
-                }
-                return isStockChecked;
-            }
-        } else {
-            if (applyLevel.equals("ALL")) {
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : getTaggedProducts()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
-                        isStockChecked = false;
-                        for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                                isStockChecked = true;
-                            }
-                        }
-                        if (isStockChecked == false) {
-                            return isStockChecked;
-                        }
-                    }
-                }
-                return isStockChecked;
-                //filtered list have 0 products not allowed to navigate
-            } else {
-                //ANY
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : getTaggedProducts()) {
-
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
-                        isStockChecked = false;
-                        for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return isStockChecked;
-            }
-        }
-    }
-
-    private boolean isCurrentLogicForOrderDone(String filterCode, String applyLevel) {
-        if (filterCode.equals("ALL")) {
-
-            if (applyLevel.equals("ALL")) {
-
-                for (ProductMasterBO product : getTaggedProducts()) {
-
-                    if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
-                        return false;
-                    }
-                }
-                return false;
-            } else {
-                //ANY
-                for (ProductMasterBO product : getTaggedProducts()) {
-
-                    if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        } else {
-            if (applyLevel.equals("ALL")) {
-                for (ProductMasterBO product : getTaggedProducts()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
-
-                        if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
-                            return false;
-                        }
-                    }
-                }
-                return false;
-            } else {
-                //ANY
-                for (ProductMasterBO product : getTaggedProducts()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
-
-                        if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -1297,36 +1058,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
         } else if (vw == mBtnNext) {
             onnext();
-        } else if (vw == mBtnGuidedSelling) {
-
-            //   updateGuidedSellingStatus();
-            boolean isAllDone = true;
-
-            for (GuidedSellingBO bo : bmodel.getmGuidedSelling()) {
-
-                if (bo.isCurrent()) {
-                    updateGuidedSellingStatus(bo);
-                }
-
-                if (!bo.isDone() && bo.isCurrent()) {
-                    //
-                    showToastForGuidedSelling(bo);
-                    isAllDone = false;
-
-                    break;
-                } else if (!bo.isDone()) {
-                    isAllDone = false;
-                    updateGuidedSellingView(false);
-
-                    break;
-                }
-
-                bo.setCurrent(false);
-            }
-
-            if (isAllDone) {
-                onnext();
-            }
         }
     }
 
