@@ -61,7 +61,6 @@ import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -183,7 +182,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
     private int SbdDistPre = 0; // Dist stock
     private int sbdDistAchieved = 0;
     private Button mBtnNext;
-    private Button mBtnGuidedSelling;
+    private Button mBtnGuidedSelling_next, mBtnGuidedSelling_prev;
 
     private Toolbar toolbar;
 
@@ -272,8 +271,10 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
         mBtn_clear = (Button) findViewById(R.id.btn_clear);
         mBtnNext = (Button) findViewById(R.id.btn_next);
-        mBtnGuidedSelling = (Button) findViewById(R.id.btn_guided_selling);
-        mBtnGuidedSelling.setOnClickListener(this);
+        mBtnGuidedSelling_next = (Button) findViewById(R.id.btn_guided_selling_next);
+        mBtnGuidedSelling_prev = (Button) findViewById(R.id.btn_guided_selling_prev);
+        mBtnGuidedSelling_next.setOnClickListener(this);
+        mBtnGuidedSelling_prev.setOnClickListener(this);
 
         mBtn_Search.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
@@ -399,14 +400,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     updateGeneralText(GENERAL);
                 }
 
-                mBtnGuidedSelling.setVisibility(View.GONE);
                 mBtnNext.setVisibility(View.VISIBLE);
             } else {
-
-                if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
-                    updateGuidedSellingView(true);
-
-                } else {
                     if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                         getMandatoryFilters();
                         String defaultfilter = getDefaultFilter();
@@ -441,7 +436,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         mSelectedFilterMap.put("General", GENERAL);
                         updateGeneralText(GENERAL);
                     }
-                }
+
             }
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -483,238 +478,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
-    private void updateGuidedSellingView(boolean isCreateView) {
 
-        mBtnGuidedSelling.setVisibility(View.VISIBLE);
-        mBtnNext.setVisibility(View.GONE);
-
-        if (bmodel.getmGuidedSelling().size() > 0) {
-
-            boolean isAllDone = true;
-            for (GuidedSellingBO bo : bmodel.getmGuidedSelling()) {
-                if (!bo.isDone()) {
-
-
-                    //in case of specialfilter as a tab
-                    if (bo.isProductFilter() || bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                        if (isCreateView) {
-                            if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                                loadSpecialFilterView();
-                        } else {
-                            findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        findViewById(R.id.hscrl_spl_filter).setVisibility(View.GONE);
-                    }
-
-
-                    // incase of menu item
-                    if (!bo.isProductFilter()) {
-                        isFilter = false;
-                    } else {
-                        isFilter = true;
-                    }
-                    getSupportActionBar().invalidateOptionsMenu();
-                    //
-
-
-                    if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
-                        mSelectedFilterMap.put("General", GENERAL);
-                        updateGeneralText(GENERAL);
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                            selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-
-                    } else {
-
-                        mSelectedFilterMap.put("General", bo.getFilterCode());
-                        updateGeneralText(bo.getFilterCode());
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
-                            selectTab(bo.getFilterCode());
-
-
-                    }
-
-                    setCurrentFlag(bo);
-
-
-                    isAllDone = false;
-
-                    break;
-                }
-            }
-
-            if (isAllDone) {// in case if all guided selling logic done, all products should be loaded
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                    mSelectedFilterMap.put("General", GENERAL);
-                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                        loadSpecialFilterView();
-                        updateGeneralText(GENERAL);
-                        selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-                    } else {
-                        updateGeneralText(GENERAL);
-                    }
-                } else {
-                    mSelectedFilterMap.put("General", GENERAL);
-                    updateGeneralText(GENERAL);
-                }
-
-            }
-        } else {
-
-            mSelectedFilterMap.put("General", GENERAL);
-            updateGeneralText(GENERAL);
-        }
-
-    }
-
-    private void setCurrentFlag(GuidedSellingBO bo) {
-
-        for (GuidedSellingBO guidedSellingBO : bmodel.getmGuidedSelling()) {
-            if (bo.getSequance() == guidedSellingBO.getSequance()) {
-                guidedSellingBO.setCurrent(true);
-            } else {
-                guidedSellingBO.setCurrent(false);
-            }
-
-        }
-    }
-
-    private void updateGuidedSellingStatus(GuidedSellingBO bo) {
-        if (bo.getSubActivity().equals(mStockCode)) {
-            if (isCurrentLogicForStockDone(bo.getFilterCode(), bo.getApplyLevel())) {
-                bo.setDone(true);
-            } else
-                bo.setDone(false);
-        } else if (bo.getSubActivity().equals(mOrderCode)) {
-
-            if (isCurrentLogicForOrderDone(bo.getFilterCode(), bo.getApplyLevel())) {
-                bo.setDone(true);
-            } else
-                bo.setDone(false);
-        } else {
-            // To skip,in case of other codes mapped
-            bo.setDone(true);
-        }
-
-    }
-
-    private boolean isCurrentLogicForStockDone(String filterCode, String applyLevel) {
-        if (filterCode.equals("ALL")) {
-            if (applyLevel.equals("ALL")) {
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    for (int j = 0; j < product.getLocations().size(); j++) {
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            } else {
-                //ANY
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-
-                    for (int j = 0; j < product.getLocations().size(); j++) {
-                        isStockChecked = false;
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                            return true;
-                        }
-                    }
-                }
-                return isStockChecked;
-            }
-        } else {
-            if (applyLevel.equals("ALL")) {
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
-                        isStockChecked = false;
-                        for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                                isStockChecked = true;
-                            }
-                        }
-                        if (isStockChecked == false) {
-                            return isStockChecked;
-                        }
-                    }
-                }
-                return isStockChecked;
-                //filtered list have 0 products not allowed to navigate
-            } else {
-                //ANY
-                boolean isStockChecked = true;
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
-                        isStockChecked = false;
-                        for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return isStockChecked;
-            }
-        }
-    }
-
-    private boolean isCurrentLogicForOrderDone(String filterCode, String applyLevel) {
-        if (filterCode.equals("ALL")) {
-
-            if (applyLevel.equals("ALL")) {
-
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-
-                    if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
-                        return false;
-                    }
-                }
-                return false;
-            } else {
-                //ANY
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-
-                    if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        } else {
-            if (applyLevel.equals("ALL")) {
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
-
-                        if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
-                            return false;
-                        }
-                    }
-                }
-                return false;
-            } else {
-                //ANY
-                for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
-
-                        if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -1673,62 +1437,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         } else if (vw == mBtnNext) {
 
             onnext();
-        } else if (vw == mBtnGuidedSelling) {
-
-            //   updateGuidedSellingStatus();
-            boolean isAllDone = true;
-
-            for (GuidedSellingBO bo : bmodel.getmGuidedSelling()) {
-
-                if (bo.isCurrent()) {
-                    updateGuidedSellingStatus(bo);
-                }
-
-                if (!bo.isDone() && bo.isCurrent()) {
-                    //
-                    showToastForGuidedSelling(bo);
-                    isAllDone = false;
-
-                    break;
-                } else if (!bo.isDone()) {
-                    isAllDone = false;
-                    updateGuidedSellingView(false);
-
-                    break;
-                }
-
-                bo.setCurrent(false);
-            }
-
-            if (isAllDone) {
-                onnext();
-            }
         }
     }
 
-
-    private void showToastForGuidedSelling(GuidedSellingBO bo) {
-        if (bo.getSubActivity().equals(mOrderCode)) {
-            if (bo.getApplyLevel().equals("ALL")) {
-
-                Toast.makeText(this, getResources().getString(R.string.all_products_should_be_ordered), Toast.LENGTH_LONG).show();
-            } else {
-
-                Toast.makeText(this, getResources().getString(R.string.atleast_one_product_should_be_ordered), Toast.LENGTH_LONG).show();
-            }
-
-        } else if (bo.getSubActivity().equals(mStockCode)) {
-
-            if (bo.getApplyLevel().equals("ALL")) {
-
-                Toast.makeText(this, getResources().getString(R.string.stock_should_be_checked_for_all_products), Toast.LENGTH_LONG).show();
-            } else {
-
-                Toast.makeText(this, getResources().getString(R.string.stock_should_be_checked_for_atleast_one_product), Toast.LENGTH_LONG).show();
-            }
-
-        }
-    }
 
     private void onnext() {
         if (bmodel.getOrderHeaderBO() == null)
