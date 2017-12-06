@@ -71,8 +71,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_UPDATE_SIH = "SR05";
     public static final String CODE_RETAILER_FREQUENCY = "RTRS06";
     public static final String CODE_DAY_REPORT_PRINT = "RPT02";
-    public static final String CODE_SHOW_SCORE_IN_SURVEY = "SURVEY09";
-    public static final String CODE_SHOW_TOTAL_SCORE_IN_SURVEY = "SURVEY10";
     public static final String CODE_CAMERA_PICTURE_SIZE = "PHOTOCAP04";
     // Password policy
     public static final String CODE_PSWD_MIN_LEN = "MIN_LEN";
@@ -183,7 +181,7 @@ public class ConfigurationMasterHelper {
     // code added in v 38
     private static final String CODE_SHOW_REMARKS_STK_ORD = "REM1";
     private static final String CODE_SHOW_REMARKS_STK_CHK = "REM2";
-    private static final String CODE_SHOW_REMARKS_SAL_RET = "REM4";
+
     private static final String CODE_SHOW_DASH_HOME = "HASDASH";
     private static final String CODE_SHOW_LOCATION_PWD_DIALOG = "GPSVAL";
     private static final String CODE_SHOW_CHART_DASH = "DASH02";
@@ -316,8 +314,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_END_TIME = "ENDTIME";
     private static final String CODE_DROPSIZE = "DROPSIZE";
     private static final String CODE_STOCK_COMPETITOR = "STOCK_COMPETITOR";
-    private static final String CODE_SURVEY_ANSWER_ALL = "SURVEY02";
-    private static final String CODE_SURVEY_ANSWER_MANDATORY = "SURVEY03";
+
     private static final String CODE_APPLY_PRODUCT_TAX = "TAXINPROD";
     private static final String CODE_SIH_SPLIT = "SIHSPLIT";
     private static final String CODE_HIDE_TARGET_PLAN = "TARGET_PLAN";
@@ -379,8 +376,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_NO_ORDER_REASON = "FUN38";
     public boolean SHOW_NO_ORDER_REASON;
 
-    private static final String CODE_CHECK_MRP = "SR07";
-    public boolean CHECK_MRP_VALUE;
+
 
     private static final String CODE_CHAT = "CHAT01";
     public boolean IS_CHAT_ENABLED;
@@ -765,8 +761,7 @@ public class ConfigurationMasterHelper {
     public int LOAD_MAX_DELIVERY_DATE = 0;
     public String LOAD_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
-    public boolean IS_SURVEY_ANSWER_ALL;
-    public boolean IS_SURVEY_ANSWER_MANDATORY;
+
     public boolean IS_APPLY_PRODUCT_TAX;
     public boolean SHOW_SIH_SPLIT;
     public boolean IS_SHOW_TARGET_PLAN;
@@ -785,11 +780,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_GLOBAL_LOCATION;
     public boolean IS_GLOBAL_CATEGORY;
     public boolean SHOW_OUTLET_PLANNING_TAB;
-    public boolean SHOW_SMS_IN_SURVEY;
-    public String smsmenutype;
-    public boolean SHOW_PHOTOCAPTURE_IN_SURVEY;
-    public boolean SHOW_DRAGDROP_IN_SURVEY;
-    public boolean ENABLE_MULTIPLE_PHOTO;
     public boolean SHOW_PROFILE_LOC1;
     public boolean SHOW_PROFILE_LOC2;
     public boolean SHOW_PROFILE_LOC3;
@@ -809,14 +799,12 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_UPDATE_SIH;
     public boolean SHOW_RETAILER_FREQUENCY;
     public boolean IS_DAY_REPORT_PRINT;
-    public boolean SHOW_SCORE_IN_SURVEY;
-    public boolean SHOW_TOTAL_SCORE_IN_SURVEY;
+
     public boolean IS_ENABLE_CAMERA_PICTURE_SIZE = false;
     public int CAMERA_PICTURE_WIDTH = 640;
     public int CAMERA_PICTURE_HEIGHT = 480;
     public int CAMERA_PICTURE_QUALITY = 40;
-    public String photocapturemenutype;
-    public String multiplePhotoCapture;
+
     public boolean IS_SIH_VALIDATION_MASTER;
     public boolean IS_WSIH_MASTER;
     public boolean IS_SCHEME_ON_MASTER;
@@ -996,14 +984,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_EOD_COLUMNS = "EOD01";
     private static final String CODE_SR_SEQUENCE_NUMBER = "SR08";
     private static final String CODE_CN_SEQUENCE_NUMBER = "SR09";
-
-    private static final String CODE_SR_DISCOUNT = "SR10";
-    public boolean IS_APPLY_DISCOUNT_IN_SR;
-    private static final String CODE_SR_TAX = "SR11";
-    public boolean IS_APPLY_TAX_IN_SR;
-
-    private static final String CODE_SR_DIFF_CNT = "SR12";
-    public boolean IS_PRD_CNT_DIFF_SR;
 
     public boolean SHOW_PRICECHECK_IN_STOCKCHECK;
     public String CODE_IS_PRICECHECK_IN_STOCKCHECK = "CSSTK02";
@@ -1728,8 +1708,6 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_CROWN_MANAGMENT = hashMapHHTModuleConfig.get(CODE_SHOW_CROWN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CROWN) : false;
         this.SHOW_BOTTLE_CREDITLIMIT = hashMapHHTModuleConfig.get(CODE_SHOW_BOTTLE_CREDITLIMIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_BOTTLE_CREDITLIMIT) : false;
-        this.IS_SURVEY_ANSWER_ALL = hashMapHHTModuleConfig.get(CODE_SURVEY_ANSWER_ALL) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_ANSWER_ALL) : false;
-        this.IS_SURVEY_ANSWER_MANDATORY = hashMapHHTModuleConfig.get(CODE_SURVEY_ANSWER_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_ANSWER_MANDATORY) : false;
         this.SHOW_ADVANCE_PAYMENT = hashMapHHTModuleConfig.get(CODE_ADVANCE_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_ADVANCE_PAYMENT) : false;
         this.SHOW_FREE_PRODUCT_GIVEN = hashMapHHTModuleConfig.get(CODE_SHOW_FREE_PRODUCT_GIVEN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_FREE_PRODUCT_GIVEN) : false;
         this.IS_ADD_NEW_BATCH = hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) != null ? hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) : false;
@@ -1789,8 +1767,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_UPDATE_SIH = hashMapHHTModuleConfig.get(CODE_UPDATE_SIH) != null ? hashMapHHTModuleConfig.get(CODE_UPDATE_SIH) : false;
         this.SHOW_RETAILER_FREQUENCY = hashMapHHTModuleConfig.get(CODE_RETAILER_FREQUENCY) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_FREQUENCY) : false;
         this.IS_DAY_REPORT_PRINT = hashMapHHTModuleConfig.get(CODE_DAY_REPORT_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_DAY_REPORT_PRINT) : false;
-        this.SHOW_SCORE_IN_SURVEY = hashMapHHTModuleConfig.get(CODE_SHOW_SCORE_IN_SURVEY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SCORE_IN_SURVEY) : false;
-        this.SHOW_TOTAL_SCORE_IN_SURVEY = hashMapHHTModuleConfig.get(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) : false;
         this.HIDE_REVIEWPLAN_FIELD = hashMapHHTModuleConfig.get(CODE_HIDE_REVIEWPLAN_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_REVIEWPLAN_FIELD) : false;
         this.IS_BATCHWISE_VANLOAD = hashMapHHTModuleConfig.get(CODE_IS_BATCHWISE_VANLOAD) != null ? hashMapHHTModuleConfig.get(CODE_IS_BATCHWISE_VANLOAD) : false;
         this.SHOW_VANLOAD_STOCK_PRINT = hashMapHHTModuleConfig.get(CODE_VANLOAD_STOCK_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_VANLOAD_STOCK_PRINT) : false;
@@ -1844,7 +1820,6 @@ public class ConfigurationMasterHelper {
         this.IS_USER_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_USER_BASED_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_USER_BASED_DASH) : false;
         this.IS_DISTRIBUTOR_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_DISTRIBUTOR_BASED_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_DISTRIBUTOR_BASED_DASH) : false;
         this.SHOW_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NO_ORDER_REASON) : false;
-        this.CHECK_MRP_VALUE = hashMapHHTModuleConfig.get(CODE_CHECK_MRP) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_MRP) : false;
         this.IS_CLEAR_DATA = hashMapHHTModuleConfig.get(CODE_CLEAR_DATA) != null ? hashMapHHTModuleConfig.get(CODE_CLEAR_DATA) : false;
         this.IS_NIVEA_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_NIVEA_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_NIVEA_DASH) : false;
         this.IS_SMP_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_SMP_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_SMP_DASH) : false;
@@ -1864,8 +1839,6 @@ public class ConfigurationMasterHelper {
             this.IS_MUST_SELL_SKIP = true;
             this.IS_MUST_SELL_REASON = false;
         }
-        this.IS_APPLY_DISCOUNT_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) : false;
-        this.IS_APPLY_TAX_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_TAX) != null ? hashMapHHTModuleConfig.get(CODE_SR_TAX) : false;
         this.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : false;
 
         if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) != null) {
@@ -4258,59 +4231,6 @@ public class ConfigurationMasterHelper {
         return new ArrayList<>();
     }
 
-    public void loadSurveyConfig(String menucode) {
-        try {
-            this.SHOW_SMS_IN_SURVEY = false;
-            this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
-            this.SHOW_DRAGDROP_IN_SURVEY = false;
-            this.ENABLE_MULTIPLE_PHOTO = false;
-            DBUtil db;
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
-                            + bmodel.QT(menucode));
-            if (c != null) {
-                while (c.moveToNext()) {
-                    this.SHOW_SMS_IN_SURVEY = true;
-                    this.smsmenutype = c.getString(0);
-                }
-                c.close();
-            }
-
-            c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
-                    + bmodel.QT(menucode));
-            if (c != null) {
-                while (c.moveToNext()) {
-                    this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
-                    this.photocapturemenutype = c.getString(0);
-                }
-                c.close();
-            }
-            // Survey12 to enable multiple photo capture
-            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
-                    + bmodel.QT(menucode));
-            if (c != null) {
-                while (c.moveToNext()) {
-                    this.ENABLE_MULTIPLE_PHOTO = true;
-                    this.multiplePhotoCapture = c.getString(0);
-                }
-                c.close();
-            }
-
-            c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
-                    + bmodel.QT(menucode));
-            if (c != null) {
-                while (c.moveToNext()) {
-                    this.SHOW_DRAGDROP_IN_SURVEY = true;
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     public void loadRouteConfig() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);

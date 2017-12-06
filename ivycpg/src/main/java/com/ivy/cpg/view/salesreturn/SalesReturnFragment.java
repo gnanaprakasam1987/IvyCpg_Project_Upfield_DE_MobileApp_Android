@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,20 +35,22 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,7 +129,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         setHasOptionsMenu(true);
-        //bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        priceTrackingHelper.mSelectedFilter = -1;
     }
 
 
@@ -602,7 +605,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 return;
             }
 
-            if (bmodel.configurationMasterHelper.CHECK_MRP_VALUE) {
+            if (salesReturnHelper.CHECK_MRP_VALUE) {
                 if (!isValidMRP()) {
                     Toast.makeText(getActivity(), "Please enter MRP Value", Toast.LENGTH_LONG).show();
                     return;
@@ -679,7 +682,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-        if (!bmodel.configurationMasterHelper.SHOW_REMARKS_SAL_RET) {
+        if (!salesReturnHelper.SHOW_REMARKS_SAL_RET) {
             menu.findItem(R.id.menu_remarks).setVisible(false);
         } else {
             menu.findItem(R.id.menu_remarks).setVisible(true);

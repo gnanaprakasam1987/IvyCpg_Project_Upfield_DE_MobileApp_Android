@@ -87,8 +87,9 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.survey.SurveyActivityNew;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -225,12 +226,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     static TextView tinExpDateTextView;
+    private SurveyHelperNew surveyHelperNew;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        surveyHelperNew = SurveyHelperNew.getInstance(context);
     }
 
     @Override
@@ -3816,7 +3819,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (bmodel.mSurveyHelperNew.isSurveyAvaliable(bmodel.newOutletHelper.getId()))
+            if (surveyHelperNew.isSurveyAvaliable(bmodel.newOutletHelper.getId()))
                 showAlert(getResources().getString(R.string.are_you_sure_to_close_without_savingthe_data));
             else if (screenMode == VIEW || screenMode == EDIT || screenMode == 0) {
                 startActivity(new Intent(getActivity(),
@@ -3835,14 +3838,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (validated) {
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_NEW_RETAILER)) {
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(true);
-                    bmodel.mSurveyHelperNew.downloadModuleId("NEW_RETAILER");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
+                    surveyHelperNew.setFromHomeScreen(true);
+                    surveyHelperNew.downloadModuleId("NEW_RETAILER");
+                    surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
                     if (screenMode == EDIT || screenMode == VIEW) {
-                        bmodel.mSurveyHelperNew.loadNewRetailerSurveyAnswers(outlet.getRetailerId());// passing selected retailerid
+                        surveyHelperNew.loadNewRetailerSurveyAnswers(outlet.getRetailerId());// passing selected retailerid
                         bmodel.newOutletHelper.setRetailerId_edit(outlet.getRetailerId());
                     } else {
-                        bmodel.mSurveyHelperNew.loadNewRetailerSurveyAnswers(bmodel.newOutletHelper.getId());//passing generated id
+                        surveyHelperNew.loadNewRetailerSurveyAnswers(bmodel.newOutletHelper.getId());//passing generated id
                     }
 
                     Intent intent = new Intent(getActivity(),
@@ -4941,7 +4944,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.mSurveyHelperNew.deleteNewRetailerSurvey(bmodel.newOutletHelper.getId());
+                        surveyHelperNew.deleteNewRetailerSurvey(bmodel.newOutletHelper.getId());
                         if (screenMode == VIEW || screenMode == EDIT) {
                             startActivity(new Intent(getActivity(),
                                     NewOutletEdit.class));

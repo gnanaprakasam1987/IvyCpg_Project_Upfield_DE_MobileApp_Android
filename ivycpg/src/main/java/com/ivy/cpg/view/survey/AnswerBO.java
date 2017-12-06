@@ -1,4 +1,4 @@
-package com.ivy.sd.png.survey;
+package com.ivy.cpg.view.survey;
 
 import java.util.ArrayList;
 

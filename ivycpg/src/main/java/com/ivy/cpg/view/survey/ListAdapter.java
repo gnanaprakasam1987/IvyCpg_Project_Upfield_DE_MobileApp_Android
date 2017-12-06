@@ -1,4 +1,4 @@
-package com.ivy.sd.png.survey;
+package com.ivy.cpg.view.survey;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -7,9 +7,7 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;

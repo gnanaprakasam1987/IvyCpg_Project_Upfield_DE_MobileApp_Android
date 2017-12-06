@@ -37,9 +37,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.price.PriceTrackActivity;
-import com.ivy.cpg.price.PriceTrackCompActivity;
-import com.ivy.cpg.price.PriceTrackingHelper;
+import com.ivy.cpg.view.price.PriceTrackActivity;
+import com.ivy.cpg.view.price.PriceTrackCompActivity;
+import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.promotion.PromotionHelper;
 import com.ivy.cpg.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
@@ -52,6 +52,7 @@ import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.sf.SODActivity;
 import com.ivy.cpg.view.sf.SODAssetActivity;
 import com.ivy.cpg.view.sf.SODAssetHelper;
@@ -73,8 +74,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
-import com.ivy.sd.png.survey.SurveyActivityNew;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -1476,10 +1478,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                     if (bmodel.configurationMasterHelper
                             .downloadFloatingSurveyConfig(MENU_STOCK)) {
-                        bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                        bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                        bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_STOCK);
-                        bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+                        surveyHelperNew.setFromHomeScreen(false);
+                        surveyHelperNew.downloadModuleId("STANDARD");
+                        surveyHelperNew.downloadQuestionDetails(MENU_STOCK);
+                        surveyHelperNew.loadSurveyAnswers(0);
                     }
 
                     bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
@@ -1579,10 +1582,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     ) {
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_ORDER)) {
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                    bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_ORDER);
-                    bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+                    surveyHelperNew.setFromHomeScreen(false);
+                    surveyHelperNew.downloadModuleId("STANDARD");
+                    surveyHelperNew.downloadQuestionDetails(MENU_ORDER);
+                    surveyHelperNew.loadSurveyAnswers(0);
                 }
 
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
@@ -1781,10 +1785,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_STK_ORD)) {
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                    bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_STK_ORD);
-                    bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+                    surveyHelperNew.setFromHomeScreen(false);
+                    surveyHelperNew.downloadModuleId("STANDARD");
+                    surveyHelperNew.downloadQuestionDetails(MENU_STK_ORD);
+                    surveyHelperNew.loadSurveyAnswers(0);
                 }
 
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
@@ -1992,20 +1997,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
-                bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
+                SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+
+                surveyHelperNew.setFromHomeScreen(false);
+                surveyHelperNew.downloadModuleId("STANDARD");
 
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
                 chooseFilterType(menu.getConfigCode());
 
-                bmodel.mSurveyHelperNew.downloadQuestionDetails(menu.getConfigCode());
-                bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                surveyHelperNew.downloadQuestionDetails(menu.getConfigCode());
+                surveyHelperNew.loadSurveyAnswers(0);
 
-                if (bmodel.mSurveyHelperNew.getSurvey() != null
-                        && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
+                if (surveyHelperNew.getSurvey() != null
+                        && surveyHelperNew.getSurvey().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.mSelectedActivityConfigCode = menu.getConfigCode();
-                    bmodel.configurationMasterHelper.loadSurveyConfig(menu
+                    surveyHelperNew.loadSurveyConfig(menu
                             .getConfigCode());
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -2357,25 +2364,27 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
             if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+                salesReturnHelper.loadSalesReturnConfigurations();
+
                 bmodel.reasonHelper.downloadSalesReturnReason();
 
                 if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
 
                     bmodel.productHelper.downloadSalesReturnProducts();
-                    //if(bmodel.configurationMasterHelper.IS_PRD_CNT_DIFF_SR)
-                    bmodel.productHelper.downloadSalesReturnSKUs();
+                    if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                        bmodel.productHelper.downloadSalesReturnSKUs();
 
 
                     bmodel.productHelper.cloneReasonMaster();
 
                     Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
 
-                    SalesReturnHelper.getInstance(this).loadSalesReturnConfigurations();
-                    SalesReturnHelper.getInstance(this).clearSalesReturnTable();
+                    salesReturnHelper.getInstance(this).clearSalesReturnTable();
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                        SalesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        SalesReturnHelper.getInstance(this).loadSalesReturnData();
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
+                        salesReturnHelper.getInstance(this).loadSalesReturnData();
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
@@ -2773,10 +2782,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 // Load survey if floating survey is enabled for the price check module.
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_PRICE)) {
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                    bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_PRICE);
-                    bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+                    surveyHelperNew.setFromHomeScreen(false);
+                    surveyHelperNew.downloadModuleId("STANDARD");
+                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE);
+                    surveyHelperNew.loadSurveyAnswers(0);
                 }
 
                 // Download Tagged products and update the product master obj
@@ -2830,10 +2840,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 // Load survey if floating survey is enabled for the price check module.
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_PRICE_COMP)) {
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(false);
-                    bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_PRICE_COMP);
-                    bmodel.mSurveyHelperNew.loadSurveyAnswers(0);
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
+                    surveyHelperNew.setFromHomeScreen(false);
+                    surveyHelperNew.downloadModuleId("STANDARD");
+                    surveyHelperNew.downloadQuestionDetails(MENU_PRICE_COMP);
+                    surveyHelperNew.loadSurveyAnswers(0);
                 }
 
                 // Download Tagged products and update the product master obj
