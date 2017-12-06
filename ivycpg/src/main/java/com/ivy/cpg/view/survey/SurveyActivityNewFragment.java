@@ -1633,8 +1633,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         et.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
         et.setMaxLines(1);
         et.setCursorVisible(true);
-        et.requestFocus();
-        et.requestFocusFromTouch();
+        //et.requestFocus();
+        //et.requestFocusFromTouch();
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         et.setLayoutParams(lp);
         et.setPadding(15, 7, 7, 7);
