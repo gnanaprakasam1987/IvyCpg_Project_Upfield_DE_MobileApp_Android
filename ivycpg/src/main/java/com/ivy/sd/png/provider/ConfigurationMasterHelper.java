@@ -586,7 +586,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REMARKS_STK_ORD;
     public boolean SHOW_REMARKS_STK_CHK;
     // Added in 45 version
-    public boolean SHOW_REMARKS_SAL_RET;
     public boolean SHOW_LOCATION_PASSWORD_DIALOG;
     public boolean IS_SURVEY_ONCE;
 
@@ -1627,7 +1626,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_MVP_DRAWER = hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) : false;
         this.SHOW_REMARKS_STK_ORD = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) : false;
         this.SHOW_REMARKS_STK_CHK = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) : false;
-        this.SHOW_REMARKS_SAL_RET = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) : false;
         this.SHOW_LOCATION_PASSWORD_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) : false;
         this.SHOW_CHART_DASH = hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) : false;
         this.SHOW_LINK_DASH_SKUTGT = hashMapHHTModuleConfig.get(CODE_SHOW_LINK_DASH_SKUTGT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LINK_DASH_SKUTGT) : false;
