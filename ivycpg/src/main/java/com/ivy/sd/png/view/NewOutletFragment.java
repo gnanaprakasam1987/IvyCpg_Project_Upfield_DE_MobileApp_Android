@@ -66,6 +66,8 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
@@ -87,9 +89,7 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 

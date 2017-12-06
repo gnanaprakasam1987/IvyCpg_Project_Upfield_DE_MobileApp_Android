@@ -97,7 +97,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                 .replace("/", "") + "/"
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
 
-        if(surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
+        if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled=true;
 
         initViews();

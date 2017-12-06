@@ -30,15 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.countersales.bo.CounterSaleBO;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 
 import org.json.JSONArray;

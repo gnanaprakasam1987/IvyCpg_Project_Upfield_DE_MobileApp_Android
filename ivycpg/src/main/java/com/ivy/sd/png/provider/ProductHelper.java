@@ -12,6 +12,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -29,7 +30,6 @@ import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;

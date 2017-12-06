@@ -377,7 +377,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_NO_ORDER_REASON;
 
 
-
     private static final String CODE_CHAT = "CHAT01";
     public boolean IS_CHAT_ENABLED;
 
