@@ -52,6 +52,7 @@ import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.sf.SODActivity;
 import com.ivy.cpg.view.sf.SODAssetActivity;
 import com.ivy.cpg.view.sf.SODAssetHelper;
@@ -73,7 +74,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.PlanogramMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
@@ -2363,25 +2364,27 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
 
             if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+                salesReturnHelper.loadSalesReturnConfigurations();
+
                 bmodel.reasonHelper.downloadSalesReturnReason();
 
                 if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
 
                     bmodel.productHelper.downloadSalesReturnProducts();
-                    //if(bmodel.configurationMasterHelper.IS_PRD_CNT_DIFF_SR)
-                    bmodel.productHelper.downloadSalesReturnSKUs();
+                    if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                        bmodel.productHelper.downloadSalesReturnSKUs();
 
 
                     bmodel.productHelper.cloneReasonMaster();
 
                     Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
 
-                    SalesReturnHelper.getInstance(this).loadSalesReturnConfigurations();
-                    SalesReturnHelper.getInstance(this).clearSalesReturnTable();
+                    salesReturnHelper.getInstance(this).clearSalesReturnTable();
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                        SalesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        SalesReturnHelper.getInstance(this).loadSalesReturnData();
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
+                        salesReturnHelper.getInstance(this).loadSalesReturnData();
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);

@@ -370,7 +370,7 @@
             android:name="com.ivyretail.views.AvailabiltyCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnEntryActivity"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
@@ -407,7 +407,7 @@
             android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnSummery"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -539,7 +539,7 @@
             android:name="com.ivy.cpg.view.price.PriceTrackCompActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnActivity"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"

@@ -14,7 +14,7 @@ import com.ivy.sd.png.asean.view.R;
 /**
  * Created by subramanian.r on 23-03-2016.
  */
-class CustomKeyBoard extends Dialog implements View.OnClickListener {
+public class CustomKeyBoard extends Dialog implements View.OnClickListener {
     private Context mContext;
     private TextView tv_value;
     private Button decimal_point;
