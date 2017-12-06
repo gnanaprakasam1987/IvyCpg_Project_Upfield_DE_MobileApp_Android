@@ -522,6 +522,7 @@ public class PlanoGramHelper {
 
     /**
      * Load PlanoGram in edit mode
+     *
      * @param retailerId Retailer Id
      */
     public void loadPlanoGramInEditMode(String retailerId) {
@@ -696,6 +697,7 @@ public class PlanoGramHelper {
 
     /**
      * Save PlanoGram in transaction table
+     *
      * @return Is Saved
      */
     public boolean savePlanoGram() {
@@ -789,6 +791,7 @@ public class PlanoGramHelper {
 
     /**
      * Save counter PlanoGram in transaction
+     *
      * @param counterId Counter Id
      * @return Is saved
      */
@@ -935,8 +938,6 @@ public class PlanoGramHelper {
     }
 
 
-
-
     public Vector<CounterPlanoGramBO> getCsPlanogramMaster() {
         return csPlanogramMaster;
     }
@@ -959,8 +960,6 @@ public class PlanoGramHelper {
                 + QT(imgName + "%"));
         db.closeDB();
     }
-
-
 
 
     public Vector<StandardListBO> getInStoreLocation() {

@@ -61,6 +61,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.countersales.provider.CS_CommonPrintHelper;
 import com.ivy.countersales.provider.CS_StockApplyHelper;
+import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -126,7 +127,6 @@ import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.LeaveApprovalHelper;
-import com.ivy.sd.png.provider.LoginHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -170,13 +170,11 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
-import com.ivy.sd.png.view.DashBoardActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InvoicePrintZebra;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.LoginScreen;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
@@ -233,17 +231,15 @@ public class BusinessModel extends Application {
     // to show the time taken on call analysis
 
     public static final String PREFS_NAME = "PRINT";
-    public static boolean loginFlag;
     public static String selectedDownloadRetailerID = "";
     public static int selectedDownloadUserID = 0;
-    public static boolean dashHomeStatic;
+    //public static boolean dashHomeStatic;
     private static String dasHomeTitle;
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     public String invoiceDisount;
     //public boolean filtershowall = false;
     public String userNameTemp, passwordTemp;
-    public String passwordType;
     public RetailerMasterBO retailerMasterBO;
     public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
@@ -315,7 +311,7 @@ public class BusinessModel extends Application {
     public MVPHelper mvpHelper;
     public LeaveApprovalHelper leaveApprovalHelper;
     public ExpenseSheetHelper expenseSheetHelper;
-    public LoginHelper mLoginHelper;
+    //public LoginHelper mLoginHelper;
     public UserFeedBackHelper mUserFeedBackHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
@@ -485,7 +481,7 @@ public class BusinessModel extends Application {
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
-        mLoginHelper = LoginHelper.getInstance(this);
+        //mLoginHelper = LoginHelper.getInstance(this);
         mUserFeedBackHelper = UserFeedBackHelper.getInstance(this);
         mJExcelHelper = JExcelHelper.getInstance(this);
         deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
@@ -518,15 +514,15 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, LoginScreen.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actHomeScreen)) {
-            if (dashHomeStatic) {
+            /*if (dashHomeStatic) {
                 myIntent = new Intent(ctxx, DashBoardActivity.class);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 myIntent.putExtra("screentitle", dasHomeTitle);
                 ctxx.startActivityForResult(myIntent, 0);
-            } else {
+            } else {*/
                 myIntent = new Intent(ctxx, HomeScreenActivity.class);
                 ctxx.startActivityForResult(myIntent, 0);
-            }
+            //}
         } else if (act.equals(DataMembers.actPlanning)) {
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
             myIntent.putExtra("menuCode", "MENU_VISIT");
@@ -4625,19 +4621,6 @@ public class BusinessModel extends Application {
 
     }
 
-    public void loadDashBordHome() {
-        Vector<ConfigureBO> menuDB = configurationMasterHelper
-                .downloadMainMenu();
-        for (ConfigureBO conf : menuDB) {
-            if (conf.getConfigCode().equalsIgnoreCase(
-                    StandardListMasterConstants.MENU_DASH)) {
-                dasHomeTitle = conf.getMenuName();
-                break;
-            }
-        }
-        dashHomeStatic = configurationMasterHelper.SHOW_DASH_HOME;
-    }
-
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
@@ -5234,26 +5217,7 @@ public class BusinessModel extends Application {
         return key;
     }
 
-    /**
-     * deleteAllValues will be called before updating the apk. This method will
-     * delete the database completely and also update AutoUpdate shared
-     * preference.
-     */
-    public void deleteAllValues() {
 
-        try {
-            this.deleteDatabase(DataMembers.DB_NAME);
-            synchronizationHelper.deleteDBFromSD();
-            SharedPreferences pref = this.getSharedPreferences("autoupdate",
-                    MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = pref.edit();
-            prefsEditor.putString("URL", "");
-            prefsEditor.putString("isUpdateExist", "False");
-            prefsEditor.apply();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
 
     public HashMap<String, String> getDigitalContentURLS() {
@@ -10516,7 +10480,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public String getSupportNo() {
+    /*public String getSupportNo() {
         DBUtil db = null;
         String suppot_no = "";
 
@@ -10541,7 +10505,7 @@ public class BusinessModel extends Application {
             db.closeDB();
         }
         return suppot_no;
-    }
+    }*/
 
     // Download bank details
     public void downloadBankDetails() {

@@ -120,7 +120,7 @@
                 <Button
                     android:id="@+id/loginButton"
                     style="?attr/roundedCustomButtonNormal"
-                    android:onClick="onClick"
+                    android:onClick="onLoginClick"
                     android:text="@string/login"
                     android:textAllCaps="false" />
             </LinearLayout>

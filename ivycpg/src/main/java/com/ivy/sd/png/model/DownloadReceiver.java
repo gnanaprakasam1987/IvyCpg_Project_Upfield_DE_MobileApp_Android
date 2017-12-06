@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ivy.countersales.CustomerVisitFragment;
+import com.ivy.cpg.login.LoginScreen.MyReceiver;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.view.AdhocPlanningFragment;
-import com.ivy.sd.png.view.LoginScreen.MyReceiver;
 import com.ivy.sd.png.view.NewOutletFragment.NewRetailerReceiver;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.sd.png.view.TLAttendanceActivity;

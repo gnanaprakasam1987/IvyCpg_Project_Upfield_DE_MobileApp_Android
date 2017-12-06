@@ -3,11 +3,11 @@ package com.ivy.cpg.view.planogram;
 public class PlanoGramBO {
 
     private String imageName;
-	private String adherence;
+    private String adherence;
     private String planoGramCameraImgName = "";
     private int pid;
-	private int planogramID;
-	private int locationID;
+    private int planogramID;
+    private int locationID;
 	private int audit=2;
 	private String reasonID ="0";
 	private String productName;

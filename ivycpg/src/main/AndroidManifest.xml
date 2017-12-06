@@ -177,7 +177,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.LoginScreen"
+            android:name="com.ivy.cpg.login.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity

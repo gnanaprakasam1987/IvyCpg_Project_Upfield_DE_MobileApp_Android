@@ -18,8 +18,8 @@ import java.util.Locale;
 public class NearExpiryTrackingHelper {
 
 	private final Context context;
-	private final BusinessModel mBModel;
-	private static NearExpiryTrackingHelper instance = null;
+    private final BusinessModel mBModel;
+    private static NearExpiryTrackingHelper instance = null;
 
 	private final String mTrackingHeader = "NearExpiry_Tracking_Header";
 	private final String mTrackingDetail = "NearExpiry_Tracking_Detail";
@@ -28,13 +28,13 @@ public class NearExpiryTrackingHelper {
 	public String mSelectedLocationName = "";
 	private int k = 0;
 
-	public String mSelectedActivityName = "";
+    public String mSelectedActivityName = "";
 
 
 	private NearExpiryTrackingHelper(Context context) {
 		this.context = context;
-		this.mBModel = (BusinessModel) context.getApplicationContext();
-	}
+        this.mBModel = (BusinessModel) context.getApplicationContext();
+    }
 
 	public static NearExpiryTrackingHelper getInstance(Context context) {
 		if (instance == null) {
@@ -50,9 +50,9 @@ public class NearExpiryTrackingHelper {
 
 			String sql1 = "SELECT ProductId, LocId,expdate, UOMId, Qty,isOwn"
 					+ " FROM LastVisitNearExpiry"
-					+ " WHERE retailerid = " + mBModel.getRetailerMasterBO().getRetailerID();
-			Cursor orderDetailCursor = db.selectSQL(sql1);
-			if (orderDetailCursor != null) {
+                    + " WHERE retailerid = " + mBModel.getRetailerMasterBO().getRetailerID();
+            Cursor orderDetailCursor = db.selectSQL(sql1);
+            if (orderDetailCursor != null) {
 				int curLocId = 0;
 				boolean isLocChanged;
 
@@ -102,9 +102,9 @@ public class NearExpiryTrackingHelper {
 			db.openDataBase();
 			String sql = "select tid from "
 					+ mTrackingHeader + " where RetailerID="
-					+ mBModel.getRetailerMasterBO().getRetailerID();
-			sql+=" AND date = "+ QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-			sql+=" and upload= 'N'";
+                    + mBModel.getRetailerMasterBO().getRetailerID();
+            sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            sql+=" and upload= 'N'";
 			Cursor orderHeaderCursor = db.selectSQL(sql);
 			if (orderHeaderCursor.getCount() > 0) {
 				orderHeaderCursor.close();
@@ -131,9 +131,9 @@ public class NearExpiryTrackingHelper {
 			String tid;
 
             String sb = "SELECT Tid FROM " + mTrackingHeader+ " WHERE retailerid = "
-					+ mBModel.getRetailerMasterBO().getRetailerID()
-						+" and (upload='N' OR refid!=0)";
-			// Get Tid From Header
+                    + mBModel.getRetailerMasterBO().getRetailerID()
+                    + " and (upload='N' OR refid!=0)";
+            // Get Tid From Header
 
 
 			Cursor orderHeaderCursor = db.selectSQL(sb);
@@ -211,12 +211,11 @@ public class NearExpiryTrackingHelper {
 		ProductMasterBO productBO;
 
 		 if(isTaggedProduct) {
-			 productBO = mBModel.productHelper.getTaggedProductBOById(pid);
-		 }
-		 else {
-			 productBO = mBModel.productHelper.getProductMasterBOById(pid);
-		 }
-			if(productBO!=null){
+             productBO = mBModel.productHelper.getTaggedProductBOById(pid);
+         } else {
+             productBO = mBModel.productHelper.getProductMasterBOById(pid);
+         }
+        if(productBO!=null){
 				for (int j = 0; j < productBO.getLocations().size(); j++) {
 					if (productBO.getLocations().get(j).getLocationId() == locationId) {
 
@@ -270,18 +269,18 @@ public class NearExpiryTrackingHelper {
 			boolean isData;
 
 
-			tid = mBModel.userMasterHelper.getUserMasterBO().getUserid()
-					+ ""
-					+ mBModel.getRetailerMasterBO().getRetailerID()
-					+ ""
-					+ SDUtil.now(SDUtil.DATE_TIME_ID);
+            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + ""
+                    + mBModel.getRetailerMasterBO().getRetailerID()
+                    + ""
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
 
 			// delete transaction if exist
 			sql = "SELECT Tid, RefId FROM "
 					+ mTrackingHeader
 					+ " WHERE RetailerId = "
-					+ mBModel.getRetailerMasterBO().getRetailerID();
-			sql += " and (upload='N' OR refid!=0)";
+                    + mBModel.getRetailerMasterBO().getRetailerID();
+            sql += " and (upload='N' OR refid!=0)";
 
 
 			headerCursor = db.selectSQL(sql);
@@ -298,7 +297,7 @@ public class NearExpiryTrackingHelper {
 
 			// Saving Transaction Detail
 			isData = false;
-			for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
+            for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
 
 				for (int j = 0; j < skubo.getLocations().size(); j++) {
 
@@ -309,7 +308,7 @@ public class NearExpiryTrackingHelper {
 								.equals(skubo.getLocations().get(j)
 										.getNearexpiryDate()
 										.get(k).getNearexpPC())||skubo.getLocations()
-								.get(mSelectedLocationIndex).getAudit() != 2) {
+                                .get(mSelectedLocationIndex).getAudit() != 2) {
 
 							values = QT(tid)
 									+ ","
@@ -333,9 +332,9 @@ public class NearExpiryTrackingHelper {
 									.getNearexpiryDate()
 									.get(k).getDate()))
 									+ ","
-									+ mBModel.getRetailerMasterBO()
-									.getRetailerID()
-									+ ","
+                                    + mBModel.getRetailerMasterBO()
+                                    .getRetailerID()
+                                    + ","
 									+ skubo.getLocations()
 									.get(j).getAudit();
 
@@ -347,9 +346,9 @@ public class NearExpiryTrackingHelper {
 								.equals(skubo.getLocations().get(j)
 										.getNearexpiryDate()
 										.get(k).getNearexpOU())||skubo.getLocations()
-								.get(mSelectedLocationIndex).getAudit() != 2) {
-							values = QT(tid)
-									+ ","
+                                .get(mSelectedLocationIndex).getAudit() != 2) {
+                            values = QT(tid)
+                                    + ","
 									+ skubo.getProductID()
 									+ ","
 									+ skubo.getLocations()
@@ -370,9 +369,9 @@ public class NearExpiryTrackingHelper {
 									.getNearexpiryDate()
 									.get(k).getDate()))
 									+ ","
-									+ mBModel.getRetailerMasterBO()
-									.getRetailerID()
-									+ ","
+                                    + mBModel.getRetailerMasterBO()
+                                    .getRetailerID()
+                                    + ","
 									+ skubo.getLocations()
 									.get(j).getAudit();
 
@@ -384,9 +383,9 @@ public class NearExpiryTrackingHelper {
 								.equals(skubo.getLocations().get(j)
 										.getNearexpiryDate()
 										.get(k).getNearexpCA())||skubo.getLocations()
-								.get(mSelectedLocationIndex).getAudit() != 2) {
-							values = QT(tid)
-									+ ","
+                                .get(mSelectedLocationIndex).getAudit() != 2) {
+                            values = QT(tid)
+                                    + ","
 									+ skubo.getProductID()
 									+ ","
 									+ skubo.getLocations()
@@ -407,9 +406,9 @@ public class NearExpiryTrackingHelper {
 									.getNearexpiryDate()
 									.get(k).getDate()))
 									+ ","
-									+ mBModel.getRetailerMasterBO()
-									.getRetailerID()
-									+ ","
+                                    + mBModel.getRetailerMasterBO()
+                                    .getRetailerID()
+                                    + ","
 									+ skubo.getLocations()
 									.get(j).getAudit();
 							db.insertSQL(mTrackingDetail,
@@ -425,10 +424,10 @@ public class NearExpiryTrackingHelper {
 			if (isData) {
 				values = QT(tid)
 						+ ","
-						+ mBModel.getRetailerMasterBO().getRetailerID()
-						+ ","
-						+ QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-						+ QT(mBModel.getTimeZone()) + "," + QT(refId);
+                        + mBModel.getRetailerMasterBO().getRetailerID()
+                        + ","
+                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(mBModel.getTimeZone()) + "," + QT(refId);
 
 				db.insertSQL(mTrackingHeader, headerColumns, values);
 			}
@@ -442,9 +441,9 @@ public class NearExpiryTrackingHelper {
 
 	public boolean checkDataToSave() {
 
-		for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
-			for (int j = 0; j < skubo.getLocations().size(); j++) {
-				for (int k = 0; k < (skubo.getLocations().get(j)
+        for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
+            for (int j = 0; j < skubo.getLocations().size(); j++) {
+                for (int k = 0; k < (skubo.getLocations().get(j)
 						.getNearexpiryDate().size()); k++) {
 					if (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
 							.get(k).getNearexpPC())
@@ -453,9 +452,9 @@ public class NearExpiryTrackingHelper {
 							|| !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
 							.get(k).getNearexpCA())
 							||skubo.getLocations()
-							.get(mSelectedLocationIndex).getAudit() != 2)
-						return true;
-				}
+                            .get(mSelectedLocationIndex).getAudit() != 2)
+                        return true;
+                }
 			}
 		}
 		return false;

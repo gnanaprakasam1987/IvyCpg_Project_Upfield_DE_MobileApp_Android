@@ -35,8 +35,8 @@ public class CustomGridAdapter extends RecyclerView.Adapter<CustomGridAdapter.Vi
 		View v = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.grid_item, parent, false);
 
-		return new ViewHolder(v);
-	}
+        return new ViewHolder(v);
+    }
 
 	@Override
 	public void onBindViewHolder(final ViewHolder holder, final int position) {
