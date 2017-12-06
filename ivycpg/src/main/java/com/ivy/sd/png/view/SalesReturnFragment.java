@@ -35,6 +35,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.LevelBO;
@@ -129,7 +130,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         setHasOptionsMenu(true);
-        bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        priceTrackingHelper.mSelectedFilter = -1;
     }
 
 
