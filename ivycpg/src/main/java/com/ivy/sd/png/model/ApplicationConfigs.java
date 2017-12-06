@@ -3,11 +3,11 @@ package com.ivy.sd.png.model;
 public interface
 ApplicationConfigs {
 
-    String DB_NAME = "ivycpg_v18_tst";
+    String DB_NAME = "ivycpg_v18";
 
     boolean withActivation = true;
 
-    boolean checkUTCTime = false;
+    boolean checkUTCTime = true;
     String LANGUAGE = "en";
 
     boolean expiryEnable = false;
