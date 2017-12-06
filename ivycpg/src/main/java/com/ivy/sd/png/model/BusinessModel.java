@@ -65,6 +65,7 @@ import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.lib.Logs;
@@ -126,7 +127,6 @@ import com.ivy.sd.png.provider.LeaveApprovalHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
-import com.ivy.sd.png.provider.NearExpiryTrackingHelper;
 import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
@@ -170,7 +170,7 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
-import com.ivy.sd.png.view.DigitalContentDisplay;
+import com.ivy.sd.png.view.DashBoardActivity;
 import com.ivy.sd.png.view.Gallery;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
@@ -257,8 +257,7 @@ public class BusinessModel extends Application {
     public boolean endjourneyclicked;
     public String mSelectedActivityName = new String();
     public String mSelectedActivityConfigCode = new String();
-    // To retain the Selected filter across the module
-    public int mSFSelectedFilter = -1;
+
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
@@ -270,7 +269,6 @@ public class BusinessModel extends Application {
     public SubChannelMasterHelper subChannelMasterHelper;
     public ConfigurationMasterHelper configurationMasterHelper;
     public ProductHelper productHelper;
-    public NearExpiryTrackingHelper mNearExpiryTrackingHelper;
     public UserMasterHelper userMasterHelper;
     public ActivationHelper activationHelper;
     public SBDMerchandisingHelper sbdMerchandisingHelper;
@@ -298,7 +296,7 @@ public class BusinessModel extends Application {
     public CloseCallHelper closecallhelper;
     // Retail Hepler Class and Independent super
     public OrderSplitHelper orderSplitHelper = null;
-  //  public PriceTrackingHelper mPriceTrackingHelper;
+    //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -334,8 +332,6 @@ public class BusinessModel extends Application {
     public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
-    //
-    public HashMap<String, PhotoCaptureProductBO> galleryDetails;
     /* ******* Invoice Number To Print ******* */
     public String invoiceNumber;
     public String invoiceDate;
@@ -349,7 +345,6 @@ public class BusinessModel extends Application {
     private Activity ctx, activity;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
-    //private Vector<DigitalContentBO> digitalMaster;
 
     //private Vector payment;
     private DailyReportBO dailyRep;
@@ -373,7 +368,6 @@ public class BusinessModel extends Application {
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private ArrayList<String> mRetailerIDList;
     private boolean isDoubleEdit_temp;
-    //private String appDigitalContentURL;
     private HashMap<String, String> digitalContentURLS;
     private int responceMessage;
     private Handler handler;
@@ -433,7 +427,6 @@ public class BusinessModel extends Application {
         configurationMasterHelper = ConfigurationMasterHelper.getInstance(this);
         productHelper = ProductHelper.getInstance(this);
         userMasterHelper = UserMasterHelper.getInstance(this);
-        mNearExpiryTrackingHelper = NearExpiryTrackingHelper.getInstance(this);
         activationHelper = ActivationHelper.getInstance(this);
         sbdMerchandisingHelper = SBDMerchandisingHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);
@@ -544,7 +537,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, NewOutlet.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actDigitalContent)) {
-            myIntent = new Intent(ctxx, DigitalContentDisplay.class);
+            myIntent = new Intent(ctxx, DigitalContentActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actOrderAndStock)) {
             myIntent = new Intent(ctxx, StockAndOrder.class);
@@ -2875,70 +2868,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-
-    // Load all retailer in Gallery
-    public void loadPhotoCapturedDetails() {
-
-        galleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-        for (int i = 0; i < retailerMaster.size(); i++) {
-            String sql = "select * from Photocapture where RetailerId="
-                    + retailerMaster.get(i).getRetailerID();
-            int imageCount = 1;
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                PhotoCaptureProductBO photoBO;
-                while (c.moveToNext()) {
-                    photoBO = new PhotoCaptureProductBO();
-                    photoBO.setRetailerName(c.getString(c
-                            .getColumnIndex("RetailerName")) + "." + imageCount);
-                    photoBO.setProductID(c.getInt(c.getColumnIndex("pid")));
-//                    photoBO.setPhototypeid(c.getInt(c.getColumnIndex("phototypeid")));
-                    galleryDetails
-                            .put(c.getString(c.getColumnIndex("imagepath")),
-                                    photoBO);
-                    imageCount++;
-                }
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
-
-    public void loadPhotoCapturedDetailsSelectedRetailer() {
-
-        galleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-        String sql = "select * from Photocapture where RetailerId="
-                + Utils.QT(this.getRetailerMasterBO().getRetailerID());
-        int imageCount = 1;
-        Cursor c = db.selectSQL(sql);
-        if (c != null) {
-            PhotoCaptureProductBO photoBO;
-            while (c.moveToNext()) {
-                photoBO = new PhotoCaptureProductBO();
-                photoBO.setRetailerName(c.getString(c
-                        .getColumnIndex("RetailerName")) + "." + imageCount);
-                photoBO.setProductID(c.getInt(c.getColumnIndex("pid")));
-//                photoBO.setPhototypeid(c.getInt(c.getColumnIndex("phototypeid")));
-                galleryDetails.put(c.getString(c.getColumnIndex("imagepath")),
-                        photoBO);
-                imageCount++;
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
 
     /**
      * This method will save the Invoice into InvoiceMaster table as well as the
@@ -5338,26 +5267,6 @@ public class BusinessModel extends Application {
     }
 
 
-    // UPDATE OrderDetail SET RetailerId = (SELECT RetailerId FROM OrderHeader
-    // WHERE OrderId = OrderDetail .OrderId )
-
-    public void setIsDigitalContent() {
-        RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = retailerMaster.get(i);
-            if (retailer.getRetailerID().equals(
-                    getRetailerMasterBO().getRetailerID())) {
-                retailer.setIsDigitalContent("Y");
-                retailerMaster.setElementAt(retailer, i);
-                return;
-            }
-        }
-
-    }
 
     public void setIsReviewPlan(String flag) {
         RetailerMasterBO retailer;
@@ -5441,15 +5350,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void setDigitalContentInDB() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        db.executeQ("update " + DataMembers.tbl_retailerMaster
-                + " set isDigitalContent=" + QT("Y") + " where retailerid="
-                + QT(getRetailerMasterBO().getRetailerID()));
-        db.closeDB();
-    }
 
     /**
      * Set Review plan in DB. This will update the isReviewPlan field in
@@ -6016,19 +5916,6 @@ public class BusinessModel extends Application {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public void deleteImageDetailsFormTable(String ImageName) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            db.deleteSQL(DataMembers.tbl_PhotoCapture, "imgName="
-                    + QT(ImageName), false); // QT(ImageName));
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
 
     public void deleteAdhocImageDetailsFormTable(String ImageName) {
@@ -6869,20 +6756,19 @@ public class BusinessModel extends Application {
                 }
             }
 
-                String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID());
-                Cursor c = db.selectSQL(query);
-                if (c.getCount() > 0) {
-                    if (c.moveToFirst()) {
-                        timeStampid = c.getString(0);
+            String query = "select max(VisitID) from OutletTimestamp where retailerid="
+                    + QT(getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    timeStampid = c.getString(0);
 
-                        if (outletTimeStampHelper.isJointCall(userMasterHelper
-                                .getUserMasterBO().getJoinCallUserList())) {
-                            flag = 1;
-                        }
+                    if (outletTimeStampHelper.isJointCall(userMasterHelper
+                            .getUserMasterBO().getJoinCallUserList())) {
+                        flag = 1;
                     }
                 }
-
+            }
 
 
             String id = userMasterHelper.getUserMasterBO().getUserid()
@@ -8210,6 +8096,7 @@ public class BusinessModel extends Application {
             }
         }
     }
+
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
         try {
@@ -11691,6 +11578,62 @@ public class BusinessModel extends Application {
     public String getWithoutExponential(Double value) {
         return ((value + "").contains("E")
                 ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
+    }
+
+
+    /**
+     * This method will called to planeDeviateReason
+     * reason.
+     */
+    public void savePlaneDiveateReason(NonproductivereasonBO outlet, String remarks) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            String values;
+            db.createDataBase();
+            db.openDataBase();
+
+            // uid = distid+uid+hh:mm
+            String id = "";
+            Cursor c = db.selectSQL("Select Uid from NonFieldActivity where UserId="
+                    + userMasterHelper.getUserMasterBO().getUserid() + " AND Upload ='N'");
+
+            if (c != null) {
+                if (c.getCount() > 0)
+                    while (c.moveToNext()) {
+                        id = c.getString(0);
+                        break;
+                    }
+            }
+            c.close();
+
+            if (!id.equals(""))
+                db.deleteSQL(
+                        "NonFieldActivity",
+                        "Uid=" + QT(id), false);
+
+
+            id = QT(userMasterHelper.getUserMasterBO()
+                    .getDistributorid()
+                    + ""
+                    + userMasterHelper.getUserMasterBO().getUserid()
+                    + ""
+                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+
+
+            String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
+
+            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
+                    + "," + QT(remarks) +
+                    "," + getRetailerMasterBO().getDistributorId();
+
+            db.insertSQL("NonFieldActivity", columns, values);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }
 

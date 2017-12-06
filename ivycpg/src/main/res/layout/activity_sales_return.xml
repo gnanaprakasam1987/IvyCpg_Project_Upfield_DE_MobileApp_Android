@@ -10,8 +10,8 @@
         layout="@layout/material_tool_bar" />
 
     <fragment
-        android:id="@+id/nearexpiry_tracking_fragment"
-        android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingFragment"
+        android:id="@+id/sales_return_fragment"
+        android:name="com.ivy.sd.png.view.SalesReturnFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

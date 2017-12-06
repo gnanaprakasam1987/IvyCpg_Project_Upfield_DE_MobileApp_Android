@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1230"
+    android:versionCode="1240"
     android:versionName="123.0.483">
 
     <supports-screens
@@ -190,7 +190,7 @@
             android:name="com.ivy.sd.png.view.NonVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplayNew"
+            android:name="com.ivy.cpg.view.digitalcontent.StoreWiseGallery"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
@@ -255,7 +255,7 @@
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleStockCheckFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NearExpiryTrackingActivity"
+            android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivyretail.views.CompetitorTrackingActivity"
@@ -357,7 +357,7 @@
             android:name="com.ivy.sd.png.view.reports.Orderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplay"
+            android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
@@ -407,26 +407,10 @@
             android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnWithActionBar"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.ivy.sd.png.view.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.ivy.sd.png.view.van.LoadManagementScreen"
@@ -550,6 +534,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.price.PriceTrackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.price.PriceTrackCompActivity"
@@ -799,6 +786,9 @@
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.sd.png.view.PlanDeviationActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

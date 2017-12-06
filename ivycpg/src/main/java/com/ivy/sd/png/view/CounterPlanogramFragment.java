@@ -39,6 +39,7 @@ import com.ivy.sd.png.bo.CounterPlanogramBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -89,12 +90,14 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
     private String calledBy = "0";
     private boolean isDialogPopup;
     private int counterId = -1;
+    PlanogramMasterHelper mPlanoGramMasterHelper;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
 
     }
 
@@ -114,7 +117,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         counterId = extras.getInt("counterId");
 
         // download data for planogram
-        vPlanogram = bmodel.planogramMasterHelper.getCsPlanogramMaster();
+        vPlanogram = mPlanoGramMasterHelper.getCsPlanogramMaster();
         txt_pgtfilterName = (TextView) view.findViewById(R.id.txt_pgfiltername);
         reason_Layout = (LinearLayout) view.findViewById(R.id.reason_layout);
         aduit_Layout = (LinearLayout) view.findViewById(R.id.aduit_layout);
@@ -159,7 +162,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 // TODO Auto-generated method stub
                 if (isChecked == true) {
                     rdNo.setChecked(false);
-                    bmodel.planogramMasterHelper.setCSImageAdherence(
+                    mPlanoGramMasterHelper.setCSImageAdherence(
                             "1" , selectedImageId);
                     reason_Layout.setVisibility(View.GONE);
                 }
@@ -174,7 +177,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 // TODO Auto-generated method stub
                 if (isChecked == true) {
                     rdYes.setChecked(false);
-                    bmodel.planogramMasterHelper.setCSImageAdherence(
+                    mPlanoGramMasterHelper.setCSImageAdherence(
                             "0" , selectedImageId);
                     reason_Layout.setVisibility(View.VISIBLE);
                 }
@@ -191,7 +194,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                                                int arg2, long arg3) {
                         ReasonMaster reString = (ReasonMaster) arg0
                                 .getSelectedItem();
-                        bmodel.planogramMasterHelper.setCSImageAdherenceReason(
+                        mPlanoGramMasterHelper.setCSImageAdherenceReason(
                                 reString.getReasonID() , selectedImageId);
 
                     }
@@ -204,8 +207,8 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                 });
 
         // chooseFilterHeading();
-        selectedImageId = bmodel.planogramMasterHelper.getCsPlanogramMaster().get(0).getImageId();
-        selectedImageName = bmodel.planogramMasterHelper.getCsPlanogramMaster().get(0).getImageName();
+        selectedImageId = mPlanoGramMasterHelper.getCsPlanogramMaster().get(0).getImageId();
+        selectedImageName = mPlanoGramMasterHelper.getCsPlanogramMaster().get(0).getImageName();
 
         if (savedInstanceState != null) {
             selectedImageId = savedInstanceState.getInt("id");
@@ -277,7 +280,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         super.onResume();
         // / if statement to make sure the alert is displayed only for the first
         // time
-        if(bmodel.planogramMasterHelper.getCsPlanogramMaster().size() != 1)
+        if (mPlanoGramMasterHelper.getCsPlanogramMaster().size() != 1)
             if (isDialogPopup)
                 showImageFilter();
 
@@ -303,8 +306,8 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
                     String path = photoNamePath
                             + planogramBO.getPlanogramCameraImgName();
                     Commons.print("image path " + path);
-                    if (bmodel.planogramMasterHelper.isImagePresent(path)) {
-                        Uri uri = bmodel.planogramMasterHelper
+                    if (mPlanoGramMasterHelper.isImagePresent(path)) {
+                        Uri uri = mPlanoGramMasterHelper
                                 .getUriFromFile(path);
                         imgCameraPath = path;
                         imgFromCamera.setImageURI(uri);
@@ -511,9 +514,9 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
     }
 
 	/*
-	 * private void chooseFilterHeading() {
+     * private void chooseFilterHeading() {
 	 * 
-	 * Vector<ChildLevelBo> items = bmodel.planogramMasterHelper
+	 * Vector<ChildLevelBo> items = mPlanoGramMasterHelper
 	 * .getLevelMaster(); if (items == null) { return; }
 	 * 
 	 * if (filterId != 0) return;
@@ -526,7 +529,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
     public void searchAndUpdateImage() {
         String path = imageFileName;
         Commons.print(TAG+  ",Img " +  imageFileName);
-        bmodel.planogramMasterHelper.setCSImagePath(path , selectedImageId);
+        mPlanoGramMasterHelper.setCSImagePath(path, selectedImageId);
 
         enableAdherence();
         clearImageViews();
@@ -558,7 +561,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
             // for category
 
             // locSelectionId =
-            // bmodel.planogramMasterHelper.showFirstFilterName(filterId);
+            // mPlanoGramMasterHelper.showFirstFilterName(filterId);
             setImagefromServer(selectedImageId);
             setImagefromCamera(selectedImageId);
             // }
@@ -681,7 +684,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 if(counterId > 0) {
-                    bmodel.planogramMasterHelper.savePhotocapture(counterId);
+                    mPlanoGramMasterHelper.savePhotocapture(counterId);
                     //bmodel.saveModuleCompletion(CSHomeScreen.MENU_COUNTER_PLANOGRAM);
                 }
                 return Boolean.TRUE;

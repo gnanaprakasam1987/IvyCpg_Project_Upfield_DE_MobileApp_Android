@@ -1,7 +1,7 @@
 package com.ivy.sd.png.bo;
 
 import com.ivy.countersales.bo.CS_StockReasonBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,6 @@ public class LocationBO {
     private int isPouring;
     private int cockTailQty;
     private boolean hasData = false;
-    private String shelfInventory = "";
     private int LocId;
     private int parentId;
     private String actual = "0", parentTotal = "0";
@@ -33,16 +32,12 @@ public class LocationBO {
     private String productName;
     private String skuname = "";
     private String abv = "";
-    private String lotcode = "";
-    private String seqno = "";
     private String feedback = "";
     private int productID;
     private int photoid;
-    private String imgName = "";
 
     ArrayList<CS_StockReasonBO> lstStockReasons;
 
-    private ArrayList<AssetTrackingBO> assetTrackingBOArrayList;
     private ArrayList<NearExpiryDateBO> nearexpiryDate;
 
     public LocationBO(LocationBO locObj) {
@@ -61,8 +56,6 @@ public class LocationBO {
         this.photoid = locObj.getPhotoid();
         this.skuname = locObj.getSkuname();
         this.abv = locObj.getAbv();
-        this.lotcode = locObj.getLotcode();
-        this.seqno = locObj.getSeqno();
         this.feedback = locObj.getFeedback();
 
         this.isPouring = locObj.getIsPouring();
@@ -77,10 +70,6 @@ public class LocationBO {
         super();
         this.LocId = locid;
         this.LocName = LocName;
-    }
-
-    public ArrayList<AssetTrackingBO> getAssetTrackingBOArrayList() {
-        return assetTrackingBOArrayList;
     }
 
     public int getLocId() {
@@ -105,10 +94,6 @@ public class LocationBO {
 
     public void setLocName(String locName) {
         LocName = locName;
-    }
-
-    public void addAssetList(ArrayList<AssetTrackingBO> assetList) {
-        this.assetTrackingBOArrayList = assetList;
     }
 
     public int getmSIH() {
@@ -199,16 +184,7 @@ public class LocationBO {
         this.hasData = hasData;
     }
 
-    public String getShelfInventory() {
-        return shelfInventory;
-    }
-
-    public void setShelfInventory(String shelfInventory) {
-        this.shelfInventory = shelfInventory;
-    }
-
     public String toString() {
-        // TODO Auto-generated method stub
         return LocName;
     }
 
@@ -354,22 +330,6 @@ public class LocationBO {
 
     public void setAbv(String abv) {
         this.abv = abv;
-    }
-
-    public String getLotcode() {
-        return lotcode;
-    }
-
-    public void setLotcode(String lotcode) {
-        this.lotcode = lotcode;
-    }
-
-    public String getSeqno() {
-        return seqno;
-    }
-
-    public void setSeqno(String seqno) {
-        this.seqno = seqno;
     }
 
     public String getFeedback() {

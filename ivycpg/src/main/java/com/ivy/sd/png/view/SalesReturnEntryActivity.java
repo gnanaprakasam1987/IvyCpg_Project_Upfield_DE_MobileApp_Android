@@ -59,7 +59,7 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
         holderTop = getIntent().getIntExtra("top", 0);
 
         if (Pid != null)
-            setScreenTitle(bmodel.productHelper.getProductMasterBOById(Pid).getProductShortName());
+            setScreenTitle(bmodel.productHelper.getSalesReturnProductBOById(Pid).getProductShortName());
 
         initializeViews();
 

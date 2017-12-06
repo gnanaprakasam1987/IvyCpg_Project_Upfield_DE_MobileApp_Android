@@ -42,6 +42,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -386,13 +387,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 break;
             case MENU_VAN_PLANOGRAM:
+                PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(getActivity());
                 bmodel.mSelectedActivityName = menuItem.getMenuName();
-                bmodel.planogramMasterHelper
+                mPlanoGramMasterHelper
                         .downloadlevels(MENU_VAN_PLANOGRAM, "0");
-                bmodel.planogramMasterHelper.downloadPlanogram(MENU_VAN_PLANOGRAM
+                mPlanoGramMasterHelper.downloadPlanogram(MENU_VAN_PLANOGRAM
                         , false, false, false, 0, 0);
                 bmodel.productHelper.downloadPlanogramProdutLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
-                bmodel.planogramMasterHelper.loadPlanoGramInEditMode("0");
+                mPlanoGramMasterHelper.loadPlanoGramInEditMode("0");
                 if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(getActivity(),
                             PlanogramActivity.class);
