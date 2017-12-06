@@ -1,4 +1,4 @@
-package com.ivy.cpg.price;
+package com.ivy.cpg.view.price;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

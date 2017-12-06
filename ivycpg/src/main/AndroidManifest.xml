@@ -270,7 +270,7 @@
             android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.SurveyActivityNew"
+            android:name="com.ivy.cpg.view.survey.SurveyActivityNew"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerSelectionActivity"
@@ -533,13 +533,13 @@
             android:name="com.ivy.sd.png.view.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.price.PriceTrackActivity"
+            android:name="com.ivy.cpg.view.price.PriceTrackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.price.PriceTrackCompActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SalesReturnActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.price.PriceTrackCompActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"
@@ -742,7 +742,7 @@
             android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
+            android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

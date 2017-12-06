@@ -1,4 +1,4 @@
-package com.ivy.sd.png.survey;
+package com.ivy.cpg.view.survey;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,7 +33,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SurveyHelperNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
@@ -98,7 +97,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                 .replace("/", "") + "/"
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
 
-        if(bmodel.configurationMasterHelper.ENABLE_MULTIPLE_PHOTO)
+        if(surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled=true;
 
         initViews();
@@ -174,7 +173,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
         imageSrc = new ArrayList<>();
         thumbnailSrc = new ArrayList<>();
         ArrayList<QuestionBO> items = new ArrayList<>();
-        for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
             items = surBO.getQuestions();
             for (int i = 0; i < items.size(); i++) {
                 if (items.get(i).getImageNames() != null) {
