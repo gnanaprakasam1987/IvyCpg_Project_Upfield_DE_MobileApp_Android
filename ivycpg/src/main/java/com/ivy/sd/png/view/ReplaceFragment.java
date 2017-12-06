@@ -21,12 +21,12 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
 
 import static android.app.Activity.RESULT_OK;

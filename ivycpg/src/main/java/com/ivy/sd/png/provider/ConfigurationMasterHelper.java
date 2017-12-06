@@ -187,7 +187,7 @@ public class ConfigurationMasterHelper {
     // code added in v 38
     private static final String CODE_SHOW_REMARKS_STK_ORD = "REM1";
     private static final String CODE_SHOW_REMARKS_STK_CHK = "REM2";
-    private static final String CODE_SHOW_REMARKS_SAL_RET = "REM4";
+
     private static final String CODE_SHOW_DASH_HOME = "HASDASH";
     private static final String CODE_SHOW_LOCATION_PWD_DIALOG = "GPSVAL";
     private static final String CODE_SHOW_CHART_DASH = "DASH02";
@@ -382,8 +382,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_NO_ORDER_REASON = "FUN38";
     public boolean SHOW_NO_ORDER_REASON;
 
-    private static final String CODE_CHECK_MRP = "SR07";
-    public boolean CHECK_MRP_VALUE;
+
 
     private static final String CODE_CHAT = "CHAT01";
     public boolean IS_CHAT_ENABLED;
@@ -595,7 +594,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REMARKS_STK_ORD;
     public boolean SHOW_REMARKS_STK_CHK;
     // Added in 45 version
-    public boolean SHOW_REMARKS_SAL_RET;
     public boolean SHOW_DASH_HOME;
     public boolean SHOW_LOCATION_PASSWORD_DIALOG;
     public boolean IS_SURVEY_ONCE;
@@ -995,14 +993,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_EOD_COLUMNS = "EOD01";
     private static final String CODE_SR_SEQUENCE_NUMBER = "SR08";
     private static final String CODE_CN_SEQUENCE_NUMBER = "SR09";
-
-    private static final String CODE_SR_DISCOUNT = "SR10";
-    public boolean IS_APPLY_DISCOUNT_IN_SR;
-    private static final String CODE_SR_TAX = "SR11";
-    public boolean IS_APPLY_TAX_IN_SR;
-
-    private static final String CODE_SR_DIFF_CNT = "SR12";
-    public boolean IS_PRD_CNT_DIFF_SR;
 
     public boolean SHOW_PRICECHECK_IN_STOCKCHECK;
     public String CODE_IS_PRICECHECK_IN_STOCKCHECK = "CSSTK02";
@@ -1656,7 +1646,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_MVP_DRAWER = hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) : false;
         this.SHOW_REMARKS_STK_ORD = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) : false;
         this.SHOW_REMARKS_STK_CHK = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) : false;
-        this.SHOW_REMARKS_SAL_RET = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_SAL_RET) : false;
         this.SHOW_DASH_HOME = hashMapHHTModuleConfig.get(CODE_SHOW_DASH_HOME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DASH_HOME) : false;
         this.SHOW_LOCATION_PASSWORD_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LOCATION_PWD_DIALOG) : false;
         this.SHOW_CHART_DASH = hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CHART_DASH) : false;
@@ -1848,7 +1837,6 @@ public class ConfigurationMasterHelper {
         this.IS_USER_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_USER_BASED_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_USER_BASED_DASH) : false;
         this.IS_DISTRIBUTOR_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_DISTRIBUTOR_BASED_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_DISTRIBUTOR_BASED_DASH) : false;
         this.SHOW_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NO_ORDER_REASON) : false;
-        this.CHECK_MRP_VALUE = hashMapHHTModuleConfig.get(CODE_CHECK_MRP) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_MRP) : false;
         this.IS_CLEAR_DATA = hashMapHHTModuleConfig.get(CODE_CLEAR_DATA) != null ? hashMapHHTModuleConfig.get(CODE_CLEAR_DATA) : false;
         this.IS_NIVEA_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_NIVEA_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_NIVEA_DASH) : false;
         this.IS_SMP_BASED_DASH = hashMapHHTModuleConfig.get(CODE_IS_SMP_DASH) != null ? hashMapHHTModuleConfig.get(CODE_IS_SMP_DASH) : false;
@@ -1868,8 +1856,6 @@ public class ConfigurationMasterHelper {
             this.IS_MUST_SELL_SKIP = true;
             this.IS_MUST_SELL_REASON = false;
         }
-        this.IS_APPLY_DISCOUNT_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_SR_DISCOUNT) : false;
-        this.IS_APPLY_TAX_IN_SR = hashMapHHTModuleConfig.get(CODE_SR_TAX) != null ? hashMapHHTModuleConfig.get(CODE_SR_TAX) : false;
         this.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE = hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : false;
 
         if (hashMapHHTModuleOrder.get(CODE_PRODUCT_SCHEME_DIALOG) != null) {

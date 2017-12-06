@@ -1,8 +1,7 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;

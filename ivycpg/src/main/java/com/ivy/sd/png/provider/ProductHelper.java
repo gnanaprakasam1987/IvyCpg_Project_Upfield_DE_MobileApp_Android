@@ -29,7 +29,7 @@ import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -2580,7 +2580,7 @@ public class ProductHelper {
         }
     }
 
-    protected static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
+    public static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
         List<SalesReturnReasonBO> clone = null;
         try {
             clone = new ArrayList<SalesReturnReasonBO>();
@@ -2719,7 +2719,7 @@ public class ProductHelper {
         }
     }
 
-    protected int getOldBatchIDByMfd(String prodId) {
+    public int getOldBatchIDByMfd(String prodId) {
         try {
             return oldBatchId.get(prodId);
         } catch (Exception e) {
