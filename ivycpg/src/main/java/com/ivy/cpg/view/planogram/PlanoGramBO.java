@@ -1,11 +1,11 @@
 package com.ivy.cpg.view.planogram;
 
-public class PlanogramBO {
-	
-	private String imageName;
+public class PlanoGramBO {
+
+    private String imageName;
 	private String adherence;
-	private String planogramCameraImgName="";
-	private int pid;
+    private String planoGramCameraImgName = "";
+    private int pid;
 	private int planogramID;
 	private int locationID;
 	private int audit=2;
@@ -53,12 +53,12 @@ public class PlanogramBO {
 	}
 
 	public String getPlanogramCameraImgName() {
-		return planogramCameraImgName;
-	}
+        return planoGramCameraImgName;
+    }
 
 	public void setPlanogramCameraImgName(String planogramCameraImgName) {
-		this.planogramCameraImgName = planogramCameraImgName;
-	}
+        this.planoGramCameraImgName = planogramCameraImgName;
+    }
 
 	public int getPid() {
 		return pid;

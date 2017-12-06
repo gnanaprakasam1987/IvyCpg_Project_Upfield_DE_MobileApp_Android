@@ -264,7 +264,7 @@
             android:name="com.ivyretail.views.SubCompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.planogram.PlanogramActivity"
+            android:name="com.ivy.cpg.view.planogram.PlanoGramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"

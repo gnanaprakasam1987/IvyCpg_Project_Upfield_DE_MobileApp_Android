@@ -263,6 +263,9 @@ public class BusinessModel extends Application {
     //public boolean fromNewTargetPlanActivity = false;
     public int mSelectedModule = -1;
     public String regid;
+
+    public static String photoPath;
+
     public InitiativeHelper initiativeHelper;
     public TargetPlanHelper targetPlanHelper;
     //public SalesReturnHelper salesReturnHelper;

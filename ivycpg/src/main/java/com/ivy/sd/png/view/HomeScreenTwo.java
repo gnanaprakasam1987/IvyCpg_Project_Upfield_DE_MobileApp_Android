@@ -53,8 +53,8 @@ import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
-import com.ivy.cpg.view.planogram.PlanogramActivity;
-import com.ivy.cpg.view.planogram.PlanogramHelper;
+import com.ivy.cpg.view.planogram.PlanoGramActivity;
+import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.sf.SODActivity;
 import com.ivy.cpg.view.sf.SODAssetActivity;
 import com.ivy.cpg.view.sf.SODAssetHelper;
@@ -2711,30 +2711,31 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(this);
+
+                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
+
                 mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                 mPlanoGramHelper.loadConfigurations();
                 chooseFilterType(MENU_PLANOGRAM);
-                mPlanoGramHelper.downloadlevels(MENU_PLANOGRAM,
-                        bmodel.retailerMasterBO.getRetailerID());
-                mPlanoGramHelper.loadData(MENU_PLANOGRAM);
-                mPlanoGramHelper
-                        .loadPlanoGramInEditMode(bmodel.retailerMasterBO
-                                .getRetailerID());
+                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM, bmodel.retailerMasterBO.getRetailerID());
+                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM);
+                mPlanoGramHelper.loadPlanoGramInEditMode(bmodel.retailerMasterBO.getRetailerID());
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_PLANOGRAM);
 
                 if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
                     Intent in = new Intent(HomeScreenTwo.this,
-                            PlanogramActivity.class);
+                            PlanoGramActivity.class);
                     in.putExtra("from", "2");
                     in.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)
                         in.putExtra("isFromChild", isFromChild);
                     startActivity(in);
                     finish();
+
                 } else {
                     dataNotMapped();
                     isCreated = false;

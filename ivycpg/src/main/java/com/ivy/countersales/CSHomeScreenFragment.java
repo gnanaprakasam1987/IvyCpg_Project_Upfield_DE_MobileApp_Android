@@ -34,8 +34,8 @@ import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.planogram.CounterPlanogramActivity;
-import com.ivy.cpg.view.planogram.PlanogramActivity;
-import com.ivy.cpg.view.planogram.PlanogramHelper;
+import com.ivy.cpg.view.planogram.PlanoGramActivity;
+import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -497,12 +497,12 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 try {
-                    PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(getActivity());
+                    PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
                     mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                     mPlanoGramHelper.loadConfigurations();
                     int counterId = bmodel.getCounterId();
-                    mPlanoGramHelper.downloadCounterPlanogram(counterId);
-                    mPlanoGramHelper.loadPlanoGramInEditMode("0", counterId);
+                    mPlanoGramHelper.downloadCounterPlanoGram(counterId);
+                    mPlanoGramHelper.loadPlanoGramInEditMode(counterId);
 
                     if (mPlanoGramHelper.getCsPlanogramMaster() != null && mPlanoGramHelper.getCsPlanogramMaster().size() > 0) {
                         Intent in = new Intent(getActivity(),
@@ -564,13 +564,13 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                PlanogramHelper mPlanoGramHelper = PlanogramHelper.getInstance(getActivity());
+                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
                 mPlanoGramHelper.loadConfigurations();
                 mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                 bmodel.productHelper.downloadProductFilter(MENU_PLANOGRAM_CS);
-                mPlanoGramHelper.downloadlevels(MENU_PLANOGRAM_CS,
+                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM_CS,
                         bmodel.retailerMasterBO.getRetailerID());
-                mPlanoGramHelper.loadData(MENU_PLANOGRAM_CS);
+                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM_CS);
                 mPlanoGramHelper
                         .loadPlanoGramInEditMode(bmodel.retailerMasterBO
                                 .getRetailerID());
@@ -581,7 +581,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     int counterId = bmodel.getCounterId();
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     Intent in = new Intent(getActivity(),
-                            PlanogramActivity.class);
+                            PlanoGramActivity.class);
                     in.putExtra("from", "3");
                     in.putExtra("counterId", counterId);
                     startActivity(in);

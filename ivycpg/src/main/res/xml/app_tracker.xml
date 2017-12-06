@@ -55,7 +55,7 @@
     <screenName name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity">Photo Capture</screenName>
     <screenName name="com.ivy.sd.png.view.CollectionScreen">Collection</screenName>
     <screenName name="com.ivy.sd.png.view.SalesReturnWithActionBar">Sales Return</screenName>
-    <screenName name="com.ivy.cpg.view.planogram.PlanogramActivity">Planogram</screenName>
+    <screenName name="com.ivy.cpg.view.planogram.PlanoGramActivity">Planogram</screenName>
     <screenName name="com.ivy.sd.png.view.CallAnalysisActivity">Call Analysis</screenName>
     <screenName name="com.ivy.sd.png.view.CloseCallActivity">Close Call</screenName>
     <screenName name="com.ivy.sd.png.view.CallAnalysisQDVP3">Call Analysis - QDVP3</screenName>

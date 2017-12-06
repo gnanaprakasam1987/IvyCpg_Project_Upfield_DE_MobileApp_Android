@@ -1,8 +1,8 @@
 package com.ivy.cpg.view.planogram;
 
-public class CounterPlanogramBO {
-	
-	private String RetailerId,PlanogramDesc,ImageName,Adherence,PlanogramCameraImgName="",PlanogramSuperCameraPath,Type="";
+public class CounterPlanoGramBO {
+
+    private String RetailerId,PlanogramDesc,ImageName,Adherence,PlanogramCameraImgName="",PlanogramSuperCameraPath,Type="";
 	private int parentId,PlanogramID,audit=2,counterId,imageId;
 	private String ReasonID ="0";
 	

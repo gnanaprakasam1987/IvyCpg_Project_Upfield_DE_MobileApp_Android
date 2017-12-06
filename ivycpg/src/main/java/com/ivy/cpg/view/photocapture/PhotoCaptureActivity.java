@@ -709,7 +709,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(mBModel.photoPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(PhotoCaptureActivity.this,
@@ -1109,7 +1109,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     /**
      * To check, is photo count reached maximum count
      *
-     * @return
+     * @return Is Taken or not
      */
     private boolean isMaximumPhotoTaken() {
         int dbImageCount = mBModel.synchronizationHelper
@@ -1127,7 +1127,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(HomeScreenFragment.photoPath,
+            mBModel.deleteFiles(mBModel.photoPath,
                     imgList);
         }
     }

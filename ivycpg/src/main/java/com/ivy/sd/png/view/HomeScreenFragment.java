@@ -97,7 +97,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     //used to save the photo
     public static File folder;
+
     public static String photoPath;
+
     public static boolean fromHomeScreen = false;
 
     private static final String MENU_PLANNING_CONSTANT = "Day Planning";
@@ -360,7 +362,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         // image path
         photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                 + DataMembers.photoFolderName;
-        folder = new File(photoPath);
+
+        //local photopath string will be removed soon
+        BusinessModel.photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                + DataMembers.photoFolderName;
+        folder = new File(BusinessModel.photoPath);
         if (!folder.exists()) {
             folder.mkdir();
         }
