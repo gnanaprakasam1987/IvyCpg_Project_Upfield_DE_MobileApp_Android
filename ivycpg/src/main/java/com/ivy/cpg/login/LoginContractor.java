@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 /**
  * Created by dharmapriya.k on 4/12/17.
+ *
  */
 
 public interface LoginContractor {
@@ -19,8 +20,6 @@ public interface LoginContractor {
         void getSupportNo();
 
         void checkDB();
-
-        void copyAssetsProfile();
 
         void assignServerUrl();
 
@@ -54,7 +53,7 @@ public interface LoginContractor {
 
         void showProgressDialog(String msg);
 
-        void dismissProgressDialog();
+        void dismissAlertDialog();
 
         void showGPSDialog();
 
@@ -68,7 +67,7 @@ public interface LoginContractor {
 
         void setAlertDialogMessage(String msg);
 
-        void sendMessageToHandler();
+        void sendUserNotExistToHandler();
 
         void threadActions();
 
@@ -87,5 +86,6 @@ public interface LoginContractor {
         void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility);
 
         void callResetPassword();
+
     }
 }

@@ -22,16 +22,27 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by subramanian.r on 11-11-2015.
+ *
  */
 public class LoginHelper {
     private final Context context;
     private final BusinessModel businessModel;
     private static LoginHelper instance = null;
+
+    private static final String CODE_IS_PWD_ENCRYPTED = "ISPWDENC";
+    public boolean IS_PASSWORD_ENCRYPTED;
+    public boolean SHOW_FORGET_PASSWORD;
+    public boolean SHOW_CHANGE_PASSWORD;
+    private static final String CODE_CHANGE_PASSWORD = "PWD01";
+    private static final String CODE_FORGET_PWD = "PWD02";
 
     private final String SENDER_ID = "534457766184";
     private GoogleCloudMessaging gcm;
@@ -39,7 +50,7 @@ public class LoginHelper {
     private static final String PROPERTY_APP_VERSION = "appVersion";
 
     private static final String CODE_PWD_LOCK = "FUN46";
-    private static final String CODE_MAXIMUM_ATTEMPTCOUNT = "Max_Login_Attempt_count";
+    private static final String CODE_MAXIMUM_ATTEMPT_COUNT = "Max_Login_Attempt_count";
     public boolean IS_PASSWORD_LOCK;
     public int MAXIMUM_ATTEMPT_COUNT = 0;
 
@@ -55,9 +66,84 @@ public class LoginHelper {
         return instance;
     }
 
+    public void loadPasswordConfiguration() {
+        DBUtil db;
+        db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuffer sb;
+        try {
+            sb = new StringBuffer();
+            sb.append("select flag from hhtmodulemaster where hhtcode =");
+            sb.append(businessModel.QT(CODE_PWD_LOCK));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        sb = new StringBuffer();
+                        sb.append("select RField from hhtmodulemaster where hhtcode =");
+                        sb.append(businessModel.QT(CODE_MAXIMUM_ATTEMPT_COUNT));
+                        sb.append(" and Flag=1");
+                        c = db.selectSQL(sb.toString());
+                        if (c.getCount() > 0) {
+                            if (c.moveToNext()) {
+
+                                MAXIMUM_ATTEMPT_COUNT = c.getInt(0);
+
+                            }
+                        }
+                        if (MAXIMUM_ATTEMPT_COUNT > 0) {
+                            int listId = businessModel.configurationMasterHelper.getActivtyType("RESET_PWD");
+                            if (listId != 0)
+                                IS_PASSWORD_LOCK = true;
+                        }
+                    }
+                }
+            }
+
+
+            SHOW_CHANGE_PASSWORD = false;
+            SHOW_FORGET_PASSWORD = false;
+
+            sb = new StringBuffer();
+            sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE (hhtcode = ");
+            sb.append(businessModel.QT(CODE_CHANGE_PASSWORD));
+            sb.append(" OR hhtcode = ");
+            sb.append(businessModel.QT(CODE_FORGET_PWD));
+            sb.append(") AND Flag = 1");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(CODE_CHANGE_PASSWORD)) {
+                        SHOW_CHANGE_PASSWORD = true;
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_FORGET_PWD)) {
+                        SHOW_FORGET_PASSWORD = true;
+                    }
+                }
+            }
+
+            IS_PASSWORD_ENCRYPTED = false;
+
+            sb = new StringBuffer();
+            sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE hhtcode = ");
+            sb.append(businessModel.QT(CODE_IS_PWD_ENCRYPTED));
+            sb.append(" AND Flag = 1");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    IS_PASSWORD_ENCRYPTED = true;
+                }
+            }
+
+        } catch (Exception e) {
+            db.closeDB();
+        }
+    }
+
     public String getSupportNo() {
         DBUtil db = null;
-        String suppot_no = "";
+        String support_no = "";
 
         try {
             db = new DBUtil(context, DataMembers.DB_NAME,
@@ -69,7 +155,7 @@ public class LoginHelper {
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    suppot_no = c.getString(0);
+                    support_no = c.getString(0);
                 }
             }
             c.close();
@@ -80,7 +166,7 @@ public class LoginHelper {
                 db.closeDB();
             }
         }
-        return suppot_no;
+        return support_no;
     }
 
     public void onGCMRegistration() {
@@ -310,44 +396,40 @@ public class LoginHelper {
         }
     }
 
-    public void loadPasswordConfiguration() {
-        DBUtil db;
-        db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb;
+    public String getPasswordCreatedDate() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String date = "";
         try {
-            sb = new StringBuffer();
-            sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(businessModel.QT(CODE_PWD_LOCK));
-            Cursor c = db.selectSQL(sb.toString());
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select PasswordCreatedDate from AppVariables";
+            Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    int value = c.getInt(0);
-                    if (value == 1) {
-                        sb = new StringBuffer();
-                        sb.append("select RField from hhtmodulemaster where hhtcode =");
-                        sb.append(businessModel.QT(CODE_MAXIMUM_ATTEMPTCOUNT));
-                        sb.append(" and Flag=1");
-                        c = db.selectSQL(sb.toString());
-                        if (c.getCount() > 0) {
-                            if (c.moveToNext()) {
+                if (c.moveToFirst()) {
+                    date = c.getString(0);
 
-                                MAXIMUM_ATTEMPT_COUNT = c.getInt(0);
 
-                            }
-                        }
-                        if (MAXIMUM_ATTEMPT_COUNT > 0) {
-                            int listid = businessModel.configurationMasterHelper.getActivtyType("RESET_PWD");
-                            if (listid != 0)
-                                IS_PASSWORD_LOCK = true;
-                        }
-                    }
                 }
             }
-
         } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
             db.closeDB();
         }
+        return date;
+    }
+
+    public String getPasswordExpiryDate(String createdDate) {
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        try {
+            today.setTime(formatter.parse(createdDate));
+            today.add(Calendar.DATE, businessModel.configurationMasterHelper.PSWD_EXPIRY);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return formatter.format(today.getTime());
+
     }
 }

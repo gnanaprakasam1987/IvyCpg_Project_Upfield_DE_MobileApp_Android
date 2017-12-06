@@ -56,6 +56,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.countersales.CSHomeScreenFragment;
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
@@ -2142,7 +2143,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bmodel.configurationMasterHelper.SHOW_USER_TASK);
 
         menu.findItem(R.id.menu_pswd).setVisible(
-                bmodel.configurationMasterHelper.SHOW_CHANGE_PASSWORD);
+                LoginHelper.getInstance(getContext()).SHOW_CHANGE_PASSWORD);
 
         menu.findItem(R.id.menu_feedback).setVisible(
                 bmodel.configurationMasterHelper.SHOW_FEEDBACK);

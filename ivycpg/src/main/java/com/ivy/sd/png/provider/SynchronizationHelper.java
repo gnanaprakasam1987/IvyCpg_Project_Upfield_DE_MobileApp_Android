@@ -32,6 +32,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -2919,30 +2920,6 @@ SynchronizationHelper {
 
     }
 
-
-    public String getPasswordCreatedDate() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        String date = "";
-        try {
-            db.createDataBase();
-            db.openDataBase();
-            String query = "select PasswordCreatedDate from AppVariables";
-            Cursor c = db.selectSQL(query);
-            if (c.getCount() > 0) {
-                if (c.moveToFirst()) {
-                    date = c.getString(0);
-
-
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        } finally {
-            db.closeDB();
-        }
-        return date;
-    }
-
     public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere) {
         mJsonObjectResponseByTableName = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -4362,7 +4339,7 @@ SynchronizationHelper {
     public boolean validateUser(String username, String password) {
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
             if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getPassword());
             else
@@ -4384,7 +4361,7 @@ SynchronizationHelper {
 
         boolean isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
         boolean isPwd;
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
             if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
             else
@@ -4549,11 +4526,11 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            bmodel.mLoginHelper.onGCMRegistration();
+            LoginHelper.getInstance(context).onGCMRegistration();
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
             bmodel.synchronizationHelper.setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)

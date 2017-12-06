@@ -2,7 +2,6 @@ package com.ivy.cpg.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,6 +24,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -36,12 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +50,7 @@ import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
 
 /**
  * Created by dharmapriya.k on 4/12/17.
+ *
  */
 
 public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
@@ -69,7 +64,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private int mIterateCount = 0;
     private TransferUtility transferUtility;
 
-    public LoginPresenterImpl(Context context) {
+    LoginPresenterImpl(Context context) {
         this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
         loginHelper = LoginHelper.getInstance(context);
@@ -81,16 +76,19 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         this.loginView = loginView;
     }
 
+    /**
+     * Loads the initial set of data for the login screen
+     */
     @Override
     public void loadInitialData() {
         syncDone = businessModel.userMasterHelper.getSyncStatus();
         if (syncDone) {
             loginHelper.loadPasswordConfiguration();
             businessModel.userMasterHelper.downloadDistributionDetails();
-            if (businessModel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
+            if (loginHelper.IS_PASSWORD_ENCRYPTED)
                 businessModel.synchronizationHelper.setEncryptType();
 
-            if (businessModel.configurationMasterHelper.SHOW_FORGET_PASSWORD) {
+            if (loginHelper.SHOW_FORGET_PASSWORD) {
                 loginView.showForgotPassword();
             }
         }
@@ -100,7 +98,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 .getDefaultSharedPreferences(context);
         String initialLanguage = "en";
 
-        if (!Locale.getDefault().equals(
+        if (!Locale.getDefault().getLanguage().equals(
                 sharedPrefs.getString("languagePref", LANGUAGE))) {
             initialLanguage = sharedPrefs.getString("languagePref", LANGUAGE);
             Locale locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
@@ -139,6 +137,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    /**
+     * Saves the last sync date and time in shared preferences
+     */
     @Override
     public void applyLastSyncPref() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
@@ -149,6 +150,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         edt.apply();
     }
 
+    /*
+    * Saves the password lock count in shared preferences
+    * */
     @Override
     public void applyPasswordLockCountPref() {
         SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
@@ -156,6 +160,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         edt.apply();
     }
 
+    /* Returns password lock count from shared preference
+    * */
     @Override
     public int getPasswordLockCount() {
         return mPasswordLockCountPref.getInt("passwordlock", 0);
@@ -166,6 +172,12 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         loginView.setSupportNoTV(loginHelper.getSupportNo());
     }
 
+    /*
+    * Checks if external storage available or not
+    *         not available then finishes the application
+    *         available then checks if back up DB there.
+    *         If backup available restores the old DB
+    **/
     @Override
     public void checkDB() {
         if (businessModel.synchronizationHelper.isExternalStorageAvailable()) {
@@ -188,6 +200,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    /*
+    * Async task to restore the DB from external storage
+    * */
     class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
 
         @Override
@@ -202,7 +217,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            loginView.dismissProgressDialog();
+            loginView.dismissAlertDialog();
             if (result) {
                 loginView.showAlert(context.getResources().getString(R.string.database_restored), false);
                 syncDone = businessModel.userMasterHelper.getSyncStatus();
@@ -216,82 +231,11 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
-    @Override
-    public void copyAssetsProfile() {
-        new AsyncCopyProfile().execute();
-    }
-
-    public class AsyncCopyProfile extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                copyAssets();
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            return null;
-        }
-
-    }
-
-    /**
-     *
-     */
-    private void copyAssets() {
-        AssetManager assetManager = context.getAssets();
-        String[] files = {"datawedge.db"};
-        for (String filename : files) {
-            InputStream in;
-            OutputStream out;
-            try {
-                in = assetManager.open(filename);
-                File outFile = new File(
-                        "/enterprise/device/settings/datawedge/autoimport/",
-                        "datawedge.db");
-
-                outFile.setExecutable(true);
-                outFile.setReadable(true);
-                outFile.setWritable(true);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-                try {
-                    chmod(outFile);
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-
-            out.write(buffer, 0, read);
-        }
-    }
-
-    //
-    private void chmod(File path) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
-        Class fileUtils = Class.forName("android.os.FileUtils");
-        Method setPermissions = fileUtils.getMethod("setPermissions",
-                String.class, int.class, int.class, int.class);
-        setPermissions.invoke(null, path.getAbsolutePath(),
-                0666, -1, -1);
-    }
-
+    /*
+    * Assigns server url from shared preference
+    * */
     @Override
     public void assignServerUrl() {
-        // Assign server url
         if (ApplicationConfigs.withActivation) {
             DataMembers.SERVER_URL = PreferenceManager
                     .getDefaultSharedPreferences(context).getString("appUrlNew", "");
@@ -311,17 +255,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
 
     public void checkLogin() {
-        if (businessModel.configurationMasterHelper.SHOW_CHANGE_PASSWORD) {
-            String createdDate = businessModel.synchronizationHelper.getPasswordCreatedDate();
+        if (loginHelper.SHOW_CHANGE_PASSWORD) {
+            String createdDate = loginHelper.getPasswordCreatedDate();
             if (createdDate != null && !createdDate.equals("")) {
-                int result = SDUtil.compareDate(businessModel.configurationMasterHelper.getPasswordExpiryDate(createdDate),
+                int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
                 if (result == -1) {
                     loginView.goToChangePwd();
                 } else {
                     checkAttendance();
                     //used for showing password expiring date
-                    int days = (int) getDifferenceDays(businessModel.configurationMasterHelper.getPasswordExpiryDate(createdDate),
+                    int days = (int) getDifferenceDays(loginHelper.getPasswordExpiryDate(createdDate),
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate());
                     if (days < (businessModel.configurationMasterHelper.PSWD_EXPIRY * 0.2)) {
                         loginView.showAlert(context.getResources().getQuantityString(R.plurals.password_expires, days, days), false);
@@ -335,7 +279,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
-    private static long getDifferenceDays(String firstDate, String secondDate) {
+    private long getDifferenceDays(String firstDate, String secondDate) {
         long diff = 0;
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd");
         try {
@@ -348,7 +292,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     private void checkAttendance() {
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
-            if (businessModel.mAttendanceHelper.loadAttendanceMaster()) {
+            if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
                 loginView.goToHomeScreen();
             } else {
                 loginView.goToAttendance();
@@ -369,7 +313,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
                 int count = mPasswordLockCountPref.getInt("passwordlock", 0);
                 if (count + 1 == loginHelper.MAXIMUM_ATTEMPT_COUNT)
-                    loginView.sendMessageToHandler();
+                    loginView.sendUserNotExistToHandler();
                 else
                     loginView.threadActions();
             }
@@ -382,7 +326,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     callAuthentication(false);
                 } else {
                     loginView.showAlert(context.getResources().getString(R.string.download_url_empty), false);
-                    loginView.dismissProgressDialog();
+                    loginView.dismissAlertDialog();
                 }
             } else {
                 loginView.showAlert(context.getResources().getString(R.string.please_connect_to_internet), false);
@@ -396,13 +340,16 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
 
+    /*
+    * get UTC date and time
+    * */
     private class DownloadUTCTime extends
             AsyncTask<Integer, Integer, Integer> {
 
 
         @Override
         protected void onPreExecute() {
-            loginView.dismissProgressDialog();
+            loginView.dismissAlertDialog();
             loginView.showProgressDialog(context.getResources().getString(R.string.checking_time));
         }
 
@@ -419,8 +366,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPostExecute(Integer result) {
             if (result == 2) {
-                loginView.dismissProgressDialog();
-                loginView.showGPSDialog();
+                loginView.dismissAlertDialog();
+                loginView.showAlert(context.getResources().getString(R.string.error_e24), true); // error_24 invalid date time
             } else {
                 loginView.setAlertDialogMessage(context.getResources().getString(R.string.loading_data));
                 loginView.threadActions();
@@ -435,7 +382,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         JSONObject jsonObject;
         final boolean changeDeviceId;
 
-        public Authentication(boolean changeDeviceId) {
+        Authentication(boolean changeDeviceId) {
             this.changeDeviceId = changeDeviceId;
         }
 
@@ -467,8 +414,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
                             SDUtil.now(SDUtil.DATE_TIME_NEW));
                 this.jsonObject = jsonObj;
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
             }
         }
 
@@ -491,8 +438,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         return errorCode;
                     }
                 }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
             }
             return "E01";
         }
@@ -500,7 +447,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPostExecute(String output) {
             super.onPostExecute(output);
-            loginView.dismissProgressDialog();
+            loginView.dismissAlertDialog();
             if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 new CheckNewVersionTask().execute();
             } else {
@@ -526,6 +473,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    /*
+    * Checks if updated version of the application is available */
     class CheckNewVersionTask extends AsyncTask<Integer, Integer, Boolean> {
 
         @Override
@@ -552,7 +501,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(Boolean result) {
             if (!result) {
                 if (loginHelper.isPasswordReset()) {
-                    loginView.dismissProgressDialog();
+                    loginView.dismissAlertDialog();
                     loginView.resetPassword();
                 } else {
                     businessModel.synchronizationHelper.deleteUrlDownloadMaster();
@@ -560,7 +509,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 }
 
             } else {
-                loginView.dismissProgressDialog();
+                loginView.dismissAlertDialog();
                 loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
             }
 
@@ -570,7 +519,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     /**
      * UrlDownload Data class is download master mapping url from server
-     * and insert into sqlite file
+     * and insert into sqLite file
      */
     class UrlDownloadData extends AsyncTask<String, String, String> {
         JSONObject jsonObject = null;
@@ -600,8 +549,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         return errorCode;
                     }
                 }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
             }
             return "E01";
         }
@@ -619,7 +568,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 if (errorMessage != null) {
                     loginView.showAlert(errorMessage, false);
                 }
-                loginView.dismissProgressDialog();
+                loginView.dismissAlertDialog();
             }
         }
     }
@@ -653,7 +602,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
                 } else {
                     loginView.showAlert(context.getResources().getString(R.string.no_data_download), false);
-                    loginView.dismissProgressDialog();
+                    loginView.dismissAlertDialog();
                 }
             }
         }
@@ -714,7 +663,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
             businessModel.distributorMasterHelper.downloadDistributorsList();
             if (businessModel.distributorMasterHelper.getDistributors().size() > 0) {
-                loginView.dismissProgressDialog();
+                loginView.dismissAlertDialog();
                 loginView.goToDistributorSelection();
             } else {
                 //No distributors, so downloading on demand url without distributor selection.
@@ -757,7 +706,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
      * Retailer wise Last visit transaction  data will be downloaded for following module
      * (Price check,Near Expiry,Stock check,Survey,promotion )if configuration enable.
      * This class is initiate retailer  wise last visit  download.we will send all
-     * retailerid with userid and version code  to server.
+     * retailerId with userId and version code  to server.
      */
     class InitiateRetailerDownload extends AsyncTask<String, String, String> {
         JSONObject json;
@@ -814,7 +763,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
                 businessModel.synchronizationHelper.downloadTransactionUrl();
                 if (businessModel.synchronizationHelper.getUrlList() != null && businessModel.synchronizationHelper.getUrlList().size() > 0) {
                     businessModel.synchronizationHelper.downloadLastVisitTranAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, 1);
@@ -832,7 +780,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /**
-     * download stock from stockinhandmaster web api
+     * download stock from stockInHandMaster web api
      */
     class SihDownloadTask extends AsyncTask<String, String, String> {
         JSONObject json = null;
@@ -862,8 +810,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         return errorCode;
                     }
                 }
-            } catch (JSONException jsonExpection) {
-                Commons.print(jsonExpection.getMessage());
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
             }
             return "E01";
         }
@@ -878,7 +826,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     /**
      * After download all data from server using this method to  update data from temporary table to
-     * main table and load data from sqlite and update in objects
+     * main table and load data from sqLite and update in objects
      */
     class LoadData extends AsyncTask<String, String, SynchronizationHelper.NEXT_METHOD> {
 
@@ -900,7 +848,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
             super.onPostExecute(response);
-            loginView.dismissProgressDialog();
+            loginView.dismissAlertDialog();
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
                 businessModel.configurationMasterHelper.setAmazonS3Credentials();
                 initializeTransferUtility();
@@ -932,7 +880,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     /**
      * Distributor wise master will be downloaded if configuration enable.
      * This class is initiate distributor wise master download.we will send all
-     * distributor id with userid and version code  to server.
+     * distributor id with userId and version code  to server.
      */
     class InitiateDistributorDownload extends AsyncTask<String, String, String> {
         JSONObject json;
@@ -951,7 +899,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     if (distributorBO.isChecked()) {
                         jsonArray.put(distributorBO.getDId());
 
-                        //update distributorid in usermaster
+                        //update distributorId in userMaster
                         businessModel.userMasterHelper.updateDistributorId(distributorBO.getDId(), distributorBO.getParentID(), distributorBO.getDName());
                     }
                 }

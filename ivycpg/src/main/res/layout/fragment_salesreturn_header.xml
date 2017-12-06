@@ -185,6 +185,7 @@
                                 android:layout_weight="4"
                                 android:gravity="left|center_vertical"
                                 android:text="@string/product_name" />
+
                             <TextView
                                 android:id="@+id/totalTitle"
                                 style="?attr/customListTitle"
@@ -195,11 +196,6 @@
                                 android:tag="sales_return_total"
                                 android:text="@string/total"
                                 android:textStyle="bold" />
-
-
-
-
-
 
 
                         </LinearLayout>

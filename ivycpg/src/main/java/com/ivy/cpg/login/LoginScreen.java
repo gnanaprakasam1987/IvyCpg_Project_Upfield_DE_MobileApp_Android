@@ -66,21 +66,19 @@ import java.util.HashMap;
 import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 
 
-public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickListener,
-        ApplicationConfigs, LoginContractor.LoginView {
+public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
 
     private BusinessModel businessModel;
+
     private EditText editTextUserName, editTextPassword;
+
+    private TextView mForgotPasswordTV;
 
     private AlertDialog alertDialog;
 
-    // Used for File download
     private ProgressDialog progressDialog;
-    private boolean bool = false;
 
     private MyReceiver receiver;
-
-    private TextView mForgotPasswordTV;
 
     public LoginPresenterImpl loginPresenter;
 
@@ -101,74 +99,71 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
             if ((SDUtil.compareDate(ApplicationConfigs.expiryDate,
                     SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") < 0))
                 finish();
+        } else {
+
+            loginPresenter = new LoginPresenterImpl(getApplicationContext());
+            loginPresenter.setView(this);
+
+            loginPresenter.loadInitialData();
+
+            //progressDialog = null;
+
+            mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
+            mForgotPasswordTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            editTextUserName = (EditText) findViewById(R.id.EditText011);
+            editTextUserName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            editTextPassword = (EditText) findViewById(R.id.EditText022);
+            editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+
+            Button buttonLogin = (Button) findViewById(R.id.loginButton);
+            buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+            loginPresenter.getSupportNo();
+
+            updateImageViews();
+
+            ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
+            btn_setting.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(LoginScreen.this,
+                            UserSettingsActivity.class);
+                    i.putExtra("isFromLogin", true);
+                    startActivity(i);
+
+                }
+            });
+
+            /* Display version information on the login screen. */
+            TextView version = (TextView) findViewById(R.id.version);
+            version.setText(getResources().getString(R.string.version)
+                    + businessModel.getApplicationVersionName());
+            version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
+            ll_footer.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    startActivity(new Intent(LoginScreen.this, About.class));
+
+                }
+            });
+
+            loginPresenter.checkDB();
+
+            /* Register receiver to receive download status. */
+            IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
+            filter.addCategory(Intent.CATEGORY_DEFAULT);
+            receiver = new MyReceiver();
+            registerReceiver(receiver, filter);
+
+            loginPresenter.assignServerUrl();
         }
-
-        loginPresenter = new LoginPresenterImpl(getApplicationContext());
-        loginPresenter.setView(this);
-
-        loginPresenter.loadInitialData();
-
-        //progressDialog = null;
-
-        mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
-        mForgotPasswordTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        editTextUserName = (EditText) findViewById(R.id.EditText011);
-        editTextPassword = (EditText) findViewById(R.id.EditText022);
-        editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        editTextUserName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        Button buttonLogin = (Button) findViewById(R.id.loginButton);
-        buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
-        loginPresenter.getSupportNo();
-
-        updateImageViews();
-
-        buttonLogin.setOnClickListener(this);
-
-        ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
-        btn_setting.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(LoginScreen.this,
-                        UserSettingsActivity.class);
-                i.putExtra("isFromLogin", true);
-                startActivity(i);
-
-            }
-        });
-
-        /* Display version information on the login screen. */
-        TextView version = (TextView) findViewById(R.id.version);
-        version.setText(getResources().getString(R.string.version)
-                + businessModel.getApplicationVersionName());
-        version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
-        ll_footer.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(LoginScreen.this, About.class));
-
-            }
-        });
-
-        loginPresenter.checkDB();
-
-        /* Copy Datawedgi Profile for Motorola barcode scanner.*/
-        if (ApplicationConfigs.hasMotoBarcodeScanner)
-            loginPresenter.copyAssetsProfile();
-
-
-        /* Register receiver to receive download status. */
-        IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new MyReceiver();
-        registerReceiver(receiver, filter);
-
-        loginPresenter.assignServerUrl();
     }
 
     private void updateImageViews() {
@@ -186,8 +181,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         return fileName.startsWith("bg_client_login");
                     }
                 });
-                for (File temp : files) {
-                    Bitmap bitmapImage = BitmapFactory.decodeFile(temp
+                if (files != null && files.length > 0) {
+                    Bitmap bitmapImage = BitmapFactory.decodeFile(files[0]
                             .getAbsolutePath());
                     Drawable bgrImage = new BitmapDrawable(getApplicationContext().getResources(), bitmapImage);
 
@@ -198,9 +193,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         bg.setBackground(bgrImage);
                     }
-
-                    break;
                 }
+
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -221,12 +215,11 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     }
                 });
                 if (files != null && files.length > 0) {
-                    for (File temp : files) {
 
-                        user_logo.setImageBitmap(BitmapFactory.decodeFile(temp
-                                .getAbsolutePath()));
-                        break;
-                    }
+
+                    user_logo.setImageBitmap(BitmapFactory.decodeFile(files[0]
+                            .getAbsolutePath()));
+
                 }
             }
         } catch (Exception e) {
@@ -246,7 +239,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
             }
         }).show();
-        bool = false;
     }
 
     @Override
@@ -265,7 +257,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         editTextUserName.setText("");
         editTextPassword.setText("");
         editTextUserName.requestFocus();
-        bool = false;
         Intent in = new Intent(
                 LoginScreen.this,
                 ChangePasswordActivity.class);
@@ -285,37 +276,29 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 AttendanceActivity.class));
     }
 
-    public void onClick(View comp) {
-        if (!bool) {
-            bool = true;
-            try {
-                businessModel.userNameTemp = (editTextUserName.getText().toString());
-                businessModel.passwordTemp = (editTextPassword.getText().toString());
+    /**
+     * @param view login button view reference from xml
+     */
+    public void onLoginClick(View view) {
+        try {
+            businessModel.userNameTemp = (editTextUserName.getText().toString());
+            businessModel.passwordTemp = (editTextPassword.getText().toString());
 
-                if (businessModel.userNameTemp.equals("")) {
-                    editTextUserName.requestFocus();
-                    editTextUserName.setError(getResources().getString(R.string.enter_username));
-                    bool = false;
-                    return;
-                } else if (businessModel.passwordTemp.equals("")) {
-                    editTextPassword.requestFocus();
-                    editTextPassword.setError(getResources().getString(R.string.enter_password));
-                    bool = false;
-                    return;
-                }
-
-                if (comp.getId() == R.id.loginButton) {
-                    loginPresenter.onLoginClick();
-                } else {
-                    bool = false;
-                }
-            } catch (Exception e) {
-                Commons.printException(e);
-                bool = false;
+            if (businessModel.userNameTemp.equals("")) {
+                editTextUserName.requestFocus();
+                editTextUserName.setError(getResources().getString(R.string.enter_username));
+                return;
+            } else if (businessModel.passwordTemp.equals("")) {
+                editTextPassword.requestFocus();
+                editTextPassword.setError(getResources().getString(R.string.enter_password));
+                return;
             }
+            loginPresenter.onLoginClick();
+        } catch (Exception e) {
+            Commons.printException(e);
         }
-
     }
+
 
     public Handler getHandler() {
         return handler;
@@ -324,16 +307,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     private final Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             businessModel = (BusinessModel) getApplicationContext();
-            bool = false;
             switch (msg.what) {
                 case DataMembers.NOTIFY_USEREXIST:
-                    dismissProgressDialog();
+                    dismissAlertDialog();
                     loginPresenter.checkLogin();
                     finish();
                     break;
                 case DataMembers.NOTIFY_NOT_USEREXIST:
                     if (!LoginHelper.getInstance(getApplicationContext()).IS_PASSWORD_LOCK) {
-                        dismissProgressDialog();
+                        dismissAlertDialog();
                         editTextPassword.setText("");
                         showAlert(
                                 getResources().getString(
@@ -342,7 +324,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         int count = loginPresenter.getPasswordLockCount();
                         mForgotPasswordTV.setVisibility(View.VISIBLE);
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
-                            dismissProgressDialog();
+                            dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
                             PasswordLockDialogFragment dialogFragment = new PasswordLockDialogFragment();
                             Bundle bundle = new Bundle();
@@ -352,7 +334,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                             dialogFragment.show(fm, "Sample Fragment");
                         } else {
                             loginPresenter.applyPasswordLockCountPref();
-                            dismissProgressDialog();
+                            dismissAlertDialog();
                             editTextPassword.setText("");
                             showAlert(
                                     getResources().getString(
@@ -365,7 +347,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                     showProgressDialog(msg.obj.toString());
                     break;
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
-                    dismissProgressDialog();
+                    dismissAlertDialog();
                     showAlert(
                             getResources()
                                     .getString(R.string.no_network_connection), false);
@@ -418,7 +400,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                         callProgressDialog(getApplicationContext()
                                 .getString(R.string.progress_dialog_title_connecting), getApplicationContext()
                                 .getString(R.string.progress_dialog_message_prefix_connecting) + " " + url, 0, Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED));
+                                DataMembers.MESSAGE_DOWNLOAD_CANCELED), false);
                     }
                     break;
             /*
@@ -440,7 +422,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                                         .getString(R.string.progress_dialog_title_downloading), getApplicationContext()
                                         .getString(R.string.progress_dialog_message_prefix_downloading) + " " + fileName,
                                 msg.arg1, Message.obtain(this,
-                                        DataMembers.MESSAGE_DOWNLOAD_CANCELED));
+                                        DataMembers.MESSAGE_DOWNLOAD_CANCELED), true);
                     }
                     break;
 
@@ -673,10 +655,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         finish();
     }
 
-    /*public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }*/
-
     public class MyReceiver extends BroadcastReceiver {
         public static final String PROCESS_RESPONSE = "com.ivy.intent.action.LOGIN";
 
@@ -689,16 +667,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     private void updateReceiver(Intent intent) {
         Bundle bundle = intent.getExtras();
         int method = bundle != null ? bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0) : 0;
-        String errorCode = bundle != null ? bundle.getString(SynchronizationHelper.ERROR_CODE) : null;
+        String errorCode = bundle != null ? bundle.getString(SynchronizationHelper.ERROR_CODE) : "";
         int updateTableCount = bundle != null ? bundle.getInt("updateCount") : 0;
         int totalTableCount = bundle != null ? bundle.getInt("totalCount") : 0;
         switch (method) {
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
-                if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
+                if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)
                         && (totalTableCount == updateTableCount)) {
                     loginPresenter.applyOutletPerformancePref();
                     loginPresenter.callUpdateFinish();
-                } else if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
@@ -710,13 +688,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 }
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
-                if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
                     }
-                } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callDistributorFinish();
                 } else {
                     reDownloadAlert(bundle);
@@ -724,13 +702,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 }
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
-                if (errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
+                if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
                     updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
                     }
-                } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callRetailerFinish();
                 } else {
                     reDownloadAlert(bundle);
@@ -767,7 +745,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
 
     @Override
     public void showDialog() {
-        bool = false;
         new CommonDialog(getApplicationContext(), LoginScreen.this,
                 getResources().getString(R.string.deviceId_change_msg_title),
                 getResources().getString(R.string.deviceId_change_msg),
@@ -802,12 +779,11 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
                 .getErrormessageByErrorCode().get(errorDownloadCode);
         loginPresenter.deleteTables(false);
 
-        dismissProgressDialog();
+        dismissAlertDialog();
 
         editTextPassword.setText("");
         editTextUserName.setText("");
         editTextUserName.requestFocus();
-        bool = false;
         if (errorDownloadMessage != null) {
             showAlert(errorDownloadMessage, false);
         } else {
@@ -848,8 +824,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     @Override
-    public void dismissProgressDialog() {
-        bool = false;
+    public void dismissAlertDialog() {
         if (alertDialog != null) {
             alertDialog.dismiss();
         }
@@ -863,7 +838,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
     }
 
     @Override
-    public void sendMessageToHandler() {
+    public void sendUserNotExistToHandler() {
         this.getHandler().sendEmptyMessage(DataMembers.NOTIFY_NOT_USEREXIST);
     }
 
@@ -888,12 +863,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements OnClickLi
         downloaderThread.start();
     }
 
-    private void callProgressDialog(String title, String message, int maxValue, Message newMsg) {
+    private void callProgressDialog(String title, String message, int maxValue, Message newMsg, boolean isHorizontalStyle) {
         progressDialog = new ProgressDialog(LoginScreen.this);
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
 
-        if (maxValue != 0) {
+        if (isHorizontalStyle) {
             progressDialog
                     .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setProgress(0);

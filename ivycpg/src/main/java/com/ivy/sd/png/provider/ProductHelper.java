@@ -222,8 +222,8 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
-        mSalesReturnProducts=null;
-        mSalesReturnProductById=null;
+        mSalesReturnProducts = null;
+        mSalesReturnProductById = null;
         System.gc();
     }
 
@@ -2472,6 +2472,7 @@ public class ProductHelper {
         }
 
     }
+
     /**
      * get tagged products and update the productBO.
      *
@@ -2483,10 +2484,10 @@ public class ProductHelper {
             mSalesReturnProducts = new Vector<ProductMasterBO>();
             mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
 
-                for (ProductMasterBO sku : getProductMaster()) {
-                    mSalesReturnProducts.add(sku);
-                    mSalesReturnProductById.put(sku.getProductID(), sku);
-                }
+            for (ProductMasterBO sku : getProductMaster()) {
+                mSalesReturnProducts.add(sku);
+                mSalesReturnProductById.put(sku.getProductID(), sku);
+            }
 
         } catch (Exception e) {
             Commons.printException("downloadSalesReturnProducts", e);
@@ -2733,8 +2734,9 @@ public class ProductHelper {
             return null;
         return productMasterById.get(productId);
     }
+
     public ProductMasterBO getSalesReturnProductBOById(String productId) {
-        if ( mSalesReturnProductById== null)
+        if (mSalesReturnProductById == null)
             return null;
         return mSalesReturnProductById.get(productId);
     }

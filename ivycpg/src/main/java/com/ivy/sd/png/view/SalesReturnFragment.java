@@ -111,8 +111,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         screenTitle = getActivity().getIntent().getStringExtra("screentitle");
 
 
-
-
         return view;
     }
 
@@ -129,7 +127,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         setHasOptionsMenu(true);
-        bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
+        //bmodel.mPriceTrackingHelper.mSelectedFilter = -1;
     }
 
 

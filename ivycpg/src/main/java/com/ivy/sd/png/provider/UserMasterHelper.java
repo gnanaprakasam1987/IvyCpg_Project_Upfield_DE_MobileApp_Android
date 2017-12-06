@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.login.LoginHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -289,7 +290,7 @@ public class UserMasterHelper {
             db.openDataBase();
 
             String password = "";
-            if(bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
+            if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
                 password=bmodel.synchronizationHelper.encryptPassword(pwd);
             }else
             {

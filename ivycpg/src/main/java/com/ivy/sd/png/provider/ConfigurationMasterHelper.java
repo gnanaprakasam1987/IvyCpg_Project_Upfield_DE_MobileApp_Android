@@ -19,12 +19,9 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Vector;
 
 public class ConfigurationMasterHelper {
@@ -87,8 +84,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_IS_BATCHWISE_VANLOAD = "BATCHVAN";
     public static final String CODE_VANLOAD_STOCK_PRINT = "STKPRO21";
     // version 90
-    public static final String CODE_CHANGE_PASSWORD = "PWD01";
-    public static final String CODE_FORGET_PWD = "PWD02";
     public static final String CODE_LOCAITON_WISE_TAX_APPLIED = "TAX02";
     private static final String MENU_CALL_ANALYSIS = "MENU_CALL_ANLYS";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
@@ -119,7 +114,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PHOTO_COMPETITOR = "PHOTOCOMP";
     private static final String CODE_TASK = "TSK";
     private static final String CODE_JUMP = "JUMPING";
-    private static final String CODE_IS_PWD_ENCRIPTED = "ISPWDENC";
     private static final String CODE_VOLUME_COMMA_COUNT = "VolComma";
     private static final String CODE_VOLUME_PRECISION_COUNT = "VolDecimal";
     private static final String CODE_PERCENT_PRECISION_COUNT = "PerDecimal";
@@ -471,7 +465,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_PHOTO_CAPTURE_IMG_PATH_CHANGE;//to change image path for kelog's specific
     public boolean IS_PHOTO_COMPETITOR;
     public boolean IS_TASK; // Activity Menu
-    public boolean IS_PASSWORD_ENCRIPTED; // Activity Menu
     public int VALUE_PRECISION_COUNT = 2;
     public int VALUE_COMMA_COUNT = 0;
     public int PERCENT_PRECISION_COUNT = 0;
@@ -841,8 +834,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_LOWER_CASE;
     public boolean IS_BATCHWISE_VANLOAD;
     public boolean SHOW_VANLOAD_STOCK_PRINT;
-    public boolean SHOW_CHANGE_PASSWORD;
-    public boolean SHOW_FORGET_PASSWORD;
     public boolean IS_LOCATION_WISE_TAX_APPLIED;
     public String STRING_LOCATION_WISE_TAX_APPLIED = "";
     public String CODE_ORD_SUMMARY_DETAIL_DIALOG = "ORDB06";
@@ -1612,7 +1603,6 @@ public class ConfigurationMasterHelper {
         this.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_CAPTURE_IMG_PATH) : false;
         this.IS_PHOTO_COMPETITOR = hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_PHOTO_COMPETITOR) : false;
         this.IS_JUMP = hashMapHHTModuleConfig.get(CODE_JUMP) != null ? hashMapHHTModuleConfig.get(CODE_JUMP) : false;
-        this.IS_PASSWORD_ENCRIPTED = hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) != null ? hashMapHHTModuleConfig.get(CODE_IS_PWD_ENCRIPTED) : false;
         this.IS_VISITSCREEN_DEV_ALLOW = hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) : false;
         this.IS_DATE_VALIDATION_REQUIRED = hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) != null ? hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) : false;
         this.IS_INITIATIVE = hashMapHHTModuleConfig.get(CODE_INITIATIVE) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE) : false;
@@ -1807,8 +1797,6 @@ public class ConfigurationMasterHelper {
         this.HIDE_ORDER_DIST = hashMapHHTModuleConfig.get(CODE_HIDE_ORDER_DIST) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_ORDER_DIST) : false;
         this.IS_TAX_APPLIED_VALIDATION = hashMapHHTModuleConfig.get(CODE_IS_TAX_APPLIED_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_IS_TAX_APPLIED_VALIDATION) : false;
         this.SHOW_ORDER_SUMMARY_DETAIL_DIALOG = hashMapHHTModuleConfig.get(CODE_ORD_SUMMARY_DETAIL_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SUMMARY_DETAIL_DIALOG) : false;
-        this.SHOW_CHANGE_PASSWORD = hashMapHHTModuleConfig.get(CODE_CHANGE_PASSWORD) != null ? hashMapHHTModuleConfig.get(CODE_CHANGE_PASSWORD) : false;
-        this.SHOW_FORGET_PASSWORD = hashMapHHTModuleConfig.get(CODE_FORGET_PWD) != null ? hashMapHHTModuleConfig.get(CODE_FORGET_PWD) : false;
         this.SHOW_DIST_STOCK = hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DIST_STOCK) : false;
         this.IS_RTR_WISE_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_RTR_WISE_DOWNLOAD) : false;
         this.IS_USER_WISE_RETAILER_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_USER_WISE_RETAILER_DOWNLOAD) : false;
@@ -4559,20 +4547,6 @@ public class ConfigurationMasterHelper {
         } finally {
             db.closeDB();
         }
-    }
-
-    public String getPasswordExpiryDate(String createddate) {
-        Calendar today = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        try {
-            today.setTime(formatter.parse(createddate));
-            today.add(Calendar.DATE, bmodel.configurationMasterHelper.PSWD_EXPIRY);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return formatter.format(today.getTime());
-
     }
 
     public boolean checkLocationConfiguration() {

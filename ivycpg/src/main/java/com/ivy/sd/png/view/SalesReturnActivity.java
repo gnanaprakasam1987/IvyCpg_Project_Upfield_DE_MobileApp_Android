@@ -2,7 +2,6 @@ package com.ivy.sd.png.view;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
@@ -35,7 +34,6 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
-   
 
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
