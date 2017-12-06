@@ -25,6 +25,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -462,8 +463,9 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
 
 
                 bmodel.mCounterSalesHelper.saveCustomerVisitDetails(flag, refid, mSchemeDiscountedAmountOnBill);
-                bmodel.mSurveyHelperNew.saveCSSurveyAnswer(flag);
-                bmodel.mSurveyHelperNew.deleteUnusedImages();
+                SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(CS_sale_summary.this);
+                surveyHelperNew.saveCSSurveyAnswer(flag);
+                surveyHelperNew.deleteUnusedImages();
                 dialogInterface.dismiss();
 
                 Toast.makeText(CS_sale_summary

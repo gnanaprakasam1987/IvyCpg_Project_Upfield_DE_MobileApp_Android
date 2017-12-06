@@ -36,8 +36,9 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.survey.SurveyActivityNew;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.Commons;
 
 import org.json.JSONArray;
@@ -72,12 +73,14 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
     EditText edt_email;
     ArrayList<StandardListBO> ageGroupList;
+    private SurveyHelperNew surveyHelperNew;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        surveyHelperNew = SurveyHelperNew.getInstance(context);
     }
 
     @Override
@@ -276,7 +279,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
             btnApply.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ok_tick, 0);
         } else
             btnApply.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (bmodel.mSurveyHelperNew.hasDataToSave()) {
+        if (surveyHelperNew.hasDataToSave()) {
             btn_feedback.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ok_tick, 0);
         } else
             btn_feedback.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -413,7 +416,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                                 || (!bmodel.getCounterSaleBO().getResolution().equals("") || bmodel.getCounterSaleBO().getAttributeId() != 0 || !bmodel.getCounterSaleBO().getConnsultingFeedback().equals(""))
                                 || (bmodel.getCounterSaleBO().getmSampleProducts() != null)
                                 || (bmodel.getCounterSaleBO().getmSalesproduct() != null))
-                        || (bmodel.mSurveyHelperNew.hasDataToSave())) {
+                        || (surveyHelperNew.hasDataToSave())) {
 
 
                     if (edt_email.getText().toString().length() > 0 && !isValidEmail(edt_email.getText().toString())) {
@@ -521,9 +524,9 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
             else
                 bmodel.productHelper.downloadProductFilter(MENU_SURVEY_CS);
 
-            if (bmodel.mSurveyHelperNew.getSurvey() != null
-                    && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
-                bmodel.mSurveyHelperNew.setFromCSsurvey(true);
+            if (surveyHelperNew.getSurvey() != null
+                    && surveyHelperNew.getSurvey().size() > 0) {
+                surveyHelperNew.setFromCSsurvey(true);
 
                 bmodel.mSelectedActivityName = "Feedback";
                 Intent intent = new Intent(getActivity(),
@@ -809,7 +812,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
                             || (!bmodel.getCounterSaleBO().getResolution().equals("") || bmodel.getCounterSaleBO().getAttributeId() != 0 || !bmodel.getCounterSaleBO().getConnsultingFeedback().equals(""))
                             || (bmodel.getCounterSaleBO().getmSampleProducts() != null)
                             || (bmodel.getCounterSaleBO().getmSalesproduct() != null))
-                    || (bmodel.mSurveyHelperNew.hasDataToSave())) {
+                    || (surveyHelperNew.hasDataToSave())) {
 
 
                 if (edt_email.getText().toString().length() > 0 && !isValidEmail(edt_email.getText().toString())) {

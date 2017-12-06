@@ -303,7 +303,7 @@
                 android:id="@+id/outercaseTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tag="item_piece"
+                android:tag="item_outer"
                 android:text="@string/item_outer"
                 android:textColor="@color/GRAY_TEXT"
                 android:textSize="@dimen/greyed_text_size" />

@@ -144,12 +144,11 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
-import com.ivy.sd.png.provider.SurveyHelperNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TargetPlanHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -181,7 +180,7 @@ import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
-import com.ivy.sd.png.view.SalesReturnSummery;
+import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.sd.png.view.ScreenActivationActivity;
 import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
@@ -268,7 +267,6 @@ public class BusinessModel extends Application {
 
     public InitiativeHelper initiativeHelper;
     public TargetPlanHelper targetPlanHelper;
-    //public SalesReturnHelper salesReturnHelper;
     public BeatMasterHelper beatMasterHealper;
     public ChannelMasterHelper channelMasterHelper;
     public SubChannelMasterHelper subChannelMasterHelper;
@@ -306,7 +304,7 @@ public class BusinessModel extends Application {
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
-    public SurveyHelperNew mSurveyHelperNew;
+    //public SurveyHelperNew mSurveyHelperNew;
     public RetailerHelper mRetailerHelper;
     public DistributorMasterHelper distributorMasterHelper;
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
@@ -475,7 +473,7 @@ public class BusinessModel extends Application {
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
         mEmptyReturnHelper = EmptyReturnHelper.getInstance(this);
-        mSurveyHelperNew = SurveyHelperNew.getInstance(this);
+        //mSurveyHelperNew = SurveyHelperNew.getInstance(this);
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.survey;
+package com.ivy.cpg.view.survey;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.survey;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +8,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.survey.AnswerBO;
-import com.ivy.sd.png.survey.QuestionBO;
-import com.ivy.sd.png.survey.SurveyBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
@@ -50,11 +47,27 @@ public class SurveyHelperNew {
     public final static String cs_feedback_menucode = "MENU_SURVEY_CS";
 
     public static final String SURVEY_SL_TYPE = "SURVEY_TYPE";
+    public boolean SHOW_SMS_IN_SURVEY;
+    public boolean SHOW_PHOTOCAPTURE_IN_SURVEY;
+    public boolean SHOW_DRAGDROP_IN_SURVEY;
+    public boolean ENABLE_MULTIPLE_PHOTO;
+    public boolean SHOW_TOTAL_SCORE_IN_SURVEY;
+    public boolean IS_SURVEY_ANSWER_ALL;
+    public boolean IS_SURVEY_ANSWER_MANDATORY;
+    public boolean SHOW_SCORE_IN_SURVEY;
+
+    private String CODE_SHOW_TOTAL_SCORE_IN_SURVEY = "SURVEY10";
+    public String CODE_SHOW_SCORE_IN_SURVEY = "SURVEY09";
+    private String CODE_SURVEY_ANSWER_ALL = "SURVEY02";
+    private String CODE_SURVEY_ANSWER_MANDATORY = "SURVEY03";
+    public String smsmenutype;
+    public String photocapturemenutype;
+    public String multiplePhotoCapture;
 
 
     private SurveyHelperNew(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static SurveyHelperNew getInstance(Context context) {
@@ -678,8 +691,8 @@ public class SurveyHelperNew {
     public boolean isAllAnswered() {
 
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
 
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
 
@@ -703,8 +716,8 @@ public class SurveyHelperNew {
      */
     public boolean isMandatoryQuestionAnswered() {
         boolean returnFlag = true;
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
 
                 for (QuestionBO qus : mParentQuestions) {
@@ -775,8 +788,8 @@ public class SurveyHelperNew {
     public boolean hasDataToSave() {
 
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
                     if (!qus.getSelectedAnswer().isEmpty()
@@ -792,8 +805,8 @@ public class SurveyHelperNew {
     public boolean hasPhotoToSave() {
 
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
-            if (sBO.getSurveyID() == bmodel.mSurveyHelperNew.mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
                     if (qus.getIsPhotoReq() > 0 && (!qus.getSelectedAnswer().isEmpty()
@@ -828,7 +841,7 @@ public class SurveyHelperNew {
             int superwiserID;
             if ("MENU_SURVEY_SW".equalsIgnoreCase(menuCode)) {
                 type = "SELLER";
-                superwiserID = bmodel.mSurveyHelperNew.mSelectedSuperVisiorID;
+                superwiserID = mSelectedSuperVisiorID;
             } else if (bmodel.configurationMasterHelper.IS_CNT01) {
                 superwiserID = bmodel.getSelectedUserId();
             } else {
@@ -854,7 +867,7 @@ public class SurveyHelperNew {
 
 
             if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     // delete transaction if exist
 
                     String sql = "SELECT uid FROM AnswerHeader WHERE"
@@ -1011,7 +1024,7 @@ public class SurveyHelperNew {
 
                         Commons.print("In Survey Save," + "" + remarkDone);
 
-                        for (SurveyBO qBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                        for (SurveyBO qBO : getSurvey()) {
                             if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
                                 String headerValues = QT(uid) + ","
@@ -1037,7 +1050,7 @@ public class SurveyHelperNew {
 
             } else {
 
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     if (sBO.getSurveyID() == mSelectedSurvey) {
                         // delete transaction if exist
                         String sql = "SELECT uid FROM AnswerHeader WHERE"
@@ -1196,7 +1209,7 @@ public class SurveyHelperNew {
 
                             Commons.print("In Survey Save," + "" + remarkDone);
 
-                            for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                            for (SurveyBO surBO : getSurvey()) {
                                 if (surBO.getSurveyID() == sBO.getSurveyID()) {
 
                                     String headerValues = QT(uid) + ","
@@ -1282,7 +1295,7 @@ public class SurveyHelperNew {
 
 
             if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     // delete transaction if exist
 
                     if (bmodel.getCounterSaleBO().isDraft()) {
@@ -1382,7 +1395,7 @@ public class SurveyHelperNew {
 
                         Commons.print("In Survey Save," + "" + remarkDone);
 
-                        for (SurveyBO qBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                        for (SurveyBO qBO : getSurvey()) {
                             if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
                                 String headerValues = QT(uid) + ","
@@ -1411,7 +1424,7 @@ public class SurveyHelperNew {
 
             } else {
 
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     if (sBO.getSurveyID() == mSelectedSurvey) {
                         // delete transaction if exist
                         String sql = "SELECT uid FROM AnswerHeader WHERE"
@@ -1512,7 +1525,7 @@ public class SurveyHelperNew {
 
                             Commons.print("In Survey Save," + "" + remarkDone);
 
-                            for (SurveyBO surBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                            for (SurveyBO surBO : getSurvey()) {
                                 if (surBO.getSurveyID() == sBO.getSurveyID()) {
 
                                     String headerValues = QT(uid) + ","
@@ -1556,7 +1569,7 @@ public class SurveyHelperNew {
         int questionSize;
 
         if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
-            for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+            for (SurveyBO sBO : getSurvey()) {
 
                 mAllQuestions.addAll(sBO.getQuestions());
                 questionSize = mAllQuestions.size();
@@ -1602,7 +1615,7 @@ public class SurveyHelperNew {
                 }
             }
         } else {
-            for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+            for (SurveyBO sBO : getSurvey()) {
 
                 if (sBO.getSurveyID() == mSelectedSurvey) {
                     mAllQuestions.addAll(sBO.getQuestions());
@@ -1697,7 +1710,7 @@ public class SurveyHelperNew {
 
         boolean isLocalData = false;// to check whether transaction record is there or not
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO sBO : getSurvey()) {
 
             surveyId = sBO.getSurveyID();
             Vector<QuestionBO> mAllQuestions = new Vector<>();
@@ -1889,7 +1902,7 @@ public class SurveyHelperNew {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    for (SurveyBO surveyBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                    for (SurveyBO surveyBO : getSurvey()) {
                         if (surveyBO.getSurveyID() == c.getInt(0)) {
 
                             for (QuestionBO questionBO : surveyBO.getQuestions()) {
@@ -1940,7 +1953,7 @@ public class SurveyHelperNew {
 
                 while (c.moveToNext()) {
                     if (c.getInt(4) == 0) {
-                        for (SurveyBO surveyBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                        for (SurveyBO surveyBO : getSurvey()) {
                             if (surveyBO.getSurveyID() == c.getInt(3)) {
 
                                 for (QuestionBO questionBO : surveyBO.getQuestions()) {
@@ -1993,7 +2006,7 @@ public class SurveyHelperNew {
         int surveyId;
         String uid;
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO sBO : getSurvey()) {
 
             surveyId = sBO.getSurveyID();
             Vector<QuestionBO> mAllQuestions = new Vector<>();
@@ -2123,7 +2136,7 @@ public class SurveyHelperNew {
         int qsize;
 
 
-        for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+        for (SurveyBO sBO : getSurvey()) {
 
             surveyId = sBO.getSurveyID();
             Vector<QuestionBO> mAllQuestions = new Vector<>();
@@ -2320,7 +2333,7 @@ public class SurveyHelperNew {
 
 
             if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     // delete transaction if exist
 
                     String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
@@ -2402,7 +2415,7 @@ public class SurveyHelperNew {
 
                         Commons.print("In Survey Save," + "" + remarkDone);
 
-                        for (SurveyBO qBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                        for (SurveyBO qBO : getSurvey()) {
                             if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
                                 String headerValues = QT(uid) + ","
@@ -2424,7 +2437,7 @@ public class SurveyHelperNew {
 
             } else {
 
-                for (SurveyBO sBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                for (SurveyBO sBO : getSurvey()) {
                     if (sBO.getSurveyID() == mSelectedSurvey) {
                         // delete transaction if exist
                         String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
@@ -2502,7 +2515,7 @@ public class SurveyHelperNew {
 
                             Commons.print("In Survey Save," + "" + remarkDone);
 
-                            for (SurveyBO qBO : bmodel.mSurveyHelperNew.getSurvey()) {
+                            for (SurveyBO qBO : getSurvey()) {
                                 if (qBO.getSurveyID() == sBO.getSurveyID()) {
 
                                     String headerValues = QT(uid) + ","
@@ -2592,6 +2605,105 @@ public class SurveyHelperNew {
 
     public void setQuestionBODragDrop(QuestionBO questionBODragDrop) {
         this.questionBODragDrop = questionBODragDrop;
+    }
+
+    public void loadSurveyConfig(String menucode) {
+        try {
+            this.SHOW_SMS_IN_SURVEY = false;
+            this.SHOW_PHOTOCAPTURE_IN_SURVEY = false;
+            this.SHOW_DRAGDROP_IN_SURVEY = false;
+            this.ENABLE_MULTIPLE_PHOTO = false;
+            this.SHOW_TOTAL_SCORE_IN_SURVEY = false;
+            this.IS_SURVEY_ANSWER_ALL = false;
+            this.IS_SURVEY_ANSWER_MANDATORY = false;
+
+            DBUtil db;
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
+                            + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.SHOW_SMS_IN_SURVEY = true;
+                    this.smsmenutype = c.getString(0);
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
+                    this.photocapturemenutype = c.getString(0);
+                }
+                c.close();
+            }
+            // Survey12 to enable multiple photo capture
+            c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.ENABLE_MULTIPLE_PHOTO = true;
+                    this.multiplePhotoCapture = c.getString(0);
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
+                    + bmodel.QT(menucode));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    this.SHOW_DRAGDROP_IN_SURVEY = true;
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) + " and Flag=1");
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_TOTAL_SCORE_IN_SURVEY = true;
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_ALL) + " and Flag=1");
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_SURVEY_ANSWER_ALL = true;
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_MANDATORY) + " and Flag=1");
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_SURVEY_ANSWER_MANDATORY = true;
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_SCORE_IN_SURVEY) + " and Flag=1");
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_SCORE_IN_SURVEY = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 }

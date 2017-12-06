@@ -59,6 +59,7 @@ import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.ConfigData;
@@ -75,7 +76,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.OrderSplitHelper;
-import com.ivy.sd.png.survey.SurveyActivityNewFragment;
+import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -1045,13 +1046,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
                                 .getJoinCallUserList())) {
 
-                    bmodel.mSurveyHelperNew.setFromHomeScreen(true);
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
 
-                    bmodel.mSurveyHelperNew.downloadModuleId("SPECIAL");
-                    bmodel.mSurveyHelperNew.downloadQuestionDetails("MENU_SURVEY_SW");
+                    surveyHelperNew.setFromHomeScreen(true);
 
-                    bmodel.mSurveyHelperNew
-                            .loadSurveyAnswers(bmodel.mSurveyHelperNew
+                    surveyHelperNew.downloadModuleId("SPECIAL");
+                    surveyHelperNew.downloadQuestionDetails("MENU_SURVEY_SW");
+
+                    surveyHelperNew
+                            .loadSurveyAnswers(surveyHelperNew
                                     .getSuperVisiroID());
 
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
@@ -1064,12 +1067,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                     .downloadProductFilter(MENU_SURVEY_SW);
                     }
 
-                    if (bmodel.mSurveyHelperNew.getSurvey() != null
-                            && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
+                    if (surveyHelperNew.getSurvey() != null
+                            && surveyHelperNew.getSurvey().size() > 0) {
                         bmodel.mSelectedActivityName = menuItem.getMenuName();
                         bmodel.mSelectedActivityConfigCode = menuItem
                                 .getConfigCode();
-                        bmodel.configurationMasterHelper.loadSurveyConfig(MENU_SURVEY_SW);
+                        surveyHelperNew.loadSurveyConfig(MENU_SURVEY_SW);
                         switchFragment(MENU_SURVEY_SW, menuItem.getMenuName());
                     } else {
 
@@ -1107,10 +1110,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.mSurveyHelperNew.setFromHomeScreen(true);
+                SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+                surveyHelperNew.setFromHomeScreen(true);
 
-                bmodel.mSurveyHelperNew.downloadModuleId("SPECIAL");
-                bmodel.mSurveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
+                surveyHelperNew.downloadModuleId("SPECIAL");
+                surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
                     if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
@@ -1121,8 +1125,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 .downloadProductFilter("MENU_SURVEY01_SW");
                 }
 
-                if (bmodel.mSurveyHelperNew.getSurvey() != null
-                        && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
+                if (surveyHelperNew.getSurvey() != null
+                        && surveyHelperNew.getSurvey().size() > 0) {
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     bmodel.mSelectedActivityConfigCode = menuItem
                             .getConfigCode();
@@ -1157,15 +1161,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else {
+                SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+                surveyHelperNew.setFromHomeScreen(true);
+                surveyHelperNew.setFromCSsurvey(false);
 
-                bmodel.mSurveyHelperNew.setFromHomeScreen(true);
-                bmodel.mSurveyHelperNew.setFromCSsurvey(false);
+                surveyHelperNew.downloadModuleId("SPECIAL");
+                surveyHelperNew.downloadQuestionDetails(MENU_SURVEY_BA_CS);
 
-                bmodel.mSurveyHelperNew.downloadModuleId("SPECIAL");
-                bmodel.mSurveyHelperNew.downloadQuestionDetails(MENU_SURVEY_BA_CS);
-
-                bmodel.mSurveyHelperNew
-                        .loadSurveyAnswers(bmodel.mSurveyHelperNew
+                surveyHelperNew
+                        .loadSurveyAnswers(surveyHelperNew
                                 .getSuperVisiroID());
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
@@ -1178,8 +1182,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 .downloadProductFilter(MENU_SURVEY_BA_CS);
                 }
 
-                if (bmodel.mSurveyHelperNew.getSurvey() != null
-                        && bmodel.mSurveyHelperNew.getSurvey().size() > 0) {
+                if (surveyHelperNew.getSurvey() != null
+                        && surveyHelperNew.getSurvey().size() > 0) {
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     bmodel.mSelectedActivityConfigCode = menuItem
                             .getConfigCode();

@@ -270,7 +270,7 @@
             android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.SurveyActivityNew"
+            android:name="com.ivy.cpg.view.survey.SurveyActivityNew"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerSelectionActivity"
@@ -370,7 +370,7 @@
             android:name="com.ivyretail.views.AvailabiltyCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnEntryActivity"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
@@ -407,26 +407,10 @@
             android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnWithActionBar"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.ivy.sd.png.view.SalesReturnSummery"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.ivy.sd.png.view.van.LoadManagementScreen"
@@ -549,10 +533,13 @@
             android:name="com.ivy.sd.png.view.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.price.PriceTrackActivity"
+            android:name="com.ivy.cpg.view.price.PriceTrackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.price.PriceTrackCompActivity"
+            android:name="com.ivy.cpg.view.price.PriceTrackCompActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"
@@ -755,7 +742,7 @@
             android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
+            android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

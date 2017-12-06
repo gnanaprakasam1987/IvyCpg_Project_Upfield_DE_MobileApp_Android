@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,8 +18,9 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.ReplaceFragment;
+import com.ivy.sd.png.view.ReturnFragment;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
         holderTop = getIntent().getIntExtra("top", 0);
 
         if (Pid != null)
-            setScreenTitle(bmodel.productHelper.getProductMasterBOById(Pid).getProductShortName());
+            setScreenTitle(bmodel.productHelper.getSalesReturnProductBOById(Pid).getProductShortName());
 
         initializeViews();
 

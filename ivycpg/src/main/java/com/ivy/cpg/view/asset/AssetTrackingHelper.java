@@ -13,6 +13,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -129,10 +130,11 @@ public class AssetTrackingHelper {
     public void loadDataForAssetPOSM(String mMenuCode) {
         if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
-            mBusinessModel.mSurveyHelperNew.setFromHomeScreen(false);
-            mBusinessModel.mSurveyHelperNew.downloadModuleId("STANDARD");
-            mBusinessModel.mSurveyHelperNew.downloadQuestionDetails(mMenuCode);
-            mBusinessModel.mSurveyHelperNew.loadSurveyAnswers(0);
+            SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(context);
+            surveyHelperNew.setFromHomeScreen(false);
+            surveyHelperNew.downloadModuleId("STANDARD");
+            surveyHelperNew.downloadQuestionDetails(mMenuCode);
+            surveyHelperNew.loadSurveyAnswers(0);
             mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         }
 

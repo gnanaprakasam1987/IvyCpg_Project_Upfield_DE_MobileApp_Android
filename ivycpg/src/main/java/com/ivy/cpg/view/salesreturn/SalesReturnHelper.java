@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.salesreturn;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,11 +8,11 @@ import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -47,6 +47,18 @@ public class SalesReturnHelper {
     public boolean SHOW_STOCK_REPLACE_OUTER;
     public boolean SHOW_SR_INVOICE_NUMBER;
     public boolean SHOW_SIH;
+
+    private String CODE_CHECK_MRP = "SR07";
+    public boolean CHECK_MRP_VALUE;
+    private String CODE_SHOW_REMARKS_SAL_RET = "REM4";
+    public boolean SHOW_REMARKS_SAL_RET;
+    private String CODE_SR_DISCOUNT = "SR10";
+    private String CODE_SR_TAX = "SR11";
+    public boolean IS_APPLY_DISCOUNT_IN_SR;
+    public boolean IS_APPLY_TAX_IN_SR;
+    private String CODE_SR_DIFF_CNT = "SR12";
+    public boolean IS_PRD_CNT_DIFF_SR;
+
     private double totalValue = 0;
 
     private SalesReturnHelper(Context context) {
@@ -131,12 +143,12 @@ public class SalesReturnHelper {
      * @return - true or false
      */
     public boolean hasSalesReturn() {
-        int siz = bmodel.productHelper.getProductMaster().size();
+        int siz = bmodel.productHelper.getSalesReturnProducts().size();
         if (siz == 0)
             return false;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getProductMaster().get(i);
+            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
             if (!product.getSalesReturnReasonList().isEmpty())
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -184,6 +196,11 @@ public class SalesReturnHelper {
             SHOW_STOCK_REPLACE_CASE = false;
             SHOW_STOCK_REPLACE_OUTER = false;
             SHOW_SR_INVOICE_NUMBER = false;
+            CHECK_MRP_VALUE = false;
+            SHOW_REMARKS_SAL_RET = false;
+            IS_APPLY_DISCOUNT_IN_SR = false;
+            IS_APPLY_TAX_IN_SR = false;
+            IS_PRD_CNT_DIFF_SR = false;
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -225,6 +242,61 @@ public class SalesReturnHelper {
                         SHOW_SR_INVOICE_NUMBER = true;
                     else if ("SIH".equalsIgnoreCase(temp))
                         SHOW_SIH = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_CHECK_MRP) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.CHECK_MRP_VALUE = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_SAL_RET) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_REMARKS_SAL_RET = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_DISCOUNT) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_APPLY_DISCOUNT_IN_SR = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_TAX) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_APPLY_TAX_IN_SR = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_DIFF_CNT) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_PRD_CNT_DIFF_SR = true;
                 }
                 c.close();
             }
@@ -290,7 +362,7 @@ public class SalesReturnHelper {
                     + QT(bmodel.getSaleReturnNote()) + ","
                     + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
-                    + bmodel.retailerMasterBO.getDistributorId()+ ","
+                    + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId();
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -301,12 +373,12 @@ public class SalesReturnHelper {
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid";
 
-            int siz = bmodel.productHelper.getProductMaster().size();
+            int siz = bmodel.productHelper.getSalesReturnProducts().size();
             int totalQty;
             double totalvalue = 0;
             for (int i = 0; i < siz; ++i) {
                 product = bmodel.productHelper
-                        .getProductMaster().elementAt(i);
+                        .getSalesReturnProducts().elementAt(i);
 
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -688,25 +760,28 @@ public class SalesReturnHelper {
     }
 
     private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo) {
-        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
+        ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
         if (productBO != null) {
             for (SalesReturnReasonBO bo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
                 if (bo.getReasonID().equals(condition)) {
-                    bo.setCaseSize(productBO.getCaseSize());
-                    bo.setOuterSize(productBO.getOutersize());
-                    bo.setProductShortName(productBO.getProductShortName());
-                    bo.setOldMrp(productBO.getMRP());
-                    bo.setSrpedit(productBO.getSrp());
-                    bo.setPieceQty(pqty);
-                    bo.setCaseQty(cqty);
-                    bo.setOuterQty(oqty);
-                    bo.setOldMrp(oldmrp);
-                    bo.setMfgDate(mfgDate);
-                    bo.setExpDate(expDate);
-                    bo.setInvoiceno(invoiceNo);
-                    bo.setSrpedit(srpEdited);
-                    bo.setLotNumber(lotNo);
-                    productBO.getSalesReturnReasonList().add(bo);
+                    SalesReturnReasonBO reasonBo = new SalesReturnReasonBO();
+                    reasonBo.setReasonDesc(bo.getReasonDesc());
+                    reasonBo.setReasonID(bo.getReasonID());
+                    reasonBo.setCaseSize(productBO.getCaseSize());
+                    reasonBo.setOuterSize(productBO.getOutersize());
+                    reasonBo.setProductShortName(productBO.getProductShortName());
+                    reasonBo.setOldMrp(productBO.getMRP());
+                    reasonBo.setSrpedit(productBO.getSrp());
+                    reasonBo.setPieceQty(pqty);
+                    reasonBo.setCaseQty(cqty);
+                    reasonBo.setOuterQty(oqty);
+                    reasonBo.setOldMrp(oldmrp);
+                    reasonBo.setMfgDate(mfgDate);
+                    reasonBo.setExpDate(expDate);
+                    reasonBo.setInvoiceno(invoiceNo);
+                    reasonBo.setSrpedit(srpEdited);
+                    reasonBo.setLotNumber(lotNo);
+                    productBO.getSalesReturnReasonList().add(reasonBo);
                     return;
                 }
             }
@@ -718,7 +793,7 @@ public class SalesReturnHelper {
      */
     public void clearSalesReturnTable() {
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
@@ -752,7 +827,7 @@ public class SalesReturnHelper {
     // set new to add data from db
     public void removeSalesReturnTable() {
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
@@ -835,7 +910,7 @@ public class SalesReturnHelper {
 
     private void saveReplacementDetails(DBUtil db, String uid) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
-        final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getProductMaster();
+        final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
         for (ProductMasterBO product : productMaster) {
@@ -1029,7 +1104,7 @@ public class SalesReturnHelper {
         double totalTaxValue = 0;
 
         if (getTotalValue() > 0) {
-            if (bmodel.configurationMasterHelper.IS_APPLY_TAX_IN_SR) {
+            if (IS_APPLY_TAX_IN_SR) {
                 bmodel.productHelper.downloadTaxDetails();
                 // Method to use Apply Tax
                 final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
@@ -1115,7 +1190,7 @@ public class SalesReturnHelper {
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
                 String pid = c.getString(0);
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(pid);
+                ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);
                 if (productBO != null) {
                     int uomid = c.getInt(2);
                     if (uomid == productBO.getPcUomid()) {
@@ -1184,7 +1259,7 @@ public class SalesReturnHelper {
     }
 
     public List<ProductMasterBO> updateReplaceQtyWithOutTakingOrder(List<ProductMasterBO> orderList) {
-        final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getProductMaster();
+        final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getSalesReturnProducts();
         if (orderList != null && !orderList.isEmpty()) {
             for (ProductMasterBO productMasterBO : productMasterList) {
                 if (productMasterBO.getOrderedPcsQty() == 0 && productMasterBO.getOrderedCaseQty() == 0 && productMasterBO.getOrderedOuterQty() == 0) {

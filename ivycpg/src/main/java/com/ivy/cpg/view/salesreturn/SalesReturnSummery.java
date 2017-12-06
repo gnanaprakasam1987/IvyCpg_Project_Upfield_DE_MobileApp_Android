@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,15 +22,14 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private void refreshList() {
         ArrayList<SalesReturnReasonBO> list = new ArrayList<>();
 
-        for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
+        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
             for (SalesReturnReasonBO bo : product.getSalesReturnReasonList()) {
                 if ((bo.getPieceQty() + bo.getCaseQty() + bo
                         .getOuterQty()) > 0) {
@@ -455,7 +454,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (!bmodel.configurationMasterHelper.SHOW_REMARKS_SAL_RET) {
+        if (!salesReturnHelper.SHOW_REMARKS_SAL_RET) {
             menu.findItem(R.id.menu_reviews).setVisible(false);
         } else
             menu.findItem(R.id.menu_reviews).setVisible(true);
@@ -558,12 +557,12 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            if (!bmodel.configurationMasterHelper.IS_APPLY_DISCOUNT_IN_SR) {
+            if (!salesReturnHelper.IS_APPLY_DISCOUNT_IN_SR) {
                 bmodel.invoiceDisount = "0";
                 bmodel.productHelper.getBillWiseDiscountList().clear();
             }
 
-            if (!bmodel.configurationMasterHelper.IS_APPLY_TAX_IN_SR) {
+            if (!salesReturnHelper.IS_APPLY_TAX_IN_SR) {
                 bmodel.productHelper.getTaxList().clear();
             }
 
@@ -618,7 +617,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlertWithImage("",
                             getResources().getString(R.string.saved_successfully),
-                            DataMembers.NOTIFY_SALES_RETURN_SAVED,true);
+                            DataMembers.NOTIFY_SALES_RETURN_SAVED, true);
                 }
             } else {
                 Toast.makeText(SalesReturnSummery.this, getResources().getString(R.string.saved_Failed), Toast.LENGTH_SHORT).show();
@@ -632,7 +631,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private void updateCreditNoteprintList() {
         mPrintList = new Vector<>();
 
-        for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
+        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
 
             int totalSalesReturnQty = 0;

@@ -42,6 +42,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -87,6 +88,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
     private Vector<ConfigureBO> mTempMenuList = new Vector<>();
 
     private AlertDialog alertDialog;
+    private SurveyHelperNew surveyHelperNew;
 
     @Nullable
     @Override
@@ -97,6 +99,8 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
 
         activityList = (ListView) view.findViewById(R.id.listView1);
         cName = (TextView) view.findViewById(R.id.counterName);
@@ -433,7 +437,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                 if (pos != 0) {
                     bmodel.setCounterSaleBO(bmodel.mCounterSalesHelper.getLstDraft().get(pos - 1));
                     // load answers for selected draft
-                    bmodel.mSurveyHelperNew.loadCSSurveyAnswers(0, bmodel.getCounterSaleBO().getLastUid());
+                    surveyHelperNew.loadCSSurveyAnswers(0, bmodel.getCounterSaleBO().getLastUid());
                 } else {
                     bmodel.setCounterSaleBO(null);
                 }
@@ -476,8 +480,8 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                 bmodel.mCounterSalesHelper.downloadDrafts();
 
                 // for cs survey
-                bmodel.mSurveyHelperNew.downloadModuleId("STANDARD");
-                bmodel.mSurveyHelperNew.downloadQuestionDetails("MENU_SURVEY_CS");
+                surveyHelperNew.downloadModuleId("STANDARD");
+                surveyHelperNew.downloadQuestionDetails("MENU_SURVEY_CS");
 
                 // Load Data for Special Filter
                 bmodel.configurationMasterHelper.downloadFilterList();

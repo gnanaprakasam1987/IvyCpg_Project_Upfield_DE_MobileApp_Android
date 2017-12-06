@@ -1,4 +1,4 @@
-package com.ivy.cpg.price;
+package com.ivy.cpg.view.price;
 
 import android.content.Context;
 import android.database.Cursor;
