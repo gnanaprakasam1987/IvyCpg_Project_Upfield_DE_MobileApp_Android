@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -37,7 +38,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.print.DemoSleeper;

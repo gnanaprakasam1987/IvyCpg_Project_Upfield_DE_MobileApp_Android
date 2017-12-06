@@ -31,12 +31,10 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.PlanogramMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.sd.png.view.Gallery;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
@@ -45,7 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.ivy.sd.png.view.Gallery.isPhotoDelete;
+import static com.ivy.cpg.view.photocapture.Gallery.isPhotoDelete;
 
 /**
  * The Class PhotoCaptureActivity is used to take photo , according to the
@@ -421,9 +419,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 && !t.getInStoreLocations().get(mSelectedItem).getImageName().equals("")) {
                             String path = HomeScreenFragment.folder.getPath() + "/"
                                     + t.getInStoreLocations().get(mSelectedItem).getImageName();
-                            PlanogramMasterHelper mPlanoGramMasterHelper = PlanogramMasterHelper.getInstance(this);
-                            if (mPlanoGramMasterHelper.isImagePresent(path)) {
-                                Uri uri = mPlanoGramMasterHelper
+                            if (mPhotoCaptureHelper.isImagePresent(path)) {
+                                Uri uri = mPhotoCaptureHelper
                                         .getUriFromFile(path);
                                 imgViewImage.setImageURI(uri);
 
@@ -712,7 +709,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(mBModel.photoPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(PhotoCaptureActivity.this,
@@ -1112,7 +1109,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     /**
      * To check, is photo count reached maximum count
      *
-     * @return
+     * @return Is Taken or not
      */
     private boolean isMaximumPhotoTaken() {
         int dbImageCount = mBModel.synchronizationHelper
@@ -1130,7 +1127,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(HomeScreenFragment.photoPath,
+            mBModel.deleteFiles(mBModel.photoPath,
                     imgList);
         }
     }

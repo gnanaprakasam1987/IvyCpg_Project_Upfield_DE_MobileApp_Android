@@ -34,7 +34,6 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
-   
 
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,

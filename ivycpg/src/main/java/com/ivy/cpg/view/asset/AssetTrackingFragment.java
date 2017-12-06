@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -41,7 +43,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
@@ -92,11 +93,8 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
-                false);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -104,6 +102,14 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             actionBar.setElevation(0);
             setScreenTitle(assetTrackingHelper.mSelectedActivityName);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
+                false);
 
         initializeViews(view);
         assetPresenter.initialLoad();

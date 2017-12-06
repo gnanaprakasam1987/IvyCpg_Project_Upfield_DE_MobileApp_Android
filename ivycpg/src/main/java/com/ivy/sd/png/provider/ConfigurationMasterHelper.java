@@ -383,7 +383,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_NO_ORDER_REASON;
 
 
-
     private static final String CODE_CHAT = "CHAT01";
     public boolean IS_CHAT_ENABLED;
 
@@ -1033,9 +1032,6 @@ public class ConfigurationMasterHelper {
 
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE = "PRICE_RETAINVW";
-
-    private static final String CODE_LOCATION_WISE_PLANOGRAM = "FUN39";
-    public boolean IS_LOCATION_WISE_PLANOGRAM;
 
     private static final String CODE_DAY_WISE_RETAILER_WALKINGSEQ = "FUN40";
     public boolean IS_DAY_WISE_RETAILER_WALKINGSEQ;
@@ -1972,7 +1968,6 @@ public class ConfigurationMasterHelper {
         this.IS_PRINT_CREDIT_NOTE_REPORT = hashMapHHTModuleConfig.get(CODE_PRINT_CREDIT_NOTE_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_CREDIT_NOTE_REPORT) : false;
         this.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE = hashMapHHTModuleConfig.get(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE) : false;
         this.IS_EOD_COLUMNS_AVALIABLE = hashMapHHTModuleConfig.get(CODE_EOD_COLUMNS) != null ? hashMapHHTModuleConfig.get(CODE_EOD_COLUMNS) : false;
-        this.IS_LOCATION_WISE_PLANOGRAM = hashMapHHTModuleConfig.get(CODE_LOCATION_WISE_PLANOGRAM) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_WISE_PLANOGRAM) : false;
         this.IS_DAY_WISE_RETAILER_WALKINGSEQ = hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) != null ? hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) : false;
         this.IS_PARTIAL_CREDIT_NOTE_ALLOW = hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) : false;
         this.IS_PAYMENT_RECEIPTNO_GET = hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) != null ? hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) : false;

@@ -66,6 +66,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -80,8 +82,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
