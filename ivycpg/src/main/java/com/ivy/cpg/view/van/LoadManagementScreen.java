@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.van;
+package com.ivy.cpg.view.van;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -59,7 +59,7 @@ import java.util.Vector;
 
 
 public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
-    private static final String OUR_INTENT_ACTION = "com.ivy.sd.png.view.van.LoadManagementScreen.RECVR";
+    private static final String OUR_INTENT_ACTION = "com.ivy.cpg.view.van.LoadManagementScreen.RECVR";
     private static final String DATA_STRING_TAG = "com.motorolasolutions.emdk.datawedge.data_string";
     private static final String ACTION_SOFTSCANTRIGGER = "com.motorolasolutions.emdk.datawedge.api.ACTION_SOFTSCANTRIGGER";
     private static final String EXTRA_PARAM = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";

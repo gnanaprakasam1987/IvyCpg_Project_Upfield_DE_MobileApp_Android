@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.van;
+package com.ivy.cpg.view.van;
 
 /**
  * Created by vikraman.a on 18-04-2017.

@@ -13,12 +13,13 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
+import com.ivy.cpg.view.van.LoadManagementFragment;
+import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.van.LoadManagementFragment;
 
 /**
  * Created by rajkumar.s on 12/30/2016.
