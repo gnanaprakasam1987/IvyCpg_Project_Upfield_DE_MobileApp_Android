@@ -59,12 +59,13 @@ import java.util.Vector;
 
 
 public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
+
     private static final String OUR_INTENT_ACTION = "com.ivy.cpg.view.van.LoadManagementScreen.RECVR";
     private static final String DATA_STRING_TAG = "com.motorolasolutions.emdk.datawedge.data_string";
     private static final String ACTION_SOFTSCANTRIGGER = "com.motorolasolutions.emdk.datawedge.api.ACTION_SOFTSCANTRIGGER";
     private static final String EXTRA_PARAM = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
     private static final String DWAPI_TOGGLE_SCANNING = "TOGGLE_SCANNING";
-    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
+
     private static final String MENU_STOCK_PROPOSAL = "MENU_STOCK_PROPOSAL";
     private static final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
     private static final String MENU_ODAMETER = "MENU_ODAMETER";
@@ -72,15 +73,19 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
     private static final String MENU_VANLOAD_STOCK_VIEW = "MENU_VANLOAD_STOCK_VIEW";
     private static final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
     private static final String MENU_VAN_PLANOGRAM = "MENU_VAN_PLANOGRAM";
-    private BusinessModel bmodel;
-    private Intent vanloadintent;
-    private Intent stockViewIntent;
-    private Intent vanloadstockview;
-    private Intent currenStockViewBatchWiseIntent;
-    private TextView mSelectedListBTN;
     private String mSelectedBarCodemodule;
+
+    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
+
+
+    private BusinessModel mBModel;
+
+    private Intent vanLoadIntent;
+    private Intent stockViewIntent;
+    private Intent vanLoadStockView;
+    private Intent currentStockViewBatchWiseIntent;
+
     private AlertDialog alertDialog;
-    private Toolbar toolbar;
 
     @SuppressLint("NewApi")
     @Override
@@ -89,14 +94,14 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
         setContentView(R.layout.activity_load_management);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         try {
-            bmodel = (BusinessModel) getApplicationContext();
-            bmodel.setContext(this);
+            mBModel = (BusinessModel) getApplicationContext();
+            mBModel.setContext(this);
 
-            if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                    && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+            if (mBModel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                    && mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                 checkAndRequestPermissionAtRunTime(3);
             }
 
@@ -105,7 +110,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 File f = new File(
                         getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                                 + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO()
+                                + mBModel.userMasterHelper.getUserMasterBO()
                                 .getUserid() + "APP");
                 if (f.isDirectory()) {
                     File files[] = f.listFiles(new FilenameFilter() {
@@ -131,7 +136,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 Commons.printException("" + e);
             }
 
-            if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
                 Toast.makeText(
                         this,
                         getResources()
@@ -144,7 +149,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             if (toolbar != null) {
                 setSupportActionBar(toolbar);
                 getSupportActionBar().setTitle(
-                        bmodel.configurationMasterHelper.getLoadmanagementtitle());
+                        mBModel.configurationMasterHelper.getLoadmanagementtitle());
                 getSupportActionBar().setIcon(R.drawable.icon_stock);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -160,19 +165,21 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             menuIcons.put(StandardListMasterConstants.MENU_DAMAGE_STOCK,
                     R.drawable.icon_stock);
 
-            Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
+            Vector<ConfigureBO> menuDB = mBModel.configurationMasterHelper
                     .downloadLoadManagementMenu();
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                bmodel.productHelper
+
+            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+                mBModel.productHelper
                         .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
             } else {
-                bmodel.productHelper
+                mBModel.productHelper
                         .downloadProductFilter("MENU_LOAD_MANAGEMENT");
             }
 
             ListView listView = (ListView) findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
             listView.setAdapter(new MenuBaseAdapter(menuDB));
+
             registerReceiver();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -184,25 +191,25 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
      * This method will load only the configured menus. Stock Proposal and New
      * Retailer module are configured from backend.
      */
-
     @Override
     protected void onResume() {
         super.onResume();
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+
+        if (mBModel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                && mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                bmodel.locationUtil.startLocationListener();
+                mBModel.locationUtil.startLocationListener();
             }
         }
     }
@@ -210,55 +217,57 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
     @Override
     public void onPause() {
         super.onPause();
-        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+        if (mBModel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                && mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
-                bmodel.locationUtil.stopLocationListener();
+                mBModel.locationUtil.stopLocationListener();
         }
     }
 
     private void gotoNextActivity(ConfigureBO menuItem) {
-        Intent stockpropintent;
-        Intent odameterintent;
+        Intent stockProposalIntent;
+        Intent odometerIntent;
         Intent damagedSalesReturnIntent;
 
         switch (menuItem.getConfigCode()) {
             case MENU_STOCK_PROPOSAL:
 
-                stockpropintent = new Intent(LoadManagementScreen.this,
+                stockProposalIntent = new Intent(LoadManagementScreen.this,
                         StockProposalScreen.class);
-                stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                stockpropintent.putExtra("screentitle", menuItem.getMenuName());
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
+                stockProposalIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                stockProposalIntent.putExtra("screentitle", menuItem.getMenuName());
+
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    mBModel.productHelper.loadProductsWithFiveLevel(
                             "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
                 else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                    mBModel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                             "MENU_STOCK_PROPOSAL");
 
 
-                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STOCK_PROPOSAL), 2);
-                startActivity(stockpropintent);
+                mBModel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STOCK_PROPOSAL), 2);
+                startActivity(stockProposalIntent);
+
                 break;
             case MENU_MANUAL_VAN_LOAD:
 
-                vanloadintent = new Intent(LoadManagementScreen.this,
+                vanLoadIntent = new Intent(LoadManagementScreen.this,
                         ManualVanLoadActivity.class);
-                vanloadintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                vanloadintent.putExtra("screentitle", menuItem.getMenuName());
+                vanLoadIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                vanLoadIntent.putExtra("screentitle", menuItem.getMenuName());
 
                 new DownloadManualVanLoad().execute();
 
                 break;
             case MENU_ODAMETER:
 
-                    odameterintent = new Intent(LoadManagementScreen.this,
-                            OdaMeterScreen.class);
-                    odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    odameterintent.putExtra("screentitle", menuItem.getMenuName());
-                    startActivity(odameterintent);
+                odometerIntent = new Intent(LoadManagementScreen.this,
+                        OdaMeterScreen.class);
+                odometerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                odometerIntent.putExtra("screentitle", menuItem.getMenuName());
+                startActivity(odometerIntent);
 
                 break;
             case MENU_STOCK_VIEW:
@@ -272,11 +281,11 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 break;
             case MENU_VANLOAD_STOCK_VIEW:
 
-                if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                if (mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                     checkIsAllowed(
                             MENU_VANLOAD_STOCK_VIEW,
-                            bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
+                            mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
+                } else if (mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
                     checkBarCode(MENU_VANLOAD_STOCK_VIEW);
                 } else {
                     vanLoadSubRoutine(menuItem.getMenuName());
@@ -284,20 +293,20 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 break;
             case MENU_VAN_UNLOAD:
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    mBModel.productHelper.loadProductsWithFiveLevel(
                             "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
                 else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                    mBModel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                             "MENU_VAN_UNLOAD");
 
-                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
+                mBModel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
 
-                if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                if (mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                     checkIsAllowed(
                             MENU_VAN_UNLOAD,
-                            bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
+                            mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
+                } else if (mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
                     checkBarCode(MENU_VAN_UNLOAD);
                 } else {
                     vanUnLoadSubRoutine(menuItem.getMenuName());
@@ -310,9 +319,9 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 mPlanoGramHelper.loadConfigurations();
                 mPlanoGramHelper.downloadLevels(MENU_VAN_PLANOGRAM, "0");
                 mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM, false, false, false, 0, 0);
-                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
                 mPlanoGramHelper.loadPlanoGramInEditMode("0");
-                if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
+                if (mBModel.productHelper.getChildLevelBo() != null && mBModel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
                             PlanoGramActivity.class);
                     in.putExtra("from", "1");
@@ -334,12 +343,12 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 startActivity(damagedSalesReturnIntent);
                 break;
             case StandardListMasterConstants.MENU_CURRENT_STOCK_VIEW_BATCH:
-                currenStockViewBatchWiseIntent = new Intent(
+                currentStockViewBatchWiseIntent = new Intent(
                         LoadManagementScreen.this,
                         CurrentStockBatchViewActivity.class);
-                currenStockViewBatchWiseIntent
+                currentStockViewBatchWiseIntent
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                currenStockViewBatchWiseIntent.putExtra("screentitle",
+                currentStockViewBatchWiseIntent.putExtra("screentitle",
                         menuItem.getMenuName());
                 new DownloadCurrentStockBAtchWise().execute();
                 break;
@@ -360,10 +369,10 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
     }
 
     private void vanLoadSubRoutine(String menuName) {
-        vanloadstockview = new Intent(LoadManagementScreen.this,
+        vanLoadStockView = new Intent(LoadManagementScreen.this,
                 VanLoadStockView_activity.class);
-        vanloadstockview.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        vanloadstockview.putExtra("screentitle", menuName);
+        vanLoadStockView.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        vanLoadStockView.putExtra("screentitle", menuName);
         new DownloadStockViewApply().execute();
     }
 
@@ -541,7 +550,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         menu.findItem(R.id.menu_clear).setVisible(false);
         menu.findItem(R.id.menu_lock).setVisible(false);
         menu.findItem(R.id.menu_save_draft).setVisible(false);
-        if (bmodel.configurationMasterHelper.SHOW_GCM_NOTIFICATION)
+        if (mBModel.configurationMasterHelper.SHOW_GCM_NOTIFICATION)
             menu.findItem(R.id.menu_refresh).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);
@@ -557,10 +566,10 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
             return true;
         } else if (i == R.id.menu_refresh) {
-            if (bmodel.isOnline()) {
+            if (mBModel.isOnline()) {
                 new DownloadNewStock().execute();
             } else {
-                bmodel.showAlert(
+                mBModel.showAlert(
                         getResources()
                                 .getString(R.string.no_network_connection), 0);
             }
@@ -591,14 +600,14 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //	pd.dismiss();
                     alertDialog.dismiss();
-                    bmodel.showAlert(
+                    mBModel.showAlert(
                             getResources().getString(
                                     R.string.stock_download_successfully), 0);
 
                 } else {
                     String errorDownlodCode = bundle
                             .getString(SynchronizationHelper.ERROR_CODE);
-                    String errorDownloadMessage = bmodel.synchronizationHelper
+                    String errorDownloadMessage = mBModel.synchronizationHelper
                             .getErrormessageByErrorCode().get(errorDownlodCode);
                     if (errorDownloadMessage != null) {
                         Toast.makeText(LoadManagementScreen.this, errorDownloadMessage,
@@ -615,7 +624,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
     }
 
     private void downloadVanload() {
-        bmodel.synchronizationHelper.downloadVanloadFromServer();
+        mBModel.synchronizationHelper.downloadVanloadFromServer();
     }
 
     class MenuBaseAdapter extends BaseAdapter {
@@ -657,11 +666,6 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                     @Override
                     public void onClick(View v) {
-                        if (mSelectedListBTN != null)
-                            mSelectedListBTN.setSelected(false);
-
-                     //   mSelectedListBTN = holder.menuBTN;
-                     //   mSelectedListBTN.setSelected(true);
 
                         gotoNextActivity(holder.config);
                     }
@@ -674,7 +678,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             }
 
             holder.config = configTemp;
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.menuBTN.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
             Integer i = menuIcons.get(configTemp.getConfigCode());
@@ -710,30 +714,30 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-                    bmodel.vanmodulehelper.downloadSubDepots();
+                if (mBModel.configurationMasterHelper.SHOW_SUBDEPOT) {
+                    mBModel.vanmodulehelper.downloadSubDepots();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    mBModel.productHelper.loadProductsWithFiveLevel(
                             "MENU_LOAD_MANAGEMENT", "MENU_MANUAL_VAN_LOAD");
                 else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                    mBModel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                             "MENU_MANUAL_VAN_LOAD");
 
-                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_MANUAL_VAN_LOAD), 2);
+                mBModel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_MANUAL_VAN_LOAD), 2);
 
-                if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
+                if (mBModel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
 
-                    bmodel.productHelper.downlaodReturnableProducts("MENU_LOAD_MANAGEMENT");
-                    bmodel.productHelper.downloadBomMaster();
-                    bmodel.productHelper.downloadGenericProductID();
-                    bmodel.vanmodulehelper.loadVanLoadReturnProductValidation();
+                    mBModel.productHelper.downlaodReturnableProducts("MENU_LOAD_MANAGEMENT");
+                    mBModel.productHelper.downloadBomMaster();
+                    mBModel.productHelper.downloadGenericProductID();
+                    mBModel.vanmodulehelper.loadVanLoadReturnProductValidation();
 
                 }
 
                 OrderHeader ordHeadBO = new OrderHeader();
-                bmodel.setOrderHeaderBO(ordHeadBO);
+                mBModel.setOrderHeaderBO(ordHeadBO);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;
@@ -748,7 +752,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
         protected void onPostExecute(Boolean result) {
             alertDialog.dismiss();
-            startActivity(vanloadintent);
+            startActivity(vanLoadIntent);
 
         }
 
@@ -771,9 +775,9 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.configurationMasterHelper.downloadSIHAppliedById();
-                bmodel.stockreportmasterhelper.downloadStockReportMaster();
-                bmodel.stockreportmasterhelper.downloadBatchwiseVanlod();
+                mBModel.configurationMasterHelper.downloadSIHAppliedById();
+                mBModel.stockreportmasterhelper.downloadStockReportMaster();
+                mBModel.stockreportmasterhelper.downloadBatchwiseVanlod();
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;
@@ -789,7 +793,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPostExecute(Boolean result) {
 
             alertDialog.dismiss();
-            startActivity(vanloadstockview);
+            startActivity(vanLoadStockView);
         }
 
     }
@@ -812,7 +816,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                mBModel.synchronizationHelper.updateAuthenticateToken();
 
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -851,19 +855,19 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+                    mBModel.productHelper
                             .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
                 } else {
-                    bmodel.productHelper
+                    mBModel.productHelper
                             .downloadProductFilter("MENU_LOAD_MANAGEMENT");
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    mBModel.productHelper.loadProductsWithFiveLevel(
                             "MENU_LOAD_MANAGEMENT", "MENU_STOCK_VIEW");
                 else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                    mBModel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                             "MENU_STOCK_VIEW");
 
             } catch (Exception e) {
@@ -904,19 +908,19 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+                    mBModel.productHelper
                             .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
                 } else {
-                    bmodel.productHelper
+                    mBModel.productHelper
                             .downloadProductFilter("MENU_LOAD_MANAGEMENT");
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
+                if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    mBModel.productHelper.loadProductsWithFiveLevel(
                             "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
                 else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                    mBModel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                             "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {
@@ -934,7 +938,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected void onPostExecute(Boolean result) {
 
             alertDialog.dismiss();
-            startActivity(currenStockViewBatchWiseIntent);
+            startActivity(currentStockViewBatchWiseIntent);
 
         }
 

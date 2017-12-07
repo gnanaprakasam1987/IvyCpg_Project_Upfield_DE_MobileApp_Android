@@ -54,6 +54,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     private LinearLayout sihLayout,caseLayout,outerLayout,pieceLayout;
     private LinearLayout ll;
     private Intent loadActivity;
+    private VanUnLoadModuleHelper mVanUnLoadModuleHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        mVanUnLoadModuleHelper = VanUnLoadModuleHelper.getInstance(this);
 
         findViewById(R.id.ll_value).setVisibility(View.GONE);
         findViewById(R.id.ll_lpc).setVisibility(View.GONE);
@@ -268,7 +270,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     public void onNextButtonClick() {
-        if (bmodel.vanunloadmodulehelper.hasVanunload()) {
+        if (mVanUnLoadModuleHelper.hasVanunload()) {
             new SaveVanUnload().execute();
 
         } else {
@@ -826,12 +828,12 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanunloadmodulehelper.saveVanUnLoad(vanunloadlist);
-                bmodel.vanunloadmodulehelper.UpdateSIH(vanunloadlist);
+                mVanUnLoadModuleHelper.saveVanUnLoad(vanunloadlist);
+                mVanUnLoadModuleHelper.UpdateSIH(vanunloadlist);
 
 
                 // If unloading empty
-                bmodel.vanunloadmodulehelper.updateEmptyReconilationTable(vanunloadlist);
+                mVanUnLoadModuleHelper.updateEmptyReconilationTable(vanunloadlist);
 
             } catch (Exception e) {
                 Commons.printException("" + e);

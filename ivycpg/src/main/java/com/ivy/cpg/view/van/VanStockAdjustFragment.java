@@ -75,12 +75,14 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
     private ArrayList<ProductMasterBO> mylist;
     private Vector<ProductMasterBO> items;
     private Button mBtn_clear;
+    private VanUnLoadModuleHelper mVanUnLoadModuleHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mVanUnLoadModuleHelper = VanUnLoadModuleHelper.getInstance(getActivity());
     }
 
     @Override
@@ -846,7 +848,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanunloadmodulehelper
+                mVanUnLoadModuleHelper
                         .saveVanStockAdjustment(vanunloadlist);
             } catch (Exception e) {
                 Commons.printException("" + e);
