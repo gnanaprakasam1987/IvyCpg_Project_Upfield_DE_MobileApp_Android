@@ -178,7 +178,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.login.LoginScreen"
+            android:name="com.ivy.cpg.view.login.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -362,13 +362,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.StockCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.StockCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.CombinedStockFragmentActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
@@ -558,7 +558,7 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"

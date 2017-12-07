@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.stockcheck;
 
 import android.Manifest;
 import android.app.AlertDialog;

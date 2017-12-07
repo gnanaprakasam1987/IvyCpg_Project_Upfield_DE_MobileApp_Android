@@ -1,4 +1,4 @@
-package com.ivy.cpg.login;
+package com.ivy.cpg.view.login;
 
 import android.app.Activity;
 import android.app.AlertDialog;

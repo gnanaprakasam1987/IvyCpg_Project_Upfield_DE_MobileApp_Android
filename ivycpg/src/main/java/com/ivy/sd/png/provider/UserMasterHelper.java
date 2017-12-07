@@ -3,7 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.login.LoginHelper;
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;

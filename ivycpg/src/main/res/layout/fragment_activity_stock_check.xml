@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/stock_check_fragment"
-        android:name="com.ivyretail.views.StockCheckFragment"
+        android:name="com.ivy.cpg.view.stockcheck.StockCheckFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />
