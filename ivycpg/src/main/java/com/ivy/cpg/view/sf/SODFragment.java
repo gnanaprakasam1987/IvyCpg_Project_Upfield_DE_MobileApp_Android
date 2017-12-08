@@ -601,6 +601,7 @@ public class SODFragment extends IvyBaseFragment implements
 
     /**
      * Shows alert dialog to denote image availability
+     *
      * @param imageNameStarts Image Name
      */
     private void showFileDeleteAlert(final String imageNameStarts) {
@@ -617,7 +618,8 @@ public class SODFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         mBModel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -632,7 +634,8 @@ public class SODFragment extends IvyBaseFragment implements
         builder.setNegativeButton(getResources().getString(R.string.no),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                     }
                 });
 
@@ -743,7 +746,8 @@ public class SODFragment extends IvyBaseFragment implements
                             }
                         }
                         calculateTotalValues();
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         mListView.invalidateViews();
                         dialog = null;
                     }
@@ -751,7 +755,8 @@ public class SODFragment extends IvyBaseFragment implements
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                if (dialog != null)
+                    dialog.dismiss();
                 mListView.invalidateViews();
                 dialog = null;
             }
@@ -777,7 +782,6 @@ public class SODFragment extends IvyBaseFragment implements
 
         }
     }
-
 
 
     @Override
@@ -807,7 +811,8 @@ public class SODFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         updateBrandText(BRAND, mSelectedFilterId);
                     }
                 });

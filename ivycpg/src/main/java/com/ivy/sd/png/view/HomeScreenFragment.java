@@ -2827,6 +2827,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 intent.setDataAndType(Uri.parse("file://" + fileName),
                         "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Commons.printException("" + e);

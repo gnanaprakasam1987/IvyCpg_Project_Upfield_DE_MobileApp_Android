@@ -139,7 +139,6 @@ public class SOSFragment extends IvyBaseFragment implements
         super.onStart();
 
 
-
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -705,7 +704,8 @@ public class SOSFragment extends IvyBaseFragment implements
         builder.setNegativeButton(getResources().getString(R.string.cancel),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                     }
                 });
 
@@ -715,8 +715,9 @@ public class SOSFragment extends IvyBaseFragment implements
 
     /**
      * Showing alert dialog to denote image availability..
+     *
      * @param imageNameStarts Image Name
-     * @param imageSrc  Image Path
+     * @param imageSrc        Image Path
      */
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
                                               final String imageSrc) {
@@ -735,7 +736,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
                         mBModel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -748,7 +750,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-//                dialog.dismiss();
+                if (dialog != null)
+                    dialog.dismiss();
             }
         });
         commonDialog.show();
@@ -884,7 +887,8 @@ public class SOSFragment extends IvyBaseFragment implements
                             }
                         }
                         calculateTotalValues();
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         mListView.invalidateViews();
                         dialog = null;
                     }
@@ -892,7 +896,8 @@ public class SOSFragment extends IvyBaseFragment implements
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                if (dialog != null)
+                    dialog.dismiss();
                 mListView.invalidateViews();
                 dialog = null;
             }
@@ -917,7 +922,6 @@ public class SOSFragment extends IvyBaseFragment implements
 
         }
     }
-
 
 
     @Override
@@ -949,7 +953,8 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         updateBrandText(BRAND, mSelectedFilterId);
                     }
                 });
@@ -1152,7 +1157,6 @@ public class SOSFragment extends IvyBaseFragment implements
                     }
 
                 });
-
 
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
@@ -1390,7 +1394,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
         protected void onPostExecute(Boolean result) {
 
-            alertDialog.dismiss();
+            if (alertDialog != null)
+                alertDialog.dismiss();
             if (result == Boolean.TRUE) {
                 totalImgList.clear();
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),

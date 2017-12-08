@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -238,13 +240,14 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                     ((VHItem) holder).mProductName.setVisibility(View.GONE);
                 }
 
+                Uri path = Uri.fromFile(new File(
+                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                + DataMembers.DIGITAL_CONTENT + "/"
+                                + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
 
                 Glide.with(getActivity())
-                        .load(new File(
-                                getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                                        + DataMembers.DIGITAL_CONTENT + "/"
-                                        + DataMembers.DIGITALCONTENT + "/" + ((VHItem) holder).filename).getAbsolutePath())
+                        .load(path)
                         .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -321,10 +324,11 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                         + DataMembers.DIGITALCONTENT + "/" + name);
         Commons.print("image" + file.getAbsolutePath());
         if (file.exists()) {
-            Uri path = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
             intent.setDataAndType(path, "image/*");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {

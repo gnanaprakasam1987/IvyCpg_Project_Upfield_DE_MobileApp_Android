@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -229,13 +231,15 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
                     ((VHItem) holder).mPName.setVisibility(View.GONE);
                 }
 
+                Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(
+                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                + DataMembers.DIGITAL_CONTENT + "/"
+                                + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
+
                 Glide
                         .with(getContext())
-                        .load(Uri.fromFile(new File(
-                                getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                                        + DataMembers.DIGITAL_CONTENT + "/"
-                                        + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName())))
+                        .load(path)
                         .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_digital_excel))
                         .into(((VHItem) holder).image);
                 ((VHItem) holder).image.setOnClickListener(new View.OnClickListener() {
@@ -300,10 +304,11 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.DIGITALCONTENT + "/" + name);
         if (file.exists()) {
-            Uri path = Uri.fromFile(file);
+            Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(path, "application/vnd.ms-excel");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             try {
                 startActivity(intent);

@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -131,7 +133,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         isUpdatePrintCount = getIntent().getExtras().getBoolean("IsUpdatePrintCount", false);
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
-        isHidePrintBtn=getIntent().getExtras().getBoolean("isHidePrintBtn", false);
+        isHidePrintBtn = getIntent().getExtras().getBoolean("isHidePrintBtn", false);
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -154,14 +156,14 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if(!bmodel.configurationMasterHelper.IS_SHARE_INVOICE){
+        if (!bmodel.configurationMasterHelper.IS_SHARE_INVOICE) {
             menu.findItem(R.id.menu_share_pdf).setVisible(false);
         }
-        if(isHidePrintBtn){
+        if (isHidePrintBtn) {
             menu.findItem(R.id.menu_print).setVisible(false);
         }
 
-        if(isHidePrintBtn){
+        if (isHidePrintBtn) {
             menu.findItem(R.id.menu_print).setVisible(false);
         }
 
@@ -175,7 +177,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 if (isFromOrder) {
                     bmodel.productHelper.clearOrderTable();
 
-                    if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+                    if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
                         bmodel.resetSRPvalues();
                     }
 
@@ -225,8 +227,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     root.setDrawingCacheEnabled(true);
                     screen = getBitmapFromView(this.getWindow().findViewById(R.id.root_print));
                     new CreatePdf().execute();
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                     Commons.printException(ex);
                 }
                 break;
@@ -251,7 +252,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
 
             return createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber
-                    );
+            );
         }
 
         @Override
@@ -265,7 +266,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     ArrayList<Uri> uriList = new ArrayList<>();
                     File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
                             , StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
-                    uriList.add(Uri.fromFile(newFile));
+                    uriList.add(FileProvider.getUriForFile(CommonPrintPreviewActivity.this, BuildConfig.APPLICATION_ID + ".provider", newFile));
 
                     sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
                     sharingIntent.setType("application/pdf");
@@ -276,8 +277,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 } else {
                     Toast.makeText(CommonPrintPreviewActivity.this, getResources().getString(R.string.error_in_creating_pdf), Toast.LENGTH_LONG).show();
                 }
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 Commons.printException(ex);
             }
 
@@ -328,13 +328,12 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
             }
 
-            }
-        catch (Exception ex){
-                Commons.printException(ex);
-                return false;
-            }
-            return true;
+        } catch (Exception ex) {
+            Commons.printException(ex);
+            return false;
         }
+        return true;
+    }
 
     public Bitmap getBitmapFromView(View view) {
         //Define a bitmap with the same size as the view
@@ -661,7 +660,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 if (isFromOrder) {
                     bmodel.productHelper.clearOrderTable();
 
-                    if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP){
+                    if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
                         bmodel.resetSRPvalues();
                     }
 
@@ -1147,7 +1146,6 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     public interface ScrybeListener {
         void isScrybeResponse(AEMPrinter aemPrinter, AEMScrybeDevice aemScrybeDevice, boolean isConnected);
     }
-
 
 
 }

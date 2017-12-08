@@ -216,13 +216,20 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         });
 
 
+        if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES
+                || bmodel.configurationMasterHelper.IS_NEARBY
+                || bmodel.configurationMasterHelper.SHOW_MISSED_RETAILER
+                || bmodel.configurationMasterHelper.IS_ADHOC) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+
         /** Show/Hide the "all route filter" **/
         if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
             cardView1.setVisibility(View.GONE);
             cardView.setVisibility(View.VISIBLE);
-            fab.setVisibility(View.VISIBLE);
         } else {
-            fab.setVisibility(View.GONE);
             cardView.setVisibility(View.GONE);
             cardView1.setVisibility(View.VISIBLE);
 
@@ -501,7 +508,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         TextView tv_target1 = (TextView) view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tv_target1.setText(getTotalAchieved());
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+            tv_target1.setText("" + getStoreVisited());
+        } else {
+            tv_target1.setText(getTotalAchieved());
+        }
 
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper

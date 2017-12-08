@@ -31,6 +31,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -80,6 +81,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BomRetunBo;
@@ -516,8 +518,8 @@ public class BusinessModel extends Application {
                 myIntent.putExtra("screentitle", dasHomeTitle);
                 ctxx.startActivityForResult(myIntent, 0);
             } else {*/
-                myIntent = new Intent(ctxx, HomeScreenActivity.class);
-                ctxx.startActivityForResult(myIntent, 0);
+            myIntent = new Intent(ctxx, HomeScreenActivity.class);
+            ctxx.startActivityForResult(myIntent, 0);
             //}
         } else if (act.equals(DataMembers.actPlanning)) {
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
@@ -5214,8 +5216,6 @@ public class BusinessModel extends Application {
     }
 
 
-
-
     public HashMap<String, String> getDigitalContentURLS() {
         return digitalContentURLS;
     }
@@ -5258,7 +5258,6 @@ public class BusinessModel extends Application {
         }
 
     }
-
 
 
     public void setIsReviewPlan(String flag) {
@@ -5908,7 +5907,6 @@ public class BusinessModel extends Application {
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
-
 
 
     public void deleteAdhocImageDetailsFormTable(String ImageName) {
@@ -6980,6 +6978,8 @@ public class BusinessModel extends Application {
             getRetailerMasterBO()
                     .setTotalLines(orderHeaderBO.getLinesPerCall());
 
+            //get entry level discount value
+            double entryLevelDistSum = 0;
             // Order Details Entry
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId";
             if (configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
@@ -7001,6 +7001,7 @@ public class BusinessModel extends Application {
                             + (product.getOrderedPcsQty() * product.getMSQty())
                             + (product.getOrderedOuterQty() * product
                             .getOutersize());
+                    entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
 
                     if (configurationMasterHelper.SHOW_BATCH_ALLOCATION
                             && configurationMasterHelper.IS_SIH_VALIDATION) {
@@ -7199,6 +7200,16 @@ public class BusinessModel extends Application {
 
             }
 
+           /* //update Entry level discount
+            try {
+                if (entryLevelDistSum > 0)
+                    db.updateSQL("update " + DataMembers.tbl_orderHeader
+                            + " set discount=" + QT(entryLevelDistSum + "") + " where RetailerID="
+                            + QT(getRetailerMasterBO().getRetailerID()));
+            } catch (Exception e) {
+
+            }
+*/
             // insert itemlevel tax in SQLite
             if (configurationMasterHelper.SHOW_TAX) {
                 productHelper.saveProductLeveltax(uid, db);
@@ -7267,6 +7278,8 @@ public class BusinessModel extends Application {
             }
 
             productHelper.updateBillEntryDiscInOrderHeader(db, uid);
+            if (configurationMasterHelper.SHOW_DISCOUNT)
+                productHelper.updateEntryLevelDiscount(db, this.getOrderid(), entryLevelDistSum);
 
             db.closeDB();
             this.invoiceDisount = orderHeaderBO.getDiscount() + "";
@@ -11648,7 +11661,7 @@ public class BusinessModel extends Application {
      */
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return Uri.fromFile(f);
+        return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
 

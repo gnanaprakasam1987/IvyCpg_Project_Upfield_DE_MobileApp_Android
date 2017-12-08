@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/factor_title_size"
                 android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginTop="@dimen/dash_margin"
+                android:layout_marginTop="@dimen/dimens_10dp"
                 android:layout_toRightOf="@+id/brandSpinner"
                 android:text="@string/select_week"
                 android:textColor="?attr/selectWeekBackground"
@@ -132,7 +132,7 @@
                 android:layout_height="@dimen/factor_title_size"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/margin_week_layout"
-                android:layout_marginTop="@dimen/dash_margin"
+                android:layout_marginTop="@dimen/dimens_10dp"
                 android:text="@string/select_day"
                 android:textColor="?attr/selectWeekBackground"
                 android:textSize="@dimen/font_small" />

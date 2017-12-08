@@ -113,7 +113,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             }
         });
 
-        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD")) {
+        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") || fromOrderScreen.equalsIgnoreCase("MENU_ORDER")) {
             updateSchemeDetails();
         } else {
             mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();

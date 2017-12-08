@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="Pictures"
+        path="Android/data/com.ivy.sd.png.asean.view/" />
+    <external-path
+        name="external_storage_root"
+        path="." />
+</paths>

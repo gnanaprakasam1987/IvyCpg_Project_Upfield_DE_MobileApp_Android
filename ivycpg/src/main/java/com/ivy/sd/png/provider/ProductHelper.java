@@ -7475,6 +7475,31 @@ public class ProductHelper {
         db.closeDB();
     }
 
+    public void updateEntryLevelDiscount(DBUtil db, String orderID, double distVal) {
+
+        StringBuffer sb = new StringBuffer();
+        // sum of product discount , scheme amount and tax amount
+        double totDiscVaue = 0;
+
+
+        sb.append("select orderid from OrderHeader");
+        sb.append(" where orderid=" + orderID);
+        Cursor c = db.selectSQL(sb.toString());
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                totDiscVaue = distVal;
+            }
+        }
+        sb = new StringBuffer();
+        sb.append("update orderheader set ");
+        sb.append("discount=discount+" + totDiscVaue);
+        sb.append(" where orderid=" + orderID);
+        db.updateSQL(sb.toString());
+
+        c.close();
+
+    }
+
     public void updateBillEntryDiscInOrderHeader(DBUtil db, String orderId) {
 
         double totDiscVaue = 0;

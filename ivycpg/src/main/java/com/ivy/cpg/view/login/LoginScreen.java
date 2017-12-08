@@ -12,13 +12,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -438,12 +439,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                         businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(
-                                    Uri.fromFile(new File(
-                                            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                                    + "/" + DataMembers.fileName)),
-                                    "application/vnd.android.package-archive");
+                            intent.setDataAndType(FileProvider.getUriForFile(LoginScreen.this, BuildConfig.APPLICATION_ID + ".provider", new File(LoginScreen.this.
+                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                    + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
+
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             startActivity(intent);
                         } catch (Exception e) {
                             Commons.printException(e);

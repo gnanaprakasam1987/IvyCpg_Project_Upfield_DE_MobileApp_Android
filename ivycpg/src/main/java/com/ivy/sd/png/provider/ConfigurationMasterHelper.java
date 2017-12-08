@@ -3052,8 +3052,7 @@ public class ConfigurationMasterHelper {
                 c.close();
 
             }
-            // if scheme is on disable product wise discount
-            if (!IS_SCHEME_ON) {
+
                 codeValue = null;
 
                 sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -3078,7 +3077,7 @@ public class ConfigurationMasterHelper {
                             SHOW_DA = true;
                     }
                 }
-            }
+
 
 
             if (SHOW_PRICECHECK_IN_STOCKCHECK) {

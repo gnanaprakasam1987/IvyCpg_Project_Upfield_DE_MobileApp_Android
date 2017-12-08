@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -610,7 +612,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                         for (String distributorName : bmodel.reportHelper
                                 .getmOrderDetailsByDistributorName().keySet()) {
                             File newFile = new File(getActivity().getExternalFilesDir(null) + "", "OrderReport_" + distributorName + ".xls");
-                            uriList.add(Uri.fromFile(newFile));
+                            uriList.add(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", newFile));
                         }
 
                         sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);

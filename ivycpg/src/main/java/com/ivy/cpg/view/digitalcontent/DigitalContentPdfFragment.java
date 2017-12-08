@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -309,11 +311,11 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.DIGITALCONTENT + "/" + name);
         if (file.exists()) {
-            Uri path = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
             intent.setDataAndType(path, "application/pdf");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {

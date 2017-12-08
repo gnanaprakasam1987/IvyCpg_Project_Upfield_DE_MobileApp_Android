@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -447,7 +449,7 @@ public class PhotoCaptureHelper {
      */
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return Uri.fromFile(f);
+        return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
 
