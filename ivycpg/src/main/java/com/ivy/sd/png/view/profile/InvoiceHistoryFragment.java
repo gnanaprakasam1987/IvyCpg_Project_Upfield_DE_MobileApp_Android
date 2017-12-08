@@ -20,9 +20,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Vector;
 
 /**
@@ -157,7 +154,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             else
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
-            holder.orderId.setText(projectObj.getOrderid());
+            holder.orderId.setText(projectObj.getOrderid() + "/ " + projectObj.getInvoiceId());
             holder.invDate.setText(projectObj.getOrderdate());
             holder.totLines.setText(projectObj.getLpc() + "");
             holder.totVal.setText(bmodel.formatValue(projectObj.getOrderValue()));
@@ -241,6 +238,28 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                     invViewLayout.setVisibility(View.GONE);
                     itemView.setClickable(false);
                     itemView.setOnClickListener(null);
+                }
+
+                try {
+                    String label_orderId = null, label_invoiceId = null;
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.order_id_txt).getTag()) != null)
+                        label_orderId = bmodel.labelsMasterHelper
+                                .applyLabels(itemView.findViewById(
+                                        R.id.order_id_txt)
+                                        .getTag());
+
+                    if (bmodel.labelsMasterHelper.applyLabels("invoice_history_label") != null)
+                        label_invoiceId = bmodel.labelsMasterHelper
+                                .applyLabels("invoice_history_label");
+
+                    String label = (label_orderId != null ? label_orderId : getResources().getString(R.string.ord_id))
+                            + "/" + (label_invoiceId != null ? label_invoiceId : getResources().getString(R.string.inv_no));
+
+                    ((TextView) itemView.findViewById(R.id.order_id_txt))
+                            .setText(label);
+                } catch (Exception ex) {
+                    Commons.printException(ex);
                 }
 
                 //typeface for label text
