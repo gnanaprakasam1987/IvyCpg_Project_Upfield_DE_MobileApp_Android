@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.van;
+package com.ivy.cpg.view.van;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -28,8 +27,6 @@ import com.ivy.sd.png.view.ToolBarwithFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
-
-import static com.ivy.sd.png.asean.view.R.id.layout_sih;
 
 public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         implements BrandDialogInterface, OnEditorActionListener {

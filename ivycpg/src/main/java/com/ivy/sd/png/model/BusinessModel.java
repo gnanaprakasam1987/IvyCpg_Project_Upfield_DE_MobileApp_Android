@@ -71,6 +71,7 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.lib.base64.Base64;
@@ -156,8 +157,6 @@ import com.ivy.sd.png.provider.TaskHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
 import com.ivy.sd.png.provider.UserFeedBackHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
-import com.ivy.sd.png.provider.VanModuleHelper;
-import com.ivy.sd.png.provider.VanUnLoadModuleHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -234,7 +233,6 @@ public class BusinessModel extends Application {
     public static String selectedDownloadRetailerID = "";
     public static int selectedDownloadUserID = 0;
     //public static boolean dashHomeStatic;
-    private static String dasHomeTitle;
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     public String invoiceDisount;
@@ -275,7 +273,7 @@ public class BusinessModel extends Application {
     public RoadActivityHelper mroadActivityHelper;
     public TaskHelper taskHelper;
     public ReportHelper reportHelper;
-    public VanModuleHelper vanmodulehelper;
+    public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
     public SchemeDetailsMasterHelper schemeDetailsMasterHelper;
     public StockReportMasterHelper stockreportmasterhelper;
@@ -287,7 +285,6 @@ public class BusinessModel extends Application {
     public ReasonHelper reasonHelper;
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
-    public VanUnLoadModuleHelper vanunloadmodulehelper;
     public NewOutletHelper newOutletHelper;
     //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
@@ -430,7 +427,7 @@ public class BusinessModel extends Application {
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         taskHelper = TaskHelper.getInstance(this);
         reportHelper = ReportHelper.getInstance(this);
-        vanmodulehelper = VanModuleHelper.getInstance(this);
+        vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
@@ -456,7 +453,6 @@ public class BusinessModel extends Application {
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
 
-        vanunloadmodulehelper = VanUnLoadModuleHelper.getInstance(this);
 
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);

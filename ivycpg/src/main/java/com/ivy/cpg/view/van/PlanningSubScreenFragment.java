@@ -1,19 +1,19 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.van;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -27,21 +27,25 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.van.ManualVanLoadActivity;
-import com.ivy.sd.png.view.van.OdaMeterScreen;
-import com.ivy.sd.png.view.van.StockViewActivity;
-import com.ivy.sd.png.view.van.VanLoadStockView_activity;
+import com.ivy.sd.png.view.DashBoardActivity;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.PlanningVisitActivity;
 
 import java.util.HashMap;
 import java.util.Vector;
 
-public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
-    private static final String OUR_INTENT_ACTION = "com.ivy.sd.png.view.PlanningSubScreen.RECVR";
+/**
+ * Created by hanifa.m on 5/3/2017.
+ */
+
+public class PlanningSubScreenFragment extends IvyBaseFragment {
+
+    private static final String OUR_INTENT_ACTION = "com.ivy.cpg.view.van.PlanningSubScreen.RECVR";
     private static final String ACTION_SOFTSCANTRIGGER = "com.motorolasolutions.emdk.datawedge.api.ACTION_SOFTSCANTRIGGER";
     private static final String EXTRA_PARAM = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
     private static final String DATA_STRING_TAG = "com.motorolasolutions.emdk.datawedge.data_string";
@@ -59,41 +63,42 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
     private Intent vanloadstockview;
     private Intent stockViewIntent;
     private Button mSelectedListBTN;
-    private String mSelectedBarCodemodule;
+    public String mSelectedBarCodemodule;
     private Intent vanloadintent;
+    private View view;
 
-    private Toolbar toolbar;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+    }
 
-        setContentView(R.layout.activity_planningsub);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_load_management, container, false);
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+            setScreenTitle(bmodel.configurationMasterHelper.getLoadplanningsubttitle());
+
+        }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-            checkAndRequestPermissionAtRunTime(3);
+            ((HomeScreenActivity) getActivity()).checkAndRequestPermissionAtRunTime(3);
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
+            Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
-            finish();
+            getActivity().finish();
         }
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(
-                    bmodel.configurationMasterHelper.getLoadplanningsubttitle());
-            getSupportActionBar().setIcon(R.drawable.icon_stock);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+
         menuIcons.put(menuOdameter, R.drawable.icon_odameter);
         menuIcons.put(menuPlanning, R.drawable.icon_order);
         menuIcons.put(menuStockView, R.drawable.icon_stock);
@@ -105,26 +110,34 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         for (int i = 0; i < menuDB.size(); i++)
             Commons.print("menu," + menuDB.get(i).getMenuName());
 
-        ListView listView = (ListView) findViewById(R.id.listView1);
+        ListView listView = (ListView) view.findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
         listView.setAdapter(new MenuBaseAdapter(menuDB));
 
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onStart() {
+        super.onStart();
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
+            Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
-            finish();
+            getActivity().finish();
         }
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-            int permissionStatus = ContextCompat.checkSelfPermission(this,
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                 bmodel.locationUtil.startLocationListener();
@@ -137,10 +150,39 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         super.onPause();
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-            int permissionStatus = ContextCompat.checkSelfPermission(this,
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
                 bmodel.locationUtil.stopLocationListener();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindDrawables(view.findViewById(R.id.root));
+    }
+
+    /**
+     * this would clear all the resources used of the layout.
+     *
+     * @param view -view
+     */
+    private void unbindDrawables(View view) {
+        if (view != null) {
+            if (view.getBackground() != null) {
+                view.getBackground().setCallback(null);
+            }
+            if (view instanceof ViewGroup) {
+                for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                    unbindDrawables(((ViewGroup) view).getChildAt(i));
+                }
+                try {
+                    ((ViewGroup) view).removeAllViews();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+            }
         }
     }
 
@@ -151,31 +193,31 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
         if (menuItem.getConfigCode().equals(menuOdameter)) {
 
-            Intent odameterintent = new Intent(PlanningSubScreen.this,
+            Intent odameterintent = new Intent(getActivity(),
                     OdaMeterScreen.class);
             odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             odameterintent.putExtra("screentitle", menuItem.getMenuName());
+            odameterintent.putExtra("planingsub", true);
             startActivity(odameterintent);
 
         } else if (menuItem.getConfigCode().equals(menuPlanning)) {
 
             if (bmodel.synchronizationHelper.isDayClosed()) {
-                Toast.makeText(this,
+                Toast.makeText(getActivity(),
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                Toast.makeText(this, bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (!isClicked) {
                     isClicked = false;
-                    Intent i = new Intent(PlanningSubScreen.this,
-                            HomeScreenActivity.class);
-                    i.putExtra("From", menuPlanningConstant);
-                    i.putExtra("Newplanningsub", "Planningsub");
+                    bmodel.distributorMasterHelper.downloadDistributorsList();
                     bmodel.configurationMasterHelper
                             .setTradecoveragetitle(menuItem.getMenuName());
+                    Intent i = new Intent(getActivity(),
+                            PlanningVisitActivity.class);
                     startActivity(i);
                 }
             }
@@ -193,46 +235,36 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
         } else if (menuItem.getConfigCode().equals(menuStockView)) {
 
-            stockViewIntent = new Intent(PlanningSubScreen.this,
+            stockViewIntent = new Intent(getActivity(),
                     StockViewActivity.class);
             stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             stockViewIntent.putExtra("screentitle", menuItem.getMenuName());
+            stockViewIntent.putExtra("planingsub", true);
             new LoadCurrenStock().execute();
 
         } else if (menuItem.getConfigCode().equals(menuDashDay)) {
 
-            Intent i = new Intent(PlanningSubScreen.this,
+            Intent i = new Intent(getActivity(),
                     DashBoardActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.putExtra("screentitle", menuItem.getMenuName());
-            i.putExtra("retid", "0");
-            i.putExtra("type", "DAY");
             startActivity(i);
 
         } else if (menuItem.getConfigCode().equals(menuManualVanload)) {
 
-            vanloadintent = new Intent(PlanningSubScreen.this,
+            vanloadintent = new Intent(getActivity(),
                     ManualVanLoadActivity.class);
             vanloadintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             vanloadintent.putExtra("screentitle", menuItem.getMenuName());
-
+            vanloadintent.putExtra("planingsub", true);
             new DownloadManualVanLoad().execute();
 
         }
 
     }
 
-    private void vanLoadSubRoutine(String menuName) {
-        vanloadstockview = new Intent(PlanningSubScreen.this,
-                VanLoadStockView_activity.class);
-        vanloadstockview.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        vanloadstockview.putExtra("screentitle", menuName);
-        new DownloadStockViewApply().execute();
-    }
-
     public void checkIsAllowed(String menuString, boolean isValidateBarCode) {
         try {
-            DBUtil db = new DBUtil(PlanningSubScreen.this, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -275,7 +307,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
     }
 
-    private void checkBarcodeData(Intent i) {
+    public void checkBarcodeData(Intent i) {
         String mScannedData;
         String mBarCode = "";
         if (i.getAction().contentEquals(OUR_INTENT_ACTION)) {
@@ -283,7 +315,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
             if (mScannedData == null)
                 mScannedData = "";
 
-            DBUtil db = new DBUtil(PlanningSubScreen.this, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -323,7 +355,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         else if (status == -3)
             strTitle = getResources().getString(R.string.barcode_not_matched);
 
-        Toast.makeText(PlanningSubScreen.this, strTitle, Toast.LENGTH_SHORT)
+        Toast.makeText(getActivity(), strTitle, Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -338,7 +370,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         else
             strTitle = getResources().getString(R.string.you_are) + " "
                     + distance + getResources().getString(R.string.mts_away);
-        Toast.makeText(PlanningSubScreen.this, strTitle, Toast.LENGTH_SHORT)
+        Toast.makeText(getActivity(), strTitle, Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -348,63 +380,107 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         Intent i = new Intent();
         i.setAction(ACTION_SOFTSCANTRIGGER);
         i.putExtra(EXTRA_PARAM, DWAPI_TOGGLE_SCANNING);
-        PlanningSubScreen.this.sendBroadcast(i);
+        getActivity().sendBroadcast(i);
     }
 
-    @Override
-    public void onNewIntent(Intent i) {
-        try {
-            if (i != null && mSelectedBarCodemodule != null) {
-                checkBarcodeData(i);
-                mSelectedBarCodemodule = null;
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
+    private void vanLoadSubRoutine(String menuName) {
+        vanloadstockview = new Intent(getActivity(),
+                VanLoadStockApplyActivity.class);
+        vanloadstockview.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        vanloadstockview.putExtra("screentitle", menuName);
+        vanloadstockview.putExtra("planingsub", true);
+        new DownloadStockViewApply().execute();
+    }
 
+    class LoadCurrenStock extends AsyncTask<Integer, Integer, Boolean> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading_data));
+            alertDialog = builder.create();
+            alertDialog.show();
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindDrawables(findViewById(R.id.root));
-    }
-
-    /**
-     * this would clear all the resources used of the layout.
-     *
-     * @param view -view
-     */
-    private void unbindDrawables(View view) {
-        if (view != null) {
-            if (view.getBackground() != null) {
-                view.getBackground().setCallback(null);
-            }
-            if (view instanceof ViewGroup) {
-                for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                    unbindDrawables(((ViewGroup) view).getChildAt(i));
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+                    bmodel.productHelper
+                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
+                } else {
+                    bmodel.productHelper
+                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
                 }
-                try {
-                    ((ViewGroup) view).removeAllViews();
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
+
+                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+                    bmodel.productHelper.loadProductsWithFiveLevel(
+                            "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
+                else
+                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
+                            "MENU_CUR_STK_BATCH");
+
+            } catch (Exception e) {
+                Commons.printException(" + e");
+                return Boolean.FALSE;
             }
+            return Boolean.TRUE;
         }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            try {
+                if (alertDialog != null)
+                    alertDialog.dismiss();
+            } catch (Exception e) {
+                Commons.printException(" + e");
+            }
+            startActivity(stockViewIntent);
+        }
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                startActivity(new Intent(PlanningSubScreen.this, HomeScreenActivity.class));
-                finish();
-                break;
-            default:
-                break;
+    class DownloadStockViewApply extends AsyncTask<Integer, Integer, Boolean> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
         }
-        return super.onOptionsItemSelected(item);
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                bmodel.configurationMasterHelper.downloadSIHAppliedById();
+                bmodel.stockreportmasterhelper.downloadStockReportMaster();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            alertDialog.dismiss();
+            startActivity(vanloadstockview);
+        }
+
     }
+
 
     class DownloadManualVanLoad extends AsyncTask<Integer, Integer, Boolean> {
 
@@ -412,7 +488,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         private AlertDialog alertDialog;
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(PlanningSubScreen.this);
+            builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
@@ -471,88 +547,6 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
     }
 
-    class LoadCurrenStock extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(PlanningSubScreen.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading_data));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
-
-                bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT, "");
-            } catch (Exception e) {
-                Commons.printException(" + e");
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            try {
-                if (alertDialog != null)
-                    alertDialog.dismiss();
-            } catch (Exception e) {
-                Commons.printException(" + e");
-            }
-            startActivity(stockViewIntent);
-        }
-
-    }
-
-    class DownloadStockViewApply extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(PlanningSubScreen.this);
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                bmodel.configurationMasterHelper.downloadSIHAppliedById();
-                bmodel.stockreportmasterhelper.downloadStockReportMaster();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-            startActivity(vanloadstockview);
-        }
-
-    }
 
     class MenuBaseAdapter extends BaseAdapter {
 
@@ -579,23 +573,30 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
             final ViewHolder holder;
             if (convertView == null) {
 
-                LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.list_item_menu, parent,
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                convertView = inflater.inflate(R.layout.custom_loadmgt_list_item, parent,
                         false);
                 holder = new ViewHolder();
                 holder.menuIcon = (ImageView) convertView
                         .findViewById(R.id.list_item_icon_ib);
 
                 holder.menuBTN = (TextView) convertView
-                        .findViewById(R.id.list_item_menu_tv_new);
+                        .findViewById(R.id.list_item_menu_tv_loadmgt);
 
-                convertView.setOnClickListener(new OnClickListener() {
+                convertView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
+                        if (mSelectedListBTN != null)
+                            mSelectedListBTN.setSelected(false);
+
+//                        mSelectedListBTN = holder.menuBTN;
+//                        mSelectedListBTN.setSelected(true);
+
                         gotoNextActivity(holder.config);
                     }
                 });
+
 
                 convertView.setTag(holder);
 
@@ -611,6 +612,12 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                 holder.menuIcon.setImageResource(i);
             else
                 holder.menuIcon.setImageResource(menuIcons.get(menuPlanning));
+
+            if (position % 2 == 0)
+                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+            else
+                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+
             return convertView;
         }
 
