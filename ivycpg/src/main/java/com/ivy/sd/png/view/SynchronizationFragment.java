@@ -55,6 +55,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
@@ -115,6 +116,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     private static final int UPLOAD_CS_REJECTED_VARIANCE = 9;
     SharedPreferences mLastSyncSharedPref;
     private NonVisitReasonDialog nvrd;
+    private VanUnLoadModuleHelper mVanUnloadHelper;
 
     TransferUtility transferUtility;
     AmazonS3Client s3;
@@ -127,6 +129,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
     }
 
     @Override
@@ -1236,7 +1239,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                             bmodel.mEmptyReconciliationhelper.updateTable();
                             if (bmodel.configurationMasterHelper.CALCULATE_UNLOAD) {
-                                bmodel.vanunloadmodulehelper
+                                mVanUnloadHelper
                                         .vanUnloadAutomatically();
                             }
                             if (bmodel.synchronizationHelper.checkDataForSync()

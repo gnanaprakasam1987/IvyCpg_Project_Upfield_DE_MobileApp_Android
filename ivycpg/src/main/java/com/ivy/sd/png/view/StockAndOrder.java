@@ -415,6 +415,45 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
+
+
+        try {
+            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+                public void afterTextChanged(Editable s) {
+                    if (s.length() >= 3) {
+                        loadSearchedList();
+                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+
+                }
+            });
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mTotalScreenWidth = dm.widthPixels;
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+        }
+
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+    }
+
+    private void prepareScreen() {
         try {
             if ("FromSummary".equals(OrderedFlag)) {
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED) {
@@ -485,42 +524,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Commons.printException(e + "");
         }
 
-        try {
-            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {
-                    if (s.length() >= 3) {
-                        loadSearchedList();
-                    }
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-
-                }
-            });
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mTotalScreenWidth = dm.widthPixels;
-
-        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
-        }
-
-        mDrawerLayout.closeDrawer(GravityCompat.END);
     }
-
     private void updateGuidedSellingView(boolean isCreateView, boolean isPrevious) {
         mBtnGuidedSelling_next.setVisibility(View.VISIBLE);
         mBtnNext.setVisibility(View.GONE);
@@ -556,11 +560,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             isFilter = true;
                         }
                         getSupportActionBar().invalidateOptionsMenu();
-                        //
-                   /* String mCurrentScreenName=getMenuName(bo.getFilterCode());
-                    if(!mCurrentScreenName.equals("")) {
-                        setScreenTitle(mCurrentScreenName);
-                    }*/
+
                         if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
                             mSelectedFilterMap.put("General", GENERAL);
                             updateGeneralText(GENERAL);
@@ -1421,6 +1421,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     @Override
     protected void onStart() {
         super.onStart();
+
+        prepareScreen();
+
         Commons.print("OnStart Called");
         // Configuration to Show Multi Seletion in Filter Fragment
         if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
@@ -2525,13 +2528,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             updateData(holder.productObj);
 
                         updateOrderedCount();
-                        if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
-                            if (!totalOrdCount.equals("0"))
-                                updateScreenTitle();
-                            else if (mSelectedFiltertext.equals(BRAND))
-                                setScreenTitle(title + " ("
-                                        + mylist.size() + ")");
-                        }
+                        updateScreenTitle();
 
                     }
 
@@ -2711,13 +2708,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             updateData(holder.productObj);
 
                         updateOrderedCount();
-                        if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
-                            if (!totalOrdCount.equals("0"))
-                                updateScreenTitle();
-                            else if (mSelectedFiltertext.equals(BRAND))
-                                setScreenTitle(title + " ("
-                                        + mylist.size() + ")");
-                        }
+                        updateScreenTitle();
 
                     }
 
@@ -2898,13 +2889,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             updateData(holder.productObj);
 
                         updateOrderedCount();
-                        if (!getScreenTitle().equals(getResources().getString(R.string.filter))) {
-                            if (!totalOrdCount.equals("0"))
-                                updateScreenTitle();
-                            else if (mSelectedFiltertext.equals(BRAND))
-                                setScreenTitle(title + " ("
-                                        + mylist.size() + ")");
-                        }
+                        updateScreenTitle();
                     }
 
                     @Override

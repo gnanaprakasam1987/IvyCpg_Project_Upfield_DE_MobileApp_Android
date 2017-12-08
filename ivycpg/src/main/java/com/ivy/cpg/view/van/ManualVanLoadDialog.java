@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.van;
+package com.ivy.cpg.view.van;
 
 import android.app.Dialog;
 import android.content.Context;

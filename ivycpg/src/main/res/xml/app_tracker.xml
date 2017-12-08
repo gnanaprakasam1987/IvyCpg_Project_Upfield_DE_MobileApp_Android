@@ -20,14 +20,14 @@
     <screenName name="com.ivy.sd.png.view.PlanningActivity">Trade Coverage</screenName>
     <screenName name="com.ivy.sd.png.view.Synchronization">Sync Screen</screenName>
     <screenName name="com.ivy.sd.png.view.reports.ReportActivity">Report</screenName>
-    <screenName name="com.ivy.sd.png.view.van.LoadManagementScreen">LoadManagement</screenName>
+    <screenName name="com.ivy.cpg.view.van.LoadManagementScreen">LoadManagement</screenName>
 
     <screenName name="com.ivy.sd.png.view.SKUWiseTargetActivity">SKU Wise Target</screenName>
-    <screenName name="com.ivy.sd.png.view.van.StockProposalScreen">Stock Proposal</screenName>
+    <screenName name="com.ivy.cpg.view.van.StockProposalScreen">Stock Proposal</screenName>
     <screenName name="com.ivy.sd.png.view.SellerDashBoardActivity">KPI Seller DashBoard</screenName>
     <screenName name="com.ivy.sd.png.view.DashBoardActivity">DashBoard</screenName>
     <screenName name="com.ivy.sd.png.view.KellogsDashBoardActivity">Kellogs DashBoard</screenName>
-    <screenName name="com.ivy.sd.png.view.van.VanStockAdjustActivity">Van Stock Adjustment
+    <screenName name="com.ivy.cpg.view.van.VanStockAdjustActivity">Van Stock Adjustment
     </screenName>
     <screenName name="com.ivy.sd.png.view.OrderSplitMasterScreen">Order Split</screenName>
     <screenName name="com.ivy.sd.png.view.JoinCallActivity">Join Call</screenName>
@@ -61,14 +61,14 @@
     <screenName name="com.ivy.sd.png.view.CallAnalysisQDVP3">Call Analysis - QDVP3</screenName>
     <screenName name="com.ivy.sd.png.view.DeliveryManagement">Delivery Management</screenName>
 
-    <screenName name="com.ivy.sd.png.view.van.OdaMeterScreen">OdaMeter Screen</screenName>
-    <screenName name="com.ivy.sd.png.view.van.StockProposalScreen">Stock Proposal</screenName>
-    <screenName name="com.ivy.sd.png.view.van.ManualVanLoadActivity">Manual VanLoad</screenName>
-    <screenName name="com.ivy.sd.png.view.van.StockViewActivity">Stock View</screenName>
-    <screenName name="com.ivy.sd.png.view.van.CurrentStockBatchViewActivity">Current Stock - Batch
+    <screenName name="com.ivy.cpg.view.van.OdaMeterScreen">OdaMeter Screen</screenName>
+    <screenName name="com.ivy.cpg.view.van.StockProposalScreen">Stock Proposal</screenName>
+    <screenName name="com.ivy.cpg.view.van.ManualVanLoadActivity">Manual VanLoad</screenName>
+    <screenName name="com.ivy.cpg.view.van.StockViewActivity">Stock View</screenName>
+    <screenName name="com.ivy.cpg.view.van.CurrentStockBatchViewActivity">Current Stock - Batch
         Wise
     </screenName>
-    <screenName name="com.ivy.sd.png.view.van.VanUnloadActivity">Van Unload</screenName>
+    <screenName name="com.ivy.cpg.view.van.VanUnloadActivity">Van Unload</screenName>
 
     <screenName name="com.ivy.cpg.primarysale.view.PrimarySaleActivity">PrimarySale_Distributor
         Selection

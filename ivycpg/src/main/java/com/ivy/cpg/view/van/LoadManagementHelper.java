@@ -1,7 +1,8 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.van;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 
 import com.ivy.lib.existing.DBUtil;
@@ -19,9 +20,9 @@ import com.ivy.sd.png.util.DataMembers;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class VanModuleHelper {
+public class LoadManagementHelper {
 
-    private static VanModuleHelper instance = null;
+    private static LoadManagementHelper instance = null;
     private int mPaymentTypeId;
     private float mVanLoadAmount = 0;
     private Context context;
@@ -30,15 +31,15 @@ public class VanModuleHelper {
     private ArrayList<SubDepotBo> subDepotList = null;
     private ArrayList<SubDepotBo> distributorList = null;
 
-    public VanModuleHelper(Context context) {
+    public LoadManagementHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
 
     }
 
-    public static VanModuleHelper getInstance(Context context) {
+    public static LoadManagementHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new VanModuleHelper(context);
+            instance = new LoadManagementHelper(context);
         }
         return instance;
     }
@@ -611,6 +612,62 @@ public class VanModuleHelper {
             }
         }
         return false;
+    }
+
+
+    public void saveVanUnLoad(Vector<LoadManagementBO> mylist) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            LoadManagementBO vanunloadbo;
+            String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
+            String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+            for (int i = 0; i < mylist.size(); i++) {
+                vanunloadbo = mylist.get(i);
+                if (vanunloadbo.getCaseqty() > 0
+                        || vanunloadbo.getPieceqty() > 0
+                        || vanunloadbo.getOuterQty() > 0) {
+                    String values = bmodel.QT(uid)
+                            + ","
+                            + vanunloadbo.getProductid()
+                            + ","
+                            + DatabaseUtils.sqlEscapeString(vanunloadbo
+                            .getProductname())
+                            + ","
+                            + vanunloadbo.getBatchId()
+                            + ","
+                            + bmodel.QT(vanunloadbo.getBatchNo())
+                            + ","
+                            + vanunloadbo.getStocksih()
+                            + ","
+                            + vanunloadbo.getCaseqty()
+                            + ","
+                            + vanunloadbo.getPieceqty()
+                            + ","
+                            + vanunloadbo.getOuterQty()
+                            + ","
+                            + vanunloadbo.getCaseSize()
+                            + ","
+                            + vanunloadbo.getOuterSize()
+                            + ","
+                            + vanunloadbo.getdUomid()
+                            + ","
+                            + vanunloadbo.getdOuonid()
+                            + ","
+                            + bmodel.QT(bmodel.userMasterHelper
+                            .getUserMasterBO().getDownloadDate()) + ","
+                            + 1;
+                    db.insertSQL(DataMembers.tbl_vanunload_details, columns,
+                            values);
+                }
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 }

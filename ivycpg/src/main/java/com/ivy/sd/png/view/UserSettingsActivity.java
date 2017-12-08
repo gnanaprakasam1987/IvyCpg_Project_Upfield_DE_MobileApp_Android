@@ -38,7 +38,6 @@ import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.van.DeviceStatusActivity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

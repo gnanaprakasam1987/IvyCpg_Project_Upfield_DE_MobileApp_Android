@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.van;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +20,7 @@ public class VanUnLoadModuleHelper {
 
     public VanUnLoadModuleHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
 
     }
 
