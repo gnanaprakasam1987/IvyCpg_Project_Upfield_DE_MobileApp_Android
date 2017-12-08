@@ -416,7 +416,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 R.string.order_dialog_barcode));
 
 
-
         try {
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
