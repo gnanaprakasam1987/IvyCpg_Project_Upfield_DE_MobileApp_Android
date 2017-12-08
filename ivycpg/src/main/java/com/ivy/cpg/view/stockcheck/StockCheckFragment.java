@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -459,7 +460,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View row = convertView;
             try {
                 final ViewHolder holder;
@@ -723,13 +725,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
                                     if (!qty.equals("")) {
-                                        int scqty = SDUtil
+                                        int shelf_case_qty = SDUtil
                                                 .convertToInt(holder.shelfCaseQty
                                                         .getText().toString());
 
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
-                                                .setShelfCase(scqty);
+                                                .setShelfCase(shelf_case_qty);
                                         int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
 
                                         holder.total
@@ -788,12 +790,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
                             if (!qty.equals("")) {
-                                int shelfoqty = SDUtil
+                                int shelf_o_qty = SDUtil
                                         .convertToInt(holder.shelfouter
                                                 .getText().toString());
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
-                                        .setShelfOuter(shelfoqty);
+                                        .setShelfOuter(shelf_o_qty);
                                 int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                 holder.total
                                         .setText(totValue + "");
@@ -840,13 +842,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
                             if (!qty.equals("")) {
-                                int wcqty = SDUtil
+                                int w_cqty = SDUtil
                                         .convertToInt(holder.facingQty
                                                 .getText().toString());
 
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
-                                        .setFacingQty(wcqty);
+                                        .setFacingQty(w_cqty);
                                 String strProductObj = stockCheckPresenter.getProductTotalValue(holder.productObj)
                                         + "";
                                 holder.total
@@ -1123,11 +1125,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
 
-                TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+                TypedArray typeArr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
                 if (position % 2 == 0) {
-                    row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
+                    row.setBackgroundColor(typeArr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
                 } else {
-                    row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
+                    row.setBackgroundColor(typeArr.getColor(R.styleable.MyTextView_listcolor, 0));
                 }
                 if (holder.productObj.getOuUomid() == 0 || !holder.productObj.isOuterMapped()) {
                     holder.shelfouter.setEnabled(false);
@@ -1257,8 +1259,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (businessModel.productHelper.getCompetitorFilterList() != null && businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
+            /*if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
                     && !businessModel.isMapEmpty(stockCheckPresenter.mSelectedIdByLevelId)) {
+                menu.findItem(R.id.menu_competitor_filter).setIcon(
+                        R.drawable.ic_action_filter_select);
+
+            }*/
+
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER
+                    && !stockCheckPresenter.selectedCompetitorId.equals("")) {
                 menu.findItem(R.id.menu_competitor_filter).setIcon(
                         R.drawable.ic_action_filter_select);
 
@@ -1511,8 +1520,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
         for (int i = 0; i < generalFilter.size(); i++) {
             ConfigureBO config = generalFilter.get(i);
 
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
+            TypedArray typeArr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            final int color = typeArr.getColor(R.styleable.MyTextView_textColor, 0);
             Button tab = new Button(getActivity());
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
@@ -1986,7 +1995,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void scrollToSelectedTabPosition() {
-        hscrl_spl_filter.scrollTo(x, y);
-        selectTab(stockCheckPresenter.getGeneralFilter().get(0).getConfigCode());
+        if (hscrl_spl_filter != null) {
+            hscrl_spl_filter.scrollTo(x, y);
+        }
+        selectTab("ALL");
     }
 }

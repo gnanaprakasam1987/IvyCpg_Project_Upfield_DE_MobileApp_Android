@@ -525,6 +525,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     }
                 }
             }
+            selectedCompetitorId = "";
             stockCheckView.updateListFromFilter(stockList);
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -696,6 +697,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
         stockCheckView.updateListFromFilter(stockList);
         stockCheckView.scrollToSelectedTabPosition();
+        generalButton = GENERAL;
+        putValueToFilterMap("");
 
 
     }

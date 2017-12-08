@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Created by dharmapriya.k on 7/12/17.
+ *
  */
 
 public interface StockCheckContractor {
