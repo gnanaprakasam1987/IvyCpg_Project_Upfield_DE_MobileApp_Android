@@ -1,4 +1,4 @@
-package com.ivy.cpg.login;
+package com.ivy.cpg.view.login;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.model.S3ObjectSummary;

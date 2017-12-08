@@ -13,7 +13,7 @@
 
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
-    <screenName name="com.ivy.cpg.login.LoginScreen">Login Screen</screenName>
+    <screenName name="com.ivy.cpg.view.login.LoginScreen">Login Screen</screenName>
     <screenName name="com.ivy.sd.png.view.HomeScreenActivity">Home Screen</screenName>
 
     <screenName name="com.ivy.sd.png.view.NewOutlet">New Retailer Creation</screenName>

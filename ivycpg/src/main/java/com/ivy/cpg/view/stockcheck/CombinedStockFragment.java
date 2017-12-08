@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.stockcheck;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -38,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,9 +63,11 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -77,7 +80,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class CombinedStockFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener, CompetitorFilterInterface {
 
 
     private static final String BRAND = "Brand";
@@ -124,7 +127,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private int mTotalScreenWidth = 0;
     private boolean isFromChild;
     private Button mBtnFilterPopup;
-
+    private String selectedCompetitorId = "";
+    private Object selectedTabTag;
+    private int x, y;
+    private HorizontalScrollView hscrl_spl_filter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -472,6 +478,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
         try {
+
+            if (mSelectedBrandID == -1) {
+                selectedCompetitorId = "";
+            }
             // Close the drawer
             mDrawerLayout.closeDrawers();
 
@@ -895,6 +905,16 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else
                 menu.findItem(R.id.menu_scheme).setVisible(true);
 
+            if (bmodel.productHelper.getCompetitorFilterList() != null && bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+                menu.findItem(R.id.menu_competitor_filter).setVisible(true);
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && !selectedCompetitorId.equals("")) {
+                menu.findItem(R.id.menu_competitor_filter).setIcon(
+                        R.drawable.ic_action_filter_select);
+
+            }
+
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -927,6 +947,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 mSelectedFilterMap.put("General", GENERAL);
             }
             productFilterClickedFragment();
+            getActivity().supportInvalidateOptionsMenu();
+            return true;
+        } else if (i == R.id.menu_competitor_filter) {
+            competitorFilterClickedFragment();
             getActivity().supportInvalidateOptionsMenu();
             return true;
         } else if (i == R.id.menu_loc_filter) {
@@ -1103,7 +1127,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
     private void loadSpecialFilterView(View view) {
-        view.findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
+        hscrl_spl_filter = (HorizontalScrollView) view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter.setVisibility(View.VISIBLE);
         ll_spl_filter = (LinearLayout) view.findViewById(R.id.ll_spl_filter);
         ll_tab_selection = (LinearLayout) view.findViewById(R.id.ll_tab_selection);
         float scale;
@@ -1170,14 +1195,19 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         generalbutton = view.getTag().toString();
                         updateBrandText(BRAND, -1);
                     }
-                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
+                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                        selectedTabTag = view.getTag();
                         selectTab(view.getTag());
+                    }
                 }
             });
 
 
             ll_spl_filter.addView(tab);
-
+            if (i == 0) {
+                x = tab.getLeft();
+                y = tab.getTop();
+            }
             Button tv_selection_identifier = new Button(getActivity());
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
@@ -1222,6 +1252,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             }
         }
+        if (!tag.toString().equalsIgnoreCase("All")) {
+            selectedCompetitorId = "";
+        }
+        getActivity().supportInvalidateOptionsMenu();
 
     }
 
@@ -1250,6 +1284,11 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             }
         }
+
+        if (!tag.toString().equalsIgnoreCase("All")) {
+            selectedCompetitorId = "";
+        }
+        getActivity().supportInvalidateOptionsMenu();
 
     }
 
@@ -1557,6 +1596,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             return;
         }
 
+        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+            selectedCompetitorId = "";
+        }
         mylist = new ArrayList<>();
         //
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {// Only own products
@@ -1678,6 +1720,11 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
 
         refreshList();
+
+        if (selectedTabTag != null) {
+            selectTab(selectedTabTag);
+        }
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -1789,5 +1836,77 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    private void competitorFilterClickedFragment() {
+        try {
+            QUANTITY = null;
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getActivity()
+                    .getSupportFragmentManager();
+            CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
+                    .findFragmentByTag("competitor filter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            /*if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+                selectedCompetitorId = "";
+            }*/
+
+            // set Fragmentclass Arguments
+            CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
+            Bundle b = new Bundle();
+            b.putString("selectedCompetitorId", selectedCompetitorId);
+            fragobj.setCompetitorFilterInterface(this);
+            fragobj.setArguments(b);
+            ft.replace(R.id.right_drawer, fragobj, "competitor filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+    }
+
+    @Override
+    public void updateCompetitorProducts(String filterId) {
+        selectedCompetitorId = filterId;
+        if (mylist != null) {
+            mylist.clear();
+        }
+        if (!selectedCompetitorId.equals("")) {
+            mSelectedIdByLevelId = new HashMap<>();
+            mSelectedBrandID = -1;
+            generalbutton = GENERAL;
+        }
+
+        /* if five filter is previously selected replace the filtered content */
+        /*if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false && selectedCompetitorId.equals("")) {
+            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
+        } else {*/
+        Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
+        if (filterId != null && !filterId.isEmpty()) {
+            for (ProductMasterBO sku : items) {
+                if (Integer.parseInt(filterId) == sku.getCompParentId()) {
+                    mylist.add(sku);
+                }
+            }
+        } else {
+            mylist.addAll(items);
+        }
+        mDrawerLayout.closeDrawers();
+        refreshList();
+        //}
+        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+            if (hscrl_spl_filter != null)
+                hscrl_spl_filter.scrollTo(x, y);
+            selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
+        }
+
+        getActivity().invalidateOptionsMenu();
+
+
     }
 }

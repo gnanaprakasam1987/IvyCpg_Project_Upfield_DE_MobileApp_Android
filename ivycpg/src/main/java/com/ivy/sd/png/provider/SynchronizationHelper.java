@@ -32,7 +32,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.ivy.cpg.login.LoginHelper;
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -183,9 +183,9 @@ SynchronizationHelper {
     public static final String INVALID_TOKEN = "E23";
     private static final String TAG = "SynchronizationHelper";
     private static final String TAG_JSON_OBJ = "json_obj_req";
-    private static final String CASE_TYPE = "CASE";
-    private static final String PIECE_TYPE = "PIECE";
-    private static final String OUTER_TYPE = "MSQ";
+    public static final String CASE_TYPE = "CASE";
+    public static final String PIECE_TYPE = "PIECE";
+    public static final String OUTER_TYPE = "MSQ";
     private static final String SECURITY_HEADER = "SECURITY_TOKEN_KEY";
     public static final String SPF_PSWD_ENCRYPT_TYPE_MD5 = "MD5";
 
