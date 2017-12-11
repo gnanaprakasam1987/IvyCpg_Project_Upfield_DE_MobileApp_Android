@@ -37,7 +37,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/icons_left_margin"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
 
                 <TextView
@@ -48,6 +48,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:text="Outlet name" />
+
+                <TextView
+                    android:id="@+id/outletLocation_tv"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/font_micro_small"
+                    android:textColor="?attr/accentcolor"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
+                    android:text="Outlet Location" />
             </LinearLayout>
 
             <LinearLayout

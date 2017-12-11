@@ -976,6 +976,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                 holder.outletname = (TextView) convertView
                         .findViewById(R.id.outletName_tv);
                 holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outletLocation = (TextView) convertView
+                        .findViewById(R.id.outlet_location_tv);
+                holder.outletLocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
                 holder.info = (ImageView) convertView
                         .findViewById(R.id.info_iv);
                 holder.visitFrequency = (TextView) convertView
@@ -1105,6 +1109,12 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             holder.retailerId = retailerObj.getRetailerID();
             holder.outletname.setText(retailerObj.getRetailerName());
+
+            if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)//to show retailer location
+                holder.outletLocation.setText(retailerObj.getRField4());
+            else
+                holder.outletLocation.setVisibility(View.GONE);
+
             holder.outletAddress.setText(retailerObj.getAddress1());
             holder.ref = position;
 
@@ -1137,6 +1147,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             ImageView outletIV;
             ImageView icon;
             TextView outletname;
+            TextView outletLocation;
             TextView outletAddress;
             String retailerId;
             int ref;

@@ -47,6 +47,18 @@
                     android:text="Outlet Address "
                     android:textSize="@dimen/font_small" />
 
+                <TextView
+                    android:id="@+id/outlet_location_tv"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:text="Outlet location "
+                    android:textColor="?attr/accentcolor"
+                    android:textSize="@dimen/font_micro_small" />
+
 
             </LinearLayout>
 

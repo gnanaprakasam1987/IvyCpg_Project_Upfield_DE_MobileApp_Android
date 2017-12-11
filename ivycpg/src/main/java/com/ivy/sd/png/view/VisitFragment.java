@@ -1135,6 +1135,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 holder.outletNameTextView = (TextView) convertView
                         .findViewById(R.id.outletName_tv);
+                holder.outletLocationTextView = (TextView) convertView
+                        .findViewById(R.id.outletName_tv);
 
                 holder.imgInvoice = (ImageView) convertView
                         .findViewById(R.id.iv_invoice);
@@ -1177,6 +1179,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.tv_freq.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
+                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outletLocationTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.tv_labelTgt1.setTypeface(bmodel.configurationMasterHelper
@@ -1239,6 +1243,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             String tvText = retailerObj.getRetailerName();
 
             holder.outletNameTextView.setText(tvText);
+
+            if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)
+                holder.outletLocationTextView.setText(retailerObj.getRField4());
+            else
+                holder.outletLocationTextView.setVisibility(View.GONE);
 
             if (mRetTgtAchv.containsKey("VST01")) {
                 String desc = mRetTgtAchv.get("VST01");
@@ -1544,6 +1553,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             private TextView outletNew;
             private TextView outletNameTextView;
+            private TextView outletLocationTextView;
 
             private ImageView imgGoldDeadStore;
             private ImageView imgInvoice;
