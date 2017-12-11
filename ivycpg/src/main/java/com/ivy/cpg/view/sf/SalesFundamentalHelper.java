@@ -86,10 +86,10 @@ public class SalesFundamentalHelper {
                     String code = c.getString(0);
                     if (code.equals(CODE_SOS_DIGITS)) {
                         sosDigits = c.getInt(1);
-                        sosDigits = sosDigits > 4 ? 4 : sosDigits;
+                        sosDigits = sosDigits >= 4 ? 4 : sosDigits;
                     } else if (code.equals(CODE_SOD_DIGITS)) {
                         sodDigits = c.getInt(1);
-                        sodDigits = sodDigits > 4 ? 4 : sodDigits;
+                        sodDigits = sodDigits >= 4 ? 4 : sodDigits;
                     }
 
                 }
@@ -153,6 +153,7 @@ public class SalesFundamentalHelper {
 
     /**
      * Download filter levels
+     *
      * @param moduleName
      */
     public void downloadSFFiveLevelFilter(String moduleName) {
@@ -205,6 +206,7 @@ public class SalesFundamentalHelper {
 
     /**
      * Load parent filter
+     *
      * @param mProductLevelId Parent Level ID
      */
     private void loadParentFilter(int mProductLevelId) {
@@ -250,10 +252,11 @@ public class SalesFundamentalHelper {
 
     /**
      * Load all child levels
-     * @param mChildLevel Child Level Id
-     * @param mParentLevel Parent level Id
-     * @param mProductLevelId  Product Id
-     * @param mParentLevelId Parent product Id
+     *
+     * @param mChildLevel     Child Level Id
+     * @param mParentLevel    Parent level Id
+     * @param mProductLevelId Product Id
+     * @param mParentLevelId  Parent product Id
      */
     private void loadChildFilter(int mChildLevel, int mParentLevel,
                                  int mProductLevelId, int mParentLevelId) {
@@ -312,12 +315,13 @@ public class SalesFundamentalHelper {
 
     /**
      * Download masters for sales fundamental
+     *
      * @param moduleName Module Name
-     * @param IsAccount Is Account wise mapped
+     * @param IsAccount  Is Account wise mapped
      * @param IsRetailer Is Retailer wise mapped
-     * @param IsClass Is class wise mapped
-     * @param LocId Is location wise mapped
-     * @param ChId Is channel wise mapped
+     * @param IsClass    Is class wise mapped
+     * @param LocId      Is location wise mapped
+     * @param ChId       Is channel wise mapped
      */
     private void downloadSalesFundamental(String moduleName, boolean IsAccount, boolean IsRetailer, boolean IsClass, int LocId, int ChId) {
         DBUtil db = null;
@@ -1564,9 +1568,10 @@ public class SalesFundamentalHelper {
 
     /**
      * Load and set Values to objects in Edit Mode
-     * @param uid Transaction Id
-     * @param pid Product Id
-     * @param totalShelf Total Shelf
+     *
+     * @param uid         Transaction Id
+     * @param pid         Product Id
+     * @param totalShelf  Total Shelf
      * @param mLocationId Location Id
      */
     public void loadSOSBlockDetails(String uid, String pid, int totalShelf, int mLocationId) {
@@ -1895,7 +1900,7 @@ public class SalesFundamentalHelper {
     /**
      * set Image Name in Each Objects
      *
-     * @param mBrandID Brand ID
+     * @param mBrandID   Brand ID
      * @param mImageName Image Name
      */
 
@@ -2005,9 +2010,10 @@ public class SalesFundamentalHelper {
     }
 
     /**
-     *  Load and set Values to objects in Edit Mode
-     * @param uid Transaction ID
-     * @param pid Product Id
+     * Load and set Values to objects in Edit Mode
+     *
+     * @param uid         Transaction ID
+     * @param pid         Product Id
      * @param mTotalShelf Total Shelf
      * @param mLocationId Location Id
      */
@@ -2218,6 +2224,7 @@ public class SalesFundamentalHelper {
 
     /**
      * Load data for SOS/SOD/SOSKU
+     *
      * @param mMenuName Module Code
      */
     public void loadData(String mMenuName) {

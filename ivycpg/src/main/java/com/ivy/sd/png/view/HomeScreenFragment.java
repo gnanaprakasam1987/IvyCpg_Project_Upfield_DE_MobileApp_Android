@@ -335,7 +335,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                bmodel.synchronizationHelper.backUpDB();
+                //bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -1790,6 +1790,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_DASH_DAY);
                 break;
             case MENU_JOINT_CALL:
+                bmodel.configurationMasterHelper.setJointCallTitle(menuName);
                 bndl = new Bundle();
                 bndl.putString("from", fragmentName);
                 fragment = new JoinCallFragment();

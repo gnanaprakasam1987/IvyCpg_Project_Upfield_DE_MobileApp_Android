@@ -86,7 +86,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private String mImageName;
     private int mSelectedLocationIndex;
     private boolean isFromChild;
-    private StringBuilder sb = new StringBuilder();
+    private String sb = "";
     private final int CAMERA_REQUEST_CODE = 1;
 
     SalesFundamentalHelper mSFHelper;
@@ -1473,6 +1473,12 @@ public class SOSFragment extends IvyBaseFragment implements
                         holder.et.setInputType(InputType.TYPE_NULL);
                         holder.et.onTouchEvent(event);
                         holder.et.setInputType(inType);
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
                         return true;
                     }
                 });
@@ -1481,6 +1487,13 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
+
                         if (!"".equals(s)) {
 
                             try {
@@ -1580,7 +1593,6 @@ public class SOSFragment extends IvyBaseFragment implements
                     s = s.substring(0, s.length() - 1);
                 } else
                     s = "0";
-                sb.append(s);
                 mSelectedET.setText(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();
@@ -1601,7 +1613,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private void updateValue(int val) {
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
-            sb.append(s);
+            sb = sb + val;
             if (sb.length() == mSFHelper.sosDigits) {
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
@@ -1612,6 +1624,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     mSelectedET.setText(strVal);
                 }
             } else {
+                sb = "";
                 Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }

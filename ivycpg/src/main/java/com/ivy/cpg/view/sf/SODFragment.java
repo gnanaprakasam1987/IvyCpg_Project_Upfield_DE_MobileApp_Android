@@ -101,7 +101,7 @@ public class SODFragment extends IvyBaseFragment implements
     private int mSelectedLocationIndex;
     private boolean isFromChild;
     private final int CAMERA_REQUEST_CODE = 1;
-    private StringBuilder sb = new StringBuilder();
+    private String sb = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1286,6 +1286,12 @@ public class SODFragment extends IvyBaseFragment implements
                         holder.et.setInputType(InputType.TYPE_NULL);
                         holder.et.onTouchEvent(event);
                         holder.et.setInputType(inType);
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
                         return true;
                     }
                 });
@@ -1294,6 +1300,13 @@ public class SODFragment extends IvyBaseFragment implements
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
+
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
                         if (!"".equals(s)) {
 
                             try {
@@ -1399,7 +1412,6 @@ public class SODFragment extends IvyBaseFragment implements
                     }
                     mSelectedET.setText(s);
                 }
-                sb.append(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();
                 if (!s1.contains(".")) {
@@ -1421,7 +1433,7 @@ public class SODFragment extends IvyBaseFragment implements
 
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
-            sb.append(s);
+            sb = sb + val;
             if (sb.length() == mSFHelper.sosDigits) {
 
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
@@ -1431,6 +1443,7 @@ public class SODFragment extends IvyBaseFragment implements
                     mSelectedET.setText(strVal);
                 }
             } else {
+                sb = "";
                 Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }

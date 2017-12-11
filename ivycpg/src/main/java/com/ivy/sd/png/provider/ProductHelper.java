@@ -2472,7 +2472,6 @@ public class ProductHelper {
 
     /**
      * get tagged products and update the productBO.
-     *
      */
     public void downloadSalesReturnProducts() {
         try {
@@ -7492,7 +7491,7 @@ public class ProductHelper {
         }
         sb = new StringBuffer();
         sb.append("update orderheader set ");
-        sb.append("discount=discount+" + totDiscVaue);
+        sb.append("discount=discount+" + bmodel.formatValue(totDiscVaue));
         sb.append(" where orderid=" + orderID);
         db.updateSQL(sb.toString());
 
@@ -8803,9 +8802,9 @@ public class ProductHelper {
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : getCompetitorProductMaster()) {
                     //if (mSKUId.contains(sku.getProductID())) {
-                        mTaggedProducts.add(sku);
-                        mTaggedProductById.put(sku.getProductID(), sku);
-                        competitorParentIds += sku.getCompParentId() + ",";
+                    mTaggedProducts.add(sku);
+                    mTaggedProductById.put(sku.getProductID(), sku);
+                    competitorParentIds += sku.getCompParentId() + ",";
                     /*}else{
                         mTaggedProducts.add(sku);
                         mTaggedProductById.put(sku.getProductID(), sku);
