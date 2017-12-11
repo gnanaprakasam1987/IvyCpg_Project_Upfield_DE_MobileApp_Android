@@ -15,7 +15,11 @@ public class OrderHistoryBO {
     }
 
     private int numid;
-    private String refId, orderdate, orderid;
+    private String refId;
+    private String orderdate;
+    private String orderid;
+
+    private String invoiceId;
     private double orderValue, paidAmount;
     private int isJointCall;
     private String delieveryStatus;
@@ -228,4 +232,14 @@ public class OrderHistoryBO {
     public void setVolume(String volume) {
         this.volume = volume;
     }
+
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
 }
