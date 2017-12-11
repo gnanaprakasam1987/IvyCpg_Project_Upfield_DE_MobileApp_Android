@@ -48,15 +48,17 @@ public class AssetHistoryFragment extends IvyBaseFragment {
     }
 
     private void initializeViews() {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_asset_history);
-        if (recyclerView != null) {
-            recyclerView.setHasFixedSize(false);
-        }
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        if (view != null) {
+            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_asset_history);
+            if (recyclerView != null) {
+                recyclerView.setHasFixedSize(false);
+            }
+            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        loadListData();
+            loadListData();
+        }
     }
 
     @Override

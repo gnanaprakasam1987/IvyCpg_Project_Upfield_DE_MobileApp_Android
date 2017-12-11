@@ -455,7 +455,7 @@ public class ProfileHelper {
 
                         invoiceHistory.setProductId(c.getInt(10));
                         invoiceHistory.setProductName(c.getString(11));
-                        invoiceHistory.setOrderid(c.getString(17));
+                        invoiceHistory.setInvoiceId(c.getString(17));
 
                         if (c.getInt(12) == pcsUomId) {
                             invoiceHistory.setPcsQty(c.getInt(13));
