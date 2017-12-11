@@ -1136,7 +1136,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.outletNameTextView = (TextView) convertView
                         .findViewById(R.id.outletName_tv);
                 holder.outletLocationTextView = (TextView) convertView
-                        .findViewById(R.id.outletName_tv);
+                        .findViewById(R.id.outletLocation_tv);
 
                 holder.imgInvoice = (ImageView) convertView
                         .findViewById(R.id.iv_invoice);
