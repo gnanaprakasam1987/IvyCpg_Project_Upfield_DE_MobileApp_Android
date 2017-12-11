@@ -389,6 +389,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     holder.tvMustSellCount.setVisibility(View.GONE);
                 //	holder.mustsellcount.setVisibility(View.GONE);
 
+                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
+                    holder.text_delivery_date.setVisibility(View.GONE);
+
 
                 row.setTag(holder);
             } else {

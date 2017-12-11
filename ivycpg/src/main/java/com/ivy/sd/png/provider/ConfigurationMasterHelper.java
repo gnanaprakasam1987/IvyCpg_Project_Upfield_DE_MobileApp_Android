@@ -434,6 +434,10 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_ONLY_SERVER_TASK = "FUN63";
     public boolean IS_SHOW_ONLY_SERVER_TASK;
+
+    private static final String CODE_ORDER_RPT_CONFIG = "ORDRPT02";
+    public boolean SHOW_DELIVERY_DATE_IN_ORDER_RPT;
+
     /**
      * RoadActivity config *
      */
@@ -2074,6 +2078,51 @@ public class ConfigurationMasterHelper {
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG) != null) {
+            if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG)) {
+                loadOrderReportConfiguration();
+            }
+        }
+    }
+
+    public void loadOrderReportConfiguration() {
+        try {
+
+            SHOW_DELIVERY_DATE_IN_ORDER_RPT = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + CODE_ORDER_RPT_CONFIG + " and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "DELVDATE":
+                            SHOW_DELIVERY_DATE_IN_ORDER_RPT = true;
+                            break;
+
+                    }
+
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
     private void getTaxModel(String hhtCode) {

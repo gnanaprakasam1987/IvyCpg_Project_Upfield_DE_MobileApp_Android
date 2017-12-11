@@ -403,7 +403,7 @@ public class ProfileHelper {
 
             Cursor c = db
                     .selectSQL("SELECT PIH.Retailerid,RetailerCode,PIH.refid,PIH.invoicedate,PIH.invoicevalue,lpc,Flag,PIH.PaidAmount," +
-                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,PIH.orderid" +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,PIH.orderNo" +
                             " FROM P4InvoiceHistoryMaster PIH left join P4InvoiceHistoryDetail PID ON PID.refid=PIH.refid" +
                             " left join productMaster PM ON PM.pid=PID.productid" +
                             " left join StandardListMaster rm on PIH.reasonid =  rm.ListId" +
