@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1240"
-    android:versionName="124.0.679">
+    android:versionName="124.0.683">
 
 
     <supports-screens
@@ -89,6 +89,17 @@
         android:icon="@drawable/launchericon"
         android:label="@string/app_name"
         android:theme="@style/MVPTheme.Blue">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />
@@ -178,7 +189,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.login.LoginScreen"
+            android:name="com.ivy.cpg.view.login.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -362,13 +373,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.StockCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.StockCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.CombinedStockFragmentActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
@@ -558,7 +569,7 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"

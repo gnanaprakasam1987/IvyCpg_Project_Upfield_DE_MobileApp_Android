@@ -16,7 +16,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +24,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -53,10 +53,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
@@ -1456,12 +1457,12 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(
-                                    Uri.fromFile(new File(getActivity().
-                                            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                            + "/" + DataMembers.fileName)),
-                                    "application/vnd.android.package-archive");
+                            intent.setDataAndType(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(getActivity().
+                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                    + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             startActivity(intent);
                         } catch (Exception e) {
                             Commons.printException(e);
@@ -2432,7 +2433,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 }
 
                 Intent intent = new Intent(getActivity(), DistributorSelectionActivity.class);
-                intent.putExtra("isFromLogin",false);
+                intent.putExtra("isFromLogin", false);
                 startActivityForResult(intent, SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE);
             } else {
                 //No distributors, so downloading on demand url without distributor selection.

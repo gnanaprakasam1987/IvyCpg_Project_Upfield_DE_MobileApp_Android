@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -44,6 +45,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.van.LoadManagementScreen;
 import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -554,7 +556,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
             return true;
-        }else if (i == R.id.menu_reason) {
+        } else if (i == R.id.menu_reason) {
             mBModel.reasonHelper.downloadNpReason(mBModel.retailerMasterBO.getRetailerID(), menuCode);
             ReasonPhotoDialog dialog = new ReasonPhotoDialog();
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -742,16 +744,19 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
     /**
      * Open the Image in Photo Gallery while onClick
+     *
      * @param fileName File name
      */
     private void openImage(String fileName) {
         if (fileName.trim().length() > 0) {
             try {
+                Uri path;
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + fileName),
-                        "image/*");
+                path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(fileName));
+                intent.setDataAndType(path, "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Commons.printException("" + e);
@@ -1023,7 +1028,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                                 + holder.planoObj.getPlanogramCameraImgName();
                         if (mBModel.isImagePresent(path)) {
                             showFileDeleteAlert(imageFileName, holder.planoObj);
-                        }else {
+                        } else {
                             setCameraImage(holder.planoObj);
                         }
                     } else {
@@ -1050,7 +1055,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                                 + holder.planoObj.getPlanogramCameraImgName();
                         if (mBModel.isImagePresent(path)) {
                             showFileDeleteAlert(imageFileName, holder.planoObj);
-                        }else {
+                        } else {
                             setCameraImage(holder.planoObj);
                         }
                     } else {
@@ -1114,7 +1119,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         rdYes.setChecked(false);
                         rdNo.setEnabled(true);
                         rdNo.setChecked(false);
-                    }else {
+                    } else {
                         imgFromCamera
                                 .setImageResource(R.drawable.ic_photo_camera);
                         rdYes.setEnabled(false);

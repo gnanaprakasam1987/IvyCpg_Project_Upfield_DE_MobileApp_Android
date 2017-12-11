@@ -216,13 +216,20 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         });
 
 
+        if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES
+                || bmodel.configurationMasterHelper.IS_NEARBY
+                || bmodel.configurationMasterHelper.SHOW_MISSED_RETAILER
+                || bmodel.configurationMasterHelper.IS_ADHOC) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+
         /** Show/Hide the "all route filter" **/
         if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
             cardView1.setVisibility(View.GONE);
             cardView.setVisibility(View.VISIBLE);
-            fab.setVisibility(View.VISIBLE);
         } else {
-            fab.setVisibility(View.GONE);
             cardView.setVisibility(View.GONE);
             cardView1.setVisibility(View.VISIBLE);
 
@@ -501,7 +508,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         TextView tv_target1 = (TextView) view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tv_target1.setText(getTotalAchieved());
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+            tv_target1.setText("" + getStoreVisited());
+        } else {
+            tv_target1.setText(getTotalAchieved());
+        }
 
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
@@ -1124,6 +1135,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 holder.outletNameTextView = (TextView) convertView
                         .findViewById(R.id.outletName_tv);
+                holder.outletLocationTextView = (TextView) convertView
+                        .findViewById(R.id.outletName_tv);
 
                 holder.imgInvoice = (ImageView) convertView
                         .findViewById(R.id.iv_invoice);
@@ -1166,6 +1179,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.tv_freq.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
+                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outletLocationTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.tv_labelTgt1.setTypeface(bmodel.configurationMasterHelper
@@ -1228,6 +1243,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             String tvText = retailerObj.getRetailerName();
 
             holder.outletNameTextView.setText(tvText);
+
+            if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)
+                holder.outletLocationTextView.setText(retailerObj.getRField4());
+            else
+                holder.outletLocationTextView.setVisibility(View.GONE);
 
             if (mRetTgtAchv.containsKey("VST01")) {
                 String desc = mRetTgtAchv.get("VST01");
@@ -1533,6 +1553,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             private TextView outletNew;
             private TextView outletNameTextView;
+            private TextView outletLocationTextView;
 
             private ImageView imgGoldDeadStore;
             private ImageView imgInvoice;

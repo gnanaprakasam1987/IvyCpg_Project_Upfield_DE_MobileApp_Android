@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.stockcheck;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

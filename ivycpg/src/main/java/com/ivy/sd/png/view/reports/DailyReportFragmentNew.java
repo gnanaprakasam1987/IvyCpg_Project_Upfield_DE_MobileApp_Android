@@ -378,26 +378,36 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
                 try {
 
-                    StringBuffer sb = null;
+                    StringBuilder sb = new StringBuilder();
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                         if (bmodel.labelsMasterHelper
                                 .applyLabels("item_piece") != null)
-                            sb.append(outlet.getPcsQty() + " " + bmodel.labelsMasterHelper
+                            sb.append((outlet.getPcsQty() == null ? 0 : outlet.getPcsQty()) + " " + bmodel.labelsMasterHelper
                                     .applyLabels("item_piece") + " ");
                     }
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                         if (bmodel.labelsMasterHelper
                                 .applyLabels("item_case") != null)
-                            sb.append(con.getMenuNumber() + " " + outlet.getCsQty() + " "
-                                    + bmodel.labelsMasterHelper
-                                    .applyLabels("item_case") + " ");
+                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                                sb.append("\n" + (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                        + bmodel.labelsMasterHelper
+                                        .applyLabels("item_case") + " ");
+                            else
+                                sb.append((outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                        + bmodel.labelsMasterHelper
+                                        .applyLabels("item_case") + " ");
                     }
                     if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                         if (bmodel.labelsMasterHelper
                                 .applyLabels("item_outer") != null)
-                            sb.append(con.getMenuNumber() + " " + outlet.getOuQty() + " "
-                                    + bmodel.labelsMasterHelper
-                                    .applyLabels("item_outer") + " ");
+                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                                sb.append("\n" + (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
+                                        + bmodel.labelsMasterHelper
+                                        .applyLabels("item_outer") + " ");
+                            else
+                                sb.append((outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
+                                        + bmodel.labelsMasterHelper
+                                        .applyLabels("item_outer") + " ");
                     }
 
                     con.setMenuNumber(sb + "");
@@ -781,7 +791,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 						sb.append("^FO20,180^AF^SNSERIAL NUMBER 00000000111,1,Y^FS");
 						sb.append("^PQ10^XZ");*/
             /*	sb.append("^XA^LRN^CI0^XZ");
-				sb.append("^XA^CWZ,E:TT0003M_.FNT^FS^XZ");
+                sb.append("^XA^CWZ,E:TT0003M_.FNT^FS^XZ");
 				sb.append("^XA");
 				sb.append("^FO10,50^CI28^AZN,50,50^FDZebra Technologies^FS");
 				sb.append("^FO010,610^CI28^AZN,50,40^FD- Swiss 721 Arabic: ?????  ????????? ????? ????????^FS");

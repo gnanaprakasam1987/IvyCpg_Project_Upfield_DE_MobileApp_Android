@@ -3,9 +3,9 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
-import com.ivy.cpg.login.LoginHelper;
-import com.ivy.cpg.login.LoginScreen;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
+import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;

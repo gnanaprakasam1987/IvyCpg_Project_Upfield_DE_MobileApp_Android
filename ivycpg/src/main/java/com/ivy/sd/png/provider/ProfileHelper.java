@@ -4,9 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -792,7 +794,7 @@ public class ProfileHelper {
 
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return Uri.fromFile(f);
+        return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
     }
 
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {

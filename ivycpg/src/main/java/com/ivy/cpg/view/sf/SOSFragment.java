@@ -86,7 +86,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private String mImageName;
     private int mSelectedLocationIndex;
     private boolean isFromChild;
-    private StringBuilder sb = new StringBuilder();
+    private String sb = "";
     private final int CAMERA_REQUEST_CODE = 1;
 
     SalesFundamentalHelper mSFHelper;
@@ -137,7 +137,6 @@ public class SOSFragment extends IvyBaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
-
 
 
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -705,7 +704,8 @@ public class SOSFragment extends IvyBaseFragment implements
         builder.setNegativeButton(getResources().getString(R.string.cancel),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                     }
                 });
 
@@ -715,8 +715,9 @@ public class SOSFragment extends IvyBaseFragment implements
 
     /**
      * Showing alert dialog to denote image availability..
+     *
      * @param imageNameStarts Image Name
-     * @param imageSrc  Image Path
+     * @param imageSrc        Image Path
      */
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
                                               final String imageSrc) {
@@ -735,7 +736,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
                         mBModel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -748,7 +750,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-//                dialog.dismiss();
+                if (dialog != null)
+                    dialog.dismiss();
             }
         });
         commonDialog.show();
@@ -884,7 +887,8 @@ public class SOSFragment extends IvyBaseFragment implements
                             }
                         }
                         calculateTotalValues();
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         mListView.invalidateViews();
                         dialog = null;
                     }
@@ -892,7 +896,8 @@ public class SOSFragment extends IvyBaseFragment implements
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                if (dialog != null)
+                    dialog.dismiss();
                 mListView.invalidateViews();
                 dialog = null;
             }
@@ -917,7 +922,6 @@ public class SOSFragment extends IvyBaseFragment implements
 
         }
     }
-
 
 
     @Override
@@ -949,7 +953,8 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         mSelectedLocationIndex = item;
-                        dialog.dismiss();
+                        if (dialog != null)
+                            dialog.dismiss();
                         updateBrandText(BRAND, mSelectedFilterId);
                     }
                 });
@@ -1152,7 +1157,6 @@ public class SOSFragment extends IvyBaseFragment implements
                     }
 
                 });
-
 
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
@@ -1390,7 +1394,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
         protected void onPostExecute(Boolean result) {
 
-            alertDialog.dismiss();
+            if (alertDialog != null)
+                alertDialog.dismiss();
             if (result == Boolean.TRUE) {
                 totalImgList.clear();
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
@@ -1468,6 +1473,12 @@ public class SOSFragment extends IvyBaseFragment implements
                         holder.et.setInputType(InputType.TYPE_NULL);
                         holder.et.onTouchEvent(event);
                         holder.et.setInputType(inType);
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
                         return true;
                     }
                 });
@@ -1476,6 +1487,13 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
+                        if (holder.et.getText().toString().equals("0") || holder.et.getText().toString().equals("0.0")
+                                || holder.et.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
+                                || !holder.et.getText().toString().equals("0.00"))
+                            sb = holder.et.getText().toString();
+
                         if (!"".equals(s)) {
 
                             try {
@@ -1575,7 +1593,6 @@ public class SOSFragment extends IvyBaseFragment implements
                     s = s.substring(0, s.length() - 1);
                 } else
                     s = "0";
-                sb.append(s);
                 mSelectedET.setText(s);
             } else if (i == R.id.calcdot) {
                 String s1 = mSelectedET.getText().toString();
@@ -1596,7 +1613,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private void updateValue(int val) {
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
-            sb.append(s);
+            sb = sb + val;
             if (sb.length() == mSFHelper.sosDigits) {
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
@@ -1607,6 +1624,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     mSelectedET.setText(strVal);
                 }
             } else {
+                sb = "";
                 Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }

@@ -56,10 +56,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.countersales.CSHomeScreenFragment;
-import com.ivy.cpg.login.LoginHelper;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -335,7 +335,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                bmodel.synchronizationHelper.backUpDB();
+                //bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -1790,6 +1790,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_DASH_DAY);
                 break;
             case MENU_JOINT_CALL:
+                bmodel.configurationMasterHelper.setJointCallTitle(menuName);
                 bndl = new Bundle();
                 bndl.putString("from", fragmentName);
                 fragment = new JoinCallFragment();
@@ -2827,6 +2828,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 intent.setDataAndType(Uri.parse("file://" + fileName),
                         "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Commons.printException("" + e);

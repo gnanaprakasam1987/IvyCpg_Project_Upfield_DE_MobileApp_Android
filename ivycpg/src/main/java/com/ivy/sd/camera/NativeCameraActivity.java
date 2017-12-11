@@ -10,8 +10,10 @@ import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -43,7 +45,7 @@ public class NativeCameraActivity extends Activity {
         if (path!=null && checkCreateDir(path)) {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                    Uri.fromFile(new File(path)));
+                    FileProvider.getUriForFile(NativeCameraActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(path)));
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
         }else{
             Toast.makeText(this,"Image Path Not Found", Toast.LENGTH_LONG).show();

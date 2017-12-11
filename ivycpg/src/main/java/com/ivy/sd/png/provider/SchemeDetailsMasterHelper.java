@@ -3930,7 +3930,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public String getChannelidForScheme(int channelid) {
-        String sql, sql1 = "", str = "";
+        String sql, sql1 = "", str = "0";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

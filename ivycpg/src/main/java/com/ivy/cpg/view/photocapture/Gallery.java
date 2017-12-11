@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MyGridView;
@@ -150,9 +152,12 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         /* List of the files you want to send */
         for (String path : imagePathArray) {
             File file = new File(path);
-            Uri uri = Uri.fromFile(file);
+            Uri uri = FileProvider.getUriForFile(Gallery.this, BuildConfig.APPLICATION_ID + ".provider", file);
+
             files.add(uri);
         }
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
         startActivity(Intent.createChooser(intent, "Share Image"));
         //startActivity(intent);

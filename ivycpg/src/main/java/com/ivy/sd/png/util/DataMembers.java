@@ -26,7 +26,7 @@ public class DataMembers {
     //public static String SERVER_URL = "https://bic-tr-qa.ivycpg.com/webapi/api";
     //public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Bic_WebAPI/api";
 
-    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_webapi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_BIC_WebApi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";

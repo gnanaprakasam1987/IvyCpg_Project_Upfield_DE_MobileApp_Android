@@ -1031,6 +1031,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 cancelVisitBtn.setVisibility(View.GONE);
                 startVisitBtn.setVisibility(View.GONE);
             }
+
+            isClicked = false;
+
+            if (visitclick && isMapview)
+                getMapView();
+
+            else if (fromHomeClick && isMapview)
+                loadStoreLocMapView(retailerLat, retailerLng);
         }
     }
 
@@ -1204,13 +1212,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     @Override
     protected void onStart() {
         super.onStart();
-        isClicked = false;
         mUserByRetailerID = bmodel.getUserByRetailerID();
-        if (visitclick && isMapview)
-            getMapView();
 
-        else if (fromHomeClick && isMapview)
-            loadStoreLocMapView(retailerLat, retailerLng);
     }
 
     @Override

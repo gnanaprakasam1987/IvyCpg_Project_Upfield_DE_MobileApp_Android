@@ -1,4 +1,4 @@
-package com.ivy.cpg.login;
+package com.ivy.cpg.view.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;

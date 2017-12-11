@@ -54,6 +54,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_PROFILE_LOC1 = "PROFILE13";
     public static final String CODE_PROFILE_LOC2 = "PROFILE14";
     public static final String CODE_PROFILE_LOC3 = "PROFILE15";
+    public static final String CODE_SHOW_RETAILER_LOCATION = "RTRS26";
     public static final String CODE_SHOW_ALL_ROUTE_FILTER = "RTRS27";
     public static final String CODE_SHOW_MISSED_RETAILER = "RTRS28";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
@@ -788,6 +789,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DATE_ROUTE;
     public boolean SHOW_BEAT_ROUTE;
     public boolean SHOW_WEEK_ROUTE;
+    public boolean SHOW_RETAILER_LOCATION;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
@@ -1751,6 +1753,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_PROFILE_LOC1 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC1) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC1) : false;
         this.SHOW_PROFILE_LOC3 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) : false;
         this.SHOW_MISSED_RETAILER = hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) : false;
+        this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
         this.SHOW_CONTRACT_EXPIRYDATE = hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) : false;
@@ -3101,31 +3104,29 @@ public class ConfigurationMasterHelper {
                 c.close();
 
             }
-            // if scheme is on disable product wise discount
-            if (!IS_SCHEME_ON) {
-                codeValue = null;
 
-                sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode='FUN02'";
-                c = db.selectSQL(sql);
-                if (c != null && c.getCount() != 0) {
-                    if (c.moveToNext()) {
-                        codeValue = c.getString(0);
-                    }
-                    c.close();
+            codeValue = null;
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='FUN02'";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
                 }
-                if (codeValue != null) {
-                    String codeSplit[] = codeValue.split(",");
-                    for (String temp : codeSplit) {
-                        if (temp.equals("D1"))
-                            SHOW_D1 = true;
-                        else if (temp.equals("D2"))
-                            SHOW_D2 = true;
-                        else if (temp.equals("D3"))
-                            SHOW_D3 = true;
-                        else if (temp.equals("DA"))
-                            SHOW_DA = true;
-                    }
+                c.close();
+            }
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (temp.equals("D1"))
+                        SHOW_D1 = true;
+                    else if (temp.equals("D2"))
+                        SHOW_D2 = true;
+                    else if (temp.equals("D3"))
+                        SHOW_D3 = true;
+                    else if (temp.equals("DA"))
+                        SHOW_DA = true;
                 }
             }
 

@@ -2472,8 +2472,6 @@ public class ProductHelper {
 
     /**
      * get tagged products and update the productBO.
-     *
-     * @param mMenuCode menu code
      */
     public void downloadSalesReturnProducts() {
         try {
@@ -6707,6 +6705,7 @@ public class ProductHelper {
             }
 
             int loopEnd = mContentLevel - mFiltrtLevel + 1;
+            getAlCompetitorTaggedProducts(loopEnd);
 
             String sql;
             sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
@@ -6766,6 +6765,9 @@ public class ProductHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
+            if (db != null) {
+                db.closeDB();
+            }
         }
 
     }
@@ -7470,6 +7472,31 @@ public class ProductHelper {
         }
         c.close();
         db.closeDB();
+    }
+
+    public void updateEntryLevelDiscount(DBUtil db, String orderID, double distVal) {
+
+        StringBuffer sb = new StringBuffer();
+        // sum of product discount , scheme amount and tax amount
+        double totDiscVaue = 0;
+
+
+        sb.append("select orderid from OrderHeader");
+        sb.append(" where orderid=" + orderID);
+        Cursor c = db.selectSQL(sb.toString());
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                totDiscVaue = distVal;
+            }
+        }
+        sb = new StringBuffer();
+        sb.append("update orderheader set ");
+        sb.append("discount=discount+" + bmodel.formatValue(totDiscVaue));
+        sb.append(" where orderid=" + orderID);
+        db.updateSQL(sb.toString());
+
+        c.close();
+
     }
 
     public void updateBillEntryDiscInOrderHeader(DBUtil db, String orderId) {
@@ -8774,11 +8801,15 @@ public class ProductHelper {
             String competitorParentIds = "";
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : getCompetitorProductMaster()) {
-                    if (mSKUId.contains(sku.getProductID())) {
+                    //if (mSKUId.contains(sku.getProductID())) {
+                    mTaggedProducts.add(sku);
+                    mTaggedProductById.put(sku.getProductID(), sku);
+                    competitorParentIds += sku.getCompParentId() + ",";
+                    /*}else{
                         mTaggedProducts.add(sku);
                         mTaggedProductById.put(sku.getProductID(), sku);
                         competitorParentIds += sku.getCompParentId() + ",";
-                    }
+                    }*/
                 }
             } else {
                 for (ProductMasterBO sku : getCompetitorProductMaster()) {
@@ -8808,6 +8839,61 @@ public class ProductHelper {
             Commons.printException("downloadTaggedProducts", e);
         }
 
+    }
+
+    /* get All competitor tagged products irrespective of own product mapping */
+    private void getAlCompetitorTaggedProducts(int loopEnd) {
+        DBUtil db;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql;
+            sql = "SELECT distinct A1.CPID, A1.CPName," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
+                    "A1.CPCode,A+" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                        + ".CPID = A" + (i - 1) + ".CPTid";
+            Cursor cur = db
+                    .selectSQL(sql
+                            + " INNER JOIN ProductTaggingGroupMapping PTGM ON PTGM.isOwn = 0 AND PTGM.pid = A1.CPID");
+            if (cur != null) {
+
+                while (cur.moveToNext()) {
+                    ProductMasterBO product = new ProductMasterBO();
+                    product.setProductID(cur.getString(0));
+                    product.setProductName(cur.getString(1));
+                    product.setProductShortName(cur.getString(1));
+                    product.setParentid(0);
+                    product.setIsSaleable(1);
+                    product.setBarCode("");
+                    product.setCasebarcode("");
+                    product.setOuterbarcode("");
+                    product.setOwn(0);
+                    product.setCaseUomId(cur.getInt(2));
+                    product.setOuUomid(cur.getInt(3));
+                    product.setPcUomid(cur.getInt(4));
+                    product.setProductCode(cur.getString(5));
+                    product.setOwnPID("0");
+                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+
+                    product.setLocations(cloneLocationList(locations));
+                    for (int i = 0; i < locations.size(); i++) {
+                        product.getLocations().get(i)
+                                .setNearexpiryDate(cloneDateList(dateList));
+                    }
+
+                    competitorProductMaster.add(product);
+
+                }
+                cur.close();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -8855,7 +8941,7 @@ public class ProductHelper {
 
             StringBuilder productIds = new StringBuilder();
             Cursor c2 = db
-                    .selectSQL("SELECT pid FROM ProductTaggingCriteriaMapping PCM " +
+                    .selectSQL("SELECT distinct pid FROM ProductTaggingCriteriaMapping PCM " +
                             "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 0" +
                             " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
                             "WHERE PM.TaggingTypelovID = " + moduletypeid +

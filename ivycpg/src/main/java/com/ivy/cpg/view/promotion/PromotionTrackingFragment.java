@@ -1,4 +1,4 @@
-package com.ivy.cpg.promotion;
+package com.ivy.cpg.view.promotion;
 
 
 import android.app.AlertDialog;
