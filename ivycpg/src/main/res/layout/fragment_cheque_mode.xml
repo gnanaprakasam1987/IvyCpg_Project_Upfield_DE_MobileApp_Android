@@ -201,7 +201,7 @@
                             android:id="@+id/edit_bankname"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/cheque_no_height"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:inputType="text"
                             android:maxLength="25" />
                     </LinearLayout>
@@ -226,7 +226,7 @@
                             android:id="@+id/edit_branchname"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/cheque_no_height"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:inputType="text"
                             android:maxLength="25" />
                     </LinearLayout>
