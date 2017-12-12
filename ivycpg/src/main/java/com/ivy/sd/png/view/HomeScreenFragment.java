@@ -68,7 +68,6 @@ import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.cpg.view.van.VanStockAdjustActivity;
 import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.location.ConfigData;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -359,7 +358,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
 
-        ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);
+       /* ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
 
         // image path
         photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
