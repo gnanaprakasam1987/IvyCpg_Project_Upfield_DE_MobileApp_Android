@@ -236,7 +236,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 			}*/
             double totalLines = 0;
             int totalAllQty = 0;
-            if(bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON){
+            if(bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON){
                 // All products not need to load.only invoice products loaded from
                 // sqlite and stored in object.Because invoice print file saved in sdcard
                 // we can show other details using the text file
@@ -281,7 +281,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
 
 
-if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON){
     schemeProductList = bmodel.reportHelper.getSchemeProductDetails(minvoiceid);
 }else {
     //load accumulation scheme free products
@@ -398,7 +398,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
             } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                 showDialog(2);
             } else if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
-                    || bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                    || bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                 // Print file already saved.so not need to reload the object.we can get the object from print text file
                 bmodel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
                 intent.setClass(InvoiceReportDetail.this,
@@ -488,7 +488,7 @@ if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMa
             if(productBO.getBatchId()!=null&&!productBO.getBatchId().equals("null"))
             holder.tvBatchNo.setText(productBO.getBatchId());
 
-            if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
+            if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON){
                 if(productBO.getUomDescription().equals("CASE")){
                     holder.tvcaseqty.setText(productBO.getQuantitySelected() + "");
                     holder.tvwqty.setText(0 + "");

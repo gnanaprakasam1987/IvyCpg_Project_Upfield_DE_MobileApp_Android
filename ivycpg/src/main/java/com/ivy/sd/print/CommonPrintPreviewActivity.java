@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -70,9 +71,14 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private TextView mPrinterStatusTV;
@@ -109,6 +115,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private String PRINT_STATE = "";
     private Toolbar toolbar;
     Bitmap screen;
+
+    private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 
     @Override
@@ -216,6 +224,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         doConnectionBixolon();
                     } else if (bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
                         doConnectionScrybe();
+                    } else if (bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+                        new Print().execute("2");
                     }
                 }
                 break;
@@ -467,6 +477,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(String... params) {
             if (params[0].equals("1"))
                 doZebraPrintNew(getMacAddressFieldText());
+            if (params[0].equals("2"))
+                doLogonPrintNew(getMacAddressFieldText());
 
             return true;
         }
@@ -625,6 +637,54 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         return new byte[0];
 
+    }
+
+    private void doLogonPrintNew(String macAddress) {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice mBluetoothDevice = null;
+        BluetoothSocket mBluetoothSocket = null;
+        OutputStream mOutputStream = null;
+
+        try {
+            if (macAddress.equals(""))
+                updateStatus("Mac address is empty...");
+
+            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(getReverseofMacAddress(macAddress));
+            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
+            mBluetoothSocket.connect();
+            updateStatus("Printing...");
+
+            for (int i = 0; i < mPrintCountInput; i++) {
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes("GBK"));
+                mOutputStream.flush();
+                mDataPrintCount++;
+                mPrintCount++;
+            }
+            mOutputStream.close();
+            mBluetoothSocket.close();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+            updateStatus("Connection Failed");
+        }
+    }
+
+    //logon printer self test gives the reverse mac address
+    private String getReverseofMacAddress(String macAddress) {
+        String mMAcAddress = "";
+
+        String[] split = macAddress.split(":");
+        List<String> list = Arrays.asList(split);
+        Collections.reverse(list);
+        for (int i = 0; i < list.size(); i++) {
+            if (i != list.size() - 1)
+                mMAcAddress = mMAcAddress + list.get(i) + ":";
+            else
+                mMAcAddress = mMAcAddress + list.get(i);
+        }
+
+        return mMAcAddress;
     }
 
     private void showAlert() {
