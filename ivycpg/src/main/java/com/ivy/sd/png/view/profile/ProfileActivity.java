@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -181,6 +183,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private UserRetailerTransactionReceiver receiver;
     private static final String ASSET_HISTORY = "Asset History";
     private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
+
+
+    CountDownTimer mCountDownTimer;
+    Timer mLocTimer;
+    LocationFetchTimer timerTask;
+    ProgressDialog mLocationProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1208,6 +1216,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     protected void onResume() {
         super.onResume();
 
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+            mLocTimer = new Timer();
+            timerTask = new LocationFetchTimer();
+            mLocTimer.schedule(timerTask, 0, 1000);
+        }
+
     }
 
     @Override
@@ -1321,6 +1336,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
 
     private void retailerClick() {
+
         if (!isClicked && calledBy.equals(MENU_VISIT)) {
             validationToProceed();
         } else if (!isClicked
@@ -1366,6 +1382,31 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
     private void validationToProceed() {
+
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
+                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+
+            if ((LocationUtil.longitude == 0 && LocationUtil.longitude == 0)) {
+                if (timerTask != null && timerTask.isRunning) {
+                    mLocationProgressDialog = new ProgressDialog(this);
+                    mLocationProgressDialog.setTitle("Fetching Location");
+                    mLocationProgressDialog.setMessage("Fetching Location");
+                    mLocationProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mLocationProgressDialog.dismiss();
+                        }
+                    });
+                    mLocationProgressDialog.show();
+
+                    return;
+                } else {
+                    Toast.makeText(this, "Location not captured", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+
         if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
                 Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -1400,16 +1441,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         0);
                 return;
             }
-        }
-
-        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
-            if (LocationUtil.accuracy > HIGHEST_LOCATION_ACCURACY_LEVEL) {
-                Toast.makeText(this, R.string.low_location_accuracy_level,
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
-
         }
 
         if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION) {
@@ -2094,4 +2125,55 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
     }
+
+    class LocationFetchTimer extends TimerTask {
+        private int count = 20;
+        public boolean isRunning = true;
+
+        @Override
+        public void run() {
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        count -= 1;
+                        //
+                        if (count <= 0) {
+                            if (mLocTimer != null) {
+                                mLocTimer.cancel();
+                                isRunning = false;
+                            }
+                            if (LocationUtil.latitude == 0 && LocationUtil.longitude == 0) {
+                                Toast.makeText(ProfileActivity.this, "Location not captured.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+
+                            if (LocationUtil.latitude != 0 && LocationUtil.longitude != 0) {
+                                if (mLocTimer != null) {
+                                    mLocTimer.cancel();
+                                    isRunning = false;
+                                }
+                                if (mLocationProgressDialog != null) {
+                                    mLocationProgressDialog.dismiss();
+                                    retailerClick();
+                                }
+                                Toast.makeText(ProfileActivity.this, "Location captured.", Toast.LENGTH_LONG).show();
+                            } else {
+                                if (mLocationProgressDialog != null) {
+                                    mLocationProgressDialog.setMessage("Please wait for " + (count) + " seconds.");
+                                }
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                }
+            });
+        }
+
+    }
+
 }
