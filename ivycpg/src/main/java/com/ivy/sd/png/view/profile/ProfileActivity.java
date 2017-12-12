@@ -399,6 +399,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
             try {
+                bmodel.configurationMasterHelper.loadInvoiceHistoryConfiguration();
                 if ((bmodel.labelsMasterHelper.applyLabels("invoice_history") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("invoice_history").length() > 0)) {
                     invoice_history_title = bmodel.labelsMasterHelper.applyLabels("invoice_history");

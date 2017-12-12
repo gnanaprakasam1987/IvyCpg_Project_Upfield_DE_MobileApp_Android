@@ -36,6 +36,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -360,7 +361,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder = new ViewHolder();
                 holder.tvwrname = (TextView) row.findViewById(R.id.PRDNAME);
                 holder.ordertxt = (TextView) row.findViewById(R.id.ordertxt);
-
+                holder.text_delivery_date = (TextView) row.findViewById(R.id.text_delivery_date);
                 holder.tvFocusBrandCount = (TextView) row.findViewById(R.id.focus_brand_count);
                 holder.tvMustSellCount = (TextView) row.findViewById(R.id.mustsell_count);
 
@@ -390,6 +391,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     holder.tvMustSellCount.setVisibility(View.GONE);
                 //	holder.mustsellcount.setVisibility(View.GONE);
 
+                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
+                    holder.text_delivery_date.setVisibility(View.GONE);
+
 
                 row.setTag(holder);
             } else {
@@ -407,7 +411,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 			holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.ordertxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvOrderNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.text_delivery_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 			holder.tvMustSellCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 			holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 			holder.tvlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -480,6 +485,22 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                         R.drawable.list_selector));
             }
 
+            try {
+                String delivery_date;
+                if (bmodel.mSelectedModule == 3) {
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(bmodel.getDeliveryDate(orderreport.getorderID()), bmodel.configurationMasterHelper.outDateFormat);
+                } else
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(bmodel.getDeliveryDate(orderreport.getreatilerId()), bmodel.configurationMasterHelper.outDateFormat);
+
+                if (bmodel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
+                    holder.text_delivery_date.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date);
+                } else {
+                    holder.text_delivery_date.setText(getResources().getString(R.string.delivery_date_label) + " : " + delivery_date);
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
 		/*	TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
 				row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
@@ -494,6 +515,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         String ref;// product id
         TextView tvwrname, ordertxt;
         TextView tvwvol, tvwvalue, tvwlpc, tvwDist, tvWeight, tvlpc, tvoutid, focus_brand_count1, mustsellcount;
+        TextView text_delivery_date;
         TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, weighttitle, focusbrandlabel, mustselllabel;
 
     }

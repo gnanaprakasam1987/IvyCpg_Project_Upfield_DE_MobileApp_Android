@@ -20,9 +20,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Vector;
 
 /**
@@ -157,7 +154,8 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             else
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
-            holder.orderId.setText(projectObj.getOrderid());
+            holder.invoice_Id.setText(projectObj.getInvoiceId());
+            holder.order_Id.setText(projectObj.getOrderid());
             holder.invDate.setText(projectObj.getOrderdate());
             holder.totLines.setText(projectObj.getLpc() + "");
             holder.totVal.setText(bmodel.formatValue(projectObj.getOrderValue()));
@@ -194,22 +192,24 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt;
-            private TextView orderId, invDate, totLines, totVal;
+            private TextView invoice_Id_label, dateTxt, totLinesTxt, totValTxt;
+            private TextView invoice_Id, invDate, totLines, totVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
+            private TextView order_Id, order_Id_label;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 invViewLayout = (LinearLayout) itemView.findViewById(R.id.inv_view_layout);
                 listBgLayout = (LinearLayout) itemView.findViewById(R.id.list_background);
-                orderIdTxt = (TextView) itemView.findViewById(R.id.order_id_txt);
+                invoice_Id_label = (TextView) itemView.findViewById(R.id.order_id_txt);
+                order_Id_label = (TextView) itemView.findViewById(R.id.ord_id_txt);
                 dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
                 totLinesTxt = (TextView) itemView.findViewById(R.id.tot_lines_txt);
                 totValTxt = (TextView) itemView.findViewById(R.id.tot_val_txt);
 
-
-                orderId = (TextView) itemView.findViewById(R.id.order_id_val);
+                order_Id = (TextView) itemView.findViewById(R.id.ord_id_val);
+                invoice_Id = (TextView) itemView.findViewById(R.id.order_id_val);
                 invDate = (TextView) itemView.findViewById(R.id.date_val);
                 totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
                 totVal = (TextView) itemView.findViewById(R.id.tot_val);
@@ -243,8 +243,28 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                     itemView.setOnClickListener(null);
                 }
 
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.order_id_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.order_id_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.order_id_txt)
+                                                .getTag()));
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.ord_id_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.ord_id_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.ord_id_txt)
+                                                .getTag()));
+                } catch (Exception ex) {
+                    Commons.printException(ex);
+                }
+
                 //typeface for label text
-                orderIdTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                invoice_Id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                order_Id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 dateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -256,7 +276,8 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
 
                 //typeface for value text font
-                orderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                invoice_Id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                order_Id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 invDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -267,6 +288,30 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 invoice_qty_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 del_rep_code_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_ORDERID) {
+                    itemView.findViewById(R.id.order_id_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_INVOICEDATE) {
+                    itemView.findViewById(R.id.date_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_INVOICEAMOUNT) {
+                    itemView.findViewById(R.id.tot_val_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_TOT_LINES) {
+                    itemView.findViewById(R.id.total_lines_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_DUEDATE) {
+                    itemView.findViewById(R.id.del_date_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_OVERDUE_DAYS) {
+                    itemView.findViewById(R.id.invoice_qty_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_OS_AMOUNT) {
+                    itemView.findViewById(R.id.invoice_date_layout).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_STATUS) {
+                    itemView.findViewById(R.id.del_rep_code_layout).setVisibility(View.GONE);
+                }
 
             }
         }

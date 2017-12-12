@@ -405,7 +405,7 @@ public class ProfileHelper {
 
             Cursor c = db
                     .selectSQL("SELECT PIH.Retailerid,RetailerCode,PIH.refid,PIH.invoicedate,PIH.invoicevalue,lpc,Flag,PIH.PaidAmount," +
-                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4" +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,PIH.orderNo" +
                             " FROM P4InvoiceHistoryMaster PIH left join P4InvoiceHistoryDetail PID ON PID.refid=PIH.refid" +
                             " left join productMaster PM ON PM.pid=PID.productid" +
                             " left join StandardListMaster rm on PIH.reasonid =  rm.ListId" +
@@ -455,7 +455,7 @@ public class ProfileHelper {
 
                         invoiceHistory.setProductId(c.getInt(10));
                         invoiceHistory.setProductName(c.getString(11));
-                        invoiceHistory.setOrderid(c.getString(17));
+                        invoiceHistory.setInvoiceId(c.getString(17));
 
                         if (c.getInt(12) == pcsUomId) {
                             invoiceHistory.setPcsQty(c.getInt(13));
@@ -468,6 +468,8 @@ public class ProfileHelper {
                         invoiceHistory.setRF2(c.getString(19));
                         invoiceHistory.setRF3(c.getString(20));
                         invoiceHistory.setRF4(c.getString(21));
+
+                        invoiceHistory.setOrderid(c.getString(22));
 
                         if (bmodel.retailerMasterBO.getCreditDays() != 0) {
 

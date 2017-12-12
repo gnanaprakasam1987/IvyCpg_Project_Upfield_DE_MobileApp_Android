@@ -8521,7 +8521,6 @@ public class BusinessModel extends Application {
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID() +
-                            " and SMA.menucode='MENU_SURVEY'" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
