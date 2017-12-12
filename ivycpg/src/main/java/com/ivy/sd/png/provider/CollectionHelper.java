@@ -949,7 +949,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath";
+            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath,BankName,BranchName";
             double calculateCredit = 0;
             String groupID;
 
@@ -1111,7 +1111,9 @@ public class CollectionHelper {
                         + "," + bmodel.getRetailerMasterBO().getDistParentId()
                         + "," + bmodel.QT(receiptno)
                         + "," + bmodel.QT(groupDate) + ",0,0"
-                        + "," + bmodel.QT(printFilePath);
+                        + "," + bmodel.QT(printFilePath)
+                        + "," + bmodel.QT(paymentBO.getBankName())
+                        + "," + bmodel.QT(paymentBO.getBranchName());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
             } else if (StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {

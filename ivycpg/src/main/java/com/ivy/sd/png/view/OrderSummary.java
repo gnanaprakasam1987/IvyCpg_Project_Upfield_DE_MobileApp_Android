@@ -1487,7 +1487,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             startActivity(i);
                                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                                         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                                             if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
                                                 bmodel.productHelper.updateDistributorDetails();
 
@@ -2542,7 +2542,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     i.putExtra("IsFromOrder", true);
                                     startActivity(i);
                                 } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                        || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                        || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                                     if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
                                         bmodel.productHelper.updateDistributorDetails();
 
@@ -2623,7 +2623,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                             finish();
                         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                             if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                                 bmodel.productHelper.updateDistributorDetails();
                             }

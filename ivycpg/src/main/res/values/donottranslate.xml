@@ -197,4 +197,6 @@
     <string name="exec_rating">Executing Rating</string>
     <string name="my_gallery">My Gallery</string>
     <string name="previous">Previous</string>
+    <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
+    <string name="pls_etr_brc_name">Please Enter Branch Name</string>
 </resources>

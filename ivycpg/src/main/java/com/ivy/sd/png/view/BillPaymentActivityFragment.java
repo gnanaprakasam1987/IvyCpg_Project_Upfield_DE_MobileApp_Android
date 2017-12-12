@@ -378,47 +378,77 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
     private boolean isValidate() {
         PaymentBO paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.CHEQUE);
         if (paymentBO != null && paymentBO.getAmount() > 0) {
-            if ("0".equals(paymentBO.getBankID())) {
-                mErrorMsg = getResources().getString(R.string.sel_bank) + " in cheque";
-                return false;
-            }
-            if ("0".equals(paymentBO.getBranchId())) {
-                mErrorMsg = getResources().getString(R.string.sel_branch) + " in cheque";
-                return false;
-            }
             if ("".equals(paymentBO.getChequeNumber())) {
                 mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in cheque";
                 return false;
             }
+            if ("-1".equals(paymentBO.getBankID())) {
+                mErrorMsg = getResources().getString(R.string.sel_bank) + " in cheque";
+                return false;
+            }
+            if ("-1".equals(paymentBO.getBranchId())) {
+                mErrorMsg = getResources().getString(R.string.sel_branch) + " in cheque";
+                return false;
+            }
+            if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                if ("".equals(paymentBO.getBankName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in cheque";
+                    return false;
+                }
+                if ("".equals(paymentBO.getBranchName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in cheque";
+                    return false;
+                }
+            }
         }
         paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.DEMAND_DRAFT);
         if (paymentBO != null && paymentBO.getAmount() > 0) {
-            if ("0".equals(paymentBO.getBankID())) {
-                mErrorMsg = getResources().getString(R.string.sel_bank) + " in Demand Draft";
-                return false;
-            }
-            if ("0".equals(paymentBO.getBranchId())) {
-                mErrorMsg = getResources().getString(R.string.sel_branch) + " in Demand Draft";
-                return false;
-            }
             if ("".equals(paymentBO.getChequeNumber())) {
                 mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in Demand Draft";
                 return false;
             }
+            if ("-1".equals(paymentBO.getBankID())) {
+                mErrorMsg = getResources().getString(R.string.sel_bank) + " in Demand Draft";
+                return false;
+            }
+            if ("-1".equals(paymentBO.getBranchId())) {
+                mErrorMsg = getResources().getString(R.string.sel_branch) + " in Demand Draft";
+                return false;
+            }
+            if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                if ("".equals(paymentBO.getBankName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in Demand Draft";
+                    return false;
+                }
+                if ("".equals(paymentBO.getBranchName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in Demand Draft";
+                    return false;
+                }
+            }
         }
         paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.RTGS);
         if (paymentBO != null && paymentBO.getAmount() > 0) {
-            if ("0".equals(paymentBO.getBankID())) {
-                mErrorMsg = getResources().getString(R.string.sel_bank) + " in RTGS";
-                return false;
-            }
-            if ("0".equals(paymentBO.getBranchId())) {
-                mErrorMsg = getResources().getString(R.string.sel_branch) + " in RTGS";
-                return false;
-            }
             if ("".equals(paymentBO.getChequeNumber())) {
                 mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in RTGS";
                 return false;
+            }
+            if ("-1".equals(paymentBO.getBankID())) {
+                mErrorMsg = getResources().getString(R.string.sel_bank) + " in RTGS";
+                return false;
+            }
+            if ("-1".equals(paymentBO.getBranchId())) {
+                mErrorMsg = getResources().getString(R.string.sel_branch) + " in RTGS";
+                return false;
+            }
+            if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                if ("".equals(paymentBO.getBankName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in RTGS";
+                    return false;
+                }
+                if ("".equals(paymentBO.getBranchName())) {
+                    mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in RTGS";
+                    return false;
+                }
             }
         }
         paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.MOBILE_PAYMENT);
