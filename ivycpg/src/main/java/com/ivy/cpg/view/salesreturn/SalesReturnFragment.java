@@ -15,6 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -232,6 +234,30 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mSearchTypeArray.add("GCAS Code");
         mSearchTypeArray.add("BarCode");
 
+        try {
+            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+                public void afterTextChanged(Editable s) {
+                    if (s.length() >= 3) {
+                        loadSearchedList();
+                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+
+                }
+            });
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         btn_next = (Button) view.findViewById(R.id.btn_save);
         btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btn_next.setOnClickListener(this);
@@ -326,6 +352,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     public void loadSearchedList() {
+        if (generalbutton == null)
+            generalbutton = GENERAL;
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
             Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();

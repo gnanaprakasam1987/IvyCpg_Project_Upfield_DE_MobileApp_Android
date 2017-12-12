@@ -379,35 +379,46 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 try {
 
                     StringBuilder sb = new StringBuilder();
+                    String op = getResources().getString(R.string.item_piece);
+                    String oc = getResources().getString(R.string.item_case);
+                    String ou = getResources().getString(R.string.item_outer);
+                    /**----- update label from label master table based on key value**/
+                    if (bmodel.labelsMasterHelper
+                            .applyLabels("item_piece") != null)
+                        op = bmodel.labelsMasterHelper
+                                .applyLabels("item_piece");
+                    if (bmodel.labelsMasterHelper
+                            .applyLabels("item_case") != null)
+                        oc = bmodel.labelsMasterHelper
+                                .applyLabels("item_case");
+
+                    if (bmodel.labelsMasterHelper
+                            .applyLabels("item_outer") != null)
+                        ou = bmodel.labelsMasterHelper
+                                .applyLabels("item_outer");
+
+                    /**-------end of the updated statement-------**/
+
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                        if (bmodel.labelsMasterHelper
-                                .applyLabels("item_piece") != null)
-                            sb.append((outlet.getPcsQty() == null ? 0 : outlet.getPcsQty()) + " " + bmodel.labelsMasterHelper
-                                    .applyLabels("item_piece") + " ");
+
+                        sb.append((outlet.getPcsQty() == null ? 0 : outlet.getPcsQty()) + " " + op + " ");
                     }
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                        if (bmodel.labelsMasterHelper
-                                .applyLabels("item_case") != null)
-                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                                sb.append("\n" + (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
-                                        + bmodel.labelsMasterHelper
-                                        .applyLabels("item_case") + " ");
-                            else
-                                sb.append((outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
-                                        + bmodel.labelsMasterHelper
-                                        .applyLabels("item_case") + " ");
+
+                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                            sb.append("\n" + (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                    + oc + " ");
+                        else
+                            sb.append((outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                    + oc + " ");
                     }
                     if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                        if (bmodel.labelsMasterHelper
-                                .applyLabels("item_outer") != null)
-                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                                sb.append("\n" + (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
-                                        + bmodel.labelsMasterHelper
-                                        .applyLabels("item_outer") + " ");
-                            else
-                                sb.append((outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
-                                        + bmodel.labelsMasterHelper
-                                        .applyLabels("item_outer") + " ");
+                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                            sb.append("\n" + (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
+                                    + ou + " ");
+                        else
+                            sb.append((outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
+                                    + ou + " ");
                     }
 
                     con.setMenuNumber(sb + "");
@@ -842,7 +853,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
 
 				/*sb.append("T 5 1 10 40 ");
-				sb.append(getResources().getString(R.string.ramallah_industrial_zone_arabic)+"\r\n");
+                sb.append(getResources().getString(R.string.ramallah_industrial_zone_arabic)+"\r\n");
 				sb.append("T 5 1 10 70 ");
 				sb.append(getResources().getString(R.string.tel_1_arabic)+"\r\n");
 				sb.append("T 5 1 10 100 ");
