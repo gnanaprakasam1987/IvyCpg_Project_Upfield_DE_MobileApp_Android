@@ -1386,7 +1386,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
 
-            if ((LocationUtil.longitude == 0 && LocationUtil.longitude == 0)) {
+            if ((LocationUtil.latitude == 0 && LocationUtil.longitude == 0)) {
                 if (timerTask != null && timerTask.isRunning) {
                     mLocationProgressDialog = new ProgressDialog(this);
                     mLocationProgressDialog.setTitle("Fetching Location");
