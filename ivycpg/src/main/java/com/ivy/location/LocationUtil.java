@@ -1,38 +1,69 @@
 
 package com.ivy.location;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
 
-public class LocationUtil  implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class LocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    static final String TAG = "LocationUtil";
+    private static final String TAG = "LocationUtil";
+
+    /* Configuration details */
+    public enum LOCATION_TYPE_CONFIG {
+        NATIVE_GPS(1),
+        NATIVE_GPS_WITH_VAL(2),
+        FUSED(0),
+        FUSED_WITH_VAL(3);
+        private int value;
+
+        LOCATION_TYPE_CONFIG(int value) {
+            this.value = value;
+        }
+    }
+
     public static int gpsconfigcode;
-    public static String mProviderName;
+
+
+    private Context context;
+    private static LocationUtil instance = null;
+
+    /* Fused location provide using Google play service initialisation.*/
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
+    /* Native location provider */
+    private LocationManager nativeLocationManager;
+    private MyLocationListener nativeLocationListener;
+
+    /* Interface to update location to fragments*/
+    private LocationUpdater iLocationUpdater;
+
+
+    /* Values from location services */
     public static double latitude = 0;
     public static double longitude = 0;
     public static float accuracy = 0;
-    private LocationManager locManager;
-    GoogleApiClient mGoogleApiClient;
-    LocationRequest mLocationRequest;    
-    private Context context;
-    private static LocationUtil instance = null;
-    private MyLocationListener locListener;
-    private LocationUpdater iLocationUpdater;
     public static boolean isMockLocation;
+    public static String mProviderName;
+
 
     protected LocationUtil(Context context) {
         this.context = context;
@@ -45,6 +76,11 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
         return instance;
     }
 
+    /**
+     * Used to receive location update when there is a change in location.
+     *
+     * @param fragment implements LocationUpdater interface
+     */
     public void instantiateLocationUpdater(Fragment fragment) {
         try {
             if (fragment instanceof LocationUpdater) {
@@ -57,65 +93,64 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
 
     }
 
-    /*
-        * Define a request code to send to Google Play services This code is
-        * returned in Activity.onActivityResult
-        */
-    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     /**
-     * Constants for location update parameters
+     * To start the location listener.
      */
-    // Milliseconds per second
-    public static final int MILLISECONDS_PER_SECOND = 1000;
-    // The update interval
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 60;
-    // A fast interval ceiling
-    public static final int FAST_CEILING_IN_SECONDS = 1;
-    // Update interval in milliseconds
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = MILLISECONDS_PER_SECOND
-            * UPDATE_INTERVAL_IN_SECONDS;
-    // A fast ceiling of update intervals, used when the app is visible
-    public static final long FAST_INTERVAL_CEILING_IN_MILLISECONDS = MILLISECONDS_PER_SECOND
-            * FAST_CEILING_IN_SECONDS;
-
-
+    @TargetApi(23)
     public void startLocationListener() {
 
-        if (!isGooglePlayServicesAvailable()) {
+        /* Notify user that google play service is not available */
+        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && !isGooglePlayServicesAvailable()) {
             Toast.makeText(context,
-                    "There is no googleplay service in this device",
+                    "Google play service not available.",
                     Toast.LENGTH_LONG).show();
         }
-        
-       
-        
-        if ((gpsconfigcode==0||gpsconfigcode==3)&&isGooglePlayServicesAvailable()) {
+
+        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && isGooglePlayServicesAvailable()) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addApi(LocationServices.API).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).build();
             mGoogleApiClient.connect();
-            
             createLocationRequest();
+
             Log.d(TAG, " Fused Api fired ..............");
+
         } else {
-        	
-            locManager = (LocationManager) context
-                    .getSystemService(Context.LOCATION_SERVICE);
-            locListener = new MyLocationListener();           
-            
-            if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0, 0, locListener);
-                mProviderName = LocationManager.GPS_PROVIDER;
-                Log.d(TAG, "GPS_PROVIDER Listener started");
-            } else if (locManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                locManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, 0, 0, locListener);
-                mProviderName = LocationManager.NETWORK_PROVIDER;
-                Log.d(TAG, "NETWORK_PROVIDER Listener started");
+            try {
+
+                if (Build.VERSION.SDK_INT >= 23 &&
+                        ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(context,
+                            context.getResources().getString(R.string.permission_enable_msg),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                nativeLocationManager = (LocationManager) context
+                        .getSystemService(Context.LOCATION_SERVICE);
+                nativeLocationListener = new MyLocationListener();
+
+                if (nativeLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    nativeLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                            0, 0, nativeLocationListener);
+                    mProviderName = LocationManager.GPS_PROVIDER;
+                    Log.d(TAG, "GPS_PROVIDER Listener started");
+                } else if (nativeLocationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    nativeLocationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER, 0, 0, nativeLocationListener);
+                    mProviderName = LocationManager.NETWORK_PROVIDER;
+                    Log.d(TAG, "NETWORK_PROVIDER Listener started");
+                }
+                Log.d(TAG, "Native Location Manager fired.");
+            } catch (SecurityException e) {
+                Commons.printException(e);
+            } catch (Exception e) {
+                Commons.printException(e);
             }
-            Log.d(TAG, "Location Manager fired ..............");
+
         }
     }
 
@@ -124,21 +159,21 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 if (loc.isFromMockProvider()) {
-                    isMockLocation=true;
+                    isMockLocation = true;
                     Log.d(TAG, "Mock Location Manager latitude :" + latitude + ",Location Manager longitude :" + longitude);
-                }
-                else {
-                    isMockLocation=false;
+                } else {
+                    isMockLocation = false;
                     Log.d(TAG, "Location Manager latitude :" + latitude + ",Location Manager longitude :" + longitude);
                 }
-            }
-            else
+            } else
                 Log.d(TAG, "Location Manager latitude :" + latitude + ",Location Manager longitude :" + longitude);
 
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
             accuracy = loc.getAccuracy();
             mProviderName = loc.getProvider();
+
+            /* Notify subscribed classes via callbacks*/
             if (iLocationUpdater != null)
                 iLocationUpdater.locationUpdate();
 
@@ -161,9 +196,9 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
      * Check GPS is Enable on not
      */
     public boolean isGPSProviderEnabled() {
-        locManager = (LocationManager) context
+        nativeLocationManager = (LocationManager) context
                 .getSystemService(Context.LOCATION_SERVICE);
-        return locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return nativeLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
     }
 
@@ -177,26 +212,26 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
      */
     public void stopLocationListener() {
 
-        if ((gpsconfigcode == 0 || gpsconfigcode == 3)&&isGooglePlayServicesAvailable()) {
-         if(mGoogleApiClient!=null){
-            if (mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.disconnect();
-                latitude = 0;
-                longitude = 0;
-                stopLocationUpdates();
+        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && isGooglePlayServicesAvailable()) {
+            if (mGoogleApiClient != null) {
+                if (mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.disconnect();
+                    latitude = 0;
+                    longitude = 0;
+                    stopLocationUpdates();
+                }
+                Log.d(TAG,
+                        "isConnected ...............: "
+                                + mGoogleApiClient.isConnected());
+                Log.d(TAG, "onStop fired ..............");
             }
-             Log.d(TAG,
-                    "isConnected ...............: "
-                            + mGoogleApiClient.isConnected());
-             Log.d(TAG, "onStop fired ..............");
-        	}           
 
 
         } else {
-            if (locManager != null && locListener != null) {
-                locManager.removeUpdates(locListener);
-                locListener = null;
-                locManager = null;
+            if (nativeLocationManager != null && nativeLocationListener != null) {
+                nativeLocationManager.removeUpdates(nativeLocationListener);
+                nativeLocationListener = null;
+                nativeLocationManager = null;
                 latitude = 0;
                 longitude = 0;
                 Log.d(TAG, "Location Manager GPS listener Stopped");
@@ -206,15 +241,19 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
 
     }
 
-    private boolean isGooglePlayServicesAvailable() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+    /**
+     * Check google play service is available or not.
+     *
+     * @return true if available
+     */
+    public boolean isGooglePlayServicesAvailable() {
+
+        int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
         if (ConnectionResult.SUCCESS == status) {
             return true;
-        } else {
-//            GooglePlayServicesUtil.getErrorDialog(status, LocationUtil.this, 0).show();
-            return false;
-
         }
+        return false;
+
     }
 
     protected void createLocationRequest() {
@@ -245,16 +284,14 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (location.isFromMockProvider()) {
-                isMockLocation=true;
+                isMockLocation = true;
                 Log.d(TAG, "Mock Fused Api latitude :" + latitude + ", Fused Api longitude :" + longitude);
-            }
-            else {
-                isMockLocation=false;
+            } else {
+                isMockLocation = false;
                 Log.d(TAG, "Fused Api latitude :" + latitude + ",Fused Api longitude :" + longitude);
 
             }
-        }
-        else
+        } else
             Log.d(TAG, "Fused Api latitude :" + latitude + ",Fused Api longitude :" + longitude);
 
         latitude = location.getLatitude();
@@ -308,5 +345,5 @@ public class LocationUtil  implements LocationListener, GoogleApiClient.Connecti
         }
     }
 
-		
+
 }
