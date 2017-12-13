@@ -101,6 +101,11 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         String[] reason = Task.this.getResources().getStringArray(
                 R.array.task_tab_header);
 
+        if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
+            reason = new String[1];
+            reason[0] = "All";
+        }
+
         int first_tab = 0;
         // Add tabs to Tablayout
         for (String tab_name : reason) {
@@ -135,31 +140,13 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
             screenTitle = extras.getString("screentitle");
             setScreenTitle(screenTitle);
         }
-        addTaskFragments();
 
-      /*  TextView mScreenTitleTV = (TextView) findViewById(R.id.tv_toolbar_title);
-        mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        // Set title to actionbar
-        if (IsRetailerwisetask) {
-            if (bmodel.configurationMasterHelper.IS_TASK)
-                mScreenTitleTV.setText(
-                        bmodel.labelsMasterHelper
-                                .applyLabels((Object) "menu_task"));
-            else {
-                if (bmodel.configurationMasterHelper
-                        .getHomescreentwomenutitle("MENU_TASK").equalsIgnoreCase("menu_task"))
-                    mScreenTitleTV.setText(
-                            bmodel.labelsMasterHelper
-                                    .applyLabels((Object) "menu_task"));
-                else
-                    mScreenTitleTV.setText(
-                            bmodel.configurationMasterHelper
-                                    .getHomescreentwomenutitle("MENU_TASK"));
-            }
-        } else
-            mScreenTitleTV.setText(
-                    bmodel.labelsMasterHelper
-                            .applyLabels((Object) "menu_task"));*/
+        if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
+            addServerTaskFragments();
+        } else {
+            addTaskFragments();
+        }
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -248,7 +235,12 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
 
         @Override
         public int getCount() {
-            return 3;
+
+            if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
+                return 1;
+            } else {
+                return 3;
+            }
         }
 
         @Override
@@ -425,6 +417,18 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         mSelectedFragment.setArguments(args2);
         mFragmentList.add(mSelectedFragment);
 
+
+    }
+
+    private void addServerTaskFragments() {
+        mFragmentList = new ArrayList<>();
+        mSelectedFragment = new TaskListFragment();
+        Bundle args1 = new Bundle();
+        args1.putInt("type", 1);
+        args1.putBoolean("isRetailer", IsRetailerwisetask);
+        args1.putBoolean("fromReview", fromReviewScreen);
+        mSelectedFragment.setArguments(args1);
+        mFragmentList.add(mSelectedFragment);
 
     }
 

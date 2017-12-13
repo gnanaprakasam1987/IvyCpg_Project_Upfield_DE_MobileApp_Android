@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view.reports;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -108,6 +109,7 @@ public class CollectionReportFragment extends Fragment {
         if (totalColl != null)
             tv_collected.setText(bModel.formatValue(totalColl));
 
+        @SuppressLint("RestrictedApi")
         Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
         final Bitmap imageBitmap = fromDrawableToBitmap(drawable);
         imageView.setColorFilter(ContextCompat.getColor(getActivity(), R.color.white));
@@ -117,13 +119,20 @@ public class CollectionReportFragment extends Fragment {
             public void onClick(View v) {
                 if (ll_cash.getVisibility() == View.GONE) {
                     imageView.setImageBitmap(getRotatedBitmap(imageBitmap, -90));
-                    ll_cash.setVisibility(View.VISIBLE);
-                    ll_cheque.setVisibility(View.VISIBLE);
-                    ll_dd.setVisibility(View.VISIBLE);
-                    ll_adPayment.setVisibility(View.VISIBLE);
-                    ll_credit_note.setVisibility(View.VISIBLE);
-                    ll_rtgs.setVisibility(View.VISIBLE);
-                    ll_mob_pymt.setVisibility(View.VISIBLE);
+                    if (totalCash > 0)
+                        ll_cash.setVisibility(View.VISIBLE);
+                    if (totalCheque > 0)
+                        ll_cheque.setVisibility(View.VISIBLE);
+                    if (totalDD > 0)
+                        ll_dd.setVisibility(View.VISIBLE);
+                    if (totalAd > 0)
+                        ll_adPayment.setVisibility(View.VISIBLE);
+                    if (totalCn > 0)
+                        ll_credit_note.setVisibility(View.VISIBLE);
+                    if (totalRTGS > 0)
+                        ll_rtgs.setVisibility(View.VISIBLE);
+                    if (total_mob_payment > 0)
+                        ll_mob_pymt.setVisibility(View.VISIBLE);
                 } else {
                     imageView.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
                     ll_cash.setVisibility(View.GONE);
@@ -471,6 +480,7 @@ public class CollectionReportFragment extends Fragment {
                     holder.down_arrow = (ImageView) row.findViewById(R.id.img_arrow);
                     holder.line = (LinearLayout) row.findViewById(R.id.line);
 
+                    @SuppressLint("RestrictedApi")
                     Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
                     Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                     holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
@@ -492,11 +502,13 @@ public class CollectionReportFragment extends Fragment {
 
             try {
                 if (isExpanded) {
+                    @SuppressLint("RestrictedApi")
                     Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
                     Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                     holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, -90));
                     holder.line.setVisibility(View.VISIBLE);
                 } else {
+                    @SuppressLint("RestrictedApi")
                     Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
                     Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                     holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));

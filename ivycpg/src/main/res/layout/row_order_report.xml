@@ -110,6 +110,18 @@
                 android:text="@string/dist"
                 android:textSize="@dimen/font_micro_small"
                 android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/text_delivery_date"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/orderno"
+                android:padding="2dp"
+                android:text="@string/delivery_date_label"
+                android:tag="delivery_date"
+                android:textSize="@dimen/font_micro_small"
+                android:maxLines="1" />
             <TextView
                 android:id="@+id/PRDMRP"
                 android:textColor="@android:color/black"

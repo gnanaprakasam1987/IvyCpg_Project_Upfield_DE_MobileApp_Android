@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/sos_fragment_proj"
-        android:name="com.ivyretail.views.SOSFragment_Proj"
+        android:name="com.ivy.cpg.view.sf.SOSFragment_PRJSpecific"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

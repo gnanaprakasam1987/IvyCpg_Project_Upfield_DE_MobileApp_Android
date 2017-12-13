@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/survey_fragment"
-        android:name="com.ivy.sd.png.survey.SurveyActivityNewFragment"
+        android:name="com.ivy.cpg.view.survey.SurveyActivityNewFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -57,7 +58,7 @@ public class About extends AppCompatActivity {
         TextView version = (TextView) findViewById(R.id.appVersionTV);
         version.setText(getResources().getString(R.string.version) + bmodel.getApplicationVersionName());
 
-        String supportNo = bmodel.getSupportNo();
+        String supportNo = LoginHelper.getInstance(this).getSupportNo();
         TextView support = (TextView) findViewById(R.id.customerSupport);
         if (supportNo.length() > 0)
             support.setText(supportNo);

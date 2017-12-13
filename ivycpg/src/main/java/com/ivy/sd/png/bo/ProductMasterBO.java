@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -1782,4 +1784,14 @@ public class ProductMasterBO {
     public void setCompanyId(int companyId) {
         this.companyId = companyId;
     }
+
+    public int getCompParentId() {
+        return compParentId;
+    }
+
+    public void setCompParentId(int compParentId) {
+        this.compParentId = compParentId;
+    }
+
+    private int compParentId;
 }

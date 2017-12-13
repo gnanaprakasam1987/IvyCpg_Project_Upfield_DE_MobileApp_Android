@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -54,6 +55,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     private String isFrom;
 
     private boolean isAttributeFilter = true;
+    SalesFundamentalHelper mSFHelper;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -64,6 +66,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         Context context = getActivity();
 
         bmodel = (BusinessModel) context.getApplicationContext();
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
         isFrom = getArguments().getString("isFrom");
         isFrom = (isFrom == null) ? "STK" : isFrom;
@@ -98,8 +101,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
                     if (isAttributeFilterSelected()) {
                         //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
-                        if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                            finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                        if (filterText.length() > 0) {
+                            if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
+                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                            }
                         }
 
                         ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
@@ -125,12 +130,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         }
                         brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
                         return;
-                    } else
-                        finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
-
-
-                } else
-                    finalParentList = updateProductLoad(sequence.size());
+                    } else {
+                        if (filterText.length() > 0)
+                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+                    }
+                } else {
+                    if (filterText.length() > 0)
+                        finalParentList = updateProductLoad(sequence.size());
+                }
 
                 brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
                 brandInterface.updateCancel();
@@ -180,8 +187,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     sequence = bmodel.productHelper.getSequenceValues();
                     break;
                 case "SF":
-                    loadedFilterValues = bmodel.salesFundamentalHelper.getFiveLevelFilters();
-                    sequence = bmodel.salesFundamentalHelper.getSequenceValues();
+                    loadedFilterValues = mSFHelper.getFiveLevelFilters();
+                    sequence = mSFHelper.getSequenceValues();
                     break;
                 case "SVR":
                     loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();

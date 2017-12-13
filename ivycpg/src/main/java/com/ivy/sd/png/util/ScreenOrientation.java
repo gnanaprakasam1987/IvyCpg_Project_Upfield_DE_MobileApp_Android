@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
+import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
+
 public class ScreenOrientation {
     /**
      * Method tells device factor
@@ -38,7 +40,10 @@ public class ScreenOrientation {
         Activity activity = (Activity) activityContext;
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        if (metrics.widthPixels > 480) {
+        boolean is7InchTablet = activityContext.getResources().getConfiguration()
+                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+
+        if (is7InchTablet) {
             return true;
         }
         return false;

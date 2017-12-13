@@ -202,7 +202,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
             actionBar.setTitle(getArguments().getString("screentitle"));
         actionBar.setIcon(R.drawable.icon_visit);
 
-        if (!BusinessModel.dashHomeStatic)
+        //if (!BusinessModel.dashHomeStatic)
             actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
     }

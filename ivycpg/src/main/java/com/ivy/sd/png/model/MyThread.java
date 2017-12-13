@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Handler;
 
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
+import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -13,7 +15,6 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.LoginScreen;
 import com.ivy.sd.png.view.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
@@ -50,10 +51,10 @@ public class MyThread extends Thread {
 
         if (opt == DataMembers.LOCAL_LOGIN) {
             LoginScreen frm = (LoginScreen) ctx;
-            int count = frm.mPasswordLockCountPref.getInt("passwordlock", 0);
+            int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
             if (bmodel.synchronizationHelper.validateUser(
                     bmodel.userNameTemp.toLowerCase(Locale.US),
-                    bmodel.passwordTemp) && count + 1 != bmodel.configurationMasterHelper.MAXIMUM_ATTEMPT_COUNT) {
+                    bmodel.passwordTemp) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
                 // If usermaster get updated
                 bmodel.userMasterHelper.downloadUserDetails();
                 bmodel.userMasterHelper.downloadDistributionDetails();
@@ -61,7 +62,6 @@ public class MyThread extends Thread {
                 /** Load all the configurations**/
                 bmodel.configurationMasterHelper.downloadConfig();
                 bmodel.configurationMasterHelper.downloadIndicativeOrderConfig();
-                bmodel.configurationMasterHelper.downloadProfileModuleConfig();
                 bmodel.mRetailerHelper.setVisitPlanning(bmodel.configurationMasterHelper
                         .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_PLANNING));
                 bmodel.mRetailerHelper.setVisitCoverage(bmodel.configurationMasterHelper
@@ -88,7 +88,6 @@ public class MyThread extends Thread {
                 bmodel.reasonHelper.downloadNonVisitReasonMaster();
                 bmodel.reasonHelper.downloadNonProductiveReasonMaster();
 
-                // bmodel.getimageDownloadURL();
                 bmodel.productHelper
                         .setBuffer(((float) bmodel.configurationMasterHelper
                                 .downloadSOBuffer() / (float) 100));
@@ -102,7 +101,7 @@ public class MyThread extends Thread {
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-                    bmodel.mLoginHelper.onGCMRegistration();
+                    LoginHelper.getInstance(ctx).onGCMRegistration();
                 if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
                     bmodel.downloadChatCredentials();
 

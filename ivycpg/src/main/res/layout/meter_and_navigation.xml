@@ -148,15 +148,24 @@
 
         </LinearLayout>
         <Button
-            android:id="@+id/btn_guided_selling"
+            android:id="@+id/btn_guided_selling_prev"
             style="?attr/roundedCustomButtonSmall"
             android:layout_centerVertical="true"
+            android:layout_margin="@dimen/target_top_margin"
+            android:layout_toLeftOf="@+id/btn_guided_selling_next"
+            android:text="@string/previous"
+            android:textAllCaps="false"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_guided_selling_next"
+            style="?attr/roundedCustomButtonSmall"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/next"
             android:textAllCaps="false"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_next"

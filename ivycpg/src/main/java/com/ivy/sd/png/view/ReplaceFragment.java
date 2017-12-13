@@ -19,14 +19,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
 
 import static android.app.Activity.RESULT_OK;
@@ -91,7 +91,7 @@ public class ReplaceFragment extends IvyBaseFragment {
         etRepCase = (EditText) view.findViewById(R.id.et_rep_csValue);
         etRepOuter = (EditText) view.findViewById(R.id.et_rep_ouValue);
 
-        productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+        productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
 
 
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -110,7 +110,7 @@ public class ReplaceFragment extends IvyBaseFragment {
     private void process() {
 
         if (Pid != null) {
-            productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             int total = 0, caseSize = 0, outerSize = 0;

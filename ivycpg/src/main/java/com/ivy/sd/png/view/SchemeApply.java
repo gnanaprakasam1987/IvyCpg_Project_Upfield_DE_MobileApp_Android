@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.ivy.countersales.CS_sale_summary;
 import com.ivy.countersales.CSsale;
+import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -112,7 +113,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             }
         });
 
-        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD")) {
+        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") || fromOrderScreen.equalsIgnoreCase("MENU_ORDER")) {
             updateSchemeDetails();
         } else {
             mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();
@@ -255,7 +256,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 //                    finish();
                 } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                     Intent i = new Intent(SchemeApply.this,
-                            DigitalContentDisplay.class);
+                            DigitalContentActivity.class);
                     i.putExtra("FromInit", "Initiative");
                     i.putExtra("ScreenCode", screenCode);
                     startActivity(i);
@@ -1421,9 +1422,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
      */
     private boolean isValidateSchemePriceEntered(SchemeBO schemeBO) {
 
-        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 0, 2))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 0, 2))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 0, 2)) > 0)) {
+        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
+                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
             /*
              * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
 			 * 0) || (priceEntered > schemeBO.getActualPrice())) {

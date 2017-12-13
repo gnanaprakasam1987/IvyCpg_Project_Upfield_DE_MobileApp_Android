@@ -329,7 +329,7 @@
     <dimen name="toolbar_image_top">20dp</dimen>
     <dimen name="toolbar_image_height">80dp</dimen>
     <dimen name="floating_btn_elevation">3dp</dimen>
-    <dimen name="list_card_height">65dp</dimen>
+    <dimen name="list_card_height">75dp</dimen>
     <dimen name="outlet_left_margin">2.5dp</dimen>
 
     <dimen name="icons_left_margin">12dp</dimen>

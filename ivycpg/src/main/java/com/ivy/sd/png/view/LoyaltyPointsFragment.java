@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,6 +42,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
@@ -55,6 +57,8 @@ import com.ivy.sd.png.util.DataMembers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
+
+import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
 
 public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnClickListener {
@@ -82,9 +86,10 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
     ArrayList<StandardListBO> lstPointTypes;
     ArrayAdapter<StandardListBO> mPointTypeAdapter;
-    int mSelectedPointTypeId=0;
+    int mSelectedPointTypeId = 0;
 
     private ArrayList<LoyaltyBO> lstLoyalty;// unique loyalty list for filter
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,7 +100,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
         saveBtn = (Button) rootView.findViewById(R.id.btn_save);
         saveBtn.setOnClickListener(this);
 
-        spn_point_type=(Spinner) rootView.findViewById(R.id.spn_pointType);
+        spn_point_type = (Spinner) rootView.findViewById(R.id.spn_pointType);
 
         setHasOptionsMenu(true);
         return rootView;
@@ -149,7 +154,10 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             inputManager = (InputMethodManager) getActivity().getSystemService(
                     Context.INPUT_METHOD_SERVICE);
 
-            if (screenwidth > 600) {
+            boolean is7InchTablet = this.getResources().getConfiguration()
+                    .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+
+            if (is7InchTablet) {
                 gridlaymanager = new GridLayoutManager(getActivity(), 3);
             } else {
                 gridlaymanager = new GridLayoutManager(getActivity(), 2);
@@ -161,30 +169,30 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
             loylatyitems = bmodel.productHelper.getProductloyalties();
 
-            ArrayList<Integer> lstTemp=new ArrayList<>();
-            lstLoyalty=new ArrayList<>();
+            ArrayList<Integer> lstTemp = new ArrayList<>();
+            lstLoyalty = new ArrayList<>();
             for (LoyaltyBO temp : loylatyitems) {
 
                 if (temp.getSelectedPoints() > 0) {
                     temp.setGivenPoints(temp.getGivenPoints());
                 }
 
-                if(!lstTemp.contains(temp.getLoyaltyId())) {
-                    LoyaltyBO bo=new LoyaltyBO();
+                if (!lstTemp.contains(temp.getLoyaltyId())) {
+                    LoyaltyBO bo = new LoyaltyBO();
                     bo.setLoyaltyId(temp.getLoyaltyId());
                     bo.setLoyaltyDescription(temp.getLoyaltyDescription());
                     lstLoyalty.add(bo);
-                   // mloylatAdapter.add(temp);
+                    // mloylatAdapter.add(temp);
                 }
                 lstTemp.add(temp.getLoyaltyId());
             }
-            lstTemp=null;
+            lstTemp = null;
 
             mloylatAdapter = new ArrayAdapter<LoyaltyBO>(getActivity(),
-                    android.R.layout.select_dialog_singlechoice,lstLoyalty);
+                    android.R.layout.select_dialog_singlechoice, lstLoyalty);
 
             lstPointTypes = bmodel.mLoyalityHelper.downloadLoyaltyPointsType();
-            if (lstPointTypes != null && lstPointTypes.size() > 0&&lstLoyalty.size()>0) {
+            if (lstPointTypes != null && lstPointTypes.size() > 0 && lstLoyalty.size() > 0) {
 
                 if (lstPointTypes.size() > 1) {
                     spn_point_type.setVisibility(View.VISIBLE);
@@ -218,8 +226,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             }
 
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -329,7 +336,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                                 + DataMembers.LOYALTY_POINTS + "/" + imageName);
 
 
-                final Uri uri = Uri.fromFile(file);
+                final Uri uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
 
                 Glide.with(getActivity())
                         .load(uri)
@@ -350,7 +357,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                             }
                         })
                         .into(holder.productImage);
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -359,8 +366,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 @Override
                 public void onClick(View v) {
 
-                    LoyaltyBO loyaltyBO=getCurrentLoyaltyBO();
-                    if(loyaltyBO!=null) {
+                    LoyaltyBO loyaltyBO = getCurrentLoyaltyBO();
+                    if (loyaltyBO != null) {
                         if (loyaltyBO.getSelectedPoints() < loyaltyBO.getGivenPoints()) {
                             if ((items.get(position).getBenifitPoints() + loyaltyBO.getSelectedPoints()) > loyaltyBO.getGivenPoints())
                                 snackBarShow("Points Should Not be exceed");
@@ -454,7 +461,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
     private void updatePoints(int totlaRedeemPoints) {
         try {
             for (LoyaltyBO tpoints : loylatyitems) {
-                if (mSelectedLoyaltyID == tpoints.getLoyaltyId()&& tpoints.getPointTypeId()==mSelectedPointTypeId) {
+                if (mSelectedLoyaltyID == tpoints.getLoyaltyId() && tpoints.getPointTypeId() == mSelectedPointTypeId) {
                     tpoints.setSelectedPoints(totlaRedeemPoints);
                     tpoints.setBalancePoints(tpoints.getGivenPoints() - tpoints.getSelectedPoints());
                     totlaRedeemPoints = tpoints.getSelectedPoints();
@@ -471,10 +478,10 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
     }
 
-    private LoyaltyBO getCurrentLoyaltyBO(){
+    private LoyaltyBO getCurrentLoyaltyBO() {
         try {
             for (LoyaltyBO tpoints : loylatyitems) {
-                if(tpoints.getLoyaltyId()==mSelectedLoyaltyID&&tpoints.getPointTypeId()==mSelectedPointTypeId){
+                if (tpoints.getLoyaltyId() == mSelectedLoyaltyID && tpoints.getPointTypeId() == mSelectedPointTypeId) {
                     return tpoints;
                 }
 
@@ -483,7 +490,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return  null;
+        return null;
     }
 
     public void updateTotalPoints(int mltyId) {
@@ -496,12 +503,12 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 return;
             }
 
-            givenPoints=0;
-            totlaSelectedPoints=0;
+            givenPoints = 0;
+            totlaSelectedPoints = 0;
 
             for (LoyaltyBO tpoints : loylatyitems) {
 
-                if (mltyId == tpoints.getLoyaltyId()&& mSelectedPointTypeId==tpoints.getPointTypeId()) {
+                if (mltyId == tpoints.getLoyaltyId() && mSelectedPointTypeId == tpoints.getPointTypeId()) {
                     totlaSelectedPoints = tpoints.getSelectedPoints();
                     givenPoints = tpoints.getGivenPoints();
                 }
@@ -530,7 +537,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             }
             mylist = new ArrayList<>();
             for (LoyaltyBO ret : loylatyitems) {
-                if (mltyId == ret.getLoyaltyId()&&mSelectedPointTypeId==ret.getPointTypeId()) {
+                if (mltyId == ret.getLoyaltyId() && mSelectedPointTypeId == ret.getPointTypeId()) {
                     mylist = ret.getLoyaltyTrackingList();
                 }
             }
@@ -547,7 +554,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
 
     public void onNextButtonClick() {
 
-        LoyaltyBO currentBO=getCurrentLoyaltyBO();
+        LoyaltyBO currentBO = getCurrentLoyaltyBO();
         if (currentBO.getSelectedPoints() > 0) {
             new SaveAsyncTask().execute();
         } else {

@@ -3,6 +3,8 @@
  */
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.sf.SFLocationBO;
+
 import java.util.ArrayList;
 
 /**
@@ -18,7 +20,7 @@ public class SODBO {
 	private String gap = "0";
 	private float norm;
 	private int MappingId;
-	private ArrayList<LocationBO> locations;
+    private ArrayList<SFLocationBO> locations;
 
 	public int getParentID() {
 		return parentID;
@@ -84,11 +86,11 @@ public class SODBO {
 		MappingId = mappingId;
 	}
 
-	public ArrayList<LocationBO> getLocations() {
-		return locations;
+    public ArrayList<SFLocationBO> getLocations() {
+        return locations;
 	}
 
-	public void setLocations(ArrayList<LocationBO> locations) {
-		this.locations = locations;
+    public void setLocations(ArrayList<SFLocationBO> locations) {
+        this.locations = locations;
 	}
 }

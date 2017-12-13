@@ -2,15 +2,14 @@ package com.ivy.sd.png.provider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
-import android.widget.Toast;
 
+import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -18,6 +17,7 @@ import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ChildLevelBo;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -25,10 +25,8 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
-import com.ivy.sd.png.bo.NearExpiryDateBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -82,6 +80,8 @@ public class ProductHelper {
     private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
     private Vector<ProductMasterBO> mTaggedProducts = null;
     private Map<String, ProductMasterBO> mTaggedProductById;
+    private Vector<ProductMasterBO> mSalesReturnProducts = null;
+    private Map<String, ProductMasterBO> mSalesReturnProductById;
     private ArrayList<Integer> mIndicativeList;
     private ArrayList<TaxBO> mTaxList = new ArrayList<TaxBO>();
     private ArrayList<TaxBO> mTaxProdList = new ArrayList<TaxBO>();
@@ -210,6 +210,7 @@ public class ProductHelper {
         this.bmodel = (BusinessModel) context;
         productMaster = new Vector<ProductMasterBO>();
         mTaggedProducts = new Vector<ProductMasterBO>();
+        mSalesReturnProducts = new Vector<ProductMasterBO>();
         // bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -218,6 +219,8 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
+        mSalesReturnProducts = null;
+        mSalesReturnProductById = null;
         System.gc();
     }
 
@@ -271,6 +274,10 @@ public class ProductHelper {
 
     public Vector<ProductMasterBO> getTaggedProducts() {
         return mTaggedProducts;
+    }
+
+    public Vector<ProductMasterBO> getSalesReturnProducts() {
+        return mSalesReturnProducts;
     }
 
     private String QT(String data) // Quote
@@ -2359,6 +2366,46 @@ public class ProductHelper {
 
     }
 
+    public void downloadSalesReturnSKUs() {
+        //For counter sales
+
+        mSalesReturnProducts = new Vector<ProductMasterBO>();
+        mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
+        if (c != null) {
+            if (c.getCount() > 0) {
+                ProductMasterBO productMasterBO;
+                while (c.moveToNext()) {
+                    productMasterBO = new ProductMasterBO();
+                    productMasterBO.setProductID(c.getString(0));
+                    productMasterBO.setProductName(c.getString(1));
+                    productMasterBO.setParentid(c.getInt(2));
+                    productMasterBO.setProductShortName(c.getString(3));
+                    productMasterBO.setSrp(c.getFloat(4));
+                    productMasterBO.setMRP(c.getFloat(5));
+                    productMasterBO.setPcUomid(c.getInt(6));
+                    productMasterBO.setCaseSize(0);
+                    productMasterBO.setOutersize(0);
+                    productMasterBO.setBarCode("");
+                    productMasterBO.setCasebarcode("");
+                    productMasterBO.setOuterbarcode("");
+                    productMasterBO.setIsSaleable(1);
+                    mSalesReturnProducts.add(productMasterBO);
+                    mSalesReturnProductById.put(productMasterBO.getProductID(), productMasterBO);
+
+                }
+            }
+        }
+
+
+    }
+
+
     private StringBuffer downloadProductSequenceFromFilter() {
         StringBuffer filter = new StringBuffer();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -2423,6 +2470,26 @@ public class ProductHelper {
 
     }
 
+    /**
+     * get tagged products and update the productBO.
+     */
+    public void downloadSalesReturnProducts() {
+        try {
+
+            mSalesReturnProducts = new Vector<ProductMasterBO>();
+            mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
+
+            for (ProductMasterBO sku : getProductMaster()) {
+                mSalesReturnProducts.add(sku);
+                mSalesReturnProductById.put(sku.getProductID(), sku);
+            }
+
+        } catch (Exception e) {
+            Commons.printException("downloadSalesReturnProducts", e);
+        }
+
+    }
+
 
     /**
      * Method will return tagged products list as a string with comma separator.
@@ -2477,7 +2544,7 @@ public class ProductHelper {
             StringBuilder productIds = new StringBuilder();
             Cursor c2 = db
                     .selectSQL("SELECT pid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 1" +
                             " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
                             "WHERE PM.TaggingTypelovID = " + moduletypeid +
                             " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
@@ -2501,7 +2568,7 @@ public class ProductHelper {
 
     public void cloneReasonMaster() {
         try {
-            for (ProductMasterBO product : productMaster) {
+            for (ProductMasterBO product : mSalesReturnProducts) {
                 product.setSalesReturnReasonList(cloneIsolateList(product));
             }
         } catch (Exception e) {
@@ -2509,7 +2576,7 @@ public class ProductHelper {
         }
     }
 
-    protected static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
+    public static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
         List<SalesReturnReasonBO> clone = null;
         try {
             clone = new ArrayList<SalesReturnReasonBO>();
@@ -2648,7 +2715,7 @@ public class ProductHelper {
         }
     }
 
-    protected int getOldBatchIDByMfd(String prodId) {
+    public int getOldBatchIDByMfd(String prodId) {
         try {
             return oldBatchId.get(prodId);
         } catch (Exception e) {
@@ -2661,6 +2728,12 @@ public class ProductHelper {
         if (productMasterById == null)
             return null;
         return productMasterById.get(productId);
+    }
+
+    public ProductMasterBO getSalesReturnProductBOById(String productId) {
+        if (mSalesReturnProductById == null)
+            return null;
+        return mSalesReturnProductById.get(productId);
     }
 
 
@@ -4277,105 +4350,6 @@ public class ProductHelper {
 
         } catch (Exception e) {
             Commons.printException("Download Category", e);
-        }
-
-    }
-
-    /**
-     * Download Module Locations
-     */
-    public void downloadStockApply() {
-        try {
-
-            inStoreLocation = new Vector<StandardListBO>();
-            StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
-                    + " FROM StandardListMaster SL  where SL.Listtype='PL' ORDER BY SL.ListId";
-
-            Cursor c = db.selectSQL(sql1);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    locations = new StandardListBO();
-                    locations.setListID(c.getString(0));
-                    locations.setListName(c.getString(1));
-                    inStoreLocation.add(locations);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            if (inStoreLocation.size() == 0) {
-                locations = new StandardListBO();
-                locations.setListID("0");
-                locations.setListName("Store");
-                inStoreLocation.add(locations);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("Download Location", e);
-        }
-
-    }
-
-
-    /**
-     * Download Module Locations
-     */
-    public void downloadPlanogramProdutLocations(String moduleName, String retailer, String query1) {
-        try {
-
-            SharedPreferences sharedPrefs = PreferenceManager
-                    .getDefaultSharedPreferences(mContext);
-
-            inStoreLocation = new Vector<StandardListBO>();
-            StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
-                    + " FROM StandardListMaster SL";
-
-            if (moduleName.equals("MENU_PLANOGRAM")) {
-                sql1 += " inner join PlanogramMapping MP on MP.StoreLocId=SL.ListId"
-                        + " inner join PlanogramMaster P on P.HId=MP.HId"
-                        + " where " + query1
-                        + " SL.Listtype='PL'"
-                        + " ORDER BY SL.ListId";
-            } else if (moduleName.equals("MENU_VAN_PLANOGRAM")) {
-                sql1 += " inner join PlanogramMapping PM on PM.StoreLocId=sl.listcode"
-                        + " inner join PlanogramMaster P on P.HId=PM.HId"
-                        + " where SL.Listtype='SL' and PM.RetailerId= " + bmodel.QT(retailer)
-                        + " ORDER BY SL.ListId";
-            } else {
-                sql1 += " where SL.Listtype='PL' ORDER BY SL.ListId";
-            }
-
-            Cursor c = db.selectSQL(sql1);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    locations = new StandardListBO();
-                    locations.setListID(c.getString(0));
-                    locations.setListName(c.getString(1));
-                    inStoreLocation.add(locations);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            if (inStoreLocation.size() == 0) {
-                locations = new StandardListBO();
-                locations.setListID("0");
-                locations.setListName("Store");
-                inStoreLocation.add(locations);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("Download Location", e);
         }
 
     }
@@ -6291,138 +6265,6 @@ public class ProductHelper {
     }
 
 
-    public void loadSODAssetData(String menuname) {
-        try {
-
-            int level;
-            level = getRetailerlevel(menuname);
-            Commons.print("level=" + level + " menuname=" + menuname);
-            if (menuname.equals("MENU_SOD_ASSET")) {
-                switch (level) {
-                    case 1:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
-                        break;
-                    case 8:
-                        bmodel.sodAssetHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void loadData(String menuname) {
-        try {
-
-            int level;
-            level = getRetailerlevel(menuname);
-            Commons.print("level=" + level + " menuname=" + menuname);
-            if (menuname.equals("MENU_SOS") || menuname.equals("MENU_SOSKU") || menuname.equals("MENU_SOD")) {
-                switch (level) {
-                    case 1:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, false, false, false, locid, chid);
-                        break;
-                    case 8:
-                        bmodel.salesFundamentalHelper.downloadSalesFundamental(menuname, true, false, false, 0, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-
-                }
-            } else if (menuname.equals("MENU_PLANOGRAM")) {
-                switch (level) {
-                    case 1:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM", false, false, false, locid, chid);
-                        break;
-                    case -1:
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            } else if (menuname.equals("MENU_PLANOGRAM_CS")) {
-                switch (level) {
-                    case 1:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, 0);
-                        break;
-                    case 5:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, chid);
-                        break;
-                    case 6:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, locid, chid);
-                        break;
-//                    case -1:
-//                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-//                        break;
-
-                    default:
-                        bmodel.planogramMasterHelper.downloadPlanogram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     public void downloadDistributorProductsWithFiveLevelFilter(String moduleCode) {
         productMasterById = new HashMap<String, ProductMasterBO>();
         getLocations();
@@ -6837,20 +6679,49 @@ public class ProductHelper {
     }
 
     public void downloadCompetitorProducts(String moduleCode) {
-
+        if (competitorProductMaster != null) {
+            competitorProductMaster.clear();
+        }
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
+            int mFiltrtLevel = 0;
+            int mContentLevel = 0;
+
+            Cursor filterCur = db
+                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
+                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  " + bmodel.configurationMasterHelper.COMPETITOR_FILTER_TYPE +
+                            " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
+                            "where Sequence = (Select max(Sequence) from ProductLevel))");
+
+            if (filterCur != null) {
+                if (filterCur.moveToNext()) {
+                    mFiltrtLevel = filterCur.getInt(0);
+                    mContentLevel = filterCur.getInt(1);
+                }
+                filterCur.close();
+            }
+
+            int loopEnd = mContentLevel - mFiltrtLevel + 1;
+            getAlCompetitorTaggedProducts(loopEnd);
+
+            String sql;
+            sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
+                    + ".CPID as parentId FROM CompetitorProductMaster A1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                        + ".CPID = A" + (i - 1) + ".CPTid";
             Cursor cur = db
-                    .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID FROM CompetitorProductMaster CP"
-                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
+                    .selectSQL(sql
+                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
                             + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                             + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                            "group by CP.CPID");
+                            " group by A1.CPID");
 
             if (cur != null) {
+
                 while (cur.moveToNext()) {
                     ProductMasterBO product = new ProductMasterBO();
                     product.setProductID(cur.getString(0));
@@ -6867,7 +6738,7 @@ public class ProductHelper {
                     product.setPcUomid(cur.getInt(5));
                     product.setProductCode(cur.getString(6));
                     product.setOwnPID(cur.getString(7));
-                    product.setCompanyId(cur.getInt(8));
+                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
 
                     // for level skiping
                     ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
@@ -6881,26 +6752,22 @@ public class ProductHelper {
                         product.getLocations().get(i)
                                 .setNearexpiryDate(cloneDateList(dateList));
                     }
-                    bmodel.productHelper.getTaggedProducts().add(product);
-                    mTaggedProductById.put(product.getProductID(), product);
+                    /*bmodel.productHelper.getTaggedProducts().add(product);
+                    mTaggedProductById.put(product.getProductID(), product);*/
+                    competitorProductMaster.add(product);
+
                 }
                 cur.close();
+
             }
             db.closeDB();
 
-            Vector<ProductMasterBO> tagItems = bmodel.productHelper.getTaggedProducts();
-            if (tagItems != null)
-                for (ProductMasterBO tagBo : tagItems) {
-                    if (tagBo.getOwn() == 0 && bmodel.productHelper.getFilterColor("Filt23") != 0) {
-                        tagBo.setTextColor(bmodel.productHelper.getFilterColor("Filt23"));
-                    } else {
-                        if (tagBo.getOwn() == 0)
-                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
-                    }
-                }
 
         } catch (Exception e) {
             Commons.printException(e);
+            if (db != null) {
+                db.closeDB();
+            }
         }
 
     }
@@ -7605,6 +7472,31 @@ public class ProductHelper {
         }
         c.close();
         db.closeDB();
+    }
+
+    public void updateEntryLevelDiscount(DBUtil db, String orderID, double distVal) {
+
+        StringBuffer sb = new StringBuffer();
+        // sum of product discount , scheme amount and tax amount
+        double totDiscVaue = 0;
+
+
+        sb.append("select orderid from OrderHeader");
+        sb.append(" where orderid=" + orderID);
+        Cursor c = db.selectSQL(sb.toString());
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                totDiscVaue = distVal;
+            }
+        }
+        sb = new StringBuffer();
+        sb.append("update orderheader set ");
+        sb.append("discount=discount+" + bmodel.formatValue(totDiscVaue));
+        sb.append(" where orderid=" + orderID);
+        db.updateSQL(sb.toString());
+
+        c.close();
+
     }
 
     public void updateBillEntryDiscInOrderHeader(DBUtil db, String orderId) {
@@ -8879,7 +8771,230 @@ public class ProductHelper {
         return isAvailable;
     }
 
+    public Vector<ProductMasterBO> getCompetitorProductMaster() {
+        if (competitorProductMaster == null)
+            return new Vector<ProductMasterBO>();
+        return competitorProductMaster;
+    }
 
+    private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
+
+    /**
+     * get competitor tagged products and update the productBO.
+     *
+     * @param mMenuCode menu code
+     */
+    public void downloadCompetitorTaggedProducts(String mMenuCode) {
+        try {
+
+            String productIds = getCompetitorTaggingDetails(mMenuCode);
+            List<String> mSKUId = new ArrayList<>();
+
+            mSKUId = Arrays.asList(productIds.split(","));
+
+            if (mTaggedProducts == null) {
+                mTaggedProducts = new Vector<ProductMasterBO>();
+            }
+            if (mTaggedProductById == null) {
+                mTaggedProductById = new HashMap<String, ProductMasterBO>();
+            }
+            String competitorParentIds = "";
+            if (productIds != null && !productIds.trim().equals("")) {
+                for (ProductMasterBO sku : getCompetitorProductMaster()) {
+                    //if (mSKUId.contains(sku.getProductID())) {
+                    mTaggedProducts.add(sku);
+                    mTaggedProductById.put(sku.getProductID(), sku);
+                    competitorParentIds += sku.getCompParentId() + ",";
+                    /*}else{
+                        mTaggedProducts.add(sku);
+                        mTaggedProductById.put(sku.getProductID(), sku);
+                        competitorParentIds += sku.getCompParentId() + ",";
+                    }*/
+                }
+            } else {
+                for (ProductMasterBO sku : getCompetitorProductMaster()) {
+                    mTaggedProducts.add(sku);
+                    mTaggedProductById.put(sku.getProductID(), sku);
+                    competitorParentIds += sku.getCompParentId() + ",";
+                }
+            }
+            if (competitorParentIds.endsWith(",")) {
+                competitorParentIds = competitorParentIds.substring(0, competitorParentIds.length() - 1);
+            }
+            if (!competitorParentIds.equals("")) {
+                getCompetitorFilter(competitorParentIds);
+            }
+
+            Vector<ProductMasterBO> tagItems = getTaggedProducts();
+            if (tagItems != null)
+                for (ProductMasterBO tagBo : tagItems) {
+                    if (tagBo.getOwn() == 0 && getFilterColor("Filt23") != 0) {
+                        tagBo.setTextColor(getFilterColor("Filt23"));
+                    } else {
+                        if (tagBo.getOwn() == 0)
+                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
+                    }
+                }
+        } catch (Exception e) {
+            Commons.printException("downloadTaggedProducts", e);
+        }
+
+    }
+
+    /* get All competitor tagged products irrespective of own product mapping */
+    private void getAlCompetitorTaggedProducts(int loopEnd) {
+        DBUtil db;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql;
+            sql = "SELECT distinct A1.CPID, A1.CPName," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
+                    "A1.CPCode,A+" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                        + ".CPID = A" + (i - 1) + ".CPTid";
+            Cursor cur = db
+                    .selectSQL(sql
+                            + " INNER JOIN ProductTaggingGroupMapping PTGM ON PTGM.isOwn = 0 AND PTGM.pid = A1.CPID");
+            if (cur != null) {
+
+                while (cur.moveToNext()) {
+                    ProductMasterBO product = new ProductMasterBO();
+                    product.setProductID(cur.getString(0));
+                    product.setProductName(cur.getString(1));
+                    product.setProductShortName(cur.getString(1));
+                    product.setParentid(0);
+                    product.setIsSaleable(1);
+                    product.setBarCode("");
+                    product.setCasebarcode("");
+                    product.setOuterbarcode("");
+                    product.setOwn(0);
+                    product.setCaseUomId(cur.getInt(2));
+                    product.setOuUomid(cur.getInt(3));
+                    product.setPcUomid(cur.getInt(4));
+                    product.setProductCode(cur.getString(5));
+                    product.setOwnPID("0");
+                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+
+                    product.setLocations(cloneLocationList(locations));
+                    for (int i = 0; i < locations.size(); i++) {
+                        product.getLocations().get(i)
+                                .setNearexpiryDate(cloneDateList(dateList));
+                    }
+
+                    competitorProductMaster.add(product);
+
+                }
+                cur.close();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Method will return competitor tagged products list as a string with comma separator.
+     *
+     * @param taggingType tagging type
+     * @return productId with comma separated string.
+     */
+    public String getCompetitorTaggingDetails(String taggingType) {
+        try {
+            String mappingId = "0", moduletypeid = "0", locationId = "0";
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+
+            Cursor c1 = db
+                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
+                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
+                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+
+            if (c1 != null) {
+                if (c1.moveToNext()) {
+
+
+                    if (c1.getString(0).equals("CHANNEL")) {
+                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+
+                        if (c1.getInt(3) != 0)
+                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+
+                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
+                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
+                    else if (c1.getString(0).equals("LOCATION")) {
+                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                    } else if (c1.getString(0).equals("USER"))
+                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
+
+                    moduletypeid = c1.getString(1);
+                }
+                c1.close();
+            }
+
+            StringBuilder productIds = new StringBuilder();
+            Cursor c2 = db
+                    .selectSQL("SELECT distinct pid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 0" +
+                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
+                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
+                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+
+            if (c2 != null) {
+                while (c2.moveToNext()) {
+                    if (!productIds.toString().equals(""))
+                        productIds.append(",");
+                    productIds.append(c2.getInt(0));
+                }
+                c2.close();
+            }
+            db.closeDB();
+
+            return productIds.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public ArrayList<CompetitorFilterLevelBO> getCompetitorFilterList() {
+        return competitorFilterList;
+    }
+
+    ArrayList<CompetitorFilterLevelBO> competitorFilterList;
+
+    private void getCompetitorFilter(String competitorParentIds) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            Cursor c = db.selectSQL("Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid" +
+                    " where CPID in (" + competitorParentIds + ")");
+            if (c.getCount() > 0) {
+                CompetitorFilterLevelBO competitorBO;
+                competitorFilterList = new ArrayList<CompetitorFilterLevelBO>();
+                while (c.moveToNext()) {
+                    competitorBO = new CompetitorFilterLevelBO();
+                    competitorBO.setProductId(c.getString(0));
+                    competitorBO.setProductName(c.getString(1));
+                    competitorBO.setLevelName(c.getString(2));
+                    competitorFilterList.add(competitorBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+    }
 }
 
 

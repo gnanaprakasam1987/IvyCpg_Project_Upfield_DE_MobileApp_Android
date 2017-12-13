@@ -7,8 +7,6 @@ import android.database.SQLException;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.bo.AttendanceReportBo;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ContractBO;
@@ -36,6 +34,8 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.TaskReportBo;
+import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
+import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -366,7 +366,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,OD.totalamount as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,((OD.totalamount)-(OD.totalamount *(OD.d1+OD.d2+OD.d3)/100)) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -3092,8 +3092,8 @@ public class ReportHelper {
         return freeProductList;
     }
 
-    public ArrayList<OutletReportBO> downloadOutletReports(){
-        ArrayList<OutletReportBO> lst=new ArrayList<>();
+    public ArrayList<OutletReportBO> downloadOutletReports() {
+        ArrayList<OutletReportBO> lst = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -3126,11 +3126,9 @@ public class ReportHelper {
 
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
-        }
-        finally {
+        } finally {
             db.closeDB();
         }
         return lst;
@@ -3142,8 +3140,9 @@ public class ReportHelper {
     }
 
     private ArrayList<OutletReportBO> lstUsers;
-    public ArrayList downloadUsers(){
-        lstUsers=new ArrayList<>();
+
+    public ArrayList downloadUsers() {
+        lstUsers = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -3165,35 +3164,32 @@ public class ReportHelper {
             }
         } catch (Exception ex) {
             Commons.printException(ex);
-        }
-        finally {
+        } finally {
             db.closeDB();
         }
         return lstUsers;
 
     }
 
-    public Integer downloadlastVisitedRetailer(int userId){
-        int retailerid=0;
+    public Integer downloadlastVisitedRetailer(int userId) {
+        int retailerid = 0;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct Retailerid from OutletPerfomanceReport where userid="+userId+" order by timein,timeout  desc limit 1");
+            sb.append("select distinct Retailerid from OutletPerfomanceReport where userid=" + userId + " order by timein,timeout  desc limit 1");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 while (c.moveToNext()) {
-                    retailerid=c.getInt(0);
+                    retailerid = c.getInt(0);
 
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
-        }
-        finally {
+        } finally {
             db.closeDB();
         }
         return retailerid;
@@ -3354,6 +3350,7 @@ public class ReportHelper {
     }
 
     private Vector<LevelBO> sequencevalues;
+
     public void downloadSellerReportFilter() {
         int LevelID = 0;
         sequencevalues = new Vector<>();

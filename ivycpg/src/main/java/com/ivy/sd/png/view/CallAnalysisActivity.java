@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;
@@ -45,7 +47,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SalesReturnHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
@@ -82,6 +83,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private Toolbar toolbar;
     TextView tv_store_status, tv_duration, tv_edt_time_taken, tv_sale;
     EditText edt_noOrderReason;
+    EditText edt_other_remarks;
     Button btn_close;
     private RelativeLayout rl_store_status;
     private CardView content_card;
@@ -144,6 +146,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             spinnerNooCollectionReason = (Spinner) findViewById(R.id.spinnerNooCollectionReason);
             spinnerFeedback = (Spinner) findViewById(R.id.spinner_feedback);
             edt_noOrderReason = (EditText) findViewById(R.id.edtNoorderreason);
+            edt_other_remarks = (EditText) findViewById(R.id.edt_other_remarks);
             mNoOrderCameraBTN = (Button) findViewById(R.id.btn_camera);
 
             if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_CAPTURE_PHOTO) {
@@ -161,10 +164,28 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             String[] dateTime = bmodel.outletTimeStampHelper.getTimeIn().split(" ");
 
             if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
-                    && bmodel.getRetailerMasterBO().getIsOrdered().equals("N")))
+                    && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
                 spinnerNoOrderReason.setVisibility(View.VISIBLE);
-            else
+                spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (parent.getSelectedItem().toString().equals("Others")) {
+                            edt_other_remarks.setVisibility(View.VISIBLE);
+                        } else {
+                            hideKeyboard();
+                            edt_other_remarks.setText("");
+                            edt_other_remarks.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+            } else {
                 spinnerNoOrderReason.setVisibility(View.GONE);
+            }
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_REASON
@@ -202,7 +223,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             spinnerAdapter = new ArrayAdapter<ReasonMaster>(this,
                     R.layout.call_analysis_spinner_layout);
-            spinnerAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select_reason_for_no_order)));
+            spinnerAdapter.add(new ReasonMaster(-1 + "", getResources().getString(R.string.select_reason_for_no_order)));
             for (ReasonMaster temp : bmodel.reasonHelper
                     .getNonProductiveReasonMaster())
                 spinnerAdapter.add(temp);
@@ -996,7 +1017,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     }
 
     public void onClose(View v) {
-
+        hideKeyboard();
         try {
             if (bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !hasActivityDone()) {
                 ReasonMaster reasonMaster = (ReasonMaster) spinnerFeedback.getSelectedItem();
@@ -1011,12 +1032,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             mSelectedReasonId = reason.getReasonID();
             if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
-                if (reason.getReasonID().equals("0")) {
+                if (reason.getReasonID().equals("-1")) {
                     Toast.makeText(
                             this,
                             getResources().getString(
                                     R.string.select_no_order_reason),
                             Toast.LENGTH_LONG).show();
+                } else if (mSelectedReasonId.equals("0") && edt_other_remarks.getText().toString().equals("")) {
+                    Toast.makeText(this, getResources().getString(R.string.enter_remarks), Toast.LENGTH_LONG).show();
                 } else if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_CAPTURE_PHOTO && !isPhotoTaken) {
                     Toast.makeText(this, getResources().getString(R.string.photo_mandatory), Toast.LENGTH_SHORT).show();
                 } else {
@@ -1291,7 +1314,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
         ReasonMaster temp = (ReasonMaster) spinnerNoOrderReason
                 .getSelectedItem();
-        if (!temp.getReasonID().equals("0")) {
+        if (!temp.getReasonID().equals("-1")) {
 
             // Consider it as a non productive
             NonproductivereasonBO nonproductive = new NonproductivereasonBO();
@@ -1303,7 +1326,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             nonproductive.setCollectionReasonType(collectionReasonType);
             nonproductive.setImagePath(mImagePath);
             nonproductive.setImageName(mImageName);
-            bmodel.saveNonproductivereason(nonproductive);
+            bmodel.saveNonproductivereason(nonproductive, edt_other_remarks.getText().toString());
             bmodel.updateIsVisitedFlag();
             // Alert the user
             Toast.makeText(CallAnalysisActivity.this,
@@ -1317,7 +1340,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             nonproductive.setReasontype("");
             nonproductive.setCollectionReasonID(collectionReasonID);
             nonproductive.setCollectionReasonType(collectionReasonType);
-            bmodel.saveNonproductivereason(nonproductive);
+            bmodel.saveNonproductivereason(nonproductive, "");
             bmodel.updateIsVisitedFlag();
             // Alert the user
             Toast.makeText(CallAnalysisActivity.this,
@@ -1643,4 +1666,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
     }
 
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

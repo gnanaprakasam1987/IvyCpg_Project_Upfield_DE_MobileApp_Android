@@ -277,7 +277,7 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
             actionBar.setTitle(getActivity().getIntent().getExtras().getString("screentitle"));
         actionBar.setIcon(R.drawable.icon_visit);
 
-        if (!BusinessModel.dashHomeStatic)
+        //if (!BusinessModel.dashHomeStatic)
             actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
@@ -749,8 +749,8 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_skutgt).setVisible(false);
-        if (BusinessModel.dashHomeStatic)
-            menu.findItem(R.id.menu_next).setVisible(true);
+        /*if (BusinessModel.dashHomeStatic)
+            menu.findItem(R.id.menu_next).setVisible(true);*/
     }
 
     @Override

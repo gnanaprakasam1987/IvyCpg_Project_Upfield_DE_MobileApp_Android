@@ -111,15 +111,18 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                 SIHTV.setVisibility(View.VISIBLE);
             }
         }
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL&&total_tv!=null) {
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL && total_tv != null) {
             total_tv.setVisibility(View.GONE);
         }
     }
 
 
     private void setKeyboard(String s) {
-        if (s.length() > 0 && !s.equals("0.0"))
+        if (s.length() > 0)
             this.value = s;
+
+        if (s.equals("-1"))
+            value = "0";
 
         tv_value = (TextView) findViewById(R.id.typed_value);
         tv_value.setText(value);
@@ -159,90 +162,90 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         btn_ok.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         if (total_tv != null) {
-        tv_value.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            tv_value.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String qty = s.toString();
-                if (pdtBO.isAllocation() == 1
-                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    if (SDUtil.convertToInt(s.toString()) <= pdtBO.getSIH()) {
-                        isOrderAllowed = true;
-                        if (!qty.equals("")) {
-                            pdtBO.setOrderedPcsQty(SDUtil
-                                    .convertToInt(qty));
-                        }
-                        double tot = (pdtBO.getOrderedPcsQty() * pdtBO
-                                .getSrp());
-                        pdtBO.setTotalamount(tot);
-                    } else {
-                        isOrderAllowed = false;
-                        if (!qty.equals("0")) {
-                            Toast.makeText(context,
-                                    String.format(
-                                            context.getResources().getString(
-                                                    R.string.exceed),
-                                            pdtBO.getSIH()),
-                                    Toast.LENGTH_SHORT).show();
-                            //Delete the last entered number and reset the qty
-                            qty = qty.length() > 1 ? qty.substring(0,
-                                    qty.length() - 1) : "0";
-                            pdtBO.setOrderedPcsQty(SDUtil
-                                    .convertToInt(qty));
-                        }
-                    }
-                } else if (pdtBO.isCbsihAvailable()) {
-                    if (SDUtil.convertToInt(s.toString()) <= pdtBO.getCpsih()) {
-                        isOrderAllowed = true;
-                        if (!qty.equals("")) {
-                            pdtBO.setOrderedPcsQty(SDUtil
-                                    .convertToInt(qty));
-                        }
-
-                        double tot = (pdtBO.getOrderedPcsQty() * pdtBO
-                                .getSrp());
-                        pdtBO.setTotalamount(tot);
-                    } else {
-                        isOrderAllowed = false;
-                        if (!qty.equals("0")) {
-                            Toast.makeText(
-                                    context,
-                                    String.format(
-                                            context.getResources().getString(
-                                                    R.string.exceed),
-                                            pdtBO.getCpsih()),
-                                    Toast.LENGTH_SHORT).show();
-
-                            //Delete the last entered number and reset the qty
-                            qty = qty.length() > 1 ? qty.substring(0,
-                                    qty.length() - 1) : "0";
-
-
-                            pdtBO.setOrderedPcsQty(SDUtil
-                                    .convertToInt(qty));
-                        }
-                    }
-                } else {
-                    isOrderAllowed = true;
-                    if (!qty.equals("")) {
-                        pdtBO.setOrderedPcsQty(SDUtil
-                                .convertToInt(qty));
-                    }
-                    double tot = (pdtBO.getOrderedPcsQty() * pdtBO
-                            .getSrp());
-                    pdtBO.setTotalamount(tot);
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String qty = s.toString();
+                    if (pdtBO.isAllocation() == 1
+                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        if (SDUtil.convertToInt(s.toString()) <= pdtBO.getSIH()) {
+                            isOrderAllowed = true;
+                            if (!qty.equals("")) {
+                                pdtBO.setOrderedPcsQty(SDUtil
+                                        .convertToInt(qty));
+                            }
+                            double tot = (pdtBO.getOrderedPcsQty() * pdtBO
+                                    .getSrp());
+                            pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context,
+                                        String.format(
+                                                context.getResources().getString(
+                                                        R.string.exceed),
+                                                pdtBO.getSIH()),
+                                        Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+                                pdtBO.setOrderedPcsQty(SDUtil
+                                        .convertToInt(qty));
+                            }
+                        }
+                    } else if (pdtBO.isCbsihAvailable()) {
+                        if (SDUtil.convertToInt(s.toString()) <= pdtBO.getCpsih()) {
+                            isOrderAllowed = true;
+                            if (!qty.equals("")) {
+                                pdtBO.setOrderedPcsQty(SDUtil
+                                        .convertToInt(qty));
+                            }
 
-            }
-        });
+                            double tot = (pdtBO.getOrderedPcsQty() * pdtBO
+                                    .getSrp());
+                            pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(
+                                        context,
+                                        String.format(
+                                                context.getResources().getString(
+                                                        R.string.exceed),
+                                                pdtBO.getCpsih()),
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+
+
+                                pdtBO.setOrderedPcsQty(SDUtil
+                                        .convertToInt(qty));
+                            }
+                        }
+                    } else {
+                        isOrderAllowed = true;
+                        if (!qty.equals("")) {
+                            pdtBO.setOrderedPcsQty(SDUtil
+                                    .convertToInt(qty));
+                        }
+                        double tot = (pdtBO.getOrderedPcsQty() * pdtBO
+                                .getSrp());
+                        pdtBO.setTotalamount(tot);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
         }
     }
 
@@ -259,7 +262,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                 calculateSONew();
                 pdtBO.getLocations()
                         .get(0).setShelfPiece(Integer.parseInt(value));
-                if (value.equals("-1") || value.equals("0.0")) {
+                if (value.equals("-1")) {
                     orderBtn.setText("STOCK");
                 } else {
                     orderBtn.setText("Stock - " + value + "");
@@ -278,7 +281,6 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
 
             isDialogCreated = false;
             dismiss();
-
 
 
         } else if (id == R.id.cancel) {

@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.survey.QuestionBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.FitScoreBO;
 import com.ivy.sd.png.bo.HHTModuleBO;
@@ -43,7 +44,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.survey.QuestionBO;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;

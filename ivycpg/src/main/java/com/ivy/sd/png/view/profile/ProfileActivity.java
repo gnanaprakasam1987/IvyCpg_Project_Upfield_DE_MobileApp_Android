@@ -81,6 +81,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
+import com.ivy.sd.png.view.AssetHistoryFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MSLUnsoldFragment;
@@ -91,7 +92,6 @@ import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.UserDialogue;
-import com.ivy.sd.png.view.AssetHistoryFragment;
 
 import org.json.JSONObject;
 
@@ -318,6 +318,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
         if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
             try {
+                bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
                 if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("order_history").length() > 0)) {
                     order_history_title = bmodel.labelsMasterHelper.applyLabels("order_history");
@@ -398,6 +399,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY) {
             try {
+                bmodel.configurationMasterHelper.loadInvoiceHistoryConfiguration();
                 if ((bmodel.labelsMasterHelper.applyLabels("invoice_history") != null) &&
                         (bmodel.labelsMasterHelper.applyLabels("invoice_history").length() > 0)) {
                     invoice_history_title = bmodel.labelsMasterHelper.applyLabels("invoice_history");
@@ -542,7 +544,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         retailerObj = bmodel.getRetailerMasterBO();
         new LoadProfileConfigs().execute();
-        Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+        /*Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         for (ConfigureBO conBo : profileConfig) {
             if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
                 isMapview = true;
@@ -560,7 +562,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             View mapFrag = findViewById(R.id.profile_map);
             mapFrag.setVisibility(View.GONE);
             retailerCodeTxt.setVisibility(View.GONE);
-        }
+        }*/
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
@@ -1030,6 +1032,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 cancelVisitBtn.setVisibility(View.GONE);
                 startVisitBtn.setVisibility(View.GONE);
             }
+
+            isClicked = false;
+
+            if (visitclick && isMapview)
+                getMapView();
+
+            else if (fromHomeClick && isMapview)
+                loadStoreLocMapView(retailerLat, retailerLng);
         }
     }
 
@@ -1203,13 +1213,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     @Override
     protected void onStart() {
         super.onStart();
-        isClicked = false;
         mUserByRetailerID = bmodel.getUserByRetailerID();
-        if (visitclick && isMapview)
-            getMapView();
 
-        else if (fromHomeClick && isMapview)
-            loadStoreLocMapView(retailerLat, retailerLng);
     }
 
     @Override
@@ -1865,11 +1870,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     bmodel.productHelper.downloadProductDiscountDetails();
                     bmodel.productHelper.downloadDiscountIdListByTypeId();
                 }
-
-                // Download the Digital Content for Retailer wise, if that
-                if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER)
-                    bmodel.planogramMasterHelper
-                            .downloadDigitalContent("RETAILER");
 
                 if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
                     bmodel.productHelper.downloadDocketPricing();

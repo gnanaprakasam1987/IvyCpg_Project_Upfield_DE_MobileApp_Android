@@ -33,7 +33,7 @@
                 android:fillViewport="true"
                 android:orientation="vertical"
                 android:scrollbars="none"
-                tools:context="com.ivyretail.views.AvailabiltyCheckActivity">
+                tools:context="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity">
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -190,7 +190,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
             } else
                 setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
         }
-        if (!BusinessModel.dashHomeStatic)
+        //if (!BusinessModel.dashHomeStatic)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
     }

@@ -15,6 +15,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -41,12 +42,14 @@ public class TaskListFragment extends Fragment {
     private boolean bool;
     private boolean hide_new_menu = true;
     String[] chids;
+    private SurveyHelperNew surveyHelperNew;
 
     @Override
     public void onStart() {
         super.onStart();
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
 
 
     }
@@ -114,9 +117,9 @@ public class TaskListFragment extends Fragment {
         taskDataBO = bmodel.taskHelper.getTaskData(mSelectedRetailerID);
         tasktype = getArguments().getInt("type");
         if (IsRetailerwisetask)
-            if (bmodel.mSurveyHelperNew.getChannelidForSurvey() != null && bmodel.mSurveyHelperNew.getChannelidForSurvey().length() > 0) {
+            if (surveyHelperNew.getChannelidForSurvey() != null && surveyHelperNew.getChannelidForSurvey().length() > 0) {
                 bool = true;
-                chids = bmodel.mSurveyHelperNew.getChannelidForSurvey().split(",");
+                chids = surveyHelperNew.getChannelidForSurvey().split(",");
             }
         updateTasks(tasktype);
     }

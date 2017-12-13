@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1230"
-    android:versionName="123.0.483">
+    android:versionCode="1240"
+    android:versionName="124.0.728">
+
 
     <supports-screens
         android:anyDensity="true"
@@ -88,6 +89,17 @@
         android:icon="@drawable/launchericon"
         android:label="@string/app_name"
         android:theme="@style/MVPTheme.Blue">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />
@@ -177,7 +189,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.LoginScreen"
+            android:name="com.ivy.cpg.view.login.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -190,13 +202,13 @@
             android:name="com.ivy.sd.png.view.NonVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplayNew"
+            android:name="com.ivy.cpg.view.digitalcontent.StoreWiseGallery"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PlanningSubScreen"
+            android:name="com.ivy.cpg.view.van.PlanningSubScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.StockAndOrder"
@@ -255,7 +267,7 @@
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleStockCheckFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NearExpiryTrackingActivity"
+            android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivyretail.views.CompetitorTrackingActivity"
@@ -264,13 +276,13 @@
             android:name="com.ivyretail.views.SubCompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PlanogramActivity"
+            android:name="com.ivy.cpg.view.planogram.PlanoGramActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.PosmTrackingActivity"
+            android:name="com.ivy.cpg.view.asset.PosmTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.SurveyActivityNew"
+            android:name="com.ivy.cpg.view.survey.SurveyActivityNew"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerSelectionActivity"
@@ -357,20 +369,20 @@
             android:name="com.ivy.sd.png.view.reports.Orderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DigitalContentDisplay"
+            android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.StockCheckFragmentActivity"
+            android:name="com.ivy.cpg.view.stockcheck.StockCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.CombinedStockFragmentActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnEntryActivity"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
@@ -384,13 +396,13 @@
             android:name="com.ivy.sd.png.view.Task"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PhotoCaptureActivity"
+            android:name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SyncRetailerSelectActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.Gallery"
+            android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.AdhocGallery"
@@ -407,29 +419,13 @@
             android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnWithActionBar"
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.SalesReturnSummery"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.SalesReturnWithActionBar.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.ivy.sd.png.view.van.LoadManagementScreen"
+            android:name="com.ivy.cpg.view.van.LoadManagementScreen"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait">
@@ -440,19 +436,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.van.ManualVanLoadActivity"
+            android:name="com.ivy.cpg.view.van.ManualVanLoadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.StockViewActivity"
+            android:name="com.ivy.cpg.view.van.StockViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.OdaMeterScreen"
+            android:name="com.ivy.cpg.view.van.OdaMeterScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.StockProposalScreen"
+            android:name="com.ivy.cpg.view.van.StockProposalScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.DeviceStatusActivity"
+            android:name="com.ivy.sd.png.view.DeviceStatusActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.OrderDiscount"
@@ -485,10 +481,10 @@
             android:name="com.ivy.sd.png.view.reports.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.VanLoadStockView_activity"
+            android:name="com.ivy.cpg.view.van.VanLoadStockView_activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.VanUnloadActivity"
+            android:name="com.ivy.cpg.view.van.VanUnloadActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.PrintPreviewScreen"
@@ -512,7 +508,7 @@
             android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.AssetTrackingActivity"
+            android:name="com.ivy.cpg.view.asset.AssetTrackingActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -523,16 +519,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.cpg.asset.AssetPosmRemoveActivity"
+            android:name="com.ivy.cpg.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.VanStockAdjustActivity"
+            android:name="com.ivy.cpg.view.van.VanStockAdjustActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.CurrentStockBatchViewActivity"
+            android:name="com.ivy.cpg.view.van.CurrentStockBatchViewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
@@ -549,10 +545,13 @@
             android:name="com.ivy.sd.png.view.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PriceTrackActivity"
+            android:name="com.ivy.cpg.view.price.PriceTrackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PriceTrackCompActivity"
+            android:name="com.ivy.cpg.view.price.PriceTrackCompActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.salesreturn.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CrownReturnActivity"
@@ -570,28 +569,28 @@
             android:name="com.ivy.sd.png.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.promotion.PromotionTrackingActivity"
+            android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RetailerContractActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSActivity"
+            android:name="com.ivy.cpg.view.sf.SOSActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSActivity_Proj"
+            android:name="com.ivy.cpg.view.sf.SOSActivity_PRJSpecific"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOS_Summary_Proj"
+            android:name="com.ivy.cpg.view.sf.SOSSummaryActivity_PRJSpecific"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SODActivity"
+            android:name="com.ivy.cpg.view.sf.SODActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SODAssetActivity"
+            android:name="com.ivy.cpg.view.sf.SODAssetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SOSKUActivity"
+            android:name="com.ivy.cpg.view.sf.SOSKUActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CallAnalysisActivityKlgs"
@@ -631,7 +630,7 @@
             android:name="com.ivy.sd.png.view.NonFieldActivityTwo"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CounterPlanogramActivity"
+            android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.countersales.CustomerVisitActivity"
@@ -720,7 +719,7 @@
             android:label="@string/title_activity_payment_mode"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.van.VanLoadStockApplyActivity"
+            android:name="com.ivy.cpg.view.van.VanLoadStockApplyActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ProductSchemeDetailsActivity"
@@ -755,7 +754,7 @@
             android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.survey.DragDropPictureActivity"
+            android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -765,7 +764,7 @@
             android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.asset.AssetMovementActivity"
+            android:name="com.ivy.cpg.view.asset.AssetMovementActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -799,6 +798,9 @@
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.sd.png.view.PlanDeviationActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

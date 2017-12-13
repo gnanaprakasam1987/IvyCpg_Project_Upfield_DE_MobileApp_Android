@@ -32,6 +32,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -68,7 +69,6 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -138,6 +138,7 @@ SynchronizationHelper {
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
     public String dataMissedTable = "";
+    public String passwordType;
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -182,9 +183,9 @@ SynchronizationHelper {
     public static final String INVALID_TOKEN = "E23";
     private static final String TAG = "SynchronizationHelper";
     private static final String TAG_JSON_OBJ = "json_obj_req";
-    private static final String CASE_TYPE = "CASE";
-    private static final String PIECE_TYPE = "PIECE";
-    private static final String OUTER_TYPE = "MSQ";
+    public static final String CASE_TYPE = "CASE";
+    public static final String PIECE_TYPE = "PIECE";
+    public static final String OUTER_TYPE = "MSQ";
     private static final String SECURITY_HEADER = "SECURITY_TOKEN_KEY";
     public static final String SPF_PSWD_ENCRYPT_TYPE_MD5 = "MD5";
 
@@ -435,44 +436,6 @@ SynchronizationHelper {
             return false;
         }
 
-    }
-
-    /**
-     * This method will restore the database saved in External storage into
-     * applicaiton.
-     *
-     * @return true - succesfull and false - failed
-     */
-    public boolean reStoreDB() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-            if (sd.canRead()) {
-                String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
-                        + DataMembers.DB_NAME;
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/pandg/" + DataMembers.DB_NAME);
-
-                Commons.print("SYNC," + "backup" + backupDB);
-
-                if (backupDB.exists()) {
-                    FileChannel src = new FileInputStream(backupDB)
-                            .getChannel();
-                    FileChannel dst = new FileOutputStream(currentDB)
-                            .getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("Synchronisation," + e + "");
-        }
-
-        return false;
     }
 
     /**
@@ -1081,7 +1044,8 @@ SynchronizationHelper {
                     "union select count(uid) from CS_GroomingHeader where upload='N'" +
                     "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
-                    "union select count(uid) from AttendanceTimeDetails where upload='N'";
+                    "union select count(uid) from AttendanceTimeDetails where upload='N'" +
+                    "union select count(UID) from NonFieldActivity where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2957,30 +2921,6 @@ SynchronizationHelper {
 
     }
 
-
-    public String getPasswordCreatedDate() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        String date = "";
-        try {
-            db.createDataBase();
-            db.openDataBase();
-            String query = "select PasswordCreatedDate from AppVariables";
-            Cursor c = db.selectSQL(query);
-            if (c.getCount() > 0) {
-                if (c.moveToFirst()) {
-                    date = c.getString(0);
-
-
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        } finally {
-            db.closeDB();
-        }
-        return date;
-    }
-
     public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere) {
         mJsonObjectResponseByTableName = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -3939,7 +3879,6 @@ SynchronizationHelper {
             db.closeDB();
         }
 
-
     }
 
     public void downloadAbsenteesRetailer(ArrayList<TeamLeadBO> absenteesList) {
@@ -4401,16 +4340,14 @@ SynchronizationHelper {
     public boolean validateUser(String username, String password) {
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
-            if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
+            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getPassword());
             else
                 isPwd = BCrypt.checkpw(password, bmodel.userMasterHelper.getUserMasterBO().getPassword());
         } else {
             isPwd = password.equals(bmodel.userMasterHelper.getUserMasterBO().getPassword());
         }
-
-
         return (isUser && isPwd);
     }
 
@@ -4425,8 +4362,8 @@ SynchronizationHelper {
 
         boolean isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
         boolean isPwd;
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED) {
-            if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
+            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                 isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
             else
                 isPwd = BCrypt.checkpw(password, jointCallUser.getPassword());
@@ -4438,7 +4375,7 @@ SynchronizationHelper {
     }
 
     public String encryptPassword(String pwd) {
-        if (bmodel.passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+        if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
             return SDUtil.convertIntoMD5hashAndBase64(pwd);
         else
             return BCrypt.hashpw(pwd, BCrypt.gensalt());
@@ -4463,7 +4400,7 @@ SynchronizationHelper {
             }
             db.closeDB();
 
-            bmodel.passwordType = type;
+            passwordType = type;
         } catch (SQLException e) {
             Commons.printException("" + e);
         }
@@ -4523,37 +4460,33 @@ SynchronizationHelper {
         // If usermaster get updated
         bmodel.userMasterHelper.downloadUserDetails();
         bmodel.userMasterHelper.downloadDistributionDetails();
+        // Common Configuration download
         bmodel.configurationMasterHelper.downloadConfig();
+        // Preseller or Van Seller Configuration Download
         bmodel.configurationMasterHelper.downloadIndicativeOrderConfig();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         bmodel.configurationMasterHelper.downloadQDVP3ScoreConfig(StandardListMasterConstants.VISITCONFIG_COVERAGE);
+
+        //download retailer row view configution in Visit or planning screen
         bmodel.mRetailerHelper.setVisitPlanning(bmodel.configurationMasterHelper
                 .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_PLANNING));
         bmodel.mRetailerHelper.setVisitCoverage(bmodel.configurationMasterHelper
                 .downloadVisitFragDatas(StandardListMasterConstants.VISITCONFIG_COVERAGE));
 
         bmodel.configurationMasterHelper.getPrinterConfig();
+
         if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            // bmodel.synchronizationHelper.deletePreviousDayOrderHistory();
             bmodel.synchronizationHelper.backUpPreviousDayOrder();
-            bmodel.synchronizationHelper.deleteOrderHistory();
-        } else {
-            bmodel.synchronizationHelper.deleteOrderHistory();
+
         }
+        bmodel.synchronizationHelper.deleteOrderHistory();
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
         }
+
         bmodel.updateRetailerMasterBySBDAcheived(false);
         bmodel.updateRetailerMasterBySBDMerchAcheived(false);
-        bmodel.updateRetailerMasterSBDCount();
-        // bmodel.sbdMerchandisingHelper.generateMerchandisingreport();
-        // if
-        // (!bmodel.configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY)
         bmodel.UpdateRetailermasterIsGoldStore();
-        // Update DTPTable
-
-        bmodel.updateOderdetailRetailId();
 
         bmodel.configurationMasterHelper.downloadRetailerProperty();
         bmodel.downloadRetailerMaster();
@@ -4561,18 +4494,14 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.CALC_QDVP3)
             bmodel.updateSurveyScoreHistoryRetailerWise();
 
-        // Update Initiative coverage Tab;e
+        // Update Initiative coverage Table
         if (bmodel.configurationMasterHelper.IS_INITIATIVE
                 && !bmodel.configurationMasterHelper.SHOW_ALL_ROUTES)
             bmodel.initiativeHelper.generateInitiativeCoverageReport();
 
         // Code moved from DOWNLOAD
-
         bmodel.beatMasterHealper.downloadBeats();
-
         bmodel.channelMasterHelper.downloadChannel();
-
-        // bmodel.downloadProducts();
 
         bmodel.reasonHelper.downloadDeviatedReason();
         bmodel.reasonHelper.downloadNonVisitReasonMaster();
@@ -4584,26 +4513,25 @@ SynchronizationHelper {
                         .downloadSOBuffer() / (float) 100));
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
-        // bmodel.posmCarryTot = bmodel.getPOSMToCarryCount();
-        //bmodel.getRetailerMasterBO().setOtpActivatedDate("");
+        //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();
 
+        //credintote updatation and loading
         bmodel.collectionHelper.updateCreditNoteACtualAmt();
         bmodel.collectionHelper.loadCreditNote();
+
         bmodel.reasonHelper.downloadReasons();
-//		bmodel.initiativeHelper
-//				.downloadInitiativeandInsertinRetailerInfoMaster();
         bmodel.updateIsTodayAndIsVanSalesInRetailerMasterInfo();
-        // bmodel.getimageDownloadURL();
         bmodel.productHelper.downloadOrdeType();
+
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            bmodel.mLoginHelper.onGCMRegistration();
+            LoginHelper.getInstance(context).onGCMRegistration();
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
-        if (bmodel.configurationMasterHelper.IS_PASSWORD_ENCRIPTED)
+        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
             bmodel.synchronizationHelper.setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)

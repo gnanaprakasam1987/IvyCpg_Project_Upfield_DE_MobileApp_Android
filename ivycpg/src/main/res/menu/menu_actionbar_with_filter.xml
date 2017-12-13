@@ -16,6 +16,13 @@
         android:title="P.F"
         ivydist:showAsAction="always"/>
     <item
+        android:id="@+id/menu_competitor_filter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="100"
+        android:title="C.F"
+        ivydist:showAsAction="always"
+        android:visible="false" />
+    <item
         android:id="@+id/menu_spl_filter"
         android:icon="@drawable/ic_action_star"
         android:orderInCategory="99"

@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -86,7 +88,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
             public void onClick(View v) {
 
                 if (!mPasswordCreatedDated.equals("")) {
-                    int result = SDUtil.compareDate(bmodel.configurationMasterHelper.getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
+                    int result = SDUtil.compareDate(LoginHelper.getInstance(getApplicationContext()).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
                     if (result == -1) {
                         startActivity(new Intent(ChangePasswordActivity.this,
                                 LoginScreen.class));
@@ -182,9 +184,9 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
         });
 
-        mPasswordCreatedDated = bmodel.synchronizationHelper.getPasswordCreatedDate();
+        mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate();
         if (!mPasswordCreatedDated.equals("")) {
-            int result = SDUtil.compareDate(bmodel.configurationMasterHelper.getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
+            int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
             if (result == -1) {
                 passwordExpiryTV = (TextView) findViewById(R.id.tv_password_expired);
                 passwordExpiryTV.setVisibility(View.VISIBLE);

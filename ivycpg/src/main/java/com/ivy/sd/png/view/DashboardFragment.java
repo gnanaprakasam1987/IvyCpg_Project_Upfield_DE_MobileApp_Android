@@ -268,7 +268,7 @@ public class DashboardFragment extends IvyBaseFragment {
             } else
                 setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
         }
-        if (!BusinessModel.dashHomeStatic)
+        //if (!BusinessModel.dashHomeStatic)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -282,8 +282,8 @@ public class DashboardFragment extends IvyBaseFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_skutgt).setVisible(false);
-        if (BusinessModel.dashHomeStatic)
-            menu.findItem(R.id.menu_next).setVisible(true);
+        /*if (BusinessModel.dashHomeStatic)
+            menu.findItem(R.id.menu_next).setVisible(true);*/
     }
 
     @Override

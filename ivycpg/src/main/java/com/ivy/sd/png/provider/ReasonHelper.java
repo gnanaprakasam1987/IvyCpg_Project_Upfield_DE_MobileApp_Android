@@ -5,12 +5,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.countersales.bo.CS_StockReasonBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReasonBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -35,6 +35,7 @@ public class ReasonHelper {
     private ArrayList<ReasonMaster> reasonList = new ArrayList<>();
     private static ReasonHelper instance = null;
     private ArrayList<ReasonMaster> assetReasonsBasedOnType;
+    private ArrayList<ReasonMaster> reasonPlaneDeviationMaster;
 
     private ReasonHelper(Context context) {
         this.context = context;
@@ -221,6 +222,37 @@ public class ReasonHelper {
         db.closeDB();
     }
 
+
+    public void downloadPlaneDeviateReasonMaster(String listType) {
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + QT(listType);
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                reasonPlaneDeviationMaster = null;
+                reasonPlaneDeviationMaster = new ArrayList<>();
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reasonPlaneDeviationMaster.add(reason);
+                }
+                c.close();
+                reason = new ReasonMaster();
+                reason.setReasonID("0");
+                reason.setReasonDesc("Others");
+                reasonPlaneDeviationMaster.add(reason);
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+    }
+
+
     public void downloadNonProductiveReasonMaster() {
         ReasonMaster reason;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -238,6 +270,10 @@ public class ReasonHelper {
             }
             c.close();
         }
+        reason = new ReasonMaster();
+        reason.setReasonID("0");
+        reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+        getNonProductiveReasonMaster().add(reason);
         db.closeDB();
     }
 
@@ -268,6 +304,14 @@ public class ReasonHelper {
     private void setNonVisitReasonMaster(
             ArrayList<ReasonMaster> reasonNonProductiveMaster) {
         this.reasonNonVisitMaster = reasonNonProductiveMaster;
+    }
+
+    public ArrayList<ReasonMaster> getReasonPlaneDeviationMaster() {
+        return reasonPlaneDeviationMaster;
+    }
+
+    private void setReasonPlaneDeviationMaster(ArrayList<ReasonMaster> reasonPlaneDeviationMaster) {
+        this.reasonPlaneDeviationMaster = reasonPlaneDeviationMaster;
     }
 
     private void setDeviatedReturnMaster(
@@ -328,7 +372,7 @@ public class ReasonHelper {
     }
 
     private void setDeviateinDB(String retailerid, ReasonMaster reasonMaster,
-                                int beatid) {
+                                int beatid, String remarks) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -341,8 +385,8 @@ public class ReasonHelper {
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
             String values = QT(uid) + "," + retailerid + ","
                     + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
-                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId();
-            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID) values("
+                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + QT(remarks);
+            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID,remarks) values("
                     + values + ")";
 
             db.executeQ(sql);
@@ -354,7 +398,7 @@ public class ReasonHelper {
     }
 
     public void setDeviate(String retailerid, ReasonMaster reasonMaster,
-                           int beatid) {
+                           int beatid, String remarks) {
         RetailerMasterBO retailer;
         int siz = bmodel.retailerMaster.size();
         if (siz == 0)
@@ -366,7 +410,7 @@ public class ReasonHelper {
                     && (retailer.getBeatID() == beatid || beatid == 0)) {
                 retailer.setIsDeviated("Y");
                 bmodel.retailerMaster.setElementAt(retailer, i);
-                setDeviateinDB(retailerid, reasonMaster, beatid);
+                setDeviateinDB(retailerid, reasonMaster, beatid, remarks);
                 return;
             }
         }

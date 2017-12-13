@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -37,7 +38,6 @@ import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.van.DeviceStatusActivity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -191,7 +191,7 @@ public class UserSettingsActivity extends PreferenceActivity {
 
             Preference change_password = findPreference("change_password");
             PreferenceCategory pswCategory = (PreferenceCategory) findPreference("psw");
-            if (isFromLogin||!bmodel.configurationMasterHelper.SHOW_CHANGE_PASSWORD) {
+            if (isFromLogin || !LoginHelper.getInstance(this).SHOW_CHANGE_PASSWORD) {
                 //Change password option not needed before login screen
                 getPreferenceScreen().removePreference(pswCategory);
             }
