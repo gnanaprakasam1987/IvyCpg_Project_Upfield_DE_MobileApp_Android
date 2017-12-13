@@ -199,4 +199,8 @@
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
+    <string name="fetching_location">Fetching Location</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="location_not_captured">Location not captured.</string>
+    <string name="location_captured">Location captured.</string>
 </resources>

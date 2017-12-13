@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/nonfield_fragment"
-        android:name="com.ivy.sd.png.view.NonFieldFragmentTwo"
+        android:name="com.ivy.sd.png.view.TimeTrackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

@@ -774,7 +774,12 @@ public class ConfigurationMasterHelper {
     public int DROPSIZE_ORDER_TYPE;
 
     public int LOAD_STOCK_COMPETITOR = 0;
+
     public int LOAD_MAX_DELIVERY_DATE = 0;
+    public int LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
+    private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
+    public int LOCATION_TIMER_PERIOD = 20;
+
     public String LOAD_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
 
@@ -923,6 +928,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_ENABLE_GCM_REGISTRATION = "FUN21";
     public boolean IS_ENABLE_GCM_REGISTRATION;
+
 
     private static final String CODE_SHOW_FEEDBACK = "FUN22";
     public boolean SHOW_FEEDBACK;
@@ -2100,6 +2106,14 @@ public class ConfigurationMasterHelper {
                 loadOrderReportConfiguration();
             }
         }
+
+        if (hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) != null
+                && hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD)) {
+            if (hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD) > 0) {
+                LOCATION_TIMER_PERIOD = hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD);
+            }
+        }
+
     }
 
     public void loadOrderReportConfiguration() {
@@ -3028,6 +3042,7 @@ public class ConfigurationMasterHelper {
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
             LOAD_MAX_DELIVERY_DATE = 0;
+            LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
 
@@ -3365,13 +3380,19 @@ public class ConfigurationMasterHelper {
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_DELIVERY_DATE) + " and Flag=1";
-
+            codeValue = "";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
-
-                    LOAD_MAX_DELIVERY_DATE = c.getInt(0);
+                    codeValue = c.getString(0);
                 }
+            }
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                if (codeSplit[0] != null && !codeSplit[0].equals(""))
+                    LOAD_MAX_DELIVERY_DATE = Integer.parseInt(codeSplit[0]);
+                if (codeSplit[1] != null && !codeSplit[1].equals(""))
+                    LOAD_MAX_DELIVERY_DATE_ALLOWED = Integer.parseInt(codeSplit[1]);
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
