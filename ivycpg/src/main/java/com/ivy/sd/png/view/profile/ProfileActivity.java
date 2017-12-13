@@ -2144,7 +2144,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                 mLocTimer.cancel();
                                 isRunning = false;
                             }
-                            if (mLocationAlertDialog != null) {
+                            if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                 mLocationAlertDialog.dismiss();
                                 retailerClick();
                             }
@@ -2160,14 +2160,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     mLocTimer.cancel();
                                     isRunning = false;
                                 }
-                                if (mLocationAlertDialog != null) {
+                                if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                     mLocationAlertDialog.dismiss();
                                     retailerClick();
                                 }
                                 Toast.makeText(ProfileActivity.this, getResources().getString(R.string.location_captured), Toast.LENGTH_LONG).show();
 
                             } else {
-                                if (mLocationAlertDialog != null) {
+                                if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                     updaterProgressMsg("Fetching location. Please wait for " + (count) + " seconds.");
                                 }
                             }
