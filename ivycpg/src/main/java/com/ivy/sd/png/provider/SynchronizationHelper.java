@@ -2417,6 +2417,7 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
+
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
                 for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
