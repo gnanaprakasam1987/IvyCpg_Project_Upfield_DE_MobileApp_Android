@@ -356,6 +356,8 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_BIXOLON;
     private static final String CODE_COMMON_PRINT_SCRYBE = "PRINT103";
     public boolean COMMON_PRINT_SCRYBE;
+    private static final String CODE_COMMON_PRINT_LOGON = "PRINT104";
+    public boolean COMMON_PRINT_LOGON;
     private static final String CODE_FIT_SCORE = "FITDASH";
     public boolean IS_FITSCORE_NEEDED;
 
@@ -4053,6 +4055,7 @@ public class ConfigurationMasterHelper {
             COMMON_PRINT_SCRYBE = false;
             SHOW_BIXOLON_TITAN = false;
             SHOW_SCRIBE_TITAN = false;
+            COMMON_PRINT_LOGON = false;
 
 
             if (CODE_BIXOLONI.equals(printer))
@@ -4079,6 +4082,8 @@ public class ConfigurationMasterHelper {
                 COMMON_PRINT_BIXOLON = true;
             else if (CODE_COMMON_PRINT_SCRYBE.equals(printer))
                 COMMON_PRINT_SCRYBE = true;
+            else if (CODE_COMMON_PRINT_LOGON.equals(printer))
+                COMMON_PRINT_LOGON = true;
             else if (CODE_BIXOLON_TITAN.equals(printer))
                 SHOW_BIXOLON_TITAN = true;
             else if (CODE_SCRIBE_TITAN.equals(printer))

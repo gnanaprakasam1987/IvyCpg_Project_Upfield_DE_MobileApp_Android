@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +62,8 @@ public class CheckModeFragment extends IvyBaseFragment
     private Spinner mBankSpin;
     private Spinner mBranchSpin;
     private ArrayList<BankMasterBO> mBankDetailList;
+    private EditText mBankET;
+    private EditText mBranchET;
 
     private ArrayList<BranchMasterBO> mBranchDetailsList;
     private Button mChequeDateBTN;
@@ -128,6 +131,8 @@ public class CheckModeFragment extends IvyBaseFragment
         mChequeNoTitleTV = (TextView) rootView.findViewById(R.id.tv_chequeno_title);
         mChequeDateTitleTV = (TextView) rootView.findViewById(R.id.tv_date_title);
         mChequeNoET = (EditText) rootView.findViewById(R.id.edit_chequeno);
+        mBankET = (EditText) rootView.findViewById(R.id.edit_bankname);
+        mBranchET = (EditText) rootView.findViewById(R.id.edit_branchname);
         if (mPaymentBO.getAmount() > 0) {
             mCollectAmountET.setText(mPaymentBO.getAmount() + "");
             mCollectAmountET.setSelection(mCollectAmountET.getText().length());
@@ -139,7 +144,7 @@ public class CheckModeFragment extends IvyBaseFragment
         bankSpinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         BankMasterBO bankMasterBO = new BankMasterBO();
-        bankMasterBO.setBankId(0);
+        bankMasterBO.setBankId(-1);
         bankMasterBO.setBankName(getResources().getString(R.string.sel_bank));
         bankSpinnerAdapter.add(bankMasterBO);
         mBankDetailList = bmodel.collectionHelper.getBankMasterBO();
@@ -148,6 +153,10 @@ public class CheckModeFragment extends IvyBaseFragment
             BankMasterBO ret = mBankDetailList.get(i);
             bankSpinnerAdapter.add(ret);
         }
+        BankMasterBO otherMasterBO = new BankMasterBO();
+        otherMasterBO.setBankId(0);
+        otherMasterBO.setBankName(getResources().getString(R.string.tab_text_others));
+        bankSpinnerAdapter.add(otherMasterBO);
         mBankSpin.setAdapter(bankSpinnerAdapter);
 
         mBranchSpin = (Spinner) rootView.findViewById(R.id.spin_branch);
@@ -158,9 +167,20 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 BankMasterBO bankBO = (BankMasterBO) mBankSpin.getSelectedItem();
-                mPaymentBO.setBankID(bankBO.getBankId() + "");
+                if (bankBO.getBankId() == 0) {
+                    ((LinearLayout) rootView.findViewById(R.id.llBranch)).setVisibility(View.GONE);
+                    ((LinearLayout) rootView.findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
+                    mPaymentBO.setBankID(bankBO.getBankId() + "");
+                    mPaymentBO.setBranchId("0");
+                    mBankET.setText(mPaymentBO.getBankName());
+                    mBranchET.setText(mPaymentBO.getBranchName());
 
-                updateBranchSpiner(bankBO.getBankId() + "");
+                } else {
+                    ((LinearLayout) rootView.findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
+                    ((LinearLayout) rootView.findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
+                    mPaymentBO.setBankID(bankBO.getBankId() + "");
+                    updateBranchSpiner(bankBO.getBankId() + "");
+                }
             }
 
             @Override
@@ -311,7 +331,7 @@ public class CheckModeFragment extends IvyBaseFragment
                     mCollectAmountET.setText(qty);
                     Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                             Toast.LENGTH_SHORT).show();
-                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CHEQUE)) {
+                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
                     //updateTotalAmountEntered();
                 } else {
                     if (!qty.contains("."))
@@ -348,7 +368,39 @@ public class CheckModeFragment extends IvyBaseFragment
                 mPaymentBO.setChequeNumber(s.toString());
             }
         });
+        mBankET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPaymentBO.setBankName(s.toString());
+            }
+        });
+
+        mBranchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPaymentBO.setBranchName(s.toString());
+            }
+        });
 
         Drawable mDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_camera);
         mDrawable.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
@@ -375,8 +427,8 @@ public class CheckModeFragment extends IvyBaseFragment
         branchSpinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         BranchMasterBO branchMasterBO = new BranchMasterBO();
-        branchMasterBO.setBankID(0 + "");
-        branchMasterBO.setBranchID(0 + "");
+        branchMasterBO.setBankID(-1 + "");
+        branchMasterBO.setBranchID(-1 + "");
         branchMasterBO.setBranchName(getResources().getString(R.string.sel_branch));
         branchSpinnerAdapter.add(branchMasterBO);
         int count = 0;
@@ -419,7 +471,7 @@ public class CheckModeFragment extends IvyBaseFragment
     }
 
     private void updateBankAndBranchSelectedItem() {
-        if ("".equals(mPaymentBO.getBankID()) || (0 + "").equals(mPaymentBO.getBranchId())) {
+        if ("".equals(mPaymentBO.getBankID()) || "-1".equals(mPaymentBO.getBankID())) {
             mBankSpin.setSelection(0);
         } else {
             if (mBankDetailList != null && mBankDetailList.size() > 0) {
@@ -430,7 +482,13 @@ public class CheckModeFragment extends IvyBaseFragment
                         break;
                     }
                 }
-                mBankSpin.setSelection(count);
+                if (!mPaymentBO.getBankID().equalsIgnoreCase("0"))
+                    mBankSpin.setSelection(count);
+                else
+                    mBankSpin.setSelection(count + 1);
+            } else {
+                if (mPaymentBO.getBankID().equalsIgnoreCase("0"))
+                    mBankSpin.setSelection(1);
             }
         }
     }
@@ -600,13 +658,23 @@ public class CheckModeFragment extends IvyBaseFragment
                     mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in cheque";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBankID())) {
+                if ("-1".equals(paymentBO.getBankID())) {
                     mErrorMsg = getResources().getString(R.string.sel_bank) + " in cheque";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBranchId())) {
+                if ("-1".equals(paymentBO.getBranchId())) {
                     mErrorMsg = getResources().getString(R.string.sel_branch) + " in cheque";
                     return false;
+                }
+                if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                    if ("".equals(paymentBO.getBankName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in cheque";
+                        return false;
+                    }
+                    if ("".equals(paymentBO.getBranchName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in cheque";
+                        return false;
+                    }
                 }
                 if (!(paymentBO.getAmount() > 0)) {
                     mErrorMsg = getResources().getString(R.string.enter_amount) + " in cheque";
@@ -622,13 +690,23 @@ public class CheckModeFragment extends IvyBaseFragment
                     mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in Demand Draft";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBankID())) {
+                if ("-1".equals(paymentBO.getBankID())) {
                     mErrorMsg = getResources().getString(R.string.sel_bank) + " in Demand Draft";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBranchId())) {
+                if ("-1".equals(paymentBO.getBranchId())) {
                     mErrorMsg = getResources().getString(R.string.sel_branch) + " in Demand Draft";
                     return false;
+                }
+                if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                    if ("".equals(paymentBO.getBankName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in Demand Draft";
+                        return false;
+                    }
+                    if ("".equals(paymentBO.getBranchName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in Demand Draft";
+                        return false;
+                    }
                 }
                 if (!(paymentBO.getAmount() > 0)) {
                     mErrorMsg = getResources().getString(R.string.enter_amount) + " in Demand Draft";
@@ -643,13 +721,23 @@ public class CheckModeFragment extends IvyBaseFragment
                     mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in RTGS";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBankID())) {
+                if ("-1".equals(paymentBO.getBankID())) {
                     mErrorMsg = getResources().getString(R.string.sel_bank) + " in RTGS";
                     return false;
                 }
-                if ("0".equals(paymentBO.getBranchId())) {
+                if ("-1".equals(paymentBO.getBranchId())) {
                     mErrorMsg = getResources().getString(R.string.sel_branch) + " in RTGS";
                     return false;
+                }
+                if ("0".equals(paymentBO.getBankID()) && "0".equals(paymentBO.getBranchId())) {
+                    if ("".equals(paymentBO.getBankName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_bnk_name) + " in RTGS";
+                        return false;
+                    }
+                    if ("".equals(paymentBO.getBranchName())) {
+                        mErrorMsg = getResources().getString(R.string.pls_etr_brc_name) + " in RTGS";
+                        return false;
+                    }
                 }
                 if (!(paymentBO.getAmount() > 0)) {
                     mErrorMsg = getResources().getString(R.string.enter_amount) + " in RTGS";
@@ -661,4 +749,5 @@ public class CheckModeFragment extends IvyBaseFragment
 
         return true;
     }
+
 }

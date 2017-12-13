@@ -1,5 +1,6 @@
 package com.ivy.sd.intermecprint;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -1369,6 +1370,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
         }
     }
 
+    @SuppressLint("ResourceType")
     private void setupComm() {
         mConversationArrayAdapter = new ArrayAdapter<String>(this,
                 R.id.remote_device);

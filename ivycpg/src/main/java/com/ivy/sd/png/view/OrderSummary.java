@@ -777,7 +777,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public void updateDate(Date date, String tag) {
 
         AdvancePaymentDialogFragment paymentDialogFragment = (AdvancePaymentDialogFragment) getSupportFragmentManager().findFragmentByTag("Advance Payment");
-        paymentDialogFragment.updateDate(date,"" );
+        paymentDialogFragment.updateDate(date, "");
 
     }
 
@@ -1492,7 +1492,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             startActivity(i);
                                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                                         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                                             if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
                                                 bmodel.productHelper.updateDistributorDetails();
 
@@ -2547,7 +2547,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     i.putExtra("IsFromOrder", true);
                                     startActivity(i);
                                 } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                        || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                        || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                                     if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
                                         bmodel.productHelper.updateDistributorDetails();
 
@@ -2628,7 +2628,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                             finish();
                         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                             if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                                 bmodel.productHelper.updateDistributorDetails();
                             }
@@ -2870,6 +2870,49 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 .getAppliedSchemeList();
         totalSchemeDiscValue = 0;
         if (appliedSchemeList != null) {
+
+
+            //update scheme ordered product count for Amount type scheme
+
+            for (SchemeBO schemBO : appliedSchemeList) {
+                if (schemBO != null) {
+                    if (schemBO.isAmountTypeSelected()) {
+                        schemBO.setOrderedProductCount(0);
+                        if (schemBO.getBuyingProducts() != null) {
+                            ArrayList<String> productidList1 = new ArrayList<>();
+                            for (SchemeProductBO bo : schemBO.getBuyingProducts()) {
+                                ProductMasterBO productBO = bmodel.productHelper
+                                        .getProductMasterBOById(bo
+                                                .getProductId());
+
+                                if (productBO != null) {
+                                    if (!productidList1.contains(productBO.getProductID())) {
+                                        productidList1.add(productBO.getProductID());
+
+                                        if (productBO.getOrderedPcsQty() > 0
+                                                || productBO.getOrderedCaseQty() > 0
+                                                || productBO.getOrderedOuterQty() > 0) {
+
+                                            schemBO.setOrderedProductCount(schemBO.getOrderedProductCount() + 1);
+
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            /**-------------------- End of the loop condition----------------------**/
+
+
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
