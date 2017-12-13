@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +19,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -185,10 +183,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
 
 
-    CountDownTimer mCountDownTimer;
     Timer mLocTimer;
     LocationFetchTimer timerTask;
-    ProgressDialog mLocationProgressDialog;
+    private AlertDialog mLocationAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1388,20 +1385,20 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
             if ((LocationUtil.latitude == 0 && LocationUtil.longitude == 0)) {
                 if (timerTask != null && timerTask.isRunning) {
-                    mLocationProgressDialog = new ProgressDialog(this);
-                    mLocationProgressDialog.setTitle("Fetching Location");
-                    mLocationProgressDialog.setMessage("Fetching Location");
-                    mLocationProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    customProgressDialog(builder, getResources().getString(R.string.fetching_location));
+                    mLocationAlertDialog = builder.create();
+                    mLocationAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.dismiss), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mLocationProgressDialog.dismiss();
+                            mLocationAlertDialog.dismiss();
                         }
                     });
-                    mLocationProgressDialog.show();
-
+                    mLocationAlertDialog.show();
                     return;
                 } else {
-                    Toast.makeText(this, "Location not captured", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getResources().getString(R.string.location_not_captured), Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -2127,7 +2124,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
     class LocationFetchTimer extends TimerTask {
-        private int count = 20;
+        private int count = bmodel.configurationMasterHelper.LOCATION_TIMER_PERIOD;
         public boolean isRunning = true;
 
         @Override
@@ -2140,14 +2137,22 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     try {
                         count -= 1;
                         //
+
                         if (count <= 0) {
+
                             if (mLocTimer != null) {
                                 mLocTimer.cancel();
                                 isRunning = false;
                             }
-                            if (LocationUtil.latitude == 0 && LocationUtil.longitude == 0) {
-                                Toast.makeText(ProfileActivity.this, "Location not captured.", Toast.LENGTH_LONG).show();
+                            if (mLocationAlertDialog != null) {
+                                mLocationAlertDialog.dismiss();
+                                retailerClick();
                             }
+
+                            if (LocationUtil.latitude == 0 && LocationUtil.longitude == 0) {
+                                Toast.makeText(ProfileActivity.this, getResources().getString(R.string.location_not_captured), Toast.LENGTH_LONG).show();
+                            }
+
                         } else {
 
                             if (LocationUtil.latitude != 0 && LocationUtil.longitude != 0) {
@@ -2155,20 +2160,21 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     mLocTimer.cancel();
                                     isRunning = false;
                                 }
-                                if (mLocationProgressDialog != null) {
-                                    mLocationProgressDialog.dismiss();
+                                if (mLocationAlertDialog != null) {
+                                    mLocationAlertDialog.dismiss();
                                     retailerClick();
                                 }
-                                Toast.makeText(ProfileActivity.this, "Location captured.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProfileActivity.this, getResources().getString(R.string.location_captured), Toast.LENGTH_LONG).show();
+
                             } else {
-                                if (mLocationProgressDialog != null) {
-                                    mLocationProgressDialog.setMessage("Please wait for " + (count) + " seconds.");
+                                if (mLocationAlertDialog != null) {
+                                    updaterProgressMsg("Fetching location. Please wait for " + (count) + " seconds.");
                                 }
                             }
                         }
 
-                    } catch (Exception e) {
-                        Commons.printException("" + e);
+                    } catch (Exception ex) {
+                        Commons.printException(ex);
                     }
                 }
             });

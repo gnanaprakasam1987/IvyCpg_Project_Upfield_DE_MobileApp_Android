@@ -197,4 +197,8 @@
     <string name="exec_rating">Executing Rating</string>
     <string name="my_gallery">My Gallery</string>
     <string name="previous">Previous</string>
+    <string name="fetching_location">Fetching Location</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="location_not_captured">Location not captured.</string>
+    <string name="location_captured">Location captured.</string>
 </resources>

@@ -1513,7 +1513,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PRESENCE);
         NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
                 .findFragmentByTag(MENU_ATTENDANCE);
-        NonFieldFragmentTwo mNonFieldTwoFragment = (NonFieldFragmentTwo) fm
+        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
 
 
@@ -1876,7 +1876,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_IN_OUT:
                 bndl = new Bundle();
                 bndl.putString("screentitle", fragmentName);
-                fragment = new NonFieldFragmentTwo();
+                fragment = new TimeTrackingFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_IN_OUT);
@@ -2042,7 +2042,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PRESENCE);
         NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
                 .findFragmentByTag(MENU_ATTENDANCE);
-        NonFieldFragmentTwo mNonFieldTwoFragment = (NonFieldFragmentTwo) fm
+        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
         ReportMenufragment mReportMenuFragment = (ReportMenufragment) fm
                 .findFragmentByTag(MENU_REPORT);

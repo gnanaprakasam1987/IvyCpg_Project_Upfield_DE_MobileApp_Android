@@ -627,7 +627,7 @@
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldActivityTwo"
+            android:name="com.ivy.sd.png.view.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"

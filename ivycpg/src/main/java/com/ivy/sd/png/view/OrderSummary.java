@@ -1294,6 +1294,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         mDateSetListener, cyear, cmonth, cday);
                 int maxDeliverydate = bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE;
                 d.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                if (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE_ALLOWED > 0) {
+                    Calendar maxCalendar = Calendar.getInstance();
+                    maxCalendar.add(Calendar.DAY_OF_YEAR, bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE_ALLOWED);
+                    d.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
+                }
                /* if (maxDeliverydate > 0) {
                     d.getDatePicker().setMaxDate(DateUtil.addDaystoDate(new Date(), maxDeliverydate).getTime());
                 }*/
