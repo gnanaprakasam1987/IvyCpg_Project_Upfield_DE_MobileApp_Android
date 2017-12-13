@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -439,6 +440,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         }
     }
 
+    @SuppressLint("ResourceType")
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(
