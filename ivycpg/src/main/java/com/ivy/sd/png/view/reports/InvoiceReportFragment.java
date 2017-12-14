@@ -576,7 +576,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
-                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber from retailerMaster A"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
                             + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
                             + " where A.retailerid="+ retailerid);
@@ -601,6 +601,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     retailer.setRfield2(c.getString(13));
                     retailer.setSameZone(c.getInt(14));
                     retailer.setGSTNumber(c.getString(15));
+                    retailer.setTinExpDate(c.getString(16));
 
                 }
                 c.close();
