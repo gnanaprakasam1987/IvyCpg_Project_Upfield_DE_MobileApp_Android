@@ -518,6 +518,12 @@ public class AssetAdapter extends BaseAdapter {
             holder.availQtyRB.setChecked(false);
         }
 
+        if (holder.assetBO.getExecutorQty() == 1) {
+            holder.execQtyRB.setChecked(true);
+        } else {
+            holder.execQtyRB.setChecked(false);
+        }
+
         if (assetTrackingHelper.SHOW_ASSET_BARCODE)
             if (holder.assetBO.getScanComplete() == 1) {
                 holder.availQtyRB.setChecked(true);

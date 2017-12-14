@@ -667,6 +667,13 @@ public class ProfileFragment extends Fragment {
                 finalProfileList.add(outletBO);
                 break;
             }
+            case "PROFILE80" : {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getTinExpDate());
+                finalProfileList.add(outletBO);
+                break;
+            }
             case "PROFILE29": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);

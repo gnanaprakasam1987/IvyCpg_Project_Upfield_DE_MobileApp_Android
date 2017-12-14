@@ -1196,7 +1196,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = "+QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1429,7 +1429,7 @@ public class BusinessModel extends Application {
             downloadIndicativeOrderedRetailer();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.channelID,"
+                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
                             + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
                             + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
@@ -1501,6 +1501,7 @@ public class BusinessModel extends Application {
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
+                    retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
                     retailer.setClassid(c.getInt(c.getColumnIndex("classid")));
                     retailer.setCategoryid(c.getInt(c.getColumnIndex("categoryid")));

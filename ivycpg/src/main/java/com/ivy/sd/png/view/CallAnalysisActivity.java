@@ -807,10 +807,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equals("CallA17")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    int totalvalue = bmodel.getTotalLinesTarget();
+                  //  int totalvalue = bmodel.getTotalLinesTarget();
 
                     int totalLines = bmodel.getTotalLines();
-                    if (totalvalue > 0) {
+                  /*  if (totalvalue > 0) {
 
                         double percentage = Utils
                                 .round(((double) totalLines / (double) totalvalue) * 100,
@@ -822,9 +822,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                 + percentage + "%");
                     } else {
                         con.setMenuNumber(totalLines + "/0 , 0%");
-                    }
+                    }*/
 
-                    con.setKpiTarget(totalvalue + "");
+//                    con.setKpiTarget(totalvalue + "");
+                    con.setMenuNumber(totalLines+"");
+                    con.setKpiTarget("-1");
                     con.setKpiAchieved(totalLines + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode()
@@ -971,6 +973,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     //Group wise FIT score
                     config.addAll(bmodel.getGroupWiseFITScore());
 
+                } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA38")) {
+                    con.setMenuName(callanalysismenu.get(i).getMenuName());
+                    String lines[] = getMessage().split("\\r?\\n");
+                    StringBuilder sb= new StringBuilder();
+                    for(String str:lines)
+                        sb.append("* ").append(str).append("\n");
+                    con.setMenuNumber(sb.toString());
+                    con.setKpiTarget("-1");
                 }
 
                 if (!callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA36")

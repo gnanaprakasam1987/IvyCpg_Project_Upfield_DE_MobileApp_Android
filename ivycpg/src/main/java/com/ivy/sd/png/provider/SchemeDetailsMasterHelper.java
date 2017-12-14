@@ -2104,36 +2104,38 @@ public class SchemeDetailsMasterHelper {
                     tempToQty = selectedtoBuyQty;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
                         ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
-                        if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
+                        if(productBO!=null) {
+                            if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
 
-                            qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
 
-                            if (qty > 0) {
+                                if (qty > 0) {
 
-                                if (tempToQty >= qty) {
-                                    tempToQty -= qty;
-                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
-                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
-                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), qty);
+                                    if (tempToQty >= qty) {
+                                        tempToQty -= qty;
+                                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), qty);
+                                        } else {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                    (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + qty));
+                                        }
+
                                     } else {
-                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
-                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + qty));
+                                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                        } else {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                    (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) tempToQty)));
+                                        }
+                                        break;
                                     }
 
-                                } else {
-                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
-                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
-                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
-                                    } else {
-                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
-                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) tempToQty)));
-                                    }
-                                    break;
+
                                 }
 
-
                             }
-
                         }
 
                     }
