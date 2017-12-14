@@ -71,6 +71,7 @@
         <item quantity="other">Password Expires in %d days</item>
     </plurals>
 
+
     <string name="tax_not_availble_for_some_product">Tax not available for some Product.</string>
     <string name="free">Free</string>
 
@@ -203,4 +204,10 @@
     <string name="dismiss">Dismiss</string>
     <string name="location_not_captured">Location not captured.</string>
     <string name="location_captured">Location captured.</string>
+    <string name="fetching_location_pls_wait">Fetching location. Please wait for %d seconds</string>
+    <plurals name="fetching_location">
+        <item quantity="zero">Fetching location.</item>
+        <item quantity="one">Fetching location. Please wait for a second.</item>
+        <item quantity="other">Fetching location. Please wait for %d seconds</item>
+    </plurals>
 </resources>
