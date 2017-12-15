@@ -80,6 +80,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String contactname2;
     private String contactLname2;
     private String tinnumber;
+    private String tinExpDate;
     private String contact1_title;
     private String contact1_titlelovid;
     private String contact2_title;
@@ -694,6 +695,14 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setTinnumber(String tinnumber) {
         this.tinnumber = tinnumber;
+    }
+
+    public String getTinExpDate() {
+        return tinExpDate;
+    }
+
+    public void setTinExpDate(String tinExpDate) {
+        this.tinExpDate = tinExpDate;
     }
 
     public double getDaily_target() {
