@@ -1061,7 +1061,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
     public boolean IS_PAYMENT_RECEIPTNO_GET = true;
 
-    private static final String CODE_DOC_REF_NO= "COLL15";
+    private static final String CODE_DOC_REF_NO= "COLL16";
     public boolean SHOW_DOC_REF_NO;
 
 
