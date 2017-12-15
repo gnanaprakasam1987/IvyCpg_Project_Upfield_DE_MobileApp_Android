@@ -1,9 +1,7 @@
 package com.ivy.cpg.view.login;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -82,8 +80,6 @@ public interface LoginContractor {
         void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
 
         void finishActivity();
-
-        void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility);
 
         void callResetPassword();
 

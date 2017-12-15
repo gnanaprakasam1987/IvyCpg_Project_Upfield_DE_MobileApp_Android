@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.CatalogImageDownloadService;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -947,48 +949,50 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Commons.print("CaTALOG IMAGE download start");
             try {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
+                if (android.os.Build.VERSION.SDK_INT > 9) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
 
-                businessModel.getimageDownloadURL();
-                businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
+                    businessModel.getimageDownloadURL();
+                    businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                    initializeTransferUtility();
 
-                BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                        ConfigurationMasterHelper.SECRET_KEY);
-                AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                            ConfigurationMasterHelper.SECRET_KEY);
+                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
 
-                ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
-                List<S3ObjectSummary> files = listing.getObjectSummaries();
+                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
+                    List<S3ObjectSummary> files = listing.getObjectSummaries();
 
-                while (listing.isTruncated()) {
-                    listing = s3.listNextBatchOfObjects(listing);
-                    files.addAll(listing.getObjectSummaries());
-                }
+                    while (listing.isTruncated()) {
+                        listing = s3.listNextBatchOfObjects(listing);
+                        files.addAll(listing.getObjectSummaries());
+                    }
 
-                if (files != null && files.size() > 0) {
-
-                    businessModel.synchronizationHelper.insertImageDetails(files);
-                    filesList = new ArrayList<>();
-                    for (int i = 0; i < files.size(); i++) {
-                        S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
-                        s3ObjectSummary.setBucketName(DataMembers.CATALOG);
-                        s3ObjectSummary.setKey(files.get(i).getKey());
-                        s3ObjectSummary.setETag("R");
-                        filesList.add(s3ObjectSummary);
+                    if (files != null && files.size() > 0) {
+                        businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime(files.size() + "");
+                        businessModel.synchronizationHelper.insertImageDetails(files);
                     }
                 }
+                return "";
             } catch (Exception e) {
                 Commons.printException(e);
+                return "Error";
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            loginView.callCatalogImageDownload(filesList, transferUtility);
+            if (!s.equalsIgnoreCase("Error")) {
+                Intent intent = new Intent(context, CatalogImageDownloadService.class);
+                context.startService(intent);
+            }
+
         }
+
     }
 
     public void callCatalogImageDownload() {
