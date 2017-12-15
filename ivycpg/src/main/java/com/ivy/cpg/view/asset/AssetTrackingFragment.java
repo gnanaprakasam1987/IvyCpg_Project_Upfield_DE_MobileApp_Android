@@ -504,6 +504,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 Commons.print(TAG + "," +
                         "Camera Activity : Successfully Captured.");
                 assetPresenter.updateImageName();
+                adapter.notifyDataSetChanged();
 
             } else {
                 Commons.print(TAG + "," + "Camera Activity : Canceled");

@@ -27,9 +27,9 @@ public class PaymentBO {
 	private double previousPaidAmount;
 	private boolean creditBalancePayment;
 
-	//for Others type Selected in Bankname spinner
-	private String BankName;
-	private String BranchName;
+    //for Others type Selected in Bankname spinner
+    private String BankName;
+    private String BranchName;
 
 
 	public String getReferenceNumber() {
@@ -284,20 +284,20 @@ public class PaymentBO {
 
 	};
 
-	public String getBankName() {
-		return BankName;
-	}
+    public String getBankName() {
+        return BankName;
+    }
 
-	public void setBankName(String bankName) {
-		BankName = bankName;
-	}
+    public void setBankName(String bankName) {
+        BankName = bankName;
+    }
 
-	public String getBranchName() {
-		return BranchName;
-	}
+    public String getBranchName() {
+        return BranchName;
+    }
 
-	public void setBranchName(String branchName) {
-		BranchName = branchName;
-	}
+    public void setBranchName(String branchName) {
+        BranchName = branchName;
+    }
 
 }
