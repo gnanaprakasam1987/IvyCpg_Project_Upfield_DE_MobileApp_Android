@@ -1710,7 +1710,7 @@ public class CollectionHelper {
         downloadBranchDetails();
         updateInvoiceDiscountedAmount();
 
-        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
         loadPaymentMode();
     }
 
@@ -1721,7 +1721,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
-            sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo from CollectionDocument ");
+            sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo,ReasonID,Remarks,SignaturePath,IsDoc,Signatureimage from CollectionDocument ");
             sb.append("where RetailerID = ");
             sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and upload='N'");
@@ -1732,7 +1732,12 @@ public class CollectionHelper {
                     String contactName = c.getString(1);
                     String contactNo = c.getString(2);
                     String docRefNo = c.getString(3);
-                    setRefDetails(billNo, contactName, contactNo, docRefNo);
+                    String reasonID = c.getString(4);
+                    String remark = c.getString(5);
+                    String signPath = c.getString(6);
+                    int isDocExchange = c.getInt(7);
+                    String imgName = c.getString(8);
+                    setRefDetails(billNo, contactName, contactNo, docRefNo, reasonID, remark, signPath, isDocExchange, imgName);
                 }
             }
             c.close();
@@ -1742,13 +1747,19 @@ public class CollectionHelper {
         }
     }
 
-    private void setRefDetails(String billNo, String contactName, String contactNo, String docRefNo) {
+    private void setRefDetails(String billNo, String contactName, String contactNo, String docRefNo, String reasonId,
+                               String remark, String signPath, int isDocExchange, String imgName) {
 
         for (InvoiceHeaderBO invoiceHeaderBO : bmodel.getInvoiceHeaderBO()) {
             if (invoiceHeaderBO.getInvoiceNo().equalsIgnoreCase(billNo)) {
                 invoiceHeaderBO.setContactName(contactName);
                 invoiceHeaderBO.setContactNo(contactNo);
                 invoiceHeaderBO.setDocRefNo(docRefNo);
+                invoiceHeaderBO.setDocReasonId(reasonId);
+                invoiceHeaderBO.setDocRemark(remark);
+                invoiceHeaderBO.setDocSignPath(signPath);
+                invoiceHeaderBO.setDocExchange(isDocExchange);
+                invoiceHeaderBO.setDocSignImage(imgName);
                 break;
             }
         }
@@ -1760,7 +1771,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo";
+            String columns = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath,IsDoc,Signatureimage";
 
             String payID = bmodel.QT("CRF"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -1772,7 +1783,10 @@ public class CollectionHelper {
 
                 if ((collectionRefList.get(i).getContactName() != null && collectionRefList.get(i).getContactName().length() > 0) ||
                         (collectionRefList.get(i).getContactNo() != null && collectionRefList.get(i).getContactNo().length() > 0) ||
-                        (collectionRefList.get(i).getDocRefNo() != null && collectionRefList.get(i).getDocRefNo().length() > 0)) {
+                        (collectionRefList.get(i).getDocRefNo() != null && collectionRefList.get(i).getDocRefNo().length() > 0) ||
+                        (collectionRefList.get(i).getDocReasonId() != null && collectionRefList.get(i).getDocReasonId().length() > 0) ||
+                        (collectionRefList.get(i).getDocSignPath() != null && collectionRefList.get(i).getDocSignPath().length() > 0) ||
+                        (collectionRefList.get(i).getDocRemark() != null && collectionRefList.get(i).getDocRemark().length() > 0)) {
 
                     String values = payID
                             + ","
@@ -1784,7 +1798,18 @@ public class CollectionHelper {
                             + ","
                             + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocRefNo());
+                            + bmodel.QT(collectionRefList.get(i).getDocRefNo())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getDocReasonId())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getDocRemark())
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getDocSignPath())
+                            + ","
+                            + collectionRefList.get(i).getDocExchange()
+                            + ","
+                            + bmodel.QT(collectionRefList.get(i).getDocSignImage());
+
 
                     db.insertSQL("CollectionDocument", columns, values);
                 }

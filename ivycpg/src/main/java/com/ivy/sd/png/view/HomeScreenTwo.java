@@ -2300,7 +2300,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                 bmodel.collectionHelper.updateInvoiceDiscountedAmount();
 
 
-                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(),"COL");
                 bmodel.collectionHelper.loadPaymentMode();
 
                 //load currency data
@@ -2340,7 +2340,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     || isPreviousDone(menu)) {
 
                 bmodel.collectionHelper.updateInvoiceDiscountedAmount();
-                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+                bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(),"DOC");
                 bmodel.collectionHelper.loadCollectionReference();
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(

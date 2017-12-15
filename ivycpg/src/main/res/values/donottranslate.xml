@@ -159,6 +159,10 @@
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
+    <string name="enter_contact_name">Kindly Enter Contact Name</string>
+    <string name="enter_contact_number">Kindly Enter Contact Number</string>
+    <string name="enter_docref_number">Kindly Enter DocRef Number</string>
+    <string name="get_signature">Kindly get Signature</string>
     <string name="downloading_rpt">Downloading Report</string>
 
     <string name="time_in">Time In</string>
@@ -200,6 +204,7 @@
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
+    <string name="doc_exchanged">Doc Exchanged</string>
     <string name="fetching_location">Fetching Location</string>
     <string name="dismiss">Dismiss</string>
     <string name="location_not_captured">Location not captured.</string>
