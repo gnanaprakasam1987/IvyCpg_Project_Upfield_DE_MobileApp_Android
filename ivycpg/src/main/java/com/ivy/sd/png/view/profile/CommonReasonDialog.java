@@ -2,6 +2,7 @@ package com.ivy.sd.png.view.profile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.drawable.StateListDrawable;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,12 +19,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 
@@ -107,6 +110,11 @@ public class CommonReasonDialog extends Dialog {
                         addNonVisitListener.addReatailerReason();
                         dismiss();
                     } else if (listLoad.equals("deviate")) {
+                        if(isReasonRemarksNA())
+                        {
+                            if(selected_reason.getReasonID().equals("0"))
+                                remarks="NA";
+                        }
                         if (selected_reason.getReasonID().equals("0") && remarks.equals("")) {
                             Toast.makeText(context, context.getResources().getString(R.string.enter_remarks), Toast.LENGTH_LONG).show();
                         } else {
@@ -263,5 +271,31 @@ public class CommonReasonDialog extends Dialog {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    // Used to Reason Not Applicable for Others LOV
+    private boolean isReasonRemarksNA()
+    {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        String sql = "SELECT hhtCode, RField FROM "
+                + DataMembers.tbl_HhtModuleMaster
+                + " WHERE menu_type = 'OTHERS' AND flag='1' AND hhtCode='RTRS01'" ;
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            while (c.moveToNext()) {
+                if (c.getString(1).equalsIgnoreCase("1")) {
+                    // bmodel.configurationMasterHelper.IS_DEVIATION_REASON_NA = true;
+                    return true;
+                }
+            }
+            c.close();
+        }
+        db.closeDB();
+
+
+        return false;
     }
 }

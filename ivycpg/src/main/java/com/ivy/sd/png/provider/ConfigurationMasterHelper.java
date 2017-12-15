@@ -974,6 +974,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NFC_SEARCH_IN_ASSET = "AT07";
     public boolean SHOW_NFC_SEARCH_IN_ASSET;
 
+    private static final String CODE_ASSET_PHOTO_VALIDATION ="AT10";
+    public boolean ASSET_PHOTO_VALIDATION;
+
     public static final String CODE_IS_UNLINK_FILTERS = "ORDB55";
     public boolean IS_UNLINK_FILTERS;
 
@@ -1827,6 +1830,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CUSTOM_KEYBOARD_NEW = hashMapHHTModuleConfig.get(CODE_CUSTOM_KEYBOARD_NEW) != null ? hashMapHHTModuleConfig.get(CODE_CUSTOM_KEYBOARD_NEW) : false;
         this.SHOW_NFC_VALIDATION_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_NFC_VALIDATION_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_NFC_VALIDATION_FOR_RETAILER) : false;
         this.SHOW_NFC_SEARCH_IN_ASSET = hashMapHHTModuleConfig.get(CODE_NFC_SEARCH_IN_ASSET) != null ? hashMapHHTModuleConfig.get(CODE_NFC_SEARCH_IN_ASSET) : false;
+        this.ASSET_PHOTO_VALIDATION = hashMapHHTModuleConfig.get(CODE_ASSET_PHOTO_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ASSET_PHOTO_VALIDATION) : false;
         this.IS_DOT_FOR_GROUP = hashMapHHTModuleConfig.get(CODE_DOT_FOR_GROUP) != null ? hashMapHHTModuleConfig.get(CODE_DOT_FOR_GROUP) : false;
         this.IS_UNLINK_FILTERS = hashMapHHTModuleConfig.get(CODE_IS_UNLINK_FILTERS) != null ? hashMapHHTModuleConfig.get(CODE_IS_UNLINK_FILTERS) : false;
         this.IS_SHOW_START_TIME = hashMapHHTModuleConfig.get(CODE_SHOW_START_TIME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_START_TIME) : false;
