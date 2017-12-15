@@ -366,8 +366,11 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-
-                    if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    if(mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
+                        if (assetBO.getAvailQty() > 0  && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
+                            return true;
+                    }
+                    else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
                     } else if (assetBO.getReason1ID() != null) {
                         if (!assetBO.getReason1ID().equals(Integer.toString(0))) {

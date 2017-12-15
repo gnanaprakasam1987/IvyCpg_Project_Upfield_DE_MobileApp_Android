@@ -35,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -43,7 +42,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThread;
-import com.ivy.sd.png.model.DownloaderThreadCatalog;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -61,10 +59,8 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
@@ -806,15 +802,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     loginPresenter.callDistributorDownload();
                 }
         }
-    }
-
-    @Override
-    public void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility) {
-        Thread downloaderThread = new DownloaderThreadCatalog(LoginScreen.this,
-                activityHandlerCatalog, imgUrls,
-                businessModel.userMasterHelper.getUserMasterBO()
-                        .getUserid(), transferUtility);
-        downloaderThread.start();
     }
 
     @Override
