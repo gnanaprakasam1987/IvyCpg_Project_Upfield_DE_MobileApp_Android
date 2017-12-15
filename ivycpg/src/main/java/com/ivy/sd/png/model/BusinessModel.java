@@ -455,7 +455,6 @@ public class BusinessModel extends Application {
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
 
-
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);
 
@@ -897,13 +896,14 @@ public class BusinessModel extends Application {
 
 
     /**
-     * Download the Invoice of A perticular Retailer Id, and stored in
+     * Download the Invoice of A particular Retailer Id and DocStatus, and stored in
      * invoiceHeader Vector.
      *
      * @param retailerId
+     * @param docStatus
      */
 
-    public void downloadInvoice(String retailerId) {
+    public void downloadInvoice(String retailerId, String docStatus) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -914,11 +914,13 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue)");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
             sb.append(QT(retailerId));
+            sb.append(" AND inv.DocStatus = ");
+            sb.append(QT(docStatus));
             sb.append(" GROUP BY Inv.InvoiceNo");
             sb.append(" ORDER BY Inv.InvoiceDate");
 
@@ -934,6 +936,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setPaidAmount(c.getDouble(3));
                     invocieHeaderBO.setBalance(c.getDouble(4));
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
+                    invocieHeaderBO.setDocRefNo(c.getString(9));
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");

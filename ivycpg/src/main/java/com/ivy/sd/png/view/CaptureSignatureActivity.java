@@ -116,6 +116,12 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
+        } else if (module.equals("COL_REF")) {
+            imageName = "CSign_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            serverPath = "CollectionSignature/"
+                    + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                    .replace("/", "") + "/"
+                    + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
         } else {
             imageName = "SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "Invoice/"
@@ -374,7 +380,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
                 startActivity(intent);
                 setResult(RESULT_OK, intent);
                 finish();
-            } else if (module.equals("DELIVERY")) {
+            } else if (module.equals("DELIVERY") || module.equals("COL_REF")) {
 
                 Intent intent = new Intent();
                 intent.putExtra("SIGNATURE", true);
@@ -398,7 +404,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             startActivity(intent);
             setResult(RESULT_OK, intent);
             finish();
-        } else if (module.equals("DELIVERY")) {
+        } else if (module.equals("DELIVERY") || module.equals("COL_REF")) {
             finish();
         }
     }

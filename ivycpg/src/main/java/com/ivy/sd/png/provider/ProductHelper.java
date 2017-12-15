@@ -3087,7 +3087,7 @@ public class ProductHelper {
 
 
     public boolean isCheckCreditPeriod() {
-        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
         ArrayList<InvoiceHeaderBO> items = bmodel.getInvoiceHeaderBO();
         if (items != null && items.size() > 0) {
 

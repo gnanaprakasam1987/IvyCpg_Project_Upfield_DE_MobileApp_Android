@@ -15,6 +15,11 @@ public class InvoiceHeaderBO {
     private String contactName = "";
     private String contactNo = "";
     private String docRefNo = "";
+    private int docExchange = 0;
+    private String docReasonId = "";
+    private String docRemark     = "";
+    private String docSignPath     = "";
+    private String docSignImage     = "";
 
     //pending invoice
     String retailerName;
@@ -143,5 +148,45 @@ public class InvoiceHeaderBO {
 
     public void setRetailerName(String retailerName) {
         this.retailerName = retailerName;
+    }
+
+    public int getDocExchange() {
+        return docExchange;
+    }
+
+    public void setDocExchange(int docExchange) {
+        this.docExchange = docExchange;
+    }
+
+    public String getDocReasonId() {
+        return docReasonId;
+    }
+
+    public void setDocReasonId(String docReasonId) {
+        this.docReasonId = docReasonId;
+    }
+
+    public String getDocRemark() {
+        return docRemark;
+    }
+
+    public void setDocRemark(String docRemark) {
+        this.docRemark = docRemark;
+    }
+
+    public String getDocSignPath() {
+        return docSignPath;
+    }
+
+    public void setDocSignPath(String docSignPath) {
+        this.docSignPath = docSignPath;
+    }
+
+    public String getDocSignImage() {
+        return docSignImage;
+    }
+
+    public void setDocSignImage(String docSignImage) {
+        this.docSignImage = docSignImage;
     }
 }
