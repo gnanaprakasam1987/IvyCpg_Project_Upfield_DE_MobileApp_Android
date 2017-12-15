@@ -2168,7 +2168,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
                             } else {
                                 if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
-                                    updaterProgressMsg("Fetching location. Please wait for " + (count) + " seconds.");
+                                    //  updaterProgressMsg(String.format(getResources().getString(R.string.fetching_location_pls_wait),count));
+                                    updaterProgressMsg(getResources().getQuantityString(R.plurals.fetching_location, count, count));
                                 }
                             }
                         }

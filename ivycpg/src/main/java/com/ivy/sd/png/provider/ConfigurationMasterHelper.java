@@ -2127,7 +2127,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + CODE_ORDER_RPT_CONFIG + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_ORDER_RPT_CONFIG) + " and Flag=1";
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
