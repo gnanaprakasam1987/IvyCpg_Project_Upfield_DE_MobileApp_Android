@@ -1052,6 +1052,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
     public boolean IS_PAYMENT_RECEIPTNO_GET = true;
 
+    private static final String CODE_DOC_REF_NO= "COLL15";
+    public boolean SHOW_DOC_REF_NO;
+
 
     private static final String CODE_IS_NEW_RETAILER_EDIT = "NEWRET01";
     public boolean IS_NEW_RETAILER_EDIT;
@@ -1972,6 +1975,7 @@ public class ConfigurationMasterHelper {
         this.IS_DAY_WISE_RETAILER_WALKINGSEQ = hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) != null ? hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) : false;
         this.IS_PARTIAL_CREDIT_NOTE_ALLOW = hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) : false;
         this.IS_PAYMENT_RECEIPTNO_GET = hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) != null ? hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) : false;
+        this.SHOW_DOC_REF_NO = hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) != null ? hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) : false;
         this.IS_NEW_RETAILER_EDIT = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) : false;
         this.IS_EOD_STOCK_SPLIT = hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) : false;
         this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;

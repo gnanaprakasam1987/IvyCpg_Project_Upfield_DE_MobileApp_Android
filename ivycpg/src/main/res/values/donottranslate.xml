@@ -58,10 +58,10 @@
     <string name="m2">M-2</string>
     <string name="m3">M-3</string>
 
-    <string name="visit_frequency" >-0</string>
-    <string name="baidu_from" >From : </string>
-    <string name="baidu_to" >To : </string>
-    <string name="zero_zero" >0.0</string>
+    <string name="visit_frequency">-0</string>
+    <string name="baidu_from">From : </string>
+    <string name="baidu_to">To : </string>
+    <string name="zero_zero">0.0</string>
     <string name="io">IO</string>
     <string name="co">CO</string>
 
@@ -158,6 +158,10 @@
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
+    <string name="enter_contact_name">Kindly Enter Contact Name</string>
+    <string name="enter_contact_number">Kindly Enter Contact Number</string>
+    <string name="enter_docref_number">Kindly Enter DocRef Number</string>
+    <string name="get_signature">Kindly get Signature</string>
     <string name="downloading_rpt">Downloading Report</string>
 
     <string name="time_in">Time In</string>
@@ -199,4 +203,5 @@
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
+    <string name="doc_exchanged">Doc Exchanged</string>
 </resources>

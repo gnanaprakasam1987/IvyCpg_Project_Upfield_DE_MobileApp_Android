@@ -21,12 +21,7 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    //public static String SERVER_URL = "https://fe-mm-qa.ivycpg.com/webapi/api";
-    // public static String SERVER_URL = "http://dev.ivymobileapps.com/ivycpg_product_webapi/api";
-    //public static String SERVER_URL = "https://bic-tr-qa.ivycpg.com/webapi/api";
-    //public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Bic_WebAPI/api";
-
-    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_BIC_WebApi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
@@ -48,9 +43,9 @@ public class DataMembers {
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
     public static final int ATTENDANCE_UPLOAD = 101;
     // print file
-    public static final String IVYDIST_PATH="IvyDist";
-    public static final String PRINT_FILE_PATH="PrintFile";
-    public static final String PRINT_FILE_START="PF_INV";
+    public static final String IVYDIST_PATH = "IvyDist";
+    public static final String PRINT_FILE_PATH = "PrintFile";
+    public static final String PRINT_FILE_START = "PF_INV";
 
     public static String COMP_PLEVELNAME = "";
 
@@ -362,7 +357,7 @@ public class DataMembers {
     private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid";
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName";
-    private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo";
+    private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate";

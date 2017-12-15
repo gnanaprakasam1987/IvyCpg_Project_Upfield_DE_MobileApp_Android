@@ -152,7 +152,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView dueBillTitle = (TextView) rootView.findViewById(R.id.tv_title_due_bill);
         dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        if(bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY){
+        if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
             btnClose.setVisibility(View.VISIBLE);
             btnClose.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +169,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {
                                 intent.putExtra("IsMoveNextActivity", true);
-                                intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode",""));
+                                intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                             }
 
                             startActivity(intent);
@@ -315,7 +315,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
     public void updateDate(Date date, String tag) {
         CheckModeFragment checkModeFragment = (CheckModeFragment) mFragmentList.get(mSelectedPagePos);
         if (checkModeFragment != null)
-            checkModeFragment.updateDate(date,"" );
+            checkModeFragment.updateDate(date, "");
     }
 
     @Override
@@ -397,6 +397,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 holder.tvAge = (TextView) row.findViewById(R.id.tv_age);
                 holder.tvDueDate = (TextView) row.findViewById(R.id.tv_duedate);
                 holder.tvDueDateTitle = (TextView) row.findViewById(R.id.tv_duedate_title);
+                holder.tvDocRef = (TextView) row.findViewById(R.id.tv_docRef);
+                holder.tvDocRefTitle = (TextView) row.findViewById(R.id.tv_docRef_title);
 
                 if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     holder.tvPayableAmtTitle.setVisibility(View.VISIBLE);
@@ -416,6 +418,14 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 } else {
                     holder.tvDueDateTitle.setVisibility(View.GONE);
                     holder.tvDueDate.setVisibility(View.GONE);
+                }
+
+                if (bmodel.configurationMasterHelper.SHOW_DOC_REF_NO) {
+                    holder.tvDocRefTitle.setVisibility(View.VISIBLE);
+                    holder.tvDocRef.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvDocRefTitle.setVisibility(View.GONE);
+                    holder.tvDocRef.setVisibility(View.GONE);
                 }
 
                 holder.imgInvSelected = (ImageView) row.findViewById(R.id.img_check);
@@ -484,11 +494,13 @@ public class CollectionFragmentNew extends IvyBaseFragment
 //                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
             int count = 0;
             if (bmodel.retailerMasterBO.getCreditDays() != 0) {
-                count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
-                        holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
+                if (holder.invoiceHeaderBO.getDueDate() != null)
+                    count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                            holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
             } else {
-                count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
-                        holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
+                if (holder.invoiceHeaderBO.getInvoiceDate() != null)
+                    count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                            holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
             }
             if (count < 0)
                 count = 0;
@@ -524,6 +536,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 }
             }
 
+            holder.tvDocRef.setText((holder.invoiceHeaderBO.getDocRefNo() != null) ? holder.invoiceHeaderBO.getDocRefNo() : "-");
+
             return row;
         }
     }
@@ -541,6 +555,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView tvAge;
         TextView tvDueDate;
         TextView tvDueDateTitle;
+        TextView tvDocRef;
+        TextView tvDocRefTitle;
 
         ImageView imgInvSelected;
         InvoiceHeaderBO invoiceHeaderBO;
@@ -613,7 +629,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
         }
         return false;
     }
-
 
 
     private void updateInvoiceListAdapter() {

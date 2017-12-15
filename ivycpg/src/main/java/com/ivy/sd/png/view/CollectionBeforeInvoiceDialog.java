@@ -446,7 +446,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
      * load data/view Bank, Branch, Invoice List View
      */
     private void loadData() {
-        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(),"COL");
         ArrayList<InvoiceHeaderBO> items = bmodel.getInvoiceHeaderBO();
         if (items == null) {
             bmodel.showAlert(
