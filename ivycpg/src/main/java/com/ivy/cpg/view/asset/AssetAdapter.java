@@ -295,11 +295,11 @@ public class AssetAdapter extends BaseAdapter {
                                 + holder.assetBO.getSerialNo() + "_"
                                 + Commons.now(Commons.DATE);
 
-/*
-                        assetPresenter.mSelectedAssetID = holder.assetBO
+
+                        mAssetPresenter.mSelectedAssetID = holder.assetBO
                                 .getAssetID();
-                        assetPresenter.mSelectedImageName = imageName;
-                        assetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();*/
+                        mAssetPresenter.mSelectedImageName = imageName;
+                        mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
                                 fileNameStarts);
@@ -512,11 +512,7 @@ public class AssetAdapter extends BaseAdapter {
                 holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_photo_camera_blue_24dp));
         }
 
-        if (holder.assetBO.getAvailQty() == 1) {
-            holder.availQtyRB.setChecked(true);
-        } else {
-            holder.availQtyRB.setChecked(false);
-        }
+
 
         if (holder.assetBO.getExecutorQty() == 1) {
             holder.execQtyRB.setChecked(true);
@@ -524,14 +520,24 @@ public class AssetAdapter extends BaseAdapter {
             holder.execQtyRB.setChecked(false);
         }
 
-        if (assetTrackingHelper.SHOW_ASSET_BARCODE)
+        if (assetTrackingHelper.SHOW_ASSET_BARCODE) {
             if (holder.assetBO.getScanComplete() == 1) {
                 holder.availQtyRB.setChecked(true);
                 holder.availQtyRB.setEnabled(false);
-            } else {
+            } else  if (holder.assetBO.getAvailQty() == 1) {
+                holder.availQtyRB.setChecked(true);
+            }
+            else {
                 holder.availQtyRB.setChecked(false);
                 holder.availQtyRB.setEnabled(true);
             }
+        } else {
+            if (holder.assetBO.getAvailQty() == 1) {
+                holder.availQtyRB.setChecked(true);
+            } else {
+                holder.availQtyRB.setChecked(false);
+            }
+        }
 
 
         return row;
