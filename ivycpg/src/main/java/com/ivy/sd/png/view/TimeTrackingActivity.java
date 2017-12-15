@@ -12,7 +12,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
-public class NonFieldActivityTwo extends IvyBaseActivityNoActionBar {
+public class TimeTrackingActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     private Toolbar toolbar;
 
@@ -20,7 +20,7 @@ public class NonFieldActivityTwo extends IvyBaseActivityNoActionBar {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nonfield_two);
+        setContentView(R.layout.activity_time_tracking);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         bmodel = (BusinessModel) getApplicationContext();

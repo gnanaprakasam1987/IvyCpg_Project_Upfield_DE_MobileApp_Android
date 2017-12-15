@@ -156,6 +156,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
     }
 
+    @SuppressLint("ResourceType")
     public void numberPressed(View vw) {
 
         if (QUANTITY == null) {

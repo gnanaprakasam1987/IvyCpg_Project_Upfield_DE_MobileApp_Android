@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -558,6 +559,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
         }
     }
 
+    @SuppressLint("ResourceType")
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(

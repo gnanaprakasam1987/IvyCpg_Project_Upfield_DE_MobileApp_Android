@@ -1199,7 +1199,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = "+QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1432,7 +1432,7 @@ public class BusinessModel extends Application {
             downloadIndicativeOrderedRetailer();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.channelID,"
+                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
                             + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
                             + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
@@ -1504,6 +1504,7 @@ public class BusinessModel extends Application {
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
+                    retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
                     retailer.setClassid(c.getInt(c.getColumnIndex("classid")));
                     retailer.setCategoryid(c.getInt(c.getColumnIndex("categoryid")));
@@ -8524,6 +8525,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID() +
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW')" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
@@ -8556,7 +8558,7 @@ public class BusinessModel extends Application {
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
-                            + " and AD.upload='N' group by SM.groupName");
+                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW') and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
@@ -8591,7 +8593,7 @@ public class BusinessModel extends Application {
                     .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
                             "INNER JOIN  AnswerHeader AH ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid " +
-                            "where AH.menuCode in('MENU_SURVEY')");
+                            "where AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW')");
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     return (c.getDouble(0));
@@ -8616,7 +8618,7 @@ public class BusinessModel extends Application {
                     .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
-                            + " where menuCode in('MENU_SURVEY') group by AH.retailerid");
+                            + " where menuCode in('MENU_SURVEY','MENU_SURVEY_SW') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
@@ -8644,7 +8646,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN AnswerHeader AH  ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   and " +
-                            "SM.qid=AD.qid where SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AH.retailerid");
+                            "SM.qid=AD.qid where (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW') and AD.upload='N' group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     for (RetailerMasterBO bo : retailerMaster) {
@@ -8672,7 +8674,7 @@ public class BusinessModel extends Application {
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid  and SM.qid=AD.qid " +
                             "where AD.retailerid=" + bo.getRetailerID() +
-                            " and SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AD.retailerid");
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW') and AD.upload='N' group by AD.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     bo.setCurrentFitScore(c.getDouble(0));

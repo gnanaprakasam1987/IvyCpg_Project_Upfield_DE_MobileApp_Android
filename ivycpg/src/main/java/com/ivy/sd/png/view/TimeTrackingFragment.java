@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
-public class NonFieldFragmentTwo extends IvyBaseFragment {
+public class TimeTrackingFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
     private NonFeildTwoDialog nonFeildTwoDialog;
@@ -66,7 +66,7 @@ public class NonFieldFragmentTwo extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        View view = inflater.inflate(R.layout.fragment_nonfield_two, container, false);
+        View view = inflater.inflate(R.layout.fragment_time_tracking, container, false);
         listview = (ListView) view.findViewById(R.id.listview);
         no_data_txt = (TextView) view.findViewById(R.id.no_data_txt);
 

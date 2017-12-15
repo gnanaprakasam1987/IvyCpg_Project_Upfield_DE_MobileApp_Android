@@ -58,10 +58,10 @@
     <string name="m2">M-2</string>
     <string name="m3">M-3</string>
 
-    <string name="visit_frequency">-0</string>
-    <string name="baidu_from">From : </string>
-    <string name="baidu_to">To : </string>
-    <string name="zero_zero">0.0</string>
+    <string name="visit_frequency" >-0</string>
+    <string name="baidu_from" >From : </string>
+    <string name="baidu_to" >To : </string>
+    <string name="zero_zero" >0.0</string>
     <string name="io">IO</string>
     <string name="co">CO</string>
 
@@ -204,4 +204,8 @@
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
     <string name="doc_exchanged">Doc Exchanged</string>
+    <string name="fetching_location">Fetching Location</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="location_not_captured">Location not captured.</string>
+    <string name="location_captured">Location captured.</string>
 </resources>
