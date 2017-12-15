@@ -395,6 +395,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         hideAndSeek();
 
+        (findViewById(R.id.calcdot))
+                .setVisibility(View.VISIBLE);
+
         productName = (TextView) findViewById(R.id.productName);
         productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -3023,8 +3026,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
                         if (!"".equals(qty)) {
-                            holder.productObj.setSrp(SDUtil
-                                    .convertToFloat(qty));
+                            if (bmodel.validDecimalValue(qty, 8, 2)) {
+                                holder.productObj.setSrp(SDUtil
+                                        .convertToFloat(qty));
+                            } else {
+                                holder.srpEdit.setText(qty.length() > 1 ? qty
+                                        .substring(0, qty.length() - 1) : "0");
+                            }
                         } else {
                             holder.productObj.setSrp(0);
                         }
@@ -4172,6 +4180,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 val = s;
 
 
+            } else if (id == R.id.calcdot) {
+                val = SDUtil.convertToInt(append);
+                if (QUANTITY.getTag() != null) {
+                    if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
+                        Button ed = (Button) findViewById(vw.getId());
+                        append = ed.getText().toString();
+                        eff();
+                        val = SDUtil.convertToInt(append);
+                    }
+
+                }
             } else {
                 Button ed = (Button) findViewById(vw.getId());
                 append = ed.getText().toString();
