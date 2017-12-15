@@ -1,8 +1,9 @@
 package com.ivy.sd.png.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -10,20 +11,16 @@ import android.os.StatFs;
 
 import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.SynchronizationFragment;
+import com.ivy.sd.png.view.CatalogImagesDownlaod;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -33,7 +30,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * Downloads a file in a thread. Will send messages to the HomeSceen activity to
@@ -56,10 +52,15 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
     int downloadPercentage = 0;
     Message msg;
     TransferUtility tm = null;
+    private HashMap<String, Integer> imageDownloadStatus = new HashMap<>();
 
 
     private boolean alertshown = false;
     private String TAG_MODIFIED = "S";
+    private BusinessModel businessModel;
+    BasicAWSCredentials awsCredentials;
+    AmazonS3Client s3Client;
+    private Intent broadCIntent;
 
     /*S3ObjectSummary oject bucketName = FolderName
     * eTag = isModified
@@ -78,11 +79,20 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                                    ArrayList<S3ObjectSummary> imgUrls, int Userid, TransferUtility transferUtility) {
         if (imgUrls != null) {
             downloadUrls = imgUrls;
+            Commons.print("DownloadUrl size " + downloadUrls.size());
+            broadCIntent = new Intent();
+            broadCIntent.setAction(CatalogImagesDownlaod.ImageDownloadReceiver.PROCESS_RESPONSE);
+        } else {
+            CatalogImageDownloadService.isServiceRunning = false;
         }
         parentActivity = inParentActivity;
         activityHandler = h;
         userID = Userid;
         tm = transferUtility;
+        businessModel = (BusinessModel) inParentActivity.getApplicationContext();
+        awsCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                ConfigurationMasterHelper.SECRET_KEY);
+        s3Client = new AmazonS3Client(awsCredentials);
     }
 
     /**
@@ -92,12 +102,20 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
      */
     @Override
     public void run() {
+        Bundle bundle = new Bundle();
         if (!isExternalStorageAvailable()) {
+            CatalogImageDownloadService.isServiceRunning = false;
             String errMsg = parentActivity
                     .getString(R.string.external_storage_not_available);
-            msg = Message.obtain(activityHandler,
-                    DataMembers.SDCARD_NOT_AVAILABLE, 0, 0, errMsg);
-            activityHandler.sendMessage(msg);
+            if (activityHandler != null) {
+                msg = Message.obtain(activityHandler,
+                        DataMembers.SDCARD_NOT_AVAILABLE, 0, 0, errMsg);
+                activityHandler.sendMessage(msg);
+                bundle.putString("Error", "SD card not available");
+                broadCIntent.putExtras(bundle);
+                parentActivity.sendBroadcast(broadCIntent);
+            }
+            parentActivity.stopService(new Intent(parentActivity, CatalogImageDownloadService.class));
         } else {
             try {
 
@@ -116,13 +134,13 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                 c.close();
                 db.closeDB();
 
-                mTranDevicePath = new File(
+                mTranDevicePath = businessModel.synchronizationHelper.getStorageDir(parentActivity.getResources().getString(R.string.app_name));/*new File(
                         parentActivity
                                 .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/" + userID + DataMembers.DIGITAL_CONTENT);
+                                + "/" + userID + DataMembers.DIGITAL_CONTENT);*/
 
-                if (!mTranDevicePath.exists())
-                    mTranDevicePath.mkdirs();
+                /*if (!mTranDevicePath.exists())
+                    mTranDevicePath.mkdirs();*/
 
                 String mFileName = "";
 
@@ -143,14 +161,14 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                 File outFile;
                 FileOutputStream fileStream;
 
-                boolean availe_flag = false;
+                boolean availe_flag;
                 File mfile;
                 // AmazonS3Client s3 = null;
 
                 if (isAmazonUpload) {
                     System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
                     try {
-                        org.xml.sax.XMLReader reader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
+                        org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
                     } catch (org.xml.sax.SAXException e) {
                         Commons.printException("Unable to load XMLReader " + e.getMessage(), e);
                     }
@@ -161,7 +179,7 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                 for (S3ObjectSummary s3ObjectSummary : downloadUrls) {
                     try {
                         String imagurl = s3ObjectSummary.getKey();
-                        String folderName = s3ObjectSummary.getBucketName();
+                        String folderName = DataMembers.CATALOG;//s3ObjectSummary.getBucketName();
                         String isModified = s3ObjectSummary.getETag();
 
                         if (isAmazonUpload) {
@@ -196,21 +214,117 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                                 availe_flag = false;
                             }
                             if (!availe_flag) {
-                                new CatalogImagesDownload(outFile, imagurl).execute();
+                                try {
+
+
+                                    S3ObjectInputStream content = s3Client.getObject(DataMembers.S3_BUCKET, imagurl).getObjectContent();
+
+
+                                    inStream = new BufferedInputStream(
+                                            content, DOWNLOAD_BUFFER_SIZE);
+
+
+                                    fileStream = new FileOutputStream(outFile);
+
+                                    outStream = new BufferedOutputStream(fileStream,
+                                            DOWNLOAD_BUFFER_SIZE);
+
+                                    byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
+
+                                    int bytesRead = 0;
+
+                                    while (!isInterrupted()
+                                            && (bytesRead = inStream.read(data, 0,
+                                            data.length)) >= 0) {
+                                        outStream.write(data, 0, bytesRead);
+                                    }
+
+                                    outStream.close();
+                                    fileStream.close();
+                                    inStream.close();
+
+                                    if (isInterrupted()) {
+                                        outFile.delete();
+                                    } else {
+                                        imageDownloadStatus.put(imagurl, 1);
+                                    }
+                                    responseCount++;
+                                    downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                    if (activityHandler != null) {
+                                        msg = Message.obtain(activityHandler,
+                                                DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
+                                                responseCount, mTotalSize);
+                                        activityHandler.sendMessage(msg);
+                                    }
+                                    if (broadCIntent != null) {
+                                        bundle.putInt("responseCount", responseCount);
+                                        broadCIntent.putExtras(bundle);
+                                        parentActivity.sendBroadcast(broadCIntent);
+                                    }
+                                    if (imageDownloadStatus.size() == 100) {
+                                        businessModel.synchronizationHelper.updateFlagInCatalogImage(imageDownloadStatus);
+                                        imageDownloadStatus.clear();
+//                                        businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime();
+                                    }
+                                    if (responseCount >= mTotalSize && !alertshown) {
+
+                                        alertshown = true;
+                                        if (activityHandler != null) {
+                                            msg = Message.obtain(activityHandler,
+                                                    DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, responseCount, mTotalSize);
+                                            activityHandler.sendMessage(msg);
+                                            if (broadCIntent != null) {
+                                                bundle.putInt("Status", DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG);
+                                                bundle.putInt("responseCount", responseCount);
+                                                broadCIntent.putExtras(bundle);
+                                                parentActivity.sendBroadcast(broadCIntent);
+                                            }
+                                        }
+                                        businessModel.synchronizationHelper.updateFlagInCatalogImage(imageDownloadStatus);
+                                        imageDownloadStatus.clear();
+//                                        businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime();
+                                        CatalogImageDownloadService.isServiceRunning = false;
+                                    }
+
+
+                                } catch (Exception e) {
+                                    if (outFile.exists()) {
+                                        outFile.delete();
+                                    }
+                                    Commons.printException(e);
+                                    if (activityHandler != null) {
+                                        msg = Message.obtain(activityHandler,
+                                                DataMembers.MESSAGE_ENCOUNTERED_ERROR_CATALOG, responseCount, mTotalSize, "Unable to create Folder");
+                                        activityHandler.sendMessage(msg);
+                                    }
+                                }
 
                             } else {
                                 responseCount++;
                                 downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
-                                msg = Message.obtain(activityHandler,
-                                        DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
-                                        responseCount, mTotalSize);
-                                activityHandler.sendMessage(msg);
-                                if (responseCount >= mTotalSize && !alertshown) {
-
-                                    alertshown = true;
+                                if (activityHandler != null) {
                                     msg = Message.obtain(activityHandler,
-                                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, responseCount, mTotalSize);
+                                            DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
+                                            responseCount, mTotalSize);
                                     activityHandler.sendMessage(msg);
+                                }
+                                if (broadCIntent != null) {
+                                    bundle.putInt("responseCount", responseCount);
+                                    broadCIntent.putExtras(bundle);
+                                    parentActivity.sendBroadcast(broadCIntent);
+                                }
+                                if (responseCount >= mTotalSize && !alertshown) {
+                                    if (activityHandler != null) {
+                                        alertshown = true;
+                                        msg = Message.obtain(activityHandler,
+                                                DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, responseCount, mTotalSize);
+                                        activityHandler.sendMessage(msg);
+                                    }
+                                    if (broadCIntent != null) {
+                                        bundle.putInt("responseCount", responseCount);
+                                        broadCIntent.putExtras(bundle);
+                                        parentActivity.sendBroadcast(broadCIntent);
+                                    }
                                 }
                             }
 
@@ -278,10 +392,17 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                             a = (float) i / (float) mTotalSize;
                             b = a * 100;
                             downloadPercentage = (int) b;
-                            msg = Message.obtain(activityHandler,
-                                    DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
-                                    i, mTotalSize);
-                            activityHandler.sendMessage(msg);
+                            if (activityHandler != null) {
+                                msg = Message.obtain(activityHandler,
+                                        DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
+                                        i, mTotalSize);
+                                activityHandler.sendMessage(msg);
+                            }
+                            if (broadCIntent != null) {
+                                bundle.putInt("responseCount", i);
+                                broadCIntent.putExtras(bundle);
+                                parentActivity.sendBroadcast(broadCIntent);
+                            }
 
                         }
                     } catch (Exception e) {
@@ -290,26 +411,35 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
                         continue;
                     }
                 }
-
+                parentActivity.stopService(new Intent(parentActivity, CatalogImageDownloadService.class));
+                CatalogImageDownloadService.isServiceRunning = false;
                 if (downloadUrls.size() == 0) {
-                    msg = Message.obtain(activityHandler,
-                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, mTotalSize, mTotalSize);
-                    activityHandler.sendMessage(msg);
+                    CatalogImageDownloadService.isServiceRunning = false;
+                    if (activityHandler != null) {
+                        msg = Message.obtain(activityHandler,
+                                DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, mTotalSize, mTotalSize);
+                        activityHandler.sendMessage(msg);
+                    }
                 }
 
                 if (!isInterrupted() && !isAmazonUpload) {
-                    msg = Message.obtain(activityHandler,
-                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, mTotalSize, mTotalSize);
-                    activityHandler.sendMessage(msg);
+                    if (activityHandler != null) {
+                        msg = Message.obtain(activityHandler,
+                                DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, mTotalSize, mTotalSize);
+                        activityHandler.sendMessage(msg);
+                    }
                 }
             } catch (Exception e) {
+                CatalogImageDownloadService.isServiceRunning = false;
                 Commons.printException(e);
                 String errMsg = parentActivity
                         .getString(R.string.error_message_general);
                 if (!isInterrupted()) {
-                    msg = Message.obtain(activityHandler,
-                            DataMembers.MESSAGE_ENCOUNTERED_ERROR_CATALOG, responseCount, mTotalSize, errMsg);
-                    activityHandler.sendMessage(msg);
+                    if (activityHandler != null) {
+                        msg = Message.obtain(activityHandler,
+                                DataMembers.MESSAGE_ENCOUNTERED_ERROR_CATALOG, responseCount, mTotalSize, errMsg);
+                        activityHandler.sendMessage(msg);
+                    }
                 }
             }
         }
@@ -349,88 +479,6 @@ public class DownloaderThreadCatalog extends Thread implements Runnable {
         } else {
             return false;
         }
-    }
-
-    public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
-
-        File outFile;
-        String imgUrl;
-
-        BufferedInputStream inStream;
-        BufferedOutputStream outStream;
-        FileOutputStream fileStream;
-
-        public CatalogImagesDownload(File outFile, String imgUrl) {
-            super();
-            this.outFile = outFile;
-            this.imgUrl = imgUrl;
-        }
-
-
-        @Override
-        protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            try {
-                BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                        ConfigurationMasterHelper.SECRET_KEY);
-                AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-
-                S3ObjectInputStream content = s3.getObject(DataMembers.S3_BUCKET, imgUrl).getObjectContent();
-
-
-                inStream = new BufferedInputStream(
-                        content, DOWNLOAD_BUFFER_SIZE);
-
-
-                fileStream = new FileOutputStream(outFile);
-
-                outStream = new BufferedOutputStream(fileStream,
-                        DOWNLOAD_BUFFER_SIZE);
-
-                byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
-
-                int bytesRead = 0;
-
-                while (!isInterrupted()
-                        && (bytesRead = inStream.read(data, 0,
-                        data.length)) >= 0) {
-                    outStream.write(data, 0, bytesRead);
-                }
-
-                outStream.close();
-                fileStream.close();
-                inStream.close();
-
-                if (isInterrupted()) {
-                    outFile.delete();
-                }
-
-                responseCount++;
-                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
-
-                msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_UPDATE_PROGRESS_CATALOG,
-                        responseCount, mTotalSize);
-                activityHandler.sendMessage(msg);
-                if (responseCount >= mTotalSize && !alertshown) {
-
-                    alertshown = true;
-                    msg = Message.obtain(activityHandler,
-                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG, responseCount, mTotalSize);
-                    activityHandler.sendMessage(msg);
-                }
-
-
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                Commons.printException(e);
-                msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_ENCOUNTERED_ERROR_CATALOG, responseCount, mTotalSize, "Unable to create Folder");
-                activityHandler.sendMessage(msg);
-            }
-            return null;
-        }
-
     }
 
 }

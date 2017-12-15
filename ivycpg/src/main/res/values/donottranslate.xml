@@ -203,4 +203,6 @@
     <string name="dismiss">Dismiss</string>
     <string name="location_not_captured">Location not captured.</string>
     <string name="location_captured">Location captured.</string>
+
+    <string name="last_image_download_time">Last downloaded time : </string>
 </resources>
