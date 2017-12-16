@@ -256,7 +256,14 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            onBackButtonClick();
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
+                    .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
+            if (currentStockBatchViewFragment != null) {
+                currentStockBatchViewFragment.onBackButtonClick();
+            } else {
+                onBackButtonClick();
+            }
 
             return true;
         }

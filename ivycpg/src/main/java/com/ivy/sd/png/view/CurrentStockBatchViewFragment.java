@@ -1,7 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +28,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
     private static final String BRAND = "Brand";
     private HashMap<String, String> mSelectedFilterMap = new HashMap<String, String>();
     private View view;
+    FrameLayout drawer;
 
     @Nullable
     @Override
@@ -78,10 +80,18 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.activity_actionbarwithfilter, container,
+        view = inflater.inflate(R.layout.fragment_current_stock_batcwise, container,
                 false);
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
+
+        //setting drawer width equal to scren width
+        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
         return view;
     }
 
@@ -128,16 +138,15 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         };
         getView().findViewById(R.id.layout_sih).setVisibility(View.VISIBLE);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        LinearLayout ll = (LinearLayout) getView().findViewById(R.id.ListHeader);
+       /* LinearLayout ll = (LinearLayout) getView().findViewById(R.id.ListHeader);
         LayoutInflater layoutInflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ll.addView(layoutInflater.inflate(
-                R.layout.current_stock_batchwise_layout, null));
-        getView().findViewById(R.id.keypad).setVisibility(View.GONE);
+                R.layout.current_stock_batchwise_layout, null));*/
 
 
         ViewFlipper viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
-        viewFlipper.setVisibility(View.INVISIBLE);
+        viewFlipper.setVisibility(View.GONE);
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(getView().findViewById(
@@ -149,6 +158,11 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+        ((TextView) getView().findViewById(R.id.sihtitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.text_product_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.sih_cs_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) getView().findViewById(R.id.sih_ou_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
             getView().findViewById(R.id.sih_cs_title).setVisibility(View.VISIBLE);
@@ -222,6 +236,18 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackButtonClick() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+            mDrawerLayout.closeDrawers();
+        else {
+            Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+            i.putExtra("menuCode", "MENU_REPORT");
+            i.putExtra("title", "aaa");
+            startActivity(i);
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
@@ -309,6 +335,13 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
                     holder.sih_cs.setVisibility(View.VISIBLE);
                     holder.sih_ou.setVisibility(View.VISIBLE);
                 }
+
+                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.batchnumber.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.sih_cs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.sih_ou.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
 
                 // inputManager.hideSoftInputFromWindow(
                 // mEdt_searchproductName.getWindowToken(), 0);
