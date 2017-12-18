@@ -6705,63 +6705,67 @@ public class ProductHelper {
             }
 
             int loopEnd = mContentLevel - mFiltrtLevel + 1;
-            getAlCompetitorTaggedProducts(loopEnd);
 
-            String sql;
-            sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
-                    + ".CPID as parentId FROM CompetitorProductMaster A1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
-                        + ".CPID = A" + (i - 1) + ".CPTid";
-            Cursor cur = db
-                    .selectSQL(sql
-                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
-                            + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
-                            + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                            " group by A1.CPID");
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+                getAlCompetitorTaggedProducts(loopEnd);
+            } else {
 
-            if (cur != null) {
+                String sql;
+                sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
+                        + ".CPID as parentId FROM CompetitorProductMaster A1";
+                for (int i = 2; i <= loopEnd; i++)
+                    sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                            + ".CPID = A" + (i - 1) + ".CPTid";
+                Cursor cur = db
+                        .selectSQL(sql
+                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
+                                + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
+                                + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
+                                " group by A1.CPID");
 
-                while (cur.moveToNext()) {
-                    ProductMasterBO product = new ProductMasterBO();
-                    product.setProductID(cur.getString(0));
-                    product.setProductName(cur.getString(1));
-                    product.setProductShortName(cur.getString(1));
-                    product.setParentid(cur.getInt(2));
-                    product.setIsSaleable(1);
-                    product.setBarCode("");
-                    product.setCasebarcode("");
-                    product.setOuterbarcode("");
-                    product.setOwn(0);
-                    product.setCaseUomId(cur.getInt(3));
-                    product.setOuUomid(cur.getInt(4));
-                    product.setPcUomid(cur.getInt(5));
-                    product.setProductCode(cur.getString(6));
-                    product.setOwnPID(cur.getString(7));
-                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+                if (cur != null) {
 
-                    // for level skiping
-                    ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
-                    if (ownprodbo != null)
-                        product.setParentid(ownprodbo.getParentid());
-                    else
-                        product.setParentid(0);
+                    while (cur.moveToNext()) {
+                        ProductMasterBO product = new ProductMasterBO();
+                        product.setProductID(cur.getString(0));
+                        product.setProductName(cur.getString(1));
+                        product.setProductShortName(cur.getString(1));
+                        product.setParentid(cur.getInt(2));
+                        product.setIsSaleable(1);
+                        product.setBarCode("");
+                        product.setCasebarcode("");
+                        product.setOuterbarcode("");
+                        product.setOwn(0);
+                        product.setCaseUomId(cur.getInt(3));
+                        product.setOuUomid(cur.getInt(4));
+                        product.setPcUomid(cur.getInt(5));
+                        product.setProductCode(cur.getString(6));
+                        product.setOwnPID(cur.getString(7));
+                        product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
 
-                    product.setLocations(cloneLocationList(locations));
-                    for (int i = 0; i < locations.size(); i++) {
-                        product.getLocations().get(i)
-                                .setNearexpiryDate(cloneDateList(dateList));
-                    }
+                        // for level skiping
+                        ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
+                        if (ownprodbo != null)
+                            product.setParentid(ownprodbo.getParentid());
+                        else
+                            product.setParentid(0);
+
+                        product.setLocations(cloneLocationList(locations));
+                        for (int i = 0; i < locations.size(); i++) {
+                            product.getLocations().get(i)
+                                    .setNearexpiryDate(cloneDateList(dateList));
+                        }
                     /*bmodel.productHelper.getTaggedProducts().add(product);
                     mTaggedProductById.put(product.getProductID(), product);*/
-                    competitorProductMaster.add(product);
+                        competitorProductMaster.add(product);
+
+                    }
+                    cur.close();
 
                 }
-                cur.close();
 
             }
             db.closeDB();
-
 
         } catch (Exception e) {
             Commons.printException(e);

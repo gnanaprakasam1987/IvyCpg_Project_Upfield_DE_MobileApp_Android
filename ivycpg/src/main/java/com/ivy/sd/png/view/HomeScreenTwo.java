@@ -1784,6 +1784,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
+                        && (bmodel.getRetailerMasterBO().getRField4().equals("1")
+                        || (bmodel.getRetailerMasterBO().getTinExpDate() != null && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() && SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
+                    bmodel.showAlert(getResources().getString(R.string.order_not_allowed_for_retailer), 0);
+                    isCreated = false;
+                    return;
+                }
+
                 if (bmodel.configurationMasterHelper
                         .downloadFloatingSurveyConfig(MENU_STK_ORD)) {
                     SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
@@ -1897,6 +1905,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
                 }
+
             } else {
                 Toast.makeText(
                         this,
