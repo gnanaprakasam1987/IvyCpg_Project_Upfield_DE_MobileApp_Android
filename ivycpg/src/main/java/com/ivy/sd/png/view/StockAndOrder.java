@@ -418,6 +418,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
+        prepareScreen();
 
         try {
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
@@ -1424,7 +1425,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     protected void onStart() {
         super.onStart();
 
-        prepareScreen();
 
         Commons.print("OnStart Called");
         // Configuration to Show Multi Seletion in Filter Fragment
