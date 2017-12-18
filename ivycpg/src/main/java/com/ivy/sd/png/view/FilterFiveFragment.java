@@ -335,8 +335,12 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
             holder.text.setText(holder.levelBO.getLevelName());
             holder.text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            int levelId = mSelectedIdByLevelId.get(holder.levelBO
-                    .getProductID());
+            int levelId = 0;
+            if (mSelectedIdByLevelId.get(holder.levelBO
+                    .getProductID()) != null) {
+                levelId = mSelectedIdByLevelId.get(holder.levelBO
+                        .getProductID());
+            }
 
             if (holder.levelBO.getProductID() == mSelectedLevelBO
                     .getProductID()) {
@@ -531,8 +535,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
             holder.text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             if (mSelectedIdByLevelId != null) {
-                int selectedLevelId = mSelectedIdByLevelId.get(mSelectedLevelBO
-                        .getProductID());
+
+                int selectedLevelId = 0;
+                if (mSelectedIdByLevelId.get(mSelectedLevelBO
+                        .getProductID()) != null) {
+                    selectedLevelId = mSelectedIdByLevelId.get(mSelectedLevelBO
+                            .getProductID());
+                }
+
 
                 if (selectedLevelId == levelBO.getProductID()) {
                     holder.selectedfilters.setVisibility(View.VISIBLE);
