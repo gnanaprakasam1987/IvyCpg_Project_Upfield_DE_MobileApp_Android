@@ -137,7 +137,12 @@ public class CheckModeFragment extends IvyBaseFragment
             mCollectAmountET.setText(mPaymentBO.getAmount() + "");
             mCollectAmountET.setSelection(mCollectAmountET.getText().length());
         }
+
         mChequeNoET.setText(mPaymentBO.getChequeNumber());
+        if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE){
+            mChequeNoET.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+
         mBankSpin = (Spinner) rootView.findViewById(R.id.spin_bank);
         ArrayAdapter<BankMasterBO> bankSpinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);

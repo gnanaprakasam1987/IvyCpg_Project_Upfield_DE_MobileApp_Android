@@ -414,7 +414,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mSearchTypeArray = new ArrayList<>();
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
@@ -4389,7 +4389,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.order_gcas))) {
+                                R.string.prod_code))) {
                             if (ret.getRField1() != null && ret.getRField1()
                                     .toLowerCase()
                                     .contains(
@@ -4673,7 +4673,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 return true;
             }
         } else if (getResources().getString(
-                R.string.order_gcas).equals(mSelectedFilter)) {
+                R.string.prod_code).equals(mSelectedFilter)) {
             if (ret.getRField1() != null && ret.getRField1()
                     .toLowerCase()
                     .contains(
