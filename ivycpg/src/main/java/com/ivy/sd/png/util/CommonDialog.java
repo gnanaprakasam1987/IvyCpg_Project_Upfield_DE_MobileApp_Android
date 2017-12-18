@@ -130,8 +130,7 @@ public class CommonDialog extends Dialog {
         else
             view = View.inflate(context, R.layout.common_dialog_layout, null);
 
-        ViewGroup.LayoutParams obj = new ViewGroup.LayoutParams((int) context.getResources().getDimension(R.dimen.filter_slider_width), ViewGroup.LayoutParams.WRAP_CONTENT);
-        setContentView(view, obj);
+        setContentView(view);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         TextView txtTitle = (TextView) view.findViewById(R.id.title);
