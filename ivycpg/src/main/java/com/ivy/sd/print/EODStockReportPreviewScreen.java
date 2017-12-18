@@ -659,6 +659,10 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                         + getResources().getString(R.string.musername) + "" + bmodel.userMasterHelper.getUserMasterBO()
                         .getUserName() + "\r\n";
                 heightlenth = heightlenth + heightspace;
+                Printitem += "T 5 0 10 " + (heightlenth)
+                        + " " + SDUtil.now(SDUtil.DATE_TIME)
+                        + "\r\n";
+                heightlenth = heightlenth + heightspace;
                 // T- Text // // Font Size // Spacing // height between lines
 
                 Printitem += "T 5 0 5 " + (heightlenth) + " --------------------------------------------------\r\n";

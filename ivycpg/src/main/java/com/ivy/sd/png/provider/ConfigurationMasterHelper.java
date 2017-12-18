@@ -145,7 +145,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_REVIEW_PO = "ORDB14";
     private static final String CODE_IS_WSIH = "ORDB16"; // ORDB16
     private static final String CODE_SHOW_HIGHLIGHT_FOR_OOS = "ORDB15"; // ORDB15
-    private static final String CODE_SHOW_RETAILER_SEARCH = "FUN01"; // FUN01
     private static final String CODE_SHOW_DISCOUNT_DIALOG = "FUN02"; // FUN02
     private static final String CODE_SHOW_DISCOUNT_ACTIVITY = "FUN03";
     // code added in v 33
@@ -559,7 +558,6 @@ public class ConfigurationMasterHelper {
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
-    public boolean SHOW_RETAILER_SEARCH; // FUN01
     public boolean SHOW_DISCOUNT_DIALOG; // FUN02
     // Added in 33 version
     public boolean SHOW_CREDIT_BALANCE;//
@@ -1060,6 +1058,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
     public boolean IS_PAYMENT_RECEIPTNO_GET = true;
+
+    public boolean COLL_CHEQUE_MODE;
+    private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
 
     private static final String CODE_DOC_REF_NO= "COLL16";
     public boolean SHOW_DOC_REF_NO;
@@ -1637,7 +1638,6 @@ public class ConfigurationMasterHelper {
         this.IS_PRODUCTIVE_CALLS_OBJ_PH = hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) : false;
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
         this.SHOW_REVIEW_AND_PO = hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) : false;
-        this.SHOW_RETAILER_SEARCH = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_SEARCH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_SEARCH) : false;
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
         this.SHOW_DISCOUNT_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
@@ -1985,6 +1985,7 @@ public class ConfigurationMasterHelper {
         this.IS_DAY_WISE_RETAILER_WALKINGSEQ = hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) != null ? hashMapHHTModuleConfig.get(CODE_DAY_WISE_RETAILER_WALKINGSEQ) : false;
         this.IS_PARTIAL_CREDIT_NOTE_ALLOW = hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_CREDITNOTE) : false;
         this.IS_PAYMENT_RECEIPTNO_GET = hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) != null ? hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) : false;
+        this.COLL_CHEQUE_MODE = hashMapHHTModuleConfig.get(CODE_COLL_CHEQUE_MODE) != null ? hashMapHHTModuleConfig.get(CODE_COLL_CHEQUE_MODE) : false;
         this.SHOW_DOC_REF_NO = hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) != null ? hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) : false;
         this.IS_NEW_RETAILER_EDIT = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) : false;
         this.IS_EOD_STOCK_SPLIT = hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) : false;

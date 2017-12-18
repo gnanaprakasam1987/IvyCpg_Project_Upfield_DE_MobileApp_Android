@@ -2,6 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,7 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, SearchView.OnQueryTextListener {
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final String CODE_PRODUCTIVE = "Filt_01";
@@ -278,8 +280,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 Filter nameFilter = new Filter() {
                     @Override
                     public CharSequence convertResultToString(Object resultValue) {
-                        String str = ((BeatMasterBO) resultValue).toString();
-                        return str;
+                        return resultValue.toString();
                     }
 
                     @Override
@@ -305,7 +306,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                         if (constraint != null) {
                             List<BeatMasterBO> filterList = (ArrayList<BeatMasterBO>) results.values;
-                            if (results != null && results.count > 0) {
+                            if (results.count > 0) {
                                 clear();
                                 for (BeatMasterBO flList : filterList) {
                                     add(flList);
@@ -469,7 +470,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
-            tv_target.setText("" + getStoreVisited());
+            tv_target.setText(String.valueOf(getStoreVisited()));
         } else {
             tv_target.setText(getTotalAchieved());
         }
@@ -523,13 +524,29 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
+        SearchManager searchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                displayTodayRoute(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
         menu.findItem(R.id.search)
-                .setVisible(false);
+                .setVisible(true);
         menu.findItem(R.id.menu_deviate_retailers).setVisible(false);
 
         menu.findItem(R.id.menu_selection_filter)
@@ -581,8 +598,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
             if (getArguments().getString("Newplanningsub") != null) {
-                if (getArguments().getString("Newplanningsub")
-                        .equals("Planningsub")) {
+                if ("Planningsub"
+                        .equals(getArguments().getString("Newplanningsub"))) {
                     Intent i = new Intent(getActivity(),
                             HomeScreenActivity.class);
                     i.putExtra("menuCode", "MENU_PLANNING_SUB");
@@ -700,7 +717,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
                 if (filter != null) {
                     if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase())) {
+                            .toLowerCase()).contains(filter.toLowerCase()) ||
+                            (bmodel.getRetailerMaster().get(i)
+                                    .getRetailerCode().toLowerCase())
+                                    .contains(filter.toLowerCase())) {
 
                         if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
                             retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
@@ -768,7 +788,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
                 if (filter != null) {
                     if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase())) {
+                            .toLowerCase()).contains(filter.toLowerCase()) ||
+                            (bmodel.getRetailerMaster().get(i)
+                                    .getRetailerCode().toLowerCase())
+                                    .contains(filter.toLowerCase())) {
                         retailer.add(bmodel.getRetailerMaster().get(i));
                     }
                 } else {
@@ -787,6 +810,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         String strCount = mSchedule.getCount() + "";
         tv_storeVisit.setText(strCount);
         listView.setAdapter(mSchedule);
+        setHasOptionsMenu(true);
 
     }
 
@@ -1089,7 +1113,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     }
 
-    class RetailerSelectionAdapter extends ArrayAdapter<RetailerMasterBO> {
+    private class RetailerSelectionAdapter extends ArrayAdapter<RetailerMasterBO> {
 
         RetailerMasterBO retailerObj;
         private ArrayList<RetailerMasterBO> items;
@@ -1737,5 +1761,19 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     public void setMapViewListener(MapViewListener listener) {
         this.mapViewListener = listener;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        displayTodayRoute(s);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        if (s.isEmpty()) {
+            displayTodayRoute(null);
+        }
+        return false;
     }
 }
