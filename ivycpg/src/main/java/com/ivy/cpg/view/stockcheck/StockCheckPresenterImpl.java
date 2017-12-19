@@ -378,7 +378,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0));
+                || (generaltxt.equalsIgnoreCase(mShelf) && ((ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0) || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1));
     }
 
     /**
@@ -403,6 +403,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
 
+            if (product.getLocations().get(i).getAvailability() > -1)
+                totalQty += product.getLocations().get(i).getAvailability();
         }
         return totalQty;
 

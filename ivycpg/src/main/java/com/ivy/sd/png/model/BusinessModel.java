@@ -1750,13 +1750,14 @@ public class BusinessModel extends Application {
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = (ProductMasterBO) productHelper
+            ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
             if (Integer.parseInt(product.getProductID()) == pdtId) {
                 for (int j = 0; j < product.getLocations().size(); j++) {
-                    if (product.getLocations().get(j).getShelfPiece() > 0 ||
-                            product.getLocations().get(j).getShelfCase() > 0 ||
-                            product.getLocations().get(j).getShelfOuter() > 0) {
+                    if ((product.getLocations().get(j).getShelfPiece() > -1 ||
+                            product.getLocations().get(j).getShelfCase() > -1 ||
+                            product.getLocations().get(j).getShelfOuter() > -1)
+                            || product.getLocations().get(j).getAvailability() > -1) {
                         return true;
                     }
                 }
@@ -6198,7 +6199,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getShelfOuter() > -1
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0)
+                        || product.getLocations().get(j).getWHOuter() > 0
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6225,7 +6227,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getCockTailQty() > 0
                         || product.getIsListed() > 0
                         || product.getIsDistributed() > 0
-                        || !product.getReasonID().equals("0"))
+                        || !product.getReasonID().equals("0")
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6247,6 +6250,7 @@ public class BusinessModel extends Application {
                     if (product.getLocations().get(j).getShelfPiece() == -1
                             && product.getLocations().get(j).getShelfCase() == -1
                             && product.getLocations().get(j).getShelfOuter() == -1
+                            && product.getLocations().get(j).getAvailability() == 0
                             && product.getReasonID().equals("0"))
                         return false;
                 }
@@ -6333,7 +6337,8 @@ public class BusinessModel extends Application {
                                 || product.getLocations().get(j).getIsPouring() > 0
                                 || product.getLocations().get(j).getCockTailQty() > 0
                                 || product.getLocations().get(j).getFacingQty() > 0
-                                || product.getLocations().get(j).getAudit() != 2) {
+                                || product.getLocations().get(j).getAudit() != 2
+                                || product.getLocations().get(j).getAvailability() > -1) {
 
                             int count = product.getLocations().get(j)
                                     .getShelfPiece()
@@ -6418,7 +6423,8 @@ public class BusinessModel extends Application {
                                     || taggedProduct.getLocations().get(j).getIsPouring() > 0
                                     || taggedProduct.getLocations().get(j).getCockTailQty() > 0
                                     || taggedProduct.getLocations().get(j).getFacingQty() > 0
-                                    || taggedProduct.getLocations().get(j).getAudit() != 2) {
+                                    || taggedProduct.getLocations().get(j).getAudit() != 2
+                                    || taggedProduct.getLocations().get(j).getAvailability() > -1) {
 
                                 int count = taggedProduct.getLocations().get(j)
                                         .getShelfPiece()

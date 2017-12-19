@@ -466,10 +466,13 @@ public class ProductHelper {
                     int size = p.getLocations().size();
                     int shelfpcs = 0, whpcs = 0;
                     for (int j = 0; j < size; j++) {
-                        shelfpcs = shelfpcs
-                                + p.getLocations().get(j).getShelfPiece();
+                        if (p.getLocations().get(j).getShelfPiece() > 0)
+                            shelfpcs += p.getLocations().get(j).getShelfPiece();
+
                         whpcs = whpcs + p.getLocations().get(j).getWHPiece();
 
+                        if (p.getLocations().get(j).getAvailability() > -1)
+                            shelfpcs += p.getLocations().get(j).getAvailability();
                     }
                     p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
                             p.getIsInitiativeProduct(), p.getDropQty(),
