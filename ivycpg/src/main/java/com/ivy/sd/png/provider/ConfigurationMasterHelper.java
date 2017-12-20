@@ -441,6 +441,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_RPT_CONFIG = "ORDRPT02";
     public boolean SHOW_DELIVERY_DATE_IN_ORDER_RPT;
 
+    private static final String CODE_SHOW_RID_CONCEDER_AS_DSTID = "FUN64";
+    public boolean IS_SHOW_RID_CONCEDER_AS_DSTID;
+
     /**
      * RoadActivity config *
      */
@@ -974,7 +977,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NFC_SEARCH_IN_ASSET = "AT07";
     public boolean SHOW_NFC_SEARCH_IN_ASSET;
 
-    private static final String CODE_ASSET_PHOTO_VALIDATION ="AT10";
+    private static final String CODE_ASSET_PHOTO_VALIDATION = "AT10";
     public boolean ASSET_PHOTO_VALIDATION;
 
     public static final String CODE_IS_UNLINK_FILTERS = "ORDB55";
@@ -1061,7 +1064,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
     public boolean IS_PAYMENT_RECEIPTNO_GET = true;
 
-    private static final String CODE_DOC_REF_NO= "COLL16";
+    private static final String CODE_DOC_REF_NO = "COLL16";
     public boolean SHOW_DOC_REF_NO;
 
 
@@ -2121,6 +2124,8 @@ public class ConfigurationMasterHelper {
                 LOCATION_TIMER_PERIOD = hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD);
             }
         }
+
+        this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
 
     }
 
