@@ -709,7 +709,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:maxLength="5" />
 
                 </LinearLayout>
 

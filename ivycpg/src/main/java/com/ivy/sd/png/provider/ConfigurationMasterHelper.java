@@ -1198,6 +1198,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_STK_ORD_ROW_BS = "BS";
     public boolean IS_STK_ORD_BS;
 
+    private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
+    public boolean IS_RESTRICT_ORDER_TAKING;
+
     public int MVPTheme = 0;
     public String fontSize = "";
 
@@ -2122,6 +2125,8 @@ public class ConfigurationMasterHelper {
                 LOCATION_TIMER_PERIOD = hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD);
             }
         }
+
+        this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
 
     }
 
