@@ -242,9 +242,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (getActionBar() != null) {
+                /*if (getActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
-                }
+                }*/
 
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -1388,6 +1388,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
@@ -1643,6 +1645,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
@@ -1874,6 +1878,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
         try {
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
+
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFragment frag = (FilterFragment) fm
                     .findFragmentByTag("filter");
@@ -1903,6 +1910,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.competitor_filter));
 
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();

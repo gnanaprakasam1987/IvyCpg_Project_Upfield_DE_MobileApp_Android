@@ -218,4 +218,6 @@
         <item quantity="other">Fetching location. Please wait for %d seconds</item>
     </plurals>
     <string name="order_not_allowed_for_retailer">Order taking not allowed for this retailer.</string>
+
+    <string name="competitor_filter">Competitor Filter</string>
 </resources>
