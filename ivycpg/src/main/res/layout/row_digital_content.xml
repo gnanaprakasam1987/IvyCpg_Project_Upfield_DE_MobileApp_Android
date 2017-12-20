@@ -10,10 +10,10 @@
         android:id="@+id/month_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="THIS MONTH"
         android:padding="10dp"
         android:textColor="@color/GRAY_TEXT"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:text="THIS MONTH" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -22,84 +22,122 @@
         card_view:cardCornerRadius="6dp"
         card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="false">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/icon"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/digital_content_image_height"
-            android:scaleType="centerCrop" />
-        <ImageView
-            android:id="@+id/play_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_action_play_video"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-    </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/pdt_details_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/digital_bottom_margin"
-            android:minHeight="40dp"
-            android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/closePRODNAME"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="2"
-            android:minLines="2"
-            android:padding="5dp"
-            android:textColor="?attr/textColorPrimary"
-            android:textSize="@dimen/font_micro_small"
-            android:textStyle="normal"
-            tools:text="est weter" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:gravity="right"
-            android:padding="5dp"
-            android:textColor="@color/GRAY_TEXT"
-            android:textSize="@dimen/font_micro_small"
-            tools:text="ser fser es" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/prodName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pdt_details_layout"
-            android:paddingBottom="@dimen/card_child_margin"
-            android:paddingLeft="@dimen/card_child_margin"
-            android:paddingRight="@dimen/card_child_margin"
-            android:textColor="?attr/textColorSecondary"
-            android:textSize="@dimen/font_micro_small"
-            android:visibility="gone" />
+            android:layout_height="wrap_content">
 
 
-        <ImageView
-            android:id="@+id/overflow"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_20dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/line_vr_dotted"
-            android:visibility="gone" />
+            <RelativeLayout
+                android:id="@+id/layoutimage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pdt_image"
+                    android:src="@drawable/no_image_available"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/play_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_action_play_video"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/pdt_details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layoutimage"
+                android:minHeight="40dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/closePRODNAME"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:padding="@dimen/dimen_2dp"
+                    android:text="@string/Product_details"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="?attr/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/dimen_2dp"
+                    android:text="@string/date"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/GRAY_TEXT" />
+            </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:id="@+id/pdt_details_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/digital_bottom_margin"-->
+            <!--android:minHeight="40dp"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/closePRODNAME"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:ellipsize="end"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:maxLines="2"-->
+            <!--android:minLines="2"-->
+            <!--android:padding="5dp"-->
+            <!--android:textColor="?attr/textColorPrimary"-->
+            <!--android:textSize="@dimen/font_micro_small"-->
+            <!--android:textStyle="normal"-->
+            <!--tools:text="est weter" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/date"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:padding="5dp"-->
+            <!--android:textColor="@color/GRAY_TEXT"-->
+            <!--android:textSize="@dimen/font_micro_small"-->
+            <!--tools:text="ser fser es" />-->
+            <!--</LinearLayout>-->
+
+            <TextView
+                android:id="@+id/prodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:paddingBottom="@dimen/card_child_margin"
+                android:paddingLeft="@dimen/card_child_margin"
+                android:paddingRight="@dimen/card_child_margin"
+                android:text="@string/product_name"
+                android:textColor="?attr/textColorSecondary"
+                android:textSize="@dimen/font_micro_small"
+                android:visibility="visible" />
 
 
-</android.support.v7.widget.CardView>
+            <ImageView
+                android:id="@+id/overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_20dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_marginTop="@dimen/dimen_10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/line_vr_dotted"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 </LinearLayout>

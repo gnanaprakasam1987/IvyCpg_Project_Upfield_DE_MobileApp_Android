@@ -3,17 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dimen_2dp"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/month_label"
+        android:id="@+id/group_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="THIS MONTH"
+        tools:text="GROUP NAME"
+        android:gravity="center_vertical"
         android:padding="5dp"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/Black"
+        android:textAllCaps="true"
         android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="?attr/primarycolor"
         android:visibility="visible" />
 </LinearLayout>

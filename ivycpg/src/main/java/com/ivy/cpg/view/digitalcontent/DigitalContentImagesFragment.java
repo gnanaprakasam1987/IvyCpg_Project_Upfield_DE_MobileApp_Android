@@ -37,14 +37,16 @@ import java.util.HashMap;
 
 public class DigitalContentImagesFragment extends IvyBaseFragment {
 
-    BusinessModel mBModel;
+    private BusinessModel mBModel;
     private DigitalContentHelper mDigitalContentHelper;
 
     private RecyclerView recyclerview;
     public GridLayoutManager mGridLayoutManager;
-    RecyclerViewAdapter mRecyclerAdapter;
-
+    private RecyclerViewAdapter mRecyclerAdapter;
     private int mScreenWidth = 0;
+    private static final String THIS_MONTH = "This Month";
+    private static final String PREVIOUS_MONTH = "Previous Month";
+    private static final String OLDER = "Older";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +86,12 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
             @Override
             public int getSpanSize(int position) {
                 if (mScreenWidth >= 400) {
-                    return mRecyclerAdapter.isPositionHeader(position) ? 3 : 1;
+                    if (mRecyclerAdapter.getItemViewType(position) == RecyclerViewAdapter.TYPE_GROUP)
+                        return 3;
+                    else if (mRecyclerAdapter.getItemViewType(position) == RecyclerViewAdapter.TYPE_HEADER)
+                        return 3;
+                    else
+                        return 1;
                 }
                 return 1;
             }
@@ -101,6 +108,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         ArrayList<DigitalContentBO> mDigitalContentList;
         ArrayList<DigitalContentBO> mImageList = new ArrayList<>();
         HashMap<String, ArrayList<DigitalContentBO>> month_wise_group = new HashMap<>();
+        HashMap<String, ArrayList<DigitalContentBO>> group_wise_group = new HashMap<>();
         mDigitalContentList = mDigitalContentHelper.getFilteredDigitalMaster();
 
         if (mDigitalContentList.size() > 0) {
@@ -112,62 +120,90 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
             }
 
             if (mImageList.size() > 0) {
-                Collections.sort(mImageList, DigitalContentBO.dateCompartor);
+                Collections.sort(mImageList, DigitalContentBO.sequenceComparotr);
 
                 String today = SDUtil.now(SDUtil.DATE_GLOBAL);
                 String mCurrentDay = today.split("/")[2];
-                String current_month_year = today.split(mCurrentDay)[0];
                 String current_month = today.split("/")[1];
                 String mCurrentYear = today.split("/")[0];
+                String current_month_year = mCurrentYear + "/" + current_month + "/";
                 String previous_month_year = mCurrentYear + "/" + (Integer.parseInt(current_month) - 1) + "/";
 
-                month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
-                month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());
-                month_wise_group.put("OLDER", new ArrayList<DigitalContentBO>());
-                ArrayList<DigitalContentBO> temp;
-                for (int i = 0; i < mImageList.size(); i++) {
-                    if (mImageList.get(i).getImageDate().startsWith(current_month_year)) {
-                        temp = (month_wise_group.get("THIS MONTH"));
-                        if (temp.size() < 1) {
-                            DigitalContentBO digital = new DigitalContentBO();
-                            digital.setHeader(true);
-                            digital.setHeaderTitle("THIS MONTH");
-                            temp.add(digital);
-                        }
 
-                        temp.add(mImageList.get(i));
-                        month_wise_group.put("THIS MONTH", temp);
-                    } else if (mImageList.get(i).getImageDate().startsWith(previous_month_year)) {
-                        temp = (month_wise_group.get("PREVIOUS MONTH"));
-                        if (temp.size() < 1) {
-                            DigitalContentBO digital = new DigitalContentBO();
-                            digital.setHeader(true);
-                            digital.setHeaderTitle("PREVIOUS MONTH");
-                            temp.add(digital);
+                ArrayList<String> mGroupList = new ArrayList<>();
+                for (int i = 0; i < mImageList.size(); i++) {
+                    String groupName = mImageList.get(i).getGroupName();
+                    if (!month_wise_group.containsKey(groupName) && !groupName.equalsIgnoreCase("")) {
+                        month_wise_group.put(groupName, new ArrayList<DigitalContentBO>());
+                        mGroupList.add(groupName);
+                    }
+                }
+                Collections.sort(mImageList, DigitalContentBO.dateCompartor);
+
+                ArrayList<DigitalContentBO> temp;
+                ArrayList<DigitalContentBO> tempGp;
+                for (int i = 0; i < mGroupList.size(); i++) {
+                    month_wise_group.put(THIS_MONTH, new ArrayList<DigitalContentBO>());
+                    month_wise_group.put(PREVIOUS_MONTH, new ArrayList<DigitalContentBO>());
+                    month_wise_group.put(OLDER, new ArrayList<DigitalContentBO>());
+                    for (int j = 0; j < mImageList.size(); j++) {
+                        if (mImageList.get(j).getGroupName().equalsIgnoreCase(mGroupList.get(i))) {
+                            tempGp = (month_wise_group.get(mGroupList.get(i)));
+                            if (tempGp.size() == 0) {
+                                if (!mGroupList.get(i).equalsIgnoreCase("NA") && mGroupList.size() > 1) {
+                                    DigitalContentBO digital = new DigitalContentBO();
+                                    digital.setGroupName(mGroupList.get(i));
+                                    digital.setGroupHeader(true);
+                                    tempGp.add(digital);
+                                }
+                            }
+                            if (mImageList.get(j).getImageDate().startsWith(current_month_year)) {
+                                temp = (month_wise_group.get(THIS_MONTH));
+                                if (temp.size() == 0) {
+                                    DigitalContentBO digital = new DigitalContentBO();
+                                    digital.setHeader(true);
+                                    digital.setHeaderTitle(THIS_MONTH);
+                                    temp.add(digital);
+                                    tempGp.add(digital);
+                                }
+                                temp.add(mImageList.get(j));
+                                tempGp.add(mImageList.get(j));
+                                group_wise_group.put(mGroupList.get(i), tempGp);
+                            } else if (mImageList.get(j).getImageDate().startsWith(previous_month_year)) {
+                                temp = (month_wise_group.get(PREVIOUS_MONTH));
+                                if (temp.size() == 0) {
+                                    DigitalContentBO digital = new DigitalContentBO();
+                                    digital.setHeader(true);
+                                    digital.setHeaderTitle(PREVIOUS_MONTH);
+                                    temp.add(digital);
+                                    tempGp.add(digital);
+                                }
+                                temp.add(mImageList.get(j));
+                                tempGp.add(mImageList.get(j));
+                                group_wise_group.put(mGroupList.get(i), tempGp);
+                            } else {
+                                temp = (month_wise_group.get(OLDER));
+                                if (temp.size() == 0) {
+                                    DigitalContentBO digital = new DigitalContentBO();
+                                    digital.setHeader(true);
+                                    digital.setHeaderTitle(OLDER);
+                                    temp.add(digital);
+                                    tempGp.add(digital);
+                                }
+                                temp.add(mImageList.get(j));
+                                tempGp.add(mImageList.get(j));
+                                group_wise_group.put(mGroupList.get(i), tempGp);
+                            }
                         }
-                        temp.add(mImageList.get(i));
-                        month_wise_group.put("PREVIOUS MONTH", temp);
-                    } else {
-                        temp = (month_wise_group.get("OLDER"));
-                        if (temp.size() < 1) {
-                            DigitalContentBO digital = new DigitalContentBO();
-                            digital.setHeader(true);
-                            digital.setHeaderTitle("OLDER");
-                            temp.add(digital);
-                        }
-                        temp.add(mImageList.get(i));
-                        month_wise_group.put("OLDER", temp);
                     }
                 }
                 mImageList.clear();
-                if (month_wise_group.get("THIS MONTH") != null && month_wise_group.get("THIS MONTH").size() != 0) {
-                    mImageList.addAll(month_wise_group.get("THIS MONTH"));
-                }
-                if (month_wise_group.get("PREVIOUS MONTH") != null && month_wise_group.get("PREVIOUS MONTH").size() != 0) {
-                    mImageList.addAll(month_wise_group.get("PREVIOUS MONTH"));
-                }
-                if (month_wise_group.get("OLDER") != null && month_wise_group.get("OLDER").size() != 0) {
-                    mImageList.addAll(month_wise_group.get("OLDER"));
+
+                for (int i=0;i<mGroupList.size(); i++)
+                {
+                    if (group_wise_group.get(mGroupList.get(i)) != null && group_wise_group.get(mGroupList.get(i)).size() != 0) {
+                        mImageList.addAll(group_wise_group.get(mGroupList.get(i)));
+                    }
                 }
                 mRecyclerAdapter = new RecyclerViewAdapter(mImageList);
                 recyclerview.setAdapter(mRecyclerAdapter);
@@ -195,6 +231,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         ArrayList<DigitalContentBO> items;
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
+        private static final int TYPE_GROUP = 2;
 
         RecyclerViewAdapter(ArrayList<DigitalContentBO> items) {
             this.items = items;
@@ -213,6 +250,10 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 //inflate your layout and pass it to view holder
                 return new VHHeader(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.row_digital_content_header, parent, false));
+            } else if (viewType == TYPE_GROUP) {
+                //inflate your layout and pass it to view holder
+                return new VHGroupHeader(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.row_digital_content_group_header, parent, false));
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
 
@@ -261,6 +302,8 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 });
             } else if (holder instanceof VHHeader) {
                 ((VHHeader) holder).month_label.setText(items.get(position).getHeaderTitle());
+            } else if (holder instanceof VHGroupHeader) {
+                ((VHGroupHeader) holder).TVGroupLabel.setText(items.get(position).getGroupName());
             }
 
 
@@ -270,20 +313,27 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         public int getItemViewType(int position) {
             if (isPositionHeader(position))
                 return TYPE_HEADER;
-
-            return TYPE_ITEM;
+            else if (isPosGroupHeader(position))
+                return TYPE_GROUP;
+            else
+                return TYPE_ITEM;
         }
 
         private boolean isPositionHeader(int position) {
             return items.get(position).isHeader();
         }
 
+        private boolean isPosGroupHeader(int position) {
+            return items.get(position).isGroupHeader();
+        }
+
+
         @Override
         public int getItemCount() {
             return items.size();
         }
 
-        public class VHItem extends RecyclerView.ViewHolder {
+        class VHItem extends RecyclerView.ViewHolder {
             TextView mProductNameDescription, date, mProductName, month_label;
             ImageView image;
             String filename;
@@ -306,6 +356,15 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
             public VHHeader(View itemView) {
                 super(itemView);
                 month_label = (TextView) itemView.findViewById(R.id.month_label);
+            }
+        }
+
+        class VHGroupHeader extends RecyclerView.ViewHolder {
+            TextView TVGroupLabel;
+
+            public VHGroupHeader(View view) {
+                super(view);
+                TVGroupLabel = (TextView) view.findViewById(R.id.group_label);
             }
         }
     }
