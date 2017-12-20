@@ -2863,6 +2863,8 @@ public class ProductHelper {
                 product.getLocations().get(z).setShelfCase(-1);
                 product.getLocations().get(z).setShelfPiece(-1);
 
+                product.getLocations().get(z).setAvailability(-1);
+                
                 product.getLocations().get(z).setWHOuter(0);
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);

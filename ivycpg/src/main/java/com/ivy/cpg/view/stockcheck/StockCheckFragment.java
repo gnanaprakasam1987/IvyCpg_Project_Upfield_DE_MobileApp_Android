@@ -313,7 +313,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
             if (!businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
                 view.findViewById(R.id.shelfCaseTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -361,6 +360,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     Commons.printException(e + "");
                 }
             }
+
+            if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
+
+            }
+
             if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL) {
                 view.findViewById(R.id.exp_stktotalTitle).setVisibility(View.GONE);
             } else {
@@ -538,6 +545,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL)
                         holder.total.setVisibility(View.GONE);
 
+                    if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                        row.findViewById(R.id.layout_shelf).setVisibility(View.GONE);
+
+                    }
 
                     holder.audit.setOnClickListener(new OnClickListener() {
 

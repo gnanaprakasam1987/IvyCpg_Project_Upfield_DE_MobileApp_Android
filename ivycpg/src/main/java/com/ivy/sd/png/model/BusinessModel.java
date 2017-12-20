@@ -4020,7 +4020,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK");
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", -1);
 
                 }
             }
@@ -4068,7 +4068,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2 from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -4091,10 +4091,11 @@ public class BusinessModel extends Application {
                     int facing = orderDetailCursor.getInt(13);
                     int pouring = orderDetailCursor.getInt(14);
                     int cocktail = orderDetailCursor.getInt(15);
+                    int availability = orderDetailCursor.getInt(16);
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode);
+                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability);
 
                 }
                 orderDetailCursor.close();
@@ -4114,7 +4115,9 @@ public class BusinessModel extends Application {
      */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
-                                         int locationId, int isDistributed, int isListed, String reasonID, int audit, int isOwn, int facing, int pouring, int cocktail, String menuCode) {
+                                         int locationId, int isDistributed, int isListed, String reasonID,
+                                         int audit, int isOwn, int facing, int pouring, int cocktail,
+                                         String menuCode, int availability) {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
@@ -4141,6 +4144,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setFacingQty(facing);
                     product.getLocations().get(j).setIsPouring(pouring);
                     product.getLocations().get(j).setCockTailQty(cocktail);
+                    product.getLocations().get(j).setAvailability(availability);
 
                     return;
                 }
@@ -6312,7 +6316,7 @@ public class BusinessModel extends Application {
             // ClosingStock Detail entry
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3";
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";
@@ -6387,7 +6391,8 @@ public class BusinessModel extends Application {
                                     + "," + product.getPcUomid()
                                     + "," + rField1
                                     + "," + rField2
-                                    + "," + rField3;
+                                    + "," + rField3
+                                    + "," + product.getLocations().get(j).getAvailability();
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 int pieces = (shelfCase * product.getCaseSize())
@@ -6473,7 +6478,9 @@ public class BusinessModel extends Application {
                                         + "," + taggedProduct.getPcUomid()
                                         + "," + rField1
                                         + "," + rField2
-                                        + "," + rField3;
+                                        + "," + rField3
+                                        + "," + taggedProduct.getLocations().get(j).getAvailability();
+
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                     int pieces = (shelfCase * taggedProduct.getCaseSize())
