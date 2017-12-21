@@ -1319,8 +1319,14 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
                 if (!(s.length() == 0)) {
                     s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0)
-                        s = "";
+                    if (s.length() == 0) {
+                        if (mSelectedET.getId() == etShelfOuter.getId() || mSelectedET.getId() == etShelfCase.getId() || mSelectedET.getId() == etShelfPiece.getId()) {
+                            s = "";
+                        } else {
+                            s = "0";
+                        }
+
+                    }
                 }
                 mSelectedET.setText(s);
 
