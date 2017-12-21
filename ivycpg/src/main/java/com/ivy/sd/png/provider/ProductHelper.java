@@ -8856,7 +8856,7 @@ public class ProductHelper {
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
-                    "A1.CPCode,A+" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
+                    "A1.CPCode,A" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
                         + ".CPID = A" + (i - 1) + ".CPTid";

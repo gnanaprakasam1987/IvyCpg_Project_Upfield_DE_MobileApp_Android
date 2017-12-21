@@ -715,10 +715,11 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
             for (RetailerMasterBO bo : mSecondRetailerList) {
                 temp.add(bo.getRetailerID());
             }
-
-            for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y")) && !temp.contains(bo.getRetailerID())) {
-                    retailerList.add(bo);
+            if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
+                    if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y")) && !temp.contains(bo.getRetailerID())) {
+                        retailerList.add(bo);
+                    }
                 }
             }
             bmodel.synchronizationHelper.downloadMasterListBySelectedRetailer(retailerList, SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION);

@@ -246,6 +246,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PHOTO_CAPTURE_COUNT = "PHOTOCAP01";
     private static final String CODE_ROAD_ACTIVITY_PHOTO_COUNT = "PHOTOCAP03";
     private static final String CODE_DOWNLOAD_ALERT = "SYNC01";
+    private static final String CODE_DELETE_TABLE_ADHOC = "SYNC10";
     private static final String CODE_SHOW_SIH_IN_FNAME = "ORDB34";
     // Added in 42 version
     private static final String CODE_SHOW_SYNC_RETAILER_SELECT = "SYNC02";
@@ -788,6 +789,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_VALIDATE_NEGATIVE_INVOICE;
     public boolean SHOW_GCM_NOTIFICATION;
     public boolean SHOW_PREV_ORDER_REPORT;
+    public boolean IS_DELETE_TABLE;
     public boolean SHOW_INDICATIVE_ORDER_ICON;
     public boolean SHOW_DATE_BTN;
     public boolean IS_DIGITAL_CONTENT; // Activity Menu
@@ -1761,6 +1763,7 @@ public class ConfigurationMasterHelper {
         this.IS_VALIDATE_NEGATIVE_INVOICE = hashMapHHTModuleConfig.get(CODE_VALIDATE_NEGATIVE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_NEGATIVE_INVOICE) : false;
         this.SHOW_GCM_NOTIFICATION = hashMapHHTModuleConfig.get(CODE_SHOW_GCM_NOTIFICATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_GCM_NOTIFICATION) : false;
         this.SHOW_PREV_ORDER_REPORT = hashMapHHTModuleConfig.get(CODE_SHOW_PREV_ORDER_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PREV_ORDER_REPORT) : false;
+        this.IS_DELETE_TABLE = hashMapHHTModuleConfig.get(CODE_DELETE_TABLE_ADHOC) != null ? hashMapHHTModuleConfig.get(CODE_DELETE_TABLE_ADHOC) : false;
         this.SHOW_INDICATIVE_ORDER_ICON = hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) : false;
         this.SHOW_DGTC = hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) : false;
         this.SHOW_INVOICE_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) : false;
