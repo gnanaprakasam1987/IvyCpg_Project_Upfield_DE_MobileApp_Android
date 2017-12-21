@@ -138,7 +138,12 @@ public class PriceTrackingHelper {
      */
     private void setPrevPrice(String pid, String price, int uomid, String mrp, int own) {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
-        ProductMasterBO sku = bmodel.productHelper.getTaggedProductBOById(pid);
+        ProductMasterBO sku;
+        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+            sku = bmodel.productHelper.getProductMasterBOById(pid);
+        } else {
+            sku = bmodel.productHelper.getTaggedProductBOById(pid);
+        }
         if (sku != null) {
             if (sku.getOwn() == own) {
                 if (sku.getCaseUomId() == uomid) {
@@ -168,7 +173,12 @@ public class PriceTrackingHelper {
                           int compliance, String reasonId, int own, int uomID, String mrp, String mop) {
 
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
-        ProductMasterBO productBO = bmodel.productHelper.getTaggedProductBOById(pid);
+        ProductMasterBO productBO;
+        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+            productBO = bmodel.productHelper.getProductMasterBOById(pid);
+        } else {
+            productBO = bmodel.productHelper.getTaggedProductBOById(pid);
+        }
         if (productBO != null) {
             if (productBO.getOwn() == own) {
                 productBO.setPriceChanged(changed);

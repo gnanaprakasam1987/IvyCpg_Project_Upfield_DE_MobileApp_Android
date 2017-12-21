@@ -402,13 +402,14 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             if (product.getLocations().get(i).getShelfOuter() > -1)
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
-
+/*
             if (product.getLocations().get(i).getAvailability() > -1)
-                totalQty += product.getLocations().get(i).getAvailability();
+                totalQty += product.getLocations().get(i).getAvailability();*/
         }
         return totalQty;
 
     }
+
 
     public void updateGeneralText(String mFilterText) {
         fiveFilter_productIDs = null;

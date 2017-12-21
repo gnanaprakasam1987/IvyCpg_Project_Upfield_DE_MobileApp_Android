@@ -736,33 +736,27 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfPiece(sp_qty);
 
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-
-                                        holder.total
-                                                .setText(totValue + "");
-                                        /*if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                            if (!holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (totValue <= 0) {
-                                                holder.avail_cb.setChecked(false);
-                                            }
-                                        }*/
                                     } else {
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfPiece(-1);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    }
 
+                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                         holder.total
                                                 .setText(totValue + "");
-                                        /*if (totValue <= 0) {
-                                            holder.avail_cb.setChecked(false);
-                                        }*/
+                                    if (totValue > 0) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.setReasonID("0");
+                                    } else {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
                                     }
+
+
                                 }
 
                                 @Override
@@ -789,33 +783,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfCase(shelf_case_qty);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
 
-                                        holder.total
-                                                .setText(totValue + "");
-                                        /*if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                            if (!holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (totValue <= 0) {
-                                                holder.avail_cb.setChecked(false);
-                                            }
-                                        }*/
                                     } else {
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfCase(-1);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    }
 
+                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                         holder.total
                                                 .setText(totValue + "");
-                                        /*if (totValue <= 0) {
-                                            holder.avail_cb.setChecked(false);
-                                        }*/
+                                    if (totValue > 0) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.setReasonID("0");
+                                    } else {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
+
                                     }
+
                                 }
 
                                 @Override
@@ -853,28 +842,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
                                         .setShelfOuter(shelf_o_qty);
-                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                holder.total
-                                        .setText(totValue + "");
-                               /* if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                    if (!holder.avail_cb.isChecked()
-                                            && totValue > 0)
-                                        holder.avail_cb.setChecked(true);
-                                    else if (totValue <= 0) {
-                                        holder.avail_cb.setChecked(false);
-                                    }
-                                }*/
+
                             } else {
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
                                         .setShelfOuter(-1);
-                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
 
+                            }
+
+
+                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                 holder.total
                                         .setText(totValue + "");
-                                /*if (totValue <= 0) {
-                                    holder.avail_cb.setChecked(false);
-                                }*/
+                            if (totValue > 0) {
+                                holder.mReason.setEnabled(false);
+                                holder.mReason.setSelected(false);
+                                holder.mReason.setSelection(0);
+                                holder.productObj.setReasonID("0");
+                            } else {
+                                holder.mReason.setEnabled(true);
+                                holder.mReason.setSelected(true);
+                                holder.mReason.setSelection(0);
+
                             }
 
                         }
@@ -1155,7 +1144,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfPiece = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfPiece()
                                 + "";
-                        holder.shelfPcsQty.setText(strShelfPiece.equals("0") ? "" : strShelfPiece);
+                        holder.shelfPcsQty.setText(strShelfPiece);
                     } else {
                         holder.shelfPcsQty.setText("");
                     }
@@ -1167,7 +1156,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfCase = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfCase()
                                 + "";
-                        holder.shelfCaseQty.setText(strShelfCase.equals("0") ? "" : strShelfCase);
+                        holder.shelfCaseQty.setText(strShelfCase);
                     } else {
                         holder.shelfCaseQty.setText("");
                     }
@@ -1178,7 +1167,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfOuter = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfOuter()
                                 + "";
-                        holder.shelfouter.setText(strShelfOuter.equals("0") ? "" : strShelfOuter);
+                        holder.shelfouter.setText(strShelfOuter);
                     } else {
                         holder.shelfouter.setText("");
                     }
@@ -2058,4 +2047,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
         selectTab("ALL");
     }
+
+
 }

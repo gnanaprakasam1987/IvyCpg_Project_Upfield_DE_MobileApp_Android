@@ -33,12 +33,15 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+
+import java.util.Vector;
 
 public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     BusinessModel bmodel;
@@ -216,8 +219,13 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     private void process() {
         if (screenTitle != null)
             setScreenTitle(screenTitle);
-        if (Pid != null)
-            mProductMasterBO = bmodel.productHelper.getTaggedProductBOById(Pid);
+        if (Pid != null) {
+            if (!bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                mProductMasterBO = bmodel.productHelper.getTaggedProductBOById(Pid);
+            } else {
+                mProductMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            }
+        }
 
         if (mProductMasterBO != null) {
 
@@ -423,21 +431,25 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                                         .setShelfPiece(sp_qty);
 
 
-                                if (!rbYesAvai.isChecked()
-                                        && sp_qty > 0)
-                                    rbYesAvai.setChecked(true);
-
-                                else if (sp_qty <= 0) {
-                                    rbNoAvai.setChecked(true);
-                                    mReason.setSelection(getReasonIndex(mProductMasterBO
-                                            .getReasonID()));
-                                }
-
                             } else {
                                 mProductMasterBO.getLocations()
                                         .get(mSelectedLocationIndex)
                                         .setShelfPiece(-1);
                             }
+
+
+                            int totValue = getProductTotalValue(mProductMasterBO);
+                            if (totValue > 0) {
+                                mReason.setEnabled(false);
+                                mReason.setSelected(false);
+                                mReason.setSelection(0);
+                                mProductMasterBO.setReasonID("0");
+                            } else {
+                                mReason.setEnabled(true);
+                                mReason.setSelected(true);
+                                mReason.setSelection(0);
+                            }
+
                         }
 
                         @Override
@@ -489,6 +501,19 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                                 mProductMasterBO.getLocations()
                                         .get(mSelectedLocationIndex)
                                         .setShelfCase(-1);
+                            }
+
+
+                            int totValue = getProductTotalValue(mProductMasterBO);
+                            if (totValue > 0) {
+                                mReason.setEnabled(false);
+                                mReason.setSelected(false);
+                                mReason.setSelection(0);
+                                mProductMasterBO.setReasonID("0");
+                            } else {
+                                mReason.setEnabled(true);
+                                mReason.setSelected(true);
+                                mReason.setSelection(0);
                             }
                         }
 
@@ -549,6 +574,19 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
                                 .setShelfOuter(-1);
+                    }
+
+
+                    int totValue = getProductTotalValue(mProductMasterBO);
+                    if (totValue > 0) {
+                        mReason.setEnabled(false);
+                        mReason.setSelected(false);
+                        mReason.setSelection(0);
+                        mProductMasterBO.setReasonID("0");
+                    } else {
+                        mReason.setEnabled(true);
+                        mReason.setSelected(true);
+                        mReason.setSelection(0);
                     }
 
                 }
@@ -1019,16 +1057,16 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         rbYesAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_green));
                         rbNoAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
                         rbNoAvai.setButtonDrawable(R.drawable.ic_cross_disable);
-                        if (mProductMasterBO
+
+                        mProductMasterBO
                                 .getLocations()
-                                .get(mSelectedLocationIndex)
-                                .getShelfPiece() == 0) {
-                            etShelfPiece.setText("1");
+                                .get(mSelectedLocationIndex).setAvailability(1);
+
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
                             mProductMasterBO.setReasonID("0");
-                        }
+
                     }
 
                 }
@@ -1043,7 +1081,12 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         rbYesAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
                         rbNoAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_no_red));
 
-                        etShelfPiece.setText("0");
+
+                        mProductMasterBO
+                                .getLocations()
+                                .get(mSelectedLocationIndex).setAvailability(0);
+
+
                         facingQty.setText("0");
                         mReason.setEnabled(true);
                         mReason.setSelected(true);
@@ -1120,7 +1163,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
             if (mProductMasterBO.getLocations()
                     .get(mSelectedLocationIndex)
-                    .getShelfPiece() > 0) {
+                    .getShelfPiece() > -1 || mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getAvailability() > -1) {
                 mReason.setEnabled(false);
                 mReason.setSelected(false);
                 mReason.setSelection(0);
@@ -1130,19 +1174,35 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             }
 
 
-            String strShelfPiece = mProductMasterBO.getLocations()
-                    .get(mSelectedLocationIndex).getShelfPiece()
-                    + "";
-            etShelfPiece.setText(strShelfPiece);
-            String strShelfCase = mProductMasterBO.getLocations()
-                    .get(mSelectedLocationIndex).getShelfCase()
-                    + "";
-            etShelfCase.setText(strShelfCase);
+            if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getShelfPiece() > -1) {
+                String strShelfPiece = mProductMasterBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfPiece()
+                        + "";
+                etShelfPiece.setText(strShelfPiece);
+            } else {
+                etShelfPiece.setText("");
+            }
 
-            String strShelfOuter = mProductMasterBO.getLocations()
-                    .get(mSelectedLocationIndex).getShelfOuter()
-                    + "";
-            etShelfOuter.setText(strShelfOuter);
+            if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getShelfCase() > -1) {
+                String strShelfCase = mProductMasterBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfCase()
+                        + "";
+                etShelfCase.setText(strShelfCase);
+            } else {
+                etShelfCase.setText("");
+            }
+
+            if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getShelfOuter() > -1) {
+                String strShelfOuter = mProductMasterBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfOuter()
+                        + "";
+                etShelfOuter.setText(strShelfOuter);
+            } else {
+                etShelfOuter.setText("");
+            }
 
             etPriceOuter.setText(mProductMasterBO.getPrice_oo());
             etPriceCase.setText(mProductMasterBO.getPrice_ca());
@@ -1260,7 +1320,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 if (!(s.length() == 0)) {
                     s = s.substring(0, s.length() - 1);
                     if (s.length() == 0)
-                        s = "0";
+                        s = "";
                 }
                 mSelectedET.setText(s);
 
@@ -1379,6 +1439,27 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
         AlertDialog alertDialog1 = alertDialogBuilder1.create();
         alertDialog1.show();
+    }
+
+    public int getProductTotalValue(ProductMasterBO product) {
+        int totalQty = 0;
+        Vector<StandardListBO> locationList = bmodel.productHelper
+                .getInStoreLocation();
+
+        int size = locationList.size();
+        for (int i = 0; i < size; i++) {
+
+            if (product.getLocations().get(i).getShelfPiece() > -1)
+                totalQty += product.getLocations().get(i).getShelfPiece();
+            if (product.getLocations().get(i).getShelfCase() > -1)
+                totalQty += (product.getLocations().get(i).getShelfCase() * product
+                        .getCaseSize());
+            if (product.getLocations().get(i).getShelfOuter() > -1)
+                totalQty += (product.getLocations().get(i).getShelfOuter() * product
+                        .getOutersize());
+        }
+        return totalQty;
+
     }
 }
 

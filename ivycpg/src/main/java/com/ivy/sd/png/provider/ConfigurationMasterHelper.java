@@ -1201,6 +1201,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
 
+    private static final String CODE_COMBINED_STOCK_CHECK_FROM_ORDER = "ORDB71";
+    public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
+
     public int MVPTheme = 0;
     public String fontSize = "";
 
@@ -2127,6 +2130,8 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
+        this.IS_COMBINED_STOCK_CHECK_FROM_ORDER = hashMapHHTModuleConfig.get(CODE_COMBINED_STOCK_CHECK_FROM_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_COMBINED_STOCK_CHECK_FROM_ORDER) : false;
+
 
     }
 

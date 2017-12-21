@@ -1811,9 +1811,27 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar {
                         bmodel.setEditStockCheck(false);
                         if (bmodel.hasAlreadyStockChecked(bmodel
                                 .getRetailerMasterBO().getRetailerID())) {
+
                             bmodel.setEditStockCheck(true);
                             bmodel.loadStockCheckedProducts(bmodel
                                     .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+
+
+                            if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                                if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
+                                        && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
+                                    NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
+                                    mNearExpiryHelper.loadSKUTracking(false);
+                                }
+
+                                if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
+                                    PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
+                                    priceTrackingHelper.loadPriceTransaction();
+                                    if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                                        priceTrackingHelper.updateLastVisitPriceAndMRP();
+                                    }
+                                }
+                            }
                         }
                         bmodel.productHelper.setProductImageUrl();
                         bmodel.setEdit(false);
