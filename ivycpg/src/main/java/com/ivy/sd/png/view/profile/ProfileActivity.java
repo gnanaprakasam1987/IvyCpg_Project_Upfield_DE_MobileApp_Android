@@ -182,10 +182,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private static final String ASSET_HISTORY = "Asset History";
     private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
 
-
     Timer mLocTimer;
     LocationFetchTimer timerTask;
     private AlertDialog mLocationAlertDialog;
+
+    private DownloadProductsAndPrice downloadProductsAndPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +241,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         bundle.putBoolean("fromHomeClick", fromHomeClick);
         bundle.putBoolean("non_visit", non_visit);
         addTabLayout();
+        downloadProductsAndPrice = new DownloadProductsAndPrice();
         hideVisibleComponents();
 
         try {
@@ -1593,7 +1595,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
-            new DownloadProductsAndPrice().execute();
+            downloadProductsAndPrice.execute();
+            // new DownloadProductsAndPrice().execute();
         }
     }
 
@@ -1613,7 +1616,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        new DownloadProductsAndPrice().execute();
+                                       // new DownloadProductsAndPrice().execute();
+                                        downloadProductsAndPrice.execute();
 
                                     }
                                 })
@@ -1835,78 +1839,79 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
-    class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
+    private class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
 
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_STK_ORD);
-                    bmodel.productHelper
-                            .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
-                } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                    //to reload product filter if diffrent retailer selected
-                    bmodel.productHelper.setmLoadedGlobalProductId(0);
-                }
-                bmodel.configurationMasterHelper
-                        .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
-                                .getSubchannelid());
-                if (bmodel.productHelper.isSBDFilterAvaiable())
-                    bmodel.productHelper.loadSBDFocusData();
-
-                if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                    bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
-                            .getRetailerMasterBO().getGroupId());
-                    bmodel.batchAllocationHelper.downloadProductBatchCount();
-                }
-
-                if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
-                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
-                    bmodel.productHelper.downloadBomMaster();
-                    if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-                        bmodel.productHelper.downloadTypeProducts();
-                        bmodel.productHelper.downloadGenericProductID();
+                if (!isCancelled()) {
+                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                        bmodel.productHelper
+                                .downloadFiveFilterLevels(MENU_STK_ORD);
+                        bmodel.productHelper
+                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+                    } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                        //to reload product filter if diffrent retailer selected
+                        bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
-                }
+                    bmodel.configurationMasterHelper
+                            .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
+                                    .getSubchannelid());
+                    if (bmodel.productHelper.isSBDFilterAvaiable())
+                        bmodel.productHelper.loadSBDFocusData();
 
-                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                    bmodel.getRetailerWiseSellerType();
-                }
+                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
+                                .getRetailerMasterBO().getGroupId());
+                        bmodel.batchAllocationHelper.downloadProductBatchCount();
+                    }
 
-                // load scheme details
-                if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER) {
+                    if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
+                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
+                        bmodel.productHelper.downloadBomMaster();
+                        if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
+                            bmodel.productHelper.downloadTypeProducts();
+                            bmodel.productHelper.downloadGenericProductID();
+                        }
+                    }
 
-                    if (bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE) {
-                        if (!("Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
+                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        bmodel.getRetailerWiseSellerType();
+                    }
 
+                    // load scheme details
+                    if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER) {
+
+                        if (bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE) {
+                            if (!("Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
+
+                                bmodel.schemeDetailsMasterHelper
+                                        .downloadSchemeMethods();
+                            }
+                        } else {
                             bmodel.schemeDetailsMasterHelper
                                     .downloadSchemeMethods();
                         }
                     } else {
-                        bmodel.schemeDetailsMasterHelper
-                                .downloadSchemeMethods();
+                        bmodel.schemeDetailsMasterHelper.setIsScheme();
                     }
-                } else {
-                    bmodel.schemeDetailsMasterHelper.setIsScheme();
+
+                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
+                        bmodel.productHelper.downloadProductDiscountDetails();
+                        bmodel.productHelper.downloadDiscountIdListByTypeId();
+                    }
+
+                    if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
+                        bmodel.productHelper.downloadDocketPricing();
+                    }
+
+                    //Getting Attributes mapped for the retailer
+                    bmodel.getAttributeHierarchyForRetailer();
+
                 }
-
-                if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
-                    bmodel.productHelper.downloadProductDiscountDetails();
-                    bmodel.productHelper.downloadDiscountIdListByTypeId();
-                }
-
-                if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
-                    bmodel.productHelper.downloadDocketPricing();
-                }
-
-                //Getting Attributes mapped for the retailer
-                bmodel.getAttributeHierarchyForRetailer();
-
-
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
@@ -1914,45 +1919,48 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(ProfileActivity.this);
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
+            if(!isCancelled()) {
+                builder = new AlertDialog.Builder(ProfileActivity.this);
+                customProgressDialog(builder, getResources().getString(R.string.loading));
+                alertDialog = builder.create();
+                alertDialog.show();
+            }
         }
 
         protected void onProgressUpdate(Integer... progress) {
         }
 
         protected void onPostExecute(Boolean result) {
+            if(!isCancelled()) {
+                // to get last user visited retailer sequence and location to calculate distance..
+                bmodel.outletTimeStampHelper.getlastRetailerDatas();
+                float distance = calculateDistanceBetweenRetailers();
 
-            // to get last user visited retailer sequence and location to calculate distance..
-            bmodel.outletTimeStampHelper.getlastRetailerDatas();
-            float distance = calculateDistanceBetweenRetailers();
+                String date = SDUtil.now(SDUtil.DATE_GLOBAL);
+                String time = SDUtil.now(SDUtil.TIME);
+                temp = SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-            String time = SDUtil.now(SDUtil.TIME);
-            temp = SDUtil.now(SDUtil.DATE_TIME_ID);
+                bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
+                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
 
-            bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-            bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
+                bmodel.outletTimeStampHelper.saveTimeStamp(
+                        SDUtil.now(SDUtil.DATE_GLOBAL), time
+                        , distance, photoPath, fnameStarts, mVisitMode, mNFCREasonId);
 
-            bmodel.outletTimeStampHelper.saveTimeStamp(
-                    SDUtil.now(SDUtil.DATE_GLOBAL), time
-                    , distance, photoPath, fnameStarts, mVisitMode, mNFCREasonId);
+                alertDialog.dismiss();
 
-            alertDialog.dismiss();
+                //set selected retailer location and its used on retailer modules
+                bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
+                bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
 
-            //set selected retailer location and its used on retailer modules
-            bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
-            bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
+                Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
 
-            Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
-
-            Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
-            i.putExtra("isLocDialog", true);
-            i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(i);
-            finish();
+                Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
+                i.putExtra("isLocDialog", true);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                finish();
+            }
         }
     }
 
@@ -2008,7 +2016,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
-                if (visitclick) {
+                if (!visitclick) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
                     finish();
@@ -2070,6 +2078,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
             unregisterReceiver(receiver);
         }
+
+        if(downloadProductsAndPrice.getStatus()== AsyncTask.Status.RUNNING)
+            downloadProductsAndPrice.cancel(true);
+
     }
 
     public class UserRetailerTransactionReceiver extends BroadcastReceiver {
@@ -2114,8 +2126,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
-
-                new DownloadProductsAndPrice().execute();
+                downloadProductsAndPrice.execute();
+                // new DownloadProductsAndPrice().execute();
                 break;
             default:
                 break;
