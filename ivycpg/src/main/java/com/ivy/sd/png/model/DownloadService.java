@@ -168,8 +168,13 @@ public class DownloadService extends IntentService {
                             if (errorLoginCode != null) {
                                 if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                                     if (isFromWhere == SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION) {
-                                        bmodel.synchronizationHelper
-                                                .parseJSONAndInsert(jsonLoginObject, true);
+                                        if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+                                            bmodel.synchronizationHelper
+                                                    .parseJSONAndInsert(jsonLoginObject, true);
+                                        } else {
+                                            bmodel.synchronizationHelper
+                                                    .parseJSONAndInsert(jsonLoginObject, false);
+                                        }
                                     } else {
                                         bmodel.synchronizationHelper
                                                 .parseJSONAndInsert(jsonLoginObject, false);

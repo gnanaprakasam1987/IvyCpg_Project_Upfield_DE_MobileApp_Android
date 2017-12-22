@@ -574,6 +574,20 @@ SynchronizationHelper {
         }
     }
 
+    private void updateOrderStatus() {
+        //Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' where RetailerID in(Select RetailerID from OrderHeader)
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.updateSQL("Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
     public boolean checkSIHTable() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -740,10 +754,10 @@ SynchronizationHelper {
 
             /** Added following line to fix the Order split download issues. **/
             if (!bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                bmodel.synchronizationHelper.deleteOrderHistory();
+                deleteOrderHistory();
             }
 
-            bmodel.synchronizationHelper.deleteDBFromSD();
+            deleteDBFromSD();
 
             try {
 
@@ -3396,7 +3410,7 @@ SynchronizationHelper {
             }
             String url;
             if (flag == DataMembers.SYNCSIHUPLOAD) {
-                url = bmodel.synchronizationHelper.getUploadUrl("UPLDSIH");
+                url = getUploadUrl("UPLDSIH");
                 if (url.length() == 0) {
                     responceMessage = 2;
                     return responceMessage;
@@ -4286,7 +4300,7 @@ SynchronizationHelper {
             jsonFormatter.addParameter("VanId", bmodel.userMasterHelper
                     .getUserMasterBO().getVanId());
             String LastDayClose = "";
-            if (bmodel.synchronizationHelper.isDayClosed()) {
+            if (isDayClosed()) {
                 LastDayClose = bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate();
             }
@@ -4295,9 +4309,9 @@ SynchronizationHelper {
                     .getUserMasterBO().getBranchId());
             jsonFormatter.addParameter("DownloadedDataDate", bmodel.userMasterHelper
                     .getUserMasterBO().getDownloadDate());
-            jsonFormatter.addParameter("DataValidationKey", bmodel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+            jsonFormatter.addParameter("DataValidationKey", generateChecksum(jsonobj.toString()));
             Commons.print(jsonFormatter.getDataInJson());
-            String appendurl = bmodel.synchronizationHelper.getUploadUrl("UPLDRET");
+            String appendurl = getUploadUrl("UPLDRET");
             if (appendurl.length() == 0)
                 return 2 + "";
             Vector<String> responseVector = bmodel.synchronizationHelper
@@ -4456,7 +4470,7 @@ SynchronizationHelper {
     }
 
     public void loadMethodsNew() {
-        bmodel.synchronizationHelper.setmJsonObjectResponseBytableName(null);
+        setmJsonObjectResponseBytableName(null);
 
         // If usermaster get updated
         bmodel.userMasterHelper.downloadUserDetails();
@@ -4476,10 +4490,12 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.getPrinterConfig();
 
         if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            bmodel.synchronizationHelper.backUpPreviousDayOrder();
-
+            backUpPreviousDayOrder();
+            deleteOrderHistory();
         }
-        bmodel.synchronizationHelper.deleteOrderHistory();
+        if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+            updateOrderStatus();
+        }
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
@@ -4533,7 +4549,7 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
-            bmodel.synchronizationHelper.setEncryptType();
+            setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/" + DataMembers.PRINT_FILE_PATH + "/");
@@ -4555,12 +4571,12 @@ SynchronizationHelper {
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
-            if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() <= 0) {
+            if (getmRetailerWiseIterateCount() <= 0) {
                 isLastVisitTranDownloadDone = true;
             }
             return NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD;
         } else if (!isSihDownloadDone
-                && !bmodel.synchronizationHelper.getSIHUrl().equals("")) {
+                && !getSIHUrl().equals("")) {
             isSihDownloadDone = true;
             return NEXT_METHOD.SIH_DOWNLOAD;
         } else if (bmodel.isDigitalContentAvailable()) {
