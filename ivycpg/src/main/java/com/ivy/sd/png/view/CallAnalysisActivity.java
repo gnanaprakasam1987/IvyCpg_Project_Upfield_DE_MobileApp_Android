@@ -12,7 +12,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -63,7 +68,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private TextView mTime;
     private ArrayAdapter<ReasonMaster> spinnerAdapter, collectionReasonAdapter, feedBackReasonAdapter;
     public static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
-    private ListView listview;
+    //  private ListView listview;
+    private RecyclerView recyclerView;
     private ArrayList<ConfigureBO> visitConfig;
     private Vector<ConfigureBO> callanalysismenu = new Vector<ConfigureBO>();
     private int inittarget;
@@ -89,6 +95,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private CardView content_card;
 
     View view_sale_header;
+    //Close Call - CallA38
+    protected CardView contentCloseCall;
+    protected TextView TVMenuName, TVMenuValue;
+    protected boolean isCloseCallAsMenu = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,18 +137,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         content_card = (CardView) findViewById(R.id.content_card);
         try {
 
-            listview = (ListView) findViewById(R.id.callAnalysisList);
-            listview.setOnTouchListener(new OnTouchListener() {
-                // Setting on Touch Listener for handling the touch inside
-                // ScrollView
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    // Disallow the touch request for parent scroll on touch of
-                    // child view
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-            });
+            //  listview = (ListView) findViewById(R.id.callAnalysisList);
+            recyclerView = (RecyclerView) findViewById(R.id.callAnalysisListRecycler);
 
             mGoldStoreIV = (ImageView) findViewById(R.id.goldstore_iv);
             rl_store_status = (RelativeLayout) findViewById(R.id.rl_store_status);
@@ -148,7 +148,13 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             edt_noOrderReason = (EditText) findViewById(R.id.edtNoorderreason);
             edt_other_remarks = (EditText) findViewById(R.id.edt_other_remarks);
             mNoOrderCameraBTN = (Button) findViewById(R.id.btn_camera);
+            contentCloseCall = (CardView) findViewById(R.id.content_closeCallCard);
+            TVMenuName = (TextView) findViewById(R.id.tvMenuName);
+            TVMenuValue = (TextView) findViewById(R.id.tv_menuValue);
+            TVMenuName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            TVMenuValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+            contentCloseCall.setVisibility(View.GONE);
             if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_CAPTURE_PHOTO) {
                 mNoOrderCameraBTN.setVisibility(View.VISIBLE);
                 edt_noOrderReason.setVisibility(View.GONE);
@@ -245,6 +251,18 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             ArrayList<ConfigureBO> configlist = updateCallAnalysisMenu(callanalysismenu);
 
+            for (ConfigureBO configureBO : callanalysismenu) {
+                if (configureBO.getConfigCode().equalsIgnoreCase("CallA38")) {
+                    contentCloseCall.setVisibility(View.VISIBLE);
+                    TVMenuName.setText(configureBO.getMenuName());
+                    String lines[] = getMessage().split("\\r?\\n");
+                    StringBuilder sb = new StringBuilder();
+                    for (String str : lines)
+                        sb.append("* ").append(str).append("\n");
+                    TVMenuValue.setText(sb.toString());
+                    break;
+                }
+            }
 
             if (ScreenOrientation.isTabletDevice(this)) {
                 if (configlist.size() > 0) {
@@ -259,17 +277,30 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             lstRight.add(configlist.get(i));
                         }
                     }
-                    ListArrayAdapter adapter = new ListArrayAdapter(this,
-                            R.layout.call_analysis_list_item, lstLeft, lstRight);
-                    listview.setAdapter(adapter);
+//                    ListArrayAdapter adapter = new ListArrayAdapter(this,
+//                            R.layout.call_analysis_list_item, lstLeft, lstRight);
+//                    listview.setAdapter(adapter);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+                    RecyclerAdapter recyclerAdapter = new RecyclerAdapter(this, R.layout.call_analysis_list_item, configlist);
+                    recyclerView.setLayoutManager(gridLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+                    recyclerView.setAdapter(recyclerAdapter);
                 } else {
                     content_card.setVisibility(View.GONE);
                 }
 
             } else {
-                ListArrayAdapter adapter = new ListArrayAdapter(this,
-                        R.layout.call_analysis_list_item, configlist, null);
-                listview.setAdapter(adapter);
+//                ListArrayAdapter adapter = new ListArrayAdapter(this,
+//                        R.layout.call_analysis_list_item, configlist, null);
+//                listview.setAdapter(adapter);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                RecyclerAdapter recyclerAdapter = new RecyclerAdapter(this, R.layout.call_analysis_list_item, configlist);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+                recyclerView.setAdapter(recyclerAdapter);
                 if (configlist == null || configlist.size() == 0) {
                     content_card.setVisibility(View.GONE);
                 }
@@ -549,6 +580,173 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
     }
 
+    class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+        private Context context;
+        private int layoutResourceId;
+        private ArrayList<ConfigureBO> configlist;
+
+        private RecyclerAdapter(CallAnalysisActivity applicationContext,
+                                int simpleExpandableListItem2,
+                                ArrayList<ConfigureBO> configlist) {
+            context = applicationContext;
+            layoutResourceId = simpleExpandableListItem2;
+            this.configlist = configlist;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.call_analysis_list_item, parent, false);
+            return new MyViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            holder.Name.setText(configlist.get(position).getMenuName());
+
+            try {
+                if (configlist.get(position).getKpiTarget().equals("-1")) {
+                    holder.ll_seekbar.setVisibility(View.GONE);
+                    holder.tv_progress_text.setVisibility(View.GONE);
+
+                    holder.tv_achieved_value.setText(configlist.get(position).getMenuNumber());
+                    holder.tv_target_value.setVisibility(View.GONE);
+
+                } else {
+                    holder.ll_seekbar.setVisibility(View.VISIBLE);
+                    holder.tv_progress_text.setVisibility(View.VISIBLE);
+                    holder.tv_target_value.setVisibility(View.VISIBLE);
+
+                    holder.seekBar.setEnabled(false);
+                    holder.seekBar.setProgress((int) Double.parseDouble(configlist.get(position).getKpiAchieved()));
+                    holder.seekBar.setMax((int) Double.parseDouble(configlist.get(position).getKpiTarget()));
+
+
+                    holder.tv_achieved_value.setText(bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiAchieved())));
+                    holder.tv_target_value.setText("/" + bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiTarget())));
+
+                    if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) > 0) {
+                        int ach = (int) Double.parseDouble(configlist.get(position).getKpiAchieved());
+                        int tgt = (int) Double.parseDouble(configlist.get(position).getKpiTarget());
+                        int percent = (ach * 100) / tgt;
+                        if (percent > 100) {
+                            percent = 100;
+                        }
+                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+                    } /*else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
+                        holder.tv_progress_text.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
+                    }*/
+                }
+            } catch (Exception ex) {
+                Commons.printException(ex);
+            }
+
+//            if (holder.itemView.findViewById(R.id.ll_second_layout) != null && position < configlist_second.size()) {// Tab view
+//
+//                holder.itemView.findViewById(R.id.ll_second_layout).setVisibility(View.VISIBLE);
+//                holder.view_separator.setVisibility(View.VISIBLE);
+//
+//                holder.Name_right.setText(configlist_second.get(position).getMenuName());
+//
+//
+//                try {
+//                    if (configlist_second.get(position).getKpiTarget().equals("-1")) {
+//                        holder.ll_seekbar_right.setVisibility(View.GONE);
+//                        holder.tv_progress_text_right.setVisibility(View.GONE);
+//
+//                        holder.tv_achieved_value_right.setText(configlist_second.get(position).getMenuNumber());
+//                        holder.tv_target_value_right.setVisibility(View.GONE);
+//
+//                    } else {
+//                        holder.ll_seekbar_right.setVisibility(View.VISIBLE);
+//                        holder.tv_progress_text_right.setVisibility(View.VISIBLE);
+//                        holder.tv_target_value_right.setVisibility(View.VISIBLE);
+//
+//                        holder.seekBar_right.setProgress((int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()));
+//                        holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
+//                        holder.seekBar_right.setEnabled(false);
+//
+//                        holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
+//                        holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
+//
+//                        if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
+//                            int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
+//                            int tgt = (int) Double.parseDouble(configlist_second.get(position).getKpiTarget());
+//                            int percent = (ach * 100) / tgt;
+//                            if (percent > 100) {
+//                                percent = 100;
+//                            }
+//                            holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+//                        } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
+//                            holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+//                        }
+//                    }
+//                } catch (Exception ex) {
+//                    Commons.printException(ex);
+//                }
+//
+//            }
+
+            TypedArray typearr = CallAnalysisActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            if (position % 2 == 0) {
+                holder.itemView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
+            } else {
+                holder.itemView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return configlist.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+
+            TextView Name;
+            TextView tv_target_value;
+            TextView tv_achieved_value;
+            LinearLayout ll_seekbar;
+            SeekBar seekBar;
+            TextView tv_progress_text;
+//            TextView Name_right;
+//            TextView tv_target_value_right;
+//            TextView tv_achieved_value_right;
+//            LinearLayout ll_seekbar_right;
+//            SeekBar seekBar_right;
+//            TextView tv_progress_text_right;
+//            View view_separator;
+
+            MyViewHolder(View row) {
+                super(row);
+                Name = (TextView) row.findViewById(R.id.menunametxt);
+                Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tv_achieved_value = (TextView) row.findViewById(R.id.tv_menuvalue_achieved);
+                tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv_target_value = (TextView) row.findViewById(R.id.tv_menuvalue_target);
+                tv_target_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ll_seekbar = (LinearLayout) row.findViewById(R.id.ll_seekbar);
+                seekBar = (SeekBar) row.findViewById(R.id.seek);
+                tv_progress_text = (TextView) row.findViewById(R.id.tv_progress_text);
+                tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+//                if (row.findViewById(R.id.ll_second_layout) != null) {// Tab view
+//                    Name_right = (TextView) row.findViewById(R.id.menunametxt_two);
+//                    Name_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+//                    tv_achieved_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_achieved_two);
+//                    tv_achieved_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+//                    tv_target_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_target_two);
+//                    tv_target_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+//                    ll_seekbar_right = (LinearLayout) row.findViewById(R.id.ll_seekbar_two);
+//                    seekBar_right = (SeekBar) row.findViewById(R.id.seek_two);
+//                    tv_progress_text_right = (TextView) row.findViewById(R.id.tv_progress_text_two);
+//                    tv_progress_text_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+//
+//                    view_separator = (View) row.findViewById(R.id.view_separator);
+//                }
+            }
+
+        }
+    }
+
     public ArrayList<ConfigureBO> updateCallAnalysisMenu(
             Vector<ConfigureBO> callanalysismenu) {
         ArrayList<ConfigureBO> config = new ArrayList<ConfigureBO>();
@@ -807,7 +1005,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equals("CallA17")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                  //  int totalvalue = bmodel.getTotalLinesTarget();
+                    //  int totalvalue = bmodel.getTotalLinesTarget();
 
                     int totalLines = bmodel.getTotalLines();
                   /*  if (totalvalue > 0) {
@@ -825,7 +1023,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     }*/
 
 //                    con.setKpiTarget(totalvalue + "");
-                    con.setMenuNumber(totalLines+"");
+                    con.setMenuNumber(totalLines + "");
                     con.setKpiTarget("-1");
                     con.setKpiAchieved(totalLines + "");
 
@@ -974,17 +1172,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     config.addAll(bmodel.getGroupWiseFITScore());
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA38")) {
-                    con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    String lines[] = getMessage().split("\\r?\\n");
-                    StringBuilder sb= new StringBuilder();
-                    for(String str:lines)
-                        sb.append("* ").append(str).append("\n");
-                    con.setMenuNumber(sb.toString());
-                    con.setKpiTarget("-1");
+                    isCloseCallAsMenu = true;
                 }
 
                 if (!callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA36")
-                        && !callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA37")) {
+                        && !callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA37")
+                        && !callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA38")) {
 
                     config.add(con);
                 }
@@ -1073,10 +1266,19 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             if (collectioReasonBO.getReasonID().equals("0")) {
                 showCollectionReason();
             } else {
-                showDialog(0);
+                if (!isCloseCallAsMenu)
+                    showDialog(0);
+                else {
+                    closeCallDone();
+                }
             }
-        } else
-            showDialog(0);
+        } else {
+            if (!isCloseCallAsMenu)
+                showDialog(0);
+            else {
+                closeCallDone();
+            }
+        }
     }
 
     private void showFeedbackReasonOrDialog() {
@@ -1241,26 +1443,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
-                                        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                                            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = true;
-                                        }
-
-                                        if (collectionReasonFlag) {
-                                            ReasonMaster collectioReasonBO = (ReasonMaster) spinnerNooCollectionReason
-                                                    .getSelectedItem();
-                                            if (!collectioReasonBO.getReasonID()
-                                                    .equals("0")) {
-                                                doCallAnalysisCloseAction(
-                                                        collectioReasonBO
-                                                                .getReasonID(),
-                                                        StandardListMasterConstants.COLLECTION_REASON_TYPE);
-                                            } else {
-                                                showCollectionReason();
-
-                                            }
-                                        } else {
-                                            doCallAnalysisCloseAction("0", "");
-                                        }
+                                        closeCallDone();
 
                                     }
 
@@ -1303,6 +1486,29 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
         return null;
 
+    }
+
+    private void closeCallDone() {
+        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = true;
+        }
+
+        if (collectionReasonFlag) {
+            ReasonMaster collectioReasonBO = (ReasonMaster) spinnerNooCollectionReason
+                    .getSelectedItem();
+            if (!collectioReasonBO.getReasonID()
+                    .equals("0")) {
+                doCallAnalysisCloseAction(
+                        collectioReasonBO
+                                .getReasonID(),
+                        StandardListMasterConstants.COLLECTION_REASON_TYPE);
+            } else {
+                showCollectionReason();
+
+            }
+        } else {
+            doCallAnalysisCloseAction("0", "");
+        }
     }
 
     private void showCollectionReason() {

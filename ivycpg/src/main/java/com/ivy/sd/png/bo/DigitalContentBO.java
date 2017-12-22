@@ -15,6 +15,8 @@ public class DigitalContentBO {
 	private Bitmap bitmap;
 	private boolean lessimagewidth;
 	private int imgFlag;
+	private String groupName;
+	private int sequenceNo;
 
 	public DigitalContentBO() {
 	}
@@ -28,6 +30,23 @@ public class DigitalContentBO {
 	}
 
 	private boolean isHeader;
+	private boolean isGroupHeader;
+
+	public boolean isGroupHeader() {
+		return isGroupHeader;
+	}
+
+	public void setGroupHeader(boolean groupHeader) {
+		isGroupHeader = groupHeader;
+	}
+
+	public int getSequenceNo() {
+		return sequenceNo;
+	}
+
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
 
 	public String getHeaderTitle() {
 		return headerTitle;
@@ -35,6 +54,14 @@ public class DigitalContentBO {
 
 	public void setHeaderTitle(String headerTitle) {
 		this.headerTitle = headerTitle;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	private String headerTitle;
@@ -150,6 +177,16 @@ public class DigitalContentBO {
 
 		}
 
+	};
+
+	public static final Comparator<DigitalContentBO> sequenceComparotr = new Comparator<DigitalContentBO>() {
+		@Override
+		public int compare(DigitalContentBO seq1, DigitalContentBO seq2) {
+			if(seq1.getSequenceNo()<seq2.getSequenceNo())
+				return seq1.getSequenceNo();
+			else
+				return seq2.getSequenceNo();
+		}
 	};
 
 }
