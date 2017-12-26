@@ -833,7 +833,16 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            downloadVanload();
+            if (mBModel.synchronizationHelper.getAuthErroCode().equals("0")) {
+                downloadVanload();
+            }else {
+                String errorMsg = mBModel.synchronizationHelper.getErrormessageByErrorCode().get(mBModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(LoadManagementScreen.this, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoadManagementScreen.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

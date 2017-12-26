@@ -221,6 +221,7 @@ SynchronizationHelper {
     private ArrayList<String> mUserRetailerTranDownloadUrlList;
     private HashMap<String, String> mErrorMessageByErrorCode;
     private String mSecurityKey = "";
+    private String mAuthErrorCode = "";
     private HashMap<String, JSONObject> mJsonObjectResponseByTableName = new HashMap<String, JSONObject>();
 
     private ArrayList<RetailerMasterBO> mRetailerListByLocOrUserWise;
@@ -230,6 +231,10 @@ SynchronizationHelper {
 
     public String getSecurityKey() {
         return mSecurityKey;
+    }
+
+    public String getAuthErroCode() {
+        return mAuthErrorCode;
     }
 
     public int getmRetailerWiseIterateCount() {
@@ -2235,6 +2240,7 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E23", context.getResources().getString(R.string.error_e23));
         mErrorMessageByErrorCode.put("E24", context.getResources().getString(R.string.error_e24));
         mErrorMessageByErrorCode.put("E25", context.getResources().getString(R.string.user_account_locked));
+        mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e26));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
     }
@@ -2375,6 +2381,7 @@ SynchronizationHelper {
 
         try {
             mSecurityKey = "";
+            mAuthErrorCode = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
@@ -2397,6 +2404,22 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (!result.isEmpty()) {
+                for (String s : result) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            mAuthErrorCode = jsonObject.get("ErrorCode").toString();
+                            mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+                        }
+                    }
+                }
+            }
+
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
                 for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
@@ -2412,6 +2435,7 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
             mSecurityKey = "";
+            mAuthErrorCode = "";
         }
     }
 

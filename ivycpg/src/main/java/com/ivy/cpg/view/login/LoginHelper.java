@@ -8,11 +8,13 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -30,7 +32,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by subramanian.r on 11-11-2015.
- *
  */
 public class LoginHelper {
     private final Context context;
@@ -283,7 +284,16 @@ public class LoginHelper {
 
             @Override
             protected void onPostExecute(String msg) {
-                storeRegistrationId(context, businessModel.regid);
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals("0")) {
+                    storeRegistrationId(context, businessModel.regid);
+                } else {
+                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }.execute(null, null, null);
     }

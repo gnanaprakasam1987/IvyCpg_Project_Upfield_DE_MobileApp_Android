@@ -198,6 +198,7 @@ public class MyHttpConnectionNew {
 
         while ((line = rd.readLine()) != null) {
             this.result.addElement(line);
+            Commons.print("processEntity - "+line);
         }
 
     }
