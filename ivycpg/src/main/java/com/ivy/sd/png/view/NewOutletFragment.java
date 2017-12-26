@@ -3804,17 +3804,21 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 .downloadFloatingSurveyConfig(MENU_NEW_RETAILER))
             menu.findItem(R.id.menu_survey).setVisible(false);
 
+        menu.findItem(R.id.menu_oppr).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR);
+        menu.findItem(R.id.menu_order).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER);
+
         if (screenMode == EDIT)
             menu.findItem(R.id.menu_capture).setVisible(false);
         else if (screenMode == VIEW) {
             menu.findItem(R.id.menu_capture).setVisible(false);
+            menu.findItem(R.id.menu_oppr).setVisible(false);
+            menu.findItem(R.id.menu_order).setVisible(false);
         }
 
         menu.findItem(R.id.menu_sort).setVisible(false);
         menu.findItem(R.id.menu_add).setVisible(false);
 
-        menu.findItem(R.id.menu_oppr).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR);
-        menu.findItem(R.id.menu_order).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER);
+
     }
 
     @Override
