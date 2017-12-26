@@ -186,6 +186,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(3);
         setHasOptionsMenu(true);
     }
 

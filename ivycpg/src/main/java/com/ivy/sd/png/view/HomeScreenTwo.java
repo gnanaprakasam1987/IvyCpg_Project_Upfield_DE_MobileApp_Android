@@ -576,15 +576,39 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(menuDB);
         updateMenuVisitStatus(mInStoreMenu);
 
+        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID) {
+            String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
 
-        if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
-            mSupplierList = bmodel.downloadSupplierDetails();
-            mSupplierAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.select_dialog_singlechoice, mSupplierList);
+            if (rSalesType.equalsIgnoreCase("INDIRECT")) {
+                bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
+                bmodel.retailerMasterBO.setDistParentId(0);
+                if (bmodel.retailerMasterBO.getAddress3() != null)
+                    retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
 
-            updateDefaultSupplierSelection();
+            } else if (rSalesType.equalsIgnoreCase("DIRECT")) {
+
+                if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
+                        && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+                    mSupplierList = bmodel.downloadSupplierDetails();
+                    mSupplierAdapter = new ArrayAdapter<>(this,
+                            R.layout.supplier_selection_list_adapter, mSupplierList);
+
+                    updateDefaultSupplierSelection();
+                }
+
+
+            }
+
+        } else {
+            if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
+                    && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+                mSupplierList = bmodel.downloadSupplierDetails();
+                mSupplierAdapter = new ArrayAdapter<>(this,
+                        android.R.layout.select_dialog_singlechoice, mSupplierList);
+
+                updateDefaultSupplierSelection();
+            }
         }
-
         /*if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(HomeScreenTwo.this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
@@ -681,6 +705,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
             menu.findItem(R.id.menu_sales_selection).setVisible(false);
         if (!bmodel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION || bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE)
+            menu.findItem(R.id.menu_supplier_selection).setVisible(false);
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && (bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId()).equalsIgnoreCase("INDIRECT")))
             menu.findItem(R.id.menu_supplier_selection).setVisible(false);
 
         if (!bmodel.configurationMasterHelper.IS_DIGITAL_CONTENT)
