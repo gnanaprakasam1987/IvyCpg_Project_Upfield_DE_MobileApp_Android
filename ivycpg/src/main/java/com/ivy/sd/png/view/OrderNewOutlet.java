@@ -285,18 +285,12 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         mBtnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mBtnNext.setText(getResources().getString(R.string.save));
 
-        String title;
-        if ("MENU_ORDER".equals(screenCode))
-            title = bmodel.configurationMasterHelper
-                    .getHomescreentwomenutitle("MENU_ORDER");
-        else
-            title = bmodel.configurationMasterHelper
-                    .getHomescreentwomenutitle("MENU_STK_ORD");
+
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(title);
+            updateTitle(screenCode);
 //            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //           // Used to remove the app logo actionbar icon and set title as home
@@ -323,13 +317,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 if (getSupportActionBar() != null) {
                     String title;
                     if (generalbutton.equals(GENERAL)) {
-                        if ("MENU_ORDER".equals(screenCode))
-                            title = bmodel.configurationMasterHelper
-                                    .getHomescreentwomenutitle("MENU_ORDER");
-                        else
-                            title = bmodel.configurationMasterHelper
-                                    .getHomescreentwomenutitle("MENU_STK_ORD");
-                        setScreenTitle(title);
+                        updateTitle(screenCode);
                     }
                 }
 
@@ -402,40 +390,40 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                 mBtnNext.setVisibility(View.VISIBLE);
             } else {
-                    if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                        getMandatoryFilters();
-                        String defaultfilter = getDefaultFilter();
-                        if (!"".equals(defaultfilter)) {
-                            mSelectedFilterMap.put("General", defaultfilter);
-                            if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                                loadSpecialFilterView();
-                                updateGeneralText(defaultfilter);
-                                selectTab(defaultfilter);
-                            } else {
-                                updateGeneralText(defaultfilter);
-                            }
-
-
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+                    getMandatoryFilters();
+                    String defaultfilter = getDefaultFilter();
+                    if (!"".equals(defaultfilter)) {
+                        mSelectedFilterMap.put("General", defaultfilter);
+                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                            loadSpecialFilterView();
+                            updateGeneralText(defaultfilter);
+                            selectTab(defaultfilter);
                         } else {
-                            mSelectedFilterMap.put("General", GENERAL);
-                            if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                                loadSpecialFilterView();
-                                updateGeneralText(GENERAL);
-                                selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-                            } else {
-                                updateGeneralText(GENERAL);
-                            }
-
-
+                            updateGeneralText(defaultfilter);
                         }
 
 
-                        //
-
                     } else {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updateGeneralText(GENERAL);
+                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                            loadSpecialFilterView();
+                            updateGeneralText(GENERAL);
+                            selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
+                        } else {
+                            updateGeneralText(GENERAL);
+                        }
+
+
                     }
+
+
+                    //
+
+                } else {
+                    mSelectedFilterMap.put("General", GENERAL);
+                    updateGeneralText(GENERAL);
+                }
 
             }
         } catch (Exception e) {
@@ -478,6 +466,23 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
+
+    private void updateTitle(String menucode) {
+
+        String title;
+        if ("MENU_ORDER".equals(screenCode)) {
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_ORDER");
+            if (title.equalsIgnoreCase("MENU_ORDER"))
+                title = bmodel.configurationMasterHelper
+                        .getHomescreentwomenutitle("MENU_STK_ORD");
+        } else {
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_STK_ORD");
+        }
+
+        setScreenTitle(title);
+    }
 
 
     @Override
@@ -2933,8 +2938,38 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                count++;
+            if (mFilterText.length() > 0) {
+                for (LevelBO levelBO : mParentIdList) {
+                    count++;
+                    for (ProductMasterBO productBO : items) {
+
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.configurationMasterHelper.IS_INVOICE
+                                && productBO.getSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    && productBO.getIndicativeOrder_oc() > 0)) {
+                                if (productBO.getIsSaleable() == 1) {
+                                    if (levelBO.getProductID() == productBO.getParentid()) {
+                                        //  filtertext = levelBO.getLevelName();
+                                        if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                            continue;
+                                        mylist.add(productBO);
+                                        fiveFilter_productIDs.add(productBO.getProductID());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
                 for (ProductMasterBO productBO : items) {
 
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -2951,18 +2986,16 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                 || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                 && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
-                                if (levelBO.getProductID() == productBO.getParentid()) {
-                                    //  filtertext = levelBO.getLevelName();
-                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
-                                        continue;
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                    continue;
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
                     }
                 }
             }
+
         }
 
 //        Applying special filter in product filtered list(mylist)

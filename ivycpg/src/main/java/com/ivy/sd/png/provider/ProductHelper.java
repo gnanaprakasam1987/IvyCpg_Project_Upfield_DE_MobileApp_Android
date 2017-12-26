@@ -8752,6 +8752,50 @@ public class ProductHelper {
     }
 
 
+    public void updateOutletOrderedProducts(String rId) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid from OrderHeaderRequest OHR " +
+                    "INNER JOIN OrderDetailRequest ODR ON OHR.OrderID=ODR.OrderID " +
+                    "where OHR.RetailerID=" + QT(rId) + " AND OHR.upload='N'";
+            Cursor c = db.selectSQL(query);
+            String pdi;
+            int qty;
+            int uomid;
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        pdi = c.getString(0);
+                        uomid = c.getInt(2);
+                        qty = c.getInt(1);
+
+                        if (bmodel.productHelper.getProductMasterBOById(pdi).getPcUomid() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedPcsQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedCaseQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedOuterQty(qty);
+
+                      //update ordered product details in edit mode
+                        bmodel.newOutletHelper.getOrderedProductList()
+                                .add(bmodel.productHelper.getProductMasterBOById(pdi));
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+        }
+
+
+    }
+
+
     public boolean isSBDFilterAvaiable() {
         DBUtil db = null;
         boolean isAvailable = false;

@@ -26,7 +26,19 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             // Used to remove the app logo actionbar icon and set title as home
             // (title support click)
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+            try {
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("new_retailer") != null)
+                    setScreenTitle(bmodel.labelsMasterHelper
+                            .applyLabels("new_retailer"));
+                else
+                    setScreenTitle(getResources().getString(R.string.new_retailer));
+            } catch (Exception e) {
+                setScreenTitle(getResources().getString(R.string.new_retailer));
+            }
         }
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);

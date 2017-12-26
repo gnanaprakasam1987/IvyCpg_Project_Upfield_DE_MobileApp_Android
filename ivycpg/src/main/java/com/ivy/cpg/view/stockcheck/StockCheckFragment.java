@@ -267,6 +267,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mBtn_Search.setOnClickListener(this);
         mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
+        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup.setOnClickListener(this);
 
         tv_total_stockCheckedProducts = (TextView) view.findViewById(R.id.tv_stockCheckedProductscount);
         tv_total_products = (TextView) view.findViewById(R.id.tv_productsCount);

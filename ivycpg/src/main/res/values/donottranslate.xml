@@ -220,4 +220,5 @@
     <string name="order_not_allowed_for_retailer">Order taking not allowed for this retailer.</string>
 
     <string name="competitor_filter">Competitor Filter</string>
+    <string name="new_retailer">New Retailer</string>
 </resources>

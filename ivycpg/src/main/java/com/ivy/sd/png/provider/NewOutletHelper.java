@@ -1245,6 +1245,21 @@ public class NewOutletHelper {
                 db.deleteSQL("RetailerPriorityProducts", " RetailerId=" + bmodel.QT(rid), false);
             // db.selectSQL("delete from RetailerPriorityProducts where rid='" + rid+"'");
 
+            if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER) {
+
+                if (selectQuery("OrderHeaderRequest", rid))
+                    db.deleteSQL("OrderHeaderRequest", " RetailerId=" + bmodel.QT(rid), false);
+
+                if (selectQuery("OrderDetailRequest", rid))
+                    db.deleteSQL("OrderDetailRequest", " RetailerId=" + bmodel.QT(rid), false);
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
+
+                if (selectQuery("RetailerPotential", rid))
+                    db.deleteSQL("RetailerPotential", " RetailerId=" + bmodel.QT(rid), false);
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);

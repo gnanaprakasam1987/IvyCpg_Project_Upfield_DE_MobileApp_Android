@@ -1415,8 +1415,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             }
 
             if (mRetTgtAchv.containsKey("VST20")) {
+                BeatMasterBO beatBo = bmodel.beatMasterHealper.getBeatMasterBOByID(holder.retailerObjectHolder.getBeatID());
                 String desc = mRetTgtAchv.get("VST20");
-                String value = holder.retailerObjectHolder.getRField4() + "";
+                String value = beatBo.getBeatDescription();
                 if (!isFirstDone) {
                     holder.tv_achvTgt1.setText(value);
                     holder.tv_actualTgt1.setVisibility(View.GONE);

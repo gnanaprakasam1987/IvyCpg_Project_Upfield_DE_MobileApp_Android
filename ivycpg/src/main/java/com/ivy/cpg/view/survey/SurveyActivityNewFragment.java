@@ -1000,6 +1000,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     updateSurveyScore();
                                     updateOverAllSurveyScore();
                                 }
+                                rvAdapter.notifyDataSetChanged();
                             }
                         });
                 LinearLayout linLayoutRad = new LinearLayout(getActivity());
@@ -1185,6 +1186,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 updateOverAllSurveyScore();
                             }
                         } else subQuestionLL.removeAllViews();
+
+                        rvAdapter.notifyDataSetChanged();
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
@@ -1316,6 +1319,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         updateSurveyScore();
                         updateOverAllSurveyScore();
                     }
+                    rvAdapter.notifyDataSetChanged();
                 }
             });
             if (mCurrentQuestionBO.equals(qScore.getTag())) {

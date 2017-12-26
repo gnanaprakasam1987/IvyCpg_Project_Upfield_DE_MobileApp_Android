@@ -211,6 +211,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     private final int VIEW = 1;
     private final int EDIT = 2;
+    private final int CREATE_FRM_EDT_SCREEN = 4;
     private Vector<RetailerMasterBO> mNearbyRetailerList;
 
     private int screenwidth = 0;
@@ -1302,6 +1303,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         }).start();
     }
 
+    @SuppressLint("NewApi")
     private boolean validateProfile() {
         boolean validate = true;
         try {
@@ -3821,13 +3823,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         if (i == android.R.id.home) {
             if (surveyHelperNew.isSurveyAvaliable(bmodel.newOutletHelper.getId()))
                 showAlert(getResources().getString(R.string.are_you_sure_to_close_without_savingthe_data));
-            else if (screenMode == VIEW || screenMode == EDIT || screenMode == 0) {
+            else if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
                 startActivity(new Intent(getActivity(),
                         HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
                 getActivity().finish();
             } else {
                 startActivity(new Intent(getActivity(),
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
+                        HomeScreenActivity.class));
                 getActivity().finish();
             }
 
@@ -4506,7 +4508,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             R.string.saved_successfully));
                     if (bmodel.newOutletHelper.getOrderedProductList().size() > 0)
                         bmodel.newOutletHelper.getOrderedProductList().clear();
-                    if (screenMode == VIEW || screenMode == EDIT) {
+                    if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
 //                        getActivity().finish();
