@@ -581,7 +581,11 @@ SynchronizationHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            db.updateSQL("Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' " +
+
+            db.updateSQL("Update RetailerMaster set isOrdered = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+
+            db.updateSQL("Update RetailerBeatMapping set isVisited = 'Y' " +
                     "where RetailerID in(Select RetailerID from OrderHeader)");
             db.closeDB();
         } catch (Exception e) {

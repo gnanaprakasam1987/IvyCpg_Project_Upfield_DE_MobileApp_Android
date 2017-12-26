@@ -686,9 +686,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     + ","
                     + LocationUtil.longitude
                     + ","
-                    + QT(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat)
-                    + " "
-                    + SDUtil.now(SDUtil.TIME))
+                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
                     + ","
                     + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                     .getDownloadDate());
@@ -801,9 +799,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         sql = "update Odameter set end="
                                 + mylist.getOdameterend()
                                 + ",endtime="
-                                + QT(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat)
-                                + " "
-                                + SDUtil.now(SDUtil.TIME))
+                                + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
                                 + ",endlatitude=" + LocationUtil.latitude
                                 + ",endlongitude=" + LocationUtil.longitude
                                 + ",isended=" + 1 + ",upload='N'";

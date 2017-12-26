@@ -302,7 +302,7 @@ public class NewOutletHelper {
                     + ",";
 
             String queryInsert = "";
-            String temRouteQuery="";
+            String temRouteQuery = "";
 
             profileEditConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
@@ -532,7 +532,7 @@ public class NewOutletHelper {
                     }
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE08")
-                        && (configBO.getModule_Order() == 1||bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
+                        && (configBO.getModule_Order() == 1 || bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
                     if (!configBO.getMenuNumber().equals("0.0")) {
                         if ((bmodel.getRetailerMasterBO().getLatitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
@@ -547,7 +547,7 @@ public class NewOutletHelper {
                     }
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE31")
-                        && (configBO.getModule_Order() == 1 ||bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
+                        && (configBO.getModule_Order() == 1 || bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE)) {
                     if (!configBO.getMenuNumber().equals("0.0")) {
                         if ((bmodel.getRetailerMasterBO().getLongitude() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
@@ -968,7 +968,7 @@ public class NewOutletHelper {
                     }
 
 
-                }else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
 
                     if (!configBO.getMenuNumber().equals("0")) {
 
@@ -991,7 +991,7 @@ public class NewOutletHelper {
                 if (!queryInsert.equals(""))
                     db.executeQ(queryInsert);
 
-                if(isData&&configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1){
+                if (isData && configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
                     queryInsert = insertquery + bmodel.QT("PROFILE77") + "," + bmodel.getRetailerMasterBO().getBeatID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                     db.executeQ(queryInsert);
                 }
@@ -1139,11 +1139,11 @@ public class NewOutletHelper {
             db.openDataBase();
             Cursor c;
 
-            String query = "select RM.RetailerID,RetailerName,subchannelid,beatid,visitDays ,locationid,creditlimit,RPTypeId,tinnumber,RField3," +
+            String query = "select distinct RM.RetailerID,RetailerName,subchannelid,beatid,visitDays ,locationid,creditlimit,RPTypeId,tinnumber,RField3," +
                     "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
-                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RA.RField5,RA.RField6,RA.TinExpDate" +
+                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1897,8 +1897,7 @@ public class NewOutletHelper {
 
                     db.insertSQL("RetailerAddress", column, value);
                 }
-            }
-            else{
+            } else {
 
                 value = QT(getId())
                         + "," + QT(outlet.getAddress())
@@ -1953,7 +1952,7 @@ public class NewOutletHelper {
                         + "," + QT(SDUtil.now(SDUtil.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
 
-                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight";
+                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount";
                 for (ProductMasterBO productMasterBO : getOrderedProductList()) {
                     if (productMasterBO.getOrderedPcsQty() > 0) {
                         value = uid
@@ -1962,7 +1961,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getPcUomid()
                                 + "," + productMasterBO.getSrp()
                                 + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
-                                + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight();
+                                + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight()
+                                + ",1";
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedCaseQty() > 0) {
@@ -1972,7 +1972,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getCaseUomId()
                                 + "," + productMasterBO.getCsrp()
                                 + "," + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
-                                + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight();
+                                + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight()
+                                + "," + productMasterBO.getCaseSize();
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedOuterQty() > 0) {
@@ -1982,7 +1983,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getOuUomid()
                                 + "," + productMasterBO.getOsrp()
                                 + "," + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp()
-                                + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight();
+                                + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight()
+                                + "," + productMasterBO.getOutersize();
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                 }
@@ -2137,7 +2139,7 @@ public class NewOutletHelper {
             if (c.getCount() > 0) {
                 StandardListBO bo;
                 while (c.moveToNext()) {
-                    bo=new StandardListBO();
+                    bo = new StandardListBO();
                     bo.setListID(c.getString(0));
                     bo.setListName(c.getString(1));
                     mLst.add(bo);
@@ -2154,8 +2156,8 @@ public class NewOutletHelper {
         return mLst;
     }
 
-    public HashMap<String,AddressBO> downloadRetailerAddress() {
-        HashMap<String,AddressBO> lst=new HashMap<>();
+    public HashMap<String, AddressBO> downloadRetailerAddress() {
+        HashMap<String, AddressBO> lst = new HashMap<>();
         DBUtil db = null;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -2171,7 +2173,7 @@ public class NewOutletHelper {
             if (c.getCount() > 0) {
                 AddressBO bo;
                 while (c.moveToNext()) {
-                    bo=new AddressBO();
+                    bo = new AddressBO();
                     bo.setAddress1(c.getString(0));
                     bo.setAddress2(c.getString(1));
                     bo.setAddress3(c.getString(2));
@@ -2185,7 +2187,7 @@ public class NewOutletHelper {
                     bo.setState(c.getString(10));
                     bo.setAddressTypeId(c.getInt(11));
 
-                    lst.put(bo.getAddressTypeId()+"",bo);
+                    lst.put(bo.getAddressTypeId() + "", bo);
                 }
             }
             c.close();
@@ -2193,7 +2195,7 @@ public class NewOutletHelper {
         } catch (Exception e) {
             db.closeDB();
             Commons.printException("" + e);
-            return new HashMap<String,AddressBO>();
+            return new HashMap<String, AddressBO>();
         }
 
         return lst;

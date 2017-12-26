@@ -1414,6 +1414,22 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
             }
 
+            if (mRetTgtAchv.containsKey("VST20")) {
+                String desc = mRetTgtAchv.get("VST20");
+                String value = holder.retailerObjectHolder.getRField4() + "";
+                if (!isFirstDone) {
+                    holder.tv_achvTgt1.setText(value);
+                    holder.tv_actualTgt1.setVisibility(View.GONE);
+                    holder.tv_labelTgt1.setText(desc);
+                    isFirstDone = true;
+                } else if (!isSecondDone) {
+                    holder.tv_achvTgt2.setText(value);
+                    holder.tv_actualTgt2.setVisibility(View.GONE);
+                    holder.tv_labelTgt2.setText(desc);
+                    isSecondDone = true;
+                }
+            }
+
             if (!isFirstDone) {
                 holder.ll_scoreParent.setVisibility(View.GONE);
             } else if (!isSecondDone) {
