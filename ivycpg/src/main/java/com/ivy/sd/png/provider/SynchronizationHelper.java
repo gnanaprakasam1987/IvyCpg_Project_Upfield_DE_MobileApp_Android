@@ -2242,6 +2242,7 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E24", context.getResources().getString(R.string.error_e24));
         mErrorMessageByErrorCode.put("E25", context.getResources().getString(R.string.user_account_locked));
         mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e26));
+        mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e27));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
     }

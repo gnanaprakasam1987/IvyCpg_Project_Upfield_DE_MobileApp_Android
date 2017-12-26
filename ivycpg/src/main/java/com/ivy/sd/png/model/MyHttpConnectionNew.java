@@ -3,6 +3,7 @@ package com.ivy.sd.png.model;
 import android.net.Uri;
 
 import com.ivy.sd.png.util.Commons;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -54,11 +55,12 @@ public class MyHttpConnectionNew {
         this.data = data;
     }
 
-    public void addHeader(String var,String val){
-        this.headerKey=var;
-        this.headervalue=val;
+    public void addHeader(String var, String val) {
+        this.headerKey = var;
+        this.headervalue = val;
 
     }
+
     public void addParam(String var, String val) {
         params.put(var, val);
     }
@@ -76,7 +78,7 @@ public class MyHttpConnectionNew {
     }
 
     public void get(String url) {
-        this.create(0, url, (String)null);
+        this.create(0, url, (String) null);
     }
 
     public void post(String url, String data) {
@@ -88,13 +90,12 @@ public class MyHttpConnectionNew {
     }
 
     public void delete(String url) {
-        this.create(3, url, (String)null);
+        this.create(3, url, (String) null);
     }
 
     public void bitmap(String url) {
-        this.create(4, url, (String)null);
+        this.create(4, url, (String) null);
     }
-
 
 
     public void connectMe() {
@@ -102,7 +103,7 @@ public class MyHttpConnectionNew {
         HttpURLConnection con = null;
         OutputStream os = null;
         try {
-            switch(this.method) {
+            switch (this.method) {
                 case 1:
                     try {
                         if (paramsJsonObject != null) {
@@ -170,11 +171,12 @@ public class MyHttpConnectionNew {
                     break;
             }
         } catch (Exception var5) {
-            Commons.printException(this.getClass().getName()+ ",Exception occured while connecting to server");
-            this.setResult((Vector)null);
+            Commons.printException(this.getClass().getName() + ",Exception occured while connecting to server");
+            this.setResult((Vector) null);
         }
 
     }
+
     private void setResponseHeader(Map<String, List<String>> headerFields) {
         this.headerFields = headerFields;
     }
@@ -198,7 +200,6 @@ public class MyHttpConnectionNew {
 
         while ((line = rd.readLine()) != null) {
             this.result.addElement(line);
-            Commons.print("processEntity - "+line);
         }
 
     }

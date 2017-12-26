@@ -669,7 +669,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals("0")) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 bmodel.synchronizationHelper.downloadCustomerSearch(edt_contact.getText().toString());
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());

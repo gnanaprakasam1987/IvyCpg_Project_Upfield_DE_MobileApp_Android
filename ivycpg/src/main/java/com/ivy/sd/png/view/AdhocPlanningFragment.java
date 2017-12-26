@@ -673,7 +673,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals("0")) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
                     if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
                         bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);

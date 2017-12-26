@@ -508,7 +508,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (businessModel.synchronizationHelper.getAuthErroCode().equals("0")) {
+            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!result) {
                     if (loginHelper.isPasswordReset()) {
                         loginView.dismissAlertDialog();

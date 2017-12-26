@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.Synchronization;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -802,7 +803,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals("0")) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 downloadVanload();
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());

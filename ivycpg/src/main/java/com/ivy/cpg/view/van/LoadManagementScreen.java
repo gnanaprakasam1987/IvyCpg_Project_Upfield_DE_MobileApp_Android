@@ -833,7 +833,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (mBModel.synchronizationHelper.getAuthErroCode().equals("0")) {
+            if (mBModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 downloadVanload();
             }else {
                 String errorMsg = mBModel.synchronizationHelper.getErrormessageByErrorCode().get(mBModel.synchronizationHelper.getAuthErroCode());
