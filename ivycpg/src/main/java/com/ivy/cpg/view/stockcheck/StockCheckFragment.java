@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.stockcheck;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -40,8 +43,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -315,7 +316,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
             if (!businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
                 view.findViewById(R.id.shelfCaseTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -363,6 +363,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     Commons.printException(e + "");
                 }
             }
+
+            if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
+
+            }
+
             if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL) {
                 view.findViewById(R.id.exp_stktotalTitle).setVisibility(View.GONE);
             } else {
@@ -461,6 +469,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
 
         @NonNull
+        @SuppressLint("RestrictedApi")
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View row = convertView;
             try {
@@ -500,9 +509,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     holder.ll_stkCB = (LinearLayout) row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
-                    holder.avail_cb = (CheckBox) row
-                            .findViewById(R.id.stock_and_order_listview_cb);
 
+                    holder.imageButton_availability = (AppCompatCheckBox) row
+                            .findViewById(R.id.btn_availability);
                     holder.total = (TextView) row
                             .findViewById(R.id.stock_check_listview_total);
                     holder.total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -540,6 +549,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL)
                         holder.total.setVisibility(View.GONE);
 
+                    if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                        row.findViewById(R.id.layout_shelf).setVisibility(View.GONE);
+
+                    }
 
                     holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -567,82 +582,132 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     });
 
-                    holder.avail_cb
-                            .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                @Override
-                                public void onCheckedChanged(
-                                        CompoundButton buttonView,
-                                        boolean isChecked) {
-                                    if (isChecked
-                                            && holder.productObj
-                                            .getLocations()
-                                            .get(stockCheckPresenter.mSelectedLocationIndex)
-                                            .getShelfPiece() == -1) {
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
-                                            if (holder.shelfPcsQty.getText().toString().length() == 0)
-                                                holder.shelfPcsQty.setText("1");
-                                        } else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                                            if (holder.shelfCaseQty.getText().toString().length() == 0)
-                                                holder.shelfCaseQty.setText("1");
-                                        } else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                            if (holder.shelfouter.getText().toString().length() == 0)
-                                                holder.shelfouter.setText("1");
-                                        } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                                && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                                && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                            holder.productObj.getLocations()
-                                                    .get(stockCheckPresenter.mSelectedLocationIndex)
-                                                    .setShelfPiece(1);
-                                        }
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                            holder.mReason.setEnabled(false);
-                                            holder.mReason.setSelected(false);
-                                            holder.mReason.setSelection(0);
-                                            holder.productObj.setReasonID("0");
-                                        }
-                                    } else if (isChecked
-                                            && holder.productObj
-                                            .getLocations()
-                                            .get(stockCheckPresenter.mSelectedLocationIndex)
-                                            .getShelfPiece() > 0) {
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                            holder.mReason.setEnabled(false);
-                                            holder.mReason.setSelected(false);
-                                            holder.mReason.setSelection(0);
-                                            holder.productObj.setReasonID("0");
-                                        }
-                                    } else if (!isChecked) {
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
-                                            if (holder.shelfPcsQty.getText().toString().length() == 0)
-                                                holder.shelfPcsQty.setText("");
-                                            else if (holder.shelfPcsQty.getText().toString().length() > 0)
-                                                holder.shelfPcsQty.setText("");
-                                        } else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                                            if (holder.shelfCaseQty.getText().toString().length() == 0)
-                                                holder.shelfCaseQty.setText("");
-                                            else if (holder.shelfCaseQty.getText().toString().length() > 0)
-                                                holder.shelfCaseQty.setText("");
-                                        } else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                            if (holder.shelfouter.getText().toString().length() == 0)
-                                                holder.shelfouter.setText("");
-                                            else if (holder.shelfouter.getText().toString().length() > 0)
-                                                holder.shelfouter.setText("");
-                                        } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                                && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                                && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                            holder.productObj.getLocations()
-                                                    .get(stockCheckPresenter.mSelectedLocationIndex)
-                                                    .setShelfPiece(-1);
-                                        }
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                            holder.mReason.setEnabled(true);
-                                            holder.mReason.setSelected(true);
-                                            holder.mReason.setSelection(0);
-                                        }
-                                    }
-                                    updateFooter();
+                    holder.imageButton_availability.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (holder.productObj.getLocations()
+                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
+                                holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
+
+                                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+                                holder.imageButton_availability.setChecked(true);
+
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    holder.mReason.setEnabled(false);
+                                    holder.mReason.setSelected(false);
+                                    holder.mReason.setSelection(0);
+                                    holder.productObj.setReasonID("0");
                                 }
-                            });
+                            } else if (holder.productObj.getLocations()
+                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
+                                holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
+
+                                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
+                                holder.imageButton_availability.setChecked(true);
+
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    holder.mReason.setEnabled(true);
+                                    holder.mReason.setSelected(true);
+                                    holder.mReason.setSelection(0);
+                                }
+                            } else if (holder.productObj.getLocations()
+                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
+                                holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
+
+                                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
+                                holder.imageButton_availability.setChecked(false);
+
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    holder.mReason.setEnabled(false);
+                                    holder.mReason.setSelected(false);
+                                    holder.mReason.setSelection(0);
+                                    holder.productObj.setReasonID("0");
+                                }
+                            }
+
+                            updateFooter();
+
+                        }
+                    });
+                         /*   holder.avail_cb
+                                    .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(
+                                                CompoundButton buttonView,
+                                                boolean isChecked) {
+                                            if (isChecked
+                                                    && holder.productObj
+                                                    .getLocations()
+                                                    .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                    .getShelfPiece() == -1) {
+                                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                                                    if (holder.shelfPcsQty.getText().toString().length() == 0)
+                                                        holder.shelfPcsQty.setText("1");
+                                                } else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                                                    if (holder.shelfCaseQty.getText().toString().length() == 0)
+                                                        holder.shelfCaseQty.setText("1");
+                                                } else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                                                    if (holder.shelfouter.getText().toString().length() == 0)
+                                                        holder.shelfouter.setText("1");
+                                                } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                                        && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                                        && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                                                    holder.productObj.getLocations()
+                                                            .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                            .setShelfPiece(1);
+                                                }
+                                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                                    holder.mReason.setEnabled(false);
+                                                    holder.mReason.setSelected(false);
+                                                    holder.mReason.setSelection(0);
+                                                    holder.productObj.setReasonID("0");
+                                                }
+                                            } else if (isChecked
+                                                    && holder.productObj
+                                                    .getLocations()
+                                                    .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                    .getShelfPiece() > 0) {
+                                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                                    holder.mReason.setEnabled(false);
+                                                    holder.mReason.setSelected(false);
+                                                    holder.mReason.setSelection(0);
+                                                    holder.productObj.setReasonID("0");
+                                                }
+                                            } else if (!isChecked) {
+                                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                                                    if (holder.shelfPcsQty.getText().toString().length() == 0)
+                                                        holder.shelfPcsQty.setText("");
+                                                    else if (holder.shelfPcsQty.getText().toString().length() > 0)
+                                                        holder.shelfPcsQty.setText("");
+                                                } else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                                                    if (holder.shelfCaseQty.getText().toString().length() == 0)
+                                                        holder.shelfCaseQty.setText("");
+                                                    else if (holder.shelfCaseQty.getText().toString().length() > 0)
+                                                        holder.shelfCaseQty.setText("");
+                                                } else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                                                    if (holder.shelfouter.getText().toString().length() == 0)
+                                                        holder.shelfouter.setText("");
+                                                    else if (holder.shelfouter.getText().toString().length() > 0)
+                                                        holder.shelfouter.setText("");
+                                                } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                                        && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                                        && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                                                    holder.productObj.getLocations()
+                                                            .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                            .setShelfPiece(-1);
+                                                }
+                                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                                    holder.mReason.setEnabled(true);
+                                                    holder.mReason.setSelected(true);
+                                                    holder.mReason.setSelection(0);
+                                                }
+                                            }
+                                            updateFooter();
+                                        }
+                                    });*/
 
                     holder.mReason.setAdapter(stockCheckPresenter.getSpinnerAdapter());
                     holder.mReason
@@ -679,33 +744,27 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfPiece(sp_qty);
 
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-
-                                        holder.total
-                                                .setText(totValue + "");
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                            if (!holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (totValue <= 0) {
-                                                holder.avail_cb.setChecked(false);
-                                            }
-                                        }
                                     } else {
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfPiece(-1);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    }
 
+                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                         holder.total
                                                 .setText(totValue + "");
-                                        if (totValue <= 0) {
-                                            holder.avail_cb.setChecked(false);
-                                        }
+                                    if (totValue > 0) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.setReasonID("0");
+                                    } else {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
                                     }
+
+
                                 }
 
                                 @Override
@@ -732,33 +791,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfCase(shelf_case_qty);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
 
-                                        holder.total
-                                                .setText(totValue + "");
-                                        if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                            if (!holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (holder.avail_cb.isChecked()
-                                                    && totValue > 0)
-                                                holder.avail_cb.setChecked(true);
-                                            else if (totValue <= 0) {
-                                                holder.avail_cb.setChecked(false);
-                                            }
-                                        }
                                     } else {
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
                                                 .setShelfCase(-1);
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    }
 
+                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                         holder.total
                                                 .setText(totValue + "");
-                                        if (totValue <= 0) {
-                                            holder.avail_cb.setChecked(false);
-                                        }
+                                    if (totValue > 0) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.setReasonID("0");
+                                    } else {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
+
                                     }
+
                                 }
 
                                 @Override
@@ -796,28 +850,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
                                         .setShelfOuter(shelf_o_qty);
-                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                holder.total
-                                        .setText(totValue + "");
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_CB) {
-                                    if (!holder.avail_cb.isChecked()
-                                            && totValue > 0)
-                                        holder.avail_cb.setChecked(true);
-                                    else if (totValue <= 0) {
-                                        holder.avail_cb.setChecked(false);
-                                    }
-                                }
+
                             } else {
                                 holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex)
                                         .setShelfOuter(-1);
-                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
 
+                            }
+
+
+                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
                                 holder.total
                                         .setText(totValue + "");
-                                if (totValue <= 0) {
-                                    holder.avail_cb.setChecked(false);
-                                }
+                            if (totValue > 0) {
+                                holder.mReason.setEnabled(false);
+                                holder.mReason.setSelected(false);
+                                holder.mReason.setSelection(0);
+                                holder.productObj.setReasonID("0");
+                            } else {
+                                holder.mReason.setEnabled(true);
+                                holder.mReason.setSelected(true);
+                                holder.mReason.setSelection(0);
+
                             }
 
                         }
@@ -1004,7 +1058,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     if (businessModel.configurationMasterHelper.IS_TEAMLEAD) {
                         holder.audit.setVisibility(View.VISIBLE);
-                        holder.avail_cb.setEnabled(false);
+                        // holder.avail_cb.setEnabled(false);
 
                         holder.shelfPcsQty.setEnabled(false);
                         holder.shelfCaseQty.setEnabled(false);
@@ -1058,23 +1112,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 holder.psq.setText(strPSQ);
 
 
-                if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                        && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                        && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                    if (holder.productObj.getLocations()
-                            .get(stockCheckPresenter.mSelectedLocationIndex)
-                            .getShelfPiece() == 1)
-                        holder.avail_cb.setChecked(true);
-                    else if (holder.productObj.getLocations()
-                            .get(stockCheckPresenter.mSelectedLocationIndex)
-                            .getShelfPiece() == -1)
-                        holder.avail_cb.setChecked(false);
+                if (holder.productObj.getLocations()
+                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
+                    holder.imageButton_availability.setChecked(true);
+                    holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+
+                } else if (holder.productObj.getLocations()
+                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
+                    holder.imageButton_availability.setChecked(true);
+                    holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
+                } else if (holder.productObj.getLocations()
+                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
+                    holder.imageButton_availability.setChecked(false);
+                    holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
                 }
+
+
 
                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex)
-                            .getShelfPiece() > 0) {
+                            .getShelfPiece() > 0 || holder.productObj.getLocations()
+                            .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
                         holder.mReason.setEnabled(false);
                         holder.mReason.setSelected(false);
                         holder.mReason.setSelection(0);
@@ -1096,7 +1155,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfPiece = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfPiece()
                                 + "";
-                        holder.shelfPcsQty.setText(strShelfPiece.equals("0") ? "" : strShelfPiece);
+                        holder.shelfPcsQty.setText(strShelfPiece);
                     } else {
                         holder.shelfPcsQty.setText("");
                     }
@@ -1108,7 +1167,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfCase = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfCase()
                                 + "";
-                        holder.shelfCaseQty.setText(strShelfCase.equals("0") ? "" : strShelfCase);
+                        holder.shelfCaseQty.setText(strShelfCase);
                     } else {
                         holder.shelfCaseQty.setText("");
                     }
@@ -1119,7 +1178,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         String strShelfOuter = holder.productObj.getLocations()
                                 .get(stockCheckPresenter.mSelectedLocationIndex).getShelfOuter()
                                 + "";
-                        holder.shelfouter.setText(strShelfOuter.equals("0") ? "" : strShelfOuter);
+                        holder.shelfouter.setText(strShelfOuter);
                     } else {
                         holder.shelfouter.setText("");
                     }
@@ -1155,8 +1214,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     public class ViewHolder {
-        private CheckBox avail_cb;
-
 
         private String productId;
         private String pname;
@@ -1178,6 +1235,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         private Spinner mReason;
         ImageButton audit;
+        AppCompatCheckBox imageButton_availability;
     }
 
 
@@ -1858,7 +1916,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             for (LocationBO locationBO : bo.getLocations()) {
 
-                if (locationBO.getShelfCase() > 0 || locationBO.getShelfOuter() > 0 || locationBO.getShelfPiece() > 0) {
+                if ((locationBO.getShelfCase() > 0 || locationBO.getShelfOuter() > 0 || locationBO.getShelfPiece() > 0)
+                        || (locationBO.getAvailability() > -1)) {
                     totalAvailableProduts += 1;
                     break;
                 }
@@ -2010,4 +2069,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
         selectTab("ALL");
     }
+
+
 }

@@ -1215,6 +1215,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     protected void onResume() {
         super.onResume();
 
+        if (mLocTimer != null) {
+            mLocTimer.cancel();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
             mLocTimer = new Timer();
@@ -2022,6 +2026,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            if (mLocTimer != null) {
+                mLocTimer.cancel();
+            }
+
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
