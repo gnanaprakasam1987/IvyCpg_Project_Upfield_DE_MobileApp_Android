@@ -1623,19 +1623,28 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
-            if (!result) {
-                if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
-                    new UrlDownloadData().execute();
-                else {
-                    isClicked = false;
-                    Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
-                    if (alertDialog != null)
-                        alertDialog.dismiss();
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!result) {
+                    if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
+                        new UrlDownloadData().execute();
+                    else {
+                        isClicked = false;
+                        Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
+                        if (alertDialog != null)
+                            alertDialog.dismiss();
+                    }
+                } else {
+                    showAlertOk(
+                            getResources().getString(R.string.update_available),
+                            DataMembers.NOTIFY_AUTOUPDATE_FOUND);
                 }
             } else {
-                showAlertOk(
-                        getResources().getString(R.string.update_available),
-                        DataMembers.NOTIFY_AUTOUPDATE_FOUND);
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
             }
 
         }

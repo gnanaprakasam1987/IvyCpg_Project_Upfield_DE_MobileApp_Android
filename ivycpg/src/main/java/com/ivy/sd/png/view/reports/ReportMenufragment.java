@@ -241,7 +241,7 @@ public class ReportMenufragment extends IvyBaseFragment {
                 String Url = bmodel.reportHelper.getPerformRptUrl();
                 if (Url != null && Url.length() > 0) {
                     new PerformRptDownloadData(config, Url).execute();
-                }else {
+                } else {
                     Toast.makeText(getActivity(), "Download Url Not Available", Toast.LENGTH_LONG).show();
                 }
             }
@@ -420,23 +420,32 @@ public class ReportMenufragment extends IvyBaseFragment {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (errorCode
-                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                if (bmodel.reportHelper.isPerformReport()) {
-                    Intent intent = new Intent(getActivity(), ReportActivity.class);
-                    Bundle bun = new Bundle();
-                    bun.putSerializable("config", config);
-                    intent.putExtras(bun);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
-                }
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (bmodel.reportHelper.isPerformReport()) {
+                        Intent intent = new Intent(getActivity(), ReportActivity.class);
+                        Bundle bun = new Bundle();
+                        bun.putSerializable("config", config);
+                        intent.putExtras(bun);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                    }
 
+                } else {
+                    String errorMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorMessage != null) {
+                        bmodel.showAlert(errorMessage, 0);
+                    }
+                }
             } else {
-                String errorMessage = bmodel.synchronizationHelper
-                        .getErrormessageByErrorCode().get(errorCode);
-                if (errorMessage != null) {
-                    bmodel.showAlert(errorMessage, 0);
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
             }
         }

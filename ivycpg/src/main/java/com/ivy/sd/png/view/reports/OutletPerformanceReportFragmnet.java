@@ -358,25 +358,33 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (errorCode
-                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE) &&
-                    bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                if (bmodel.reportHelper.isPerformReport()) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (bmodel.reportHelper.isPerformReport()) {
 
-                    downloadReportData();
-                    updateView(null, true);
+                        downloadReportData();
+                        updateView(null, true);
 
-                    getActivity().invalidateOptionsMenu();
+                        getActivity().invalidateOptionsMenu();
+                    } else {
+                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                        onBackButtonClick();
+                    }
+
                 } else {
-                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
-                    onBackButtonClick();
+                    String errorMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorMessage != null) {
+                        bmodel.showAlert(errorMessage, 0);
+                    }
                 }
-
             } else {
-                String errorMessage = bmodel.synchronizationHelper
-                        .getErrormessageByErrorCode().get(errorCode);
-                if (errorMessage != null) {
-                    bmodel.showAlert(errorMessage, 0);
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
             }
         }
