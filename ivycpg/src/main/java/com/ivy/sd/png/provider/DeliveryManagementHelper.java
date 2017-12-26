@@ -112,30 +112,43 @@ public class DeliveryManagementHelper {
     }
 
     public void downloadDeliveryProductDetails(String invoiceno){
+        HashMap<Integer, ProductMasterBO> invoicedProducts = new HashMap<>();
         mInvoiceDetailsList=new ArrayList<ProductMasterBO>();
         DBUtil db=null;
         try{
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum from invoicedetailuomwise id ");
-            sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid ");
-            sb.append(" where invoiceid="+bmodel.QT(invoiceno));
-            sb.append("  order by productid,id.batchid");
+            //sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum from invoicedetailuomwise id ");
+            //sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid ");
+            //sb.append(" where invoiceid="+bmodel.QT(invoiceno));
+            //sb.append("  order by productid,id.batchid");
 
+            sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
+                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize from invoicedetailuomwise id");
+            sb.append("Inner JOIN ProductMaster PM on PM.PID = id.productid");
+            sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid="
+                    + bmodel.QT(invoiceno) + "  order by productid,id.batchid");
+/*select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID,
+PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize from invoicedetailuomwise id
+Inner JOIN ProductMaster PM on PM.PID = id.productid
+left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid='123456'  order by productid,id.batchid*/
 
-
-
-            /*sb.append("select productid,qty,uomid,uomcount,uomprice,batchid from invoicedetailuomwise ");
-            sb.append("where invoiceid="+bmodel.QT(invoiceno));
-            sb.append("  order by productid,batchid");*/
             Cursor c=db.selectSQL(sb.toString());
             if(c.getCount()>0){
                 ProductMasterBO invoiceProductBO=null;
                 int productid=0;
                 int batchid=0;
                 while (c.moveToNext()){
-                    ProductMasterBO product=bmodel.productHelper.getProductMasterBOById(c.getString(0));
+                    productid = c.getInt(c.getColumnIndex("productid"));
+                    if (invoicedProducts.get(productid) == null) {
+                        invoiceProductBO = new ProductMasterBO();
+                    } else {
+                        invoiceProductBO = invoicedProducts.get(productid);
+                    }
+                    invoiceProductBO.setProductID(productid + "");
+                    invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
+                    /*ProductMasterBO product=bmodel.productHelper.getProductMasterBOById(c.getString(0));
 
                     if(product!=null) {
                         if (productid == c.getInt(0) && batchid == c.getInt(5)) {
@@ -205,7 +218,7 @@ public class DeliveryManagementHelper {
                             batchid=c.getInt(5);
                         }
                     }
-
+*/
 
                 }
                 if(productid!=0)
