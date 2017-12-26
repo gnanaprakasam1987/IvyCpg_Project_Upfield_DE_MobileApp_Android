@@ -162,6 +162,9 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                         i.putExtra("invoiceno",
                                 holder.invoiceHeaderBO.getInvoiceNo());
                         i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                        if (getIntent().getStringExtra("From") != null) {
+                            i.putExtra("From", getIntent().getStringExtra("From"));
+                        }
                         startActivity(i);
                         finish();
                     }

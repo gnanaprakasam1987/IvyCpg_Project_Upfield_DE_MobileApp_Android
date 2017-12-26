@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
@@ -60,6 +62,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
     private DrawerLayout mDrawerLayout;
     private String serverPath = "";
     private Toolbar toolbar;
+    TextInputEditText contact_name, contact_no;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,11 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         //File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
 
+        if (getIntent().getStringExtra("From") != null) {
+            ((RelativeLayout) findViewById(R.id.contact_det_rl)).setVisibility(View.VISIBLE);
+            contact_no = (TextInputEditText) findViewById(R.id.contact_no);
+            contact_name = (TextInputEditText) findViewById(R.id.contact_name);
+        }
         prepareDirectory();
 
         File directory = new File(PHOTO_PATH);

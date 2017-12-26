@@ -79,9 +79,9 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
                 public void onClick(View v) {
                     businessModel.setRetailerMasterBO(holder.retailerMasterBO);
                     businessModel.configurationMasterHelper.loadDeliveryUOMConfiguration();
-                    //businessModel.mSelectedActivityName = menu.getMenuName();
+                    businessModel.mSelectedActivityName = holder.retailerMasterBO.getRetailerName();
                     Intent i = new Intent(getActivity(), DeliveryManagement.class);
-                    //i.putExtra("screentitle", menu.getMenuName());
+                    i.putExtra("screentitle", holder.retailerMasterBO.getRetailerName());
                     i.putExtra("From", "HOME MENU");
                     startActivity(i);
                 }

@@ -19,6 +19,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rajesh.k on 24-02-2016.
@@ -125,9 +126,9 @@ public class DeliveryManagementHelper {
             //sb.append("  order by productid,id.batchid");
 
             sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
-                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize from invoicedetailuomwise id");
-            sb.append("Inner JOIN ProductMaster PM on PM.PID = id.productid");
-            sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid="
+                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih from invoicedetailuomwise id");
+            sb.append(" Inner JOIN ProductMaster PM on PM.PID = id.productid");
+            sb.append(" left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid="
                     + bmodel.QT(invoiceno) + "  order by productid,id.batchid");
 /*select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID,
 PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize from invoicedetailuomwise id
@@ -143,11 +144,28 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                     productid = c.getInt(c.getColumnIndex("productid"));
                     if (invoicedProducts.get(productid) == null) {
                         invoiceProductBO = new ProductMasterBO();
+                        invoiceProductBO.setProductID(productid + "");
+                        invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
+                        invoiceProductBO.setSIH(c.getInt(c.getColumnIndex("sih")));
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
-                    invoiceProductBO.setProductID(productid + "");
-                    invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
+                    if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
+                        invoiceProductBO.setOrderedPcsQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
+
+                        //invoiceProductBO.setSrp(c.getFloat(4));
+                    } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
+                        invoiceProductBO.setOrderedCaseQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
+                        invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
+                    } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
+                        invoiceProductBO.setOrderedOuterQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
+                        invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
+                    }
+
+
                     /*ProductMasterBO product=bmodel.productHelper.getProductMasterBOById(c.getString(0));
 
                     if(product!=null) {
@@ -219,10 +237,16 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                         }
                     }
 */
+                    invoicedProducts.put(productid, invoiceProductBO);
+                }
+
+                for (Map.Entry<Integer, ProductMasterBO> map : invoicedProducts.entrySet()) {
+
+                    mInvoiceDetailsList.add(map.getValue());
 
                 }
-                if(productid!=0)
-                    mInvoiceDetailsList.add(invoiceProductBO);
+                /*if(productid!=0)
+                    mInvoiceDetailsList.add(invoiceProductBO);*/
             }
         }catch (Exception e){
             Commons.print(e.getMessage());
