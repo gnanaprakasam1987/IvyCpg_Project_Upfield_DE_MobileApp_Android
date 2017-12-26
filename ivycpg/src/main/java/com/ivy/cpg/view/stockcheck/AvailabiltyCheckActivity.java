@@ -248,18 +248,18 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             //shelf
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_CB)
                 ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
                 ((LinearLayout) findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
                 ((LinearLayout) findViewById(R.id.ll_avail_piece)).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
                 ((LinearLayout) findViewById(R.id.ll_avail_outer)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
                 ((LinearLayout) findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC &&
-                        !bmodel.configurationMasterHelper.SHOW_STOCK_SP &&
-                        !bmodel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC &&
+                        !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP &&
+                        !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER) {
                     ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setVisibility(View.GONE);
                     ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
                 }

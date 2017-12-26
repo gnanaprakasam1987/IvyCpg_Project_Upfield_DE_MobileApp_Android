@@ -1201,8 +1201,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
 
-    private static final String CODE_COMBINED_STOCK_CHECK_FROM_ORDER = "ORDB71";
     public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
+    public boolean SHOW_COMB_STOCK_SC;
+    public boolean SHOW_COMB_STOCK_SP;
+    public boolean SHOW_COMB_STOCK_SHELF_OUTER;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -2130,7 +2132,6 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
-        this.IS_COMBINED_STOCK_CHECK_FROM_ORDER = hashMapHHTModuleConfig.get(CODE_COMBINED_STOCK_CHECK_FROM_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_COMBINED_STOCK_CHECK_FROM_ORDER) : false;
 
 
     }
@@ -3152,9 +3153,20 @@ public class ConfigurationMasterHelper {
                         SHOW_REPLACED_QTY_OU = true;
                     else if (temp.equals("AVGDAYS"))
                         SHOW_STOCK_AVGDAYS = true;
+                    else if (temp.equals("COMBSTK"))
+                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                    else if (temp.equals("COMBSP"))
+                        SHOW_COMB_STOCK_SP = true;
+                    else if (temp.equals("COMBSC"))
+                        SHOW_COMB_STOCK_SC = true;
+                    else if (temp.equals("COMBSHO"))
+                        SHOW_COMB_STOCK_SHELF_OUTER = true;
+
 
                 }
             }
+
+
             codeValue = null;
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
