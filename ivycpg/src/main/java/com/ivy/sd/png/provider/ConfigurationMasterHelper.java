@@ -1630,7 +1630,7 @@ public class ConfigurationMasterHelper {
         this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
         this.IS_HST04 = hashMapHHTModuleConfig.get(CODE_HST04) != null ? hashMapHHTModuleConfig.get(CODE_HST04) : false;//history fragment*/
         this.IS_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_CHAT) : false;
-        this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_TASK) : false;
+        this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) : false;
         this.HAS_PROFILE_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) : false;
         this.SHOW_ALL_ROUTES = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_ROUTES) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_ROUTES) : false;
         this.SHOW_RETAILER_VISIT_CONFIRMATION = hashMapHHTModuleConfig.get(CODE_RETAILER_VISIT_CONFIRMATION) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_VISIT_CONFIRMATION) : false;
