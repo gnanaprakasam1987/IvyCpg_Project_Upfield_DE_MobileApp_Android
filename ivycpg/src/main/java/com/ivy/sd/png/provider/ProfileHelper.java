@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -46,6 +47,8 @@ public class ProfileHelper {
     private Vector<OrderHistoryBO> parent_invoiceHistoryLIst;
     private Vector<Vector<OrderHistoryBO>> child_invoiceHistoryList;
     public Vector<OrderHistoryBO> invoiceHistoryList;
+    public Vector<RetailerMasterBO> mSalesCateogryList;
+    public String mSalesCategoryLabel = "";
 
     public static ProfileHelper getInstance(Context context) {
         if (instance == null) {
@@ -59,6 +62,7 @@ public class ProfileHelper {
         this.bmodel = (BusinessModel) context;
         setParentOrderHistory(new Vector<OrderHistoryBO>());
         setParentInvoiceHistory(new Vector<OrderHistoryBO>());
+        setmSalesCateogryList(new Vector<RetailerMasterBO>());
     }
 
     public float getP4AvgOrderValue() {
@@ -556,6 +560,22 @@ public class ProfileHelper {
         this.parent_invoiceHistoryLIst = invoiceHistory;
     }
 
+    public Vector<RetailerMasterBO> getmSalesCateogryList() {
+        return mSalesCateogryList;
+    }
+
+    public void setmSalesCateogryList(Vector<RetailerMasterBO> mSalesCateogryList) {
+        this.mSalesCateogryList = mSalesCateogryList;
+    }
+
+    public String getmSalesCategoryLabel() {
+        return mSalesCategoryLabel;
+    }
+
+    public void setmSalesCategoryLabel(String mSalesCategoryLabel) {
+        this.mSalesCategoryLabel = mSalesCategoryLabel;
+    }
+
     public ArrayList<PlanningOutletBO> downloadPlanningOutletCategory() {
         planningoutletlist = new ArrayList<PlanningOutletBO>();
         try {
@@ -810,5 +830,107 @@ public class ProfileHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public void salesPerCategory() {
+        mSalesCateogryList.clear();
+        mSalesCategoryLabel="";
+        String givenLevelId = getGivenLovId();
+        if(givenLevelId!=null && !givenLevelId.equalsIgnoreCase("")) {
+            String sql = "Select PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, PM.PLid, PM.ParentId," +
+                    " SUM(PID.Qty) as QTY, PM.psname  from P4InvoiceHistoryMaster PIM INNER JOIN P4InvoiceHistoryDetail PID ON PID.refid=PIM.refid  " +
+                    "INNER JOIN ProductMaster PM ON PID.productid=PM.PID where PIM.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " group by PIM.refid";
+
+            String sqlLabel = "Select LevelName from ProductLevel where LevelId=" + givenLevelId;
+
+    /*    String sql = "Select PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, PM.PLid, PM.ParentId," +
+                " SUM(PID.Qty) as QTY, PM.psname  from P4InvoiceHistoryMaster PIM INNER JOIN P4InvoiceHistoryDetail PID ON PID.refid=PIM.refid  " +
+                "INNER JOIN ProductMaster PM ON PID.productid=PM.PID where PIM.retailerid=180201 group by PIM.refid";*/
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL(sql);
+            Cursor c1 = db.selectSQL(sqlLabel);
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
+
+                    String invoiceId = c.getString(1);
+                    String invoiceValue = c.getString(2);
+                    String lpc = c.getString(3);
+                    String levelId = c.getString(5);
+                    String parentId = c.getString(6);
+                    String qty = c.getString(7);
+                    String psnmae = c.getString(8);
+
+                    retailerMasterBO.setSalesInvoiceId(invoiceId);
+                    retailerMasterBO.setSalesInvoiceValue(invoiceValue);
+                    retailerMasterBO.setSalesLpc(lpc);
+                    retailerMasterBO.setSalesQty(qty);
+
+                    if (levelId.equalsIgnoreCase(givenLevelId)) {
+                        retailerMasterBO.setSalesProductSName(psnmae);
+                    } else {
+                        retailerMasterBO = getProductBrand(parentId, givenLevelId, retailerMasterBO);
+                    }
+                    mSalesCateogryList.add(retailerMasterBO);
+                }
+                c.close();
+            }
+
+            if (c1 != null) {
+                while (c1.moveToNext()) {
+                    mSalesCategoryLabel = c1.getString(0);
+                }
+                c1.close();
+            }
+            db.closeDB();
+        }else Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();
+    }
+
+    private RetailerMasterBO getProductBrand(String parentId, String givenLevelId, RetailerMasterBO retailerMasterBO) {
+        String sql = "Select pid, pname, psname, plid, parentid from productMaster where pid=" + parentId;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL(sql);
+        if (c != null) {
+            while (c.moveToNext()) {
+                String levelId = c.getString(3);
+                String parId = c.getString(4);
+                String psname = c.getString(1);
+
+                if (levelId.equalsIgnoreCase(givenLevelId)) {
+                    retailerMasterBO.setSalesProductSName(psname);
+                    return retailerMasterBO;
+                } else {
+                    retailerMasterBO=getProductBrand(parId, givenLevelId, retailerMasterBO);
+                    return retailerMasterBO;
+                }
+
+            }
+            c.close();
+        }
+        db.closeDB();
+        return retailerMasterBO;
+    }
+
+    private String getGivenLovId() {
+        String givenLovId="";
+        String sql = " Select RField from HhtModuleMaster where hhtCode = "+bmodel.QT(bmodel.configurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL)+" and flag =1";
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL(sql);
+        if (c != null)
+        {
+            while (c.moveToNext()) {
+                givenLovId = c.getString(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return givenLovId;
     }
 }

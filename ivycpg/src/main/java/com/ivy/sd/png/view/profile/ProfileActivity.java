@@ -88,9 +88,11 @@ import com.ivy.sd.png.view.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.sd.png.view.SalesPerCategory;
 import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
+import com.ivy.sd.png.view.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
 import org.json.JSONObject;
@@ -180,6 +182,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     private UserRetailerTransactionReceiver receiver;
     private static final String ASSET_HISTORY = "Asset History";
+    private static final String TASK = "Task";
+    private static final String SALES_PER_LEVEL = "Sales";
     private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
 
     Timer mLocTimer;
@@ -420,8 +424,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 Commons.printException("Error while setting label for InvoiceHist Tab", ex);
             }
         }
-        if (bmodel.configurationMasterHelper.SHOW_ASSET_HISTORY) {
-            tabLayout.addTab(tabLayout.newTab().setText(ASSET_HISTORY));
+
+        if (bmodel.configurationMasterHelper.SHOW_TASK) {
+            tabLayout.addTab(tabLayout.newTab().setText(TASK));
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_AVG_SALES_PER_LEVEL) {
+            bmodel.profilehelper.salesPerCategory();
+            tabLayout.addTab(tabLayout.newTab().setText(SALES_PER_LEVEL));
         }
 
         View root = tabLayout.getChildAt(0);
@@ -1199,8 +1209,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return new MSLUnsoldFragment();
             } else if (tabName.equals(invoice_history_title)) {
                 return new InvoiceHistoryFragment();
-            } else if (tabName.equals("Asset History")) {
+            } else if (tabName.equals(ASSET_HISTORY)) {
                 return new AssetHistoryFragment();
+            } else if (tabName.equalsIgnoreCase(TASK)) {
+                TaskListFragment taskListFragment = new TaskListFragment();
+                Bundle args1 = new Bundle();
+                args1.putInt("type", 1);
+                args1.putBoolean("isRetailer", true);
+                args1.putBoolean("fromReview", false);
+                args1.putBoolean("fromProfileScreen", true);
+                taskListFragment.setArguments(args1);
+                return taskListFragment;
+            } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
+                return new SalesPerCategory();
             }
             return null;
         }
@@ -1919,7 +1940,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPreExecute() {
-            if(!isCancelled()) {
+            if (!isCancelled()) {
                 builder = new AlertDialog.Builder(ProfileActivity.this);
                 customProgressDialog(builder, getResources().getString(R.string.loading));
                 alertDialog = builder.create();
@@ -1931,7 +1952,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPostExecute(Boolean result) {
-            if(!isCancelled()) {
+            if (!isCancelled()) {
                 // to get last user visited retailer sequence and location to calculate distance..
                 bmodel.outletTimeStampHelper.getlastRetailerDatas();
                 float distance = calculateDistanceBetweenRetailers();
@@ -2079,7 +2100,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             unregisterReceiver(receiver);
         }
 
-        if(downloadProductsAndPrice.getStatus()== AsyncTask.Status.RUNNING)
+        if (downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.cancel(true);
 
     }
