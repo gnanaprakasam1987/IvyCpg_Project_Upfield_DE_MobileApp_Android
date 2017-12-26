@@ -318,7 +318,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
                 mPlanoGramHelper.loadConfigurations();
                 mPlanoGramHelper.downloadLevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM, false, false, false, 0, 0);
+                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM);
                 mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
                 mPlanoGramHelper.loadPlanoGramInEditMode("0");
                 if (mBModel.productHelper.getChildLevelBo() != null && mBModel.productHelper.getChildLevelBo().size() > 0) {
@@ -833,7 +833,16 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            downloadVanload();
+            if (mBModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                downloadVanload();
+            }else {
+                String errorMsg = mBModel.synchronizationHelper.getErrormessageByErrorCode().get(mBModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(LoadManagementScreen.this, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoadManagementScreen.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

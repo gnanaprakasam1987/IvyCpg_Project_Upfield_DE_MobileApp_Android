@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.Synchronization;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -392,8 +393,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
                 mPlanoGramHelper
                         .downloadLevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM
-                        , false, false, false, 0, 0);
+                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM);
                 mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
                 mPlanoGramHelper.loadPlanoGramInEditMode("0");
                 if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
@@ -803,7 +803,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            downloadVanload();
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                downloadVanload();
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

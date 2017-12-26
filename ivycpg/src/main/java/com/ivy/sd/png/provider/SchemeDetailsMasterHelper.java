@@ -1107,8 +1107,8 @@ public class SchemeDetailsMasterHelper {
                 int maximumQuantity = schemeProductBO.getQuantityMaximum();
 
                 if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null
-                        &&  (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
-                              ||schemeBO.getProcessType().equals(PROCESS_TYPE_MTS)))) {
+                        && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
+                        || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS)))) {
 
 					/* scheme type is Quantity Value */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -2104,7 +2104,7 @@ public class SchemeDetailsMasterHelper {
                     tempToQty = selectedtoBuyQty;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
                         ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
-                        if(productBO!=null) {
+                        if (productBO != null) {
                             if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
 
                                 qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
@@ -3932,7 +3932,7 @@ public class SchemeDetailsMasterHelper {
     }
 
     public String getChannelidForScheme(int channelid) {
-        String sql, sql1 = "", str = "0";
+        String sql, sql1 = "", str = "";
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -3980,6 +3980,8 @@ public class SchemeDetailsMasterHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+        if (str.length() == 0)
+            str = "0";
         return str;
     }
 
