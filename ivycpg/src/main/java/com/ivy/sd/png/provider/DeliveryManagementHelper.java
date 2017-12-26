@@ -75,6 +75,34 @@ public class DeliveryManagementHelper {
 
 
     }
+
+    public ArrayList<RetailerMasterBO> getInvoicedRetailerList() {
+        ArrayList<RetailerMasterBO> invoicedRetailerList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "select distinct RM.Retailerid,RM.RetailerName from invoicemaster IM INNER JOIN RetailerMaster RM on RM.RetailerID = IM.Retailerid"
+                    + " where IM.InvoiceNo not in(select vh.invoiceid from vandeliveryheader vh)";
+            Cursor c = db.selectSQL(s);
+            RetailerMasterBO retailerMasterBO;
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerMasterBO = new RetailerMasterBO();
+                    retailerMasterBO.setRetailerID(c.getString(0));
+                    retailerMasterBO.setRetailerName(c.getString(1));
+                    invoicedRetailerList.add(retailerMasterBO);
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        } finally {
+            db.closeDB();
+        }
+
+        return invoicedRetailerList;
+    }
     public ArrayList<InvoiceHeaderBO> getInvoiceList(){
         if(mInvoiceList!=null){
             return mInvoiceList;

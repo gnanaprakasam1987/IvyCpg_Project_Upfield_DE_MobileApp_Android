@@ -552,9 +552,10 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             if (invoiceList.size() == 1) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-
-                Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
-                startActivity(i);
+                if (getIntent().getStringExtra("From") == null) {
+                    Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
+                    startActivity(i);
+                }
                 finish();
             } else {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -562,6 +563,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                 Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                 i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                if (getIntent().getStringExtra("From") != null) {
+                    i.putExtra("From", getIntent().getStringExtra("From"));
+                }
                 startActivity(i);
                 finish();
             }

@@ -3,9 +3,9 @@ package com.ivy.sd.png.model;
 public interface
 ApplicationConfigs {
 
-    String DB_NAME = "ivycpg_v18";
+    String DB_NAME = "ivycpg_v18_dm";
 
-    boolean withActivation = true;
+    boolean withActivation = false;
 
     boolean checkUTCTime = false;
     String LANGUAGE = "en";
