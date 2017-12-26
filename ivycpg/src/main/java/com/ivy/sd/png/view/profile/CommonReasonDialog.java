@@ -138,14 +138,32 @@ public class CommonReasonDialog extends Dialog {
             reasonVisitTxt.setVisibility(View.GONE);
             reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getNonVisitReasonMaster()));
         } else if (listLoad.equals("deviate")) {
-            ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
-            deviateReasons.addAll(bmodel.reasonHelper.getDeviatedReturnMaster());
-            reasonVisitTxt.setVisibility(View.VISIBLE);
-            ReasonMaster reason = new ReasonMaster();
-            reason.setReasonID("0");
-            reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
-            deviateReasons.add(reason);
-            reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
+            if(!isReasonRemarksNA()) {
+                ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
+                deviateReasons.addAll(bmodel.reasonHelper.getDeviatedReturnMaster());
+                reasonVisitTxt.setVisibility(View.VISIBLE);
+                ReasonMaster reason = new ReasonMaster();
+                reason.setReasonID("0");
+                reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+                deviateReasons.add(reason);
+                reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
+            }
+            else
+            {
+                ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
+                reasonVisitTxt.setVisibility(View.GONE);
+                reason_recycler.setVisibility(View.GONE);
+                ReasonMaster reason = new ReasonMaster();
+                reason.setReasonID("0");
+                reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+                deviateReasons.add(reason);
+                selected_reason=reason;
+                reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
+                addReason1.setVisibility(View.GONE);
+                addReason.setVisibility(View.VISIBLE);
+                addReason.setEnabled(true);
+                addReason.setClickable(true);
+            }
         }
 
     }

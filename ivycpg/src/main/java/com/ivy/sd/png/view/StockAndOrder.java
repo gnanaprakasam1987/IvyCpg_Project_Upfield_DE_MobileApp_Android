@@ -3032,12 +3032,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.validDecimalValue(qty, 8, 2)) {
                                 holder.productObj.setSrp(SDUtil
                                         .convertToFloat(qty));
+                                holder.productObj.setCsrp(holder.productObj.getCaseSize() * SDUtil
+                                        .convertToFloat(qty));
+                                holder.productObj.setOsrp(holder.productObj.getOutersize() * SDUtil
+                                        .convertToFloat(qty));
                             } else {
                                 holder.srpEdit.setText(qty.length() > 1 ? qty
                                         .substring(0, qty.length() - 1) : "0");
                             }
                         } else {
                             holder.productObj.setSrp(0);
+                            holder.productObj.setCsrp(0);
+                            holder.productObj.setOsrp(0);
                         }
                         double tot = (holder.productObj.getOrderedCaseQty() * holder.productObj
                                 .getCsrp())

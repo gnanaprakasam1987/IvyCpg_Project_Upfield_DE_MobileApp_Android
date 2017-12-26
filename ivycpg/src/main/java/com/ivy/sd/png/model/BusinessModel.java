@@ -409,6 +409,12 @@ public class BusinessModel extends Application {
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
     public Timer orderTimer;
+    // used for ProductiveCall
+    private boolean PRD_FOR_ORDER = false;
+    private boolean PRD_FOR_SKT = false;
+    private static final String PRODUCTVIE_CALLS = "PRODUCTIVECALL";
+    private static final String PRD_ORD = "ORD";
+    private static final String PRD_STK = "STK";
 
 
     public BusinessModel() {
@@ -6060,8 +6066,9 @@ public class BusinessModel extends Application {
     /**
      * This method will return the productive retailers count for the Day. For
      * Van Seller, this method will get distinct retailer count from
-     * InvoiceTable and For Pre-seller from OrderHeader. Deviated retailers
-     * productivity wont be considered for deviated retailers.
+     * InvoiceTable and For Pre-seller from OrderHeader if PRD_FOR_ORDER is TRUE and from ClosingStockHeader if PRD_FOR_STK is true.
+     * This config is computed through loadProductiveCallsConfig()
+     * Deviated retailer productivity wont be considered for deviated retailers.
      *
      * @return ProductiveCallsForTheDay
      */
@@ -6087,13 +6094,24 @@ public class BusinessModel extends Application {
             } else {
                 // c =
                 // db.selectSQL("select distinct(RetailerId) from OrderHeader");
-                if (beatMasterHealper.getTodayBeatMasterBO() == null
-                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                    c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
-                } else {
-                    c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
-                            + "o.retailerid=r.retailerid ");// where
-                    // r.isdeviated='N'
+                loadProductiveCallsConfig();
+                if (PRD_FOR_ORDER) {
+                    if (beatMasterHealper.getTodayBeatMasterBO() == null
+                            || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
+                    } else {
+                        c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                                + "o.retailerid=r.retailerid ");// where
+                        // r.isdeviated='N'
+                    }
+                } else if (PRD_FOR_SKT) {
+                    if (beatMasterHealper.getTodayBeatMasterBO() == null
+                            || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                    } else {
+                        c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                                + "CSH.RetailerID=RM.RetailerID ");
+                    }
                 }
             }
             if (c != null) {
@@ -6110,6 +6128,40 @@ public class BusinessModel extends Application {
         }
 
         return productive_calls;
+    }
+
+    /* This method will download the config for the productivecall. Based on the RField
+    * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
+
+    public void loadProductiveCallsConfig() {
+        try {
+            PRD_FOR_ORDER = false;
+            PRD_FOR_SKT = false;
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1'";
+
+            Cursor c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(PRD_ORD))
+                        PRD_FOR_ORDER = true;
+                    else if (c.getString(0).equalsIgnoreCase(PRD_STK))
+                        PRD_FOR_SKT = true;
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("loadProductiveCallsConfigs " + e);
+        }
     }
 
     /**
