@@ -568,13 +568,15 @@
                         android:maxLines="1"
                         android:text="@string/avail" />
 
-                    <ImageButton
+                    <android.support.v7.widget.AppCompatCheckBox
                         android:id="@+id/btn_availability"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/image_desc"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:background="@android:color/transparent" />
+
+                        />
                 </LinearLayout>
 
                 <LinearLayout

@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,7 +53,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -1528,6 +1529,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             return items.size();
         }
 
+        @SuppressLint("RestrictedApi")
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             final ViewHolder holder;
@@ -1568,7 +1570,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 //Store - Stock Check
 
-                holder.imageButton_availability = (ImageButton) row.findViewById(R.id.btn_availability);
+                holder.imageButton_availability = (AppCompatCheckBox) row.findViewById(R.id.btn_availability);
                 holder.imageView_stock = (ImageView) row.findViewById(R.id.iv_stock);
                 //check - qty entry
                 holder.shelfCaseQty = (EditText) row
@@ -1668,6 +1670,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.ssrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
                     holder.mrp.setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)
+                    holder.imageView_stock.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.SHOW_INDICATIVE_ORDER) {
                     ((LinearLayout) row.findViewById(R.id.llIo)).setVisibility(View.GONE);
@@ -2088,22 +2093,25 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 .get(mSelectedLocationIndex).getAvailability() == -1) {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex).setAvailability(1);
-                            holder.imageButton_availability
-                                    .setImageResource(R.drawable.ic_thumb_up_black_24dp);
+
+                            holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.GREEN)));
+                            holder.imageButton_availability.setChecked(true);
 
                         } else if (holder.productObj.getLocations()
                                 .get(mSelectedLocationIndex).getAvailability() == 1) {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex).setAvailability(0);
-                            holder.imageButton_availability
-                                    .setImageResource(R.drawable.ic_thumb_down_black_24dp);
+
+                            holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
+                            holder.imageButton_availability.setChecked(true);
 
                         } else if (holder.productObj.getLocations()
                                 .get(mSelectedLocationIndex).getAvailability() == 0) {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex).setAvailability(-1);
-                            holder.imageButton_availability
-                                    .setImageResource(R.drawable.ic_remove_circle_black_24dp);
+
+                            holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
+                            holder.imageButton_availability.setChecked(false);
 
                         }
 
@@ -3247,14 +3255,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             if (holder.productObj.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 1) {
-                holder.imageButton_availability.setImageResource(R.drawable.ic_thumb_up_black_24dp);
+                holder.imageButton_availability.setChecked(true);
+                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.GREEN)));
 
             } else if (holder.productObj.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 0) {
-                holder.imageButton_availability.setImageResource(R.drawable.ic_thumb_down_black_24dp);
+                holder.imageButton_availability.setChecked(true);
+                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
             } else if (holder.productObj.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == -1) {
-                holder.imageButton_availability.setImageResource(R.drawable.ic_remove_circle_black_24dp);
+                holder.imageButton_availability.setChecked(false);
+                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
             }
 
             // set SO value
@@ -3496,7 +3507,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     class ViewHolder {
-        private ImageButton imageButton_availability;
+        private AppCompatCheckBox imageButton_availability;
         private String productId;
         private String pname;
         private ProductMasterBO productObj;

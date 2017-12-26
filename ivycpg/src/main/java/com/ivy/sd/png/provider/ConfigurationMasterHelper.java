@@ -1205,6 +1205,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_COMB_STOCK_SC;
     public boolean SHOW_COMB_STOCK_SP;
     public boolean SHOW_COMB_STOCK_SHELF_OUTER;
+    public boolean SHOW_COMB_STOCK_CB;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -3153,14 +3154,17 @@ public class ConfigurationMasterHelper {
                         SHOW_REPLACED_QTY_OU = true;
                     else if (temp.equals("AVGDAYS"))
                         SHOW_STOCK_AVGDAYS = true;
-                    else if (temp.equals("COMBSTK"))
+                    else if (temp.equals("CSTK"))
                         IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                    else if (temp.equals("COMBSP"))
+                    else if (temp.equals("CSP"))
                         SHOW_COMB_STOCK_SP = true;
-                    else if (temp.equals("COMBSC"))
+                    else if (temp.equals("CSC"))
                         SHOW_COMB_STOCK_SC = true;
-                    else if (temp.equals("COMBSHO"))
+                    else if (temp.equals("CSHO"))
                         SHOW_COMB_STOCK_SHELF_OUTER = true;
+                    else if (temp.equals("CCB"))
+                        SHOW_COMB_STOCK_CB = true;
+
 
 
                 }

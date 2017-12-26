@@ -1,8 +1,10 @@
 package com.ivy.cpg.view.stockcheck;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -23,7 +25,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,7 +51,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     private String screenTitle, Pid;
     private int mSelectedLocationIndex;
     private View view_dotted_line;
-    private RadioButton rbYesAvai, rbNoAvai, rbYesPrice, rbNoPrice;
+    private RadioButton rbYesPrice, rbNoPrice;
     private InputMethodManager inputManager;
     private EditText mSelectedET;
     private EditText etShelfPiece, etShelfCase, etShelfOuter;
@@ -65,6 +66,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private Button btnSave;
     private PriceTrackingHelper priceTrackingHelper;
+    private AppCompatCheckBox chkAvailability;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +115,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
         view_dotted_line.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mSelectedET = null;
 
-        rbYesAvai = (RadioButton) findViewById(R.id.availyes);
-        rbNoAvai = (RadioButton) findViewById(R.id.availno);
+        chkAvailability = (AppCompatCheckBox) findViewById(R.id.chk_availability);
+
         rbYesPrice = (RadioButton) findViewById(R.id.priceYes);
         rbNoPrice = (RadioButton) findViewById(R.id.priceno);
 
@@ -142,8 +144,6 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
         btnSave = (Button) findViewById(R.id.btn_save);
 
-        rbYesAvai.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        rbNoAvai.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         rbYesPrice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         rbNoPrice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -216,6 +216,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
 
     }
 
+    @SuppressLint("RestrictedApi")
     private void process() {
         if (screenTitle != null)
             setScreenTitle(screenTitle);
@@ -246,8 +247,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((LinearLayout) findViewById(R.id.ll_reason)).setVisibility(View.GONE);
 
             //shelf
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_CB)
-                ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
+            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
+                (findViewById(R.id.ll_availability)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
                 ((LinearLayout) findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
@@ -261,7 +262,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP &&
                         !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER) {
                     ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setVisibility(View.GONE);
-                    ((RadioGroup) findViewById(R.id.rg_available)).setVisibility(View.GONE);
+                    findViewById(R.id.ll_availability).setVisibility(View.GONE);
                 }
 
 
@@ -272,7 +273,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs() + "");
             }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
-                    && !bmodel.configurationMasterHelper.SHOW_STOCK_CB)
+                    && !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
                 ((RelativeLayout) findViewById(R.id.availability_lty)).setVisibility(View.GONE);
 
 
@@ -1048,53 +1049,73 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 }
             });
 
-            rbYesAvai.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            //Initial load
+            if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getAvailability() == 1) {
+                chkAvailability.setChecked(true);
+                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.GREEN)));
+            } else if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getAvailability() == 0) {
+                chkAvailability.setChecked(true);
+                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+            } else if (mProductMasterBO.getLocations()
+                    .get(mSelectedLocationIndex).getAvailability() == -1) {
+                chkAvailability.setChecked(false);
+                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
+            }
+
+            //        chkStkDistributed.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.Yellow)));
+
+            chkAvailability.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if (isChecked) {
-                        rbNoAvai.setChecked(false);
-                        rbYesAvai.setButtonDrawable(R.drawable.ic_tick_enable);
-                        rbYesAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_green));
-                        rbNoAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
-                        rbNoAvai.setButtonDrawable(R.drawable.ic_cross_disable);
+                public void onClick(View view) {
 
-                        mProductMasterBO
-                                .getLocations()
+                    if (mProductMasterBO.getLocations()
+                            .get(mSelectedLocationIndex).getAvailability() == -1) {
+                        mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex).setAvailability(1);
+                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.GREEN)));
+                        chkAvailability.setChecked(true);
 
+                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
                             mProductMasterBO.setReasonID("0");
+                        }
 
-                    }
-
-                }
-            });
-            rbNoAvai.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if (isChecked) {
-                        rbYesAvai.setChecked(false);
-                        rbYesAvai.setButtonDrawable(R.drawable.ic_tick_disable);
-                        rbNoAvai.setButtonDrawable(R.drawable.ic_cross_enable);
-                        rbYesAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
-                        rbNoAvai.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_no_red));
-
-
-                        mProductMasterBO
-                                .getLocations()
+                    } else if (mProductMasterBO.getLocations()
+                            .get(mSelectedLocationIndex).getAvailability() == 1) {
+                        mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex).setAvailability(0);
+                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+                        chkAvailability.setChecked(true);
 
+                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                            mReason.setEnabled(true);
+                            mReason.setSelected(true);
+                            mReason.setSelection(0);
+                        }
 
-                        facingQty.setText("0");
-                        mReason.setEnabled(true);
-                        mReason.setSelected(true);
-                        mReason.setSelection(0);
+                    } else if (mProductMasterBO.getLocations()
+                            .get(mSelectedLocationIndex).getAvailability() == 0) {
+                        mProductMasterBO.getLocations()
+                                .get(mSelectedLocationIndex).setAvailability(-1);
+                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
+                        chkAvailability.setChecked(false);
+
+                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                            mReason.setEnabled(false);
+                            mReason.setSelected(false);
+                            mReason.setSelection(0);
+                            mProductMasterBO.setReasonID("0");
+                        }
+
                     }
 
                 }
             });
+
 
             mReason.setAdapter(spinnerAdapter);
 
