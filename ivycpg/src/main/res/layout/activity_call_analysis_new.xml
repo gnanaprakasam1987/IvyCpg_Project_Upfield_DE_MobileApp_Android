@@ -1,101 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/root"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <RelativeLayout
-        android:id="@+id/root"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/ll_footer"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
-        android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
-        android:orientation="vertical">
-
+        android:layout_below="@+id/toolbar">
         <RelativeLayout
-            android:id="@+id/rl_store_status"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
+            android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_store_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="@string/store_status"
-                android:textColor="@color/store_status_text_color"
-                android:textSize="@dimen/font_small" />
+            <RelativeLayout
+                android:id="@+id/rl_store_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_store_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/store_status"
+                    android:textColor="@color/store_status_text_color"
+                    android:textSize="@dimen/font_small" />
 
 
-            <ImageView
-                android:id="@+id/goldstore_iv"
-                android:layout_width="@dimen/store_status_star_width"
-                android:layout_height="@dimen/store_status_star_height"
-                android:layout_alignParentRight="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/golden_store"
-                android:src="@drawable/icon_star" />
-        </RelativeLayout>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/content_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rl_store_status"
-            android:layout_marginTop="@dimen/dimen_6dp"
-            android:background="@color/WHITE">
-
+                <ImageView
+                    android:id="@+id/goldstore_iv"
+                    android:layout_width="@dimen/store_status_star_width"
+                    android:layout_height="@dimen/store_status_star_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/golden_store"
+                    android:src="@drawable/icon_star" />
+            </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_store_status"
+                android:layout_marginTop="@dimen/dimen_6dp"
                 android:orientation="vertical">
-
-                <RelativeLayout
+                <android.support.v7.widget.CardView
+                    android:id="@+id/content_card"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/sale_header_height"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content"
+                    android:background="@color/WHITE">
 
-                    <TextView
-                        android:id="@+id/sale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:paddingLeft="@dimen/list_padding_left_n_right"
-                        android:paddingRight="@dimen/list_padding_left_n_right"
-                        android:text="@string/sale"
-                        android:textColor="@color/store_status_text_color"
-                        android:textSize="@dimen/font_small" />
-
-                    <View
-                        android:id="@+id/view_dotted_line"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimen_2dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="@dimen/list_item_inter_margin"
-                        android:layout_marginTop="@dimen/list_item_inter_margin"
-                        android:background="@drawable/line_dotted" />
-                </RelativeLayout>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                <ListView
-                    android:id="@+id/callAnalysisList"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/sale_header_height"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/sale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:paddingLeft="@dimen/list_padding_left_n_right"
+                                android:paddingRight="@dimen/list_padding_left_n_right"
+                                android:text="@string/sale"
+                                android:textColor="@color/store_status_text_color"
+                                android:textSize="@dimen/font_small" />
+
+                            <View
+                                android:id="@+id/view_dotted_line"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dimen_2dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="@dimen/list_item_inter_margin"
+                                android:layout_marginTop="@dimen/list_item_inter_margin"
+                                android:background="@drawable/line_dotted" />
+                        </RelativeLayout>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/callAnalysisListRecycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:cacheColorHint="@null"
+                            android:divider="@null"
+                            android:nestedScrollingEnabled="false"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            android:fitsSystemWindows="true"/>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:id="@+id/content_closeCallCard"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:cacheColorHint="@null"
-                    android:divider="@null"
-                    android:fitsSystemWindows="true"></ListView>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/content_card"
+                    android:layout_marginTop="@dimen/dimen_6dp"
+                    android:background="@color/WHITE">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:id="@+id/layoutCloseCall"
+                        android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
+                        android:paddingLeft="@dimen/dimen_8dp"
+                        android:paddingRight="@dimen/dimen_8dp"
+                        android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
-    </RelativeLayout>
+
+                        <TextView
+                            style="?attr/customListItemPrimary"
+                            android:id="@+id/tvMenuName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:gravity="center"
+                            android:textSize="@dimen/font_small"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true">
+
+                                <TextView
+                                    android:id="@+id/tv_menuValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:textColor="@color/kpi_value_text_color"
+                                    android:textSize="@dimen/highlight_small"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+
 
     <!-- </ScrollView>-->
     <RelativeLayout
