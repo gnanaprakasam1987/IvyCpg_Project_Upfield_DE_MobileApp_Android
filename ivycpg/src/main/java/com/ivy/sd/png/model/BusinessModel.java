@@ -1178,7 +1178,8 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()));
+                    + QT(retailerMasterBO.getRetailerID()) +
+                    " AND upload='N'");
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);
@@ -1440,9 +1441,9 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
-                            + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
+                            + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, RBM.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
-                            + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
+                            + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, RBM.isVisited,"
                             + " (select count(distinct GrpName) from SbdDistributionMaster where channelid = A.ChannelId) as sbdtgt,"
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
@@ -2475,8 +2476,9 @@ public class BusinessModel extends Application {
         }
 
 
-        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
-                + " where isdeviated='Y' and isVisited='Y'");
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM " +
+                "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + " where RBM.isdeviated='Y' and RBM.isVisited='Y'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -2488,7 +2490,8 @@ public class BusinessModel extends Application {
         sb = new StringBuffer();
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and isdeviated='Y'");
+        sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2515,7 +2518,8 @@ public class BusinessModel extends Application {
         }
         c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
                 + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                + "where isVisited='Y' and RMI.isToday='1'");
+                + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + "where RBM.isVisited='Y' and RMI.isToday='1'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -5736,8 +5740,9 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                            + " WHERE (RMI.isToday=1 or isDeviated='Y')");
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                            + " WHERE (RMI.isToday=1 or RBM.isDeviated='Y')");
             if (c != null) {
                 if (c.getCount() > 0) {
                     c.moveToNext();
@@ -5752,8 +5757,9 @@ public class BusinessModel extends Application {
 
             Cursor c1 = db
                     .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                            + " WHERE IsGoldStore=1 and (RMI.isToday=1 or isDeviated='Y')");
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                            + " WHERE IsGoldStore=1 and (RMI.isToday=1 or RBM.isDeviated='Y')");
             if (c1 != null) {
                 if (c1.getCount() > 0) {
                     c1.moveToNext();
@@ -6018,12 +6024,14 @@ public class BusinessModel extends Application {
                     || beatMasterHealper.getTodayBeatMasterBO() == null
                     || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
                 c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                        + "where   isdeviated='Y' or RMI.isToday='1'");
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
             } else {
                 c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                        + " where   isdeviated='Y' or RMI.isToday='1'");
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
             }
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -6055,7 +6063,9 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = null;
-            c = db.selectSQL("select count(distinct retailerid) from retailermaster where isvisited='Y'");// and
+            c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM" +
+                    " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID" +
+                    " where RBM.isvisited='Y'");// and
             // isdeviated='N'
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -6099,7 +6109,8 @@ public class BusinessModel extends Application {
                 } else {
                     c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
                             + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
-                            + " where r.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
+                            + "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = r.RetailerID"
+                            + " where RBM.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
                 }
             } else {
                 // c =
@@ -6227,8 +6238,9 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            db.updateSQL("Update RetailerMaster set isVisited='Y' where RetailerID ="
-                    + getRetailerMasterBO().getRetailerID());
+            db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
+                    + getRetailerMasterBO().getRetailerID()
+                    + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
             db.closeDB();
 
@@ -6456,12 +6468,13 @@ public class BusinessModel extends Application {
                                     + "," + rField3
                                     + "," + product.getLocations().get(j).getAvailability();
 
+
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 int pieces = (shelfCase * product.getCaseSize())
                                         + (shelfOuter * product.getOutersize())
                                         + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+                                values = values + "," + productWeightage;
                                 sum = sum + productWeightage;
                             }
 
@@ -7466,7 +7479,7 @@ public class BusinessModel extends Application {
                             schemeProduct.setOrderedOuterQty(0);
 
                             // excluding tax values
-                            productHelper.excludeProductTax(schemeProduct, taxBO, true);
+                            productHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
 
                             //inserting free product tax details to db
                             productHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);

@@ -530,7 +530,8 @@ public class RetailerHelper {
             String query = "SELECT RM.RetailerId FROM RetailerMaster RM"
                     + " INNER JOIN Nonproductivereasonmaster NP ON NP.RetailerID = RM.RetailerID"
                     + " AND NP.ReasonTypes =(select ListId from StandardListMaster where ListCode='NV')"
-                    + " WHERE RM.isVisited = 'N'";
+                    + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                    + " WHERE RBM.isVisited = 'N'";
             Cursor c = db.selectSQL(query);
             if (c != null) {
 

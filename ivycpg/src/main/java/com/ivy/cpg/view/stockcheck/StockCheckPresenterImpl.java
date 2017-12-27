@@ -248,6 +248,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+                }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
             if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
@@ -282,6 +288,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+                }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
             if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
@@ -315,6 +327,13 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
                     }
+                }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+
                 }
             }
         }

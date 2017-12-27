@@ -441,6 +441,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_RPT_CONFIG = "ORDRPT02";
     public boolean SHOW_DELIVERY_DATE_IN_ORDER_RPT;
 
+    private static final String CODE_SHOW_RID_CONCEDER_AS_DSTID = "FUN64";
+    public boolean IS_SHOW_RID_CONCEDER_AS_DSTID;
+
     /**
      * RoadActivity config *
      */
@@ -2136,6 +2139,8 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
+        this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
+
 
 
     }

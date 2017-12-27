@@ -73,6 +73,7 @@ public class NewOutletEditFragment extends IvyBaseFragment {
     private boolean isdialog = false;
     private AlertDialog alertDialog;
     private View view;
+    private static final String MENU_NEW_RETAILER = "MENU_NEW_RET";
 
 
     @Nullable
@@ -82,12 +83,12 @@ public class NewOutletEditFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
+        view = inflater.inflate(R.layout.activity_new_profile_edit, container, false);
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.rcv_new_retailers);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_new_retailers);
 
 
-        if(((AppCompatActivity) getActivity()).getSupportActionBar() !=null){
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
         }
 
@@ -147,13 +148,7 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
             holder.ib_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    bmodel.newOutletHelper.loadNewOutletConfiguration(0);
-                    Intent i = new Intent(getActivity(), NewOutlet.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    i.putExtra("screenMode", 2);
-                    i.putExtra("retailerId", retailer.getRetailerId());
-                    startActivity(i);
-                    getActivity().finish();
+                    new LoadNewOutLet().execute("1");
                 }
             });
             holder.ll_retailer.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +241,6 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
 
         }
     }
-
 
 
     public class NewOutletEditSortDialog extends Dialog {
@@ -385,6 +379,82 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
             }
         }
     }
+
+
+    private AlertDialog.Builder builder;
+
+    class LoadNewOutLet extends AsyncTask<String, Void, Boolean> {
+        private String mParam;
+
+        protected void onPreExecute() {
+
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            mParam = params[0];
+
+            try {
+                if (!bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
+                    bmodel.newOutletHelper.loadNewOutletConfiguration(0);
+                    bmodel.newOutletHelper.downloadLinkRetailer();
+                }
+
+                if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
+                    bmodel.productHelper
+                            .downloadFiveFilterLevels(MENU_NEW_RETAILER);
+                    bmodel.productHelper
+                            .downloadProductsNewOutlet(MENU_NEW_RETAILER);
+
+                    if (mParam.equals("1"))
+                        bmodel.productHelper.updateOutletOrderedProducts(selectedRetId);
+                }
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return Boolean.FALSE;
+            }
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (alertDialog != null)
+                alertDialog.dismiss();
+
+            if (result) {
+                Intent i = new Intent(getActivity(), NewOutlet.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                if (mParam.equals("1")) {
+                    i.putExtra("screenMode", 2);
+                    i.putExtra("retailerId", selectedRetId);
+                } else if (mParam.equals("0")) {
+                    i.putExtra("screenMode", 4);
+                    fromHomeScreen = true;
+                }
+                startActivity(i);
+                getActivity().finish();
+
+            } else {
+                bmodel = (BusinessModel) getActivity().getApplicationContext();
+                bmodel.showAlert(
+                        "Error: "
+                                + getResources().getString(
+                                R.string.new_store_infn_not_saved), 0);
+            }
+
+        }
+
+    }
+
 
 
 /*
@@ -580,16 +650,7 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
 
 
             } else {
-                if (!bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
-                    bmodel.newOutletHelper.loadNewOutletConfiguration(0);
-                    bmodel.newOutletHelper.downloadLinkRetailer();
-                }
-                Intent j = new Intent(getActivity(), NewOutlet.class);
-                j.putExtra("screenMode", 0);
-                fromHomeScreen = true;
-                j.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(j);
-                getActivity().finish();
+                new LoadNewOutLet().execute("0");
             }
         } else if (i == R.id.menu_sort) {
             NewOutletEditSortDialog sortDialog = new NewOutletEditSortDialog(getActivity(), "nonVisit");
@@ -601,8 +662,8 @@ view=inflater.inflate(R.layout.activity_new_profile_edit,container,false);
             lp.height = (int) (displaymetrics.heightPixels / 2.5);//WindowManager.LayoutParams.WRAP_CONTENT;
             window.setAttributes(lp);
         }
-        
-        
+
+
         return super.onOptionsItemSelected(item);
     }
 }

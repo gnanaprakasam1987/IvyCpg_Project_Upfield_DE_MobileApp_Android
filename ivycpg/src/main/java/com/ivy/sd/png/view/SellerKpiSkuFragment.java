@@ -162,7 +162,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         MyAdapter mSchedule = new MyAdapter(temp);
         rvwplist.setAdapter(mSchedule);
         bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
-        adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
+        adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
         vpPager.setAdapter(adapterViewPager);
         indicator.setViewPager(vpPager);
 
@@ -189,7 +189,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             MyAdapter mSchedule = new MyAdapter(temp);
             rvwplist.setAdapter(mSchedule);
             bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
-            adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
+            adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
             vpPager.setAdapter(adapterViewPager);
             indicator.setViewPager(vpPager);
             if (curSeq != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel)
@@ -481,7 +481,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
                 case 1: // Fragment # 0 - This will show FirstFragment different title
                     Fragment fragment = new TotalAchivedFragment();
                     Bundle args = new Bundle();
-                    args.putInt("flex1",flex1);
+                    args.putInt("flex1", flex1);
                     fragment.setArguments(args);
                     return fragment;
                 case 2: // Fragment # 0 - This will show FirstFragment different title

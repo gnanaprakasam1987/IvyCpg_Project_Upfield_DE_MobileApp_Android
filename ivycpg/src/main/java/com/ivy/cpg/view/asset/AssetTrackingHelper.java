@@ -1493,11 +1493,11 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
 
-                                    sum = sum + productWeightAge;
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
 
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
@@ -1608,10 +1608,9 @@ public class AssetTrackingHelper {
                                 }
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
-
-                                    sum = sum + productWeightAge;
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
