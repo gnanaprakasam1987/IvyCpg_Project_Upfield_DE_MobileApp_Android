@@ -1,12 +1,10 @@
 package com.ivy.sd.png.view;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -14,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -47,6 +44,7 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
@@ -594,18 +592,46 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             }
         } else if (i1 == R.id.menu_signature) {
             if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, signName)) {
-                DialogFragment dialog = new signatureExistingAlert();
-                Bundle args = new Bundle();
-                args.putString("title", getResources().getString(
-                        R.string.word_photocaptured_delete_retake));
-                dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), "sign");
+                final CommonDialog commonDialog = new CommonDialog(getApplicationContext(),
+                        this,
+                        "",
+                        getResources().getString(
+                                R.string.sign_captured_already),
+                        false,
+                        getResources().getString(R.string.yes),
+                        getResources().getString(R.string.no),
+                        false,
+                        new CommonDialog.positiveOnClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                        signName);
+                                Intent i = new Intent(DeliveryManagementDetail.this,
+                                        CaptureSignatureActivity.class);
+                                i.putExtra("fromModule", "DELIVERY");
+                                if (getIntent().getStringExtra("From") != null) {
+                                    i.putExtra("From", getIntent().getStringExtra("From"));
+                                }
+                                startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
+
+                            }
+                        }, new CommonDialog.negativeOnClickListener() {
+                    @Override
+                    public void onNegativeButtonClick() {
+
+                    }
+                });
+                commonDialog.show();
+                commonDialog.setCancelable(false);
 
             } else {
 
                 Intent i = new Intent(DeliveryManagementDetail.this,
                         CaptureSignatureActivity.class);
                 i.putExtra("fromModule", "DELIVERY");
+                if (getIntent().getStringExtra("From") != null) {
+                    i.putExtra("From", getIntent().getStringExtra("From"));
+                }
                 startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
                 bmodel.configurationMasterHelper.setSignatureTitle("Signature");
             }
@@ -758,7 +784,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
         @Override
         protected Void doInBackground(Void... params) {
-            bmodel.deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath);
+            bmodel.deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath, contactName, contactNo);
             bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT");
 
             return null;
@@ -945,47 +971,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
     }
 
 
-    @SuppressLint("ValidFragment")
-    public class signatureExistingAlert extends DialogFragment {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            //   return super.onCreateDialog(savedInstanceState);
-
-            Bundle args = getArguments();
-            String title = args.getString("title");
-            //  String message = args.getString("message");
-
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(title)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            bmodel.deleteFiles(HomeScreenFragment.photoPath,
-                                    signName);
-                            Intent i = new Intent(DeliveryManagementDetail.this,
-                                    CaptureSignatureActivity.class);
-                            i.putExtra("fromModule", "DELIVERY");
-                            if (getIntent().getStringExtra("From") != null) {
-                                i.putExtra("From", getIntent().getStringExtra("From"));
-                            }
-                            startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .create();
-        }
-    }
-
     private static final int REQUEST_SIGNAATURE_CAPTURE = 100;
     String signName = "";
     String signPath = "";
+    String contactName = "";
+    String contactNo = "";
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Commons.print(TAG + ",onActivityResult " + resultCode);
@@ -994,6 +984,10 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 if (resultCode == Activity.RESULT_OK) {
                     signName = data.getStringExtra("IMAGE_NAME");
                     signPath = data.getStringExtra("SERVER_PATH");
+                    if (data.getStringExtra("CONTACTNAME") != null) {
+                        contactName = data.getStringExtra("CONTACTNAME");
+                        contactNo = data.getStringExtra("CONTACTNO");
+                    }
                 }
                 break;
 

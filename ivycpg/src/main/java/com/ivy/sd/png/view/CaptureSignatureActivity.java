@@ -394,6 +394,10 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
                 intent.putExtra("SIGNATURE", true);
                 intent.putExtra("IMAGE_NAME", imageName);
                 intent.putExtra("SERVER_PATH", serverPath);
+                if (contact_name != null) {
+                    intent.putExtra("CONTACTNAME", contact_name.getText().toString());
+                    intent.putExtra("CONTACTNO", contact_no.getText().toString());
+                }
                 setResult(RESULT_OK, intent);
                 finish();
             }

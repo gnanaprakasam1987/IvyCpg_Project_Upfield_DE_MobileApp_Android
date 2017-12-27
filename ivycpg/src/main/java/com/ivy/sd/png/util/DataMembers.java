@@ -515,7 +515,7 @@ public class DataMembers {
     private static final String tbl_UserFeedBack_cols = "UId,DateTime,TypeLovId,Feedback,Rating";
 
     public static final String tbl_van_delivery_header = "VanDeliveryHeader";
-    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid";
+    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid,contactName,contactNo";
     public static final String tbl_van_delivery_detail = "VanDeliveryDetail";
     private static final String tbl_van_delivery_detail_cols = "Uid,Pid,Uomid,Batchid,invoiceqty,Deliveredqty,Returnqty";
 

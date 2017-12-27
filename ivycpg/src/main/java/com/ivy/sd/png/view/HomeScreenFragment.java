@@ -152,7 +152,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
 
     //Deleiver MAnagement
-    private static final String MENU_RET_SELECTION = "MENU_RET_SELECTION";
+    private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
 
     private String roadTitle;
     private boolean isClicked;
@@ -1440,8 +1440,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
             bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
-        } else if (menuItem.getConfigCode().equals(MENU_RET_SELECTION)) {
-            switchFragment(MENU_RET_SELECTION, menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_DELMGMT_RET)) {
+            switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
         }
 
           /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
@@ -1477,7 +1477,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_SYNC);
 
         DeliveryManagementRetailersFragment deliveryRetailersFragment = (DeliveryManagementRetailersFragment) fm
-                .findFragmentByTag(MENU_RET_SELECTION);
+                .findFragmentByTag(MENU_DELMGMT_RET);
 
         SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
@@ -1559,7 +1559,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mSyncFragment != null && (fragmentName.equals(MENU_SYNC))
                 && mSyncFragment.isVisible()) {
             return;
-        } else if (deliveryRetailersFragment != null && (fragmentName.equals(MENU_RET_SELECTION))
+        } else if (deliveryRetailersFragment != null && (fragmentName.equals(MENU_DELMGMT_RET))
                 && deliveryRetailersFragment.isVisible()) {
             return;
         } else if (mSellerDashFragment != null && (fragmentName.equals(MENU_DASH_KPI))
@@ -1989,13 +1989,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_NON_FIELD);
                 break;
-            case MENU_RET_SELECTION:
+            case MENU_DELMGMT_RET:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 fragment = new DeliveryManagementRetailersFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
-                        MENU_RET_SELECTION);
+                        MENU_DELMGMT_RET);
                 break;
         }
         ft.commit();

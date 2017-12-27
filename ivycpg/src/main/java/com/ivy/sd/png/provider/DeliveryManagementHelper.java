@@ -310,7 +310,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         return new ArrayList<ProductMasterBO>();
     }
 
-    public void saveDeliveryManagement(String invoiceno,String selectedItem,String SignName,String SignPath) {
+    public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
         DBUtil db = null;
         try {
             InvoiceHeaderBO invoiceHeaderBO = null;
@@ -323,7 +323,8 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
 
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate,invoiceid,SignName,Proofpicture";
+            String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate," +
+                    "invoiceid,SignName,Proofpicture,contactName,contactNo";
             String status = "";
             if (selectedItem.equals(mContext.getResources().getString(R.string.fullfilled))) {
                 status = "F";
@@ -342,8 +343,9 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             header.append(DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
             header.append("," + bmodel.QT(invoiceno));
             header.append("," + bmodel.QT(SignName));//internal colunm
-            header.append("," + bmodel.QT(SignPath))// proofPicture not used... so using same column
-            ;
+            header.append("," + bmodel.QT(SignPath));// proofPicture not used... so using same column
+            header.append("," + bmodel.QT(contactName));
+            header.append("," + bmodel.QT(contactNo));
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header.toString());
 
             if (selectedItem.equals(mContext.getResources().getString(R.string.partially_fullfilled))) {

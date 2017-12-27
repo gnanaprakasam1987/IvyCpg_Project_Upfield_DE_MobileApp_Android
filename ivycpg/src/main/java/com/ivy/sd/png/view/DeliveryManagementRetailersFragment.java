@@ -26,13 +26,14 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
  */
 
 public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
-    BusinessModel businessModel;
+    private BusinessModel businessModel;
+    private RecyclerView retailer_selection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_delivery_retailers, container, false);
-        RecyclerView retailer_selection = (RecyclerView) view.findViewById(R.id.retailer_selection);
+        retailer_selection = (RecyclerView) view.findViewById(R.id.retailer_selection);
         int sizeLarge = SCREENLAYOUT_SIZE_LARGE; // For 7" tablet
         boolean is7InchTablet = this.getResources().getConfiguration()
                 .isLayoutSizeAtLeast(sizeLarge);
@@ -48,8 +49,14 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
 
         retailer_selection.setLayoutManager(gridLayoutManager);
 
-        retailer_selection.setAdapter(new RetailerSelectionAdapter(DeliveryManagementHelper.getInstance(getContext()).getInvoicedRetailerList()));
+//        retailer_selection.setAdapter(new RetailerSelectionAdapter(DeliveryManagementHelper.getInstance(getContext()).getInvoicedRetailerList()));
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        retailer_selection.setAdapter(new RetailerSelectionAdapter(DeliveryManagementHelper.getInstance(getContext()).getInvoicedRetailerList()));
     }
 
     class RetailerSelectionAdapter extends RecyclerView.Adapter<RetailerSelectionAdapter.ViewHolder> {
