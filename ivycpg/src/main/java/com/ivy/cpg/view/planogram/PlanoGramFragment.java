@@ -132,7 +132,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             photoNamePath = BusinessModel.photoPath + "/";
 
             loadReason();
-            mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
+            //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
             if (savedInstanceState != null) {
                 filterId = savedInstanceState.getInt("id");
             }
@@ -275,7 +275,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         super.onResume();
         BusinessModel.getInstance().trackScreenView("Planogram");
         //if statement to make sure the alert is displayed only for the first time
-        if (mPlanoGramHelper.getInStoreLocation().size() != 1 && !isDialogPopup) {
+        if (mPlanoGramHelper.getInStoreLocation().size() != 2 && !isDialogPopup) {
             if (!mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 showLocationFilterAlert();
         }
