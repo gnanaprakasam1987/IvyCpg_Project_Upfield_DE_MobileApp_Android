@@ -800,6 +800,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 case "PERC":
                     showEditText(2, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
                     break;
+                case "EMAIL":
+                    showEditText(3, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
+                    break;
                 default:
                     showEditText(0, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
             }
@@ -1649,6 +1652,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (i == 2) {
             et.setInputType(InputType.TYPE_CLASS_NUMBER);
             et.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        }
+        if (1 == 3) {
+            et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         }
         et.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before,
