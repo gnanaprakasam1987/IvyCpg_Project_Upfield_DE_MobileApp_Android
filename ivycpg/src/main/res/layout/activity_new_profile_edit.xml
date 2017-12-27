@@ -4,9 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcv_new_retailers"

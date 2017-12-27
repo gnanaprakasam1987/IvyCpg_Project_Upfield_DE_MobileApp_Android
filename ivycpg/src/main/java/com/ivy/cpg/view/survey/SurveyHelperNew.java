@@ -1797,10 +1797,10 @@ public class SurveyHelperNew {
                                     subqBO.setSelectedAnswerID(c1.getInt(1));
                                     subqBO.setSelectedAnswer(c1.getString(2));
 
-                                    if (subqBO.getQuestionID() == c.getInt(0))
-                                        subqBO.setQuestScore(subqBO.getQuestScore() + c.getFloat(3));
+                                    if (subqBO.getQuestionID() == c1.getInt(0))
+                                        subqBO.setQuestScore(subqBO.getQuestScore() + c1.getFloat(3));
                                     else
-                                        subqBO.setQuestScore(c.getFloat(3));
+                                        subqBO.setQuestScore(c1.getFloat(3));
 
                                     sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
                                     sb1.append(QT(uid));

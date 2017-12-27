@@ -663,6 +663,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
+                        mylist.add(sku);
+                    }
+                }
             }
 
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
@@ -694,6 +700,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
+                        mylist.add(sku);
+                    }
+                }
             }
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
             if (mAttributeProducts != null && !parentidList.isEmpty()) {
@@ -722,6 +734,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                                 (sku.getIsSaleable() == 1)) {
                             mylist.add(sku);
                         }
+                    }
+                }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1) {
+                        mylist.add(sku);
                     }
                 }
             }

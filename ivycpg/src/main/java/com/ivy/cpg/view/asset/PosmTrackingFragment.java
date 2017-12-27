@@ -83,7 +83,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class PosmTrackingFragment extends IvyBaseFragment implements
-        OnEditorActionListener, BrandDialogInterface,DataPickerDialogFragment.UpdateDateInterface {
+        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
 
 
     private BusinessModel mBModel;
@@ -106,7 +106,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     private final String moduleName = "AT_";
     private String strBarCodeSearch = "ALL";
     private static final String MENU_POSM = "MENU_POSM";
-    private static final String MENU_POSM_CS="MENU_POSM_CS";
+    private static final String MENU_POSM_CS = "MENU_POSM_CS";
     private String screenCode = "MENU_POSM";
     private String append = "";
     private static String outPutDateFormat;
@@ -122,7 +122,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     private String mFilterText;
 
 
-    private ArrayList<AssetTrackingBO> myList ;
+    private ArrayList<AssetTrackingBO> myList;
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
     private ArrayList<ReasonMaster> mPOSMReasonList;
     private ArrayList<ReasonMaster> mPOSMConditionList;
@@ -134,7 +134,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     private Vector<LevelBO> mParentIdLIst;
     private ArrayList<Integer> mAttributeProducts;
 
-    AssetTrackingHelper assetTrackingHelper ;
+    AssetTrackingHelper assetTrackingHelper;
 
     @Override
     public void onAttach(Context context) {
@@ -464,6 +464,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
     /**
      * update list by NFC selection
+     *
      * @param mNFCTag NFC tag
      */
     public void updateListByNFCTag(String mNFCTag) {
@@ -504,7 +505,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
     /**
      * update POSM list
-     * @param bid Brand Id
+     *
+     * @param bid            Brand Id
      * @param standardListBO Selected Location Object
      */
     private void updateList(int bid, StandardListBO standardListBO) {
@@ -671,7 +673,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                                 holder.reason1Spin.setEnabled(false);
                                 holder.reason1Spin.setSelection(0);
-                                if (holder.assetBO.getImageName() != null  && !holder.assetBO.getImageName().isEmpty()
+                                if (holder.assetBO.getImageName() != null && !holder.assetBO.getImageName().isEmpty()
                                         ) {
                                     holder.photoBTN.setEnabled(true);
                                     setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
@@ -885,7 +887,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                             }
 
                         } else {
-                            Toast.makeText(getActivity(),getResources().getString(R.string.sdcard_is_not_ready_to_capture_img), Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), getResources().getString(R.string.sdcard_is_not_ready_to_capture_img), Toast.LENGTH_SHORT)
                                     .show();
                             getActivity().finish();
                         }
@@ -1104,7 +1106,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      * will show Alert Dialog In Alert Dialog, if click yes,remove image in
      * sdcard and retake photo. If click No, Alert Dialog dismiss
      *
-     * @param mAssetId Asset Id
+     * @param mAssetId        Asset Id
      * @param imageNameStarts Image Name
      */
     private void showFileDeleteAlertWithImage(final String mAssetId,
@@ -1184,7 +1186,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 // Photo saved successfully
-                Commons.print(TAG+"," +
+                Commons.print(TAG + "," +
                         "Camera Activity : Successfully Captured.");
                 if (assetTrackingHelper.mSelectedAssetID != 0) {
                     onSaveImageName(
@@ -1192,7 +1194,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                             assetTrackingHelper.mSelectedImageName);
                 }
             } else {
-                Commons.print(TAG+"," + "Camera Activity : Canceled");
+                Commons.print(TAG + "," + "Camera Activity : Canceled");
             }
         } else {
 
@@ -1222,6 +1224,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
     /**
      * Delete file
+     *
      * @param filename File Name
      */
     private void deleteFiles(String filename) {
@@ -1232,7 +1235,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             if (tempFile != null && tempFile.getName().equals(filename)) {
                 boolean isDeleted = tempFile.delete();
                 if (isDeleted)
-                    Commons.print(TAG+" Image Delete," + "Success");
+                    Commons.print(TAG + " Image Delete," + "Success");
             }
         }
     }
@@ -1272,7 +1275,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     null, new CommonDialog.positiveOnClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                    Intent intent ;
+                    Intent intent;
                     if (screenCode.equals(MENU_POSM)) {
                         intent = new Intent(getActivity(), HomeScreenTwo.class);
 
@@ -1381,7 +1384,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
             }
         } catch (Exception e) {
-            Commons.printException( e.toString());
+            Commons.printException(e.toString());
         }
         if (view != null && !assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
             view.findViewById(R.id.tv_competitor_qty).setVisibility(View.GONE);
@@ -1396,7 +1399,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                             R.id.tv_competitor_qty).getTag()));
                 }
             } catch (Exception e) {
-                Commons.printException( e.toString());
+                Commons.printException(e.toString());
             }
         }
 
@@ -1414,7 +1417,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                 }
             } catch (Exception e) {
-                Commons.printException( e.toString());
+                Commons.printException(e.toString());
             }
         }
 
@@ -1436,7 +1439,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
-            Commons.printException( e.toString());
+            Commons.printException(e.toString());
         }
     }
 
@@ -1541,7 +1544,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             ft.add(R.id.right_drawer, mFragment, "filter");
             ft.commit();
         } catch (Exception e) {
-            Commons.printException( e.toString());
+            Commons.printException(e.toString());
         }
     }
 
@@ -1692,6 +1695,22 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            }
+        } else if (mFilterText.length() == 0) {
+            for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                if (ALL.equals(strBarCodeSearch)) {
+                    if (mCapturedNFCTag.isEmpty()) {
+                        if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
+                            myList.add(assetBO);
+                        }
+                    } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                        assetBO.setAvailQty(1);
+                        myList.add(assetBO);
+                    }
+                } else if (strBarCodeSearch.equals(assetBO.getSerialNo())) {
+                    myList.add(assetBO);
+                }
+
             }
         }
 

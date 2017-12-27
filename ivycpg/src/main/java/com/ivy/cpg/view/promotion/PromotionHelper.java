@@ -265,8 +265,9 @@ public class PromotionHelper {
                                     "," + promotion.getHasAnnouncer();
 
                             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                sbDetails = sbDetails + "," + productWeightage;
-                                sum = sum + productWeightage;
+                                sbDetails = sbDetails + "," + ((promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0) ? productWeightage : "0");
+                                if (promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0)
+                                    sum = sum + productWeightage;
                             }
 
                             db.insertSQL("PromotionDetail", detailColumns,
