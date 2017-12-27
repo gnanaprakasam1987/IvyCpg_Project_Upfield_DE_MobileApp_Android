@@ -522,7 +522,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     loginView.dismissAlertDialog();
                     loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
                 }
-            }else {
+            } else {
                 String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                 if (errorMsg != null) {
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
