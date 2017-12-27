@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;

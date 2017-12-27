@@ -39,7 +39,8 @@
                 android:text="Stores"
                 android:textColor="@color/store_label"
                 android:textSize="@dimen/highlight_normal"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tag="store_title" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -54,6 +54,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CollectionScreen;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderSummary;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -188,14 +189,18 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
                         bmodel.resetSRPvalues();
                     }
-
-                    Intent i = new Intent(
-                            CommonPrintPreviewActivity.this,
-                            HomeScreenTwo.class);
-                    Bundle extras = getIntent().getExtras();
-                    if (extras != null) {
-                        i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                        i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                    Intent i;
+                    if (getIntent().getStringExtra("From") == null) {
+                        i = new Intent(
+                                CommonPrintPreviewActivity.this,
+                                HomeScreenTwo.class);
+                        Bundle extras = getIntent().getExtras();
+                        if (extras != null) {
+                            i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                        }
+                    } else {
+                        i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
                     }
                     startActivity(i);
                 } else if (isFromCollection) {
@@ -724,13 +729,18 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         bmodel.resetSRPvalues();
                     }
 
-                    Intent i = new Intent(
-                            CommonPrintPreviewActivity.this,
-                            HomeScreenTwo.class);
-                    Bundle extras = getIntent().getExtras();
-                    if (extras != null) {
-                        i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                        i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                    Intent i;
+                    if (getIntent().getStringExtra("From") == null) {
+                        i = new Intent(
+                                CommonPrintPreviewActivity.this,
+                                HomeScreenTwo.class);
+                        Bundle extras = getIntent().getExtras();
+                        if (extras != null) {
+                            i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                        }
+                    } else {
+                        i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
                     }
                     startActivity(i);
                 } else if (isFromCollection) {

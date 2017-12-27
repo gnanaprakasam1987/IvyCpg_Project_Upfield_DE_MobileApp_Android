@@ -112,6 +112,18 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
 
         ((TextView) view.findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.label_activity_count).getTag()) != null)
+                ((TextView) view.findViewById(R.id.label_activity_count))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.label_activity_count)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         mActivityDoneCount = (TextView) view.findViewById(R.id.activity_done_count);
         mActivityTotalCount = (TextView) view.findViewById(R.id.activity_total_count);
 

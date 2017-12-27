@@ -71,7 +71,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
     internal lateinit var infoSalesValue: TextView
     internal lateinit var infoSeller: TextView
     internal lateinit var iv_planned: ImageView
-    internal  lateinit var iv_deviated: ImageView
+    internal lateinit var iv_deviated: ImageView
     private var markerList: MutableList<MarkerOptions>? = null
     private var bounds: LatLngBounds? = null
     private var builder: LatLngBounds.Builder? = null
@@ -259,8 +259,8 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             mDrawerLayout!!.openDrawer(GravityCompat.END)
 
             val fm = activity.supportFragmentManager
-            val frag:SellerListFragment?
-            frag= fm.findFragmentByTag("filter") as? SellerListFragment
+            val frag: SellerListFragment?
+            frag = fm.findFragmentByTag("filter") as? SellerListFragment
             val ft = fm.beginTransaction()
             if (frag != null)
                 ft.detach(frag)
@@ -549,7 +549,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
     @SuppressLint("LongLogTag")
     @Throws(IOException::class)
     private fun downloadUrl(strUrl: String): String {
-        var data=""
+        var data = ""
         val iStream: InputStream
         var urlConnection: HttpURLConnection
         try {
@@ -559,11 +559,11 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             urlConnection.connect()
             iStream = urlConnection.inputStream
 
-           // val br = BufferedReader(InputStreamReader(iStream))
+            // val br = BufferedReader(InputStreamReader(iStream))
 
-            data=iStream.bufferedReader().readText()
+            data = iStream.bufferedReader().readText()
 
-          //  br.close()
+            //  br.close()
             iStream.close()
             urlConnection.disconnect()
         } catch (e: Exception) {

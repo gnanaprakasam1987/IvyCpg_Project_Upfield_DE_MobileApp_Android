@@ -1131,7 +1131,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
 
 
-
                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex)
