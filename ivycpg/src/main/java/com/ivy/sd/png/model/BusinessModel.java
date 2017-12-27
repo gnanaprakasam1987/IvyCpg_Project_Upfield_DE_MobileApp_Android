@@ -8358,7 +8358,7 @@ public class BusinessModel extends Application {
                 int count = 0;
                 int fnames_size = fnames.length;
                 for (String str : fnames) {
-                    if ((str != null) && (str.length() > 0)) {
+                    if ((str != null) && !fNameStarts.equals("") && (str.length() > 0)) {
                         if (str.startsWith(fNameStarts)) {
                             count++;
                         }

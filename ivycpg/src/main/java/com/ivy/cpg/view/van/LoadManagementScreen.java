@@ -835,7 +835,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             super.onPostExecute(integer);
             if (mBModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 downloadVanload();
-            }else {
+            } else {
                 String errorMsg = mBModel.synchronizationHelper.getErrormessageByErrorCode().get(mBModel.synchronizationHelper.getAuthErroCode());
                 if (errorMsg != null) {
                     Toast.makeText(LoadManagementScreen.this, errorMsg, Toast.LENGTH_SHORT).show();

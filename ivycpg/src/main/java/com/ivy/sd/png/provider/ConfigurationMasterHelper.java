@@ -531,6 +531,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_WC;
     public boolean SHOW_STOCK_SC;
     public boolean SHOW_STOCK_SP;
+    public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
     public boolean SHOW_ORDER_CASE;
     public boolean SHOW_ORDER_TOTAL;
@@ -3021,6 +3022,7 @@ public class ConfigurationMasterHelper {
             SHOW_STOCK_WC = false;
             SHOW_STOCK_WP = false;
             SHOW_STOCK_SP = false;
+            SHOW_CAT_STOCK_SP = false;
             SHOW_STOCK_SC = false;
             SHOW_STOCK_CB = false;
             SHOW_STOCK_LD = false;
@@ -3132,6 +3134,8 @@ public class ConfigurationMasterHelper {
                         SHOW_STOCK_WP = true;
                     else if (temp.equals("SP"))
                         SHOW_STOCK_SP = true;
+                    else if (temp.equals("CASP"))
+                        SHOW_CAT_STOCK_SP = true;
                     else if (temp.equals("SC"))
                         SHOW_STOCK_SC = true;
                     else if (temp.equals("CB"))

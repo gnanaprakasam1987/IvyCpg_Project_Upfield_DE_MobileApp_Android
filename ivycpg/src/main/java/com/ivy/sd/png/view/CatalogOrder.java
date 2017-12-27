@@ -2373,7 +2373,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
                 scheme_star.setImageDrawable(mDrawable);*/
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP
+                if (!bmodel.configurationMasterHelper.SHOW_CAT_STOCK_SP
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER)) {
                     list_view_stock_btn.setVisibility(View.GONE);

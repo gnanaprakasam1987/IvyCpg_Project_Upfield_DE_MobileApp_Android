@@ -439,6 +439,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             }
         }
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(tvStoreLbl.getTag()) != null)
+                tvStoreLbl.setText(bmodel.labelsMasterHelper
+                        .applyLabels(tvStoreLbl.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         TextView spinnerLabel = (TextView) view.findViewById(R.id.spinnerLabel);
         spinnerLabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 

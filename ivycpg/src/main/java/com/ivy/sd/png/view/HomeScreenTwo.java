@@ -375,6 +375,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         ((TextView) findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.label_activity_count).getTag()) != null)
+                ((TextView) findViewById(R.id.label_activity_count))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.label_activity_count)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         mActivityDoneCount = (TextView) findViewById(R.id.activity_done_count);
         mActivityTotalCount = (TextView) findViewById(R.id.activity_total_count);
 
