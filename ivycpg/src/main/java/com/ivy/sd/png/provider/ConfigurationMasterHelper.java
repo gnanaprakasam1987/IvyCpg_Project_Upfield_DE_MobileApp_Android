@@ -1206,6 +1206,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
 
+    public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
+    public boolean SHOW_COMB_STOCK_SC;
+    public boolean SHOW_COMB_STOCK_SP;
+    public boolean SHOW_COMB_STOCK_SHELF_OUTER;
+    public boolean SHOW_COMB_STOCK_CB;
+
     public int MVPTheme = 0;
     public String fontSize = "";
 
@@ -1627,7 +1633,7 @@ public class ConfigurationMasterHelper {
         this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
         this.IS_HST04 = hashMapHHTModuleConfig.get(CODE_HST04) != null ? hashMapHHTModuleConfig.get(CODE_HST04) : false;//history fragment*/
         this.IS_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_CHAT) : false;
-        this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_TASK) : false;
+        this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) : false;
         this.HAS_PROFILE_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) : false;
         this.SHOW_ALL_ROUTES = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_ROUTES) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_ROUTES) : false;
         this.SHOW_RETAILER_VISIT_CONFIRMATION = hashMapHHTModuleConfig.get(CODE_RETAILER_VISIT_CONFIRMATION) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_VISIT_CONFIRMATION) : false;
@@ -2134,6 +2140,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
+
 
 
     }
@@ -3155,9 +3162,23 @@ public class ConfigurationMasterHelper {
                         SHOW_REPLACED_QTY_OU = true;
                     else if (temp.equals("AVGDAYS"))
                         SHOW_STOCK_AVGDAYS = true;
+                    else if (temp.equals("CSTK"))
+                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                    else if (temp.equals("CSP"))
+                        SHOW_COMB_STOCK_SP = true;
+                    else if (temp.equals("CSC"))
+                        SHOW_COMB_STOCK_SC = true;
+                    else if (temp.equals("CSHO"))
+                        SHOW_COMB_STOCK_SHELF_OUTER = true;
+                    else if (temp.equals("CCB"))
+                        SHOW_COMB_STOCK_CB = true;
+
+
 
                 }
             }
+
+
             codeValue = null;
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

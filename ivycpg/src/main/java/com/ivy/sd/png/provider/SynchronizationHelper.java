@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.StringInputStream;
@@ -221,6 +222,7 @@ SynchronizationHelper {
     private ArrayList<String> mUserRetailerTranDownloadUrlList;
     private HashMap<String, String> mErrorMessageByErrorCode;
     private String mSecurityKey = "";
+    private String mAuthErrorCode = "";
     private HashMap<String, JSONObject> mJsonObjectResponseByTableName = new HashMap<String, JSONObject>();
 
     private ArrayList<RetailerMasterBO> mRetailerListByLocOrUserWise;
@@ -230,6 +232,10 @@ SynchronizationHelper {
 
     public String getSecurityKey() {
         return mSecurityKey;
+    }
+
+    public String getAuthErroCode() {
+        return mAuthErrorCode;
     }
 
     public int getmRetailerWiseIterateCount() {
@@ -2239,6 +2245,8 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E23", context.getResources().getString(R.string.error_e23));
         mErrorMessageByErrorCode.put("E24", context.getResources().getString(R.string.error_e24));
         mErrorMessageByErrorCode.put("E25", context.getResources().getString(R.string.user_account_locked));
+        mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e26));
+        mErrorMessageByErrorCode.put("E27", context.getResources().getString(R.string.error_e27));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
     }
@@ -2267,25 +2275,28 @@ SynchronizationHelper {
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
-        try {
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam("userinfo", headerinfo);
-            if (data != null) {
-                http.addParam("data", data);
-            }
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam("userinfo", headerinfo);
+                if (data != null) {
+                    http.addParam("data", data);
+                }
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
                 return new Vector<>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException("" + e);
+        } else {
             return new Vector<>();
         }
-
     }
 
     public static final String USER_IDENTITY = "UserIdentity";
@@ -2301,21 +2312,25 @@ SynchronizationHelper {
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
-        try {
+        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<String>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException(e);
                 return new Vector<String>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException(e);
+        } else {
             return new Vector<String>();
         }
 
@@ -2379,6 +2394,7 @@ SynchronizationHelper {
 
         try {
             mSecurityKey = "";
+            mAuthErrorCode = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
@@ -2401,6 +2417,23 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (!result.isEmpty()) {
+                for (String s : result) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            mAuthErrorCode = jsonObject.get("ErrorCode").toString();
+                            mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+                            break;
+                        }
+                    }
+                }
+            }
+
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
                 for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
@@ -2416,6 +2449,7 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
             mSecurityKey = "";
+            mAuthErrorCode = "";
         }
     }
 
@@ -3492,6 +3526,15 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
             if (response == 1) {
@@ -3836,7 +3879,17 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
+
             if (response == 1) {
 
                 db.updateSQL("Update " + DataMembers.tbl_TransactionSequence
@@ -3967,40 +4020,44 @@ SynchronizationHelper {
     public String downloadSessionId(String url) {
         updateAuthenticateToken();
         String sessionId = "";
-        try {
+        if (mAuthErrorCode.equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url, null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-            jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
-            http.setParamsJsonObject(jsonObj);
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url, null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+                jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+                jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
+                http.setParamsJsonObject(jsonObj);
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
+                http.connectMe();
+                Vector<String> result = http.getResult();
 
-            if (!result.isEmpty()) {
-                for (String s : result) {
-                    JSONObject jsonObject = new JSONObject(s);
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Data")) {
-                            sessionId = jsonObject.getJSONArray("Data").get(0).toString();
-                            sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                if (!result.isEmpty()) {
+                    for (String s : result) {
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Data")) {
+                                sessionId = jsonObject.getJSONArray("Data").get(0).toString();
+                                sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                            }
                         }
                     }
+
                 }
+                return sessionId;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return sessionId;
 
             }
+        } else {
             return sessionId;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return sessionId;
-
         }
 
 
@@ -4348,6 +4405,15 @@ SynchronizationHelper {
                     }
 
 
+                }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         } catch (SQLException | JSONException e) {

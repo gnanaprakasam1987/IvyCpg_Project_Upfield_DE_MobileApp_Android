@@ -37,6 +37,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.AWSCredentials;
@@ -1757,13 +1758,14 @@ public class BusinessModel extends Application {
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = (ProductMasterBO) productHelper
+            ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
             if (Integer.parseInt(product.getProductID()) == pdtId) {
                 for (int j = 0; j < product.getLocations().size(); j++) {
-                    if (product.getLocations().get(j).getShelfPiece() > 0 ||
-                            product.getLocations().get(j).getShelfCase() > 0 ||
-                            product.getLocations().get(j).getShelfOuter() > 0) {
+                    if ((product.getLocations().get(j).getShelfPiece() > -1 ||
+                            product.getLocations().get(j).getShelfCase() > -1 ||
+                            product.getLocations().get(j).getShelfOuter() > -1)
+                            || product.getLocations().get(j).getAvailability() > -1) {
                         return true;
                     }
                 }
@@ -4029,7 +4031,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK");
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", -1);
 
                 }
             }
@@ -4077,7 +4079,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2 from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -4100,10 +4102,11 @@ public class BusinessModel extends Application {
                     int facing = orderDetailCursor.getInt(13);
                     int pouring = orderDetailCursor.getInt(14);
                     int cocktail = orderDetailCursor.getInt(15);
+                    int availability = orderDetailCursor.getInt(16);
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode);
+                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability);
 
                 }
                 orderDetailCursor.close();
@@ -4123,7 +4126,9 @@ public class BusinessModel extends Application {
      */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
-                                         int locationId, int isDistributed, int isListed, String reasonID, int audit, int isOwn, int facing, int pouring, int cocktail, String menuCode) {
+                                         int locationId, int isDistributed, int isListed, String reasonID,
+                                         int audit, int isOwn, int facing, int pouring, int cocktail,
+                                         String menuCode, int availability) {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
@@ -4150,6 +4155,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setFacingQty(facing);
                     product.getLocations().get(j).setIsPouring(pouring);
                     product.getLocations().get(j).setCockTailQty(cocktail);
+                    product.getLocations().get(j).setAvailability(availability);
 
                     return;
                 }
@@ -4586,6 +4592,15 @@ public class BusinessModel extends Application {
                     }
 
 
+                }
+            } else {
+                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
            /* if (responseVector != null) {
@@ -6262,7 +6277,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getShelfOuter() > -1
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0)
+                        || product.getLocations().get(j).getWHOuter() > 0
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6289,7 +6305,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getCockTailQty() > 0
                         || product.getIsListed() > 0
                         || product.getIsDistributed() > 0
-                        || !product.getReasonID().equals("0"))
+                        || !product.getReasonID().equals("0")
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6311,6 +6328,7 @@ public class BusinessModel extends Application {
                     if (product.getLocations().get(j).getShelfPiece() == -1
                             && product.getLocations().get(j).getShelfCase() == -1
                             && product.getLocations().get(j).getShelfOuter() == -1
+                            && product.getLocations().get(j).getAvailability() == 0
                             && product.getReasonID().equals("0"))
                         return false;
                 }
@@ -6372,7 +6390,7 @@ public class BusinessModel extends Application {
             // ClosingStock Detail entry
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3";
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";
@@ -6397,7 +6415,8 @@ public class BusinessModel extends Application {
                                 || product.getLocations().get(j).getIsPouring() > 0
                                 || product.getLocations().get(j).getCockTailQty() > 0
                                 || product.getLocations().get(j).getFacingQty() > 0
-                                || product.getLocations().get(j).getAudit() != 2) {
+                                || product.getLocations().get(j).getAudit() != 2
+                                || product.getLocations().get(j).getAvailability() > -1) {
 
                             int count = product.getLocations().get(j)
                                     .getShelfPiece()
@@ -6446,7 +6465,8 @@ public class BusinessModel extends Application {
                                     + "," + product.getPcUomid()
                                     + "," + rField1
                                     + "," + rField2
-                                    + "," + rField3;
+                                    + "," + rField3
+                                    + "," + product.getLocations().get(j).getAvailability();
 
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -6483,7 +6503,8 @@ public class BusinessModel extends Application {
                                     || taggedProduct.getLocations().get(j).getIsPouring() > 0
                                     || taggedProduct.getLocations().get(j).getCockTailQty() > 0
                                     || taggedProduct.getLocations().get(j).getFacingQty() > 0
-                                    || taggedProduct.getLocations().get(j).getAudit() != 2) {
+                                    || taggedProduct.getLocations().get(j).getAudit() != 2
+                                    || taggedProduct.getLocations().get(j).getAvailability() > -1) {
 
                                 int count = taggedProduct.getLocations().get(j)
                                         .getShelfPiece()
@@ -6532,7 +6553,9 @@ public class BusinessModel extends Application {
                                         + "," + taggedProduct.getPcUomid()
                                         + "," + rField1
                                         + "," + rField2
-                                        + "," + rField3;
+                                        + "," + rField3
+                                        + "," + taggedProduct.getLocations().get(j).getAvailability();
+
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                     int pieces = (shelfCase * taggedProduct.getCaseSize())
@@ -8220,6 +8243,15 @@ public class BusinessModel extends Application {
                     }
 
 
+                }
+            } else {
+                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

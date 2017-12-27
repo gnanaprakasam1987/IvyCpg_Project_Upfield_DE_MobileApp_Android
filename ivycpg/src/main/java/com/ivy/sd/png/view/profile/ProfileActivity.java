@@ -1215,6 +1215,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     protected void onResume() {
         super.onResume();
 
+        if (mLocTimer != null) {
+            mLocTimer.cancel();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
             mLocTimer = new Timer();
@@ -1616,7 +1620,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                       // new DownloadProductsAndPrice().execute();
+                                        // new DownloadProductsAndPrice().execute();
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -1919,7 +1923,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPreExecute() {
-            if(!isCancelled()) {
+            if (!isCancelled()) {
                 builder = new AlertDialog.Builder(ProfileActivity.this);
                 customProgressDialog(builder, getResources().getString(R.string.loading));
                 alertDialog = builder.create();
@@ -1931,7 +1935,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPostExecute(Boolean result) {
-            if(!isCancelled()) {
+            if (!isCancelled()) {
                 // to get last user visited retailer sequence and location to calculate distance..
                 bmodel.outletTimeStampHelper.getlastRetailerDatas();
                 float distance = calculateDistanceBetweenRetailers();
@@ -1990,11 +1994,20 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         protected void onPostExecute(Boolean result) {
-            ArrayList<String> userRetailerTranUrlList = bmodel.synchronizationHelper.getUserRetailerTranDownloadurlList();
-            if (!userRetailerTranUrlList.isEmpty()) {
-                bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
-                        .getRetailerMasterBO()
-                        .getRetailerID());
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                ArrayList<String> userRetailerTranUrlList = bmodel.synchronizationHelper.getUserRetailerTranDownloadurlList();
+                if (!userRetailerTranUrlList.isEmpty()) {
+                    bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
+                            .getRetailerMasterBO()
+                            .getRetailerID());
+                }
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(ProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -2013,6 +2026,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            if (mLocTimer != null) {
+                mLocTimer.cancel();
+            }
+
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
@@ -2079,7 +2096,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             unregisterReceiver(receiver);
         }
 
-        if(downloadProductsAndPrice.getStatus()== AsyncTask.Status.RUNNING)
+        if (downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.cancel(true);
 
     }

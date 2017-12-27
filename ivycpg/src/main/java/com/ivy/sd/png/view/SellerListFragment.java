@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Created by rajkumar.s on 10/31/2017.
  */
 
-public class SellerListFragment<E> extends Fragment implements View.OnClickListener {
+public class SellerListFragment extends Fragment implements View.OnClickListener {
 
     View view;
     Context context;
