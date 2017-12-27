@@ -579,7 +579,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(bmodel.productHelper.updateProductDiscountUsingEntry(mOrderedProductList), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
-            value = PrepareProductLevelTax(precisionCount);
+            value = getProductLevelTax(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(mBillLevelDiscountValue, precisionCount) + "");
         } else if (tag.equalsIgnoreCase(TAG_TAX_BILL)) {
@@ -1304,14 +1304,18 @@ public class CommonPrintHelper {
         return sb.toString();
     }
 
+
+
+
+
+
+
     /**
      * load product level tax which is applied
      *
      * @return
      */
-
-    private String PrepareProductLevelTax(int precision) {
-
+    private String getProductLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
 
         // load tax details
@@ -1329,22 +1333,22 @@ public class CommonPrintHelper {
 
             String taxDesc = "";
             String previousTaxDesc = "";
-            String s = "";
+            String s = ""; // load tax product details
 
             for (TaxBO taxBO : groupIdList) {// here group id is tax type..
+
 
                 //Getting tax list by groupid, to show group(tax type) wise
                 LinkedHashSet<TaxBO> totalTaxList = totalTaxListByGroupId.get(taxBO.getGroupId());
 
-
                 if (totalTaxList != null) {
                     for (TaxBO totalTaxBO : totalTaxList) {
-
 
                         taxDesc = totalTaxBO.getTaxDesc2();
                         double taxpercentege = totalTaxBO.getTaxRate();
 
                         //Same tax type with different tax rate may mapped to a product, so getting product list with the use of groupid(taxtype) anf percentage.
+
                         HashSet<String> taxProductList = productListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
                         HashSet<String> taxFreeProductList = freeProductListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
 
@@ -1352,80 +1356,125 @@ public class CommonPrintHelper {
                         double totalExcludeValue = 0.0;
 
                         if (taxProductList != null) {
+
                             for (String productid : taxProductList) {// normal products
 
                                 ProductMasterBO prodcutBO = bmodel.productHelper.getProductMasterBOById(productid);
                                 if (prodcutBO != null) {
 
-                                    //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-                                    if (bmodel.productHelper.getmTaxListByProductId().get(productid) != null) {
-                                        for (TaxBO productTaxBo : bmodel.productHelper.getmTaxListByProductId().get(productid)) {
+                                    if (taxBO.getParentType().equals("0")) {// Parent tax..
 
-                                            if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
+                                        //batch wise product's calculation
+                                        if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
 
-                                                totalTax += productTaxBo.getTotalTaxAmount();
-                                                totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
+                                            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
+                                                    .getBatchlistByProductID().get(prodcutBO.getProductID());
+                                            if (batchList != null) {
+                                                for (ProductMasterBO batchProductBO : batchList) {
+
+                                                    totalExcludeValue = totalExcludeValue + batchProductBO.getTaxValue();
+                                                    totalTax = totalTax + (batchProductBO.getTaxValue() * taxpercentege) / 100;
+                                                }
+                                            }
+
+                                        } else {
+                                            totalExcludeValue = totalExcludeValue + prodcutBO.getTaxValue();
+                                            totalTax = totalTax + (prodcutBO.getTaxValue() * taxpercentege) / 100;
+
+                                        }
+                                    } else {
+
+                                        //To print child tax..
+                                        if (bmodel.configurationMasterHelper.IS_GST) {
+
+                                            //batch wise product's calculation
+                                            if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                                                if (bmodel.productHelper.getmTaxBoBatchProduct().get(productid) != null) {
+
+                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxBoBatchProduct().get(productid)) {
+
+                                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
+
+                                                            totalTax += productTaxBo.getTotalTaxAmount();
+                                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
+                                                if (bmodel.productHelper.getmTaxListByProductId().get(productid) != null) {
+
+                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxListByProductId().get(productid)) {
+
+                                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
+
+                                                            totalTax += productTaxBo.getTotalTaxAmount();
+                                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                            }
+
+
+                            if (bmodel.configurationMasterHelper.IS_GST) {
+                                //Tax can be applied to Free products, so below set of code is used..
+                                if (taxFreeProductList != null) {
+                                    for (String productid : taxFreeProductList) {// free products
+
+                                        //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
+
+                                        if (bmodel.getmFreeProductTaxListByProductId().get(productid) != null) {
+                                            for (TaxBO productTaxBo : bmodel.getmFreeProductTaxListByProductId().get(productid)) {
+
+                                                if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
+
+                                                    totalTax += productTaxBo.getTotalTaxAmount();
+                                                    totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
+                                                }
                                             }
                                         }
-                                    }
 
+
+                                    }
 
                                 }
                             }
-                        }
 
-                        //Tax can be applied to Free products, so below set of code is used..
-                        if (taxFreeProductList != null) {
-                            for (String productid : taxFreeProductList) {// free products
-
-                                //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-
-                                if (bmodel.getmFreeProductTaxListByProductId().get(productid) != null) {
-                                    for (TaxBO productTaxBo : bmodel.getmFreeProductTaxListByProductId().get(productid)) {
-
-                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
-
-                                            totalTax += productTaxBo.getTotalTaxAmount();
-                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
+                            // preparing string builder to show product level tax in print
+                            if (taxProductList != null || taxFreeProductList != null) {
+                                if (totalTax > 0) {
+                                    if (!taxDesc.equals(previousTaxDesc)) {
+                                        if (taxDesc.length() > 10) {
+                                            s = taxDesc.substring(0, 10);
+                                        } else {
+                                            s = taxDesc;
                                         }
-                                    }
-                                }
-
-
-                            }
-
-                        }
-
-
-                        // preparing string builder to show product level tax in print
-                        if (taxProductList != null || taxFreeProductList != null) {
-                            if (totalTax > 0) {
-                                if (!taxDesc.equals(previousTaxDesc)) {
-                                    if (taxDesc.length() > 10) {
-                                        s = taxDesc.substring(0, 10);
                                     } else {
-                                        s = taxDesc;
+                                        s = doAlign("", ALIGNMENT_RIGHT, taxDesc.length());
                                     }
-                                } else {
-                                    s = doAlign("", ALIGNMENT_RIGHT, taxDesc.length());
+
+                                    s = s + " " + taxpercentege + "% on Rs " + formatValueInPrint(totalExcludeValue, precision);
+
+                                    s = alignWithLabelForSingleLine(s, formatValueInPrint(totalTax, precision));
+
+
+                                    sb.append(s);
+
+                                    sb.append("\n");
                                 }
-
-                                s = s + " " + taxpercentege + "% on Rs " + formatValueInPrint(totalExcludeValue, precision);
-
-                                s = alignWithLabelForSingleLine(s, formatValueInPrint(totalTax, precision));
-
-                                sb.append(s);
-
-                                sb.append("\n");
                             }
                         }
-
                         previousTaxDesc = taxDesc;
                     }
                 }
 
             }
-
         }
         return sb.toString();
     }

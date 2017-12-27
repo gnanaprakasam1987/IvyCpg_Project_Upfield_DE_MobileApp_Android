@@ -921,7 +921,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         holder.etPromoQty.setInputType(inType);
                         holder.etPromoQty.selectAll();
                         holder.etPromoQty.requestFocus();
-                        inputManager.hideSoftInputFromWindow(null, 0);
+                        inputManager.hideSoftInputFromWindow(holder.etPromoQty.getWindowToken(), 0);
                         return true;
                     }
                 });

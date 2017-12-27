@@ -6448,12 +6448,13 @@ public class BusinessModel extends Application {
                                     + "," + rField2
                                     + "," + rField3;
 
+
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 int pieces = (shelfCase * product.getCaseSize())
                                         + (shelfOuter * product.getOutersize())
                                         + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+                                values = values + "," + productWeightage;
                                 sum = sum + productWeightage;
                             }
 
@@ -7455,7 +7456,7 @@ public class BusinessModel extends Application {
                             schemeProduct.setOrderedOuterQty(0);
 
                             // excluding tax values
-                            productHelper.excludeProductTax(schemeProduct, taxBO, true);
+                            productHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
 
                             //inserting free product tax details to db
                             productHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
