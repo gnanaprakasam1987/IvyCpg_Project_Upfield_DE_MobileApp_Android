@@ -995,7 +995,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mOOS) && ret.getOos() == 0)
                 || (generaltxt.equalsIgnoreCase(mNMustSell) && ret.getIsNMustSell() == 1)
                 || (generaltxt.equalsIgnoreCase(mDiscount) && ret.getIsDiscountable() == 1)
-                || (generaltxt.equalsIgnoreCase(mStock) && ret.getLocations().get(0).getShelfPiece() > 0)
+                || (generaltxt.equalsIgnoreCase(mStock) && (ret.getLocations().get(0).getShelfPiece() > 0 || ret.getLocations().get(0).getAvailability() > -1))
                 || (generaltxt.equalsIgnoreCase(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
@@ -1055,7 +1055,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
-                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)) {
+                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(0).getShelfPiece() > 0 || ret.getLocations().get(0).getAvailability() > -1)) || (isDiscount && ret.getIsDiscountable() == 1)) {
 
             return true;
         }
@@ -1748,7 +1748,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         || product.getLocations().get(j).getShelfOuter() > 0
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0)
+                        || product.getLocations().get(j).getWHOuter() > 0
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -1882,7 +1883,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     || ret.getLocations().get(j).getWHPiece() > 0
                                     || ret.getLocations().get(j).getShelfCase() > -1
                                     || ret.getLocations().get(j).getShelfOuter() > -1
-                                    || ret.getLocations().get(j).getShelfPiece() > -1) {
+                                    || ret.getLocations().get(j).getShelfPiece() > -1
+                                    || ret.getLocations().get(j).getAvailability() > -1) {
 
                                 sbdStockAchieved.add(ret.getSbdGroupName());
                             }
@@ -1896,6 +1898,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
                                         .getShelfPiece() > 0
+                                        || ret.getLocations().get(j).getAvailability() > -1
                                         || ret.isSBDAcheivedLocal()) {
                                     sbdStkAndOrderAchieved.add(ret
                                             .getSbdGroupName());
@@ -1912,6 +1915,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
                                         .getShelfPiece() > 0
+                                        || ret.getLocations().get(j).getAvailability() > -1
                                         || ret.isSBDAcheived()
                                         || ret.isSBDAcheivedLocal()) {
                                     sbdStkAndOrderAchieved.add(ret

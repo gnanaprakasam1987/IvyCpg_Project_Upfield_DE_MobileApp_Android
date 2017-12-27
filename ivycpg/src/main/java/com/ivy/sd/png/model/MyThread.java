@@ -6,6 +6,7 @@ import android.os.Handler;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
+import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -253,8 +254,19 @@ public class MyThread extends Thread {
 
             // If Stock and order is enabled , then save stock too.
             if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
-                    && bmodel.hasStockInOrder())
+                    && bmodel.hasStockInOrder()) {
                 bmodel.saveClosingStock();
+
+                if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                    // save price check
+                    PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                    if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                        priceTrackingHelper.savePriceTransaction(bmodel.productHelper.getProductMaster());
+
+                    // save near expiry
+                    bmodel.saveNearExpiry();
+                }
+            }
 
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -423,6 +435,16 @@ public class MyThread extends Thread {
             if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                     && bmodel.hasStockInOrder()) {
                 bmodel.saveClosingStock();
+
+                if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                    // save price check
+                    PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                    if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                        priceTrackingHelper.savePriceTransaction(bmodel.productHelper.getProductMaster());
+
+                    // save near expiry
+                    bmodel.saveNearExpiry();
+                }
             }
 
             if (bmodel.configurationMasterHelper.IS_INVOICE) {
