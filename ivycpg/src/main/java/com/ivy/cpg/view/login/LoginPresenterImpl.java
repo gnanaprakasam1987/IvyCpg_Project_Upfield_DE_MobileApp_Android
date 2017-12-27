@@ -294,6 +294,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
+        loginHelper.loadPasswordConfiguration();
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
             if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
                 businessModel.userMasterHelper.downloadDistributionDetails();
