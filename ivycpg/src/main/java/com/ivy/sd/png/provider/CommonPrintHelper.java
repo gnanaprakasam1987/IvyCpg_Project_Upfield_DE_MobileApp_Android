@@ -1305,11 +1305,6 @@ public class CommonPrintHelper {
     }
 
 
-
-
-
-
-
     /**
      * load product level tax which is applied
      *

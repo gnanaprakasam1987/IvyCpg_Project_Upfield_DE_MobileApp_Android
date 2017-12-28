@@ -294,19 +294,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
+        loginHelper.loadPasswordConfiguration();
+        businessModel.userMasterHelper.downloadDistributionDetails();
+        if (loginHelper.IS_PASSWORD_ENCRYPTED)
+            businessModel.synchronizationHelper.setEncryptType();
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
             if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
-                businessModel.userMasterHelper.downloadDistributionDetails();
-                if (loginHelper.IS_PASSWORD_ENCRYPTED)
-                    businessModel.synchronizationHelper.setEncryptType();
                 loginView.goToHomeScreen();
             } else {
                 loginView.goToAttendance();
             }
         } else {
-            businessModel.userMasterHelper.downloadDistributionDetails();
-            if (loginHelper.IS_PASSWORD_ENCRYPTED)
-                businessModel.synchronizationHelper.setEncryptType();
             loginView.goToHomeScreen();
         }
     }
