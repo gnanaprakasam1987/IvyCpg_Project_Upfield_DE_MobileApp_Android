@@ -285,7 +285,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      */
     private void basicInitialization() {
 
-        //overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         firstLevZoom = true;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 

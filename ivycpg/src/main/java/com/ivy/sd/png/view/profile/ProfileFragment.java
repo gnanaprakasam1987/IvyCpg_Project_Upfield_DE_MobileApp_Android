@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -189,7 +190,7 @@ public class ProfileFragment extends IvyBaseFragment {
 
         recyclerView.setLayoutManager(gridlaymanager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-       // recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).size(1).color(Color.parseColor("#EEEEEE")).margin(22, 22).build());
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).size(1).color(Color.parseColor("#EEEEEE")).margin(22, 22).build());
 
         if (fromHomeClick || non_visit) {
             callLinkBtn.setVisibility(View.GONE);
