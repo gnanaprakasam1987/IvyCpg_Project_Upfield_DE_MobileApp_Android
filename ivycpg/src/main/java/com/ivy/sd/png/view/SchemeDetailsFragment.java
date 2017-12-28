@@ -755,8 +755,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicBUY(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.setMargins(0, 5, 0, 0);
@@ -1010,7 +1012,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewANDLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
+
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mAddViewLayout = new LinearLayout(ctxt);
@@ -1124,8 +1130,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
     private HorizontalScrollView addViewAndLogicBuyNew(int parentId, String groupName) {
 
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
 
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.setMargins(0, 5, 0, 0);
@@ -1256,7 +1264,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.bottomMargin = 20;
@@ -1380,7 +1391,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewONLYLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
+
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.bottomMargin = 20;

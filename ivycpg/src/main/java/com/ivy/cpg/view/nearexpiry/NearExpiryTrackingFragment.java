@@ -253,7 +253,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (mBModel.productHelper.getInStoreLocation().size() < 2)
+                if (mBModel.productHelper.getInStoreLocation().size() > 1)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
