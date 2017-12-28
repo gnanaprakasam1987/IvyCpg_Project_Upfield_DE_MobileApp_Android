@@ -4187,7 +4187,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     // save price check
                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(StockAndOrder.this);
                     if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(mylist);
+                        priceTrackingHelper.savePriceTransaction(getApplicationContext(), mylist);
 
                     // save near expiry
                     bmodel.saveNearExpiry();

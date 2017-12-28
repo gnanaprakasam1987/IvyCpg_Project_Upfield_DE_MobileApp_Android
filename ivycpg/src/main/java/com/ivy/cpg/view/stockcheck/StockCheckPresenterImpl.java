@@ -159,7 +159,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             try {
                 // save price check
                 if (businessModel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    priceTrackingHelper.savePriceTransaction(stockList);
+                    priceTrackingHelper.savePriceTransaction(context.getApplicationContext(), stockList);
 
                 // save near expiry
                 businessModel.saveNearExpiry();

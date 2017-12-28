@@ -430,7 +430,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues();
+                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
                         businessModel.activationHelper.clearAppUrl();
                         businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
@@ -492,7 +492,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
                         try {
-                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster();
+                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster(getApplicationContext());
                             startActivity(new Intent(LoginScreen.this, LoginScreen.class));
                             finish();
                             break;
@@ -722,6 +722,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        LoginHelper.getInstance(LoginScreen.this).clearInstance();
     }
 
 

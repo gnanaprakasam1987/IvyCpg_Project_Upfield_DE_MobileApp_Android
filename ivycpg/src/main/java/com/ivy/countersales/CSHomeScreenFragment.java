@@ -515,10 +515,10 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                 try {
                     PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
                     mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
-                    mPlanoGramHelper.loadConfigurations();
+                    mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
                     int counterId = bmodel.getCounterId();
-                    mPlanoGramHelper.downloadCounterPlanoGram(counterId);
-                    mPlanoGramHelper.loadPlanoGramInEditMode(counterId);
+                    mPlanoGramHelper.downloadCounterPlanoGram(getContext().getApplicationContext(), counterId);
+                    mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), counterId);
 
                     if (mPlanoGramHelper.getCsPlanogramMaster() != null && mPlanoGramHelper.getCsPlanogramMaster().size() > 0) {
                         Intent in = new Intent(getActivity(),
@@ -581,14 +581,14 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
-                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
                 mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                 bmodel.productHelper.downloadProductFilter(MENU_PLANOGRAM_CS);
-                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM_CS,
+                mPlanoGramHelper.downloadLevels(getContext().getApplicationContext(), MENU_PLANOGRAM_CS,
                         bmodel.retailerMasterBO.getRetailerID());
-                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM_CS);
+                mPlanoGramHelper.downloadMaster(getContext().getApplicationContext(), MENU_PLANOGRAM_CS);
                 mPlanoGramHelper
-                        .loadPlanoGramInEditMode(bmodel.retailerMasterBO
+                        .loadPlanoGramInEditMode(getContext().getApplicationContext(), bmodel.retailerMasterBO
                                 .getRetailerID());
                 if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(

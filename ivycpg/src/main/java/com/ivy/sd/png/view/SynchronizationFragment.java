@@ -1452,7 +1452,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     // Here Code to call dwnloaded apk.
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(getActivity()).deleteAllValues();
+                        LoginHelper.getInstance(getActivity()).deleteAllValues(getContext().getApplicationContext());
                         bmodel.activationHelper.clearAppUrl();
                         bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {

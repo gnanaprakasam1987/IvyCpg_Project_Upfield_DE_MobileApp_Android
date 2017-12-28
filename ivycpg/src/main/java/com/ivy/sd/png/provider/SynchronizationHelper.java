@@ -4614,7 +4614,7 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            LoginHelper.getInstance(context).onGCMRegistration();
+            LoginHelper.getInstance(context).onGCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();

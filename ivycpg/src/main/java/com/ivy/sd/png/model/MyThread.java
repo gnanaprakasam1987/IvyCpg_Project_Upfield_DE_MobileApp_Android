@@ -102,7 +102,7 @@ public class MyThread extends Thread {
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-                    LoginHelper.getInstance(ctx).onGCMRegistration();
+                    LoginHelper.getInstance(ctx).onGCMRegistration(ctx.getApplicationContext());
                 if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
                     bmodel.downloadChatCredentials();
 
@@ -261,7 +261,7 @@ public class MyThread extends Thread {
                     // save price check
                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
                     if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(bmodel.productHelper.getProductMaster());
+                        priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                     // save near expiry
                     bmodel.saveNearExpiry();
@@ -440,7 +440,7 @@ public class MyThread extends Thread {
                     // save price check
                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
                     if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(bmodel.productHelper.getProductMaster());
+                        priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                     // save near expiry
                     bmodel.saveNearExpiry();

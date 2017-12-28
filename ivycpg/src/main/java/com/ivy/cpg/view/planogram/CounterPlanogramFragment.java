@@ -619,7 +619,7 @@ public class CounterPlanogramFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 if(counterId > 0) {
-                    mPlanoGramHelper.saveCounterPlanoGram(counterId);
+                    mPlanoGramHelper.saveCounterPlanoGram(getContext().getApplicationContext(), counterId);
                 }
                 return Boolean.TRUE;
             } catch (Exception e) {
