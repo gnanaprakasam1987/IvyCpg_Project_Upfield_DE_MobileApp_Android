@@ -334,7 +334,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 }
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
-                SalesReturnHelper.getInstance(this).loadDamagedProductReport();
+                SalesReturnHelper.getInstance(this).loadDamagedProductReport(getApplicationContext());
                 damagedSalesReturnIntent = new Intent(LoadManagementScreen.this,
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

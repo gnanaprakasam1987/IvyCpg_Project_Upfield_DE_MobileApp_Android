@@ -986,7 +986,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         .getConfigCode()
                         .equals(StandardListMasterConstants.MENU_STOCK_REPLACEMENT)) {
                     if (menuDB.get(i).getHasLink() == 1) {
-                        if (SalesReturnHelper.getInstance(this).isStockReplacementDone())
+                        if (SalesReturnHelper.getInstance(this).isStockReplacementDone(getApplicationContext()))
                             menuDB.get(i).setDone(true);
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
@@ -2437,7 +2437,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                salesReturnHelper.loadSalesReturnConfigurations();
+                salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
 
                 bmodel.reasonHelper.downloadSalesReturnReason();
 
@@ -2456,7 +2456,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                         salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData();
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
@@ -2986,7 +2986,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 PromotionHelper promotionHelper = PromotionHelper.getInstance(this);
-                promotionHelper.loadDataForPromotion(menu.getConfigCode());
+                promotionHelper.loadDataForPromotion(getApplicationContext(), menu.getConfigCode());
                 if (promotionHelper.getPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(

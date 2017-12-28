@@ -2889,15 +2889,15 @@ public class BusinessModel extends Application {
     public void saveNewInvoice() {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-        salesReturnHelper.getSalesReturnGoods();
+        salesReturnHelper.getSalesReturnGoods(getApplicationContext());
         ArrayList<ProductMasterBO> batchList;
 
-        int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated();
+        int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated(getApplicationContext());
 
         double ordervalue = 0.0;
         if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                 && isCredtNoteCreated != 1) {
-            if (salesReturnHelper.isValueReturned()) {
+            if (salesReturnHelper.isValueReturned(getApplicationContext())) {
                 ordervalue = orderHeaderBO.getOrderValue()
                         - salesReturnHelper.getSaleableValue();
             } else {
@@ -3003,7 +3003,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
                 Commons.print("if" + salesReturnHelper.getSaleableValue());
-                if (salesReturnHelper.isValueReturned())
+                if (salesReturnHelper.isValueReturned(getApplicationContext()))
                     sb.append(salesReturnHelper.getSaleableValue() + ",");
                 else
                     sb.append(0 + ",");
@@ -3015,7 +3015,7 @@ public class BusinessModel extends Application {
             sb.append(this.configurationMasterHelper.discountType + ",");
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned())
+                    && salesReturnHelper.isValueReturned(getApplicationContext()))
                 sb.append(1);
             else
                 sb.append(0);
@@ -3086,7 +3086,7 @@ public class BusinessModel extends Application {
             /** update credit not flag in sales return header **/
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned()) {
+                    && salesReturnHelper.isValueReturned(getApplicationContext())) {
                 db.executeQ("update SalesReturnHeader set credit_flag=2 where RetailerID="
                         + QT(getRetailerMasterBO().getRetailerID()));
             }
@@ -11118,18 +11118,18 @@ public class BusinessModel extends Application {
             String invid = userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated();
+            int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated(getApplicationContext());
             double discountPercentage = collectionHelper.getSlabwiseDiscountpercentage();
 
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-            salesReturnHelper.getSalesReturnGoods();
+            salesReturnHelper.getSalesReturnGoods(getApplicationContext());
 
             ArrayList<ProductMasterBO> batchList;
 
             double ordervalue = 0.0;
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
-                if (salesReturnHelper.isValueReturned()) {
+                if (salesReturnHelper.isValueReturned(getApplicationContext())) {
                     ordervalue = orderHeaderBO.getOrderValue()
                             - salesReturnHelper.getSaleableValue();
                 } else {
@@ -11210,7 +11210,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
                 Commons.print("if" + salesReturnHelper.getSaleableValue());
-                if (salesReturnHelper.isValueReturned())
+                if (salesReturnHelper.isValueReturned(getApplicationContext()))
                     sb.append(salesReturnHelper.getSaleableValue() + ",");
                 else
                     sb.append(0 + ",");
@@ -11222,7 +11222,7 @@ public class BusinessModel extends Application {
             sb.append(this.configurationMasterHelper.discountType + ",");
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned())
+                    && salesReturnHelper.isValueReturned(getApplicationContext()))
                 sb.append(1);
             else
                 sb.append(0);

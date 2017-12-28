@@ -408,7 +408,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 }
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
-                SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport();
+                SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport(getContext().getApplicationContext());
                 damagedSalesReturnIntent = new Intent(getActivity(),
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
