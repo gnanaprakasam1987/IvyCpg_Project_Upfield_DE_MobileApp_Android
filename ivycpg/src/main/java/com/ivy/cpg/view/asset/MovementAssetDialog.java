@@ -176,7 +176,7 @@ public class MovementAssetDialog extends DialogFragment {
                     setAddAssetDetails();
                     mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                     assetTrackingHelper
-                            .saveAssetMovementDetails("MENU_ASSET");
+                            .saveAssetMovementDetails(getContext().getApplicationContext(), "MENU_ASSET");
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();

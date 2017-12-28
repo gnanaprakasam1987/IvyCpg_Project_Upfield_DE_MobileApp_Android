@@ -1134,7 +1134,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                             }
                         }
                         assetTrackingHelper
-                                .deleteImageName(imageNameStarts);
+                                .deleteImageName(getContext().getApplicationContext(), imageNameStarts);
                         mBModel.synchronizationHelper.deleteFiles(photoPath,
                                 imageNameStarts);
 
@@ -1256,7 +1256,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         protected String doInBackground(String... params) {
 
             deleteUnusedImages();
-            assetTrackingHelper.saveAsset(screenCode);
+            assetTrackingHelper.saveAsset(getContext().getApplicationContext(), screenCode);
             mBModel.saveModuleCompletion(screenCode);
             return "";
         }

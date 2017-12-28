@@ -135,7 +135,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	private void updateList() {
 
 		Vector<AssetTrackingBO> items;
-		assetTrackingHelper.lodAddRemoveAssets(mModuleName);
+        assetTrackingHelper.lodAddRemoveAssets(getApplicationContext(), mModuleName);
 
 		items = assetTrackingHelper.getAddRemoveAssets();
 		if (items == null) {
@@ -327,8 +327,8 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
 						mReasonID = lstTemp.get(i).getReason1ID();
 						assetTrackingHelper
-								.saveAddAndDeleteDetails(mPOSMIdDialog,
-										mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
+                                .saveAddAndDeleteDetails(getApplicationContext(), mPOSMIdDialog,
+                                        mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
 
 						mList.remove(i);
 					}
@@ -336,8 +336,8 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
 				} else {
 					assetTrackingHelper
-							.deletePosmDetails(lstTemp.get(i)
-									.getSNO());
+                            .deletePosmDetails(getApplicationContext(), lstTemp.get(i)
+                                    .getSNO());
 					mList.remove(i);
 				}
 				bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);

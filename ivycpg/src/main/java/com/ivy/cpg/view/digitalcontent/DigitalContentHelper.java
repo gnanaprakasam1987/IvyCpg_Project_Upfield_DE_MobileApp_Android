@@ -20,7 +20,6 @@ import java.util.Vector;
 public class DigitalContentHelper {
 
 
-    private final Context context;
     private final BusinessModel mBModel;
     private static DigitalContentHelper instance;
     private Vector<DigitalContentBO> digitalMaster;
@@ -28,7 +27,6 @@ public class DigitalContentHelper {
     public String mSelectedActivityName;
 
     private DigitalContentHelper(Context context) {
-        this.context = context;
         mBModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -37,6 +35,10 @@ public class DigitalContentHelper {
             instance = new DigitalContentHelper(context);
         }
         return instance;
+    }
+
+    public void clearInstance() {
+        instance = null;
     }
 
     public Vector<DigitalContentBO> getDigitalMaster() {
@@ -57,11 +59,11 @@ public class DigitalContentHelper {
      *
      * @return Mapping Id
      */
-    private String getDigitalContentTaggingDetails() {
+    private String getDigitalContentTaggingDetails(Context mContext) {
         String mappingId = "-1";
         ArrayList<String> mappingIdList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c1 = db
@@ -96,7 +98,7 @@ public class DigitalContentHelper {
     }
 
 
-    public String addCommaSeparator(ArrayList<String> array) {
+    private String addCommaSeparator(ArrayList<String> array) {
         String result = "";
         if (array.size() > 0) {
             StringBuilder sb = new StringBuilder();
@@ -114,18 +116,18 @@ public class DigitalContentHelper {
      *
      * @param value seller or Retailer
      */
-    public void downloadDigitalContent(String value) {
+    public void downloadDigitalContent(Context mContext, String value) {
         DigitalContentBO product;
         String mMappingId;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
             if ("SELLER".equals(value))
                 mMappingId = "0";
             else
-                mMappingId = getDigitalContentTaggingDetails();
+                mMappingId = getDigitalContentTaggingDetails(mContext);
             if ("SELLER".equals(value))
 
             {
@@ -160,9 +162,9 @@ public class DigitalContentHelper {
                 sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid ) ");
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
                 sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid LEFT JOIN StandardListMaster SLM ON SLM.ListId = DC.GroupLovID");
-                sBuffer.append(" where mappingid=");
+                sBuffer.append(" where mappingid IN(");
                 sBuffer.append(mMappingId);
-                sBuffer.append(" and DCM.mappingtype!='SELLER' ORDER BY GroupSequence asc ");
+                sBuffer.append(") and DCM.mappingtype!='SELLER' ORDER BY GroupSequence asc ");
 
                 Cursor c = db.selectSQL(sBuffer.toString());
                 if (c != null) {
@@ -214,8 +216,8 @@ public class DigitalContentHelper {
     /**
      * Update digital content availability in Db
      */
-    public void setDigitalContentInDB() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void setDigitalContentInDB(Context mAppContext) {
+        DBUtil db = new DBUtil(mAppContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster

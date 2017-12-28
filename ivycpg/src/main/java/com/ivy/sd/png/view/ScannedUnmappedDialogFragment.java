@@ -191,7 +191,7 @@ public class ScannedUnmappedDialogFragment extends DialogFragment implements Vie
                     setAddAssetDetails();
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                     assetTrackingHelper
-                            .saveAssetAddAndDeleteDetails("MENU_ASSET");
+                            .saveAssetAddAndDeleteDetails(getContext().getApplicationContext(), "MENU_ASSET");
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();

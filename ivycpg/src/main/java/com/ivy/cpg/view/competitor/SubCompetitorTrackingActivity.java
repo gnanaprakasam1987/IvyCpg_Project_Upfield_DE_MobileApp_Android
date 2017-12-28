@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.competitor;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;

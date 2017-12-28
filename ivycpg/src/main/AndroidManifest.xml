@@ -271,10 +271,10 @@
             android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.CompetitorTrackingActivity"
+            android:name="com.ivy.cpg.view.competitor.CompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SubCompetitorTrackingActivity"
+            android:name="com.ivy.cpg.view.competitor.SubCompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.planogram.PlanoGramActivity"

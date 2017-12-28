@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -87,7 +88,6 @@ import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
-import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -855,7 +855,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (!isClick) {
                 isClick = true;
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
-                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                mDigitalContentHelper.downloadDigitalContent(getApplicationContext(), "RETAILER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
@@ -1541,7 +1541,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
                                 && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
                             NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
-                            mNearExpiryHelper.loadSKUTracking(true);
+                            mNearExpiryHelper.loadSKUTracking(getApplicationContext(), true);
                         }
 
                         if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
@@ -1865,7 +1865,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
                                         && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
                                     NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
-                                    mNearExpiryHelper.loadSKUTracking(false);
+                                    mNearExpiryHelper.loadSKUTracking(getApplicationContext(), false);
                                 }
 
                                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
@@ -2525,7 +2525,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
-                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                mDigitalContentHelper.downloadDigitalContent(getApplicationContext(), "RETAILER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
@@ -2627,7 +2627,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
@@ -2669,7 +2669,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_POSM);
 
                 if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
@@ -2716,10 +2716,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mNearExpiryHelper.mSelectedActivityName = menu.getMenuName();
 
                 bmodel.productHelper.downloadInStoreLocations();
-                mNearExpiryHelper.loadSKUTracking(false);
+                mNearExpiryHelper.loadSKUTracking(getApplicationContext(), false);
 
-                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone()) {
-                    mNearExpiryHelper.loadLastVisitSKUTracking();
+                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone(getApplicationContext())) {
+                    mNearExpiryHelper.loadLastVisitSKUTracking(getApplicationContext());
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_NEAREXPIRY), 1);
@@ -3166,7 +3166,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 SODAssetHelper mSODAssetHelper = SODAssetHelper.getInstance(this);
 
                 mSODAssetHelper.downloadLocations();
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)

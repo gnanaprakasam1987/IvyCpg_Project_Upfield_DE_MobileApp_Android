@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.planogram.CounterPlanogramActivity;
@@ -46,7 +47,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -554,7 +554,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     ) {
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
 
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM_CS);
+                assetTrackingHelper.loadDataForAssetPOSM(getContext().getApplicationContext(), MENU_POSM_CS);
 
                 bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -621,7 +621,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     ) {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
-                mDigitalContentHelper.downloadDigitalContent("COUNTER");
+                mDigitalContentHelper.downloadDigitalContent(getContext().getApplicationContext(), "COUNTER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
