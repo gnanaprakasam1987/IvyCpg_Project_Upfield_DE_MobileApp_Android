@@ -31,7 +31,7 @@ import java.util.Vector;
 
 public class NewOutletHelper {
 
-    private Context context;
+    private final Context context;
     private int mSelectedChannelid = 0;
     private String mSelectedChannelname = "";
 
@@ -44,12 +44,12 @@ public class NewOutletHelper {
     }
 
 
-    NewOutletBO imageType;
-    ArrayList<NewOutletBO> retailerTypeList;
-    ArrayList<NewOutletBO> contactTitleList;
-    ArrayList<NewOutletBO> contractStatusList;
+    private NewOutletBO imageType;
+    private ArrayList<NewOutletBO> retailerTypeList;
+    private ArrayList<NewOutletBO> contactTitleList;
+    private ArrayList<NewOutletBO> contractStatusList;
     private Vector<RetailerMasterBO> mLinkRetailerList;
-    private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<StandardListBO>();
+    private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<>();
     private ArrayList<ProductMasterBO> orderedProductList = new ArrayList<>();
     private ArrayList<ProductMasterBO> opprProductList = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class NewOutletHelper {
     private MaterialSpinner materialSpinner[] = null;
 
 
-    public ArrayList<StandardListBO> getSelectedPrioProducts() {
+    private ArrayList<StandardListBO> getSelectedPrioProducts() {
         return selectedPrioProducts;
     }
 
@@ -125,16 +125,16 @@ public class NewOutletHelper {
         return imageType;
     }
 
-    Vector<ConfigureBO> profileConfig = null;
-    Vector<ConfigureBO> profileEditConfig = null;
+    private Vector<ConfigureBO> profileConfig = null;
+    private Vector<ConfigureBO> profileEditConfig = null;
 
     private static NewOutletHelper instance = null;
-    BusinessModel bmodel;
-    Vector<NewOutletBO> imageTypeList = new Vector<>();
+    private final BusinessModel bmodel;
+    private Vector<NewOutletBO> imageTypeList = new Vector<>();
 
     private String id;
 
-    protected NewOutletHelper(Context context) {
+    private NewOutletHelper(Context context) {
         this.context = context;
         bmodel = (BusinessModel) context;
     }
@@ -151,7 +151,7 @@ public class NewOutletHelper {
         return imageTypeList;
     }
 
-    public void setImageTypeList(Vector<NewOutletBO> imageTypeList) {
+    private void setImageTypeList(Vector<NewOutletBO> imageTypeList) {
         this.imageTypeList = imageTypeList;
     }
 
@@ -178,7 +178,7 @@ public class NewOutletHelper {
         return instance;
     }
 
-    public String QT(String data) // Quote
+    private String QT(String data) // Quote
     {
         return "'" + data + "'";
     }
@@ -1040,8 +1040,8 @@ public class NewOutletHelper {
         int tempParentID = 0;
         String attribName = "";
         String attribHeader = "";
-        int levelId = 0;
-        String status = "";
+        int levelId;
+        String status;
         NewOutletAttributeBO tempBO;
         for (NewOutletAttributeBO attributeBO : list) {
             tempBO = new NewOutletAttributeBO();
@@ -1129,7 +1129,7 @@ public class NewOutletHelper {
         return mNewRetailerById;
     }
 
-    HashMap<String, NewOutletBO> mNewRetailerById;
+    private HashMap<String, NewOutletBO> mNewRetailerById;
 
     public ArrayList<NewOutletBO> getNewRetailers() {
         ArrayList<NewOutletBO> lst = new ArrayList<>();
@@ -1293,7 +1293,7 @@ public class NewOutletHelper {
     /**
      * Download configuration fields for new retailer
      *
-     * @return
+     * return
      */
     public void loadNewOutletConfiguration(int channelid) {
         ConfigureBO ConfigureBO;
@@ -1333,7 +1333,7 @@ public class NewOutletHelper {
                         if (str.contains("<") && str.contains(">")) {
 
                             String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-                            if (minlen != null && !minlen.isEmpty()) {
+                            if (!minlen.isEmpty()) {
                                 try {
                                     ConfigureBO.setMaxLengthNo(Integer.parseInt(minlen));
                                 } catch (Exception ex) {
@@ -1506,7 +1506,7 @@ public class NewOutletHelper {
         return lstEditRequests;
     }
 
-    HashMap<String, String> lstEditRequests = new HashMap<>();
+    private final HashMap<String, String> lstEditRequests = new HashMap<>();
 
     public void getNearbyRetailersEditRequest(int retailerId) {
         lstEditRequests.clear();
@@ -1709,7 +1709,7 @@ public class NewOutletHelper {
         return levelame;
     }
 
-    String levelame = "";
+    private String levelame = "";
 
     public ArrayList<ChannelBO> getChannelList() {
         ArrayList<ChannelBO> channelList = new ArrayList<>();
@@ -1740,7 +1740,7 @@ public class NewOutletHelper {
         return channelList;
     }
 
-    public void savePriorityProducts(NewOutletBO newOutletBO) {
+    private void savePriorityProducts(NewOutletBO newOutletBO) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -2110,29 +2110,29 @@ public class NewOutletHelper {
     }
 
     public ArrayList<String> getRetialerIds(String suppilerID) {
-        ArrayList<String> mRetailerIds = new ArrayList<String>();
+        ArrayList<String> mRetailerIds = new ArrayList<>();
         DBUtil db = null;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuffer sb = new StringBuffer();
+            String sb = "select distinct rid from Suppliermaster " +
+                    "where sid=" + QT(suppilerID);
 
-            sb.append("select distinct rid from Suppliermaster ");
-            sb.append("where sid=" + QT(suppilerID));
-
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerIds.add(c.getString(0));
                 }
+                c.close();
             }
-            c.close();
+
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if(db!=null)
+                db.closeDB();
             Commons.printException("" + e);
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
 
         return mRetailerIds;
@@ -2145,12 +2145,10 @@ public class NewOutletHelper {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuffer sb = new StringBuffer();
+            String sb = "select listid,listname from StandardListMaster " +
+                    "where listtype='ADDRESS_TYPE'";
 
-            sb.append("select listid,listname from StandardListMaster ");
-            sb.append("where listtype='ADDRESS_TYPE'");
-
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 StandardListBO bo;
                 while (c.moveToNext()) {
@@ -2163,9 +2161,10 @@ public class NewOutletHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if(db!=null)
+                db.closeDB();
             Commons.printException("" + e);
-            return new ArrayList<StandardListBO>();
+            return new ArrayList<>();
         }
 
         return mLst;
@@ -2178,13 +2177,12 @@ public class NewOutletHelper {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuffer sb = new StringBuffer();
 
-            sb.append("select distinct Address1,Address2,Address3,ContactNumber,City,latitude,longitude,email,FaxNo,pincode,State,AddressTypeID from RetailerAddress");
+            String sb ="select distinct Address1,Address2,Address3,ContactNumber,City,latitude,longitude,email,FaxNo,pincode,State,AddressTypeID from RetailerAddress";
          /*   sb.append("LEFT JOIN StandardListMaster SM ON RA.AddressTypeID=SM.listid");
             sb.append("where listtype='ADDRESS_TYPE'");*/
 
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 AddressBO bo;
                 while (c.moveToNext()) {
@@ -2208,9 +2206,10 @@ public class NewOutletHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if(db!=null)
+                db.closeDB();
             Commons.printException("" + e);
-            return new HashMap<String, AddressBO>();
+            return new HashMap<>();
         }
 
         return lst;

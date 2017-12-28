@@ -42,6 +42,9 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String address2;
     private String address3;
 
+    // Sales per category
+    private String salseProductName,salesInvoiceId,salesInvoiceValue,salesProdParentId,salesLovId,salesLpc,salesQty,salesProductSName;
+
     public String getMovRetailerId() {
         return movRetailerId;
     }
@@ -133,6 +136,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String sbdDistpercent;
     private String initiativePercent;
     private String isOrdered;
+    private String isProductive;
     private String isInvoiceDone;
     private double distance;
     private double Visit_Actual;
@@ -815,6 +819,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.isOrdered = isOrdered;
     }
 
+    public String isProductive() {
+        return isProductive;
+    }
+
+    public void setProductive(String productive) {
+        isProductive = productive;
+    }
     public String isInvoiceDone() {
         return isInvoiceDone;
     }
@@ -1437,4 +1448,68 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     private boolean isBomAchieved = false;
+
+    public String getSalseProductName() {
+        return salseProductName;
+    }
+
+    public void setSalseProductName(String salseProductName) {
+        this.salseProductName = salseProductName;
+    }
+
+    public String getSalesInvoiceId() {
+        return salesInvoiceId;
+    }
+
+    public void setSalesInvoiceId(String salesInvoiceId) {
+        this.salesInvoiceId = salesInvoiceId;
+    }
+
+    public String getSalesInvoiceValue() {
+        return salesInvoiceValue;
+    }
+
+    public void setSalesInvoiceValue(String salesInvoiceValue) {
+        this.salesInvoiceValue = salesInvoiceValue;
+    }
+
+    public String getSalesProdParentId() {
+        return salesProdParentId;
+    }
+
+    public void setSalesProdParentId(String salesProdParentId) {
+        this.salesProdParentId = salesProdParentId;
+    }
+
+    public String getSalesLovId() {
+        return salesLovId;
+    }
+
+    public void setSalesLovId(String salesLovId) {
+        this.salesLovId = salesLovId;
+    }
+
+    public String getSalesLpc() {
+        return salesLpc;
+    }
+
+    public void setSalesLpc(String salesLpc) {
+        this.salesLpc = salesLpc;
+    }
+
+    public String getSalesQty() {
+        return salesQty;
+    }
+
+    public void setSalesQty(String salesQty) {
+        this.salesQty = salesQty;
+    }
+
+    public String getSalesProductSName() {
+        return salesProductSName;
+    }
+
+    public void setSalesProductSName(String salesProductSName) {
+        this.salesProductSName = salesProductSName;
+    }
 }

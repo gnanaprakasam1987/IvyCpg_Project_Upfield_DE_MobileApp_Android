@@ -3,6 +3,7 @@ package com.ivy.sd.png.view;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ public class TaskListFragment extends Fragment {
     private TextView mSelectedTaskTV;
     private boolean IsRetailerwisetask = false;
     private boolean fromReviewScreen = false;
+    private boolean fromProfileScreen = false;
     private int tasktype = 0;
     private BusinessModel bmodel;
     private boolean bool;
@@ -54,12 +56,13 @@ public class TaskListFragment extends Fragment {
 
     }
 
-    static TaskListFragment init(int pos, boolean isRetailerwisetask, boolean fromReviewScreen) {
+    static TaskListFragment init(int pos, boolean isRetailerwisetask, boolean fromReviewScreen, boolean fromProfileScreen) {
         TaskListFragment taskListFragment = new TaskListFragment();
         Bundle args = new Bundle();
         args.putInt("type", 0);
         args.putBoolean("isRetailer", isRetailerwisetask);
         args.putBoolean("fromReview", fromReviewScreen);
+        args.putBoolean("fromProfileScreen",fromProfileScreen);
         taskListFragment.setArguments(args);
         return taskListFragment;
     }
@@ -70,6 +73,7 @@ public class TaskListFragment extends Fragment {
         tasktype = getArguments().getInt("type");
         IsRetailerwisetask = getArguments().getBoolean("isRetailer");
         fromReviewScreen = getArguments().getBoolean("fromReview");
+        fromProfileScreen = getArguments().getBoolean("fromProfileScreen");
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -224,6 +228,17 @@ public class TaskListFragment extends Fragment {
         task_created.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView task_execution = (TextView) view.findViewById(R.id.task_execution);
         task_execution.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        LinearLayout layoutTaskExecution = (LinearLayout) view.findViewById(R.id.layoutTaskExecution);
+        LinearLayout layoutTaskHeader = (LinearLayout) view.findViewById(R.id.layoutTaskHeader);
+
+        if(fromProfileScreen) {
+            layoutTaskExecution.setVisibility(View.GONE);
+            layoutTaskHeader.setVisibility(View.GONE);
+        }
+        else {
+            layoutTaskExecution.setVisibility(View.VISIBLE);
+            layoutTaskHeader.setVisibility(View.VISIBLE);
+        }
         mTaskContainer.addView(view);
 
         if (taskDataBOForAdapter != null) {
@@ -231,16 +246,28 @@ public class TaskListFragment extends Fragment {
             int size = taskDataBOForAdapter.size();
             taskDes = new String[size][1];
             int j = 0;
-            for (TaskDataBO task : taskDataBOForAdapter) {
+            for(int i=0;i<taskDataBOForAdapter.size();i++) {
                 final ViewHolder holder = new ViewHolder();
-                holder.taskBO = task;
+                holder.taskBO = taskDataBOForAdapter.get(i);
+                TaskDataBO task = holder.taskBO;
 
                 View v = inflater.inflate(R.layout.row_task_title, null);
 
                 holder.taskCB = (CheckBox) v.findViewById(R.id.task_title_CB);
                 holder.taskTaskOwner = (TextView) v.findViewById(R.id.task_taskowner);
                 holder.taskCreatedDate = (TextView) v.findViewById(R.id.task_createdOn);
+                holder.layoutCB = (LinearLayout) v.findViewById(R.id.layoutCB);
+                holder.layoutrow = (LinearLayout)v.findViewById(R.id.layoutBorder);
+                if(fromProfileScreen) {
+                    holder.layoutCB.setVisibility(View.GONE);
+                    if (i % 2 == 0)
+                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+                    else
+                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
+                }
+                else
+                    holder.layoutCB.setVisibility(View.VISIBLE);
                 holder.taskTaskOwner.setText(task.getTaskOwner());
                 holder.taskCreatedDate.setText("" + DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat));
 
@@ -316,6 +343,8 @@ public class TaskListFragment extends Fragment {
         TextView taskDescription;
         TextView taskTaskOwner;
         TextView taskCreatedDate;
+        LinearLayout layoutCB;
+        LinearLayout layoutrow;
     }
 
     public void hideNewTaskMenu() {

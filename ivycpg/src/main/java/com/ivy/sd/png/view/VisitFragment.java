@@ -1271,6 +1271,22 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                         i.putExtra("visit", startvisit);
                                         i.putExtra("locvisit", true);
                                     }
+                        if (!profileclick) {
+                            profileclick = true;
+                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                            }
+                           // bmodel.newOutletHelper.downloadLinkRetailer();
+                            Intent i = new Intent(getActivity(), ProfileActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            if (isFromPlannning) {
+                                i.putExtra("From", MENU_PLANNING);
+                                i.putExtra("isPlanning", true);
+                            } else {
+                                i.putExtra("From", MENU_VISIT);
+                                i.putExtra("visit", startvisit);
+                                i.putExtra("locvisit", true);
+                            }
 
                                     startActivity(i);
                                 }
@@ -1500,8 +1516,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
 
             if (!calledBy.equals(MENU_PLANNING)) {
-
-                if (("Y").equals(holder.retailerObjectHolder.isOrdered())) {
+                bmodel.loadProductiveCallsConfig();
+                if (("Y").equals(holder.retailerObjectHolder.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
                     if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             && ("N").equals(holder.retailerObjectHolder.isInvoiceDone())) {
                         holder.line_order_without_invoice
@@ -1510,6 +1526,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         holder.line_order_without_invoice
                                 .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
                     }
+                } else if (bmodel.PRD_FOR_SKT && holder.retailerObjectHolder.isProductive().equalsIgnoreCase("Y")) { // If ProductiveStockCheck is ON and then check for Productive is done or not. This value is updated while saving the stockcheck
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
                 } else if (!hasOrderScreen && "Y".equals(holder.retailerObjectHolder.getIsVisited())) {
                     holder.line_order_without_invoice
                             .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
