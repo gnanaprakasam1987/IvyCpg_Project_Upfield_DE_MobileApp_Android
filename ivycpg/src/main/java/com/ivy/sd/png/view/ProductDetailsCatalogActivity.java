@@ -74,12 +74,13 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         //sih_detail.setText("SIH : " + bmodel.selectedPdt.getSIH());
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         pdt_name.setText(bmodel.selectedPdt.getProductName());
-        sih_detail.setText("SRP : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) +
+        pdt_name.setText(bmodel.selectedPdt.getProductName());
+        sih_detail.setText((bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP == true ?
+                "SRP : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
                 (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP == true ?
                         " MRP : " + bmodel.formatValue(bmodel.selectedPdt.getMRP()) : "") +
                 (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
                         " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
-
      /*   FragmentSchemeDialog fragment = new FragmentSchemeDialog();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.frame, fragment);
@@ -115,15 +116,15 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
      * @return
      */
     public String getImageFilePath(final String fileName) {
-
-        File file = new File(getExternalFilesDir(
+        File file = new File(/*getExternalFilesDir(
                 Environment.DIRECTORY_DOWNLOADS)
                 + "/"
                 + bmodel.userMasterHelper.getUserMasterBO()
                 .getUserid()
-                + DataMembers.DIGITAL_CONTENT
-                + "/"
-                + DataMembers.CATALOG);
+                + DataMembers.DIGITAL_CONTENT*/
+                bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name))
+                        + "/"
+                        + DataMembers.CATALOG);
 
         File[] files = file.listFiles(new FileFilter() {
 

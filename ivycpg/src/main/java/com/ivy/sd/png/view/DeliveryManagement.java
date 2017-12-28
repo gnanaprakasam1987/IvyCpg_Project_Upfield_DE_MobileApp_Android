@@ -69,6 +69,9 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                     i.putExtra("invoiceno",
                             mInvoiceList.get(0).getInvoiceNo());
                     i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                    if (getIntent().getStringExtra("From") != null) {
+                        i.putExtra("From", getIntent().getStringExtra("From"));
+                    }
                     startActivity(i);
                     finish();
                 } else {
@@ -97,11 +100,13 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            if (getIntent().getStringExtra("From") == null) {
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
 
-            BusinessModel.loadActivity(DeliveryManagement.this,
-                    DataMembers.actHomeScreenTwo);
+                BusinessModel.loadActivity(DeliveryManagement.this,
+                        DataMembers.actHomeScreenTwo);
+            }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             finish();
         }
@@ -157,6 +162,9 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                         i.putExtra("invoiceno",
                                 holder.invoiceHeaderBO.getInvoiceNo());
                         i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                        if (getIntent().getStringExtra("From") != null) {
+                            i.putExtra("From", getIntent().getStringExtra("From"));
+                        }
                         startActivity(i);
                         finish();
                     }

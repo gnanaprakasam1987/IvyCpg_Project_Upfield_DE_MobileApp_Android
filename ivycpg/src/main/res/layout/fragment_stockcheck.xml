@@ -193,83 +193,91 @@
                                 android:gravity="left|center_vertical"
                                 android:text="@string/product_name" />
 
-                            <TextView
-                                android:id="@+id/shelfPcsCB"
-                                style="?attr/customListTitle"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/avail" />
-
-
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="3"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical"
-                                android:id="@+id/shelf_layout"
-                                android:weightSum="10">
+                                android:layout_weight="6"
+                                android:gravity="center"
+                                android:orientation="horizontal">
 
                                 <TextView
+                                    android:id="@+id/shelfPcsCB"
                                     style="?attr/customListTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="5"
-                                    android:text="@string/label_shelf" />
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/avail" />
+
 
                                 <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="5"
-                                    android:orientation="horizontal">
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="3"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical"
+                                    android:id="@+id/shelf_layout"
+                                    android:weightSum="10">
 
                                     <TextView
-                                        android:id="@+id/shelfCaseTitle"
-                                        style="?attr/customListTitleSecondary"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:tag="shelf_case"
-                                        android:text="@string/sc" />
+                                        style="?attr/customListTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="5"
+                                        android:text="@string/label_shelf" />
 
-                                    <TextView
-                                        android:id="@+id/shelfOuterTitle"
-                                        style="?attr/customListTitleSecondary"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:tag="shelf_outer"
-                                        android:text="@string/souter" />
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="5"
+                                        android:orientation="horizontal">
 
-                                    <TextView
-                                        android:id="@+id/shelfPcsTitle"
-                                        style="?attr/customListTitleSecondary"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:tag="shelf_piece"
-                                        android:text="@string/sp" />
+                                        <TextView
+                                            android:id="@+id/shelfCaseTitle"
+                                            style="?attr/customListTitleSecondary"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:tag="shelf_case"
+                                            android:text="@string/sc" />
+
+                                        <TextView
+                                            android:id="@+id/shelfOuterTitle"
+                                            style="?attr/customListTitleSecondary"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:tag="shelf_outer"
+                                            android:text="@string/souter" />
+
+                                        <TextView
+                                            android:id="@+id/shelfPcsTitle"
+                                            style="?attr/customListTitleSecondary"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:tag="shelf_piece"
+                                            android:text="@string/sp" />
+                                    </LinearLayout>
                                 </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/et_facingQty"
+                                    style="?attr/customListTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tag="item_exp_facing"
+                                    android:text="@string/facing" />
+
+                                <TextView
+                                    android:id="@+id/exp_stktotalTitle"
+                                    style="?attr/customListTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tag="total_stock"
+                                    android:text="@string/total" />
                             </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/et_facingQty"
-                                style="?attr/customListTitle"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:tag="item_exp_facing"
-                                android:text="@string/facing" />
-
-                            <TextView
-                                android:id="@+id/exp_stktotalTitle"
-                                style="?attr/customListTitle"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:tag="total_stock"
-                                android:text="@string/total" />
 
 
                         </LinearLayout>

@@ -466,10 +466,13 @@ public class ProductHelper {
                     int size = p.getLocations().size();
                     int shelfpcs = 0, whpcs = 0;
                     for (int j = 0; j < size; j++) {
-                        shelfpcs = shelfpcs
-                                + p.getLocations().get(j).getShelfPiece();
+                        if (p.getLocations().get(j).getShelfPiece() > 0)
+                            shelfpcs += p.getLocations().get(j).getShelfPiece();
+
                         whpcs = whpcs + p.getLocations().get(j).getWHPiece();
 
+                        if (p.getLocations().get(j).getAvailability() > -1)
+                            shelfpcs += p.getLocations().get(j).getAvailability();
                     }
                     p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
                             p.getIsInitiativeProduct(), p.getDropQty(),
@@ -2860,6 +2863,8 @@ public class ProductHelper {
                 product.getLocations().get(z).setShelfCase(-1);
                 product.getLocations().get(z).setShelfPiece(-1);
 
+                product.getLocations().get(z).setAvailability(-1);
+                
                 product.getLocations().get(z).setWHOuter(0);
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
@@ -5382,7 +5387,7 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1 from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
             sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
             sb.append(" where invoiceid=" + bmodel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
@@ -5403,6 +5408,7 @@ public class ProductHelper {
 
                     taxBO.setTaxDesc2(c.getString(2));
                     taxBO.setTaxRate(c.getDouble(1));
+                    taxBO.setParentType(c.getString(3));
 
                     if (groupid != c.getInt(0)) {
                         if (groupid != 0) {
@@ -5607,6 +5613,7 @@ public class ProductHelper {
      */
     public void updateProductWiseTax() {
         if (mProductTaxList != null) {
+            mTaxBoBatchProduct = new HashMap<>();
             for (String productId : mProductTaxList) {
                 ProductMasterBO productBo = getProductMasterBOById(productId);
 
@@ -5626,23 +5633,43 @@ public class ProductHelper {
                                     .getDiscount_order_value();
                             double remainingValue = totalValue / totalQty;
                             double taxRate = 0;
+                            taxBOArrayList = new ArrayList<>();
                             for (TaxBO taxBO : taxList) {
                                 if (bmodel.configurationMasterHelper.SHOW_MRP_LEVEL_TAX) {
                                     if (taxBO.getApplyRange() == 1) {
 
                                         if (taxBO.getMinValue() <= remainingValue
                                                 && taxBO.getMaxValue() >= remainingValue) {
-                                            excludeProductTax(productBo, taxBO, false);
+
+                                            if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                                taxRate += taxBO.getTaxRate();
+                                            }
+
+                                            if (bmodel.configurationMasterHelper.IS_GST)
+                                                calculateTaxOnTax(productBo, taxBO, false);
+
                                         }
 
                                     } else {
-                                        excludeProductTax(productBo, taxBO, false);
+                                        if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                            taxRate += taxBO.getTaxRate();
+                                        }
+
+                                        if (bmodel.configurationMasterHelper.IS_GST)
+                                            calculateTaxOnTax(productBo, taxBO, false);
                                     }
                                 } else {
-                                    excludeProductTax(productBo, taxBO, false);
+                                    if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                        taxRate += taxBO.getTaxRate();
+                                    }
+
+                                    if (bmodel.configurationMasterHelper.IS_GST)
+                                        calculateTaxOnTax(productBo, taxBO, false);
                                 }
                             }
-                            calculateTotalTaxForProduct(productBo);
+                            //  calculateTotalTaxForProduct(productBo);
+                            calculateProductExcludeTax(productBo, taxRate);
+
                         }
                     }
                 }
@@ -5653,9 +5680,15 @@ public class ProductHelper {
 
 
     private HashMap<String, TaxBO> mTaxBoByBatchProduct = null;
+    private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct = null;//used for batch wise product's
+    ArrayList<TaxBO> taxBOArrayList = null;
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct() {
+        return mTaxBoBatchProduct;
+    }
 
     // Excluding tax value from product total value and setting it in taxlist(mTaxListByProductId) against to product id
-    public void excludeProductTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
+    public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
 
         double productPriceWithoutTax = 0.0;
         double taxAmount = 0.0;
@@ -5670,19 +5703,30 @@ public class ProductHelper {
                         .getBatchlistByProductID().get(productMasterBO.getProductID());
                 if (batchList != null) {
                     mTaxBoByBatchProduct = new HashMap<>();
+                    TaxBO batchTaxBO = null;
                     for (ProductMasterBO batchProductBO : batchList) {
                         if (batchProductBO.getOrderedPcsQty() > 0
                                 || batchProductBO.getOrderedCaseQty() > 0
                                 || batchProductBO.getOrderedOuterQty() > 0) {
                             // calculating tax value batchwise
 
-                            TaxBO batchTaxBO = cloneTaxBo(taxBO);
+                            batchTaxBO = cloneTaxBo(taxBO);
 
                             productPriceWithoutTax = batchProductBO.getDiscount_order_value() / (1 + (batchTaxBO.getTaxRate() / 100));
                             taxAmount = productPriceWithoutTax * batchTaxBO.getTaxRate() / 100;
 
                             batchTaxBO.setTotalTaxAmount(taxAmount);
                             batchTaxBO.setTaxableAmount(productPriceWithoutTax);
+                            if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) == null)
+                                taxBOArrayList.add(batchTaxBO);
+
+                            if (mTaxBoBatchProduct == null)
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+                            else if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) != null)
+                                mTaxBoBatchProduct.get(batchProductBO.getProductID()).add(batchTaxBO);
+                            else
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+
                             mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchTaxBO);
 
 
@@ -5690,7 +5734,8 @@ public class ProductHelper {
                     }
 
                     HashMap<String, TaxBO> tempList = new HashMap<>();
-                    tempList.put(taxBO.getTaxType(), taxBO);
+                    if (batchTaxBO != null)
+                        tempList.put(taxBO.getTaxType(), batchTaxBO);
                     excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
 
                 }
@@ -8748,6 +8793,50 @@ public class ProductHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+    }
+
+
+    public void updateOutletOrderedProducts(String rId) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid from OrderHeaderRequest OHR " +
+                    "INNER JOIN OrderDetailRequest ODR ON OHR.OrderID=ODR.OrderID " +
+                    "where OHR.RetailerID=" + QT(rId) + " AND OHR.upload='N'";
+            Cursor c = db.selectSQL(query);
+            String pdi;
+            int qty;
+            int uomid;
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        pdi = c.getString(0);
+                        uomid = c.getInt(2);
+                        qty = c.getInt(1);
+
+                        if (bmodel.productHelper.getProductMasterBOById(pdi).getPcUomid() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedPcsQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedCaseQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedOuterQty(qty);
+
+                        //update ordered product details in edit mode
+                        bmodel.newOutletHelper.getOrderedProductList()
+                                .add(bmodel.productHelper.getProductMasterBOById(pdi));
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+        }
+
 
     }
 

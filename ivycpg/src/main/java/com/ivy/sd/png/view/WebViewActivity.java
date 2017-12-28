@@ -20,6 +20,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 
 import java.util.Locale;
 
@@ -151,7 +152,16 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
                     Toast.makeText(WebViewActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(WebViewActivity.this, R.string.token_error, Toast.LENGTH_LONG).show();
+                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(WebViewActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(WebViewActivity.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(WebViewActivity.this, R.string.token_error, Toast.LENGTH_LONG).show();
+                }
             }
 
         }

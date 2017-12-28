@@ -439,6 +439,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             }
         }
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(tvStoreLbl.getTag()) != null)
+                tvStoreLbl.setText(bmodel.labelsMasterHelper
+                        .applyLabels(tvStoreLbl.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         TextView spinnerLabel = (TextView) view.findViewById(R.id.spinnerLabel);
         spinnerLabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -1408,6 +1416,23 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     isFirstDone = true;
                 } else if (!isSecondDone) {
                     holder.tv_achvTgt2.setText(Utils.formatAsTwoDecimal(value));
+                    holder.tv_actualTgt2.setVisibility(View.GONE);
+                    holder.tv_labelTgt2.setText(desc);
+                    isSecondDone = true;
+                }
+            }
+
+            if (mRetTgtAchv.containsKey("VST20")) {
+                BeatMasterBO beatBo = bmodel.beatMasterHealper.getBeatMasterBOByID(holder.retailerObjectHolder.getBeatID());
+                String desc = mRetTgtAchv.get("VST20");
+                String value = beatBo.getBeatDescription();
+                if (!isFirstDone) {
+                    holder.tv_achvTgt1.setText(value);
+                    holder.tv_actualTgt1.setVisibility(View.GONE);
+                    holder.tv_labelTgt1.setText(desc);
+                    isFirstDone = true;
+                } else if (!isSecondDone) {
+                    holder.tv_achvTgt2.setText(value);
                     holder.tv_actualTgt2.setVisibility(View.GONE);
                     holder.tv_labelTgt2.setText(desc);
                     isSecondDone = true;

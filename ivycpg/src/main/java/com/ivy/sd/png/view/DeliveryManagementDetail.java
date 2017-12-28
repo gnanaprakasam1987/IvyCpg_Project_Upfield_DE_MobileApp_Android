@@ -1,18 +1,17 @@
 package com.ivy.sd.png.view;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -24,6 +23,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -44,6 +44,7 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
@@ -206,12 +207,12 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     Toast.makeText(DeliveryManagementDetail.this, getResources().getString(R.string.stock_not_available), Toast.LENGTH_SHORT).show();
                 } else {
                     android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                    CustomFragment dialogFragment = new CustomFragment();
-                    Bundle bundle = new Bundle();
+                    CustomFragment dialogFragment = new CustomFragment(this);
+                    /*Bundle bundle = new Bundle();
                     bundle.putString("title", "Delivery Management Dialog");
                     bundle.putString("textviewTitle", getResources().getString(R.string.do_u_want_to_save_delivery_management));
-                    dialogFragment.setArguments(bundle);
-                    dialogFragment.show(fm, "Sample Fragment");
+                    dialogFragment.setArguments(bundle);*/
+                    dialogFragment.show();
                 }
 
             } else {
@@ -471,7 +472,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             holder.outerET.setText(holder.productBO.getInit_OuterQty() + "");
             holder.deliveryCB.setChecked(holder.productBO.isCheked());
 
-            holder.sih.setText(bmodel.productHelper.getProductMasterBOById(holder.productBO.getProductID()).getSIH() + "");
+            holder.sih.setText(holder.productBO.getSIH() + "");//bmodel.productHelper.getProductMasterBOById(holder.productBO.getProductID()).getSIH() + "");
             if (holder.productBO.isCheked()) {
 
                 holder.pieceET.setEnabled(false);
@@ -552,9 +553,10 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             if (invoiceList.size() == 1) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-
-                Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
-                startActivity(i);
+                if (getIntent().getStringExtra("From") == null) {
+                    Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
+                    startActivity(i);
+                }
                 finish();
             } else {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -562,6 +564,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                 Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                 i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                if (getIntent().getStringExtra("From") != null) {
+                    i.putExtra("From", getIntent().getStringExtra("From"));
+                }
                 startActivity(i);
                 finish();
             }
@@ -574,12 +579,12 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     return false;
                 } else {
                     android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                    CustomFragment dialogFragment = new CustomFragment();
-                    Bundle bundle = new Bundle();
+                    CustomFragment dialogFragment = new CustomFragment(this);
+                    /*Bundle bundle = new Bundle();
                     bundle.putString("title", "Delivery Management Dialog");
                     bundle.putString("textviewTitle", getResources().getString(R.string.do_u_want_to_save_delivery_management));
-                    dialogFragment.setArguments(bundle);
-                    dialogFragment.show(fm, "Sample Fragment");
+                    dialogFragment.setArguments(bundle);*/
+                    dialogFragment.show();
                 }
 
             } else {
@@ -587,18 +592,46 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             }
         } else if (i1 == R.id.menu_signature) {
             if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, signName)) {
-                DialogFragment dialog = new signatureExistingAlert();
-                Bundle args = new Bundle();
-                args.putString("title", getResources().getString(
-                        R.string.word_photocaptured_delete_retake));
-                dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), "sign");
+                final CommonDialog commonDialog = new CommonDialog(getApplicationContext(),
+                        this,
+                        "",
+                        getResources().getString(
+                                R.string.sign_captured_already),
+                        false,
+                        getResources().getString(R.string.yes),
+                        getResources().getString(R.string.no),
+                        false,
+                        new CommonDialog.positiveOnClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                        signName);
+                                Intent i = new Intent(DeliveryManagementDetail.this,
+                                        CaptureSignatureActivity.class);
+                                i.putExtra("fromModule", "DELIVERY");
+                                if (getIntent().getStringExtra("From") != null) {
+                                    i.putExtra("From", getIntent().getStringExtra("From"));
+                                }
+                                startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
+
+                            }
+                        }, new CommonDialog.negativeOnClickListener() {
+                    @Override
+                    public void onNegativeButtonClick() {
+
+                    }
+                });
+                commonDialog.show();
+                commonDialog.setCancelable(false);
 
             } else {
 
                 Intent i = new Intent(DeliveryManagementDetail.this,
                         CaptureSignatureActivity.class);
                 i.putExtra("fromModule", "DELIVERY");
+                if (getIntent().getStringExtra("From") != null) {
+                    i.putExtra("From", getIntent().getStringExtra("From"));
+                }
                 startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
                 bmodel.configurationMasterHelper.setSignatureTitle("Signature");
             }
@@ -751,7 +784,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
         @Override
         protected Void doInBackground(Void... params) {
-            bmodel.deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath);
+            bmodel.deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath, contactName, contactNo);
             bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT");
 
             return null;
@@ -788,17 +821,25 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);
+                    if (getIntent().getStringExtra("From") != null) {
+                        i.putExtra("From", getIntent().getStringExtra("From"));
+                    }
                     startActivity(i);
                     finish();
 
                 } else {
                     if (bmodel.deliveryManagementHelper.getInvoiceList().size() <= 1) {
-                        Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
-                        startActivity(i);
+                        if (getIntent().getStringExtra("From") == null) {
+                            Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
+                            startActivity(i);
+                        }
                         finish();
                     } else {
                         Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                         i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                        if (getIntent().getStringExtra("From") != null) {
+                            i.putExtra("From", getIntent().getStringExtra("From"));
+                        }
                         startActivity(i);
                         finish();
                     }
@@ -807,8 +848,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         }
     }
 
-    @SuppressLint("ValidFragment")
-    public class CustomFragment extends DialogFragment {
+    public class CustomFragment extends Dialog {
         private String mTitle = "";
         private String mTextviewTitle = "";
 
@@ -816,34 +856,50 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         private TextView mTitleTV;
         private Button mOkBtn, mDismisBtn;
         private ListView mCountLV;
-
+        View rootView;
 
         private String[] mPrintCountArray;
+        private Context context;
+
+        public CustomFragment(@NonNull Context context) {
+            super(context);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            this.context = context;
+            rootView = LayoutInflater.from(context).inflate(R.layout.custom_dialog_fragment, null);
+            setContentView(rootView);
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                setTheme(bmodel.configurationMasterHelper.getMVPTheme());
+            } else {
+                setTheme(bmodel.configurationMasterHelper.MVPTheme);
+            }
+            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
+                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
+            } else {
+                setFontStyle(bmodel.configurationMasterHelper.fontSize);
+            }
+        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mTitle = getArguments().getString("title");
-            mTextviewTitle = getArguments().getString("textviewTitle");
+            mTitle = "Delivery Management Dialog";
+            mTextviewTitle = getResources().getString(R.string.do_u_want_to_save_delivery_management);
 
 
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.custom_dialog_fragment, container, false);
-
-            return rootView;
         }
 
         @Override
         public void onStart() {
             super.onStart();
-            getDialog().setTitle(mTitle);
-            mTitleTV = (TextView) getView().findViewById(R.id.title);
-            mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
-            mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
-            mCountLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
+            setTitle(mTitle);
+            mTitleTV = (TextView) rootView.findViewById(R.id.title);
+            if (mTitleTV != null) {
+                mTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            }
+            mOkBtn = (Button) rootView.findViewById(R.id.btn_ok);
+            mDismisBtn = (Button) rootView.findViewById(R.id.btn_dismiss);
+            mCountLV = (ListView) rootView.findViewById(R.id.lv_colletion_print);
             mCountLV.setVisibility(View.GONE);
             mTitleTV.setText(mTextviewTitle);
             mPrintCountArray = bmodel.printHelper.getPrintCountArray();
@@ -857,11 +913,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     mSelectedPrintCount = position;
-                    builder10 = new AlertDialog.Builder(getActivity());
+                    builder10 = new AlertDialog.Builder(context);
                     customProgressDialog(builder10, "Printing....");
                     alertDialog = builder10.create();
                     alertDialog.show();
-                    getDialog().dismiss();
+                    dismiss();
                 }
             });
 
@@ -890,13 +946,17 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         ArrayList<InvoiceHeaderBO> invoiceList = bmodel.deliveryManagementHelper.getInvoiceList();
                         if (invoiceList.size() == 1) {
 
-
-                            Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
-                            startActivity(i);
+                            if (getIntent().getStringExtra("From") == null) {
+                                Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
+                                startActivity(i);
+                            }
                             finish();
                         } else {
                             Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                             i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                            if (getIntent().getStringExtra("From") != null) {
+                                i.putExtra("From", getIntent().getStringExtra("From"));
+                            }
                             startActivity(i);
                             finish();
                         }
@@ -911,44 +971,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
     }
 
 
-    @SuppressLint("ValidFragment")
-    public class signatureExistingAlert extends DialogFragment {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            //   return super.onCreateDialog(savedInstanceState);
-
-            Bundle args = getArguments();
-            String title = args.getString("title");
-            //  String message = args.getString("message");
-
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(title)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            bmodel.deleteFiles(HomeScreenFragment.photoPath,
-                                    signName);
-                            Intent i = new Intent(DeliveryManagementDetail.this,
-                                    CaptureSignatureActivity.class);
-                            i.putExtra("fromModule", "DELIVERY");
-                            startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .create();
-        }
-    }
-
     private static final int REQUEST_SIGNAATURE_CAPTURE = 100;
     String signName = "";
     String signPath = "";
+    String contactName = "";
+    String contactNo = "";
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Commons.print(TAG + ",onActivityResult " + resultCode);
@@ -957,6 +984,10 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 if (resultCode == Activity.RESULT_OK) {
                     signName = data.getStringExtra("IMAGE_NAME");
                     signPath = data.getStringExtra("SERVER_PATH");
+                    if (data.getStringExtra("CONTACTNAME") != null) {
+                        contactName = data.getStringExtra("CONTACTNAME");
+                        contactNo = data.getStringExtra("CONTACTNO");
+                    }
                 }
                 break;
 
@@ -1089,17 +1120,25 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("isHomeBtnEnable", true);
+                if (getIntent().getStringExtra("From") != null) {
+                    i.putExtra("From", getIntent().getStringExtra("From"));
+                }
                 startActivity(i);
                 finish();
 
             } else {
                 if (bmodel.deliveryManagementHelper.getInvoiceList().size() <= 1) {
-                    Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
-                    startActivity(i);
+                    if (getIntent().getStringExtra("From") == null) {
+                        Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
+                        startActivity(i);
+                    }
                     finish();
                 } else {
                     Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                     i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
+                    if (getIntent().getStringExtra("From") != null) {
+                        i.putExtra("From", getIntent().getStringExtra("From"));
+                    }
                     startActivity(i);
                     finish();
                 }

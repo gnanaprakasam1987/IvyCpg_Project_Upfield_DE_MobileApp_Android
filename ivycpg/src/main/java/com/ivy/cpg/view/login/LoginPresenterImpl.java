@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
@@ -293,19 +294,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
+        loginHelper.loadPasswordConfiguration();
+        businessModel.userMasterHelper.downloadDistributionDetails();
+        if (loginHelper.IS_PASSWORD_ENCRYPTED)
+            businessModel.synchronizationHelper.setEncryptType();
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
             if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
-                businessModel.userMasterHelper.downloadDistributionDetails();
-                if (loginHelper.IS_PASSWORD_ENCRYPTED)
-                    businessModel.synchronizationHelper.setEncryptType();
                 loginView.goToHomeScreen();
             } else {
                 loginView.goToAttendance();
             }
         } else {
-            businessModel.userMasterHelper.downloadDistributionDetails();
-            if (loginHelper.IS_PASSWORD_ENCRYPTED)
-                businessModel.synchronizationHelper.setEncryptType();
             loginView.goToHomeScreen();
         }
     }
@@ -507,18 +506,27 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (!result) {
-                if (loginHelper.isPasswordReset()) {
-                    loginView.dismissAlertDialog();
-                    loginView.resetPassword();
-                } else {
-                    businessModel.synchronizationHelper.deleteUrlDownloadMaster();
-                    new UrlDownloadData().execute();
-                }
+            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!result) {
+                    if (loginHelper.isPasswordReset()) {
+                        loginView.dismissAlertDialog();
+                        loginView.resetPassword();
+                    } else {
+                        businessModel.synchronizationHelper.deleteUrlDownloadMaster();
+                        new UrlDownloadData().execute();
+                    }
 
+                } else {
+                    loginView.dismissAlertDialog();
+                    loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+                }
             } else {
-                loginView.dismissAlertDialog();
-                loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+                String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
             }
 
         }

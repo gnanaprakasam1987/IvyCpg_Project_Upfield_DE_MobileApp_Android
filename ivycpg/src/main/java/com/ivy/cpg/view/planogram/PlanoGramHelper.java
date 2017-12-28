@@ -118,24 +118,18 @@ public class PlanoGramHelper {
             }
             String str = "";
             int level = mBModel.productHelper.getRetailerlevel("MENU_PLANOGRAM");
-            if (level == 1)
-                str = " and MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid();
-            else if (level == 2)
-                str = " and MP.RetailerId=" + retailerId;
-            else if (level == 3)
-                str = " and MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid();
-
-            if (level == 6)
-                str = " and MP.LocId=" + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId()) + " and MP.ChId=" + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid());
-            else if (level == 4)
-                str = " and MP.LocId=" + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId());
-            else if (level == 5)
-                str = " and MP.ChId=" + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid());
-
             if (level == -1) {
                 Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
                 return;
+            } else {
+                str = " and MP.AccId in (0," + mBModel.getRetailerMasterBO().getAccountid()
+                        + ") and MP.RetailerId in (0," + retailerId
+                        + ") and MP.ClassId in (0," + mBModel.getRetailerMasterBO().getClassid()
+                        + ") and MP.LocId in (0," + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId())
+                        + ") and MP.ChId in (0," + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid()) + ")";
+
             }
+
             // Two Level Filter
             if (mParentLevel != 0 && mChildLevel != 0) {
 
@@ -259,58 +253,8 @@ public class PlanoGramHelper {
      */
     public void downloadMaster(String mMenuName) {
         try {
-            int level;
-            level = mBModel.productHelper.getRetailerlevel(mMenuName);
-            if (mMenuName.equals("MENU_PLANOGRAM")) {
-                switch (level) {
-                    case 1:
-                        downloadPlanoGram("MENU_PLANOGRAM", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        downloadPlanoGram("MENU_PLANOGRAM", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        downloadPlanoGram("MENU_PLANOGRAM", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, mBModel.productHelper.locid, 0);
-                        break;
-                    case 5:
-                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, 0, mBModel.productHelper.chid);
-                        break;
-                    case 6:
-                        downloadPlanoGram("MENU_PLANOGRAM", false, false, false, mBModel.productHelper.locid, mBModel.productHelper.chid);
-                        break;
-                    case -1:
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            } else if (mMenuName.equals("MENU_PLANOGRAM_CS")) {
-                switch (level) {
-                    case 1:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", true, false, false, 0, 0);
-                        break;
-                    case 2:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, true, false, 0, 0);
-                        break;
-                    case 3:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, true, 0, 0);
-                        break;
-                    case 4:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, mBModel.productHelper.locid, 0);
-                        break;
-                    case 5:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, 0, mBModel.productHelper.chid);
-                        break;
-                    case 6:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, mBModel.productHelper.locid, mBModel.productHelper.chid);
-                        break;
-
-                    default:
-                        downloadPlanoGram("MENU_PLANOGRAM_CS", false, false, false, 0, 0);
-                        break;
-                }
-            }
+            mBModel.productHelper.getRetailerlevel(mMenuName);
+            downloadPlanoGram(mMenuName);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -319,14 +263,9 @@ public class PlanoGramHelper {
     /**
      * Download PlanoGram
      *
-     * @param moduleName  Module Name
-     * @param isAccount   Is Account Wise
-     * @param isRetailer  Is Retailer Wise
-     * @param isClass     Is Class wise
-     * @param mLocationId Location Id
-     * @param mChannelId  Channel Id
+     * @param moduleName Module Name
      */
-    public void downloadPlanoGram(String moduleName, boolean isAccount, boolean isRetailer, boolean isClass, int mLocationId, int mChannelId) {
+    public void downloadPlanoGram(String moduleName) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PlanoGramBO planogram;
@@ -339,36 +278,13 @@ public class PlanoGramHelper {
             else
                 retailerID = mBModel.getRetailerMasterBO().getRetailerID();
 
-            if (isAccount) {
-                if (query1.isEmpty())
-                    query1 = " MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid() + " and";
-                else
-                    query1 = query1 + " MP.AccId=" + mBModel.getRetailerMasterBO().getAccountid() + " and";
-            }
-            if (isRetailer) {
-                if (query1.isEmpty())
-                    query1 = " MP.RetailerId=" + retailerID + " and";
-                else
-                    query1 = query1 + " MP.RetailerId=" + retailerID + " and";
-            }
-            if (isClass) {
-                if (query1.isEmpty())
-                    query1 = " MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid() + " and";
-                else
-                    query1 = query1 + " MP.ClassId=" + mBModel.getRetailerMasterBO().getClassid() + " and";
-            }
-            if (mLocationId > 0) {
-                if (query1.isEmpty())
-                    query1 = " MP.LocId=" + mBModel.productHelper.getMappingLocationId(mLocationId, mBModel.getRetailerMasterBO().getLocationId()) + " and";
-                else
-                    query1 = query1 + " MP.LocId=" + mBModel.productHelper.getMappingLocationId(mLocationId, mBModel.getRetailerMasterBO().getLocationId()) + " and";
-            }
-            if (mChannelId > 0) {
-                if (query1.isEmpty())
-                    query1 = " MP.ChId=" + mBModel.productHelper.getMappingChannelId(mChannelId, mBModel.getRetailerMasterBO().getSubchannelid()) + " and";
-                else
-                    query1 = query1 + " MP.ChId=" + mBModel.productHelper.getMappingChannelId(mChannelId, mBModel.getRetailerMasterBO().getSubchannelid()) + " and";
-            }
+            query1 = " MP.AccId in (0 ," + mBModel.getRetailerMasterBO().getAccountid() + ") and"
+                    + " MP.RetailerId in (0 ," + retailerID + ") and"
+                    + " MP.ClassId in (0 ," + mBModel.getRetailerMasterBO().getClassid() + ") and"
+                    + " MP.LocId in (0 ," + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId()) + ") and"
+                    + " MP.ChId in (0 ," + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid()) + ")";
+
+
             if ("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)) {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName"
                         + " FROM PlanogramMapping MP"
@@ -376,7 +292,7 @@ public class PlanoGramHelper {
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
                         + " LEFT JOIN StandardListMaster STM  on STM.Listid = MP.StoreLocId"
                         + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
-                        + " WHERE" + query1
+                        + " WHERE" + query1 + " AND "
                         + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
@@ -391,6 +307,8 @@ public class PlanoGramHelper {
                         + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             }
+
+            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
 
             Cursor c = db.selectSQL(query);
 
@@ -569,13 +487,15 @@ public class PlanoGramHelper {
         }
     }
 
-    /**Set planoGram details in object
+    /**
+     * Set planoGram details in object
+     *
      * @param planogramPId pid
      * @param imageName    imageName
      * @param adherence    adherence
      * @param reasonID     reasonID
      * @param locationID   location id
-     * @param isAudit        audit
+     * @param isAudit      audit
      */
     private void setPlanoGramDetails(int planogramPId, String imageName,
                                      String adherence, String reasonID, int locationID, int isAudit) {
@@ -600,11 +520,12 @@ public class PlanoGramHelper {
 
     /**
      * Set counter planoGram objects
-     * @param imageId Image Id
+     *
+     * @param imageId   Image Id
      * @param imageName Image Name
      * @param adherence Adherence
-     * @param reasonID Reason Id
-     * @param isAudit Audit
+     * @param reasonID  Reason Id
+     * @param isAudit   Audit
      * @param counterId counter Id
      */
     private void setCounterPlanoGramDetails(int imageId, String imageName,
@@ -677,8 +598,9 @@ public class PlanoGramHelper {
 
     /**
      * Set adherence to object by image Id
+     *
      * @param adherence Adherence
-     * @param imageId Image Id
+     * @param imageId   Image Id
      */
     public void setCSImageAdherence(String adherence, int imageId) {
         CounterPlanoGramBO planogrambo;
@@ -908,8 +830,7 @@ public class PlanoGramHelper {
     }
 
 
-    private String QT(String data)
-    {
+    private String QT(String data) {
         return "'" + data + "'";
     }
 
@@ -948,6 +869,7 @@ public class PlanoGramHelper {
 
     /**
      * Delete image from transaction table
+     *
      * @param imgName Image name
      */
     public void deleteImageName(String imgName) {
@@ -985,7 +907,7 @@ public class PlanoGramHelper {
                 case "MENU_PLANOGRAM":
                     sql1 += " inner join PlanogramMapping MP on MP.StoreLocId=SL.ListId"
                             + " inner join PlanogramMaster P on P.HId=MP.HId"
-                            + " where " + query1
+                            + " where " + query1 + " AND "
                             + " SL.Listtype='PL'"
                             + " ORDER BY SL.ListId";
                     break;

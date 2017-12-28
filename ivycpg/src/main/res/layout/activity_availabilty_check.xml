@@ -69,7 +69,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
 
                             <LinearLayout
@@ -96,7 +97,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_weight="1"
-                                    android:gravity="center" />
+                                    android:gravity="center"
+
+                                    />
 
                             </LinearLayout>
 
@@ -127,40 +130,35 @@
                                     android:gravity="center" />
                             </LinearLayout>
 
-
-                            <RadioGroup
-                                android:id="@+id/rg_available"
+                            <LinearLayout
+                                android:id="@+id/ll_availability"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_gravity="center_vertical"
-                                android:orientation="horizontal">
+                                android:layout_marginLeft="@dimen/right_margin"
+                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginTop="@dimen/target_top_margin"
+                                android:orientation="vertical">
 
-                                <RadioButton
-                                    android:id="@+id/availyes"
+                                <TextView
+                                    android:id="@+id/tv_availability"
                                     style="?attr/customListItemSecondary"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/radio_margin"
-                                    android:layout_marginRight="@dimen/radio_margin"
-                                    android:button="@drawable/ic_tick_disable"
-                                    android:paddingLeft="@dimen/plano_rb_padding"
-                                    android:text="@string/yes"
-                                    android:textSize="@dimen/text_sz_medium" />
+                                    android:tag="item_exp_facing"
+                                    android:text="@string/avail"
+                                    android:textSize="@dimen/card_margin" />
 
-                                <RadioButton
-                                    android:id="@+id/availno"
-                                    style="?attr/customListItemSecondary"
+                                <android.support.v7.widget.AppCompatCheckBox
+                                    android:id="@+id/chk_availability"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@id/availyes"
-                                    android:button="@drawable/ic_cross_disable"
-                                    android:paddingLeft="@dimen/plano_rb_padding"
-                                    android:paddingRight="@dimen/plano_rb_padding"
-                                    android:text="@string/no"
-                                    android:textSize="@dimen/text_sz_medium" />
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
 
-                            </RadioGroup>
+                                    />
+
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:id="@+id/ll_reason"

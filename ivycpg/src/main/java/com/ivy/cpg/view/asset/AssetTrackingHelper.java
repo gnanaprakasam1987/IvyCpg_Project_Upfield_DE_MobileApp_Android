@@ -24,7 +24,7 @@ import java.util.Vector;
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
 
-    private static AssetTrackingHelper instance=null;
+    private static AssetTrackingHelper instance = null;
     private final Context context;
     private final BusinessModel mBusinessModel;
     private AssetTrackingBO mAssetTrackingBO;
@@ -118,10 +118,10 @@ public class AssetTrackingHelper {
     }
 
     public static AssetTrackingHelper getInstance(Context context) {
-        if(instance==null)
-            instance=new AssetTrackingHelper(context);
+        if (instance == null)
+            instance = new AssetTrackingHelper(context);
 
-         return instance;
+        return instance;
     }
 
     /*
@@ -403,7 +403,7 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
 
-            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and ListType='POSM_GROUP_TYPE' ");
@@ -411,42 +411,21 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
-            if (level == 1) {
-                // account mapping
-                sb.append(" and AccountId =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getAccountid());
-            } else if (level == 2) {
-                // retailer mapping
-                sb.append(" and Retailerid=");
-                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
-            } else if (level == 3) {
-                // Class mapping
-                sb.append(" and Classid = ");
-                sb.append(mBusinessModel.getRetailerMasterBO().getClassid());
-            } else if (level == 4) {
-                // Location mapping
-                sb.append(" and Locid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(")");
-            } else if (level == 5) {
-                // Channel Mapping
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            } else if (level == 6) {
+            sb.append(" and AccountId in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" and Retailerid in(0,");
+            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" and Classid in (0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+            sb.append(" and Locid in(0,");
+            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+            sb.append(")");
+            sb.append(" and (Channelid in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" OR Channelid in (0,");
+            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
-                // Location Mapping and Channel Mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
-                sb.append(")");
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            }
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                 sb.append(" and (SBD.Productid = ");
@@ -931,7 +910,7 @@ public class AssetTrackingHelper {
                     typeListId = c0.getInt(0);
                 }
             }
-            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
 
 
             StringBuilder sb = new StringBuilder();
@@ -944,37 +923,20 @@ public class AssetTrackingHelper {
             sb.append(" and SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
-
-            if (level == 2) {
-                // retailer mapping
-                sb.append(" and Retailerid=");
-                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
-            } else if (level == 4) {
-                // Location mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(")");
-
-
-            } else if (level == 5) {
-                // Channel Mapping
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-
-            } else if (level == 6) {
-
-                // Location Mapping and Channel Mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            }
+            sb.append(" and AccountId in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" and Retailerid in(0,");
+            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" and Classid in (0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+            sb.append(" and Locid in(0,");
+            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+            sb.append(")");
+            sb.append(" and (Channelid in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" OR Channelid in (0,");
+            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());
@@ -1531,11 +1493,11 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
 
-                                    sum = sum + productWeightAge;
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
 
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
@@ -1646,10 +1608,9 @@ public class AssetTrackingHelper {
                                 }
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
-
-                                    sum = sum + productWeightAge;
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());

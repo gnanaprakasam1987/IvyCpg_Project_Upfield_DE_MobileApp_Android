@@ -55,7 +55,8 @@ public class PromotionHelper {
         if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
-        loadData(mMenuCode);
+        businessModel.productHelper.getRetailerlevel(mMenuCode);
+        downloadPromotionMaster();
         loadPromoEntered();
     }
 
@@ -116,42 +117,6 @@ public class PromotionHelper {
     }
 
 
-    /* get promotion level from ConfigActivityFilter to load the data */
-    private void loadData(String mMenuCode) {
-        try {
-            switch (businessModel.productHelper.getRetailerlevel(mMenuCode)) {
-                case 1:
-                    downloadPromotionMaster(true, false, false, 0, 0);
-                    break;
-                case 2:
-                    downloadPromotionMaster(false, true, false, 0, 0);
-                    break;
-                case 3:
-                    downloadPromotionMaster(false, false, true, 0, 0);
-                    break;
-                case 4:
-                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, 0);
-                    break;
-                case 5:
-                    downloadPromotionMaster(false, false, false, 0, businessModel.productHelper.chid);
-                    break;
-                case 6:
-                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, businessModel.productHelper.chid);
-                    break;
-                case 7:
-                    downloadPromotionMaster(false, false, true, 0, businessModel.productHelper.chid);
-                    break;
-                case 8:
-                    downloadPromotionMaster(true, false, false, 0, businessModel.productHelper.chid);
-                    break;
-                case -1:
-                    break;
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     /**
      * Download Promotion Data based on the menu level from configActivityFilter
      * <p>
@@ -161,35 +126,19 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster(boolean isAccount, boolean isRetailer, boolean isClass, int locationId, int channelId) {
+    private void downloadPromotionMaster() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
-            String query = "";
-            if (isAccount && channelId > 0) {
-                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
+            String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
+                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))"
+                    + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
+                    + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
+                    + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))"
+                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
 
-            } else if (isAccount)
-                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
-            else if (isRetailer)
-                query = " where PM.retailerid=" + businessModel.getRetailerMasterBO().getRetailerID();
-
-            else if (isClass && channelId > 0) {
-                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (isClass)
-                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
-
-            else if (locationId > 0 && channelId > 0) {
-                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (locationId > 0)
-                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-            else if (channelId > 0)
-                query = " where  (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
 
             if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                 query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
@@ -316,8 +265,9 @@ public class PromotionHelper {
                                     "," + promotion.getHasAnnouncer();
 
                             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                sbDetails = sbDetails + "," + productWeightage;
-                                sum = sum + productWeightage;
+                                sbDetails = sbDetails + "," + ((promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0) ? productWeightage : "0");
+                                if (promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0)
+                                    sum = sum + productWeightage;
                             }
 
                             db.insertSQL("PromotionDetail", detailColumns,

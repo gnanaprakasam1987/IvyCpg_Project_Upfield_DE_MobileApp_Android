@@ -50,7 +50,7 @@ public class StockReportMasterHelper {
                     + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date from VanLoad A inner join productmaster B on A.pid=B.pid"
                     + " LEFT JOIN BatchMaster C on A.BatchId=C.batchid  AND C.Pid = B.pid"
                     + " left join Odameter o"
-                    + " where B.IsSalable=1  GROUP BY A.uid,A.pid,C.batchid ORDER BY B.rowid";
+                    + " where B.IsSalable=1 OR B.IsSalable=0 GROUP BY A.uid,A.pid,C.batchid ORDER BY B.rowid";
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
@@ -223,7 +223,7 @@ public class StockReportMasterHelper {
             if (batchIDList.size() == 0) {
                 for (StockReportMasterBO stockReport : mylist) {
                     if (uid.equals(stockReport.getUid())) {
-                        if (!isAlreadyStockAvailable(stockReport.getProductid() + "", stockReport.getBatchId() + "",db)) {
+                        if (!isAlreadyStockAvailable(stockReport.getProductid() + "", stockReport.getBatchId() + "", db)) {
                             String columns = "pid,qty,batchid";
                             String values = stockReport.getProductid() + ","
                                     + stockReport.getTotalQty() + ","
@@ -371,7 +371,7 @@ public class StockReportMasterHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count(distinct pid) from VanLoad" +
-                    " where uid ="+bmodel.QT(uid));
+                    " where uid =" + bmodel.QT(uid));
 
             if (c != null) {
                 if (c.moveToNext()) {

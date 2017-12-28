@@ -59,6 +59,7 @@ public class DigitalContentHelper {
      */
     private String getDigitalContentTaggingDetails() {
         String mappingId = "-1";
+        ArrayList<String> mappingIdList = new ArrayList<>();
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -66,29 +67,47 @@ public class DigitalContentHelper {
             Cursor c1 = db
                     .selectSQL("SELECT mappingtype  FROM DigitalContentMapping WHERE mappingtype != 'SELLER'");
 
-            if (c1 != null && c1.moveToNext()) {
-                if (c1.getString(0).equals("CHL_L1"))
-                    mappingId = ""
-                            + mBModel.getRetailerMasterBO().getChannelID();
-                else if (c1.getString(0).equals("CHL_L2"))
-                    mappingId = ""
-                            + mBModel.getRetailerMasterBO()
-                            .getSubchannelid();
-                else if (c1.getString(0).equals("RETAILER"))
-                    mappingId = mBModel.getRetailerMasterBO()
-                            .getRetailerID();
-                else if (c1.getString(0).equals("COUNTER"))
-                    mappingId = "" + mBModel.getCounterId();
-
+            if (c1 != null) {
+                mappingIdList = new ArrayList<>();
+                while (c1.moveToNext()) {
+                    if (c1.getString(0).equals("CHL_L1"))
+                        mappingIdList.add("" + mBModel.getRetailerMasterBO().getChannelID());
+                    else if (c1.getString(0).equals("CHL_L2"))
+                        mappingIdList.add("" + mBModel.getRetailerMasterBO().getSubchannelid());
+                    else if (c1.getString(0).equals("RETAILER"))
+                        mappingIdList.add("" + mBModel.getRetailerMasterBO().getRetailerID());
+                    else if (c1.getString(0).equals("COUNTER"))
+                        mappingIdList.add("" + mBModel.getCounterId());
+                    else if (c1.getString(0).equals("ACCOUNT"))
+                        mappingIdList.add("" + mBModel.getRetailerMasterBO().getAccountid());
+                }
                 c1.close();
             }
             db.closeDB();
+
+            if (mappingIdList.size() > 0)
+                mappingId = addCommaSeparator(mappingIdList);
+
             return mappingId;
         } catch (Exception e) {
             Commons.printException("" + e);
             return mappingId;
         }
     }
+
+
+    public String addCommaSeparator(ArrayList<String> array) {
+        String result = "";
+        if (array.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : array) {
+                sb.append(s).append(",");
+            }
+            result = sb.deleteCharAt(sb.length() - 1).toString();
+        }
+        return result;
+    }
+
 
     /**
      * Download Digital Content details for Seller and retailer wise
@@ -110,7 +129,7 @@ public class DigitalContentHelper {
             if ("SELLER".equals(value))
 
             {
-                sBuffer.append("SELECT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
+                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
                 sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON DC.Imageid = DCM.Imgid  ");
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
@@ -136,7 +155,7 @@ public class DigitalContentHelper {
                 }
 
             } else {
-                sBuffer.append("SELECT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),PM.psname,IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
+                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),PM.psname,IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
                 sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid ) ");
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");

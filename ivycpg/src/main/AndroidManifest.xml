@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1250"
-    android:versionName="124.0.728">
+    android:versionName="2.125.0.728">
 
 
     <supports-screens
@@ -132,6 +132,7 @@
         </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
+        <service android:name="com.ivy.sd.png.model.CatalogImageDownloadService" />
 
         <receiver
             android:name="com.ivy.sd.png.view.GcmBroadcastReceiver"
