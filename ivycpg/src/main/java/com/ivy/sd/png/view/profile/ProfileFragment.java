@@ -3,12 +3,10 @@ package com.ivy.sd.png.view.profile;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,9 +14,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -43,6 +40,7 @@ import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThreadNew;
@@ -59,16 +57,16 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.view.profile.ProfileActivity.retailerLat;
 import static com.ivy.sd.png.view.profile.ProfileActivity.retailerLng;
 
-/**
+/*
  * Created by nivetha.s on 09-12-2015.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends IvyBaseFragment {
 
     private View view;
-    private BusinessModel bmodel;
+    private static BusinessModel bmodel;
 
     private int locid = 0;
-    public int screenwidth = 0;
+    // --Commented out by Inspection (12/27/2017 3:31 PM):public int screenwidth = 0;
 
     private double mnth_actual = 0.0, Balance = 0.0;
     private double outStanding = 0.0, invoiceAmount = 0.0;
@@ -78,7 +76,6 @@ public class ProfileFragment extends Fragment {
     private String retailerCreditLimit = "0.0";
     private String physicalLocation = "", gstType = "", taxType = "";
 
-    private boolean fromHomeClick, non_visit;
     private boolean is_contact_title1 = false, is_contact_title2 = false;
     private boolean isGstType;
 
@@ -93,9 +90,7 @@ public class ProfileFragment extends Fragment {
     private ToggleButton btn_Deactivate;
     private TextView storeTxt, addressTxt, addressTxt3, cspTxt, rContTxt, rcodeTxt;
     private RecyclerView recyclerView;
-    public GridLayoutManager gridlaymanager;
-    private RelativeLayout contact_lay;
-    private ImageView callLinkBtn;
+    private LinearLayout contact_lay;
 
     private RetailerMasterBO retailerObj;
     private TransferUtility transferUtility;
@@ -105,30 +100,21 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         view = inflater.inflate(R.layout.fragment_profile, container,
                 false);
-
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
         if (!_hasLoadedOnce) {
             initializeViews();
         }
-
+        outletInfo();
+        LoadDataAsync async = new LoadDataAsync();
+        if(async.getStatus() == AsyncTask.Status.PENDING)
+            async.execute();
+        updateRetailerStatus();
         return view;
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
-    }
-
-    public void showDeActivateAlert(String msg, final boolean isData) {
+    private void showDeActivateAlert(String msg, final boolean isData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(msg);
         builder.setCancelable(false);
@@ -155,15 +141,16 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        DownloadAsync downloadAsync = new DownloadAsync();
+        if(downloadAsync.getStatus() == AsyncTask.Status.PENDING)
+            downloadAsync.execute();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
-    }
 
     private void initializeViews() {
         storeTxt = (TextView) view.findViewById(R.id.profile_str_name);
@@ -172,7 +159,7 @@ public class ProfileFragment extends Fragment {
         addressTxt3 = (TextView) view.findViewById(R.id.profile_add_three);
         cspTxt = (TextView) view.findViewById(R.id.profile_csp);
         rContTxt = (TextView) view.findViewById(R.id.profile_retailer_cno);
-        contact_lay = (RelativeLayout) view.findViewById(R.id.contact_lay);
+        contact_lay = (LinearLayout) view.findViewById(R.id.contact_lay);
         recyclerView = (RecyclerView) view.findViewById(R.id.profile_recyclerview);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
@@ -180,9 +167,9 @@ public class ProfileFragment extends Fragment {
             recyclerView.setFocusable(false);
         }
 
-        callLinkBtn = (ImageView) view.findViewById(R.id.call_btnimg);
-        fromHomeClick = getArguments().getBoolean("fromHomeClick");
-        non_visit = getArguments().getBoolean("non_visit");
+        ImageView callLinkBtn = (ImageView) view.findViewById(R.id.call_btnimg);
+        boolean fromHomeClick = getArguments().getBoolean("fromHomeClick");
+        boolean non_visit = getArguments().getBoolean("non_visit");
 
         storeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         rcodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -193,6 +180,7 @@ public class ProfileFragment extends Fragment {
 
         boolean is7InchTablet = this.getResources().getConfiguration()
                 .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+        GridLayoutManager gridlaymanager;
         if (is7InchTablet) {
             gridlaymanager = new GridLayoutManager(getActivity(), 3);
         } else {
@@ -200,18 +188,18 @@ public class ProfileFragment extends Fragment {
         }
 
         recyclerView.setLayoutManager(gridlaymanager);
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).size(1).color(Color.parseColor("#EEEEEE")).margin(22, 22).build());
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+       // recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).size(1).color(Color.parseColor("#EEEEEE")).margin(22, 22).build());
 
         if (fromHomeClick || non_visit) {
             callLinkBtn.setVisibility(View.GONE);
         } else {
-            if (retailerLat == 0.0 && retailerLng == 0.0) {
-            } else {
+            if (retailerLat != 0.0 && retailerLng != 0.0) {
                 callLinkBtn.setVisibility(View.VISIBLE);
             }
         }
 
-        /**
+        /*
          * get NearByRetailer based on distributed id
          */
         try {
@@ -233,8 +221,6 @@ public class ProfileFragment extends Fragment {
             Commons.print("Null Pointer Exception in Distributed ID" + e);
         }
 
-        bmodel.newOutletHelper.loadContactTitle();
-        bmodel.newOutletHelper.loadContactStatus();
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
@@ -242,17 +228,12 @@ public class ProfileFragment extends Fragment {
                 bmodel.locationUtil.startLocationListener();
             }
         }
+        retailerObj = bmodel.getRetailerMasterBO();
 
-        new DownloadAsync().execute();
-        outletInfo();
-        loadProfileDatas();
-        updateRetailerStatus();
 
         if (retailerObj.getContactnumber() != null && !retailerObj.getContactnumber().isEmpty()) {
             if (retailerObj.getContactnumber().contains("-")) {
                 phoneNoCall = retailerObj.getContactnumber().replace("-", "");
-//                phoneNoCall = retailerObj.getContactnumber().split("-")[0]
-//                        + retailerObj.getContactnumber().split("-")[1];
             } else {
                 phoneNoCall = retailerObj.getContactnumber();
             }
@@ -278,15 +259,11 @@ public class ProfileFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isFragmentVisible_) {
         super.setUserVisibleHint(isFragmentVisible_);
-
-
         if (this.isVisible()) {
             // we check that the fragment is becoming visible
             if (!isFragmentVisible_ && !_hasLoadedOnce) {
                 //run your async task here since the user has just focused on your fragment
-
                 _hasLoadedOnce = true;
-
             }
         }
     }
@@ -323,9 +300,9 @@ public class ProfileFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
-                                if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT) {
-                                    //edit.setVisibility(View.VISIBLE);
-                                }
+//                                if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT) {
+//                                    //edit.setVisibility(View.VISIBLE);
+//                                }
                                 btn_Deactivate.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.button_rounded_corner_orange, null));
                             }
                         });
@@ -343,32 +320,9 @@ public class ProfileFragment extends Fragment {
         }
 
     }
-
-   /* private void updateLocationMasterList() {
-        bmodel.newOutletHelper.downloadLocationMaster();
-
-        LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId = bmodel.newOutletHelper.getLocationListByLevId();
-        if (locationListByLevId != null) {
-            int count = 0;
-            for (Map.Entry<Integer, ArrayList<LocationBO>> entry : locationListByLevId.entrySet()) {
-                count++;
-                Commons.print("level id," + entry.getKey() + "");
-                if (entry.getValue() != null) {
-                    if (count == 1) {
-                        mLocationMasterList1 = entry.getValue();
-                    } else if (count == 2) {
-                        mLocationMasterList2 = entry.getValue();
-                    } else if (count == 3) {
-                        mLocationMasterList3 = entry.getValue();
-                    }
-                }
-            }
-        }
-    }*/
-
     private void outletInfo() {
 
-        retailerObj = bmodel.getRetailerMasterBO();
+
         //bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         profileConfig = new Vector<>();
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
@@ -379,90 +333,100 @@ public class ProfileFragment extends Fragment {
             int flag = profileConfig.get(i).isFlag();
             String configCode = profileConfig.get(i).getConfigCode();
 
-            if (configCode.equals("PROFILE01") && flag == 1) {
+            if(flag == 1) {
+                switch (configCode) {
+                    case "PROFILE01":
 
-                if (retailerObj.getRetailerCode() != null) {
-                    rcodeTxt.setVisibility(View.VISIBLE);
-                    rcodeTxt.setText(retailerObj
-                            .getRetailerCode());
-                } else {
-                    rcodeTxt.setVisibility(View.GONE);
-                }
+                        if (retailerObj.getRetailerCode() != null) {
+                            rcodeTxt.setVisibility(View.VISIBLE);
+                            rcodeTxt.setText(retailerObj
+                                    .getRetailerCode());
+                        } else {
+                            rcodeTxt.setVisibility(View.GONE);
+                        }
 
-            } else if (configCode.equals("PROFILE02") && flag == 1) {
-                if (retailerObj.getRetailerName() != null) {
-                    storeTxt.setVisibility(View.VISIBLE);
-                    storeTxt.setText(retailerObj
-                            .getRetailerName());
-                } else {
-                    storeTxt.setVisibility(View.GONE);
-                }
+                        break;
+                    case "PROFILE02":
+                        if (retailerObj.getRetailerName() != null) {
+                            storeTxt.setVisibility(View.VISIBLE);
+                            storeTxt.setText(retailerObj
+                                    .getRetailerName());
+                        } else {
+                            storeTxt.setVisibility(View.GONE);
+                        }
 
-            } else if (configCode.equals("PROFILE03") && flag == 1) {
-                if (retailerObj.getAddress1() != null) {
-                    addressTxt.setVisibility(View.VISIBLE);
-                    addressTxt.setText(retailerObj
-                            .getAddress1());
-                } else {
-                    addressTxt.setVisibility(View.GONE);
-                }
+                        break;
+                    case "PROFILE03":
+                        if (retailerObj.getAddress1() != null) {
+                            addressTxt.setVisibility(View.VISIBLE);
+                            addressTxt.setText(retailerObj
+                                    .getAddress1());
+                        } else {
+                            addressTxt.setVisibility(View.GONE);
+                        }
 
-            } else if (configCode.equals("PROFILE04") && flag == 1) {
-                if (retailerObj.getAddress2() != null) {
-                    addressTxt.setVisibility(View.VISIBLE);
-                    addressTxt.append(", " + retailerObj
-                            .getAddress2());
-                } else {
-                    addressTxt.setVisibility(View.GONE);
-                }
+                        break;
+                    case "PROFILE04":
+                        if (retailerObj.getAddress2() != null) {
+                            addressTxt.setVisibility(View.VISIBLE);
+                            addressTxt.append(", " + retailerObj
+                                    .getAddress2());
+                        } else {
+                            addressTxt.setVisibility(View.GONE);
+                        }
 
-            } else if (configCode.equals("PROFILE05") && flag == 1) {
-                if (retailerObj.getAddress3() != null) {
-                    addressTxt3.setVisibility(View.VISIBLE);
-                    addressTxt3.setText(retailerObj
-                            .getAddress3());
-                } else {
-                    addressTxt3.setVisibility(View.GONE);
-                }
+                        break;
+                    case "PROFILE05":
+                        if (retailerObj.getAddress3() != null) {
+                            addressTxt3.setVisibility(View.VISIBLE);
+                            addressTxt3.setText(retailerObj
+                                    .getAddress3());
+                        } else {
+                            addressTxt3.setVisibility(View.GONE);
+                        }
 
 
-            } else if (configCode.equals("PROFILE30") && flag == 1) {
-                if (retailerObj.getContactnumber() != null) {
-                    rContTxt.setVisibility(View.VISIBLE);
-                    contact_lay.setVisibility(View.VISIBLE);
-                    rContTxt.setText(retailerObj.getContactnumber());
-                } else {
-                    rContTxt.setVisibility(View.GONE);
-                    contact_lay.setVisibility(View.GONE);
-                }
+                        break;
+                    case "PROFILE30":
+                        if (retailerObj.getContactnumber() != null) {
+                            rContTxt.setVisibility(View.VISIBLE);
+                            contact_lay.setVisibility(View.VISIBLE);
+                            rContTxt.setText(retailerObj.getContactnumber());
+                        } else {
+                            rContTxt.setVisibility(View.GONE);
+                            contact_lay.setVisibility(View.GONE);
+                        }
 
-            } else if (configCode.equals("PROFILE60") && flag == 1) {
+                        break;
+                    case "PROFILE60":
 
-                if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
-                    String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-                    String path = imgPaths[imgPaths.length - 1];
-                    File imgFile = new File(getActivity().getExternalFilesDir(
-                            Environment.DIRECTORY_DOWNLOADS)
-                            + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid()
-                            + DataMembers.DIGITAL_CONTENT
-                            + "/"
-                            + DataMembers.PROFILE + "/"
-                            + path);
-                    if (imgFile.exists()) {
-                        bmodel.getimageDownloadURL();
-                        bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                        initializeTransferUtility();
-                        HashMap<String, String> hashMap = new HashMap<>();
-                        hashMap.put(DataMembers.img_Down_URL + "" + retailerObj.getProfileImagePath(),
-                                DataMembers.PROFILE);
-                        Thread downloaderThread = new DownloaderThreadNew(getActivity(),
-                                activityHandler, hashMap,
-                                bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid(), transferUtility);
-                        downloaderThread.start();
-                    }
+                        if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
+                            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+                            String path = imgPaths[imgPaths.length - 1];
+                            File imgFile = new File(getActivity().getExternalFilesDir(
+                                    Environment.DIRECTORY_DOWNLOADS)
+                                    + "/"
+                                    + bmodel.userMasterHelper.getUserMasterBO()
+                                    .getUserid()
+                                    + DataMembers.DIGITAL_CONTENT
+                                    + "/"
+                                    + DataMembers.PROFILE + "/"
+                                    + path);
+                            if (imgFile.exists()) {
+                                bmodel.getimageDownloadURL();
+                                bmodel.configurationMasterHelper.setAmazonS3Credentials();
+                                initializeTransferUtility();
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put(DataMembers.img_Down_URL + "" + retailerObj.getProfileImagePath(),
+                                        DataMembers.PROFILE);
+                                Thread downloaderThread = new DownloaderThreadNew(getActivity(),
+                                        activityHandler, hashMap,
+                                        bmodel.userMasterHelper.getUserMasterBO()
+                                                .getUserid(), transferUtility);
+                                downloaderThread.start();
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -474,7 +438,7 @@ public class ProfileFragment extends Fragment {
      */
     public class RecyclerViewAdapter extends RecyclerView.Adapter<ProfileFragment.RecyclerViewAdapter.ViewHolder> {
 
-        private ArrayList<NewOutletBO> items;
+        private final ArrayList<NewOutletBO> items;
 
         public RecyclerViewAdapter(ArrayList<NewOutletBO> items) {
             this.items = items;
@@ -490,8 +454,6 @@ public class ProfileFragment extends Fragment {
         @Override
         public void onBindViewHolder(ProfileFragment.RecyclerViewAdapter.ViewHolder holder, int position) {
             holder.projectObj = items.get(position);
-//            Log.e("name==",projectObj.getmName());
-//            Log.e("value==",projectObj.getValueText());
             holder.menuText.setText(holder.projectObj.getmName());
             holder.valueText.setText(holder.projectObj.getValueText());
             holder.itemView.setTag(holder.projectObj);
@@ -509,8 +471,9 @@ public class ProfileFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            private TextView menuText, valueText;
-            NewOutletBO projectObj;
+            private final TextView menuText;
+            private final TextView valueText;
+            private NewOutletBO projectObj;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -528,7 +491,7 @@ public class ProfileFragment extends Fragment {
      */
     private void loadProfileDatas() {
         retailerObj = bmodel.getRetailerMasterBO();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+     //   bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         Vector<ConfigureBO> mTempProfileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
         ArrayList<String> unWantedMenus = new ArrayList<>();
@@ -639,8 +602,7 @@ public class ProfileFragment extends Fragment {
             }
             mPrevMenuNumber = Integer.parseInt(menuNo);
         }
-        if (finalProfileList.size() > 0)
-            updateProfileListView(finalProfileList);
+
     }
 
 
@@ -685,7 +647,7 @@ public class ProfileFragment extends Fragment {
                 NewOutletBO newBo;
                 String text = "";
                 if (is_contact_title1) {
-                    String mcontact_title1_lovId = "";
+                    String mcontact_title1_lovId;
                     mcontact_title1_lovId = retailerObj.getContact1_titlelovid();
 
                     for (int j = 0; j < mcontactTitleList.size(); j++) {
@@ -797,12 +759,11 @@ public class ProfileFragment extends Fragment {
             }
             case "PROFILE13": {
                 try {
-                    String title = "", value = "";
+                    String value = "";
                     locid = retailerObj.getLocationId();
                     if (locid != 0) {
                         String[] loc1 = bmodel.mRetailerHelper.getParentLevelName(
                                 locid, false);
-                        title = loc1[2];
                         value = loc1[1];
                     }
                     outletBO = new NewOutletBO();
@@ -816,11 +777,10 @@ public class ProfileFragment extends Fragment {
             }
             case "PROFILE14": {
                 try {
-                    String title = "", value = "";
+                    String value = "";
                     String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                             locid, true);
                     if (loc2 != null) {
-                        title = loc2[2];
                         value = loc2[1];
                     }
                     outletBO = new NewOutletBO();
@@ -1234,13 +1194,31 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private class DownloadAsync extends
-            AsyncTask<Integer, Integer, Boolean> {
+    private class LoadDataAsync extends  AsyncTask <String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            loadProfileDatas();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (finalProfileList.size() > 0)
+                updateProfileListView(finalProfileList);
+        }
+    }
+
+    private static class DownloadAsync extends AsyncTask<Integer, Integer, Boolean> {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
             //updateLocationMasterList();
+            bmodel.newOutletHelper.downloadLinkRetailer();
             bmodel.mRetailerHelper.loadContractData();
+            bmodel.newOutletHelper.loadContactTitle();
+            bmodel.newOutletHelper.loadContactStatus();
             //channelMaster = bmodel.channelMasterHelper.getChannelMaster();
             return true;
         }
@@ -1248,12 +1226,6 @@ public class ProfileFragment extends Fragment {
 
     public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
         mSelectedIds = list;
-    }
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
 
@@ -1321,7 +1293,7 @@ public class ProfileFragment extends Fragment {
      * This is the Handler for this activity. It will receive messages from the
      * DownloaderThread and make the necessary updates to the UI.
      */
-    private Handler activityHandler = new Handler() {
+    private final Handler activityHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:

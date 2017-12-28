@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,12 +77,10 @@ public class SalesPerCategory extends IvyBaseFragment {
     }
 
     private void loadListData() {
+        mBModel.profilehelper.salesPerCategory();
         lovLabel = mBModel.profilehelper.getmSalesCategoryLabel();
-        Vector<RetailerMasterBO> salesCateogryList = mBModel.profilehelper.getmSalesCateogryList();
+        Vector<RetailerMasterBO> salesCateogryList = mBModel.profilehelper.getmSalesCategoryList();
         if(salesCateogryList!=null && salesCateogryList.size()>0) {
-//            for (RetailerMasterBO retailerMasterBO : salesCateogryList) {
-//                Log.e("Value", retailerMasterBO.getSalesProductSName());
-//            }
             recyclerAdapter = new RecyclerAdapter(salesCateogryList);
             recyclerView.setAdapter(recyclerAdapter);
         }

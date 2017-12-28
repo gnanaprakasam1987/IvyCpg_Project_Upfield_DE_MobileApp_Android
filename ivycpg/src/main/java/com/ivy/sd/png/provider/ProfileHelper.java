@@ -36,19 +36,19 @@ import static com.ivy.lib.Utils.QT;
  */
 public class ProfileHelper {
     private static ProfileHelper instance = null;
-    private Context mContext;
-    private BusinessModel bmodel;
+    private final Context mContext;
+    private final BusinessModel bmodel;
 
     public LinearLayout.LayoutParams commonsparams;
     private Vector<OrderHistoryBO> parent_orderHistoryLIst;
     private Vector<Vector<OrderHistoryBO>> child_orderHistoryList;
-    public Vector<OrderHistoryBO> historyList;
+    private Vector<OrderHistoryBO> historyList;
     private Vector<AssetHistoryBO> assetHistoryList;
     private Vector<OrderHistoryBO> parent_invoiceHistoryLIst;
     private Vector<Vector<OrderHistoryBO>> child_invoiceHistoryList;
-    public Vector<OrderHistoryBO> invoiceHistoryList;
-    public Vector<RetailerMasterBO> mSalesCateogryList;
-    public String mSalesCategoryLabel = "";
+    private Vector<OrderHistoryBO> invoiceHistoryList;
+    private Vector<RetailerMasterBO> mSalesCategoryList;
+    private String mSalesCategoryLabel = "";
 
     public static ProfileHelper getInstance(Context context) {
         if (instance == null) {
@@ -62,7 +62,7 @@ public class ProfileHelper {
         this.bmodel = (BusinessModel) context;
         setParentOrderHistory(new Vector<OrderHistoryBO>());
         setParentInvoiceHistory(new Vector<OrderHistoryBO>());
-        setmSalesCateogryList(new Vector<RetailerMasterBO>());
+        setmSalesCategoryList(new Vector<RetailerMasterBO>());
     }
 
     public float getP4AvgOrderValue() {
@@ -146,8 +146,9 @@ public class ProfileHelper {
             if (c1.moveToNext()) {
                 osAmt = c1.getFloat(0);
             }
+            c1.close();
         }
-        c1.close();
+
 
         Cursor c2 = db
                 .selectSQL("select Amount from Payment where RetailerID='"
@@ -156,8 +157,9 @@ public class ProfileHelper {
             if (c2.moveToNext()) {
                 osAmt1 = c2.getFloat(0);
             }
+            c2.close();
         }
-        c2.close();
+
 
         Cursor c3 = db
                 .selectSQL("SELECT count(invNetamount) FROM InvoiceMaster where Retailerid='"
@@ -166,8 +168,9 @@ public class ProfileHelper {
             if (c3.moveToNext()) {
                 billsCount = c3.getInt(0);
             }
+            c3.close();
         }
-        c3.close();
+
 
         db.closeDB();
 
@@ -182,7 +185,7 @@ public class ProfileHelper {
             return;
 
         for (int i = 0; i < siz; ++i) {
-            product = (RetailerMasterBO) bmodel.getRetailerMaster().get(i);
+            product = bmodel.getRetailerMaster().get(i);
             if (product.getRetailerID().equals(retailerid)) {
                 product.setBillsCount(billsCount);
                 product.setOsAmt(osAmt);
@@ -190,7 +193,6 @@ public class ProfileHelper {
                 // return;
             }
         }
-        return;
     }
 
 
@@ -304,7 +306,7 @@ public class ProfileHelper {
                 if (childItemList == null) {
                     childItemList = new Vector<>();
                     childItemList.add(historyBO);
-                    if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
+                    if (isHistoryBOAvailable(historyBO, "orderHistory")) {
                         parent_orderHistoryLIst.add(historyBO);
                     }
                     HistBOTemp = historyBO;
@@ -315,7 +317,7 @@ public class ProfileHelper {
 
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
+                        if (isHistoryBOAvailable(historyBO, "orderHistory")) {
                             parent_orderHistoryLIst.add(historyBO);
                         }
                     } else {
@@ -323,14 +325,14 @@ public class ProfileHelper {
                         childItemList = new Vector<>();
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO, "orderHistory")) {
+                        if (isHistoryBOAvailable(historyBO, "orderHistory")) {
                             parent_orderHistoryLIst.add(historyBO);
                         }
                     }
                 }
             }
             if (childItemList != null) {
-                if (!isHistoryBOAvailable(HistBOTemp, "orderHistory")) {
+                if (isHistoryBOAvailable(HistBOTemp, "orderHistory")) {
                     parent_orderHistoryLIst.add(HistBOTemp);
                 }
                 child_orderHistoryList.add(childItemList);
@@ -371,6 +373,7 @@ public class ProfileHelper {
             }
         } catch (Exception e) {
             Commons.printException(e + "");
+            return false;
         }
         return false;
     }
@@ -379,7 +382,7 @@ public class ProfileHelper {
         return parent_orderHistoryLIst;
     }
 
-    public void setParentOrderHistory(Vector<OrderHistoryBO> orderHistory) {
+    private void setParentOrderHistory(Vector<OrderHistoryBO> orderHistory) {
         this.parent_orderHistoryLIst = orderHistory;
     }
 
@@ -485,7 +488,7 @@ public class ProfileHelper {
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
                             invoiceHistory.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
-                                    dueDate, bmodel.configurationMasterHelper.outDateFormat));
+                                    dueDate, ConfigurationMasterHelper.outDateFormat));
 
                         }
                         int due_count = 0;
@@ -515,7 +518,7 @@ public class ProfileHelper {
                 if (childItemList == null) {
                     childItemList = new Vector<>();
                     childItemList.add(historyBO);
-                    if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
+                    if (isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                         parent_invoiceHistoryLIst.add(historyBO);
                     }
                     HistBOTemp = historyBO;
@@ -526,7 +529,7 @@ public class ProfileHelper {
 
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
+                        if (isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                             parent_invoiceHistoryLIst.add(historyBO);
                         }
                     } else {
@@ -534,14 +537,14 @@ public class ProfileHelper {
                         childItemList = new Vector<>();
                         childItemList.add(historyBO);
                         HistBOTemp = historyBO;
-                        if (!isHistoryBOAvailable(historyBO, "invoiceHistory")) {
+                        if (isHistoryBOAvailable(historyBO, "invoiceHistory")) {
                             parent_invoiceHistoryLIst.add(historyBO);
                         }
                     }
                 }
             }
             if (childItemList != null) {
-                if (!isHistoryBOAvailable(HistBOTemp, "invoiceHistory")) {
+                if (isHistoryBOAvailable(HistBOTemp, "invoiceHistory")) {
                     parent_invoiceHistoryLIst.add(HistBOTemp);
                 }
                 child_invoiceHistoryList.add(childItemList);
@@ -556,16 +559,16 @@ public class ProfileHelper {
         return parent_invoiceHistoryLIst;
     }
 
-    public void setParentInvoiceHistory(Vector<OrderHistoryBO> invoiceHistory) {
+    private void setParentInvoiceHistory(Vector<OrderHistoryBO> invoiceHistory) {
         this.parent_invoiceHistoryLIst = invoiceHistory;
     }
 
-    public Vector<RetailerMasterBO> getmSalesCateogryList() {
-        return mSalesCateogryList;
+    public Vector<RetailerMasterBO> getmSalesCategoryList() {
+        return mSalesCategoryList;
     }
 
-    public void setmSalesCateogryList(Vector<RetailerMasterBO> mSalesCateogryList) {
-        this.mSalesCateogryList = mSalesCateogryList;
+    private void setmSalesCategoryList(Vector<RetailerMasterBO> mSalesCategoryList) {
+        this.mSalesCategoryList = mSalesCategoryList;
     }
 
     public String getmSalesCategoryLabel() {
@@ -577,7 +580,7 @@ public class ProfileHelper {
     }
 
     public ArrayList<PlanningOutletBO> downloadPlanningOutletCategory() {
-        planningoutletlist = new ArrayList<PlanningOutletBO>();
+        planningoutletlist = new ArrayList<>();
         try {
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -591,7 +594,7 @@ public class ProfileHelper {
                             + bmodel.dashBoardHelper.mMinLevel + "  ORDER BY A.pId");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    ArrayList<PlanningOutletBO> list = new ArrayList<PlanningOutletBO>();
+                    ArrayList<PlanningOutletBO> list = new ArrayList<>();
                     pbo = new PlanningOutletBO();
                     pbo.setPid(c.getInt(0));
                     pbo.setPname(c.getString(1));
@@ -600,7 +603,7 @@ public class ProfileHelper {
                             .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                     + c.getInt(0)
                                     + " and A.date < "
-                                    + bmodel.QT(bmodel.dashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                    + bmodel.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                     + "  and Rid="
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID()
@@ -614,10 +617,11 @@ public class ProfileHelper {
                             list.add(pbo1);
 
                         }
+                        c1.close();
                     }
                     pbo.setPlanlist(list);
                     Commons.print("list size in category" + list.size());
-                    c1.close();
+
                     planningoutletlist.add(pbo);
                 }
             }
@@ -632,7 +636,7 @@ public class ProfileHelper {
     }
 
     public ArrayList<PlanningOutletBO> downloadPlanningOutletBrand(List pids) {
-        planningoutletlist = new ArrayList<PlanningOutletBO>();
+        planningoutletlist = new ArrayList<>();
         try {
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -650,7 +654,7 @@ public class ProfileHelper {
                                 + "  ORDER BY A.pId");
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
-                        ArrayList<PlanningOutletBO> list = new ArrayList<PlanningOutletBO>();
+                        ArrayList<PlanningOutletBO> list = new ArrayList<>();
                         pbo = new PlanningOutletBO();
                         pbo.setPid(c.getInt(0));
                         pbo.setPname(c.getString(1));
@@ -658,7 +662,7 @@ public class ProfileHelper {
                                 .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                         + c.getInt(0)
                                         + " and A.date < "
-                                        + bmodel.QT(bmodel.dashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                        + bmodel.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                         + "  and Rid="
                                         + bmodel.getRetailerMasterBO()
                                         .getRetailerID()
@@ -672,10 +676,11 @@ public class ProfileHelper {
                                 list.add(pbo1);
 
                             }
+                            c1.close();
                         }
                         pbo.setPlanlist(list);
                         Commons.print("list size in brand" + list.size());
-                        c1.close();
+
                         planningoutletlist.add(pbo);
                     }
                 }
@@ -833,60 +838,93 @@ public class ProfileHelper {
     }
 
     public void salesPerCategory() {
-        mSalesCateogryList.clear();
-        mSalesCategoryLabel="";
+        mSalesCategoryList.clear();
+        mSalesCategoryLabel = "";
         String givenLevelId = getGivenLovId();
-        if(givenLevelId!=null && !givenLevelId.equalsIgnoreCase("")) {
-            String sql = "Select PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, PM.PLid, PM.ParentId," +
-                    " SUM(PID.Qty) as QTY, PM.psname  from P4InvoiceHistoryMaster PIM INNER JOIN P4InvoiceHistoryDetail PID ON PID.refid=PIM.refid  " +
-                    "INNER JOIN ProductMaster PM ON PID.productid=PM.PID where PIM.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " group by PIM.refid";
+        if (givenLevelId != null && !givenLevelId.equalsIgnoreCase("")) {
 
-            String sqlLabel = "Select LevelName from ProductLevel where LevelId=" + givenLevelId;
+            int loop = getProductGroupingLevel(givenLevelId);
+            if( loop>0) {
+                StringBuilder finalSql = new StringBuilder("Select   PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, SUM(PID.Qty) as QTY," +
+                        "A" + loop
+                        + ".psname,"
+                        + "A" + loop
+                        + ".Pname,"
+                        + "A" + loop
+                        + ".ParentId as finalParentId,"
+                        + "A" + loop
+                        + ".Plid as finalPlid"
+                        + " from P4InvoiceHistoryMaster PIM INNER JOIN P4InvoiceHistoryDetail PID ON PID.refid=PIM.refid INNER JOIN ProductMaster A1 ON PID.productid=A1.PID ");
 
-    /*    String sql = "Select PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, PM.PLid, PM.ParentId," +
-                " SUM(PID.Qty) as QTY, PM.psname  from P4InvoiceHistoryMaster PIM INNER JOIN P4InvoiceHistoryDetail PID ON PID.refid=PIM.refid  " +
-                "INNER JOIN ProductMaster PM ON PID.productid=PM.PID where PIM.retailerid=180201 group by PIM.refid";*/
+                for (int i = loop; i > 1; i--)
+                    finalSql.append(" INNER JOIN ProductMaster A").append(i).append(" ON A").append(i).append(".PID = A").append(i - 1).append(".ParentId");
+
+                finalSql.append(" where PIM.retailerid=").append(bmodel.getRetailerMasterBO().getRetailerID()).append("  group by PIM.refid");
+
+                String sqlLabel = "Select LevelName from ProductLevel where Sequence=" + givenLevelId;
+
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                        DataMembers.DB_PATH);
+                db.openDataBase();
+                Cursor c = db.selectSQL(finalSql.toString());
+                Cursor c1 = db.selectSQL(sqlLabel);
+
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
+
+                        String invoiceId = c.getString(c.getColumnIndex("invoiceid"));
+                        String invoiceValue = c.getString(c.getColumnIndex("InvoiceValue"));
+                        String lpc = c.getString(c.getColumnIndex("lpc"));
+                        String qty = c.getString(c.getColumnIndex("QTY"));
+                        String pname = c.getString(c.getColumnIndex("PName"));
+                        String psname = c.getString(c.getColumnIndex("psname"));
+
+                        retailerMasterBO.setSalesInvoiceId(invoiceId);
+                        retailerMasterBO.setSalesInvoiceValue(invoiceValue);
+                        retailerMasterBO.setSalesLpc(lpc);
+                        retailerMasterBO.setSalesQty(qty);
+                        retailerMasterBO.setSalesProductSName(pname);
+                     //   retailerMasterBO.setSalesProductSName(psname);
+                        mSalesCategoryList.add(retailerMasterBO);
+                    }
+                    c.close();
+                }
+
+                if (c1 != null) {
+                    while (c1.moveToNext()) {
+                        mSalesCategoryLabel = c1.getString(0);
+                    }
+                    c1.close();
+                }
+                db.closeDB();
+            }
+            else
+                Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();
+    }
+
+    private int getProductGroupingLevel(String giveLevelID) {
+        try {
+            String sql = "Select Max(Sequence) from ProductLevel ";
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db.selectSQL(sql);
-            Cursor c1 = db.selectSQL(sqlLabel);
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
-
-                    String invoiceId = c.getString(1);
-                    String invoiceValue = c.getString(2);
-                    String lpc = c.getString(3);
-                    String levelId = c.getString(5);
-                    String parentId = c.getString(6);
-                    String qty = c.getString(7);
-                    String psnmae = c.getString(8);
-
-                    retailerMasterBO.setSalesInvoiceId(invoiceId);
-                    retailerMasterBO.setSalesInvoiceValue(invoiceValue);
-                    retailerMasterBO.setSalesLpc(lpc);
-                    retailerMasterBO.setSalesQty(qty);
-
-                    if (levelId.equalsIgnoreCase(givenLevelId)) {
-                        retailerMasterBO.setSalesProductSName(psnmae);
-                    } else {
-                        retailerMasterBO = getProductBrand(parentId, givenLevelId, retailerMasterBO);
-                    }
-                    mSalesCateogryList.add(retailerMasterBO);
-                }
-                c.close();
-            }
-
+            Cursor c1 = db.selectSQL(sql);
+            String prodLevel = "0";
             if (c1 != null) {
                 while (c1.moveToNext()) {
-                    mSalesCategoryLabel = c1.getString(0);
+                    prodLevel = c1.getString(0);
                 }
                 c1.close();
             }
             db.closeDB();
-        }else Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();
+            return Integer.parseInt(prodLevel) - Integer.parseInt(giveLevelID) + 1;
+        } catch (NumberFormatException e) {
+            Commons.printException(e);
+            return 0;
+        }
     }
 
     private RetailerMasterBO getProductBrand(String parentId, String givenLevelId, RetailerMasterBO retailerMasterBO) {
@@ -905,7 +943,7 @@ public class ProfileHelper {
                     retailerMasterBO.setSalesProductSName(psname);
                     return retailerMasterBO;
                 } else {
-                    retailerMasterBO=getProductBrand(parId, givenLevelId, retailerMasterBO);
+                    retailerMasterBO = getProductBrand(parId, givenLevelId, retailerMasterBO);
                     return retailerMasterBO;
                 }
 
@@ -917,14 +955,13 @@ public class ProfileHelper {
     }
 
     private String getGivenLovId() {
-        String givenLovId="";
-        String sql = " Select RField from HhtModuleMaster where hhtCode = "+bmodel.QT(bmodel.configurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL)+" and flag =1";
+        String givenLovId = "";
+        String sql = " Select RField from HhtModuleMaster where hhtCode = " + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
         Cursor c = db.selectSQL(sql);
-        if (c != null)
-        {
+        if (c != null) {
             while (c.moveToNext()) {
                 givenLovId = c.getString(0);
             }

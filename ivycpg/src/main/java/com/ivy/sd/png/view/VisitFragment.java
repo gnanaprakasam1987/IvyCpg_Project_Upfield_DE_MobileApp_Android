@@ -1238,7 +1238,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                 bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
                             }
-                            bmodel.newOutletHelper.downloadLinkRetailer();
+                           // bmodel.newOutletHelper.downloadLinkRetailer();
                             Intent i = new Intent(getActivity(), ProfileActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             if (isFromPlannning) {
