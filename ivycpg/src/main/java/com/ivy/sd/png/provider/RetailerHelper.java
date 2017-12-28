@@ -681,5 +681,28 @@ public class RetailerHelper {
             db.closeDB();
         }
     }
+
+    public String getValidateUrl() {
+        String url = "";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select URL from UrlDownloadMaster where MasterName = 'TRADE_COVERAGE_VALIDATE'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    url = c.getString(0);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return url;
+    }
 }
 

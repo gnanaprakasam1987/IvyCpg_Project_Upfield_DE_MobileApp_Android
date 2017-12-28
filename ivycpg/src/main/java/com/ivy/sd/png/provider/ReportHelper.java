@@ -2272,13 +2272,13 @@ public class ReportHelper {
         this.webViewPlanUrl = webViewPlanUrl;
     }
 
-    public void downloadWebViewPlanAuthUrl() {
+    public void downloadWebViewPlanAuthUrl(String listType) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             webViewAuthUrl = "";
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_PLAN'");
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = " + bmodel.QT(listType));
             if (c != null) {
                 if (c.moveToNext()) {
                     webViewAuthUrl = c.getString(0);
@@ -2287,7 +2287,14 @@ public class ReportHelper {
             }
 
             if (!"".equals(webViewAuthUrl)) {
-                webViewAuthUrl += "/UserAuthentication/GetDeviceToken";
+                Cursor c1 = db
+                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = " + bmodel.QT(listType));
+                if (c1 != null) {
+                    if (c1.moveToNext()) {
+                        webViewAuthUrl += c1.getString(0);
+                    }
+                    c1.close();
+                }
             }
             db.closeDB();
 
@@ -2307,13 +2314,13 @@ public class ReportHelper {
 
     private String webViewAuthUrl = "";
 
-    public void downloadWebViewPlanUrl() {
+    public void downloadWebViewPlanUrl(String listType) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             webViewPlanUrl = "";
             Cursor c = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_PLAN'");
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = " + bmodel.QT(listType));
             if (c != null) {
                 if (c.moveToNext()) {
                     webViewPlanUrl = c.getString(0);
@@ -2323,7 +2330,7 @@ public class ReportHelper {
 
             if (!"".equals(webViewPlanUrl)) {
                 Cursor c1 = db
-                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_PLAN' AND ListType = 'WEBVIEW_PLAN'");
+                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_PLAN' AND ListType = " + bmodel.QT(listType));
                 if (c1 != null) {
                     while (c1.moveToNext()) {
                         webViewPlanUrl += c1.getString(0);

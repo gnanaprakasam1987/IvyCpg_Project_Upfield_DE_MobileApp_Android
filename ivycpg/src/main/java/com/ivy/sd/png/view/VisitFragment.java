@@ -2,16 +2,20 @@ package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -55,13 +59,18 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -1234,32 +1243,73 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.cardView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (bmodel.configurationMasterHelper.VALIDATE_TRADE_COVERAGE) {
+                            SharedPreferences sharedPrefs = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity());
+                            int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
+                            if (validate == 1) {
 
-                        mSelectedRetailer = holder;
+                                mSelectedRetailer = holder;
 
-                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
-                        bmodel.setVisitretailerMaster(startVistitRetailers);
-                        startvisit = calledBy.equals(MENU_PLANNING);
+                                bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                                bmodel.setVisitretailerMaster(startVistitRetailers);
+                                startvisit = calledBy.equals(MENU_PLANNING);
 
-                        if (!profileclick) {
-                            profileclick = true;
-                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
-                            }
-                            bmodel.newOutletHelper.downloadLinkRetailer();
-                            Intent i = new Intent(getActivity(), ProfileActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            if (isFromPlannning) {
-                                i.putExtra("From", MENU_PLANNING);
-                                i.putExtra("isPlanning", true);
+                                if (!profileclick) {
+                                    profileclick = true;
+                                    if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                        bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                                    }
+                                    bmodel.newOutletHelper.downloadLinkRetailer();
+                                    Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    if (isFromPlannning) {
+                                        i.putExtra("From", MENU_PLANNING);
+                                        i.putExtra("isPlanning", true);
+                                    } else {
+                                        i.putExtra("From", MENU_VISIT);
+                                        i.putExtra("visit", startvisit);
+                                        i.putExtra("locvisit", true);
+                                    }
+
+                                    startActivity(i);
+                                }
                             } else {
-                                i.putExtra("From", MENU_VISIT);
-                                i.putExtra("visit", startvisit);
-                                i.putExtra("locvisit", true);
+                                String Url = bmodel.mRetailerHelper.getValidateUrl();
+                                if (bmodel.isOnline()) {
+                                    if (Url.length() > 0)
+                                        new ValidateRetailerVisit(holder, Url).execute();
+                                    else
+                                        Toast.makeText(getActivity(), R.string.url_not_mapped, Toast.LENGTH_LONG).show();
+                                } else
+                                    Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
                             }
+                        } else {
+                            mSelectedRetailer = holder;
 
-                            startActivity(i);
-                            //getActivity().finish();
+                            bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                            bmodel.setVisitretailerMaster(startVistitRetailers);
+                            startvisit = calledBy.equals(MENU_PLANNING);
+
+                            if (!profileclick) {
+                                profileclick = true;
+                                if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                    bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                                }
+                                bmodel.newOutletHelper.downloadLinkRetailer();
+                                Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                if (isFromPlannning) {
+                                    i.putExtra("From", MENU_PLANNING);
+                                    i.putExtra("isPlanning", true);
+                                } else {
+                                    i.putExtra("From", MENU_VISIT);
+                                    i.putExtra("visit", startvisit);
+                                    i.putExtra("locvisit", true);
+                                }
+
+                                startActivity(i);
+                            }
                         }
                     }
                 });
@@ -1800,5 +1850,116 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             displayTodayRoute(null);
         }
         return false;
+    }
+
+
+    class ValidateRetailerVisit extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+        String Url;
+        RetailerSelectionAdapter.ViewHolder holder;
+        private ProgressDialog progressDialogue;
+
+        ValidateRetailerVisit(RetailerSelectionAdapter.ViewHolder holder, String Url) {
+            this.Url = Url;
+            this.holder = holder;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.validating_retailer_visit),
+                    true, false);
+            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            bmodel.synchronizationHelper.updateAuthenticateToken();
+            String response = bmodel.synchronizationHelper.sendPostMethod(Url, jsonObject);
+            String errorCode = "E01";
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            int validateStatus = jsonObject.getInt("Response");
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity())
+                                    .edit();
+                            editor.putInt("trade_coverage_validation",
+                                    validateStatus);
+                            editor.commit();
+
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return errorCode;
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            progressDialogue.dismiss();
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    //proceed to retailer Selection
+                    SharedPreferences sharedPrefs = PreferenceManager
+                            .getDefaultSharedPreferences(getActivity());
+                    int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
+                    if (validate == 1) {
+                        mSelectedRetailer = holder;
+
+                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                        bmodel.setVisitretailerMaster(startVistitRetailers);
+                        startvisit = calledBy.equals(MENU_PLANNING);
+
+                        if (!profileclick) {
+                            profileclick = true;
+                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                            }
+                            bmodel.newOutletHelper.downloadLinkRetailer();
+                            Intent i = new Intent(getActivity(), ProfileActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            if (isFromPlannning) {
+                                i.putExtra("From", MENU_PLANNING);
+                                i.putExtra("isPlanning", true);
+                            } else {
+                                i.putExtra("From", MENU_VISIT);
+                                i.putExtra("visit", startvisit);
+                                i.putExtra("locvisit", true);
+                            }
+
+                            startActivity(i);
+                        }
+                    } else {
+                        bmodel.showAlert(getResources().getString(R.string.validation_msg), 0);
+                    }
+                } else {
+                    String errorMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorMessage != null) {
+                        bmodel.showAlert(errorMessage, 0);
+                    }
+                }
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }
