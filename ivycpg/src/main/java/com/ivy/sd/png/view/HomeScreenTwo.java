@@ -2189,8 +2189,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 int count = bmodel.synchronizationHelper.getImagesCount();
                 bmodel.productHelper.getLocations();
                 bmodel.productHelper.downloadInStoreLocations();
-
                 PhotoCaptureHelper mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
+                mPhotoCaptureHelper.downloadLocations();
                 mPhotoCaptureHelper.downloadPhotoCaptureProducts();
                 mPhotoCaptureHelper.downloadPhotoTypeMaster();
                 mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());

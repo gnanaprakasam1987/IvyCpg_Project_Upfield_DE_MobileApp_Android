@@ -1468,9 +1468,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
-        this.parentidList = parentidList;
+        this.parentidList = mParentIdList;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         onLoadModule(parentidList, mSelectedIdByLevelId, mAttributeProducts);
     }
