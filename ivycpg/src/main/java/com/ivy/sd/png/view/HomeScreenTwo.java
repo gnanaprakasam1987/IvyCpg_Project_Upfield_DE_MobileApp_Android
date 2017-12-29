@@ -3518,13 +3518,34 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             startActivity(i);
             finish();
         } else if (menu.getConfigCode().equals(MENU_DISPLAY_SCHEME) && hasLink == 1) {
-            Intent i = new Intent(this,
-                    FitScoreDashboardActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            i.putExtra("screentitle", menu.getMenuName());
-            i.putExtra("menuCode", menu.getConfigCode());
-            startActivity(i);
-            finish();
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                bmodel.schemeDetailsMasterHelper.downloadDisplayScheme(getApplicationContext());
+                if (bmodel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList().size() > 0) {
+                    Intent i = new Intent(this,
+                            FitScoreDashboardActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("screentitle", menu.getMenuName());
+                    i.putExtra("menuCode", menu.getConfigCode());
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.no_orders_available),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
         } else {
             isCreated = false;
         }

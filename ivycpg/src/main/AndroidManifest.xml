@@ -802,6 +802,10 @@
         <activity
             android:name="com.ivy.sd.png.view.PlanDeviationActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.ivy.sd.png.view.DisplaySchemeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

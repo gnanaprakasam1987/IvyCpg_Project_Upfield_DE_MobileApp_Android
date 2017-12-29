@@ -97,6 +97,7 @@ public class SchemeDetailsMasterHelper {
     private HashMap<String, SchemeProductBO> mFreeProductBOBySchemeidWithPid;
     private SparseArray<ArrayList<String>> mProductidListByAlreadyApplySchemeId;
     private ArrayList<SchemeProductBO> mOffInvoiceSchemeFreeProductList;
+    private ArrayList<SchemeBO> mDisplaySchemeMasterList;
 
     /**
      * Method to load all scheme related methods
@@ -4826,6 +4827,50 @@ public class SchemeDetailsMasterHelper {
     }
 
     private List<SchemeBO> mSchemePromotion;
+
+
+    public ArrayList<SchemeBO> getmDisplaySchemeMasterList() {
+        return mDisplaySchemeMasterList;
+    }
+
+    /**
+     * Download display scheme
+     */
+    public void downloadDisplayScheme(Context mContext) {
+        mDisplaySchemeMasterList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select schemeId,schemeShortDesc,schemeDesc,DisplayPeriodStart,DisplayPeriodEnd,BookingPeriodStart,BookingPeriodEnd");
+            sb.append(",PayoutFrequency,qualifier from DisplaySchemeMaster DM INNER JOIN DisplaySchemeMapping DMP ON DMP.schemeId=DM.schemeId");
+            sb.append(" WHERE DMP.retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                SchemeBO schemeBO;
+                while (c.moveToNext()) {
+                    schemeBO = new SchemeBO();
+                    schemeBO.setSchemeId(c.getString(0));
+                    schemeBO.setSchemeParentName(c.getString(1));
+                    schemeBO.setSchemeDescription(c.getString(2));
+                    schemeBO.setDisplayPeriodStart(c.getString(3));
+                    schemeBO.setDisplayPeriodEnd(c.getString(4));
+                    schemeBO.setPayoutFrequency(c.getString(5));
+                    schemeBO.setQualifier(c.getString(6));
+                    mDisplaySchemeMasterList.add(schemeBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+    }
 
 }
 

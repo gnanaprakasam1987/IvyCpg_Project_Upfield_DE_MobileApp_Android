@@ -607,4 +607,57 @@ public class SchemeBO {
 	public void setIsAutoApply(int isAutoApply) {
 		this.isAutoApply = isAutoApply;
 	}
+
+
+    public String getDisplayPeriodStart() {
+        return displayPeriodStart;
+    }
+
+    public void setDisplayPeriodStart(String displayPeriodStart) {
+        this.displayPeriodStart = displayPeriodStart;
+    }
+
+    public String getDisplayPeriodEnd() {
+        return displayPeriodEnd;
+    }
+
+    public void setDisplayPeriodEnd(String displayPeriodEnd) {
+        this.displayPeriodEnd = displayPeriodEnd;
+    }
+
+    public String getBookingPeriodStart() {
+        return BookingPeriodStart;
+    }
+
+    public void setBookingPeriodStart(String bookingPeriodStart) {
+        BookingPeriodStart = bookingPeriodStart;
+    }
+
+    public String getBookingPeriodEnd() {
+        return BookingPeriodEnd;
+    }
+
+    public void setBookingPeriodEnd(String bookingPeriodEnd) {
+        BookingPeriodEnd = bookingPeriodEnd;
+    }
+
+    public String getPayoutFrequency() {
+        return payoutFrequency;
+    }
+
+    public void setPayoutFrequency(String payoutFrequency) {
+        this.payoutFrequency = payoutFrequency;
+    }
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
+    }
+
+    private String displayPeriodStart, displayPeriodEnd, BookingPeriodStart, BookingPeriodEnd, payoutFrequency, qualifier;
+
+
 }
