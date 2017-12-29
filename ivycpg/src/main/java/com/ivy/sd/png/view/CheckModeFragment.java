@@ -139,7 +139,7 @@ public class CheckModeFragment extends IvyBaseFragment
         }
 
         mChequeNoET.setText(mPaymentBO.getChequeNumber());
-        if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE){
+        if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE) {
             mChequeNoET.setInputType(InputType.TYPE_CLASS_TEXT);
         }
 
@@ -463,9 +463,19 @@ public class CheckModeFragment extends IvyBaseFragment
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
             if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
-                Toast.makeText(getActivity(), getResources().getString(
-                        R.string.post_dated_cheque_notallow),
-                        Toast.LENGTH_SHORT).show();
+                if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT))
+                    Toast.makeText(getActivity(), getResources().getString(
+                            R.string.post_dated_demand_draft_notallow),
+                            Toast.LENGTH_SHORT).show();
+                else if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS))
+                    Toast.makeText(getActivity(), getResources().getString(
+                            R.string.post_dated_rtgs_notallow),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), getResources().getString(
+                            R.string.post_dated_cheque_notallow),
+                            Toast.LENGTH_SHORT).show();
+
                 return;
             }
         }

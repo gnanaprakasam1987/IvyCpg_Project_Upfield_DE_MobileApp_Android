@@ -319,7 +319,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                                         R.string.please_check_username_and_password), false);
                     } else {
                         int count = loginPresenter.getPasswordLockCount();
-                        mForgotPasswordTV.setVisibility(View.VISIBLE);
+                        if (mForgotPasswordTV != null)
+                            mForgotPasswordTV.setVisibility(View.VISIBLE);
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
                             dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
@@ -633,18 +634,20 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
     @Override
     public void showForgotPassword() {
-        mForgotPasswordTV.setVisibility(View.VISIBLE);
-        mForgotPasswordTV.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editTextUserName.getText().toString().equals("")) {
-                    businessModel.userNameTemp = editTextUserName.getText().toString();
-                    loginPresenter.callForgetPassword();
-                } else {
-                    editTextUserName.setError(getResources().getString(R.string.enter_username));
+        if (mForgotPasswordTV != null) {
+            mForgotPasswordTV.setVisibility(View.VISIBLE);
+            mForgotPasswordTV.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!editTextUserName.getText().toString().equals("")) {
+                        businessModel.userNameTemp = editTextUserName.getText().toString();
+                        loginPresenter.callForgetPassword();
+                    } else {
+                        editTextUserName.setError(getResources().getString(R.string.enter_username));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

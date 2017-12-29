@@ -616,7 +616,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
                 mSupplierList = bmodel.downloadSupplierDetails();
                 mSupplierAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.select_dialog_singlechoice, mSupplierList);
+                        R.layout.supplier_selection_list_adapter, mSupplierList);
 
                 updateDefaultSupplierSelection();
             }
@@ -2191,6 +2191,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.productHelper.downloadInStoreLocations();
 
                 PhotoCaptureHelper mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
+                mPhotoCaptureHelper.downloadLocations(getApplicationContext());
                 mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
                 mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());
                 mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());

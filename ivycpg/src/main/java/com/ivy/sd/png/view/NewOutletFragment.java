@@ -2566,11 +2566,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (outlet.getLocid() != 0) {
                 String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                         outlet.getLocid(), true);
-                int loc2id = Integer.parseInt(loc2[0]);
+                int loc2id = SDUtil.convertToInt((loc2[0]).toString());
 
                 String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(
                         loc2id, true);
-                int loc3id = Integer.parseInt(loc3[0]);
+                int loc3id = SDUtil.convertToInt((loc3[0]).toString());
                 for (int i = 0; i < locationAdapter3.getCount(); i++) {
                     if (locationAdapter3.getItem(i).getLocId() == loc3id) {
                         return i;
@@ -2583,7 +2583,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         } else if (code.equals("LOCATION01")) {
             String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                     outlet.getLocid(), true);
-            int loc2id = Integer.parseInt(loc2[0]);
+
+            int loc2id = SDUtil.convertToInt((loc2[0]).toString());
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {
