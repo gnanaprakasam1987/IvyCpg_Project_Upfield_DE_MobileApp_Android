@@ -3,22 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="40dp"
-    android:orientation="horizontal" >
-    
+    android:orientation="horizontal">
+
     <TextView
         android:id="@+id/sku"
-        android:textSize="@dimen/font_small"
+        style="?customListItemPrimary"
         android:layout_width="@dimen/price_product_name"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
-    
-     <EditText
+        android:layout_marginLeft="@dimen/dimen_5dp"
+        android:layout_alignParentTop="true"
+        android:textSize="@dimen/font_small" />
+
+    <EditText
         android:id="@+id/qty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/price_value"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-
         android:padding="3dp" />
 
 </LinearLayout>
