@@ -650,7 +650,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mPlanoGramHelper.savePlanoGram();
+                mPlanoGramHelper.savePlanoGram(getContext().getApplicationContext());
                 if (calledBy != null && !"3".equals(calledBy))
                     mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM);
                 return Boolean.TRUE;
@@ -858,7 +858,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
 
                         mPlanoGramHelper
-                                .deleteImageName(planoGramBO.getPlanogramCameraImgName());
+                                .deleteImageName(getContext().getApplicationContext(), planoGramBO.getPlanogramCameraImgName());
                         mBModel.deleteFiles(
                                 HomeScreenFragment.folder.getPath(), planoGramBO.getPlanogramCameraImgName());
                         planoGramBO.setPlanogramCameraImgName("");
@@ -1337,5 +1337,11 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPlanoGramHelper.clearInstance();
     }
 }

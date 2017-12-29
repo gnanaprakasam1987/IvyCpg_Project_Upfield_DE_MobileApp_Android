@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 public class PhotoCaptureHelper {
 
-    private final Context context;
     private final BusinessModel mBModel;
     private static PhotoCaptureHelper instance = null;
     private ArrayList<PhotoCaptureProductBO> photoCaptureProductList;
@@ -33,7 +32,6 @@ public class PhotoCaptureHelper {
     private ArrayList<PhotoCaptureLocationBO> inStoreLocation;
 
     private PhotoCaptureHelper(Context context) {
-        this.context = context;
         mBModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -44,11 +42,15 @@ public class PhotoCaptureHelper {
         return instance;
     }
 
+    public void clearInstance() {
+        instance = null;
+    }
+
     /**
      * Download the products for photo capture. Level will be taken from ProductFilter1 column of ConfigActivityFilter.
      */
-    public void downloadPhotoCaptureProducts() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void downloadPhotoCaptureProducts(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             PhotoCaptureProductBO phCapture;
@@ -84,10 +86,10 @@ public class PhotoCaptureHelper {
     /**
      * Download the photo types from StandardListMaster of type PHOTO_TYPE
      */
-    public void downloadPhotoTypeMaster() {
+    public void downloadPhotoTypeMaster(Context mContext) {
         try {
             PhotoTypeMasterBO typeMasterBO;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId, ListName, ListCode FROM StandardListMaster WHERE ListType = 'PHOTO_TYPE'");
@@ -160,8 +162,8 @@ public class PhotoCaptureHelper {
      *
      * @param retailerID retailerID
      */
-    public void savePhotoCaptureDetails(String retailerID) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void savePhotoCaptureDetails(Context mContext, String retailerID) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         Cursor cursor;
         try {
             String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
@@ -293,8 +295,8 @@ public class PhotoCaptureHelper {
      *
      * @param retailerID retailerID
      */
-    public void loadPhotoCaptureDetailsInEditMode(String retailerID) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void loadPhotoCaptureDetailsInEditMode(Context mContext, String retailerID) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         Cursor cursor;
         try {
             db.openDataBase();
@@ -355,12 +357,12 @@ public class PhotoCaptureHelper {
     /**
      * Download locations
      */
-    public void downloadLocations() {
+    public void downloadLocations(Context mContext) {
         try {
 
             inStoreLocation = new ArrayList<>();
             PhotoCaptureLocationBO locations;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -416,9 +418,9 @@ public class PhotoCaptureHelper {
      *
      * @param ImageName Image name
      */
-    public void deleteImageDetailsFormTable(String ImageName) {
+    public void deleteImageDetailsFormTable(Context mContext, String ImageName) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_PhotoCapture, "imgName="
@@ -447,9 +449,9 @@ public class PhotoCaptureHelper {
      * @param path File path
      * @return URI
      */
-    public Uri getUriFromFile(String path) {
+    public Uri getUriFromFile(Context mContext, String path) {
         File f = new File(path);
-        return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);
+        return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
 

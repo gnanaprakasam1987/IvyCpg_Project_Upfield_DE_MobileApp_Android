@@ -1405,7 +1405,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    priceTrackingHelper.savePriceTransaction(mProductMasterBO);
+                    priceTrackingHelper.savePriceTransaction(getApplicationContext(), mProductMasterBO);
 
                 // save near expiry
                 bmodel.saveNearExpiry();

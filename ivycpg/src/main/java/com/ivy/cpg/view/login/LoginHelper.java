@@ -35,7 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by subramanian.r on 11-11-2015.
  */
 public class LoginHelper {
-    private final Context context;
+
     private final BusinessModel businessModel;
     private static LoginHelper instance = null;
 
@@ -57,8 +57,7 @@ public class LoginHelper {
     public int MAXIMUM_ATTEMPT_COUNT = 0;
 
     private LoginHelper(Context context) {
-        this.context = context;
-        this.businessModel = (BusinessModel) context;
+        this.businessModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static LoginHelper getInstance(Context context) {
@@ -68,9 +67,13 @@ public class LoginHelper {
         return instance;
     }
 
-    public void loadPasswordConfiguration() {
+    public void clearInstance() {
+        instance = null;
+    }
+
+    public void loadPasswordConfiguration(Context mContext) {
         DBUtil db;
-        db = new DBUtil(context, DataMembers.DB_NAME,
+        db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuffer sb;
@@ -143,12 +146,12 @@ public class LoginHelper {
         }
     }
 
-    public String getSupportNo() {
+    public String getSupportNo(Context mContext) {
         DBUtil db = null;
         String support_no = "";
 
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
 
             db.openDataBase();
@@ -171,13 +174,13 @@ public class LoginHelper {
         return support_no;
     }
 
-    public void onGCMRegistration() {
-        businessModel.regid = getRegistrationId(context);
+    public void onGCMRegistration(Context mContext) {
+        businessModel.regid = getRegistrationId(mContext);
         Commons.printInformation("REG ID IS : " + businessModel.regid);
         if (businessModel.regid.isEmpty()) {
-            if (checkPlayServices()) {
-                gcm = GoogleCloudMessaging.getInstance(context);
-                registerInBackground();
+            if (checkPlayServices(mContext)) {
+                gcm = GoogleCloudMessaging.getInstance(mContext);
+                registerInBackground(mContext);
             } else {
                 Commons.printInformation("No valid Google Play Services APK found.");
             }
@@ -244,11 +247,11 @@ public class LoginHelper {
      * doesn't, display a dialog that allows users to download the APK from the
      * Google Play Store or enable it in the device's system settings.
      */
-    private boolean checkPlayServices() {
+    private boolean checkPlayServices(Context mContext) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context);
+        int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(mContext);
         /*int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(context);*/
+                .isGooglePlayServicesAvailable(mContext);*/
         if (resultCode != ConnectionResult.SUCCESS) {
             if (!googleApiAvailability.isUserResolvableError(resultCode)) {
                 Commons.printInformation("This device is not supported.");
@@ -264,14 +267,14 @@ public class LoginHelper {
      * Stores the registration ID and the app versionCode in the application's
      * shared preferences.
      */
-    private void registerInBackground() {
+    private void registerInBackground(final Context mContext) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
                 String msg;
                 try {
                     if (gcm == null)
-                        gcm = GoogleCloudMessaging.getInstance(context);
+                        gcm = GoogleCloudMessaging.getInstance(mContext);
 
                     businessModel.regid = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + businessModel.regid;
@@ -286,13 +289,13 @@ public class LoginHelper {
             @Override
             protected void onPostExecute(String msg) {
                 if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    storeRegistrationId(context, businessModel.regid);
+                    storeRegistrationId(mContext, businessModel.regid);
                 } else {
                     String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -316,10 +319,10 @@ public class LoginHelper {
         editor.apply();
     }
 
-    public boolean isPasswordReset() {
+    public boolean isPasswordReset(Context mContext) {
         boolean isReset = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -337,9 +340,9 @@ public class LoginHelper {
         return isReset;
     }
 
-    public void deleteUserMaster() {
+    public void deleteUserMaster(Context mContext) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -356,7 +359,7 @@ public class LoginHelper {
      *
      * @return true - successful and false - failed
      */
-    public boolean reStoreDB() {
+    public boolean reStoreDB(Context mContext) {
         try {
             File sd = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
@@ -365,7 +368,7 @@ public class LoginHelper {
                         + DataMembers.DB_NAME;
                 File currentDB = new File(data, currentDBPath);
                 File backupDB = new File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                        mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                                 + "/pandg/" + DataMembers.DB_NAME);
 
                 if (backupDB.exists()) {
@@ -391,12 +394,12 @@ public class LoginHelper {
      * delete the database completely and also update AutoUpdate shared
      * preference.
      */
-    public void deleteAllValues() {
+    public void deleteAllValues(Context mContext) {
 
         try {
-            context.deleteDatabase(DataMembers.DB_NAME);
+            mContext.deleteDatabase(DataMembers.DB_NAME);
             businessModel.synchronizationHelper.deleteDBFromSD();
-            SharedPreferences pref = context.getSharedPreferences("autoupdate",
+            SharedPreferences pref = mContext.getSharedPreferences("autoupdate",
                     MODE_PRIVATE);
             SharedPreferences.Editor prefsEditor = pref.edit();
             prefsEditor.putString("URL", "");
@@ -407,8 +410,8 @@ public class LoginHelper {
         }
     }
 
-    public String getPasswordCreatedDate() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public String getPasswordCreatedDate(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         String date = "";
         try {
             db.createDataBase();

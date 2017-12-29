@@ -107,6 +107,7 @@ public class BeatMasterHelper {
                     beat.setBeatId(c.getInt(0));
                     beat.setBeatDescription(c.getString(1));
                     beat.setToday(c.getInt(2));
+                    beat.setUserId(c.getInt(3));
                     getBeatMaster().add(beat);
                 }
                 c.close();

@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/competitor_tracking_fragment"
-        android:name="com.ivyretail.views.CompetitorTackingFragment"
+        android:name="com.ivy.cpg.view.competitor.CompetitorTackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

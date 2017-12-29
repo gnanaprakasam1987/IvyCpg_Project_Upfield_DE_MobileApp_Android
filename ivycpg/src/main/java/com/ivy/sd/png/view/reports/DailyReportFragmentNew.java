@@ -360,7 +360,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 final float totalWeight = bmodel.productHelper.getTotalWeight("");
                 con.setMenuNumber(bmodel.formatValue(totalWeight) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT19")) {
-                con.setMenuNumber(bmodel.formatValue((SDUtil.convertToDouble(outlet.getTotValues())) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue()));
+                con.setMenuNumber(bmodel.formatValue((SDUtil.convertToDouble(outlet.getTotValues())) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getContext().getApplicationContext())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT20")) {
                 final int totalOrderedQty = bmodel.productHelper.getTotalOrderQty();
                 con.setMenuNumber(totalOrderedQty + "");
