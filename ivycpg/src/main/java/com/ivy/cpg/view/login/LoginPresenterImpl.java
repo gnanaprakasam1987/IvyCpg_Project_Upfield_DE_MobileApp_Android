@@ -86,7 +86,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     public void loadInitialData() {
         syncDone = businessModel.userMasterHelper.getSyncStatus();
         if (syncDone) {
-            loginHelper.loadPasswordConfiguration();
+            loginHelper.loadPasswordConfiguration(context);
             businessModel.userMasterHelper.downloadDistributionDetails();
             if (loginHelper.IS_PASSWORD_ENCRYPTED)
                 businessModel.synchronizationHelper.setEncryptType();
@@ -172,7 +172,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     @Override
     public void getSupportNo() {
-        loginView.setSupportNoTV(loginHelper.getSupportNo());
+        loginView.setSupportNoTV(loginHelper.getSupportNo(context));
     }
 
     /*
@@ -215,7 +215,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            return loginHelper.reStoreDB();
+            return loginHelper.reStoreDB(context);
         }
 
         @Override
@@ -259,7 +259,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public void checkLogin() {
         if (loginHelper.SHOW_CHANGE_PASSWORD) {
-            String createdDate = loginHelper.getPasswordCreatedDate();
+            String createdDate = loginHelper.getPasswordCreatedDate(context);
             if (createdDate != null && !createdDate.equals("")) {
                 int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
@@ -508,7 +508,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(Boolean result) {
             if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!result) {
-                    if (loginHelper.isPasswordReset()) {
+                    if (loginHelper.isPasswordReset(context)) {
                         loginView.dismissAlertDialog();
                         loginView.resetPassword();
                     } else {
@@ -955,7 +955,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
 
-        ArrayList<S3ObjectSummary> filesList = new ArrayList<>();
 
         protected void onPreExecute() {
 

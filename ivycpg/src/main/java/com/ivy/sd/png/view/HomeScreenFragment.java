@@ -1251,7 +1251,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             } else {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
-                mDigitalContentHelper.downloadDigitalContent("SELLER");
+                mDigitalContentHelper.downloadDigitalContent(getContext().getApplicationContext(), "SELLER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {

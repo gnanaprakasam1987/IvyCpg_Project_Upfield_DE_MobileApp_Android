@@ -18,7 +18,6 @@ import static com.ivy.lib.Utils.QT;
 
 public class PromotionHelper {
 
-    private final Context context;
     private final BusinessModel businessModel;
     private static PromotionHelper instance = null;
     int mSelectedPromoID = 0;
@@ -32,7 +31,6 @@ public class PromotionHelper {
     boolean SHOW_PROMO_ANNOUNCER;
 
     private PromotionHelper(Context context) {
-        this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
 
     }
@@ -44,9 +42,13 @@ public class PromotionHelper {
         return instance;
     }
 
+    public void clearInstance() {
+        instance = null;
+    }
+
     /* load data for promotion */
-    public void loadDataForPromotion(String mMenuCode) {
-        loadPromotionConfigs();
+    public void loadDataForPromotion(Context mContext, String mMenuCode) {
+        loadPromotionConfigs(mContext);
 
         if (businessModel.productHelper.getInStoreLocation().size() == 0) {
             businessModel.productHelper.downloadInStoreLocations();
@@ -56,13 +58,13 @@ public class PromotionHelper {
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
         businessModel.productHelper.getRetailerlevel(mMenuCode);
-        downloadPromotionMaster();
-        loadPromoEntered();
+        downloadPromotionMaster(mContext);
+        loadPromoEntered(mContext);
     }
 
 
     /* Load promotion related configs */
-    private void loadPromotionConfigs() {
+    private void loadPromotionConfigs(Context mContext) {
         try {
             SHOW_PROMO_TYPE = false;
             SHOW_PROMO_RATING = false;
@@ -71,7 +73,7 @@ public class PromotionHelper {
             SHOW_PROMO_QTY = false;
             SHOW_PROMO_ANNOUNCER = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -126,8 +128,8 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    private void downloadPromotionMaster(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
@@ -188,8 +190,8 @@ public class PromotionHelper {
      *
      * @return True or False
      */
-    void savePromotionDetails() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    void savePromotionDetails(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         StringBuilder sbuffer = new StringBuilder();
         String headerColumns = "UiD,Date,RetailerId,Remark,distributorid";
         String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer";
@@ -295,8 +297,8 @@ public class PromotionHelper {
     /**
      * Get values from Tables and set in Objects while going Edit Mode
      */
-    private void loadPromoEntered() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    private void loadPromoEntered(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String uid = "";
@@ -536,9 +538,9 @@ public class PromotionHelper {
     }
 
     /* get promotion rating list from StandardListMaster */
-    void downloadPromotionRating() {
+    void downloadPromotionRating(Context mContext) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String query = "select listid,listCode,ListName from standardlistmaster where listType='PROMOTION_RATING'";

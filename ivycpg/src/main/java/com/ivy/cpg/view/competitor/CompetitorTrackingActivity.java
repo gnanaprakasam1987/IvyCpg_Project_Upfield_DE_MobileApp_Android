@@ -1,4 +1,4 @@
-package com.ivyretail.views;
+package com.ivy.cpg.view.competitor;
 
 import android.os.Build;
 import android.os.Bundle;
