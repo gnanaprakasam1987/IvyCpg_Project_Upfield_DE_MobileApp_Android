@@ -329,7 +329,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         else
-            totalOrderValue.setText(SDUtil.format(getTotValues() - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(),
+            totalOrderValue.setText(SDUtil.format(getTotValues() - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
                     bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 

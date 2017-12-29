@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.asset;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -37,20 +38,17 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     public String mSelectedImageName = "";
     public String mSelectedSerial = "";
     String photoPath = "";
+    private Context mContext;
 
-    public AssetPresenterImpl(BusinessModel mBModel, AssetTrackingHelper mAssetTrackingHelper) {
+    public AssetPresenterImpl(Context mContext, BusinessModel mBModel, AssetTrackingHelper mAssetTrackingHelper) {
         this.mBModel = mBModel;
         this.mAssetTrackingHelper = mAssetTrackingHelper;
+        this.mContext = mContext;
     }
 
     @Override
     public void setView(AssetContractor.AssetView mAssetView) {
         this.mAssetView = mAssetView;
-    }
-
-    @Override
-    public void loadMasters(String mMenuCode) {
-        mAssetTrackingHelper.loadDataForAssetPOSM(mMenuCode);
     }
 
 
@@ -67,7 +65,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         @Override
         protected String doInBackground(String... params) {
             deleteUnUsedImages();
-            mAssetTrackingHelper.saveAsset(params[0]);
+            mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), params[0]);
             mBModel.saveModuleCompletion(params[0]);
             return "";
         }
@@ -191,7 +189,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                 for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
                     if (mCapturedBarcode.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
 
-                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mCapturedBarcode)) {
+                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mContext.getApplicationContext(), mCapturedBarcode)) {
                             isUnmapped = true;
                             bundle.putString("serialNo", mCapturedBarcode);
                             bundle.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
@@ -359,7 +357,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                 assetBO.setImageName("");
             }
         }
-        mAssetTrackingHelper.deleteImageName(imageNameStarts);
+        mAssetTrackingHelper.deleteImageName(mContext.getApplicationContext(), imageNameStarts);
         mBModel.synchronizationHelper.deleteFiles(photoPath,
                 imageNameStarts);
     }

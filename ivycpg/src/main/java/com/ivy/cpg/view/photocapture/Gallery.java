@@ -400,7 +400,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                                     }
 
                                     if (imageFileArray.get(i).delete()) {
-                                        mPhotoCaptureHelper.deleteImageDetailsFormTable(imagePathArray.get(i));
+                                        mPhotoCaptureHelper.deleteImageDetailsFormTable(getApplicationContext(), imagePathArray.get(i));
                                         mBModel.photocount--;
                                     }
                                 }

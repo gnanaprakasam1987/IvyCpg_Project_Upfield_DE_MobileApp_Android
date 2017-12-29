@@ -273,7 +273,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
             }
             //
 
-            salesReturnHelper.getNonSaleableReturnGoods();
+            salesReturnHelper.getNonSaleableReturnGoods(getApplicationContext());
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             nonsaleablevalue = salesReturnHelper.getNonsaleablevalue();
             updateproducts();
@@ -298,7 +298,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
             retailername
                     .setText(bmodel.getRetailerMasterBO().getRetailerName());
             if (IsFromReport) {
-                if (salesReturnHelper.isInvoiceCreated(bmodel
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                         .getInvoiceNumber()))
                     goodsreturn.setText(bmodel
                             .formatValue(salesReturnHelper.getReturn_amt())
@@ -306,7 +306,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                 else
                     goodsreturn.setText(bmodel.formatValue(0) + "");
             } else {
-                if (salesReturnHelper.isInvoiceCreated())
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                     goodsreturn.setText(bmodel
                             .formatValue(salesReturnHelper.getReturn_amt())
                             + "");
@@ -711,18 +711,18 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         SDUtil.convertToDouble(storediscount), mTotalValue);
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
-                    && salesReturnHelper.isCreditNoteCreated() != 1) {
+                    && salesReturnHelper.isCreditNoteCreated(getApplicationContext()) != 1) {
                 Commons.print("flag"
-                        + salesReturnHelper.isInvoiceCreated());
+                        + salesReturnHelper.isInvoiceCreated(getApplicationContext()));
                 if (IsFromReport) {
-                    if (salesReturnHelper.isInvoiceCreated(bmodel
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                             .getInvoiceNumber()))
                         mNetSales = mTotalValue
                                 - salesReturnHelper.getReturn_amt();
                     else
                         mNetSales = mTotalValue;
                 } else {
-                    if (salesReturnHelper.isInvoiceCreated())
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                         mNetSales = mTotalValue
                                 - salesReturnHelper.getReturn_amt();
                     else
@@ -1299,7 +1299,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         + getResources().getString(R.string.good_returns)
                         + "\r\n";
                 if (IsFromReport) {
-                    if (salesReturnHelper.isInvoiceCreated(bmodel
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                             .getInvoiceNumber())) {
                         Printitem += "T 5 0 410 "
                                 + x
@@ -1310,7 +1310,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         Printitem += "T 5 0 410 " + x + " "
                                 + bmodel.formatValue(0) + "\r\n";
                 } else {
-                    if (salesReturnHelper.isInvoiceCreated())
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                         Printitem += "T 5 0 410 "
                                 + x
                                 + " "

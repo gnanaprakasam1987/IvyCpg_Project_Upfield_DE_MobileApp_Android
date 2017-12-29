@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -87,7 +88,6 @@ import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
-import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -855,7 +855,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (!isClick) {
                 isClick = true;
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
-                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                mDigitalContentHelper.downloadDigitalContent(getApplicationContext(), "RETAILER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
@@ -986,7 +986,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         .getConfigCode()
                         .equals(StandardListMasterConstants.MENU_STOCK_REPLACEMENT)) {
                     if (menuDB.get(i).getHasLink() == 1) {
-                        if (SalesReturnHelper.getInstance(this).isStockReplacementDone())
+                        if (SalesReturnHelper.getInstance(this).isStockReplacementDone(getApplicationContext()))
                             menuDB.get(i).setDone(true);
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
@@ -1541,13 +1541,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
                                 && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
                             NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
-                            mNearExpiryHelper.loadSKUTracking(true);
+                            mNearExpiryHelper.loadSKUTracking(getApplicationContext(), true);
                         }
 
                         if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
                             PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
-                            priceTrackingHelper.loadPriceTransaction();
-                            if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                            priceTrackingHelper.loadPriceTransaction(getApplicationContext());
+                            if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                                 priceTrackingHelper.updateLastVisitPriceAndMRP();
                             }
                         }
@@ -1865,13 +1865,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK
                                         && bmodel.configurationMasterHelper.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) {
                                     NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
-                                    mNearExpiryHelper.loadSKUTracking(false);
+                                    mNearExpiryHelper.loadSKUTracking(getApplicationContext(), false);
                                 }
 
                                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
                                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(this);
-                                    priceTrackingHelper.loadPriceTransaction();
-                                    if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                                    priceTrackingHelper.loadPriceTransaction(getApplicationContext());
+                                    if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                                         priceTrackingHelper.updateLastVisitPriceAndMRP();
                                     }
                                 }
@@ -2191,9 +2191,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.productHelper.downloadInStoreLocations();
 
                 PhotoCaptureHelper mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
-                mPhotoCaptureHelper.downloadPhotoCaptureProducts();
-                mPhotoCaptureHelper.downloadPhotoTypeMaster();
-                mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(bmodel.getRetailerMasterBO().getRetailerID());
+                mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
+                mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());
+                mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
 
                 if (!isClick) {
                     isClick = true;
@@ -2437,7 +2437,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                salesReturnHelper.loadSalesReturnConfigurations();
+                salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
 
                 bmodel.reasonHelper.downloadSalesReturnReason();
 
@@ -2456,7 +2456,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                         salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData();
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
@@ -2525,7 +2525,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
-                mDigitalContentHelper.downloadDigitalContent("RETAILER");
+                mDigitalContentHelper.downloadDigitalContent(getApplicationContext(), "RETAILER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
@@ -2627,7 +2627,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
@@ -2669,7 +2669,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_POSM);
 
                 if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
@@ -2716,10 +2716,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mNearExpiryHelper.mSelectedActivityName = menu.getMenuName();
 
                 bmodel.productHelper.downloadInStoreLocations();
-                mNearExpiryHelper.loadSKUTracking(false);
+                mNearExpiryHelper.loadSKUTracking(getApplicationContext(), false);
 
-                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone()) {
-                    mNearExpiryHelper.loadLastVisitSKUTracking();
+                if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone(getApplicationContext())) {
+                    mNearExpiryHelper.loadLastVisitSKUTracking(getApplicationContext());
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_NEAREXPIRY), 1);
@@ -2803,11 +2803,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
 
                 mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
-                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.loadConfigurations(getApplicationContext());
                 chooseFilterType(MENU_PLANOGRAM);
-                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM, bmodel.retailerMasterBO.getRetailerID());
-                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM);
-                mPlanoGramHelper.loadPlanoGramInEditMode(bmodel.retailerMasterBO.getRetailerID());
+                mPlanoGramHelper.downloadLevels(getApplicationContext(), MENU_PLANOGRAM, bmodel.retailerMasterBO.getRetailerID());
+                mPlanoGramHelper.downloadMaster(getApplicationContext(), MENU_PLANOGRAM);
+                mPlanoGramHelper.loadPlanoGramInEditMode(getApplicationContext(), bmodel.retailerMasterBO.getRetailerID());
                 bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_PLANOGRAM);
 
                 if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
@@ -2863,7 +2863,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.productHelper.downloadTaggedProducts("PC");
 
                 // Load Price related configurations.
-                priceTrackingHelper.loadPriceCheckConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
+                priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
 
                 if (priceTrackingHelper.IS_LOAD_PRICE_COMPETITOR) {
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
@@ -2871,9 +2871,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 priceTrackingHelper.clearPriceCheck();
-                priceTrackingHelper.loadPriceTransaction();
+                priceTrackingHelper.loadPriceTransaction(getApplicationContext());
 
-                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                     priceTrackingHelper.updateLastVisitPriceAndMRP();
                 }
 
@@ -2921,16 +2921,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.productHelper.downloadTaggedProducts("PC");
 
                 // Load Price related configurations.
-                priceTrackingHelper.loadPriceCheckConfiguration(bmodel.getRetailerMasterBO().getSubchannelid());
+                priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
                 bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
 
                 priceTrackingHelper.clearPriceCheck();
-                priceTrackingHelper.loadPriceTransaction();
+                priceTrackingHelper.loadPriceTransaction(getApplicationContext());
                 bmodel.competitorTrackingHelper.downloadPriceCompanyMaster(MENU_PRICE_COMP);
 
-                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone()) {
+                if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                     priceTrackingHelper.updateLastVisitPriceAndMRP();
                 }
 
@@ -2986,7 +2986,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 PromotionHelper promotionHelper = PromotionHelper.getInstance(this);
-                promotionHelper.loadDataForPromotion(menu.getConfigCode());
+                promotionHelper.loadDataForPromotion(getApplicationContext(), menu.getConfigCode());
                 if (promotionHelper.getPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3166,7 +3166,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 SODAssetHelper mSODAssetHelper = SODAssetHelper.getInstance(this);
 
                 mSODAssetHelper.downloadLocations();
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+                assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 //Load filter
                 if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)

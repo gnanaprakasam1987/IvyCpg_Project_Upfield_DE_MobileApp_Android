@@ -58,7 +58,7 @@ public class About extends AppCompatActivity {
         TextView version = (TextView) findViewById(R.id.appVersionTV);
         version.setText(getResources().getString(R.string.version) + bmodel.getApplicationVersionName());
 
-        String supportNo = LoginHelper.getInstance(this).getSupportNo();
+        String supportNo = LoginHelper.getInstance(this).getSupportNo(getApplicationContext());
         TextView support = (TextView) findViewById(R.id.customerSupport);
         if (supportNo.length() > 0)
             support.setText(supportNo);
