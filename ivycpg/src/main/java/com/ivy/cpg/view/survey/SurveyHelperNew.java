@@ -239,7 +239,7 @@ public class SurveyHelperNew {
 
             sb.append("SELECT Distinct Survey.SurveyId,Survey.GroupId,IfNull(LocationId,0) AS LocationId,IfNull(ChannelId,0) AS ChannelId," +
                     "Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag" +
-                    ",IfNull(PriorityBiD,0) AS PriorityBiD,IfNull(RetailerID,0) AS RetailerID" +
+                    ",IfNull(PriorityBiD,0) AS PriorityBiD,IfNull(RetailerID,0) AS RetailerID, IfNull(AccountID,0) AS AccountID" +
                     " FROM (SELECT  DISTINCT SurveyId,GroupId FROM SurveyCriteriaMapping) AS Survey" +
                     " LEFT JOIN  (SELECT DISTINCT SurveyId,GroupId,CriteriaId LocationId  FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
@@ -262,9 +262,14 @@ public class SurveyHelperNew {
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='RETAILER')" +
                     " RTR ON  Survey.SurveyId=RTR.SurveyId and Survey.GroupId=RTR.GroupId" +
+                    " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId AccountID FROM SurveyCriteriaMapping" +
+                    " INNER JOIN StandardListMaster on ListId=CriteriaType" +
+                    " WHERE ListCode='ACCOUNT')" +
+                    " ACC ON  Survey.SurveyId=ACC.SurveyId and Survey.GroupId=ACC.GroupId" +
                     " where ifNull(locationid,0) in(0" + locIdScheme + "," + bmodel.getRetailerMasterBO().getLocationId() + ")" +
                     " And ifnull(channelid,0) in (0" + channelId + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ") And ifnull(PriorityBiD,0) in (0," + bmodel.getRetailerMasterBO().getPrioriryProductId() + ") "
-                    + "And ifnull(RetailerID,0) in (0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
+                    + "And ifnull(RetailerID,0) in (0," + bmodel.getRetailerMasterBO().getRetailerID() + ")"
+                    + "And ifnull(AccountID,0) in (0," + bmodel.getRetailerMasterBO().getAccountid() + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -303,14 +308,10 @@ public class SurveyHelperNew {
             int questionIndex = -1;
             int optionIndex = -1;
             String mtempGName = "";
-            String locationQuery = "";
-            String channelQuery = "";
             String retailerid = "0";
 
 
             if (!fromHomeScreen) {
-                locationQuery = "SCM.locid=" + bmodel.getRetailerMasterBO().getLocationId() + "  OR SCM.locid in (" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ")";
-                channelQuery = "SCM.ChannelId=" + bmodel.getRetailerMasterBO().getSubchannelid() + "  OR SCM.ChannelId in (" + getChannelidForSurvey() + ")";
                 if (bmodel.getRetailerMasterBO() != null)
                     retailerid = bmodel.getRetailerMasterBO().getRetailerID();
             }
@@ -1796,10 +1797,10 @@ public class SurveyHelperNew {
                                     subqBO.setSelectedAnswerID(c1.getInt(1));
                                     subqBO.setSelectedAnswer(c1.getString(2));
 
-                                    if (subqBO.getQuestionID() == c.getInt(0))
-                                        subqBO.setQuestScore(subqBO.getQuestScore() + c.getFloat(3));
+                                    if (subqBO.getQuestionID() == c1.getInt(0))
+                                        subqBO.setQuestScore(subqBO.getQuestScore() + c1.getFloat(3));
                                     else
-                                        subqBO.setQuestScore(c.getFloat(3));
+                                        subqBO.setQuestScore(c1.getFloat(3));
 
                                     sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
                                     sb1.append(QT(uid));

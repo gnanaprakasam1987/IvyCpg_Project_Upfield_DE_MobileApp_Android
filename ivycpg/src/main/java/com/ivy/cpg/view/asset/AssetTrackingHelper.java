@@ -24,8 +24,7 @@ import java.util.Vector;
 @SuppressLint("UseSparseArrays")
 public class AssetTrackingHelper {
 
-    private static AssetTrackingHelper instance=null;
-    private final Context context;
+    private static AssetTrackingHelper instance = null;
     private final BusinessModel mBusinessModel;
     private AssetTrackingBO mAssetTrackingBO;
     public String mSelectedActivityName;
@@ -101,7 +100,6 @@ public class AssetTrackingHelper {
     private static final String MENU_POSM = "MENU_POSM";
 
     private AssetTrackingHelper(Context context) {
-        this.context = context;
         this.mBusinessModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -118,19 +116,23 @@ public class AssetTrackingHelper {
     }
 
     public static AssetTrackingHelper getInstance(Context context) {
-        if(instance==null)
-            instance=new AssetTrackingHelper(context);
+        if (instance == null)
+            instance = new AssetTrackingHelper(context);
 
-         return instance;
+        return instance;
+    }
+
+    public void clear() {
+        instance = null;
     }
 
     /*
     Download Master Data needed for Asset Screen
      */
-    public void loadDataForAssetPOSM(String mMenuCode) {
+    public void loadDataForAssetPOSM(Context mContext, String mMenuCode) {
         if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
-            SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(context);
+            SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
             surveyHelperNew.setFromHomeScreen(false);
             surveyHelperNew.downloadModuleId("STANDARD");
             surveyHelperNew.downloadQuestionDetails(mMenuCode);
@@ -140,9 +142,9 @@ public class AssetTrackingHelper {
 
         //update configurations
         if (MENU_ASSET.equalsIgnoreCase(mMenuCode))
-            loadAssetConfigs();
+            loadAssetConfigs(mContext);
         else if (MENU_POSM.equalsIgnoreCase(mMenuCode) || "MENU_POSM_CS".equalsIgnoreCase(mMenuCode))
-            loadPOSMConfigs();
+            loadPOSMConfigs(mContext);
 
         //download locations
         mBusinessModel.productHelper.downloadInStoreLocations();
@@ -151,17 +153,17 @@ public class AssetTrackingHelper {
         mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
         // Load master records
-        downloadAssetMaster(mMenuCode);
+        downloadAssetMaster(mContext, mMenuCode);
 
         // Load data from transaction
-        loadAssetData(mBusinessModel
+        loadAssetData(mContext, mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
     /**
      * Load All Asset Screen Specific Configurations
      */
-    private void loadAssetConfigs() {
+    private void loadAssetConfigs(Context mContext) {
         try {
             SHOW_ASSET_TARGET = false;
             SHOW_ASSET_QTY = false;
@@ -181,7 +183,7 @@ public class AssetTrackingHelper {
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
             SHOW_MOVE_ASSET = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -220,11 +222,11 @@ public class AssetTrackingHelper {
             db.closeDB();
 
             if (SHOW_ASSET_REASON)
-                downloadAssetPOSMReason(ASSET_REASON);
+                downloadAssetPOSMReason(mContext, ASSET_REASON);
             if (SHOW_ASSET_CONDITION)
-                downloadAssetPOSMReason(ASSET_CONDITION);
+                downloadAssetPOSMReason(mContext, ASSET_CONDITION);
             if (SHOW_REMARKS_ASSET)
-                downloadAssetPOSMReason(ASSET_REMARK);
+                downloadAssetPOSMReason(mContext, ASSET_REMARK);
 
         } catch (Exception e) {
             Commons.printException("loadAssetConfigs " + e);
@@ -274,7 +276,7 @@ public class AssetTrackingHelper {
     /**
      * Load all POSM related configurations
      */
-    private void loadPOSMConfigs() {
+    private void loadPOSMConfigs(Context mContext) {
         try {
             SHOW_POSM_TARGET = false;
             SHOW_POSM_QTY = false;
@@ -293,7 +295,7 @@ public class AssetTrackingHelper {
             SHOW_POSM_ALL = false;
             SHOW_REMARKS_POSM = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -333,9 +335,9 @@ public class AssetTrackingHelper {
         }
 
         if (SHOW_POSM_REASON)
-            downloadAssetPOSMReason(POSM_REASON);
+            downloadAssetPOSMReason(mContext, POSM_REASON);
         if (SHOW_POSM_CONDITION)
-            downloadAssetPOSMReason(POSM_CONDITION);
+            downloadAssetPOSMReason(mContext, POSM_CONDITION);
 
     }
 
@@ -384,7 +386,7 @@ public class AssetTrackingHelper {
      *
      * @param moduleName module name
      */
-    private void downloadAssetMaster(String moduleName) {
+    private void downloadAssetMaster(Context mContext, String moduleName) {
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = null;
 
         String type;
@@ -397,13 +399,13 @@ public class AssetTrackingHelper {
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
             db.openDataBase();
 
-            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and ListType='POSM_GROUP_TYPE' ");
@@ -411,42 +413,21 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
             String allMasterSb = sb.toString();
-            if (level == 1) {
-                // account mapping
-                sb.append(" and AccountId =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getAccountid());
-            } else if (level == 2) {
-                // retailer mapping
-                sb.append(" and Retailerid=");
-                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
-            } else if (level == 3) {
-                // Class mapping
-                sb.append(" and Classid = ");
-                sb.append(mBusinessModel.getRetailerMasterBO().getClassid());
-            } else if (level == 4) {
-                // Location mapping
-                sb.append(" and Locid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(")");
-            } else if (level == 5) {
-                // Channel Mapping
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            } else if (level == 6) {
+            sb.append(" and AccountId in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" and Retailerid in(0,");
+            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" and Classid in (0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+            sb.append(" and Locid in(0,");
+            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+            sb.append(")");
+            sb.append(" and (Channelid in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" OR Channelid in (0,");
+            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
-                // Location Mapping and Channel Mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
-                sb.append(")");
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            }
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                 sb.append(" and (SBD.Productid = ");
@@ -559,14 +540,14 @@ public class AssetTrackingHelper {
      * @param mRetailerId Retailer ID
      * @param moduleName  Module Name
      */
-    private void loadAssetData(String mRetailerId, String moduleName) {
+    private void loadAssetData(Context mContext, String mRetailerId, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
         else
             type = MERCH_INIT;
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -653,7 +634,7 @@ public class AssetTrackingHelper {
      *
      * @param category Reason Category
      */
-    private void downloadAssetPOSMReason(String category) {
+    private void downloadAssetPOSMReason(Context mContext, String category) {
         switch (category) {
             case ASSET_REASON:
                 mAssetReasonList = new ArrayList<>();
@@ -672,7 +653,7 @@ public class AssetTrackingHelper {
                 break;
         }
         ReasonMaster reasonBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -719,7 +700,7 @@ public class AssetTrackingHelper {
      *
      * @param moduleName Module Name
      */
-    public void downloadAssetsPosm(String moduleName) {
+    public void downloadAssetsPosm(Context mContext, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = "CMP";
@@ -727,7 +708,7 @@ public class AssetTrackingHelper {
             type = "CMN";
 
         AssetAddDetailBO assetBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -868,11 +849,11 @@ public class AssetTrackingHelper {
      *
      * @param brandPosm POSM Id
      */
-    public void downloadAssetBrand(String brandPosm) {
+    public void downloadAssetBrand(Context mContext, String brandPosm) {
 
         AssetAddDetailBO assetBO;
         mBrandSpinner = new Vector<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -907,7 +888,7 @@ public class AssetTrackingHelper {
      *
      * @param moduleName Module Name
      */
-    public void lodAddRemoveAssets(String moduleName) {
+    public void lodAddRemoveAssets(Context mContext, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -916,7 +897,7 @@ public class AssetTrackingHelper {
         AssetTrackingBO assetBO;
 
         mAddRemoveAssets = new Vector<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -931,7 +912,7 @@ public class AssetTrackingHelper {
                     typeListId = c0.getInt(0);
                 }
             }
-            int level = mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
 
 
             StringBuilder sb = new StringBuilder();
@@ -944,37 +925,20 @@ public class AssetTrackingHelper {
             sb.append(" and SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
-
-            if (level == 2) {
-                // retailer mapping
-                sb.append(" and Retailerid=");
-                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
-            } else if (level == 4) {
-                // Location mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(")");
-
-
-            } else if (level == 5) {
-                // Channel Mapping
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-
-            } else if (level == 6) {
-
-                // Location Mapping and Channel Mapping
-                sb.append(" and Locid in(");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getLocationIdsForScheme());
-                sb.append(" and (Channelid =");
-                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid());
-                sb.append(" OR Channelid in (");
-                sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
-                sb.append("))");
-            }
+            sb.append(" and AccountId in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" and Retailerid in(0,");
+            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" and Classid in (0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+            sb.append(" and Locid in(0,");
+            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+            sb.append(")");
+            sb.append(" and (Channelid in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" OR Channelid in (0,");
+            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());
@@ -1103,8 +1067,8 @@ public class AssetTrackingHelper {
      *
      * @param imgName imageName
      */
-    public void deleteImageName(String imgName) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public void deleteImageName(Context mContext, String imgName) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -1115,13 +1079,13 @@ public class AssetTrackingHelper {
     /**
      * Method to save Asset Details in sql table
      */
-    public void saveAssetAddAndDeleteDetails(String moduleName) {
+    public void saveAssetAddAndDeleteDetails(Context mContext, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
         else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -1162,13 +1126,13 @@ public class AssetTrackingHelper {
     /**
      * Method to save Asset Movement Details in sql table
      */
-    public void saveAssetMovementDetails(String moduleName) {
+    public void saveAssetMovementDetails(Context mContext, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
         else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -1214,7 +1178,7 @@ public class AssetTrackingHelper {
      * @param reasonId   Reason ID
      * @param moduleName Module Name
      */
-    public void saveAddAndDeleteDetails(String posmId, String mSno,
+    public void saveAddAndDeleteDetails(Context mContext, String posmId, String mSno,
                                         String mSbdId, String mBrandId, String reasonId, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName))
@@ -1223,7 +1187,7 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -1262,8 +1226,8 @@ public class AssetTrackingHelper {
      *
      * @param mSno SNO
      */
-    public void deletePosmDetails(String mSno) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public void deletePosmDetails(Context mContext, String mSno) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -1285,9 +1249,9 @@ public class AssetTrackingHelper {
      * @param mSno SNO
      * @return Is Serial Number available
      */
-    public boolean isExistingRetailerSno(String mSno) {
+    public boolean isExistingRetailerSno(Context mContext, String mSno) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -1317,9 +1281,9 @@ public class AssetTrackingHelper {
     /**
      * Method to check the Asset already scanned and mapped to other retailer in sql table
      */
-    public boolean isExistingAssetInRetailer(String serialNum) {
+    public boolean isExistingAssetInRetailer(Context mContext, String serialNum) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -1351,14 +1315,14 @@ public class AssetTrackingHelper {
      *
      * @param moduleName Module Name
      */
-    public void saveAsset(String moduleName) {
+    public void saveAsset(Context mContext, String moduleName) {
         String type = "";
         if (MENU_ASSET.equals(moduleName)) {
             type = MERCH;
         } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
         }
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
 
@@ -1531,11 +1495,11 @@ public class AssetTrackingHelper {
                                     assetDetailValues.append(QT(""));
                                 }
 
-                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
 
-                                    sum = sum + productWeightAge;
+                                if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
 
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
@@ -1646,10 +1610,9 @@ public class AssetTrackingHelper {
                                 }
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(productWeightAge);
-
-                                    sum = sum + productWeightAge;
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0)
+                                        sum = sum + productWeightAge;
                                 }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
@@ -1777,8 +1740,8 @@ public class AssetTrackingHelper {
     /**
      * Method to check the movement Asset in sql table
      */
-    public ArrayList<String> getAssetMovementDetails() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public ArrayList<String> getAssetMovementDetails(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
         ArrayList<String> retailerMovedData = new ArrayList<>();

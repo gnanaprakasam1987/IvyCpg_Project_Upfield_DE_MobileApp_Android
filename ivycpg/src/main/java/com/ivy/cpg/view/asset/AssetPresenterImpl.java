@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.asset;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -29,34 +30,31 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     int mSelectedLocationIndex;
     private static final String ALL = "ALL";
-    private String mCapturedBarcode ="ALL";
-    private String mCapturedNFCTag="";
-    ArrayList<AssetTrackingBO> mAssetList=new ArrayList<>();
+    private String mCapturedBarcode = "ALL";
+    private String mCapturedNFCTag = "";
+    ArrayList<AssetTrackingBO> mAssetList = new ArrayList<>();
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
     public String mSelectedSerial = "";
-    String photoPath="";
+    String photoPath = "";
+    private Context mContext;
 
-    public AssetPresenterImpl(BusinessModel mBModel,AssetTrackingHelper mAssetTrackingHelper){
-        this.mBModel=mBModel;
-        this.mAssetTrackingHelper=mAssetTrackingHelper;
+    public AssetPresenterImpl(Context mContext, BusinessModel mBModel, AssetTrackingHelper mAssetTrackingHelper) {
+        this.mBModel = mBModel;
+        this.mAssetTrackingHelper = mAssetTrackingHelper;
+        this.mContext = mContext;
     }
 
     @Override
     public void setView(AssetContractor.AssetView mAssetView) {
-       this.mAssetView=mAssetView;
-    }
-
-    @Override
-    public void loadMasters(String mMenuCode) {
-        mAssetTrackingHelper.loadDataForAssetPOSM(mMenuCode);
+        this.mAssetView = mAssetView;
     }
 
 
     @Override
     public void save(String mModuleCode) {
-     new SaveAssetAsync().execute(mModuleCode);
+        new SaveAssetAsync().execute(mModuleCode);
     }
 
     private class SaveAssetAsync extends AsyncTask<String, Void, String> {
@@ -67,7 +65,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         @Override
         protected String doInBackground(String... params) {
             deleteUnUsedImages();
-            mAssetTrackingHelper.saveAsset(params[0]);
+            mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), params[0]);
             mBModel.saveModuleCompletion(params[0]);
             return "";
         }
@@ -92,7 +90,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void setBarcode(String mBarcode) {
-        mCapturedBarcode=mBarcode;
+        mCapturedBarcode = mBarcode;
     }
 
     /* @Override
@@ -103,7 +101,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void updateLocationIndex(int mIndex) {
-        mSelectedLocationIndex=mIndex;
+        mSelectedLocationIndex = mIndex;
 
     }
 
@@ -124,15 +122,14 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public int getItemIndex(String id, ArrayList<ReasonMaster> mList, boolean isReason) {
-        if(isReason){
+        if (isReason) {
             for (int i = 0; i < mList.size(); i++) {
                 ReasonMaster reasonBO = mList.get(i);
                 if (reasonBO.getReasonID().equals(id)) {
                     return i;
                 }
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < mList.size(); i++) {
                 ReasonMaster reasonBO = mList.get(i);
                 if (reasonBO.getConditionID().equals(id)) {
@@ -145,7 +142,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void setNFCTag(String tag) {
-        mCapturedNFCTag=tag;
+        mCapturedNFCTag = tag;
     }
 
     @Override
@@ -157,8 +154,8 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     public void updateList() {
         mAssetList.clear();
 
-       StandardListBO standardListBO=mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex);
-       ArrayList<AssetTrackingBO> mAssetTrackingList=standardListBO.getAssetTrackingList();
+        StandardListBO standardListBO = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex);
+        ArrayList<AssetTrackingBO> mAssetTrackingList = standardListBO.getAssetTrackingList();
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
 
         if (mAssetTrackingList != null) {
@@ -184,16 +181,16 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
             }
         }
 
-        Bundle bundle=null ;
-        boolean isUnmapped=false;
+        Bundle bundle = null;
+        boolean isUnmapped = false;
         if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
             if (mAllAssetTrackingList != null) {
-                  bundle= new Bundle();
+                bundle = new Bundle();
                 for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
                     if (mCapturedBarcode.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
 
-                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mCapturedBarcode)) {
-                            isUnmapped=true;
+                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mContext.getApplicationContext(), mCapturedBarcode)) {
+                            isUnmapped = true;
                             bundle.putString("serialNo", mCapturedBarcode);
                             bundle.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
                             bundle.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
@@ -202,7 +199,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
                             break;
                         } else {
-                            isUnmapped=false;
+                            isUnmapped = false;
                             break;
                         }
                     }
@@ -211,15 +208,14 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         }
 
 
-
-        mAssetView.updateAssets(mAssetList,isUnmapped,bundle);
+        mAssetView.updateAssets(mAssetList, isUnmapped, bundle);
     }
 
     @Override
     public void updateFiveFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mAssetList.clear();
-        ArrayList<AssetTrackingBO> mAssetTrackingList=mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
+        ArrayList<AssetTrackingBO> mAssetTrackingList = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
 
         if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
             for (LevelBO levelBO : mParentIdList) {
@@ -282,11 +278,27 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     }
                 }
             }
+        } else {
+
+            if (mFilterText.equals("")) {
+                for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                    if (ALL.equals(mCapturedBarcode)) {
+                        if ("".equals(mCapturedNFCTag)) {
+                            mAssetList.add(assetBO);
+
+                        } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                            assetBO.setAvailQty(1);
+                            mAssetList.add(assetBO);
+                        }
+                    } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
+                        mAssetList.add(assetBO);
+                    }
+                }
+            }
         }
 
         mAssetView.updateFiveFilteredList(mAssetList);
     }
-
 
 
     @Override
@@ -297,7 +309,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                 .replace("/", "") + "/"
                 + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + mSelectedImageName;
 
-        if(mSelectedAssetID!=0) {
+        if (mSelectedAssetID != 0) {
             for (AssetTrackingBO assetBO : mAssetList) {
                 if (mSelectedAssetID == assetBO.getAssetID() &&
                         mSelectedSerial.equals(assetBO.getSerialNo())) {
@@ -339,13 +351,13 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     }
 
     @Override
-    public void removeExistingImage(String mAssetId, String imageNameStarts,String photoPath) {
+    public void removeExistingImage(String mAssetId, String imageNameStarts, String photoPath) {
         for (AssetTrackingBO assetBO : mAssetList) {
             if (mAssetId.equals(Integer.toString(assetBO.getAssetID()))) {
                 assetBO.setImageName("");
             }
         }
-        mAssetTrackingHelper.deleteImageName(imageNameStarts);
+        mAssetTrackingHelper.deleteImageName(mContext.getApplicationContext(), imageNameStarts);
         mBModel.synchronizationHelper.deleteFiles(photoPath,
                 imageNameStarts);
     }
@@ -366,11 +378,10 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if(mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
-                        if (assetBO.getAvailQty() > 0  && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
+                    if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
+                        if (assetBO.getAvailQty() > 0 && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
                             return true;
-                    }
-                    else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    } else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
                     } else if (assetBO.getReason1ID() != null) {
                         if (!assetBO.getReason1ID().equals(Integer.toString(0))) {

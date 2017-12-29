@@ -379,7 +379,8 @@ public class ReasonHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "update retailermaster set isDeviated='Y' where retailerid=" + retailerid;
+            String sql = "update RetailerBeatMapping set isDeviated='Y' where retailerid=" + retailerid +
+                    "AND ";
             db.executeQ(sql);
 
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);

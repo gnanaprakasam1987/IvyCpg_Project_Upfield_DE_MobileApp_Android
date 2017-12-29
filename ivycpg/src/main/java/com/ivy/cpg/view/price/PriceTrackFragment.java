@@ -229,6 +229,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.competitor_filter));
 
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
@@ -285,9 +287,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
             public void onDrawerOpened(View drawerView) {
 
-                if (getActionBar() != null) {
+                /*if (getActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
-                }
+                }*/
 
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -427,6 +429,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFragment frag = (FilterFragment) fm
@@ -520,7 +524,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                priceTrackingHelper.savePriceTransaction(businessModel.productHelper.getTaggedProducts());
+                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), businessModel.productHelper.getTaggedProducts());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -659,6 +663,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
+                        mylist.add(sku);
+                    }
+                }
             }
 
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
@@ -690,6 +700,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
+                        mylist.add(sku);
+                    }
+                }
             }
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
             if (mAttributeProducts != null && !parentidList.isEmpty()) {
@@ -718,6 +734,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                                 (sku.getIsSaleable() == 1)) {
                             mylist.add(sku);
                         }
+                    }
+                }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1) {
+                        mylist.add(sku);
                     }
                 }
             }
@@ -1446,9 +1468,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
-        this.parentidList = parentidList;
+        this.parentidList = mParentIdList;
         this.mAttributeProducts = mAttributeProducts;
-        this.filtertext = filtertext;
+        this.filtertext = mFilterText;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         onLoadModule(parentidList, mSelectedIdByLevelId, mAttributeProducts);
     }
@@ -1458,6 +1480,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         try {
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
@@ -1482,4 +1506,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        priceTrackingHelper.clearInstance();
+    }
 }

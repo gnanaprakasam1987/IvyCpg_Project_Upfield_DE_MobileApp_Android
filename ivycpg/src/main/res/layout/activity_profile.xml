@@ -6,14 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:weightSum="3">
+    android:orientation="vertical">
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="2"
         android:fitsSystemWindows="true">
 
@@ -48,119 +47,120 @@
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-                <FrameLayout
-                    android:id="@+id/main_framelayout_title"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/profile_header_frame_layout_height"
                     android:layout_gravity="bottom"
                     android:gravity="center_vertical"
-                    android:orientation="vertical"
                     app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.3">
+                    app:layout_collapseParallaxMultiplier="0.3"
+                    android:background="@drawable/profile_map_bg"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/profile_map_bg"
-                        android:orientation="horizontal">
+                        android:id="@+id/img_layout"
+                        android:layout_width="@dimen/profile_header_img"
+                        android:layout_height="@dimen/profile_header_img"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/profile_header_img_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
+                        android:background="@drawable/circle_blockbg"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:id="@+id/img_layout"
-                            android:layout_width="@dimen/profile_header_img"
-                            android:layout_height="@dimen/profile_header_img"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="@dimen/profile_header_img_marginleft"
-                            android:layout_marginStart="@dimen/profile_header_img_marginleft"
-                            android:background="@drawable/circle_blockbg"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                        <ImageView
+                            android:layout_width="@dimen/profile_header_img_width"
+                            android:layout_height="@dimen/profile_header_img_height"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/store" />
 
-                            <ImageView
-                                android:layout_width="@dimen/profile_header_img_width"
-                                android:layout_height="@dimen/profile_header_img_height"
-                                android:layout_gravity="center"
-                                android:src="@drawable/store" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/main.linearlayout.title"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/retailer_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
-                                tools:text="Apollo Healthcare"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/highlight_small" />
-
-                            <TextView
-                                android:id="@+id/retailer_code"
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_marginTop="@dimen/profile_margin_top_minus"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
-                                tools:text="Ghatkopar (w)"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/font_medium" />
-                        </LinearLayout>
                     </LinearLayout>
-                </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:gravity="bottom|right"
-                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/main.linearlayout.title"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingLeft="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
 
-                    <ProgressBar
-                        android:id="@+id/progress_map"
-                        android:layout_width="@dimen/dimens_20dp"
-                        android:layout_height="@dimen/dimens_20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="@dimen/dimens_20dp"
-                        android:layout_marginLeft="@dimen/dimens_10dp"
-                        android:layout_marginRight="@dimen/dimens_10dp" />
+                        <TextView
+                            android:id="@+id/retailer_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
+                            tools:text="Apollo Healthcare"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/highlight_small" />
 
-                    <ImageView
-                        android:id="@+id/draw_routeimg_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="@dimen/dimens_22dp"
-                        android:layout_marginLeft="@dimen/dimens_10dp"
-                        android:layout_marginRight="@dimen/dimens_10dp"
-                        android:clickable="true"
-                        android:src="@drawable/ic_directions"
-                        android:tint="@color/WHITE" />
+                        <TextView
+                            android:id="@+id/retailer_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"
+                            android:gravity="center_vertical"
+                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
+                            tools:text="Ghatkopar (w)"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/font_medium" />
+                    </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/profile_edit_click"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
-                        android:layout_margin="@dimen/dimens_22dp"
-                        android:layout_marginRight="@dimen/dimens_10dp"
-                        android:src="@drawable/ic_edit"
-                        android:tint="@color/white"
-                        app:borderWidth="0dp"
-                        app:fabSize="mini"
-                        app:layout_anchor="@id/appbar"
-                        app:layout_anchorGravity="bottom|end"
-                        tools:ignore="MissingPrefix" />
+                        android:gravity="bottom|end"
+                        android:orientation="horizontal">
 
+                        <ProgressBar
+                            android:id="@+id/progress_map"
+                            android:layout_width="@dimen/dimens_20dp"
+                            android:layout_height="@dimen/dimens_20dp"
+                            android:layout_marginBottom="@dimen/dimens_20dp"
+                            android:layout_marginLeft="@dimen/dimens_10dp"
+                            android:layout_marginRight="@dimen/dimens_10dp" />
+
+                        <ImageView
+                            android:id="@+id/draw_routeimg_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dimens_22dp"
+                            android:layout_marginLeft="@dimen/dimens_10dp"
+                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_directions"
+                            android:tint="@color/WHITE"
+                            android:contentDescription="@null" />
+
+                        <ImageView
+                            android:id="@+id/profile_edit_click"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|end"
+                            android:layout_margin="@dimen/dimens_22dp"
+                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_10dp"
+                            android:src="@drawable/ic_edit"
+                            android:tint="@color/white"
+                            app:borderWidth="0dp"
+                            app:fabSize="mini"
+                            app:layout_anchor="@id/appbar"
+                            app:layout_anchorGravity="bottom|end"
+                            tools:ignore="MissingPrefix"
+                            android:contentDescription="@null"
+                            />
+
+                    </LinearLayout>
                 </LinearLayout>
+
+
 
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -201,7 +201,6 @@
             android:id="@+id/reason_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_above="@+id/reason_btns"
             android:layout_gravity="center"
             android:background="@color/GRAY"
             android:src="@drawable/downloadsuccess" />
@@ -209,17 +208,16 @@
         <LinearLayout
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/profile_botton_layout_height"
-            android:layout_alignParentBottom="true"
+            android:layout_height="0dp"
             android:layout_weight="0.5"
             android:gravity="bottom|center"
+            android:padding="@dimen/dimen_5dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/profile_deviate"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/profile_history_20dp"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
                 android:onClick="onClick"
@@ -229,7 +227,6 @@
                 android:id="@+id/cancel_visit"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/profile_history_20dp"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
                 android:onClick="onClick"
@@ -240,7 +237,6 @@
                 android:id="@+id/start_visit"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/profile_history_20dp"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
                 android:onClick="onClick"

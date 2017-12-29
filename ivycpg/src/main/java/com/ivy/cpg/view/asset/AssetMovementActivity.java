@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.asset;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -75,7 +76,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
         if (mSelectedLocationIndex != -99 && mSelectedStandardListBO != null)
-            updateList(mSelectedStandardListBO);
+            updateList(getApplicationContext(), mSelectedStandardListBO);
         else {
             Toast.makeText(this, "Failed, Try Again Later", Toast.LENGTH_SHORT).show();
             finish();
@@ -86,11 +87,11 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
      * update List with asset movement details
      * @param standardListBO Selected Location Object
      */
-    protected void updateList(StandardListBO standardListBO) {
+    protected void updateList(Context mContext, StandardListBO standardListBO) {
         mAssetTrackingList = standardListBO.getAssetTrackingList();
         AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-        ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails();
+        ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails(mContext);
         ArrayList<Integer> toRemovePos=new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {
@@ -155,7 +156,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        updateList(mSelectedStandardListBO);
+        updateList(getApplicationContext(), mSelectedStandardListBO);
     }
 
 

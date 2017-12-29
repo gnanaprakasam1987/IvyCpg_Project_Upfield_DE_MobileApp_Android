@@ -58,10 +58,10 @@
     <string name="m2">M-2</string>
     <string name="m3">M-3</string>
 
-    <string name="visit_frequency" >-0</string>
-    <string name="baidu_from" >From : </string>
-    <string name="baidu_to" >To : </string>
-    <string name="zero_zero" >0.0</string>
+    <string name="visit_frequency">-0</string>
+    <string name="baidu_from">From : </string>
+    <string name="baidu_to">To : </string>
+    <string name="zero_zero">0.0</string>
     <string name="io">IO</string>
     <string name="co">CO</string>
 
@@ -217,4 +217,16 @@
         <item quantity="one">Fetching location. Please wait for a second.</item>
         <item quantity="other">Fetching location. Please wait for %d seconds</item>
     </plurals>
+    <string name="order_not_allowed_for_retailer">Order taking not allowed for this retailer.</string>
+
+    <string name="competitor_filter">Competitor Filter</string>
+    <string name="error_e26">Unauthorized access</string>
+    <string name="error_e27">DeviceId mismatch</string>
+    <string name="new_retailer">New Retailer</string>
+
+    <string name="sign_captured_already">Signature already captured. Do you want to delete and re-capture?</string>
+    <string name="post_dated_demand_draft_notallow">Post dated Demand Draft Not Allowed</string>
+    <string name="post_dated_rtgs_notallow">Post dated RTGS Not Allowed</string>
+    <string name="prev_dated_demand_draft_notallow">Previous Dated Demand Draft Not Allowed</string>
+    <string name="prev_dated_rtgs_notallow">Previous Dated RTGS Not Allowed</string>
 </resources>

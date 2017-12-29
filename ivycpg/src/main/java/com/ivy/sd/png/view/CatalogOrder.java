@@ -164,6 +164,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private Button nextBtn;
     private int totalAllQty = 0;
     private TextView totalQtyTV;
+    private File appImageFolderPath;
 
 
     @Override
@@ -174,6 +175,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        if (bmodel.configurationMasterHelper.SHOW_BARCODE)
+            checkAndRequestPermissionAtRunTime(2);
         pdt_recycler_view = (RecyclerView) findViewById(R.id.pdt_recycler_view);
         brand_recycler_view = (RecyclerView) findViewById(R.id.brand_recycler_view);
         top_toolbar = (Toolbar) findViewById(R.id.top_toolbar);
@@ -201,6 +205,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         setScreenTitle("" + bmodel.mSelectedActivityName);
+
+
+        // set catalog image path  root folder name
+        appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
 
         // set a custom shadow that overlays the main content when the drawer
         // opens
@@ -995,7 +1003,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mOOS) && ret.getOos() == 0)
                 || (generaltxt.equalsIgnoreCase(mNMustSell) && ret.getIsNMustSell() == 1)
                 || (generaltxt.equalsIgnoreCase(mDiscount) && ret.getIsDiscountable() == 1)
-                || (generaltxt.equalsIgnoreCase(mStock) && ret.getLocations().get(0).getShelfPiece() > 0)
+                || (generaltxt.equalsIgnoreCase(mStock) && (ret.getLocations().get(0).getShelfPiece() > 0 || ret.getLocations().get(0).getAvailability() > -1))
                 || (generaltxt.equalsIgnoreCase(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
@@ -1055,7 +1063,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
-                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)) {
+                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(0).getShelfPiece() > 0 || ret.getLocations().get(0).getAvailability() > -1)) || (isDiscount && ret.getIsDiscountable() == 1)) {
 
             return true;
         }
@@ -1241,22 +1249,35 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
         } else {
+            if (mFilterText.length() > 0) {
+                for (ProductMasterBO productBO : items) {
+                    for (LevelBO levelBO : mParentIdList) {
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
-
-            for (ProductMasterBO productBO : items) {
-                for (LevelBO levelBO : mParentIdList) {
+                            if (productBO.getIsSaleable() == 1) {
+                                if (levelBO.getProductID() == productBO.getParentid()) {
+                                    //  filtertext = levelBO.getLevelName();
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ProductMasterBO productBO : items) {
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
                         if (productBO.getIsSaleable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                //  filtertext = levelBO.getLevelName();
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                                break;
-                            }
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
                 }
@@ -1748,7 +1769,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         || product.getLocations().get(j).getShelfOuter() > 0
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0)
+                        || product.getLocations().get(j).getWHOuter() > 0
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -1882,7 +1904,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     || ret.getLocations().get(j).getWHPiece() > 0
                                     || ret.getLocations().get(j).getShelfCase() > -1
                                     || ret.getLocations().get(j).getShelfOuter() > -1
-                                    || ret.getLocations().get(j).getShelfPiece() > -1) {
+                                    || ret.getLocations().get(j).getShelfPiece() > -1
+                                    || ret.getLocations().get(j).getAvailability() > -1) {
 
                                 sbdStockAchieved.add(ret.getSbdGroupName());
                             }
@@ -1896,6 +1919,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
                                         .getShelfPiece() > 0
+                                        || ret.getLocations().get(j).getAvailability() > -1
                                         || ret.isSBDAcheivedLocal()) {
                                     sbdStkAndOrderAchieved.add(ret
                                             .getSbdGroupName());
@@ -1912,6 +1936,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                         .getShelfOuter() > 0
                                         || ret.getLocations().get(j)
                                         .getShelfPiece() > 0
+                                        || ret.getLocations().get(j).getAvailability() > -1
                                         || ret.isSBDAcheived()
                                         || ret.isSBDAcheivedLocal()) {
                                     sbdStkAndOrderAchieved.add(ret
@@ -2230,20 +2255,31 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.pdt_image != null) {
-                if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
-                    if (isExternalStorageAvailable()) {
-                        File prd = new File(getImageFilePath(holder.productObj.getProductCode()));
+                //if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+                //if (isExternalStorageAvailable()) {
+                /*File prd = new File(Utils.getSdcardPath(getApplicationContext())
+                        + "/" + bmodel.productHelper.getProductImageUrl() + "/" + holder.productObj.getProductCode() + ".jpg");*/
+                //File prd = new File(getImageFilePath(holder.productObj.getProductCode()));
 
-                        Glide.with(getApplicationContext())
-                                .load(prd)
-                                .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
-                                .dontAnimate()
-                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                                .into(holder.pdt_image);
-                    }
-                } else {
+                Glide.with(getApplicationContext())
+                        .load(
+                                        /*Environment.DIRECTORY_DOWNLOADS)
+                                        + "/"
+                                        + bmodel.userMasterHelper.getUserMasterBO()
+                                        .getUserid()
+                                        + DataMembers.DIGITAL_CONTENT*/
+                                appImageFolderPath
+                                        + "/"
+                                        + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg")
+                        .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(holder.pdt_image);
+                //}
+
+                /*} else {
                     holder.pdt_image.setImageResource(R.drawable.no_image_available);
-                }
+                }*/
 
                 //set SIH value
                 if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
@@ -2337,7 +2373,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
                 scheme_star.setImageDrawable(mDrawable);*/
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP
+                if (!bmodel.configurationMasterHelper.SHOW_CAT_STOCK_SP
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER)) {
                     list_view_stock_btn.setVisibility(View.GONE);

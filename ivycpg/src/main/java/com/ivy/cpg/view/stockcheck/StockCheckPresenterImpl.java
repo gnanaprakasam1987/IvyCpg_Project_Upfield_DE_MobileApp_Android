@@ -159,7 +159,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             try {
                 // save price check
                 if (businessModel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    priceTrackingHelper.savePriceTransaction(stockList);
+                    priceTrackingHelper.savePriceTransaction(context.getApplicationContext(), stockList);
 
                 // save near expiry
                 businessModel.saveNearExpiry();
@@ -248,6 +248,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+                }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
             if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
@@ -282,6 +288,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                         }
                     }
                 }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+                }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
             if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
@@ -315,6 +327,13 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
                     }
+                }
+            } else {
+                for (ProductMasterBO sku : items) {
+                    if (sku.getIsSaleable() == 1)
+                        stockList.add(sku);
+                    fiveFilter_productIDs.add(sku.getProductID());
+
                 }
             }
         }
@@ -378,7 +397,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0));
+                || (generaltxt.equalsIgnoreCase(mShelf) && ((ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0) || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1));
     }
 
     /**
@@ -402,11 +421,14 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             if (product.getLocations().get(i).getShelfOuter() > -1)
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
-
+/*
+            if (product.getLocations().get(i).getAvailability() > -1)
+                totalQty += product.getLocations().get(i).getAvailability();*/
         }
         return totalQty;
 
     }
+
 
     public void updateGeneralText(String mFilterText) {
         fiveFilter_productIDs = null;

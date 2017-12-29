@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.SellerPerformanceBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -34,7 +31,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.StockAndOrder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -391,21 +387,30 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             progressDialogue.dismiss();
-            if (errorCode
-                    .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                if (bmodel.reportHelper.isPerformReport()) {
-                    new LoadAsyncTask().execute();
-                    getActivity().invalidateOptionsMenu();
-                } else {
-                    Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
-                    onBackButtonClick();
-                }
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (bmodel.reportHelper.isPerformReport()) {
+                        new LoadAsyncTask().execute();
+                        getActivity().invalidateOptionsMenu();
+                    } else {
+                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                        onBackButtonClick();
+                    }
 
+                } else {
+                    String errorMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorMessage != null) {
+                        bmodel.showAlert(errorMessage, 0);
+                    }
+                }
             } else {
-                String errorMessage = bmodel.synchronizationHelper
-                        .getErrormessageByErrorCode().get(errorCode);
-                if (errorMessage != null) {
-                    bmodel.showAlert(errorMessage, 0);
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -17,7 +17,6 @@ import java.util.Locale;
 
 public class NearExpiryTrackingHelper {
 
-	private final Context context;
     private final BusinessModel mBModel;
     private static NearExpiryTrackingHelper instance = null;
 
@@ -32,7 +31,6 @@ public class NearExpiryTrackingHelper {
 
 
 	private NearExpiryTrackingHelper(Context context) {
-		this.context = context;
         this.mBModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -43,9 +41,13 @@ public class NearExpiryTrackingHelper {
 		return instance;
 	}
 
-	public void loadLastVisitSKUTracking() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-		try {
+    public void clear() {
+        instance = null;
+    }
+
+    public void loadLastVisitSKUTracking(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
 			db.openDataBase();
 
 			String sql1 = "SELECT ProductId, LocId,expdate, UOMId, Qty,isOwn"
@@ -94,10 +96,10 @@ public class NearExpiryTrackingHelper {
 		}
 	}
 
-	public boolean hasAlreadySKUTrackingDone() {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+    public boolean hasAlreadySKUTrackingDone(Context mContext) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
 			db.createDataBase();
 			db.openDataBase();
 			String sql = "select tid from "
@@ -123,9 +125,9 @@ public class NearExpiryTrackingHelper {
 	/**
 	 * Load SKU from Detail Table
 	 */
-	public void loadSKUTracking(boolean isTaggedProduct) {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-		try {
+    public void loadSKUTracking(Context mContext, boolean isTaggedProduct) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
 			db.openDataBase();
 			k = -1;
 			String tid;
@@ -251,9 +253,9 @@ public class NearExpiryTrackingHelper {
 	/**
 	 * Save Tracking Detail in Detail Table
 	 */
-	public void saveSKUTracking() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-		try {
+    public void saveSKUTracking(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
 			db.openDataBase();
 
 			String tid;

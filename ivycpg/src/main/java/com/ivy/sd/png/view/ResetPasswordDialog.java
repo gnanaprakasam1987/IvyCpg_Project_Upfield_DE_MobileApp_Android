@@ -193,35 +193,48 @@ public class ResetPasswordDialog extends Dialog {
                 jsonObject.put("NewPassword", Npassword);
                 Commons.printInformation("Reset password upload " + jsonObject.toString());
                 String appendUrl = "/V1/ForgotPassword/Validate";
-                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl,false);
-                for (String s : responseVector) {
-                    JSONObject jsonObjectResponse = new JSONObject(s);
+                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, false);
+                if (responseVector.size() > 0) {
+                    for (String s : responseVector) {
+                        JSONObject jsonObjectResponse = new JSONObject(s);
 
-                    Iterator itr = jsonObjectResponse.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            SharedPreferences passwordlockSharedPreference = ctx.getSharedPreferences("passwordlock", ctx.MODE_PRIVATE);
-                            SharedPreferences.Editor edt = passwordlockSharedPreference.edit();
-                            edt.putInt("lockcount", 0);
-                            edt.apply();
-                            downloadStatus = jsonObjectResponse.getInt("Response");
-                            Commons.printInformation("Reset password upload Response " + jsonObject.toString());
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObjectResponse.getString("ErrorCode");
-                            Commons.printInformation("Reset password upload Error " + jsonObject.toString());
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+                        Iterator itr = jsonObjectResponse.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Response")) {
+                                SharedPreferences passwordlockSharedPreference = ctx.getSharedPreferences("passwordlock", ctx.MODE_PRIVATE);
+                                SharedPreferences.Editor edt = passwordlockSharedPreference.edit();
+                                edt.putInt("lockcount", 0);
+                                edt.apply();
+                                downloadStatus = jsonObjectResponse.getInt("Response");
+                                Commons.printInformation("Reset password upload Response " + jsonObject.toString());
+                            } else if (key.equals("ErrorCode")) {
+                                String tokenResponse = jsonObjectResponse.getString("ErrorCode");
+                                Commons.printInformation("Reset password upload Error " + jsonObject.toString());
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
 
-                                return -4;
+                                    return -4;
+
+                                }
 
                             }
 
                         }
 
+
                     }
 
+                } else {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                        if (errorMsg != null) {
+                            Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ctx, ctx.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
                 }
 

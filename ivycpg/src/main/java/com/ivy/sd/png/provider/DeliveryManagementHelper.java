@@ -19,6 +19,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rajesh.k on 24-02-2016.
@@ -75,6 +76,34 @@ public class DeliveryManagementHelper {
 
 
     }
+
+    public ArrayList<RetailerMasterBO> getInvoicedRetailerList() {
+        ArrayList<RetailerMasterBO> invoicedRetailerList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "select distinct RM.Retailerid,RM.RetailerName from invoicemaster IM INNER JOIN RetailerMaster RM on RM.RetailerID = IM.Retailerid"
+                    + " where IM.InvoiceNo not in(select vh.invoiceid from vandeliveryheader vh)";
+            Cursor c = db.selectSQL(s);
+            RetailerMasterBO retailerMasterBO;
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerMasterBO = new RetailerMasterBO();
+                    retailerMasterBO.setRetailerID(c.getString(0));
+                    retailerMasterBO.setRetailerName(c.getString(1));
+                    invoicedRetailerList.add(retailerMasterBO);
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        } finally {
+            db.closeDB();
+        }
+
+        return invoicedRetailerList;
+    }
     public ArrayList<InvoiceHeaderBO> getInvoiceList(){
         if(mInvoiceList!=null){
             return mInvoiceList;
@@ -84,30 +113,60 @@ public class DeliveryManagementHelper {
     }
 
     public void downloadDeliveryProductDetails(String invoiceno){
+        HashMap<Integer, ProductMasterBO> invoicedProducts = new HashMap<>();
         mInvoiceDetailsList=new ArrayList<ProductMasterBO>();
         DBUtil db=null;
         try{
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum from invoicedetailuomwise id ");
-            sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid ");
-            sb.append(" where invoiceid="+bmodel.QT(invoiceno));
-            sb.append("  order by productid,id.batchid");
+            //sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum from invoicedetailuomwise id ");
+            //sb.append("left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid ");
+            //sb.append(" where invoiceid="+bmodel.QT(invoiceno));
+            //sb.append("  order by productid,id.batchid");
 
+            sb.append("select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
+                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih from invoicedetailuomwise id");
+            sb.append(" Inner JOIN ProductMaster PM on PM.PID = id.productid");
+            sb.append(" left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid="
+                    + bmodel.QT(invoiceno) + "  order by productid,id.batchid");
+/*select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID,
+PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize from invoicedetailuomwise id
+Inner JOIN ProductMaster PM on PM.PID = id.productid
+left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid='123456'  order by productid,id.batchid*/
 
-
-
-            /*sb.append("select productid,qty,uomid,uomcount,uomprice,batchid from invoicedetailuomwise ");
-            sb.append("where invoiceid="+bmodel.QT(invoiceno));
-            sb.append("  order by productid,batchid");*/
             Cursor c=db.selectSQL(sb.toString());
             if(c.getCount()>0){
                 ProductMasterBO invoiceProductBO=null;
                 int productid=0;
                 int batchid=0;
                 while (c.moveToNext()){
-                    ProductMasterBO product=bmodel.productHelper.getProductMasterBOById(c.getString(0));
+                    productid = c.getInt(c.getColumnIndex("productid"));
+                    if (invoicedProducts.get(productid) == null) {
+                        invoiceProductBO = new ProductMasterBO();
+                        invoiceProductBO.setProductID(productid + "");
+                        invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
+                        invoiceProductBO.setSIH(c.getInt(c.getColumnIndex("sih")));
+                    } else {
+                        invoiceProductBO = invoicedProducts.get(productid);
+                    }
+                    if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
+                        invoiceProductBO.setOrderedPcsQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
+
+                        //invoiceProductBO.setSrp(c.getFloat(4));
+                    } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
+                        invoiceProductBO.setOrderedCaseQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
+                        invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
+                    } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
+                        invoiceProductBO.setOrderedOuterQty(c.getInt(1));
+                        invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
+                        invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
+                    }
+
+
+                    /*ProductMasterBO product=bmodel.productHelper.getProductMasterBOById(c.getString(0));
 
                     if(product!=null) {
                         if (productid == c.getInt(0) && batchid == c.getInt(5)) {
@@ -177,11 +236,17 @@ public class DeliveryManagementHelper {
                             batchid=c.getInt(5);
                         }
                     }
+*/
+                    invoicedProducts.put(productid, invoiceProductBO);
+                }
 
+                for (Map.Entry<Integer, ProductMasterBO> map : invoicedProducts.entrySet()) {
+
+                    mInvoiceDetailsList.add(map.getValue());
 
                 }
-                if(productid!=0)
-                    mInvoiceDetailsList.add(invoiceProductBO);
+                /*if(productid!=0)
+                    mInvoiceDetailsList.add(invoiceProductBO);*/
             }
         }catch (Exception e){
             Commons.print(e.getMessage());
@@ -245,7 +310,7 @@ public class DeliveryManagementHelper {
         return new ArrayList<ProductMasterBO>();
     }
 
-    public void saveDeliveryManagement(String invoiceno,String selectedItem,String SignName,String SignPath) {
+    public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
         DBUtil db = null;
         try {
             InvoiceHeaderBO invoiceHeaderBO = null;
@@ -258,7 +323,8 @@ public class DeliveryManagementHelper {
 
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate,invoiceid,SignName,Proofpicture";
+            String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate," +
+                    "invoiceid,SignName,Proofpicture,contactName,contactNo,SignaturePath";
             String status = "";
             if (selectedItem.equals(mContext.getResources().getString(R.string.fullfilled))) {
                 status = "F";
@@ -277,8 +343,10 @@ public class DeliveryManagementHelper {
             header.append(DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
             header.append("," + bmodel.QT(invoiceno));
             header.append("," + bmodel.QT(SignName));//internal colunm
-            header.append("," + bmodel.QT(SignPath))// proofPicture not used... so using same column
-            ;
+            header.append("," + bmodel.QT(SignPath));// proofPicture not used... so using same column
+            header.append("," + bmodel.QT(contactName));
+            header.append("," + bmodel.QT(contactNo));
+            header.append("," + bmodel.QT(SignPath));
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header.toString());
 
             if (selectedItem.equals(mContext.getResources().getString(R.string.partially_fullfilled))) {

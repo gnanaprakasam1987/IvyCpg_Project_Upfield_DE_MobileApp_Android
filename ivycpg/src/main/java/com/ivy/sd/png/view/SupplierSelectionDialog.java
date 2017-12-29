@@ -33,6 +33,11 @@ public class SupplierSelectionDialog extends DialogFragment {
     Context mContext;
     ArrayList<String> lst_group;
     ArrayList<List<SupplierMasterBO>> lst_child;
+    private UpdateSupplierName updateSupplierName;
+
+    public interface UpdateSupplierName {
+        void updateSupplierName(String supplierName);
+    }
     public  SupplierSelectionDialog(){
 
     }
@@ -43,6 +48,12 @@ public class SupplierSelectionDialog extends DialogFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        try {
+            updateSupplierName = (UpdateSupplierName) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling Fragment must implement OnAddFriendListener");
+        }
 
     }
 
@@ -133,6 +144,8 @@ public class SupplierSelectionDialog extends DialogFragment {
                         bmodel.getRetailerMasterBO().setDistParentId(childHolder.childList.get(childHolder.childPosition).getDistParentID());
                         bmodel.updateRetailerWiseSupplierType(childHolder.childList.get(childHolder.childPosition)
                                 .getSupplierID());
+                        updateSupplierName.updateSupplierName(childHolder.childList.get(childHolder.childPosition)
+                                .getSupplierName());
                         getDialog().dismiss();
                     }
                 });

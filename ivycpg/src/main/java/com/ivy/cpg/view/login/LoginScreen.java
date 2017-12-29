@@ -163,6 +163,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loginPresenter.reloadActivity();
+    }
+
     private void updateImageViews() {
         /* Update login screen background image*/
         try {
@@ -319,7 +325,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                                         R.string.please_check_username_and_password), false);
                     } else {
                         int count = loginPresenter.getPasswordLockCount();
-                        mForgotPasswordTV.setVisibility(View.VISIBLE);
+                        if (mForgotPasswordTV != null)
+                            mForgotPasswordTV.setVisibility(View.VISIBLE);
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
                             dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
@@ -430,7 +437,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues();
+                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
                         businessModel.activationHelper.clearAppUrl();
                         businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
@@ -492,7 +499,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
                         try {
-                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster();
+                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster(getApplicationContext());
                             startActivity(new Intent(LoginScreen.this, LoginScreen.class));
                             finish();
                             break;
@@ -633,18 +640,20 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
     @Override
     public void showForgotPassword() {
-        mForgotPasswordTV.setVisibility(View.VISIBLE);
-        mForgotPasswordTV.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editTextUserName.getText().toString().equals("")) {
-                    businessModel.userNameTemp = editTextUserName.getText().toString();
-                    loginPresenter.callForgetPassword();
-                } else {
-                    editTextUserName.setError(getResources().getString(R.string.enter_username));
+        if (mForgotPasswordTV != null) {
+            mForgotPasswordTV.setVisibility(View.VISIBLE);
+            mForgotPasswordTV.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!editTextUserName.getText().toString().equals("")) {
+                        businessModel.userNameTemp = editTextUserName.getText().toString();
+                        loginPresenter.callForgetPassword();
+                    } else {
+                        editTextUserName.setError(getResources().getString(R.string.enter_username));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -722,6 +731,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        LoginHelper.getInstance(LoginScreen.this).clearInstance();
     }
 
 

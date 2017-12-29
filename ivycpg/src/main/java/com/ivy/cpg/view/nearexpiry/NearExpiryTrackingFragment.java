@@ -253,7 +253,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (mBModel.productHelper.getInStoreLocation().size() < 2)
+                if (mBModel.productHelper.getInStoreLocation().size() > 1)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
@@ -646,7 +646,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                mNearExpiryHelper.saveSKUTracking();
+                mNearExpiryHelper.saveSKUTracking(getActivity().getApplicationContext());
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -918,5 +918,12 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mNearExpiryHelper.clear();
+        System.gc();
     }
 }

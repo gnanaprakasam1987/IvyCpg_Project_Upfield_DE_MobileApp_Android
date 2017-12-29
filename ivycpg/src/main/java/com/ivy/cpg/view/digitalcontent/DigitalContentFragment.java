@@ -415,7 +415,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             if (action == 1) {
 
                 mDigitalContentHelper.setIsDigitalContent();
-                mDigitalContentHelper.setDigitalContentInDB();
+                mDigitalContentHelper.setDigitalContentInDB(getActivity().getApplicationContext());
                 mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
 
                 switch (calledFrom) {
@@ -491,7 +491,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 }
             } else if (action == 2) {
                 mDigitalContentHelper.setIsDigitalContent();
-                mDigitalContentHelper.setDigitalContentInDB();
+                mDigitalContentHelper.setDigitalContentInDB(getContext().getApplicationContext());
                 mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -805,9 +805,11 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mDigitalContentHelper.clearInstance();
         unbindDrawables(view.findViewById(R.id.root));
     }
 

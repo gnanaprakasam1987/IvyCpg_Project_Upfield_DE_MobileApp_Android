@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.StringInputStream;
@@ -221,6 +222,7 @@ SynchronizationHelper {
     private ArrayList<String> mUserRetailerTranDownloadUrlList;
     private HashMap<String, String> mErrorMessageByErrorCode;
     private String mSecurityKey = "";
+    private String mAuthErrorCode = "";
     private HashMap<String, JSONObject> mJsonObjectResponseByTableName = new HashMap<String, JSONObject>();
 
     private ArrayList<RetailerMasterBO> mRetailerListByLocOrUserWise;
@@ -230,6 +232,10 @@ SynchronizationHelper {
 
     public String getSecurityKey() {
         return mSecurityKey;
+    }
+
+    public String getAuthErroCode() {
+        return mAuthErrorCode;
     }
 
     public int getmRetailerWiseIterateCount() {
@@ -574,6 +580,24 @@ SynchronizationHelper {
         }
     }
 
+    private void updateOrderStatus() {
+        //Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' where RetailerID in(Select RetailerID from OrderHeader)
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            db.updateSQL("Update RetailerMaster set isOrdered = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+
+            db.updateSQL("Update RetailerBeatMapping set isVisited = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
     public boolean checkSIHTable() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -740,10 +764,10 @@ SynchronizationHelper {
 
             /** Added following line to fix the Order split download issues. **/
             if (!bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                bmodel.synchronizationHelper.deleteOrderHistory();
+                deleteOrderHistory();
             }
 
-            bmodel.synchronizationHelper.deleteDBFromSD();
+            deleteDBFromSD();
 
             try {
 
@@ -2017,7 +2041,7 @@ SynchronizationHelper {
                 sb.append("msqQty, dUomQty, mrp, RField1, RField2, RField3, wsih, IsAlloc,  dOuomQty, dOuomid,  CaseBarcode, ");
                 sb.append("OuterBarcode, isReturnable, suggestqty, isMust, maxQty, stdpcs, stdcase, stdouter, issalable, baseprice, ");
                 sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription) ");
-                sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, IFNULL(A.piecebarcode,0) , P.vat, P.isfocus, ");
+                sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, (CASE WHEN IFNULL(A.piecebarcode,'') = '' THEN P.barcode ELSE A.piecebarcode END), P.vat, P.isfocus, ");
                 sb.append("IFNULL(A.caseUomId,0), P.msqQty, IFNULL(A.caseqty,0), P.mrp, P.RField1, P.RField2, P.RField3, P.wsih, P.IsAlloc,  ");
                 sb.append("IFNULL(A.boxqty,0), IFNULL(A.boxUomId,0),  IFNULL(A.casebarcode,0), IFNULL(A.boxbarcode,0), P.isReturnable, ");
                 sb.append("P.suggestqty, P.isMust, P.maxQty, P.stdpcs, P.stdcase, P.stdouter, P.issalable,P.baseprice, IFNULL(A.pieceUomId,0), ");
@@ -2221,6 +2245,8 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E23", context.getResources().getString(R.string.error_e23));
         mErrorMessageByErrorCode.put("E24", context.getResources().getString(R.string.error_e24));
         mErrorMessageByErrorCode.put("E25", context.getResources().getString(R.string.user_account_locked));
+        mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e26));
+        mErrorMessageByErrorCode.put("E27", context.getResources().getString(R.string.error_e27));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
     }
@@ -2249,25 +2275,28 @@ SynchronizationHelper {
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
-        try {
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam("userinfo", headerinfo);
-            if (data != null) {
-                http.addParam("data", data);
-            }
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam("userinfo", headerinfo);
+                if (data != null) {
+                    http.addParam("data", data);
+                }
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
                 return new Vector<>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException("" + e);
+        } else {
             return new Vector<>();
         }
-
     }
 
     public static final String USER_IDENTITY = "UserIdentity";
@@ -2283,21 +2312,25 @@ SynchronizationHelper {
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
-        try {
+        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<String>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException(e);
                 return new Vector<String>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException(e);
+        } else {
             return new Vector<String>();
         }
 
@@ -2361,6 +2394,7 @@ SynchronizationHelper {
 
         try {
             mSecurityKey = "";
+            mAuthErrorCode = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
@@ -2383,6 +2417,23 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (!result.isEmpty()) {
+                for (String s : result) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            mAuthErrorCode = jsonObject.get("ErrorCode").toString();
+                            mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+                            break;
+                        }
+                    }
+                }
+            }
+
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
                 for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
@@ -2398,6 +2449,7 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
             mSecurityKey = "";
+            mAuthErrorCode = "";
         }
     }
 
@@ -3396,7 +3448,7 @@ SynchronizationHelper {
             }
             String url;
             if (flag == DataMembers.SYNCSIHUPLOAD) {
-                url = bmodel.synchronizationHelper.getUploadUrl("UPLDSIH");
+                url = getUploadUrl("UPLDSIH");
                 if (url.length() == 0) {
                     responceMessage = 2;
                     return responceMessage;
@@ -3473,6 +3525,15 @@ SynchronizationHelper {
                     }
 
 
+                }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -3818,7 +3879,17 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
+
             if (response == 1) {
 
                 db.updateSQL("Update " + DataMembers.tbl_TransactionSequence
@@ -3949,40 +4020,44 @@ SynchronizationHelper {
     public String downloadSessionId(String url) {
         updateAuthenticateToken();
         String sessionId = "";
-        try {
+        if (mAuthErrorCode.equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url, null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-            jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
-            http.setParamsJsonObject(jsonObj);
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url, null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+                jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+                jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
+                http.setParamsJsonObject(jsonObj);
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
+                http.connectMe();
+                Vector<String> result = http.getResult();
 
-            if (!result.isEmpty()) {
-                for (String s : result) {
-                    JSONObject jsonObject = new JSONObject(s);
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Data")) {
-                            sessionId = jsonObject.getJSONArray("Data").get(0).toString();
-                            sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                if (!result.isEmpty()) {
+                    for (String s : result) {
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Data")) {
+                                sessionId = jsonObject.getJSONArray("Data").get(0).toString();
+                                sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                            }
                         }
                     }
+
                 }
+                return sessionId;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return sessionId;
 
             }
+        } else {
             return sessionId;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return sessionId;
-
         }
 
 
@@ -4286,7 +4361,7 @@ SynchronizationHelper {
             jsonFormatter.addParameter("VanId", bmodel.userMasterHelper
                     .getUserMasterBO().getVanId());
             String LastDayClose = "";
-            if (bmodel.synchronizationHelper.isDayClosed()) {
+            if (isDayClosed()) {
                 LastDayClose = bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate();
             }
@@ -4295,9 +4370,9 @@ SynchronizationHelper {
                     .getUserMasterBO().getBranchId());
             jsonFormatter.addParameter("DownloadedDataDate", bmodel.userMasterHelper
                     .getUserMasterBO().getDownloadDate());
-            jsonFormatter.addParameter("DataValidationKey", bmodel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+            jsonFormatter.addParameter("DataValidationKey", generateChecksum(jsonobj.toString()));
             Commons.print(jsonFormatter.getDataInJson());
-            String appendurl = bmodel.synchronizationHelper.getUploadUrl("UPLDRET");
+            String appendurl = getUploadUrl("UPLDRET");
             if (appendurl.length() == 0)
                 return 2 + "";
             Vector<String> responseVector = bmodel.synchronizationHelper
@@ -4331,6 +4406,15 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         } catch (SQLException | JSONException e) {
             Commons.printException("" + e);
@@ -4339,6 +4423,7 @@ SynchronizationHelper {
     }
 
     public boolean validateUser(String username, String password) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
@@ -4456,7 +4541,7 @@ SynchronizationHelper {
     }
 
     public void loadMethodsNew() {
-        bmodel.synchronizationHelper.setmJsonObjectResponseBytableName(null);
+        setmJsonObjectResponseBytableName(null);
 
         // If usermaster get updated
         bmodel.userMasterHelper.downloadUserDetails();
@@ -4476,10 +4561,12 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.getPrinterConfig();
 
         if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            bmodel.synchronizationHelper.backUpPreviousDayOrder();
-
+            backUpPreviousDayOrder();
+            deleteOrderHistory();
         }
-        bmodel.synchronizationHelper.deleteOrderHistory();
+        if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+            updateOrderStatus();
+        }
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
@@ -4528,12 +4615,12 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            LoginHelper.getInstance(context).onGCMRegistration();
+            LoginHelper.getInstance(context).onGCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
-            bmodel.synchronizationHelper.setEncryptType();
+            setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/" + DataMembers.PRINT_FILE_PATH + "/");
@@ -4555,12 +4642,12 @@ SynchronizationHelper {
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
-            if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() <= 0) {
+            if (getmRetailerWiseIterateCount() <= 0) {
                 isLastVisitTranDownloadDone = true;
             }
             return NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD;
         } else if (!isSihDownloadDone
-                && !bmodel.synchronizationHelper.getSIHUrl().equals("")) {
+                && !getSIHUrl().equals("")) {
             isSihDownloadDone = true;
             return NEXT_METHOD.SIH_DOWNLOAD;
         } else if (bmodel.isDigitalContentAvailable()) {

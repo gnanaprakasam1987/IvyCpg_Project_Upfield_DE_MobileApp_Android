@@ -396,6 +396,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         args.putInt("type", 0);
         args.putBoolean("isRetailer", IsRetailerwisetask);
         args.putBoolean("fromReview", fromReviewScreen);
+        args.putBoolean("fromProfileScreen",false);
         mSelectedFragment.setArguments(args);
         mFragmentList.add(mSelectedFragment);
 
@@ -405,6 +406,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         args1.putInt("type", 1);
         args1.putBoolean("isRetailer", IsRetailerwisetask);
         args1.putBoolean("fromReview", fromReviewScreen);
+        args1.putBoolean("fromProfileScreen",false);
         mSelectedFragment.setArguments(args1);
         mFragmentList.add(mSelectedFragment);
 
@@ -414,6 +416,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         args2.putInt("type", 2);
         args2.putBoolean("isRetailer", IsRetailerwisetask);
         args2.putBoolean("fromReview", fromReviewScreen);
+        args2.putBoolean("fromProfileScreen",false);
         mSelectedFragment.setArguments(args2);
         mFragmentList.add(mSelectedFragment);
 
@@ -427,6 +430,7 @@ public class Task extends IvyBaseActivityNoActionBar implements OnClickListener 
         args1.putInt("type", 1);
         args1.putBoolean("isRetailer", IsRetailerwisetask);
         args1.putBoolean("fromReview", fromReviewScreen);
+        args1.putBoolean("fromProfileScreen",false);
         mSelectedFragment.setArguments(args1);
         mFragmentList.add(mSelectedFragment);
 

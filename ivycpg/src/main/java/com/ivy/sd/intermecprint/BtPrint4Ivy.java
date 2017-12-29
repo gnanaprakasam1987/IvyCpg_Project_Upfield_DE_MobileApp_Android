@@ -343,7 +343,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                 mProducts.add(new ProductMasterBO(mTempProducts.get(j)));
             }
             //
-            salesReturnHelper.getNonSaleableReturnGoods();
+            salesReturnHelper.getNonSaleableReturnGoods(getApplicationContext());
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             nonsaleablevalue = salesReturnHelper.getNonsaleablevalue();
             updateproducts();
@@ -368,7 +368,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
             else
                 totalqty.setText(totcase + "/" + totouter + "/" + totpcs);
             if (IsFromReport) {
-                if (salesReturnHelper.isInvoiceCreated(bmodel
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                         .getInvoiceNumber()))
                     goodsreturn.setText(bmodel
                             .formatValue(salesReturnHelper.getReturn_amt())
@@ -376,7 +376,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                 else
                     goodsreturn.setText(bmodel.formatValue(0) + "");
             } else {
-                if (salesReturnHelper.isInvoiceCreated())
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                     goodsreturn.setText(bmodel
                             .formatValue(salesReturnHelper.getReturn_amt())
                             + "");
@@ -603,18 +603,18 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                         SDUtil.convertToDouble(storediscount), mTotalValue);
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
-                    && salesReturnHelper.isCreditNoteCreated() != 1) {
+                    && salesReturnHelper.isCreditNoteCreated(getApplicationContext()) != 1) {
                 Commons.print("flag"
-                        + salesReturnHelper.isInvoiceCreated());
+                        + salesReturnHelper.isInvoiceCreated(getApplicationContext()));
                 if (IsFromReport) {
-                    if (salesReturnHelper.isInvoiceCreated(bmodel
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                             .getInvoiceNumber()))
                         mNetSales = mTotalValue
                                 - salesReturnHelper.getReturn_amt();
                     else
                         mNetSales = mTotalValue;
                 } else {
-                    if (salesReturnHelper.isInvoiceCreated())
+                    if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                         mNetSales = mTotalValue
                                 - salesReturnHelper.getReturn_amt();
                     else
@@ -1088,7 +1088,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
             sb.append("PP40," + x + ":AN1:PT \""
                     + getResources().getString(R.string.good_returns) + "\"\n");
             if (IsFromReport) {
-                if (salesReturnHelper.isInvoiceCreated(bmodel
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext(), bmodel
                         .getInvoiceNumber())) {
                     sb.append("PP530,"
                             + x
@@ -1100,7 +1100,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                     sb.append("PP530," + x + ":AN3:PT \"" + " "
                             + bmodel.formatValue(0) + "\n");
             } else {
-                if (salesReturnHelper.isInvoiceCreated())
+                if (salesReturnHelper.isInvoiceCreated(getApplicationContext()))
                     sb.append("PP530,"
                             + x
                             + ":AN3:PT \""

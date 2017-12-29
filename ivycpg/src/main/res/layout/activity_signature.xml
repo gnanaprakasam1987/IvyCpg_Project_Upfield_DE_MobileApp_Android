@@ -14,6 +14,37 @@
             android:id="@+id/toolbar"
             layout="@layout/material_tool_bar" />
 
+        <RelativeLayout
+            android:id="@+id/contact_det_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:minHeight="@dimen/dimen_60dp"
+            android:visibility="gone">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Contact person name"
+                android:textColor="@color/list_item_values_text_color"
+                android:textSize="@dimen/font_small"
+                android:layout_centerVertical="true" />
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/contact_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="contact person number"
+                android:layout_toRightOf="@+id/contact_name"
+                android:inputType="number"
+                android:textColor="@color/list_item_values_text_color"
+                android:textSize="@dimen/font_small"
+                android:maxLength="15"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"

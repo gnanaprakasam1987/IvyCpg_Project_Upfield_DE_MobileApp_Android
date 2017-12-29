@@ -184,7 +184,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
         });
 
-        mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate();
+        mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate(getApplicationContext());
         if (!mPasswordCreatedDated.equals("")) {
             int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
             if (result == -1) {
@@ -228,32 +228,42 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
                 Commons.printInformation("Change password upload " + jsonObject.toString());
                 final String appendUrl = DataMembers.CHANGE_PWD;
-                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl,true);
-                for (String s : responseVector) {
-                    JSONObject jsonObjectResponse = new JSONObject(s);
+                Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, true);
+                if (responseVector.size() > 0) {
+                    for (String s : responseVector) {
+                        JSONObject jsonObjectResponse = new JSONObject(s);
 
-                    Iterator itr = jsonObjectResponse.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            downloadStatus = jsonObjectResponse.getInt("Response");
-                            Commons.printInformation("Change password upload Response " + jsonObject.toString());
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObjectResponse.getString("ErrorCode");
-                            Commons.printInformation("Change password upload Error " + jsonObjectResponse.toString());
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-                                errorMsg = jsonObjectResponse.getString("ErrorMsg");
-                                return -1;
+                        Iterator itr = jsonObjectResponse.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Response")) {
+                                downloadStatus = jsonObjectResponse.getInt("Response");
+                                Commons.printInformation("Change password upload Response " + jsonObject.toString());
+                            } else if (key.equals("ErrorCode")) {
+                                String tokenResponse = jsonObjectResponse.getString("ErrorCode");
+                                Commons.printInformation("Change password upload Error " + jsonObjectResponse.toString());
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+                                    errorMsg = jsonObjectResponse.getString("ErrorMsg");
+                                    return -1;
+
+                                }
 
                             }
 
                         }
-
                     }
 
-
+                } else {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                        if (errorMsg != null) {
+                            Toast.makeText(ChangePasswordActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ChangePasswordActivity.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
 
             } catch (Exception e) {

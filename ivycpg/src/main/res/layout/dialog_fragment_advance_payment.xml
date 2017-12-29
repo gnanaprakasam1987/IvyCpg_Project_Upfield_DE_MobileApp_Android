@@ -264,7 +264,7 @@
                                 android:layout_width="@dimen/cheque_no_width"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="@string/city"
+                                android:text="@string/branch_area"
                                 android:textColor="@color/Black"
                                 android:textSize="@dimen/text_sz_small"
                                 android:textStyle="bold" />

@@ -151,6 +151,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
 
+    //Deleiver MAnagement
+    private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
+
     private String roadTitle;
     private boolean isClicked;
     public static boolean isLeave_today;
@@ -333,7 +336,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //bmodel.synchronizationHelper.backUpDB();
+                bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -1248,7 +1251,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             } else {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
-                mDigitalContentHelper.downloadDigitalContent("SELLER");
+                mDigitalContentHelper.downloadDigitalContent(getContext().getApplicationContext(), "SELLER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
@@ -1437,6 +1440,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
             bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_DELMGMT_RET)) {
+            switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
         }
 
           /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
@@ -1470,6 +1475,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         SynchronizationFragment mSyncFragment = (SynchronizationFragment) fm
                 .findFragmentByTag(MENU_SYNC);
+
+        DeliveryManagementRetailersFragment deliveryRetailersFragment = (DeliveryManagementRetailersFragment) fm
+                .findFragmentByTag(MENU_DELMGMT_RET);
 
         SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
@@ -1550,6 +1558,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             return;
         } else if (mSyncFragment != null && (fragmentName.equals(MENU_SYNC))
                 && mSyncFragment.isVisible()) {
+            return;
+        } else if (deliveryRetailersFragment != null && (fragmentName.equals(MENU_DELMGMT_RET))
+                && deliveryRetailersFragment.isVisible()) {
             return;
         } else if (mSellerDashFragment != null && (fragmentName.equals(MENU_DASH_KPI))
                 && mSellerDashFragment.isVisible()) {
@@ -1645,6 +1656,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mPlanningFragment);
         if (mSyncFragment != null)
             ft.remove(mSyncFragment);
+        if (deliveryRetailersFragment != null)
+            ft.remove(deliveryRetailersFragment);
         if (mSellerDashFragment != null)
             ft.remove(mSellerDashFragment);
         if (mDashFragment != null)
@@ -1975,6 +1988,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_NON_FIELD);
+                break;
+            case MENU_DELMGMT_RET:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new DeliveryManagementRetailersFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_DELMGMT_RET);
                 break;
         }
         ft.commit();

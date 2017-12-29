@@ -388,14 +388,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 break;
             case MENU_VAN_PLANOGRAM:
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
-                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
                 mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
                 mPlanoGramHelper
-                        .downloadLevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM
-                        , false, false, false, 0, 0);
-                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramHelper.loadPlanoGramInEditMode("0");
+                        .downloadLevels(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, "0");
+                mPlanoGramHelper.downloadPlanoGram(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM);
+                mPlanoGramHelper.downloadPlanoGramProductLocations(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), "0");
                 if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(getActivity(),
                             PlanoGramActivity.class);
@@ -409,7 +408,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 }
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
-                SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport();
+                SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport(getContext().getApplicationContext());
                 damagedSalesReturnIntent = new Intent(getActivity(),
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -803,7 +802,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            downloadVanload();
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                downloadVanload();
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

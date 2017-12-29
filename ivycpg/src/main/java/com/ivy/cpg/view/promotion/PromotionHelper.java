@@ -18,7 +18,6 @@ import static com.ivy.lib.Utils.QT;
 
 public class PromotionHelper {
 
-    private final Context context;
     private final BusinessModel businessModel;
     private static PromotionHelper instance = null;
     int mSelectedPromoID = 0;
@@ -32,7 +31,6 @@ public class PromotionHelper {
     boolean SHOW_PROMO_ANNOUNCER;
 
     private PromotionHelper(Context context) {
-        this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
 
     }
@@ -44,9 +42,13 @@ public class PromotionHelper {
         return instance;
     }
 
+    public void clearInstance() {
+        instance = null;
+    }
+
     /* load data for promotion */
-    public void loadDataForPromotion(String mMenuCode) {
-        loadPromotionConfigs();
+    public void loadDataForPromotion(Context mContext, String mMenuCode) {
+        loadPromotionConfigs(mContext);
 
         if (businessModel.productHelper.getInStoreLocation().size() == 0) {
             businessModel.productHelper.downloadInStoreLocations();
@@ -55,13 +57,14 @@ public class PromotionHelper {
         if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
-        loadData(mMenuCode);
-        loadPromoEntered();
+        businessModel.productHelper.getRetailerlevel(mMenuCode);
+        downloadPromotionMaster(mContext);
+        loadPromoEntered(mContext);
     }
 
 
     /* Load promotion related configs */
-    private void loadPromotionConfigs() {
+    private void loadPromotionConfigs(Context mContext) {
         try {
             SHOW_PROMO_TYPE = false;
             SHOW_PROMO_RATING = false;
@@ -70,7 +73,7 @@ public class PromotionHelper {
             SHOW_PROMO_QTY = false;
             SHOW_PROMO_ANNOUNCER = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -116,42 +119,6 @@ public class PromotionHelper {
     }
 
 
-    /* get promotion level from ConfigActivityFilter to load the data */
-    private void loadData(String mMenuCode) {
-        try {
-            switch (businessModel.productHelper.getRetailerlevel(mMenuCode)) {
-                case 1:
-                    downloadPromotionMaster(true, false, false, 0, 0);
-                    break;
-                case 2:
-                    downloadPromotionMaster(false, true, false, 0, 0);
-                    break;
-                case 3:
-                    downloadPromotionMaster(false, false, true, 0, 0);
-                    break;
-                case 4:
-                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, 0);
-                    break;
-                case 5:
-                    downloadPromotionMaster(false, false, false, 0, businessModel.productHelper.chid);
-                    break;
-                case 6:
-                    downloadPromotionMaster(false, false, false, businessModel.productHelper.locid, businessModel.productHelper.chid);
-                    break;
-                case 7:
-                    downloadPromotionMaster(false, false, true, 0, businessModel.productHelper.chid);
-                    break;
-                case 8:
-                    downloadPromotionMaster(true, false, false, 0, businessModel.productHelper.chid);
-                    break;
-                case -1:
-                    break;
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     /**
      * Download Promotion Data based on the menu level from configActivityFilter
      * <p>
@@ -161,35 +128,19 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster(boolean isAccount, boolean isRetailer, boolean isClass, int locationId, int channelId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    private void downloadPromotionMaster(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
-            String query = "";
-            if (isAccount && channelId > 0) {
-                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
+            String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
+                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))"
+                    + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
+                    + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
+                    + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))"
+                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
 
-            } else if (isAccount)
-                query = " where PM.AccId=" + businessModel.getRetailerMasterBO().getAccountid();
-            else if (isRetailer)
-                query = " where PM.retailerid=" + businessModel.getRetailerMasterBO().getRetailerID();
-
-            else if (isClass && channelId > 0) {
-                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (isClass)
-                query = " where PM.ClassId=" + businessModel.getRetailerMasterBO().getClassid();
-
-            else if (locationId > 0 && channelId > 0) {
-                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-                query = query + " and (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
-            } else if (locationId > 0)
-                query = " where  (PM.LocId=" + businessModel.getRetailerMasterBO().getLocationId() + " OR PM.LocId in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))";
-            else if (channelId > 0)
-                query = " where  (PM.ChId=" + businessModel.getRetailerMasterBO().getSubchannelid() + " OR PM.Chid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))";
 
             if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                 query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
@@ -239,8 +190,8 @@ public class PromotionHelper {
      *
      * @return True or False
      */
-    void savePromotionDetails() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    void savePromotionDetails(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         StringBuilder sbuffer = new StringBuilder();
         String headerColumns = "UiD,Date,RetailerId,Remark,distributorid";
         String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer";
@@ -316,8 +267,9 @@ public class PromotionHelper {
                                     "," + promotion.getHasAnnouncer();
 
                             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                sbDetails = sbDetails + "," + productWeightage;
-                                sum = sum + productWeightage;
+                                sbDetails = sbDetails + "," + ((promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0) ? productWeightage : "0");
+                                if (promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0)
+                                    sum = sum + productWeightage;
                             }
 
                             db.insertSQL("PromotionDetail", detailColumns,
@@ -345,8 +297,8 @@ public class PromotionHelper {
     /**
      * Get values from Tables and set in Objects while going Edit Mode
      */
-    private void loadPromoEntered() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    private void loadPromoEntered(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String uid = "";
@@ -586,9 +538,9 @@ public class PromotionHelper {
     }
 
     /* get promotion rating list from StandardListMaster */
-    void downloadPromotionRating() {
+    void downloadPromotionRating(Context mContext) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String query = "select listid,listCode,ListName from standardlistmaster where listType='PROMOTION_RATING'";

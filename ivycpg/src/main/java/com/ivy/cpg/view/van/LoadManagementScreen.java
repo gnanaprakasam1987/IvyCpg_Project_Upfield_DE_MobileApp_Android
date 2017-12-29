@@ -316,11 +316,11 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             case MENU_VAN_PLANOGRAM:
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
                 mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
-                mPlanoGramHelper.loadConfigurations();
-                mPlanoGramHelper.downloadLevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM, false, false, false, 0, 0);
-                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramHelper.loadPlanoGramInEditMode("0");
+                mPlanoGramHelper.loadConfigurations(getApplicationContext());
+                mPlanoGramHelper.downloadLevels(getApplicationContext(), MENU_VAN_PLANOGRAM, "0");
+                mPlanoGramHelper.downloadPlanoGram(getApplicationContext(), MENU_VAN_PLANOGRAM);
+                mPlanoGramHelper.downloadPlanoGramProductLocations(getApplicationContext(), MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.loadPlanoGramInEditMode(getApplicationContext(), "0");
                 if (mBModel.productHelper.getChildLevelBo() != null && mBModel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
                             PlanoGramActivity.class);
@@ -334,7 +334,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 }
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
-                SalesReturnHelper.getInstance(this).loadDamagedProductReport();
+                SalesReturnHelper.getInstance(this).loadDamagedProductReport(getApplicationContext());
                 damagedSalesReturnIntent = new Intent(LoadManagementScreen.this,
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -833,7 +833,16 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            downloadVanload();
+            if (mBModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                downloadVanload();
+            } else {
+                String errorMsg = mBModel.synchronizationHelper.getErrormessageByErrorCode().get(mBModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(LoadManagementScreen.this, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoadManagementScreen.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

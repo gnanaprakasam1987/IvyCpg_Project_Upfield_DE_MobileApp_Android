@@ -79,8 +79,8 @@
                             android:id="@+id/edit_chequeno"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/cheque_no_height"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            android:inputType="text"
+                            android:digits="0123456789"
+                            android:inputType="number"
                             android:maxLength="8" />
                     </LinearLayout>
 

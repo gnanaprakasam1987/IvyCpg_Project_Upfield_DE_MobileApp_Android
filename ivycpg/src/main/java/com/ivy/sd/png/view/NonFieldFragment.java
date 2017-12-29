@@ -195,6 +195,13 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         select =  getResources().getString(R.string.select);
         ll_dummy = (LinearLayout) findViewById(R.id.ll_dummy);
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(txt_leaves_type.getTag()) != null)
+                txt_leaves_type.setText(bmodel.labelsMasterHelper.applyLabels(txt_leaves_type.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         if (!NonFieldActivity.isSaved) {
             edt_descr.addTextChangedListener(new TextWatcher() {
                 @Override

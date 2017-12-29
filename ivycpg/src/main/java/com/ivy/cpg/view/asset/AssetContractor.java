@@ -42,9 +42,6 @@ public interface AssetContractor {
          void save(String mModuleCode);
          void updateTimeStamp();
 
-         void loadMasters(String mMenuCode);
-
-
 
      }
 

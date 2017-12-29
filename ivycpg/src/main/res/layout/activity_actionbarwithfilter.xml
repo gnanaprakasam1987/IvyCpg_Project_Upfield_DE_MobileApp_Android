@@ -69,28 +69,35 @@
             android:id="@+id/layout_sih" xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_above="@+id/footer"
-            android:visibility="gone"
+            android:background="@color/footer_bg"
             >
 
-            <TextView
-                android:id="@+id/tv_sih"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:gravity="center"
-                style="?textFieldStyle"
-                android:background="@android:color/white"
-                />
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_value"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:text="@string/total"
-                android:layout_toLeftOf="@+id/tv_sih"
-                android:gravity="center"
-                android:layout_marginRight="10dp"
-         />
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/target_top_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/greyed_text_size" />
+
+                <TextView
+                    android:id="@+id/tv_sih"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero"
+                    android:textColor="@color/WHITE"
+                    android:textSize="@dimen/footer_lbl_text_size" />
+
+            </LinearLayout>
 
         </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -197,44 +204,40 @@
                 </ViewFlipper>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/prod"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal" >
+                android:layout_above="@+id/footer"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/list_margin">
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none" >
+                <LinearLayout
+                    android:id="@+id/prod"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
 
                     <LinearLayout
+                        android:id="@+id/ListHeader"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:orientation="vertical" >
+                        android:layout_height="@dimen/list_title_height"
+                        android:background="@color/list_title_bg_color"
+                        android:orientation="horizontal"></LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/ListHeader"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/list_title_height"
-                            android:background="@color/list_title_bg_color"
-                            android:orientation="horizontal" >
-                        </LinearLayout>
+                    <ListView
+                        android:id="@+id/lvwplist"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:cacheColorHint="@null"
+                        android:divider="@android:color/white"
+                        android:dividerHeight="1dp"
+                        android:fitsSystemWindows="true"></ListView>
 
-                        <ListView
-                            android:id="@+id/list"
-                            android:layout_width="fill_parent"
-                            android:layout_height="match_parent"
-                            android:cacheColorHint="@null"
-                            android:divider="@android:color/white"
-                            android:dividerHeight="1dp"
-                            android:fitsSystemWindows="true" >
-                        </ListView>
 
-                    </LinearLayout>
-                </HorizontalScrollView>
-            </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
     </RelativeLayout>
 
