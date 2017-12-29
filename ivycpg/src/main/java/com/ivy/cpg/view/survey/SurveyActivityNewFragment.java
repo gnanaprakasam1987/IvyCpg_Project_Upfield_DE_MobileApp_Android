@@ -1649,7 +1649,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         et.setPadding(15, 7, 7, 7);
         et.setTextColor(Color.BLACK);
         if (i == 1)
-            et.setInputType(InputType.TYPE_CLASS_NUMBER);
+            et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         if (i == 2) {
             et.setInputType(InputType.TYPE_CLASS_NUMBER);
             et.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
