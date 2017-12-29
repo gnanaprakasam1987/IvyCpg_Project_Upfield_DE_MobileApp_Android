@@ -5,7 +5,7 @@ public class BeatMasterBO {
     private int beatId;
     private String beatDescription;
     private int today;
-
+    private int userId;
     public BeatMasterBO() {
 
         // Empty Constructor
@@ -44,5 +44,13 @@ public class BeatMasterBO {
 
     public void setToday(int today) {
         this.today = today;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
