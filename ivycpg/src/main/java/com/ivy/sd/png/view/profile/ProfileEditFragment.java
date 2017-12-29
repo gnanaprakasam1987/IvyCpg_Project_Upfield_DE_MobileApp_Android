@@ -228,7 +228,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
         bmodel.newOutletHelper.loadContactStatus();
         bmodel.newOutletHelper.downloadLinkRetailer();
         new DownloadAsync().execute();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+      //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         // get previous changes from retailerEdit  Header and Detail table
         bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
         createTabViewForProfileForEdit();

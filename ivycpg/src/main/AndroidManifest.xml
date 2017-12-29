@@ -132,7 +132,7 @@
         </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
-        <service android:name="com.ivy.sd.png.model.CatalogImageDownloadService"/>
+        <service android:name="com.ivy.sd.png.model.CatalogImageDownloadService" />
 
         <receiver
             android:name="com.ivy.sd.png.view.GcmBroadcastReceiver"

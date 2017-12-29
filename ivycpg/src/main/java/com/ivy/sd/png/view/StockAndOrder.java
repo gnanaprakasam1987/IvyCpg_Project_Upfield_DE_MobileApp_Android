@@ -236,7 +236,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        if(bmodel.configurationMasterHelper.SHOW_BARCODE)
+        if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
