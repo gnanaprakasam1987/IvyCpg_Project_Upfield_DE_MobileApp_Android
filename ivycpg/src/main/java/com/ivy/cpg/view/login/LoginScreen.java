@@ -163,6 +163,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loginPresenter.reloadActivity();
+    }
+
     private void updateImageViews() {
         /* Update login screen background image*/
         try {
