@@ -1934,8 +1934,6 @@ public class NewOutletHelper {
 
             }
 
-            db.insertSQL("RetailerAddress", column, value);
-
             column = "RetailerId, AttributeId, LevelId, Upload";
             for (NewOutletAttributeBO attributeBO : outlet.getAttributeList()) {
                 value = QT(getId())

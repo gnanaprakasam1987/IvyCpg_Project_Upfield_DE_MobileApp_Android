@@ -509,4 +509,33 @@ public class UserMasterHelper {
             Commons.printException("" + e);
         }
     }
+
+    public ArrayList<UserMasterBO> downloadAllUser() {
+        ArrayList<UserMasterBO> userList = null;
+        String codeChild = "CHILD";
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + bmodel.QT(codeChild);
+            Cursor c = db.selectSQL(query);
+            if (c != null) {
+                userList = new ArrayList<>();
+                UserMasterBO userMasterBO;
+                while (c.moveToNext()) {
+                    userMasterBO = new UserMasterBO();
+                    userMasterBO.setUserid(c.getInt(0));
+                    userMasterBO.setUserName(c.getString(1));
+                    userList.add(userMasterBO);
+                }
+                c.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return userList;
+    }
 }
