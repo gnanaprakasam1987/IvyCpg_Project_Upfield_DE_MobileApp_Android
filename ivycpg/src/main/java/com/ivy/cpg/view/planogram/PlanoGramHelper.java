@@ -18,7 +18,6 @@ import java.util.Vector;
 
 public class PlanoGramHelper {
 
-    private final Context context;
     private final BusinessModel mBModel;
     private static PlanoGramHelper instance = null;
     private Vector<PlanoGramBO> mPlanoGramMaster;
@@ -33,7 +32,6 @@ public class PlanoGramHelper {
 
 
     private PlanoGramHelper(Context context) {
-        this.context = context;
         mBModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -44,15 +42,19 @@ public class PlanoGramHelper {
         return instance;
     }
 
+    public void clearInstance() {
+        instance = null;
+    }
+
     /**
      * Load PlanoGram screen specific configurations
      */
-    public void loadConfigurations() {
+    public void loadConfigurations(Context mContext) {
         try {
 
             IS_LOCATION_WISE_PLANOGRAM = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -84,8 +86,8 @@ public class PlanoGramHelper {
      * @param moduleName Module Name
      * @param retailerId RetaILER iD
      */
-    public void downloadLevels(String moduleName, String retailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void downloadLevels(Context mContext, String moduleName, String retailerId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
 
@@ -119,7 +121,7 @@ public class PlanoGramHelper {
             String str = "";
             int level = mBModel.productHelper.getRetailerlevel("MENU_PLANOGRAM");
             if (level == -1) {
-                Toast.makeText(context, context.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 str = " and MP.AccId in (0," + mBModel.getRetailerMasterBO().getAccountid()
@@ -251,10 +253,10 @@ public class PlanoGramHelper {
      *
      * @param mMenuName Menu Name
      */
-    public void downloadMaster(String mMenuName) {
+    public void downloadMaster(Context mContext, String mMenuName) {
         try {
             mBModel.productHelper.getRetailerlevel(mMenuName);
-            downloadPlanoGram(mMenuName);
+            downloadPlanoGram(mContext, mMenuName);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -265,8 +267,8 @@ public class PlanoGramHelper {
      *
      * @param moduleName Module Name
      */
-    public void downloadPlanoGram(String moduleName) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void downloadPlanoGram(Context mContext, String moduleName) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             PlanoGramBO planogram;
             db.openDataBase();
@@ -328,7 +330,7 @@ public class PlanoGramHelper {
             db.closeDB();
 
             if (("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)))
-                downloadPlanoGramProductLocations(moduleName, null, query1);
+                downloadPlanoGramProductLocations(mContext, moduleName, null, query1);
         } catch (Exception e) {
             Commons.printException("" + e);
             db.closeDB();
@@ -340,8 +342,8 @@ public class PlanoGramHelper {
      *
      * @param counterId Counter Id
      */
-    public void downloadCounterPlanoGram(int counterId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void downloadCounterPlanoGram(Context mContext, int counterId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             CounterPlanoGramBO planogram;
             db.openDataBase();
@@ -393,8 +395,8 @@ public class PlanoGramHelper {
      *
      * @param counterId Counter Id
      */
-    public void loadPlanoGramInEditMode(int counterId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void loadPlanoGramInEditMode(Context mContext, int counterId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String tid;
@@ -443,8 +445,8 @@ public class PlanoGramHelper {
      *
      * @param retailerId Retailer Id
      */
-    public void loadPlanoGramInEditMode(String retailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void loadPlanoGramInEditMode(Context mContext, String retailerId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String tid = "";
@@ -622,8 +624,8 @@ public class PlanoGramHelper {
      *
      * @return Is Saved
      */
-    public boolean savePlanoGram() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public boolean savePlanoGram(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String tid;
@@ -717,8 +719,8 @@ public class PlanoGramHelper {
      * @param counterId Counter Id
      * @return Is saved
      */
-    public boolean saveCounterPlanoGram(int counterId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public boolean saveCounterPlanoGram(Context mContext, int counterId) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String tid;
@@ -872,8 +874,8 @@ public class PlanoGramHelper {
      *
      * @param imgName Image name
      */
-    public void deleteImageName(String imgName) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public void deleteImageName(Context mContext, String imgName) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -891,12 +893,12 @@ public class PlanoGramHelper {
     /**
      * Download Module Locations
      */
-    public void downloadPlanoGramProductLocations(String moduleName, String retailer, String query1) {
+    public void downloadPlanoGramProductLocations(Context mContext, String moduleName, String retailer, String query1) {
         try {
 
             mLocationList = new Vector<>();
             StandardListBO locations;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 

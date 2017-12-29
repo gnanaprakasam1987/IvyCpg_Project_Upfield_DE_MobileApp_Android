@@ -504,7 +504,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-                                salesReturnHelper.clearTransaction();
+                                salesReturnHelper.clearTransaction(getApplicationContext());
                                 Toast.makeText(SalesReturnSummery.this, getResources().getString(R.string.tran_deleted_successfully), Toast.LENGTH_LONG).show();
                                 BusinessModel.loadActivity(SalesReturnSummery.this,
                                         DataMembers.actHomeScreenTwo);
@@ -574,7 +574,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             try {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                salesReturnHelper.saveSalesReturn();
+                salesReturnHelper.saveSalesReturn(getApplicationContext());
                 // Update isVisited Flag
                 bmodel.updateIsVisitedFlag();
                 salesReturnHelper.clearSalesReturnTable();

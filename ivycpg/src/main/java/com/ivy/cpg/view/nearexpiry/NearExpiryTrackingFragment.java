@@ -646,7 +646,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                mNearExpiryHelper.saveSKUTracking();
+                mNearExpiryHelper.saveSKUTracking(getActivity().getApplicationContext());
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -918,5 +918,12 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mNearExpiryHelper.clear();
+        System.gc();
     }
 }

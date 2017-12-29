@@ -184,7 +184,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
         });
 
-        mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate();
+        mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate(getApplicationContext());
         if (!mPasswordCreatedDated.equals("")) {
             int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
             if (result == -1) {

@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,9 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -32,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -40,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -1105,14 +1100,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     con.setMenuNumber(totalWeight + "");
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA30")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesRetunTotalValue();
+                    final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesRetunTotalValue(getApplicationContext());
                     con.setMenuNumber(bmodel.formatValue(salesReturnValue) + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA31")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesReturnValue();
+                    final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesReturnValue(getApplicationContext());
 
-                    con.setMenuNumber(bmodel.formatValue(SalesReturnHelper.getInstance(this).getOrderValue() - salesReturnValue));
+                    con.setMenuNumber(bmodel.formatValue(SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext()) - salesReturnValue));
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA33")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());

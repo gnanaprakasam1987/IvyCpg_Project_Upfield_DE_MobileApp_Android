@@ -316,11 +316,11 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             case MENU_VAN_PLANOGRAM:
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(this);
                 mPlanoGramHelper.mSelectedActivityName = menuItem.getMenuName();
-                mPlanoGramHelper.loadConfigurations();
-                mPlanoGramHelper.downloadLevels(MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(MENU_VAN_PLANOGRAM);
-                mPlanoGramHelper.downloadPlanoGramProductLocations(MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramHelper.loadPlanoGramInEditMode("0");
+                mPlanoGramHelper.loadConfigurations(getApplicationContext());
+                mPlanoGramHelper.downloadLevels(getApplicationContext(), MENU_VAN_PLANOGRAM, "0");
+                mPlanoGramHelper.downloadPlanoGram(getApplicationContext(), MENU_VAN_PLANOGRAM);
+                mPlanoGramHelper.downloadPlanoGramProductLocations(getApplicationContext(), MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
+                mPlanoGramHelper.loadPlanoGramInEditMode(getApplicationContext(), "0");
                 if (mBModel.productHelper.getChildLevelBo() != null && mBModel.productHelper.getChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
                             PlanoGramActivity.class);
@@ -334,7 +334,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 }
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
-                SalesReturnHelper.getInstance(this).loadDamagedProductReport();
+                SalesReturnHelper.getInstance(this).loadDamagedProductReport(getApplicationContext());
                 damagedSalesReturnIntent = new Intent(LoadManagementScreen.this,
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

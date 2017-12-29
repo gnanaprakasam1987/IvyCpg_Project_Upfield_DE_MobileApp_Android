@@ -4064,7 +4064,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             finish();
         } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
             DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(this);
-            mDigitalContentHelper.downloadDigitalContent("RETAILER");
+            mDigitalContentHelper.downloadDigitalContent(getApplicationContext(), "RETAILER");
             Intent i = new Intent(StockAndOrder.this,
                     DigitalContentActivity.class);
             i.putExtra("ScreenCode", screenCode);
@@ -4187,7 +4187,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     // save price check
                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(StockAndOrder.this);
                     if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(mylist);
+                        priceTrackingHelper.savePriceTransaction(getApplicationContext(), mylist);
 
                     // save near expiry
                     bmodel.saveNearExpiry();

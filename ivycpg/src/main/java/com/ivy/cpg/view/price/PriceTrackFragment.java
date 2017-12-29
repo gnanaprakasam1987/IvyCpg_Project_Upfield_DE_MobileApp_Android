@@ -524,7 +524,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                priceTrackingHelper.savePriceTransaction(businessModel.productHelper.getTaggedProducts());
+                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), businessModel.productHelper.getTaggedProducts());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -1506,4 +1506,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        priceTrackingHelper.clearInstance();
+    }
 }

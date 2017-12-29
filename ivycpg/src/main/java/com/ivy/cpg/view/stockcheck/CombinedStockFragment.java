@@ -1360,7 +1360,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    priceTrackingHelper.savePriceTransaction(mylist);
+                    priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), mylist);
 
                 // save near expiry
                 bmodel.saveNearExpiry();
