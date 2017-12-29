@@ -84,6 +84,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 /**
  * IsExclude score will not work/applicable for multi select questions.
@@ -1653,8 +1654,23 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             et.setInputType(InputType.TYPE_CLASS_NUMBER);
             et.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         }
-        if (1 == 3) {
+        if (i == 3) {
             et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            InputFilter inputFilter = new InputFilter() {
+                @Override
+                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                    for (int i = start; i < end; i++) {
+                        String checkMe = String.valueOf(source.charAt(i));
+
+                        if (!Pattern.compile("[a-zA-Z0-9.@]").matcher(checkMe).matches()) {
+                            Log.d("", "invalid");
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+            };
+            et.setFilters(new InputFilter[]{inputFilter});
         }
         et.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before,
