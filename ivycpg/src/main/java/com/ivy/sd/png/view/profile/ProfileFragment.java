@@ -399,6 +399,61 @@ public class ProfileFragment extends IvyBaseFragment {
                         }
 
                         break;
+
+                    case "PROFILE38": {
+                        switch (configCode) {
+                            case "PROFILE39":
+                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                    cspTxt.setText(retailerObj.getCity());
+                                break;
+                            case "PROFILE40":
+                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                    cspTxt.append(", " + retailerObj.getState());
+                                break;
+                            case "PROFILE38":
+                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                    cspTxt.append(" -" + retailerObj.getPincode());
+                                break;
+                        }
+                        cspTxt.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case "PROFILE39": {
+                        switch (configCode) {
+                            case "PROFILE39":
+                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                    cspTxt.setText(retailerObj.getCity());
+                                break;
+                            case "PROFILE40":
+                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                    cspTxt.append(", " + retailerObj.getState());
+                                break;
+                            case "PROFILE38":
+                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                    cspTxt.append(" -" + retailerObj.getPincode());
+                                break;
+                        }
+                        cspTxt.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case "PROFILE40": {
+                        switch (configCode) {
+                            case "PROFILE39":
+                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                    cspTxt.setText(retailerObj.getCity());
+                                break;
+                            case "PROFILE40":
+                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                    cspTxt.append(", " + retailerObj.getState());
+                                break;
+                            case "PROFILE38":
+                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                    cspTxt.append(" -" + retailerObj.getPincode());
+                                break;
+                        }
+                        cspTxt.setVisibility(View.VISIBLE);
+                        break;
+                    }
                     case "PROFILE60":
 
                         if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
@@ -951,60 +1006,6 @@ public class ProfileFragment extends IvyBaseFragment {
                 outletBO.setmName(mName);
                 outletBO.setValueText(taxName);
                 finalProfileList.add(outletBO);
-                break;
-            }
-            case "PROFILE38": {
-                switch (configCode) {
-                    case "PROFILE39":
-                        if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                            cspTxt.setText(retailerObj.getCity());
-                        break;
-                    case "PROFILE40":
-                        if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                            cspTxt.append(", " + retailerObj.getState());
-                        break;
-                    case "PROFILE38":
-                        if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                            cspTxt.append(" -" + retailerObj.getPincode());
-                        break;
-                }
-                cspTxt.setVisibility(View.VISIBLE);
-                break;
-            }
-            case "PROFILE39": {
-                switch (configCode) {
-                    case "PROFILE39":
-                        if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                            cspTxt.setText(retailerObj.getCity());
-                        break;
-                    case "PROFILE40":
-                        if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                            cspTxt.append(", " + retailerObj.getState());
-                        break;
-                    case "PROFILE38":
-                        if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                            cspTxt.append(" -" + retailerObj.getPincode());
-                        break;
-                }
-                cspTxt.setVisibility(View.VISIBLE);
-                break;
-            }
-            case "PROFILE40": {
-                switch (configCode) {
-                    case "PROFILE39":
-                        if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                            cspTxt.setText(retailerObj.getCity());
-                        break;
-                    case "PROFILE40":
-                        if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                            cspTxt.append(", " + retailerObj.getState());
-                        break;
-                    case "PROFILE38":
-                        if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                            cspTxt.append(" -" + retailerObj.getPincode());
-                        break;
-                }
-                cspTxt.setVisibility(View.VISIBLE);
                 break;
             }
             case "PROFILE46": {

@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
@@ -64,7 +65,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
@@ -83,6 +84,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.MaterialSpinner;
@@ -111,12 +113,12 @@ import java.util.regex.Pattern;
 import static android.app.Activity.RESULT_OK;
 
 public class NewOutletFragment extends IvyBaseFragment implements NearByRetailerDialog.NearByRetailerInterface {
-    double lattitude = 0;
-    double longitude = 0;
+    private double lattitude = 0;
+    private double longitude = 0;
 
-    private String MENU_NEW_RETAILER = "MENU_NEW_RET";
+    private final String MENU_NEW_RETAILER = "MENU_NEW_RET";
 
-    boolean isLatLong;
+    private boolean isLatLong;
     private String imageName;
     private ArrayList<LocationBO> mLocationMasterList1;
     private ArrayList<LocationBO> mLocationMasterList2;
@@ -128,11 +130,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private ArrayList<StandardListBO> mTaxTypeList;
     private ArrayList<StandardListBO> mClassTypeList;
     private ArrayList<StandardListBO> mPriorityProductList;
+    private ArrayList<UserMasterBO> mUserList;
     private ArrayList<NewOutletAttributeBO> mAttributeParentList; // List of parentid = 0
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap; // List of first spinner for each level
     private HashMap<Integer, NewOutletAttributeBO> selectedAttribList; // Hashmap to retreive selected level of Attribute
     private ArrayList<NewOutletAttributeBO> selectedAttributeLevel; // List of chosen last level
-    HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelID;
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelID;
 
 
     private ArrayAdapter<NewOutletBO> contactTitleAdapter;
@@ -146,7 +149,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private String PHOTO_PATH = "";
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final String TAG = "NewOutlet Screen";
-    private String moduleName = "NO_";
+    private final String moduleName = "NO_";
     private boolean isLocSelectedManually = false;
     private NewOutletBO outlet;
     private Vector<ChannelBO> channelMaster;
@@ -159,11 +162,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private String weekNoStr = null;
     private String beatName = null;
     private String routeMname = "";
-    public static final int MAX_NO_OF_DAYS = 7;
-    protected static String[] days = null;
-    protected static final String[] daysForUpload = new String[]{"SUN", "MON",
+    private static final int MAX_NO_OF_DAYS = 7;
+    private static String[] days = null;
+    private static final String[] daysForUpload = new String[]{"SUN", "MON",
             "TUE", "WED", "THU", "FRI", "SAT"};
-    public static final int NUMBER_OF_WEEKS = 4;
+    private static final int NUMBER_OF_WEEKS = 4;
     private String uID;
     private BusinessModel bmodel;
     private static StringBuffer sb;
@@ -175,7 +178,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private Vector<ConfigureBO> profileConfig;
     private ScrollView scrollview2;
     private MaterialSpinner channel, subchannel, location1, location2, location3,
-            route, paymentType, distributorSpinner, taxTypeSpinner, contactTitleSpinner1, contactTitleSpinner2, contractSpinner, classSpinner;
+            route, paymentType, distributorSpinner, taxTypeSpinner, contactTitleSpinner1,
+            contactTitleSpinner2, contractSpinner, classSpinner, userSpinner;
     private TextView latlongtextview;
     private AppCompatAutoCompleteTextView priorityProductAutoCompleteTextView, nearbyAutoCompleteTextView;
 
@@ -183,9 +187,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private TextView textview[] = null;
     private TextInputLayout edittextinputLayout, edittextinputLayout2, edittextinputLayout3, edittextinputLayout4;
 
-    LinearLayout.LayoutParams commonsparams, commonsparams3, commonsparams4, params, params2, params3, params3new, params4new, params4aflollipop, params4, params5, params5new, params5aflollipop, params6, paramsaflollipop, params6aflollipop, params8, params9, params10, params11, params12, params13, paramsAttrib, paramsAttribSpinner;
-    LinearLayout.LayoutParams weight1, weight2, weight3, weight6, weight0, weight0wrap, weight0marginbottom, editweightmargin, weight1new;
-    LinearLayout.LayoutParams textinputlayoutparams, textinputlayoutparams2, textinputlayoutparams3;
+    private LinearLayout.LayoutParams commonsparams, commonsparams3, commonsparams4, params, params2, params3, params3new, params4new, params4aflollipop, params4, params5, params5new, params5aflollipop, params6, paramsaflollipop, params6aflollipop, params8, params9, params10, params11, params12, params13, paramsAttrib, paramsAttribSpinner;
+    private LinearLayout.LayoutParams weight1, weight2, weight3, weight6, weight0, weight0wrap, weight0marginbottom, editweightmargin, weight1new;
+    private LinearLayout.LayoutParams textinputlayoutparams, textinputlayoutparams2, textinputlayoutparams3;
 
     boolean isChannel = false;
     boolean issubChannel = false;
@@ -221,8 +225,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private View view;
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
-    private Button saveBtn;
-    private LinearLayout linearLayout;
     private String screenTitle = null;
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
@@ -279,10 +281,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             else
                 setScreenTitle(getArguments().getString("screentitle"));
         } catch (Exception e) {
+            Commons.printException(e);
         }
 
 
-        if (Build.VERSION.SDK_INT >= 13) {
+        if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
             getActivity().getWindowManager().getDefaultDisplay().getSize(size);
             screenwidth = size.x;
@@ -292,9 +295,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         bmodel.newOutletHelper.setMaterialSpinner(null);
         bmodel.newOutletHelper.setEditText(null);
 
-        saveBtn = (Button) view.findViewById(R.id.new_outlet_save);
+        Button saveBtn = (Button) view.findViewById(R.id.new_outlet_save);
         saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        linearLayout = (LinearLayout) view.findViewById(R.id.bottom_layout);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.bottom_layout);
         editText = new AppCompatEditText[100];
         textview = new TextView[100];
 
@@ -373,9 +376,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 isContactTitle = true;
                 mcontactTitleList = new ArrayList<>();
                 mcontactTitleList.add(0, new NewOutletBO(-1, getResources().getString(R.string.select_str) + " " + "Title"));
-                for (NewOutletBO temp : bmodel.newOutletHelper.getContactTitleList()) {
-                    mcontactTitleList.add(temp);
-                }
+                mcontactTitleList.addAll(bmodel.newOutletHelper.getContactTitleList());
 
                 mcontactTitleList.add(bmodel.newOutletHelper.getContactTitleList().size() + 1, new NewOutletBO(0, "OTHERS"));
                 Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
@@ -395,13 +396,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
     }
 
     private void loadsubchannel(int channelid) {
@@ -492,7 +486,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     .equalsIgnoreCase("LOCATION02")) {
 
                 isLocation2 = true;
-            } else if ("ATTRIBUTE"
+            } else if (profileConfig.get(i).getConfigCode()
+                    .equalsIgnoreCase("USER")) {
+                mUserList = bmodel.userMasterHelper.downloadAllUser();
+
+            }else if ("ATTRIBUTE"
                     .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 isAttribute = true;
                 bmodel.newOutletAttributeHelper.downloadAttributeParentList();
@@ -592,7 +590,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
         if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG && isLatLong)
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
-                Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+                Integer resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
                 if (resultCode != ConnectionResult.SUCCESS) {
                     bmodel.requestLocation(getActivity());
                 } else
@@ -620,7 +618,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     /**
      * getActivity() would clear all the resources used of the layout.
      *
-     * @param view
+     * param view
      */
     private void unbindDrawables(View view) {
         if (view != null) {
@@ -871,6 +869,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("CONTRACT")
                         || configCode.equalsIgnoreCase("TAXTYPE")
                         || configCode.equalsIgnoreCase("CLASS")
+                        || configCode.equalsIgnoreCase("USER")
                         ) {
 
                     totalView.addView(
@@ -1201,7 +1200,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     }
 
-    TextWatcher watcher = new TextWatcher() {
+    final TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -1243,7 +1242,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 // Determine where to set the scroll-to to by measuring the distance from the top of the scroll view
                 // to the control to focus on by summing the "top" position of each view in the hierarchy.
                 int yDistanceToControlsView = 0;
-                View parentView = (View) secificEditText;
+                View parentView = secificEditText;
                 while (true) {
                     if (parentView.equals(scrollview2)) {
                         break;
@@ -2434,7 +2433,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (str.contains("{") && str.contains("}")) {
 
                 String len = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
-                if (len != null && !len.isEmpty()) {
+                if (!len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
                             fil = new InputFilter.LengthFilter(Integer.parseInt(len.split(",")[1]));
@@ -2491,50 +2490,51 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     private String getValue(String code) {
-        if (code.equals("STORENAME")) {
-            return outlet.getOutletName();
-        } else if (code.equals("ADDRESS1")) {
-            return outlet.getAddress();
-        } else if (code.equals("CONTACTPERSON1")) {
-            return outlet.getContactpersonname();
-        } else if (code.equals("ADDRESS2")) {
-            return outlet.getAddress2();
-        } else if (code.equals("ADDRESS3")) {
-            return outlet.getAddress3();
-        } else if (code.equals("CITY")) {
-            return outlet.getCity();
-        } else if (code.equals("STATE")) {
-            return outlet.getState();
-        } else if (code.equals("CONTACTPERSON2")) {
-            return outlet.getContactpersonname2();
-        } else if (code.equals("PHNO1")) {
-            return outlet.getPhone();
-        } else if (code.equals("PHNO2")) {
-            return outlet.getPhone2();
-        } else if (code.equals("PLAN")) {
-            return outlet.getVisitDays();
-        } else if (code.equals("FAX")) {
-            return outlet.getFax();
-        } else if (code.equals("EMAIL")) {
-            return outlet.getEmail();
-        } else if (code.equals("CREDITLIMIT")) {
-            return outlet.getCreditLimit();
-        } else if (code.equals("TINNUM")) {
-            return outlet.getTinno();
-        } else if (code.equals("TINEXPDATE")) {
-            return outlet.getTinExpDate();
-        } else if (code.equals("PINCODE")) {
-            return outlet.getPincode();
-        } else if (code.equals("RFIELD3")) {
-            return outlet.getRfield3();
-        } else if (code.equals("RFIELD5")) {
-            return outlet.getRfield5();
-        } else if (code.equals("RFIELD6")) {
-            return outlet.getRfield6();
-        } else if (code.equals("CREDITPERIOD")) {
-            return outlet.getCreditDays();
-        } else if (code.equals("GST_NO")) {
-            return outlet.getGstNum();
+        switch (code) {
+            case "STORENAME":
+                return outlet.getOutletName();
+            case "ADDRESS1":
+                return outlet.getAddress();
+            case "CONTACTPERSON1":
+                return outlet.getContactpersonname();
+            case "ADDRESS2":
+                return outlet.getAddress2();
+            case "ADDRESS3":
+                return outlet.getAddress3();
+            case "CITY":
+                return outlet.getCity();
+            case "STATE":
+                return outlet.getState();
+            case "CONTACTPERSON2":
+                return outlet.getContactpersonname2();
+            case "PHNO1":
+                return outlet.getPhone();
+            case "PHNO2":
+                return outlet.getPhone2();
+            case "PLAN":
+                return outlet.getVisitDays();
+            case "FAX":
+                return outlet.getFax();
+            case "EMAIL":
+                return outlet.getEmail();
+            case "CREDITLIMIT":
+                return outlet.getCreditLimit();
+            case "TINNUM":
+                return outlet.getTinno();
+            case "TINEXPDATE":
+                return outlet.getTinExpDate();
+            case "PINCODE":
+                return outlet.getPincode();
+            case "RFIELD3":
+                return outlet.getRfield3();
+            case "RFIELD5":
+                return outlet.getRfield5();
+            case "RFIELD6":
+                return outlet.getRfield6();
+            case "CREDITPERIOD":
+                return outlet.getCreditDays();
+            case "GST_NO":
+                return outlet.getGstNum();
         }
 
 
@@ -2566,11 +2566,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (outlet.getLocid() != 0) {
                 String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                         outlet.getLocid(), true);
-                int loc2id = Integer.parseInt(loc2[0]);
+                int loc2id = SDUtil.convertToInt((loc2[0]).toString());
 
                 String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(
                         loc2id, true);
-                int loc3id = Integer.parseInt(loc3[0]);
+                int loc3id = SDUtil.convertToInt((loc3[0]).toString());
                 for (int i = 0; i < locationAdapter3.getCount(); i++) {
                     if (locationAdapter3.getItem(i).getLocId() == loc3id) {
                         return i;
@@ -2583,7 +2583,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         } else if (code.equals("LOCATION01")) {
             String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                     outlet.getLocid(), true);
-            int loc2id = Integer.parseInt(loc2[0]);
+
+            int loc2id = SDUtil.convertToInt((loc2[0]).toString());
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {
@@ -2630,12 +2631,21 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
+        }else if (code.equals("USER")) {
+            for (int i = 0; i < mUserList.size(); i++) {
+                if (mUserList.get(i).getUserid() == outlet.getUserId()) {
+                    return i;
+                }
+            }
+
         }
+
 
         return default_value;
     }
 
 
+    @SuppressLint("RestrictedApi")
     private LinearLayout getTextView(int mNumber, String MName,
                                      String textname, int mandatory) {
 
@@ -2732,6 +2742,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar c = Calendar.getInstance();
@@ -2820,6 +2831,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 return false;
             }
+
         });
 
         if (screenMode == VIEW || screenMode == EDIT) {
@@ -3066,9 +3078,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
             mcontractStatusList = new ArrayList<>();
             mcontractStatusList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
-            for (NewOutletBO contemp : bmodel.newOutletHelper.getContractStatusList()) {
-                mcontractStatusList.add(contemp);
-            }
+            mcontractStatusList.addAll(bmodel.newOutletHelper.getContractStatusList());
             ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
             contractStatusAdapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -3093,401 +3103,366 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
         }
-        if (menuCode.equals("SUBCHANNEL")) {
-            if (subchannel == null)
-                subchannel = new MaterialSpinner(getActivity());
-            subchannel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            subchannel.setId(mNumber);
-            sub_chanel_mname = MName;
-            subchannel.setFloatingLabelText(MName);
+        switch (menuCode) {
+            case "SUBCHANNEL":
+                if (subchannel == null)
+                    subchannel = new MaterialSpinner(getActivity());
+                subchannel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                subchannel.setId(mNumber);
+                sub_chanel_mname = MName;
+                subchannel.setFloatingLabelText(MName);
 
-            if (mandatory != 1) {
-                firstlayout.addView(subchannel, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(subchannel, params12);
-                layout.addView(firstlayout, params10);
-            }
-        } else if (menuCode.equals("ROUTE")) {
-            route = new MaterialSpinner(getActivity());
-            route.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            route.setId(mNumber);
-            route.setFloatingLabelText(MName);
-            if (mandatory != 1) {
-                firstlayout.addView(route, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(route, params12);
-                layout.addView(firstlayout, params10);
-            }
-
-
-            routeAdapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item);
-            routeAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
-                    .getString(R.string.select_str) + " " + MName, 0));
-            routeMname = MName;
-
-            if (beatMaster != null)
-                for (BeatMasterBO temp : bmodel.beatMasterHealper
-                        .getBeatMaster()) {
-
-                    String routeCaps = temp.getBeatDescription();
-                    temp.setBeatDescription(routeCaps);
-                    routeAdapter.add(temp);
-
+                if (mandatory != 1) {
+                    firstlayout.addView(subchannel, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(subchannel, params12);
+                    layout.addView(firstlayout, params10);
                 }
-            route.setAdapter(routeAdapter);
-            route.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-
-
-                    BeatMasterBO tempBo = (BeatMasterBO) parent
-                            .getSelectedItem();
-                    outlet.setRouteid(tempBo.getBeatId());
+                break;
+            case "ROUTE":
+                route = new MaterialSpinner(getActivity());
+                route.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                route.setId(mNumber);
+                route.setFloatingLabelText(MName);
+                if (mandatory != 1) {
+                    firstlayout.addView(route, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(route, params12);
+                    layout.addView(firstlayout, params10);
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {
 
-                }
+                routeAdapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item);
+                routeAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
+                        .getString(R.string.select_str) + " " + MName, 0));
+                routeMname = MName;
 
-            });
+                if (beatMaster != null)
+                    if (mUserList != null) {//user spinner available
+                        for (BeatMasterBO temp : beatMaster) {
 
-            if (screenMode == VIEW || screenMode == EDIT) {
-                route.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    route.setEnabled(false);
-            }
+                            String routeCaps = temp.getBeatDescription();
+                            temp.setBeatDescription(routeCaps);
+                            routeAdapter.add(temp);
+
+                        }
+                    } else {// load login user beats
+                        for (BeatMasterBO temp : bmodel.beatMasterHealper
+                                .getBeatMaster()) {
+
+                            String routeCaps = temp.getBeatDescription();
+                            temp.setBeatDescription(routeCaps);
+                            routeAdapter.add(temp);
+
+                        }
+                    }
+                route.setAdapter(routeAdapter);
+                route.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
 
 
-        } else if (menuCode.equals("LOCATION")) {
+                        BeatMasterBO tempBo = (BeatMasterBO) parent
+                                .getSelectedItem();
+                        outlet.setRouteid(tempBo.getBeatId());
+                    }
 
-            location1 = new MaterialSpinner(getActivity());
-            location1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            location1.setId(mNumber);
-            location1.setFloatingLabelText(MName);
-            if (mLocationMasterList1 == null) {
-                mLocationMasterList1 = new ArrayList<>();
-            }
-            mLocationMasterList1.add(0, new LocationBO(0, getActivity()
-                    .getResources().getString(R.string.select_str) + " " + MName));
+                    public void onNothingSelected(AdapterView<?> arg0) {
 
+                    }
 
-            locationAdapter1 = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, mLocationMasterList1);
-            locationAdapter1.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            location1.setAdapter(locationAdapter1);
-            location1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
+                });
 
-                    LocationBO tempBo = (LocationBO) parent.getSelectedItem();
-                    outlet.setLocid(tempBo.getLocId());
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-
-                }
-
-            });
-
-            if (!isLocation1) {
                 if (screenMode == VIEW || screenMode == EDIT) {
-                    location1.setSelection(getPosition(menuCode));
+                    route.setSelection(getPosition(menuCode));
                     if (screenMode == VIEW)
-                        location1.setEnabled(false);
-                }
-            }
-
-
-            if (mandatory != 1) {
-                firstlayout.addView(location1, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(location1, params12);
-                layout.addView(firstlayout, params10);
-            }
-
-
-        } else if (menuCode.equals("LOCATION01")) {
-            location2 = new MaterialSpinner(getActivity());
-            location2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            location2.setId(mNumber);
-            location2.setFloatingLabelText(MName);
-            if (mLocationMasterList2 == null) {
-                mLocationMasterList2 = new ArrayList<>();
-            }
-            mLocationMasterList2.add(0, new LocationBO(0, getActivity()
-                    .getResources().getString(R.string.select_str) + " " + MName));
-
-            locationAdapter2 = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, mLocationMasterList2);
-            locationAdapter2.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-
-            location2.setAdapter(locationAdapter2);
-            location2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-
-
-                    LocationBO tempBo = (LocationBO) parent.getSelectedItem();
-                    outlet.setLoc1id(tempBo.getLocId());
-                    updateLocationAdapter1(outlet.getLoc1id());
+                        route.setEnabled(false);
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {
 
+                break;
+            case "LOCATION":
+
+                location1 = new MaterialSpinner(getActivity());
+                location1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                location1.setId(mNumber);
+                location1.setFloatingLabelText(MName);
+                if (mLocationMasterList1 == null) {
+                    mLocationMasterList1 = new ArrayList<>();
                 }
-
-            });
-
-
-            if (mandatory != 1) {
-                firstlayout.addView(location2, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(location2, params12);
-                layout.addView(firstlayout, params10);
-            }
-
-        } else if (menuCode.equals("LOCATION02")) {
-            location3 = new MaterialSpinner(getActivity());
-            location3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            location3.setId(mNumber);
-            location3.setFloatingLabelText(MName);
-            if (mLocationMasterList3 == null) {
-                mLocationMasterList3 = new ArrayList<>();
-            }
-            mLocationMasterList3.add(0, new LocationBO(0, getActivity()
-                    .getResources().getString(R.string.select_str) + " " + MName));
+                mLocationMasterList1.add(0, new LocationBO(0, getActivity()
+                        .getResources().getString(R.string.select_str) + " " + MName));
 
 
-            locationAdapter3 = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, mLocationMasterList3);
-            locationAdapter3.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            location3.setAdapter(locationAdapter3);
-            location3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
+                locationAdapter1 = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, mLocationMasterList1);
+                locationAdapter1.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                location1.setAdapter(locationAdapter1);
+                location1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
 
+                        LocationBO tempBo = (LocationBO) parent.getSelectedItem();
+                        outlet.setLocid(tempBo.getLocId());
+                    }
 
-                    LocationBO tempBo = (LocationBO) parent.getSelectedItem();
-                    outlet.setLoc2id(tempBo.getLocId());
-                    updateLocationAdapter2(outlet.getLoc2id());
-                }
+                    public void onNothingSelected(AdapterView<?> arg0) {
 
-                public void onNothingSelected(AdapterView<?> arg0) {
+                    }
 
-                }
+                });
 
-            });
-
-            if (screenMode == VIEW || screenMode == EDIT) {
-                location3.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    location3.setEnabled(false);
-            }
-
-            if (mandatory != 1) {
-                firstlayout.addView(location3, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(location3, params12);
-                layout.addView(firstlayout, params10);
-            }
-
-        } else if (menuCode.equals("PAYMENTTYPE")) {
-
-            bmodel.newOutletHelper.loadRetailerType();
-
-            paymentType = new MaterialSpinner(getActivity());
-            paymentType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            paymentType.setId(mNumber);
-            paymentType.setFloatingLabelText(MName);
-            mretailertypeMasterList = new ArrayList<>();
-            mretailertypeMasterList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
-            mretailertypeMasterList.addAll(bmodel.newOutletHelper.getRetailerTypeList());
-            Commons.print("Size Payment type : " + bmodel.newOutletHelper.getRetailerTypeList().size());
-            ArrayAdapter<NewOutletBO> retailertypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mretailertypeMasterList);
-            retailertypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            paymentType.setAdapter(retailertypeAdapter);
-            paymentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
-                    NewOutletBO tempBo = (NewOutletBO) parent.getSelectedItem();
-                    outlet.setPayment(tempBo.getListId() + "");
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-                }
-
-            });
-
-            if (screenMode == VIEW || screenMode == EDIT) {
-                paymentType.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    paymentType.setEnabled(false);
-            }
-
-            if (mandatory != 1) {
-                firstlayout.addView(paymentType, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(paymentType, params12);
-                layout.addView(firstlayout, params10);
-            }
-
-        } else if (menuCode.equals("DISTRIBUTOR")) {
-
-            distributorSpinner = new MaterialSpinner(getActivity());
-            distributorSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            distributorSpinner.setId(mNumber);
-            distributorSpinner.setFloatingLabelText(MName);
-            bmodel.distributorMasterHelper.downloadDistributorsList();
-
-            mdistributortypeMasterList = new ArrayList<>();
-            mdistributortypeMasterList.add(0, new DistributorMasterBO("0", getResources().getString(R.string.select_str) + " " + MName));
-            for (DistributorMasterBO tempDis : bmodel.distributorMasterHelper.getDistributors()) {
-                mdistributortypeMasterList.add(tempDis);
-            }
-            Commons.print("Size Distributor  : " + bmodel.distributorMasterHelper.getDistributors().size());
-            distributortypeAdapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, mdistributortypeMasterList);
-            distributortypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            distributorSpinner.setAdapter(distributortypeAdapter);
-            distributorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
-
-                    DistributorMasterBO tempBo = (DistributorMasterBO) parent.getSelectedItem();
-                    outlet.setDistid(tempBo.getDId() + "");
-                    if (!tempBo.getDId().equals("0") && route != null && routeAdapter != null) {
-                        ArrayList<String> beatIds = new ArrayList<String>();
-                        ArrayList<String> retailerIds = bmodel.newOutletHelper.getRetialerIds(tempBo.getDId());
-
-                        for (int i = 0; i < retailerIds.size(); i++) {
-                            String retailerId = retailerIds.get(i);
-                            for (RetailerMasterBO bo : bmodel.retailerMaster) {
-                                if (bo.getRetailerID().equals(retailerId))
-                                    beatIds.add(bo.getBeatID() + "");
-                            }
-                        }
-                        Set<String> hs = new HashSet<>();
-                        hs.addAll(beatIds);
-                        beatIds.clear();
-                        beatIds.addAll(hs);
-
-                        routeAdapter.clear();
-                        routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
-                                .getString(R.string.select_str) + " " + routeMname, 0));
-
-                        for (String beatId : beatIds) {
-                            if (beatMaster != null)
-                                routeAdapter.add(bmodel.beatMasterHealper.getBeatMasterBOByID(SDUtil.convertToInt(beatId)));
-                        }
-
-                        route.setAdapter(routeAdapter);
+                if (!isLocation1) {
+                    if (screenMode == VIEW || screenMode == EDIT) {
+                        location1.setSelection(getPosition(menuCode));
+                        if (screenMode == VIEW)
+                            location1.setEnabled(false);
                     }
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {
+
+                if (mandatory != 1) {
+                    firstlayout.addView(location1, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(location1, params12);
+                    layout.addView(firstlayout, params10);
                 }
 
-            });
 
-            if (screenMode == VIEW || screenMode == EDIT) {
-                distributorSpinner.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    distributorSpinner.setEnabled(false);
-            }
+                break;
+            case "LOCATION01":
+                location2 = new MaterialSpinner(getActivity());
+                location2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                location2.setId(mNumber);
+                location2.setFloatingLabelText(MName);
+                if (mLocationMasterList2 == null) {
+                    mLocationMasterList2 = new ArrayList<>();
+                }
+                mLocationMasterList2.add(0, new LocationBO(0, getActivity()
+                        .getResources().getString(R.string.select_str) + " " + MName));
 
-            if (mandatory != 1) {
-                firstlayout.addView(distributorSpinner, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(distributorSpinner, params12);
-                layout.addView(firstlayout, params10);
-            }
+                locationAdapter2 = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, mLocationMasterList2);
+                locationAdapter2.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-
-        } else if (menuCode.equals("TAXTYPE")) {
-            taxTypeSpinner = new MaterialSpinner(getActivity());
-            taxTypeSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            taxTypeSpinner.setId(mNumber);
-            taxTypeSpinner.setFloatingLabelText(MName);
-            mTaxTypeList = bmodel.newOutletHelper.downloadTaxType();
-            if (mTaxTypeList == null)
-                mTaxTypeList = new ArrayList<>();
-
-            StandardListBO standardListBO = new StandardListBO();
-            standardListBO.setListID(0 + "");
-            standardListBO.setListName("Select " + MName);
-            mTaxTypeList.add(0, standardListBO);
-            ArrayAdapter<StandardListBO> taxTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mTaxTypeList);
-            taxTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            taxTypeSpinner.setAdapter(taxTypeAdapter);
-            taxTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                location2.setAdapter(locationAdapter2);
+                location2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
 
 
-                    StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
-                    outlet.setTaxTypeId(standardListBO.getListID());
+                        LocationBO tempBo = (LocationBO) parent.getSelectedItem();
+                        outlet.setLoc1id(tempBo.getLocId());
+                        updateLocationAdapter1(outlet.getLoc1id());
+                    }
 
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+
+                });
+
+
+                if (mandatory != 1) {
+                    firstlayout.addView(location2, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(location2, params12);
+                    layout.addView(firstlayout, params10);
                 }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
+                break;
+            case "LOCATION02":
+                location3 = new MaterialSpinner(getActivity());
+                location3.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                location3.setId(mNumber);
+                location3.setFloatingLabelText(MName);
+                if (mLocationMasterList3 == null) {
+                    mLocationMasterList3 = new ArrayList<>();
                 }
-            });
+                mLocationMasterList3.add(0, new LocationBO(0, getActivity()
+                        .getResources().getString(R.string.select_str) + " " + MName));
 
-            if (screenMode == VIEW || screenMode == EDIT) {
-                taxTypeSpinner.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    taxTypeSpinner.setEnabled(false);
-            }
 
-            if (mandatory != 1) {
-                firstlayout.addView(taxTypeSpinner, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(taxTypeSpinner, params12);
-                layout.addView(firstlayout, params10);
-            }
+                locationAdapter3 = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, mLocationMasterList3);
+                locationAdapter3.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                location3.setAdapter(locationAdapter3);
+                location3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
 
-        } else if (menuCode.equals("PRIORITYPRODUCT")) {
 
-            mPriorityProductList = bmodel.newOutletHelper.downloadPriorityProducts();
-            StandardListBO standardListBO = new StandardListBO();
-            standardListBO.setListID(0 + "");
-            standardListBO.setListName("Select " + MName);
+                        LocationBO tempBo = (LocationBO) parent.getSelectedItem();
+                        outlet.setLoc2id(tempBo.getLocId());
+                        updateLocationAdapter2(outlet.getLoc2id());
+                    }
 
-            if (mPriorityProductList == null)
-                mPriorityProductList = new ArrayList<>();
+                    public void onNothingSelected(AdapterView<?> arg0) {
 
-            mPriorityProductList.add(0, standardListBO);
+                    }
 
-            if (hasLink == 0) {
-                MaterialSpinner priorityProductSpinner = new MaterialSpinner(getActivity());
-                priorityProductSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                priorityProductSpinner.setId(mNumber);
-                priorityProductSpinner.setFloatingLabelText(MName);
-                ArrayAdapter<StandardListBO> priorityProductAdapter = new ArrayAdapter<>(getActivity(),
-                        android.R.layout.simple_spinner_item, mPriorityProductList);
-                priorityProductAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                priorityProductSpinner.setAdapter(priorityProductAdapter);
-                priorityProductSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    location3.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        location3.setEnabled(false);
+                }
+
+                if (mandatory != 1) {
+                    firstlayout.addView(location3, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(location3, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "PAYMENTTYPE":
+
+                bmodel.newOutletHelper.loadRetailerType();
+
+                paymentType = new MaterialSpinner(getActivity());
+                paymentType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                paymentType.setId(mNumber);
+                paymentType.setFloatingLabelText(MName);
+                mretailertypeMasterList = new ArrayList<>();
+                mretailertypeMasterList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
+                mretailertypeMasterList.addAll(bmodel.newOutletHelper.getRetailerTypeList());
+                Commons.print("Size Payment type : " + bmodel.newOutletHelper.getRetailerTypeList().size());
+                ArrayAdapter<NewOutletBO> retailertypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mretailertypeMasterList);
+                retailertypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                paymentType.setAdapter(retailertypeAdapter);
+                paymentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+                        NewOutletBO tempBo = (NewOutletBO) parent.getSelectedItem();
+                        outlet.setPayment(tempBo.getListId() + "");
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    paymentType.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        paymentType.setEnabled(false);
+                }
+
+                if (mandatory != 1) {
+                    firstlayout.addView(paymentType, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(paymentType, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "DISTRIBUTOR":
+
+                distributorSpinner = new MaterialSpinner(getActivity());
+                distributorSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                distributorSpinner.setId(mNumber);
+                distributorSpinner.setFloatingLabelText(MName);
+                bmodel.distributorMasterHelper.downloadDistributorsList();
+
+                mdistributortypeMasterList = new ArrayList<>();
+                mdistributortypeMasterList.add(0, new DistributorMasterBO("0", getResources().getString(R.string.select_str) + " " + MName));
+                for (DistributorMasterBO tempDis : bmodel.distributorMasterHelper.getDistributors()) {
+                    mdistributortypeMasterList.add(tempDis);
+                }
+                Commons.print("Size Distributor  : " + bmodel.distributorMasterHelper.getDistributors().size());
+                distributortypeAdapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, mdistributortypeMasterList);
+                distributortypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                distributorSpinner.setAdapter(distributortypeAdapter);
+                distributorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+
+                        DistributorMasterBO tempBo = (DistributorMasterBO) parent.getSelectedItem();
+                        outlet.setDistid(tempBo.getDId() + "");
+                        if (!tempBo.getDId().equals("0") && route != null && routeAdapter != null) {
+                            ArrayList<String> beatIds = new ArrayList<>();
+                            ArrayList<String> retailerIds = bmodel.newOutletHelper.getRetialerIds(tempBo.getDId());
+
+                            for (int i = 0; i < retailerIds.size(); i++) {
+                                String retailerId = retailerIds.get(i);
+                                for (RetailerMasterBO bo : bmodel.retailerMaster) {
+                                    if (bo.getRetailerID().equals(retailerId))
+                                        beatIds.add(bo.getBeatID() + "");
+                                }
+                            }
+                            Set<String> hs = new HashSet<>();
+                            hs.addAll(beatIds);
+                            beatIds.clear();
+                            beatIds.addAll(hs);
+
+                            routeAdapter.clear();
+                            routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
+                                    .getString(R.string.select_str) + " " + routeMname, 0));
+
+                            for (String beatId : beatIds) {
+                                if (beatMaster != null)
+                                    routeAdapter.add(bmodel.beatMasterHealper.getBeatMasterBOByID(SDUtil.convertToInt(beatId)));
+                            }
+
+                            route.setAdapter(routeAdapter);
+                        }
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    distributorSpinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        distributorSpinner.setEnabled(false);
+                }
+
+                if (mandatory != 1) {
+                    firstlayout.addView(distributorSpinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(distributorSpinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "TAXTYPE": {
+                taxTypeSpinner = new MaterialSpinner(getActivity());
+                taxTypeSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                taxTypeSpinner.setId(mNumber);
+                taxTypeSpinner.setFloatingLabelText(MName);
+                mTaxTypeList = bmodel.newOutletHelper.downloadTaxType();
+                if (mTaxTypeList == null)
+                    mTaxTypeList = new ArrayList<>();
+
+                StandardListBO standardListBO = new StandardListBO();
+                standardListBO.setListID(0 + "");
+                standardListBO.setListName("Select " + MName);
+                mTaxTypeList.add(0, standardListBO);
+                ArrayAdapter<StandardListBO> taxTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mTaxTypeList);
+                taxTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                taxTypeSpinner.setAdapter(taxTypeAdapter);
+                taxTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
                         StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
-                        outlet.setPriorityProductId(standardListBO.getListID());
-                        outlet.setPriorityProductLevelId(standardListBO.getListCode());
+                        outlet.setTaxTypeId(standardListBO.getListID());
+
                     }
 
                     @Override
@@ -3495,79 +3470,209 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     }
                 });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    taxTypeSpinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        taxTypeSpinner.setEnabled(false);
+                }
+
                 if (mandatory != 1) {
-                    firstlayout.addView(priorityProductSpinner, params12);
+                    firstlayout.addView(taxTypeSpinner, params12);
                     layout.addView(firstlayout, editweightmargin);
                 } else {
-                    firstlayout.addView(priorityProductSpinner, params12);
+                    firstlayout.addView(taxTypeSpinner, params12);
                     layout.addView(firstlayout, params10);
                 }
-            } else if (hasLink == 1) {
-                Button btn = new Button(getActivity());
-                btn.setText("");
-                btn.setOnClickListener(new View.OnClickListener() {
+
+                break;
+            }
+            case "PRIORITYPRODUCT": {
+
+                mPriorityProductList = bmodel.newOutletHelper.downloadPriorityProducts();
+                StandardListBO standardListBO = new StandardListBO();
+                standardListBO.setListID(0 + "");
+                standardListBO.setListName("Select " + MName);
+
+                if (mPriorityProductList == null)
+                    mPriorityProductList = new ArrayList<>();
+
+                mPriorityProductList.add(0, standardListBO);
+
+                if (hasLink == 0) {
+                    MaterialSpinner priorityProductSpinner = new MaterialSpinner(getActivity());
+                    priorityProductSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    priorityProductSpinner.setId(mNumber);
+                    priorityProductSpinner.setFloatingLabelText(MName);
+                    ArrayAdapter<StandardListBO> priorityProductAdapter = new ArrayAdapter<>(getActivity(),
+                            android.R.layout.simple_spinner_item, mPriorityProductList);
+                    priorityProductAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    priorityProductSpinner.setAdapter(priorityProductAdapter);
+                    priorityProductSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                            StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
+                            outlet.setPriorityProductId(standardListBO.getListID());
+                            outlet.setPriorityProductLevelId(standardListBO.getListCode());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    if (mandatory != 1) {
+                        firstlayout.addView(priorityProductSpinner, params12);
+                        layout.addView(firstlayout, editweightmargin);
+                    } else {
+                        firstlayout.addView(priorityProductSpinner, params12);
+                        layout.addView(firstlayout, params10);
+                    }
+                } else if (hasLink == 1) {
+                    Button btn = new Button(getActivity());
+                    btn.setText("");
+                    btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+                    layout.addView(btn, commonsparams3);
+                }
+
+                break;
+            }
+            case "CLASS": {
+                classSpinner = new MaterialSpinner(getActivity());
+                classSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                classSpinner.setId(mNumber);
+                classSpinner.setFloatingLabelText(MName);
+                mClassTypeList = bmodel.newOutletHelper.downloadClaasType();
+                if (mClassTypeList == null)
+                    mClassTypeList = new ArrayList<>();
+
+                StandardListBO standardListBO = new StandardListBO();
+                standardListBO.setListID(0 + "");
+                standardListBO.setListName("Select " + MName);
+                mClassTypeList.add(0, standardListBO);
+                ArrayAdapter<StandardListBO> classTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mClassTypeList);
+                classTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                classSpinner.setAdapter(classTypeAdapter);
+                classSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                        StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
+                        outlet.setClassTypeId(standardListBO.getListID());
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
                     }
                 });
-                layout.addView(btn, commonsparams3);
 
-
-            }
-
-        } else if (menuCode.equals("CLASS")) {
-            classSpinner = new MaterialSpinner(getActivity());
-            classSpinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            classSpinner.setId(mNumber);
-            classSpinner.setFloatingLabelText(MName);
-            mClassTypeList = bmodel.newOutletHelper.downloadClaasType();
-            if (mClassTypeList == null)
-                mClassTypeList = new ArrayList<>();
-
-            StandardListBO standardListBO = new StandardListBO();
-            standardListBO.setListID(0 + "");
-            standardListBO.setListName("Select " + MName);
-            mClassTypeList.add(0, standardListBO);
-            ArrayAdapter<StandardListBO> classTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mClassTypeList);
-            classTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            classSpinner.setAdapter(classTypeAdapter);
-            classSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
-                    StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
-                    outlet.setClassTypeId(standardListBO.getListID());
-
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    classSpinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        classSpinner.setEnabled(false);
                 }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
+                if (mandatory != 1) {
+                    firstlayout.addView(classSpinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(classSpinner, params12);
+                    layout.addView(firstlayout, params10);
                 }
-            });
-
-            if (screenMode == VIEW || screenMode == EDIT) {
-                classSpinner.setSelection(getPosition(menuCode));
-                if (screenMode == VIEW)
-                    classSpinner.setEnabled(false);
+                break;
             }
+            case "USER": {
+                userSpinner = new MaterialSpinner(getActivity());
+                userSpinner.setId(mNumber);
+                userSpinner.setFloatingLabelText(MName);
 
-            if (mandatory != 1) {
-                firstlayout.addView(classSpinner, params12);
-                layout.addView(firstlayout, editweightmargin);
-            } else {
-                firstlayout.addView(classSpinner, params12);
-                layout.addView(firstlayout, params10);
+                UserMasterBO bo = new UserMasterBO();
+                bo.setUserid(0);
+                bo.setUserName("Select " + MName);
+                mUserList.add(0, bo);
+
+                ArrayAdapter<UserMasterBO> userAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mUserList);
+                userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                userSpinner.setAdapter(userAdapter);
+                //Pre select login user
+                for (int i = 0; i < mUserList.size(); i++) {
+                    if (mUserList.get(i).getUserid() == bmodel.userMasterHelper.getUserMasterBO().getUserid()) {
+                        userSpinner.setSelection(i);
+                        break;
+                    }
+                }
+                userSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (route != null) {
+                            UserMasterBO bo = (UserMasterBO) parent.getSelectedItem();
+                            outlet.setUserId(bo.getUserid());
+                            updateBeat(bo.getUserid());
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    userSpinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        userSpinner.setEnabled(false);
+                }
+
+                if (mandatory != 1) {
+                    firstlayout.addView(userSpinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(userSpinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+                break;
             }
         }
-
 
         return layout;
 
     }
+    private void updateBeat(int userid) {
 
+        routeAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item);
+        routeAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
+                .getString(R.string.select_str) + " " + routeMname, 0));
+
+        if (beatMaster != null)
+            for (BeatMasterBO temp : beatMaster) {
+
+                if (userid == temp.getUserId()) {
+
+                    String routeCaps = temp.getBeatDescription();
+                    temp.setBeatDescription(routeCaps);
+                    routeAdapter.add(temp);
+                }
+
+            }
+
+        route.setAdapter(routeAdapter);
+
+
+    }
     //To create layout for Retailer Attribute
     private LinearLayout addAttributeView(final String MName, int mandatory, int flag) {
         //flag=0 - add common atrributes
@@ -3619,17 +3724,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 mCommonAttributeList.addAll(bmodel.newOutletAttributeHelper.getmCommonAttributeList());
 
         } else if (isFromChannel) {
-            parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
-            if (parentLayout != null) {
-                for (int i = 0; i < parentLayout.getChildCount(); i++) {
-                    if (parentLayout.getChildAt(i).getTag() != null && ((String) parentLayout.getChildAt(i).getTag()).equals("channel"))
-                        parentLayout.removeViewAt(i);
+            if(getView()!=null) {
+                parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
+                if (parentLayout != null) {
+                    for (int i = 0; i < parentLayout.getChildCount(); i++) {
+                        if (parentLayout.getChildAt(i).getTag() != null && parentLayout.getChildAt(i).getTag().equals("channel"))
+                            parentLayout.removeViewAt(i);
 
+                    }
                 }
+                mChannelAttributeList = new ArrayList<>();
+                if (mAttributeListByChannelID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
+                    mChannelAttributeList.addAll(mAttributeListByChannelID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
             }
-            mChannelAttributeList = new ArrayList<>();
-            if (mAttributeListByChannelID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
-                mChannelAttributeList.addAll(mAttributeListByChannelID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
         }
 
 
@@ -3640,7 +3747,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         for (int i = 0; i < rowCount; i++) {
             NewOutletAttributeBO parentBO = mAttributeParentList.get(i);
             if ((isCommon && mCommonAttributeList.contains(parentBO.getAttrId()))
-                    || (isFromChannel && mChannelAttributeList.contains(parentBO.getAttrId()))) {
+                    || (isFromChannel && (mChannelAttributeList != null && mChannelAttributeList.contains(parentBO.getAttrId())))) {
 
                 LinearLayout layout = new LinearLayout(getActivity());
                 if (isFromChannel)
@@ -3919,7 +4026,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             return true;
         } else if (i == R.id.menu_order) {
             bmodel.configurationMasterHelper.downloadProductDetailsList();
-            /** Settign color **/
+            /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
             bmodel.productHelper.updateProductColor();
             bmodel.productHelper.downloadInStoreLocations();
@@ -3939,7 +4046,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             bmodel.productHelper.downloadCompetitorProducts("MENU_STK_ORD");
             bmodel.productHelper.downloadCompetitorTaggedProducts(MENU_NEW_RETAILER);
 
-            /** Settign color **/
+            /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
             bmodel.productHelper.updateProductColor();
             bmodel.productHelper.downloadInStoreLocations();
@@ -3956,7 +4063,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         return false;
     }
 
-    protected Dialog onCreateDialogNew() {
+    protected void onCreateDialogNew() {
         AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
                 .setIcon(null)
                 .setTitle(getResources().getString(R.string.enable_gps))
@@ -3970,7 +4077,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             }
                         });
         bmodel.applyAlertDialogTheme(builderGPS);
-        return null;
     }
 
     private void setValues() {
@@ -4600,7 +4706,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     }
 
-    private Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
