@@ -298,7 +298,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
-        loginHelper.loadPasswordConfiguration();
+        loginHelper.loadPasswordConfiguration(context);
         businessModel.userMasterHelper.downloadDistributionDetails();
         if (loginHelper.IS_PASSWORD_ENCRYPTED)
             businessModel.synchronizationHelper.setEncryptType();
