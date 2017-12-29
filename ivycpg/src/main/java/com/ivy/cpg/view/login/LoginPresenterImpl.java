@@ -66,6 +66,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private SharedPreferences mLastSyncSharedPref;
     private int mIterateCount = 0;
     private TransferUtility transferUtility;
+    private String initialLanguage = "en";
+    private SharedPreferences sharedPrefs;
 
     LoginPresenterImpl(Context context) {
         this.context = context;
@@ -97,11 +99,10 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
         businessModel.synchronizationHelper.loadErrorCode();
         /* Set default language */
-        SharedPreferences sharedPrefs = PreferenceManager
+        sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        String initialLanguage = "en";
 
-        if (!Locale.getDefault().getLanguage().equals(
+        if (!Locale.getDefault().equals(
                 sharedPrefs.getString("languagePref", LANGUAGE))) {
             initialLanguage = sharedPrefs.getString("languagePref", LANGUAGE);
             Locale locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
@@ -115,11 +116,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         // Getting back date
         DataMembers.backDate = sharedPrefs.getString("backDate", "");
 
-        // When language preference is changed, recreate the activity.
-        if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
-                LANGUAGE))) {
-            loginView.reload();
-        }
+        reloadActivity();
 
         mLastSyncSharedPref = context.getSharedPreferences("lastSync", MODE_PRIVATE);
         mPasswordLockCountPref = context.getSharedPreferences("passwordlock", MODE_PRIVATE);
@@ -140,6 +137,13 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    public void reloadActivity() {
+        // When language preference is changed, recreate the activity.
+        if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
+                LANGUAGE))) {
+            loginView.reload();
+        }
+    }
     /**
      * Saves the last sync date and time in shared preferences
      */
@@ -294,7 +298,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
-        loginHelper.loadPasswordConfiguration();
+        loginHelper.loadPasswordConfiguration(context);
         businessModel.userMasterHelper.downloadDistributionDetails();
         if (loginHelper.IS_PASSWORD_ENCRYPTED)
             businessModel.synchronizationHelper.setEncryptType();
