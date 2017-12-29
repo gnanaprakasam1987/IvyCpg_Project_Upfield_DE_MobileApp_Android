@@ -1413,7 +1413,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -2060,7 +2060,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A"
+                        + "A" + loopEnd + ".dOuomQty,A"
                         + loopEnd
                         + ".dOuomid,A"
                         + loopEnd
@@ -6349,7 +6349,7 @@ public class ProductHelper {
                         + ".dUomQty,A"
                         + loopEnd
                         + ".duomid, u.ListCode,"
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -8595,7 +8595,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
