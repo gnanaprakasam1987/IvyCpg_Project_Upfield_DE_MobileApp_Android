@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class NewOutletBO {
-    public int mSelectedImageIndex = 0;
-    double NewOutletlattitude, NewOutletLongitude;
+    private int mSelectedImageIndex = 0;
+    private double NewOutletlattitude, NewOutletLongitude;
     private String visitDays;
     private String weekNo;
     private String mName;
@@ -16,8 +16,8 @@ public class NewOutletBO {
     private int listId;
     private String listName;
 
-    public Vector<String> ImageName = new Vector<String>();
-    public Vector<Integer> ImageId = new Vector<Integer>();
+    public Vector<String> ImageName = new Vector<>();
+    public Vector<Integer> ImageId = new Vector<>();
 
     private String Market;
     private int channel, subChannel;
@@ -37,17 +37,18 @@ public class NewOutletBO {
     private String Contact2title, contact2titlelovid;
     private int contractStatuslovid;
     private int routeid, locid, loc1id, loc2id;
-    String Fax;
-    String Email;
-    String CreditLimit;
-    String Vat;
-    String Payment;
-    String retailerId;
-    String creditDays;
-    ArrayList<NewOutletBO> lst;
+    private String Fax;
+    private String Email;
+    private String CreditLimit;
+    private String Vat;
+    private String Payment;
+    private String retailerId;
+    private String creditDays;
+    private ArrayList<NewOutletBO> lst;
     private String rfield5;
     private String rfield6;
     private String tinExpDate;
+    private int userId;
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -587,4 +588,13 @@ public class NewOutletBO {
     public String getTinExpDate() {
         return tinExpDate;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
 }

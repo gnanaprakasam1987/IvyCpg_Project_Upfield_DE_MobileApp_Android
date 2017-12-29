@@ -241,7 +241,7 @@ public class DataMembers {
 
 
     public static final String tbl_beatMaster = "BeatMaster";
-    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today";
+    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today,UserId";
 
 
     public static final String tbl_userMaster = "UserMaster";
