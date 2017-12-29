@@ -324,7 +324,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate," +
-                    "invoiceid,SignName,Proofpicture,contactName,contactNo";
+                    "invoiceid,SignName,Proofpicture,contactName,contactNo,SignaturePath";
             String status = "";
             if (selectedItem.equals(mContext.getResources().getString(R.string.fullfilled))) {
                 status = "F";
@@ -346,6 +346,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             header.append("," + bmodel.QT(SignPath));// proofPicture not used... so using same column
             header.append("," + bmodel.QT(contactName));
             header.append("," + bmodel.QT(contactNo));
+            header.append("," + bmodel.QT(SignPath));
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header.toString());
 
             if (selectedItem.equals(mContext.getResources().getString(R.string.partially_fullfilled))) {
