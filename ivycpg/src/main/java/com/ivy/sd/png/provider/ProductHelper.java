@@ -8803,7 +8803,7 @@ public class ProductHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid from OrderHeaderRequest OHR " +
+            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid,OHR.Remarks from OrderHeaderRequest OHR " +
                     "INNER JOIN OrderDetailRequest ODR ON OHR.OrderID=ODR.OrderID " +
                     "where OHR.RetailerID=" + QT(rId) + " AND OHR.upload='N'";
             Cursor c = db.selectSQL(query);
@@ -8816,6 +8816,7 @@ public class ProductHelper {
                         pdi = c.getString(0);
                         uomid = c.getInt(2);
                         qty = c.getInt(1);
+                        bmodel.setOrderHeaderNote(c.getString(c.getColumnIndex("Remarks")));
 
                         if (bmodel.productHelper.getProductMasterBOById(pdi).getPcUomid() == uomid)
                             bmodel.productHelper.getProductMasterBOById(pdi).setOrderedPcsQty(qty);

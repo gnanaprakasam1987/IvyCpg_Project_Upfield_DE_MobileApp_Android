@@ -289,7 +289,7 @@ public class DataMembers {
     private static final String tbl_retailerEditAttribute = "RetailerEditAttribute";
     private static final String tbl_orderHeaderRequest = "OrderHeaderRequest";
     private static final String tbl_orderDetailRequest = "OrderDetailRequest";
-    private static final String tbl_retailerPotential = "RetailerPotential";
+    public static final String tbl_retailerPotential = "RetailerPotential";
 
     private static final String tbl_deviateReasontableupload = "deviateReasontable";
     private static final String tbl_SbdMerchandisingHeaderupload = "SbdMerchandisingHeader";
@@ -1079,7 +1079,7 @@ public class DataMembers {
         uploadNewRetailerColumn.put(tbl_retailerpriorityproducts, tbl_retailerpriorityproducts_cols);
         uploadNewRetailerColumn.put(tbl_retailerAttribute, tbl_retailerAttributeupload_cols);
         uploadNewRetailerColumn.put(tbl_orderHeaderRequest, tbl_OrderHeaderRequest_cols);
-        uploadNewRetailerColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
+        //uploadNewRetailerColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
         uploadNewRetailerColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
 
     }

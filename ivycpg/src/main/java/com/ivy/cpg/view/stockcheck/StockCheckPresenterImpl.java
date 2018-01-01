@@ -450,9 +450,10 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     public void prepareAdapters() {
 
         mSearchTypeArray = new ArrayList<>();
-        mSearchTypeArray.add("Product Name");
-        mSearchTypeArray.add("GCAS Code");
-        mSearchTypeArray.add("BarCode");
+        mSearchTypeArray.add(context.getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(context.getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(context.getResources().getString(
+                R.string.order_dialog_barcode));
 
         //location
         mLocationAdapter = new ArrayAdapter<>(context,
