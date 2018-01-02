@@ -1,9 +1,12 @@
 package com.ivy.sd.png.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,14 +28,30 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
 
     BusinessModel businessModel;
     RecyclerView recyclerView;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_display_scheme);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
+            setScreenTitle(title);
+        }
 
 
         recyclerView = (RecyclerView) findViewById(R.id.list_scheme);
@@ -44,6 +63,19 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
         recyclerView.setAdapter(mAdapter);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            startActivity(new Intent(DisplaySchemeActivity.this,
+                    HomeScreenTwo.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 

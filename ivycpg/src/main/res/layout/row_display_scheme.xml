@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_margin"
-        android:paddingBottom="@dimen/target_top_margin"
-        android:paddingLeft="@dimen/list_padding_left_n_right"
-        android:paddingRight="@dimen/list_padding_left_n_right"
-        android:paddingTop="@dimen/target_top_margin">
+        android:layout_margin="@dimen/list_margin">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
+            android:paddingLeft="@dimen/list_padding_left_n_right"
+            android:paddingRight="@dimen/list_padding_left_n_right"
+            android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
             <TextView
                 android:id="@+id/text_scheme_name"

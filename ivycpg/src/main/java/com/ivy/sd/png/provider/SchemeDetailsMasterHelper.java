@@ -4845,8 +4845,8 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
-            sb.append("Select schemeId,schemeShortDesc,schemeDesc,DisplayPeriodStart,DisplayPeriodEnd,BookingPeriodStart,BookingPeriodEnd");
-            sb.append(",PayoutFrequency,qualifier from DisplaySchemeMaster DM INNER JOIN DisplaySchemeMapping DMP ON DMP.schemeId=DM.schemeId");
+            sb.append("Select DM.schemeId,schemeShortDesc,schemeDesc,DisplayPeriodStart,DisplayPeriodEnd,BookingPeriodStart,BookingPeriodEnd");
+            sb.append(",PayoutFrequency,qualifiers from DisplaySchemeMaster DM INNER JOIN DisplaySchemeMapping DMP ON DMP.schemeId=DM.schemeId");
             sb.append(" WHERE DMP.retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
 
             Cursor c = db.selectSQL(sb.toString());
@@ -4867,7 +4867,9 @@ public class SchemeDetailsMasterHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            if (db != null) {
+                db.closeDB();
+            }
             Commons.printException("" + e);
         }
     }
