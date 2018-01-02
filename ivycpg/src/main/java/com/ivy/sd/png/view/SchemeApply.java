@@ -71,6 +71,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     private Toolbar toolbar;
     private Button btnNext;
     private String fromOrderScreen = "";
+    private String schemeViewTxt = "View";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 fromOrderScreen = extras.getString("ForScheme", "STD_ORDER");
             }
         }
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels("scheme_view") != null)
+                schemeViewTxt = bmodel.labelsMasterHelper.applyLabels("scheme_view");
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         mExpandableLV = (ExpandableListView) findViewById(R.id.elv);
         btnNext = (Button) findViewById(R.id.btn_next);
         btnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -113,7 +122,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             }
         });
 
-        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") || fromOrderScreen.equalsIgnoreCase("MENU_ORDER")) {
+        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
+                fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
+                fromOrderScreen.equals("MENU_CATALOG_ORDER")) {
             updateSchemeDetails();
         } else {
             mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();
@@ -413,6 +424,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 ((TextView) view.findViewById(R.id.tv_pricetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) view.findViewById(R.id.tv_amounttitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) view.findViewById(R.id.tv_percenttitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                holder.showFreeBTN.setText(schemeViewTxt);
 
                 holder.upArrow.setOnClickListener(new OnClickListener() {
 

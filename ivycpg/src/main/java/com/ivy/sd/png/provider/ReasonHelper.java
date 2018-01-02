@@ -505,7 +505,7 @@ public class ReasonHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             reason = new ReasonMaster();
-            reason.setReasonDesc("Select Reason");
+            reason.setReasonDesc(context.getResources().getString(R.string.select_reason));
             ordfreasonlist.add(reason);
             Cursor c = db.selectSQL(getReasonFromStdListMaster("FFR"));
             if (c.getCount() > 0) {

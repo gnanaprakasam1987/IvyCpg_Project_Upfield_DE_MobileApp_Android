@@ -92,12 +92,28 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             tabLayout.removeAllTabs();
 
         schemeDetailsTab = tabLayout.newTab();
-        schemeDetailsTab.setText("Scheme");
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels("scheme_details_tab") != null)
+                schemeDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("scheme_details_tab"));
+            else
+                schemeDetailsTab.setText("Scheme");
+        } catch (Exception e) {
+            Commons.printException(e);
+            schemeDetailsTab.setText("Scheme");
+        }
         tabLayout.addTab(schemeDetailsTab);
 
         if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
             productDetailsTab = tabLayout.newTab();
-            productDetailsTab.setText("Product Details");
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels("product_details_tab") != null)
+                    productDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("product_details_tab"));
+                else
+                    productDetailsTab.setText("Product Details");
+            } catch (Exception e) {
+                Commons.printException(e);
+                productDetailsTab.setText("Product Details");
+            }
             tabLayout.addTab(productDetailsTab);
         }
 

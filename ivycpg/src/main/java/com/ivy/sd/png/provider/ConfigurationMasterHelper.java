@@ -982,7 +982,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NFC_SEARCH_IN_ASSET = "AT07";
     public boolean SHOW_NFC_SEARCH_IN_ASSET;
 
-    private static final String CODE_ASSET_PHOTO_VALIDATION ="AT10";
+    private static final String CODE_ASSET_PHOTO_VALIDATION = "AT10";
     public boolean ASSET_PHOTO_VALIDATION;
 
     public static final String CODE_IS_UNLINK_FILTERS = "ORDB55";
