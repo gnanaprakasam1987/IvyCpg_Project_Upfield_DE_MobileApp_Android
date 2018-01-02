@@ -1961,7 +1961,7 @@ public class NewOutletHelper {
                         + "," + bmodel.getOrderHeaderBO().getOrderValue()
                         + "," + bmodel.getOrderHeaderBO().getLinesPerCall()
                         + "," + bmodel.getOrderHeaderBO().getTotalWeight()
-                        + "," + QT(bmodel.getOrderHeaderBO().getRemark())
+                        + "," + QT(bmodel.getOrderHeaderNote())
                         + "," + QT(SDUtil.now(SDUtil.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
 

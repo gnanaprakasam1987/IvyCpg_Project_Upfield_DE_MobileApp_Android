@@ -131,7 +131,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         SalesReturnReasonBO reason = new SalesReturnReasonBO();
         reason.setReasonID("0");
-        reason.setReasonDesc("Select reason");
+        reason.setReasonDesc(getResources().getString(R.string.select_reason));
         reason.setReasonCategory("");
         spinnerAdapter.add(reason);
 

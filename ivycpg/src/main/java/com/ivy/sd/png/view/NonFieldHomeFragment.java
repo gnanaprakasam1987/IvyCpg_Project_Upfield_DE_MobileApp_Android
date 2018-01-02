@@ -115,6 +115,14 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         if (getView() != null) {
             lvList = (ListView) getView().findViewById(R.id.listview);
             no_data_txt = (TextView) getView().findViewById(R.id.no_data_txt);
+
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(no_data_txt.getTag()) != null)
+                    no_data_txt.setText(bmodel.labelsMasterHelper.applyLabels(no_data_txt.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
             ll_title = (CardView) getView().findViewById(R.id.card_title);
         }
 

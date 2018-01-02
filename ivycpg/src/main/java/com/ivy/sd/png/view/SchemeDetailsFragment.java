@@ -32,6 +32,7 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -494,7 +495,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         //float size1 =convertSpToPixels(getResources().getDimension(R.dimen.dimens_font_12dp),getActivity());
                         //buyTitleTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.dimens_font_12dp));
                         buyTitleTV.setTextSize(mTextViewSize);
-                        buyTitleTV.setText("BUY");
+                        try {
+                            if (bmodel.labelsMasterHelper.applyLabels("scheme_buy") != null)
+                                buyTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_buy"));
+                            else
+                                buyTitleTV.setText("BUY");
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                            buyTitleTV.setText("BUY");
+                        }
                         buyTitleTV.setWidth(mProductNameWidth);
                         buyTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         buyTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -583,7 +592,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
                         //freeTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
                         freeTitleTV.setTextSize(mTextViewSize);
-                        freeTitleTV.setText("GET FreeProduct");
+                        try {
+                            if (bmodel.labelsMasterHelper.applyLabels("scheme_get") != null)
+                                freeTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_get"));
+                            else
+                                freeTitleTV.setText("GET FreeProduct");
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                            freeTitleTV.setText("GET FreeProduct");
+                        }
                         freeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         freeTitleTV.setWidth(150);
 

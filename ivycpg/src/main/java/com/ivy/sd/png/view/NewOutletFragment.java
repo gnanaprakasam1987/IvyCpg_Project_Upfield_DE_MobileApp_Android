@@ -211,7 +211,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     ArrayList<StandardListBO> priorityProductIDList;
     Vector<RetailerMasterBO> mselectedRetailers;
     int screenMode;
-    String retailerId_edit;
+    String retailerId_edit = "";
 
     private final int VIEW = 1;
     private final int EDIT = 2;
@@ -354,6 +354,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             outlet = bmodel.newOutletHelper.getmNewRetailerById().get(retailerId_edit);
         }
 
+        if (retailerId_edit.equals("")) {
+            bmodel.setOrderHeaderNote("");
+        }
         profileConfig = new Vector<>();
         profileConfig = bmodel.newOutletHelper.getProfileConfiguraion();
 
@@ -4663,9 +4666,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+                    return false;
                 } else if (rid.equals("2")) {
                     getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_URL_NOT_CONFIGURED);
+                    return false;
                 } else if (!rid.equals("")) {
 
                     if (bmodel.configurationMasterHelper.IS_NEARBY_RETAILER) {
@@ -4678,28 +4683,34 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     if (newRetailerUrlList.size() > 0) {
                         bmodel.synchronizationHelper.downloadNewRetailerFromUrl(rid);
+                        return true;
                     } else {
                         getHandler().sendEmptyMessage(
                                 DataMembers.RETAILER_DOWNLOAD_FAILED);
+                        return false;
                     }
 
 
-                } else
+                } else {
                     getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
-            } else
+                    return false;
+                }
+            } else {
                 getHandler().sendEmptyMessage(
                         DataMembers.NOTIFY_NO_INTERNET);
+                return false;
+            }
 
-            return true;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-
-            getHandler().sendEmptyMessage(
-                    DataMembers.NOTIFY_NEW_OUTLET_SAVED);
+            if (result) {
+                getHandler().sendEmptyMessage(
+                        DataMembers.NOTIFY_NEW_OUTLET_SAVED);
+            }
 
 
         }
@@ -4918,6 +4929,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             case SynchronizationHelper.DOWNLOAD_FINISH_UPDATE:
 
                 deleteNewRetailer();
+                bmodel.downloadRetailerMaster();
                 alertDialog.dismiss();
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.data_download_successfully),
@@ -5250,7 +5262,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
 
             for (String tableName : keys) {
-                if (tableName.equals(DataMembers.tbl_nearbyRetailer)) {
+                if (tableName.equals(DataMembers.tbl_nearbyRetailer) ||
+                        tableName.equals(DataMembers.tbl_retailerPotential)) {
                     db.deleteSQL(tableName, "rid ='" + bmodel.newOutletHelper.getId() + "'", false);
                 } else {
                     db.deleteSQL(tableName, "RetailerID ='" + bmodel.newOutletHelper.getId() + "'", false);

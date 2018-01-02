@@ -1199,6 +1199,10 @@
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="select_reason_for_no_order">Select Reason for no order</string>
 
+    <!-- Order summary success dialog message -->
+    <string name="delivery_date_is">Delivery Date is: </string>
+    <string name="old_order_volume">Original value</string>
+
 
     <string-array name="task_tab_header">
         <item>All</item>

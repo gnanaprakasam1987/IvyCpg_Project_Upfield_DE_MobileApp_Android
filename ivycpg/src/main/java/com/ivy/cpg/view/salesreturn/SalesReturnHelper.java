@@ -1258,7 +1258,7 @@ public class SalesReturnHelper {
 
     public List<ProductMasterBO> updateReplaceQtyWithOutTakingOrder(List<ProductMasterBO> orderList) {
         final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getSalesReturnProducts();
-        if (orderList != null && !orderList.isEmpty()) {
+        if (orderList != null && !orderList.isEmpty() && productMasterList != null) {
             for (ProductMasterBO productMasterBO : productMasterList) {
                 if (productMasterBO.getOrderedPcsQty() == 0 && productMasterBO.getOrderedCaseQty() == 0 && productMasterBO.getOrderedOuterQty() == 0) {
                     if (productMasterBO.getRepPieceQty() > 0 || productMasterBO.getRepCaseQty() > 0 || productMasterBO.getRepOuterQty() > 0) {

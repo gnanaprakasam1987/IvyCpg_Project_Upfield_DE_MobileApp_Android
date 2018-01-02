@@ -471,7 +471,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
             tv_target.setText(String.valueOf(getStoreVisited()));
         } else {
-            tv_target.setText(getTotalAchieved());
+            tv_target.setText(getTotalVisitActual());
         }
 
         try {
@@ -511,7 +511,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
             tv_target1.setText(String.valueOf(getStoreVisited()));
         } else {
-            tv_target1.setText(getTotalAchieved());
+            tv_target1.setText(getTotalVisitActual());
         }
 
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
@@ -1729,6 +1729,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         strAchieved = bmodel.formatValue(value);
         return strAchieved;
+    }
+
+    private String getTotalVisitActual() {
+        String totalActual = "";
+        double value = 0.0;
+
+        for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+            value += retObj.getVisit_Actual();
+        }
+        totalActual = bmodel.formatValue(value);
+
+        return totalActual;
     }
 
     private int getStoreVisited() {

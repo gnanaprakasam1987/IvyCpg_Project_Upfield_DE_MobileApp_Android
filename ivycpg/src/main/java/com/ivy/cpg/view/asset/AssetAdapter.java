@@ -30,6 +30,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -78,10 +79,9 @@ public class AssetAdapter extends BaseAdapter {
         this.mAssetPresenter=mAssetPresenter;
         this.mFragment=mFragment;
 
-        String select_reason = "Select Reason";
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc(select_reason);
+        reason1.setReasonDesc(context.getResources().getString(R.string.select_reason));
         mAssetReasonList = mAssetPresenter.getAssetReasonList();
         mAssetReasonList.add(0, reason1);
 
@@ -91,6 +91,12 @@ public class AssetAdapter extends BaseAdapter {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         String select_condition = "Select Condition";
+        try {
+            if (LabelsMasterHelper.getInstance(context).applyLabels("select_condition") != null)
+                select_condition = LabelsMasterHelper.getInstance(context).applyLabels("select_condition");
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
         ReasonMaster reason3 = new ReasonMaster();
         reason3.setConditionID(Integer.toString(0));
         reason3.setReasonDesc(select_condition);

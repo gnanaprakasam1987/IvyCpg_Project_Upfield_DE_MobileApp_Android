@@ -2063,7 +2063,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A"
+                        + "A" + loopEnd + ".dOuomQty,A"
                         + loopEnd
                         + ".dOuomid,A"
                         + loopEnd
@@ -6394,7 +6394,7 @@ public class ProductHelper {
                         + ".dUomQty,A"
                         + loopEnd
                         + ".duomid, u.ListCode,"
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -8803,7 +8803,7 @@ public class ProductHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid from OrderHeaderRequest OHR " +
+            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid,OHR.Remarks from OrderHeaderRequest OHR " +
                     "INNER JOIN OrderDetailRequest ODR ON OHR.OrderID=ODR.OrderID " +
                     "where OHR.RetailerID=" + QT(rId) + " AND OHR.upload='N'";
             Cursor c = db.selectSQL(query);
@@ -8816,6 +8816,7 @@ public class ProductHelper {
                         pdi = c.getString(0);
                         uomid = c.getInt(2);
                         qty = c.getInt(1);
+                        bmodel.setOrderHeaderNote(c.getString(c.getColumnIndex("Remarks")));
 
                         if (bmodel.productHelper.getProductMasterBOById(pdi).getPcUomid() == uomid)
                             bmodel.productHelper.getProductMasterBOById(pdi).setOrderedPcsQty(qty);

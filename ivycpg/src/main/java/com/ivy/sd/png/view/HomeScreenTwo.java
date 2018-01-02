@@ -303,6 +303,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         callAnalysisBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(callAnalysisBtn.getTag()) != null)
+                callAnalysisBtn.setText(bmodel.labelsMasterHelper.applyLabels(callAnalysisBtn.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         retailerNameTxt.setText(title);
         if (bmodel.retailerMasterBO.getAddress3() != null && !bmodel.retailerMasterBO.getAddress3().isEmpty()) {
             retailerCodeTxt.setVisibility(View.VISIBLE);
