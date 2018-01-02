@@ -1704,33 +1704,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     }
 
-    private String getTotalAchieved() {
-        String strAchieved;
-        double value = 0.0;
-        for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
-            if (mRetTgtAchv.containsKey("VST01") || mRetTgtAchv.containsKey("VST02")) {
-                value += retObj.getVisit_Actual();
-                continue;
-            }
-
-            if (mRetTgtAchv.containsKey("VST08")) {
-                value += Double.valueOf(retObj.getMslAch());
-                continue;
-            }
-
-            if (mRetTgtAchv.containsKey("VST09")) {
-                value += retObj.getMonthly_acheived();
-                continue;
-            }
-
-            if (mRetTgtAchv.containsKey("VST17")) {
-                retObj.getSalesValue();
-            }
-        }
-        strAchieved = bmodel.formatValue(value);
-        return strAchieved;
-    }
-
     private String getTotalVisitActual() {
         String totalActual = "";
         double value = 0.0;
