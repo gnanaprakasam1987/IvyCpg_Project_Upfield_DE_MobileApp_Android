@@ -101,11 +101,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         //File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
 
-        if (getIntent().getStringExtra("From") != null) {
-            ((RelativeLayout) findViewById(R.id.contact_det_rl)).setVisibility(View.VISIBLE);
-            contact_no = (TextInputEditText) findViewById(R.id.contact_no);
-            contact_name = (TextInputEditText) findViewById(R.id.contact_name);
-        }
+
         prepareDirectory();
 
         File directory = new File(PHOTO_PATH);
@@ -118,6 +114,11 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             }
         }
 
+        if (getIntent().getStringExtra("From") != null || module.equals("DELIVERY")) {
+            ((RelativeLayout) findViewById(R.id.contact_det_rl)).setVisibility(View.VISIBLE);
+            contact_no = (TextInputEditText) findViewById(R.id.contact_no);
+            contact_name = (TextInputEditText) findViewById(R.id.contact_name);
+        }
         if (module.equals("DELIVERY")) {
             imageName = "DV__SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "Delivery/"

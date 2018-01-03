@@ -160,6 +160,12 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         btn_traveltime.setOnClickListener(this);
         rdgrp = (RadioGroup) findViewById(R.id.rdGrp_session);
         btn_add = (Button) findViewById(R.id.btn_add);
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(btn_add.getTag()) != null)
+                btn_add.setText(bmodel.labelsMasterHelper.applyLabels(btn_add.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
         btn_add.setOnClickListener(this);
         btn_add.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         spnReason = (Spinner) findViewById(R.id.spn_resn);
@@ -184,6 +190,21 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         TextView txt_session = (TextView) findViewById(R.id.txt_session);
         TextView txt_traveltime = (TextView) findViewById(R.id.txt_traveltime);
         TextView txt_Descr = (TextView) findViewById(R.id.txt_Descr);
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(per_txt.getTag()) != null)
+                per_txt.setText(bmodel.labelsMasterHelper.applyLabels(per_txt.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        TextView txt_total = (TextView) findViewById(R.id.txt_total);
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(txt_total.getTag()) != null)
+                txt_total.setText(bmodel.labelsMasterHelper.applyLabels(txt_total.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
         txt_reason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         txt_joint.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

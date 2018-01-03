@@ -55,7 +55,6 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 public class NewOutletEditFragment extends IvyBaseFragment {
     RecyclerView recyclerView;
     private BusinessModel bmodel;
-    LinearLayoutManager linearLayoutManager;
     GridLayoutManager gridLayoutManager;
     Bundle bundle;
     private DisplayMetrics displaymetrics;

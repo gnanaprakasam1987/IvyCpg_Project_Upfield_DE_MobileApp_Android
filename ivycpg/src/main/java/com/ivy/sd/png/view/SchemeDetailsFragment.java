@@ -32,6 +32,7 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -494,7 +495,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         //float size1 =convertSpToPixels(getResources().getDimension(R.dimen.dimens_font_12dp),getActivity());
                         //buyTitleTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.dimens_font_12dp));
                         buyTitleTV.setTextSize(mTextViewSize);
-                        buyTitleTV.setText("BUY");
+                        try {
+                            if (bmodel.labelsMasterHelper.applyLabels("scheme_buy") != null)
+                                buyTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_buy"));
+                            else
+                                buyTitleTV.setText("BUY");
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                            buyTitleTV.setText("BUY");
+                        }
                         buyTitleTV.setWidth(mProductNameWidth);
                         buyTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         buyTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -583,7 +592,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
                         //freeTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
                         freeTitleTV.setTextSize(mTextViewSize);
-                        freeTitleTV.setText("GET FreeProduct");
+                        try {
+                            if (bmodel.labelsMasterHelper.applyLabels("scheme_get") != null)
+                                freeTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_get"));
+                            else
+                                freeTitleTV.setText("GET FreeProduct");
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                            freeTitleTV.setText("GET FreeProduct");
+                        }
                         freeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         freeTitleTV.setWidth(150);
 
@@ -755,8 +772,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicBUY(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.setMargins(0, 5, 0, 0);
@@ -1010,7 +1029,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewANDLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
+
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mAddViewLayout = new LinearLayout(ctxt);
@@ -1124,8 +1147,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
     private HorizontalScrollView addViewAndLogicBuyNew(int parentId, String groupName) {
 
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
 
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.setMargins(0, 5, 0, 0);
@@ -1256,7 +1281,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.bottomMargin = 20;
@@ -1380,7 +1408,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewONLYLogicGET(int schemeParentId, String groupName) {
-        final int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
+
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams1.bottomMargin = 20;

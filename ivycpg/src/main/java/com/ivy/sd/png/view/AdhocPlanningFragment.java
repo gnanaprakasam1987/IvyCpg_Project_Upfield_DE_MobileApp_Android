@@ -721,15 +721,24 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
                 ArrayList<RetailerMasterBO> retailerList = new ArrayList<>();
                 retailerList.addAll(mSecondRetailerList);
 
-                ArrayList<String> temp = new ArrayList<>();
+                /*ArrayList<String> temp = new ArrayList<>();
                 for (RetailerMasterBO bo : mSecondRetailerList) {
                     temp.add(bo.getRetailerID());
-                }
-                if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
-                    for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                        if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y")) && !temp.contains(bo.getRetailerID())) {
+                }*/
+                HashMap<String, Boolean> isRetailerExists = new HashMap<>();
+
+
+                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
+                    isRetailerExists.put(bo.getRetailerID(), true);
+                    if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+                        if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y"))) {
                             retailerList.add(bo);
                         }
+                    }
+                }
+                for (int i = 0; i < mSecondRetailerList.size(); i++) {
+                    if (!isRetailerExists.containsKey(mSecondRetailerList.get(i).getRetailerID())) {
+                        retailerList.add(mSecondRetailerList.get(i));
                     }
                 }
                 bmodel.synchronizationHelper.downloadMasterListBySelectedRetailer(retailerList, SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION);

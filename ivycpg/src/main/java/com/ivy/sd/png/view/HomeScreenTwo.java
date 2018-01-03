@@ -303,6 +303,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         callAnalysisBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(callAnalysisBtn.getTag()) != null)
+                callAnalysisBtn.setText(bmodel.labelsMasterHelper.applyLabels(callAnalysisBtn.getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         retailerNameTxt.setText(title);
         if (bmodel.retailerMasterBO.getAddress3() != null && !bmodel.retailerMasterBO.getAddress3().isEmpty()) {
             retailerCodeTxt.setVisibility(View.VISIBLE);
@@ -616,7 +623,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
                 mSupplierList = bmodel.downloadSupplierDetails();
                 mSupplierAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.select_dialog_singlechoice, mSupplierList);
+                        R.layout.supplier_selection_list_adapter, mSupplierList);
 
                 updateDefaultSupplierSelection();
             }
@@ -2191,6 +2198,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.productHelper.downloadInStoreLocations();
 
                 PhotoCaptureHelper mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
+                mPhotoCaptureHelper.downloadLocations(getApplicationContext());
                 mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
                 mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());
                 mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());

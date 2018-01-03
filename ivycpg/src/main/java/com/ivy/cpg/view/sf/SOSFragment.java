@@ -1614,7 +1614,7 @@ public class SOSFragment extends IvyBaseFragment implements
         if (mSelectedET != null && mSelectedET.getText() != null) {
             String s = mSelectedET.getText().toString();
             sb = sb + val;
-            if (sb.length() == mSFHelper.sosDigits) {
+            if (sb.length() <= mSFHelper.sosDigits) {
                 if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s)) {
 
                     mSelectedET.setText(String.valueOf(val));

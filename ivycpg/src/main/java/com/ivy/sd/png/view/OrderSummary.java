@@ -111,7 +111,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Vector<ProductMasterBO> shortListOrder;
 
     private boolean hidealert = false;
-    private double enteredDiscAmtOrPercent;
+    private double enteredDiscAmtOrPercent = 0;
 
     private String nextDate;
     private double totalOrderValue, cmyDiscount, distDiscount;
@@ -2345,9 +2345,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
 
 
-                bmodel.getOrderHeaderBO()
-                        .setOrderValue(
-                                getDiscountAppliedValue(enteredDiscAmtOrPercent));
+                bmodel.getOrderHeaderBO().setOrderValue(
+                        getDiscountAppliedValue(enteredDiscAmtOrPercent));
                 bmodel.getOrderHeaderBO().setDiscount(
                         enteredDiscAmtOrPercent);
                 bmodel.getOrderHeaderBO().setDiscountId(discountId);
