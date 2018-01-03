@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.ivy.countersales.bo.CounterSaleBO;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.planogram.CounterPlanogramActivity;
@@ -46,7 +47,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivyretail.views.CompetitorTrackingActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -111,6 +111,18 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
         activityList.setDivider(null);
 
         ((TextView) view.findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.label_activity_count).getTag()) != null)
+                ((TextView) view.findViewById(R.id.label_activity_count))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.label_activity_count)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
         mActivityDoneCount = (TextView) view.findViewById(R.id.activity_done_count);
         mActivityTotalCount = (TextView) view.findViewById(R.id.activity_total_count);
@@ -503,10 +515,10 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                 try {
                     PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
                     mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
-                    mPlanoGramHelper.loadConfigurations();
+                    mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
                     int counterId = bmodel.getCounterId();
-                    mPlanoGramHelper.downloadCounterPlanoGram(counterId);
-                    mPlanoGramHelper.loadPlanoGramInEditMode(counterId);
+                    mPlanoGramHelper.downloadCounterPlanoGram(getContext().getApplicationContext(), counterId);
+                    mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), counterId);
 
                     if (mPlanoGramHelper.getCsPlanogramMaster() != null && mPlanoGramHelper.getCsPlanogramMaster().size() > 0) {
                         Intent in = new Intent(getActivity(),
@@ -542,7 +554,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     ) {
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
 
-                assetTrackingHelper.loadDataForAssetPOSM(MENU_POSM_CS);
+                assetTrackingHelper.loadDataForAssetPOSM(getContext().getApplicationContext(), MENU_POSM_CS);
 
                 bmodel.mSelectedActivityName = menu.getMenuName();
 
@@ -569,14 +581,14 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
-                mPlanoGramHelper.loadConfigurations();
+                mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
                 mPlanoGramHelper.mSelectedActivityName = menu.getMenuName();
                 bmodel.productHelper.downloadProductFilter(MENU_PLANOGRAM_CS);
-                mPlanoGramHelper.downloadLevels(MENU_PLANOGRAM_CS,
+                mPlanoGramHelper.downloadLevels(getContext().getApplicationContext(), MENU_PLANOGRAM_CS,
                         bmodel.retailerMasterBO.getRetailerID());
-                mPlanoGramHelper.downloadMaster(MENU_PLANOGRAM_CS);
+                mPlanoGramHelper.downloadMaster(getContext().getApplicationContext(), MENU_PLANOGRAM_CS);
                 mPlanoGramHelper
-                        .loadPlanoGramInEditMode(bmodel.retailerMasterBO
+                        .loadPlanoGramInEditMode(getContext().getApplicationContext(), bmodel.retailerMasterBO
                                 .getRetailerID());
                 if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -609,7 +621,7 @@ public class CSHomeScreenFragment extends IvyBaseFragment implements AppBarLayou
                     ) {
                 DigitalContentHelper mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
 
-                mDigitalContentHelper.downloadDigitalContent("COUNTER");
+                mDigitalContentHelper.downloadDigitalContent(getContext().getApplicationContext(), "COUNTER");
                 if (mDigitalContentHelper.getDigitalMaster() != null
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {

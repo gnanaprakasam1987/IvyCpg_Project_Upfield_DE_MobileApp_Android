@@ -3,7 +3,6 @@ package com.ivy.sd.png.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -72,14 +71,20 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         sih_detail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         pdt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        sih_detail.setText("SIH : " + bmodel.selectedPdt.getSIH());
+        //sih_detail.setText("SIH : " + bmodel.selectedPdt.getSIH());
         pdt_name.setText(bmodel.selectedPdt.getProductName());
-        sih_detail.setText("SRP : " + bmodel.selectedPdt.getSrp() + " MRP : " + bmodel.selectedPdt.getMRP() + " SIH : " + bmodel.selectedPdt.getSIH());
-
-        FragmentSchemeDialog fragment = new FragmentSchemeDialog();
+        pdt_name.setText(bmodel.selectedPdt.getProductName());
+        pdt_name.setText(bmodel.selectedPdt.getProductName());
+        sih_detail.setText((bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP == true ?
+                "SRP : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
+                (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP == true ?
+                        " MRP : " + bmodel.formatValue(bmodel.selectedPdt.getMRP()) : "") +
+                (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
+                        " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
+     /*   FragmentSchemeDialog fragment = new FragmentSchemeDialog();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.frame, fragment);
-        transaction.commit();
+        transaction.commit();*/
 
     }
 
@@ -111,15 +116,15 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
      * @return
      */
     public String getImageFilePath(final String fileName) {
-
-        File file = new File(getExternalFilesDir(
+        File file = new File(/*getExternalFilesDir(
                 Environment.DIRECTORY_DOWNLOADS)
                 + "/"
                 + bmodel.userMasterHelper.getUserMasterBO()
                 .getUserid()
-                + DataMembers.DIGITAL_CONTENT
-                + "/"
-                + DataMembers.CATALOG);
+                + DataMembers.DIGITAL_CONTENT*/
+                bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name))
+                        + "/"
+                        + DataMembers.CATALOG);
 
         File[] files = file.listFiles(new FileFilter() {
 

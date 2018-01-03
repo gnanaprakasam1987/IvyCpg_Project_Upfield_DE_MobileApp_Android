@@ -35,6 +35,15 @@
                 android:text="@string/product_name" />
 
             <ImageView
+                android:id="@+id/iv_stock"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/ivInfoicon"
+                android:padding="@dimen/list_item_padding"
+                android:src="@drawable/activity_icon_stock_check"
+                android:tint="@color/black_bg1" />
+            <ImageView
                 android:id="@+id/ivInfoicon"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
@@ -546,7 +555,7 @@
                 <LinearLayout
                     android:id="@+id/llAvail"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
@@ -559,10 +568,15 @@
                         android:maxLines="1"
                         android:text="@string/avail" />
 
-                    <CheckBox
-                        android:id="@+id/stock_and_order_listview_cb"
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/btn_availability"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -709,13 +723,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:maxLength="5" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llSrpEdit"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -734,7 +749,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:maxLength="8" />
 
                 </LinearLayout>
 

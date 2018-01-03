@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dimen_2dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/group_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="GROUP NAME"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="?attr/primarycolor"
+        android:visibility="visible" />
+</LinearLayout>

@@ -136,10 +136,11 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
         if (isFromMenuClick) {
             mBModel.productHelper.getLocations();
-            mPhotoCaptureHelper.downloadLocations();
-            mPhotoCaptureHelper.downloadPhotoCaptureProducts();
-            mPhotoCaptureHelper.downloadPhotoTypeMaster();
-            mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(mBModel.getRetailerMasterBO().getRetailerID());
+            mBModel.productHelper.getInStoreLocation();
+            mPhotoCaptureHelper.downloadLocations(getApplicationContext());
+            mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
+            mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());
+            mPhotoCaptureHelper.loadPhotoCaptureDetailsInEditMode(getApplicationContext(), mBModel.getRetailerMasterBO().getRetailerID());
         }
 
 
@@ -421,7 +422,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                     + t.getInStoreLocations().get(mSelectedItem).getImageName();
                             if (mPhotoCaptureHelper.isImagePresent(path)) {
                                 Uri uri = mPhotoCaptureHelper
-                                        .getUriFromFile(path);
+                                        .getUriFromFile(getApplicationContext(), path);
                                 imgViewImage.setImageURI(uri);
 
                                 setImage(path);
@@ -482,7 +483,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPhotoCaptureHelper = null;
+        mPhotoCaptureHelper.clearInstance();
         unbindDrawables(findViewById(R.id.root));
         // force the garbage collector to run
         System.gc();
@@ -748,7 +749,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                mPhotoCaptureHelper.savePhotoCaptureDetails(mRetailerId);
+                mPhotoCaptureHelper.savePhotoCaptureDetails(getApplicationContext(), mRetailerId);
 
                 mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO);

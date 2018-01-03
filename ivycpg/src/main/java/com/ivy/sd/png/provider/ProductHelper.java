@@ -466,10 +466,13 @@ public class ProductHelper {
                     int size = p.getLocations().size();
                     int shelfpcs = 0, whpcs = 0;
                     for (int j = 0; j < size; j++) {
-                        shelfpcs = shelfpcs
-                                + p.getLocations().get(j).getShelfPiece();
+                        if (p.getLocations().get(j).getShelfPiece() > 0)
+                            shelfpcs += p.getLocations().get(j).getShelfPiece();
+
                         whpcs = whpcs + p.getLocations().get(j).getWHPiece();
 
+                        if (p.getLocations().get(j).getAvailability() > -1)
+                            shelfpcs += p.getLocations().get(j).getAvailability();
                     }
                     p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
                             p.getIsInitiativeProduct(), p.getDropQty(),
@@ -1413,7 +1416,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -2060,7 +2063,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A"
+                        + "A" + loopEnd + ".dOuomQty,A"
                         + loopEnd
                         + ".dOuomid,A"
                         + loopEnd
@@ -2860,6 +2863,8 @@ public class ProductHelper {
                 product.getLocations().get(z).setShelfCase(-1);
                 product.getLocations().get(z).setShelfPiece(-1);
 
+                product.getLocations().get(z).setAvailability(-1);
+
                 product.getLocations().get(z).setWHOuter(0);
                 product.getLocations().get(z).setWHCase(0);
                 product.getLocations().get(z).setWHPiece(0);
@@ -3087,7 +3092,7 @@ public class ProductHelper {
 
 
     public boolean isCheckCreditPeriod() {
-        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID());
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
         ArrayList<InvoiceHeaderBO> items = bmodel.getInvoiceHeaderBO();
         if (items != null && items.size() > 0) {
 
@@ -5382,7 +5387,7 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1 from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
             sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
             sb.append(" where invoiceid=" + bmodel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
@@ -5403,6 +5408,7 @@ public class ProductHelper {
 
                     taxBO.setTaxDesc2(c.getString(2));
                     taxBO.setTaxRate(c.getDouble(1));
+                    taxBO.setParentType(c.getString(3));
 
                     if (groupid != c.getInt(0)) {
                         if (groupid != 0) {
@@ -5607,6 +5613,7 @@ public class ProductHelper {
      */
     public void updateProductWiseTax() {
         if (mProductTaxList != null) {
+            mTaxBoBatchProduct = new HashMap<>();
             for (String productId : mProductTaxList) {
                 ProductMasterBO productBo = getProductMasterBOById(productId);
 
@@ -5626,23 +5633,43 @@ public class ProductHelper {
                                     .getDiscount_order_value();
                             double remainingValue = totalValue / totalQty;
                             double taxRate = 0;
+                            taxBOArrayList = new ArrayList<>();
                             for (TaxBO taxBO : taxList) {
                                 if (bmodel.configurationMasterHelper.SHOW_MRP_LEVEL_TAX) {
                                     if (taxBO.getApplyRange() == 1) {
 
                                         if (taxBO.getMinValue() <= remainingValue
                                                 && taxBO.getMaxValue() >= remainingValue) {
-                                            excludeProductTax(productBo, taxBO, false);
+
+                                            if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                                taxRate += taxBO.getTaxRate();
+                                            }
+
+                                            if (bmodel.configurationMasterHelper.IS_GST)
+                                                calculateTaxOnTax(productBo, taxBO, false);
+
                                         }
 
                                     } else {
-                                        excludeProductTax(productBo, taxBO, false);
+                                        if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                            taxRate += taxBO.getTaxRate();
+                                        }
+
+                                        if (bmodel.configurationMasterHelper.IS_GST)
+                                            calculateTaxOnTax(productBo, taxBO, false);
                                     }
                                 } else {
-                                    excludeProductTax(productBo, taxBO, false);
+                                    if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                                        taxRate += taxBO.getTaxRate();
+                                    }
+
+                                    if (bmodel.configurationMasterHelper.IS_GST)
+                                        calculateTaxOnTax(productBo, taxBO, false);
                                 }
                             }
-                            calculateTotalTaxForProduct(productBo);
+                            //  calculateTotalTaxForProduct(productBo);
+                            calculateProductExcludeTax(productBo, taxRate);
+
                         }
                     }
                 }
@@ -5653,9 +5680,15 @@ public class ProductHelper {
 
 
     private HashMap<String, TaxBO> mTaxBoByBatchProduct = null;
+    private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct = null;//used for batch wise product's
+    ArrayList<TaxBO> taxBOArrayList = null;
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct() {
+        return mTaxBoBatchProduct;
+    }
 
     // Excluding tax value from product total value and setting it in taxlist(mTaxListByProductId) against to product id
-    public void excludeProductTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
+    public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
 
         double productPriceWithoutTax = 0.0;
         double taxAmount = 0.0;
@@ -5670,19 +5703,30 @@ public class ProductHelper {
                         .getBatchlistByProductID().get(productMasterBO.getProductID());
                 if (batchList != null) {
                     mTaxBoByBatchProduct = new HashMap<>();
+                    TaxBO batchTaxBO = null;
                     for (ProductMasterBO batchProductBO : batchList) {
                         if (batchProductBO.getOrderedPcsQty() > 0
                                 || batchProductBO.getOrderedCaseQty() > 0
                                 || batchProductBO.getOrderedOuterQty() > 0) {
                             // calculating tax value batchwise
 
-                            TaxBO batchTaxBO = cloneTaxBo(taxBO);
+                            batchTaxBO = cloneTaxBo(taxBO);
 
                             productPriceWithoutTax = batchProductBO.getDiscount_order_value() / (1 + (batchTaxBO.getTaxRate() / 100));
                             taxAmount = productPriceWithoutTax * batchTaxBO.getTaxRate() / 100;
 
                             batchTaxBO.setTotalTaxAmount(taxAmount);
                             batchTaxBO.setTaxableAmount(productPriceWithoutTax);
+                            if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) == null)
+                                taxBOArrayList.add(batchTaxBO);
+
+                            if (mTaxBoBatchProduct == null)
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+                            else if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) != null)
+                                mTaxBoBatchProduct.get(batchProductBO.getProductID()).add(batchTaxBO);
+                            else
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+
                             mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchTaxBO);
 
 
@@ -5690,7 +5734,8 @@ public class ProductHelper {
                     }
 
                     HashMap<String, TaxBO> tempList = new HashMap<>();
-                    tempList.put(taxBO.getTaxType(), taxBO);
+                    if (batchTaxBO != null)
+                        tempList.put(taxBO.getTaxType(), batchTaxBO);
                     excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
 
                 }
@@ -6349,7 +6394,7 @@ public class ProductHelper {
                         + ".dUomQty,A"
                         + loopEnd
                         + ".duomid, u.ListCode,"
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -6705,63 +6750,67 @@ public class ProductHelper {
             }
 
             int loopEnd = mContentLevel - mFiltrtLevel + 1;
-            getAlCompetitorTaggedProducts(loopEnd);
 
-            String sql;
-            sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
-                    + ".CPID as parentId FROM CompetitorProductMaster A1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
-                        + ".CPID = A" + (i - 1) + ".CPTid";
-            Cursor cur = db
-                    .selectSQL(sql
-                            + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
-                            + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
-                            + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                            " group by A1.CPID");
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+                getAlCompetitorTaggedProducts(loopEnd);
+            } else {
 
-            if (cur != null) {
+                String sql;
+                sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
+                        + ".CPID as parentId FROM CompetitorProductMaster A1";
+                for (int i = 2; i <= loopEnd; i++)
+                    sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
+                            + ".CPID = A" + (i - 1) + ".CPTid";
+                Cursor cur = db
+                        .selectSQL(sql
+                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
+                                + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
+                                + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
+                                " group by A1.CPID");
 
-                while (cur.moveToNext()) {
-                    ProductMasterBO product = new ProductMasterBO();
-                    product.setProductID(cur.getString(0));
-                    product.setProductName(cur.getString(1));
-                    product.setProductShortName(cur.getString(1));
-                    product.setParentid(cur.getInt(2));
-                    product.setIsSaleable(1);
-                    product.setBarCode("");
-                    product.setCasebarcode("");
-                    product.setOuterbarcode("");
-                    product.setOwn(0);
-                    product.setCaseUomId(cur.getInt(3));
-                    product.setOuUomid(cur.getInt(4));
-                    product.setPcUomid(cur.getInt(5));
-                    product.setProductCode(cur.getString(6));
-                    product.setOwnPID(cur.getString(7));
-                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+                if (cur != null) {
 
-                    // for level skiping
-                    ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
-                    if (ownprodbo != null)
-                        product.setParentid(ownprodbo.getParentid());
-                    else
-                        product.setParentid(0);
+                    while (cur.moveToNext()) {
+                        ProductMasterBO product = new ProductMasterBO();
+                        product.setProductID(cur.getString(0));
+                        product.setProductName(cur.getString(1));
+                        product.setProductShortName(cur.getString(1));
+                        product.setParentid(cur.getInt(2));
+                        product.setIsSaleable(1);
+                        product.setBarCode("");
+                        product.setCasebarcode("");
+                        product.setOuterbarcode("");
+                        product.setOwn(0);
+                        product.setCaseUomId(cur.getInt(3));
+                        product.setOuUomid(cur.getInt(4));
+                        product.setPcUomid(cur.getInt(5));
+                        product.setProductCode(cur.getString(6));
+                        product.setOwnPID(cur.getString(7));
+                        product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
 
-                    product.setLocations(cloneLocationList(locations));
-                    for (int i = 0; i < locations.size(); i++) {
-                        product.getLocations().get(i)
-                                .setNearexpiryDate(cloneDateList(dateList));
-                    }
+                        // for level skiping
+                        ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
+                        if (ownprodbo != null)
+                            product.setParentid(ownprodbo.getParentid());
+                        else
+                            product.setParentid(0);
+
+                        product.setLocations(cloneLocationList(locations));
+                        for (int i = 0; i < locations.size(); i++) {
+                            product.getLocations().get(i)
+                                    .setNearexpiryDate(cloneDateList(dateList));
+                        }
                     /*bmodel.productHelper.getTaggedProducts().add(product);
                     mTaggedProductById.put(product.getProductID(), product);*/
-                    competitorProductMaster.add(product);
+                        competitorProductMaster.add(product);
+
+                    }
+                    cur.close();
 
                 }
-                cur.close();
 
             }
             db.closeDB();
-
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -8595,7 +8644,7 @@ public class ProductHelper {
                         + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
                         + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
                         + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A1.dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
+                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
                         + ".caseBarcode,A" + loopEnd
                         + ".outerBarcode,count(A1.pid),A" + loopEnd
                         + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
@@ -8748,6 +8797,51 @@ public class ProductHelper {
     }
 
 
+    public void updateOutletOrderedProducts(String rId) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select ODR.ProductID,ODR.Qty,ODR.uomid,OHR.Remarks from OrderHeaderRequest OHR " +
+                    "INNER JOIN OrderDetailRequest ODR ON OHR.OrderID=ODR.OrderID " +
+                    "where OHR.RetailerID=" + QT(rId) + " AND OHR.upload='N'";
+            Cursor c = db.selectSQL(query);
+            String pdi;
+            int qty;
+            int uomid;
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        pdi = c.getString(0);
+                        uomid = c.getInt(2);
+                        qty = c.getInt(1);
+                        bmodel.setOrderHeaderNote(c.getString(c.getColumnIndex("Remarks")));
+
+                        if (bmodel.productHelper.getProductMasterBOById(pdi).getPcUomid() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedPcsQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedCaseQty(qty);
+                        else if (bmodel.productHelper.getProductMasterBOById(pdi).getCaseUomId() == uomid)
+                            bmodel.productHelper.getProductMasterBOById(pdi).setOrderedOuterQty(qty);
+
+                        //update ordered product details in edit mode
+                        bmodel.newOutletHelper.getOrderedProductList()
+                                .add(bmodel.productHelper.getProductMasterBOById(pdi));
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+        }
+
+
+    }
+
+
     public boolean isSBDFilterAvaiable() {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -8852,7 +8946,7 @@ public class ProductHelper {
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
-                    "A1.CPCode,A+" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
+                    "A1.CPCode,A" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
                         + ".CPID = A" + (i - 1) + ".CPTid";

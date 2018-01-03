@@ -108,7 +108,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
      */
     private void loadData() {
 
-        assetTrackingHelper.downloadAssetsPosm("MENU_ASSET");
+        assetTrackingHelper.downloadAssetsPosm(getContext().getApplicationContext(), "MENU_ASSET");
 
         Vector mPOSMList = assetTrackingHelper.getAssetPosmNames();
 
@@ -135,7 +135,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                        int arg2, long arg3) {
 
                 assetTrackingHelper
-                        .downloadAssetBrand(assetTrackingHelper
+                        .downloadAssetBrand(getActivity().getApplicationContext(), assetTrackingHelper
                                 .getAssetPosmIds(mAsset.getSelectedItem()
                                         .toString()));
 
@@ -285,12 +285,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                         && !mSNO.getText().toString().equals("")) {
                     if (!assetTrackingHelper
-                            .isExistingRetailerSno(mSNO.getText()
+                            .isExistingRetailerSno(getContext().getApplicationContext(), mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
                         mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                         assetTrackingHelper
-                                .saveAssetAddAndDeleteDetails("MENU_ASSET");
+                                .saveAssetAddAndDeleteDetails(getContext().getApplicationContext(), "MENU_ASSET");
                         Toast.makeText(
                                 getActivity(),
                                 getResources()

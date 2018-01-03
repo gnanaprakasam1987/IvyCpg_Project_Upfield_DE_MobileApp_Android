@@ -46,7 +46,7 @@ public class InOutReasonDialog extends Dialog {
         reason_spnr.setVisibility(View.VISIBLE);
         dataAdapter = new ArrayAdapter<ReasonMaster>(context,
                 R.layout.spinner_bluetext_layout);
-        dataAdapter.add(new ReasonMaster(0 + "", "Select Reason"));
+        dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
         loadInOutReason();
         dataAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);

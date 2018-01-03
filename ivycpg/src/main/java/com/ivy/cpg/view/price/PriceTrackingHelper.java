@@ -15,7 +15,6 @@ import java.util.Vector;
 
 public class PriceTrackingHelper {
 
-    private final Context context;
     private final BusinessModel bmodel;
     private static PriceTrackingHelper instance = null;
 
@@ -45,7 +44,6 @@ public class PriceTrackingHelper {
     private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
 
     private PriceTrackingHelper(Context context) {
-        this.context = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -57,12 +55,16 @@ public class PriceTrackingHelper {
     }
 
 
+    public void clearInstance() {
+        instance = null;
+    }
+
     /**
      * Load SKU from Detail Table
      */
-    public void loadPriceTransaction() {
+    public void loadPriceTransaction(Context mContext) {
         String mLastVisitPrice = "LastVisitPrice";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
 
@@ -138,7 +140,12 @@ public class PriceTrackingHelper {
      */
     private void setPrevPrice(String pid, String price, int uomid, String mrp, int own) {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
-        ProductMasterBO sku = bmodel.productHelper.getTaggedProductBOById(pid);
+        ProductMasterBO sku;
+        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+            sku = bmodel.productHelper.getProductMasterBOById(pid);
+        } else {
+            sku = bmodel.productHelper.getTaggedProductBOById(pid);
+        }
         if (sku != null) {
             if (sku.getOwn() == own) {
                 if (sku.getCaseUomId() == uomid) {
@@ -168,7 +175,12 @@ public class PriceTrackingHelper {
                           int compliance, String reasonId, int own, int uomID, String mrp, String mop) {
 
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
-        ProductMasterBO productBO = bmodel.productHelper.getTaggedProductBOById(pid);
+        ProductMasterBO productBO;
+        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+            productBO = bmodel.productHelper.getProductMasterBOById(pid);
+        } else {
+            productBO = bmodel.productHelper.getTaggedProductBOById(pid);
+        }
         if (productBO != null) {
             if (productBO.getOwn() == own) {
                 productBO.setPriceChanged(changed);
@@ -198,8 +210,8 @@ public class PriceTrackingHelper {
     /**
      * Save Tracking Detail in Detail Table
      */
-    public void savePriceTransaction(List<ProductMasterBO> productList) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void savePriceTransaction(Context mContext, List<ProductMasterBO> productList) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
 
@@ -362,8 +374,8 @@ public class PriceTrackingHelper {
     }
 
     //save price track to transaction table
-    public void savePriceTransaction(ProductMasterBO sku) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void savePriceTransaction(Context mContext, ProductMasterBO sku) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
 
@@ -513,9 +525,9 @@ public class PriceTrackingHelper {
 
 
     //to update visited status for price check module icon
-    public boolean isPriceCheckDone() {
+    public boolean isPriceCheckDone(Context mContext) {
         boolean flag = false;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
             String sb = "select tid from PriceCheckHeader where retailerid=" +
@@ -550,7 +562,7 @@ public class PriceTrackingHelper {
         }
     }
 
-    public void loadPriceCheckConfiguration(int subChannelId) {
+    public void loadPriceCheckConfiguration(Context mContext, int subChannelId) {
         try {
 
             SHOW_PRICE_PC = false;
@@ -565,7 +577,7 @@ public class PriceTrackingHelper {
             SHOW_PRICE_LASTVP = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sql = "select RField from "

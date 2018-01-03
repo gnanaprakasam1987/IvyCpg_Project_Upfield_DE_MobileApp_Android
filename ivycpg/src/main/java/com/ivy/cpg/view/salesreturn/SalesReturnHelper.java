@@ -23,7 +23,6 @@ import java.util.Vector;
 
 public class SalesReturnHelper {
 
-    private final Context context;
     private final BusinessModel bmodel;
     private String lpcValue;
     private double returnValue;
@@ -62,7 +61,6 @@ public class SalesReturnHelper {
     private double totalValue = 0;
 
     private SalesReturnHelper(Context context) {
-        this.context = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -160,8 +158,8 @@ public class SalesReturnHelper {
         return false;
     }
 
-    public float getSalesReturnValue() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public float getSalesReturnValue(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -183,7 +181,7 @@ public class SalesReturnHelper {
     /**
      * This method will load salesreturn related configurations and set the variables.
      */
-    public void loadSalesReturnConfigurations() {
+    public void loadSalesReturnConfigurations(Context mContext) {
         try {
             SHOW_SAL_RET_OLD_MRP = false;
             SHOW_SAL_RET_MRP = false;
@@ -202,7 +200,7 @@ public class SalesReturnHelper {
             IS_APPLY_TAX_IN_SR = false;
             IS_PRD_CNT_DIFF_SR = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -309,10 +307,10 @@ public class SalesReturnHelper {
     /**
      * Save sales return details and update SIH.
      */
-    public void saveSalesReturn() {
+    public void saveSalesReturn(Context mContext) {
         try {
             ProductMasterBO product;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -525,9 +523,9 @@ public class SalesReturnHelper {
         return "'" + data + "'";
     }
 
-    public void loadDamagedProductReport() {
+    public void loadDamagedProductReport(Context mContext) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -575,8 +573,8 @@ public class SalesReturnHelper {
         return damagedSalesReport;
     }
 
-    public void getSalesReturnGoods() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public void getSalesReturnGoods(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -596,8 +594,8 @@ public class SalesReturnHelper {
         db.closeDB();
     }
 
-    public void getNonSaleableReturnGoods() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public void getNonSaleableReturnGoods(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -617,10 +615,10 @@ public class SalesReturnHelper {
         db.closeDB();
     }
 
-    public boolean isStockReplacementDone() {
+    public boolean isStockReplacementDone(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from "
@@ -641,10 +639,10 @@ public class SalesReturnHelper {
         return flag;
     }
 
-    public boolean isValueReturned() {
+    public boolean isValueReturned(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -662,10 +660,10 @@ public class SalesReturnHelper {
         return flag;
     }
 
-    public boolean isInvoiceCreated() {
+    public boolean isInvoiceCreated(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -684,10 +682,10 @@ public class SalesReturnHelper {
         return flag;
     }
 
-    public boolean isInvoiceCreated(String invoiceno) {
+    public boolean isInvoiceCreated(Context mContext, String invoiceno) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -711,10 +709,10 @@ public class SalesReturnHelper {
      * Load sales return transaction data into object.
      * If replacement is enbaled the replacement will also get loaded into memory.
      */
-    public void loadSalesReturnData() {
+    public void loadSalesReturnData(Context mContext) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sb = "select SI.productid,SI.batchid,SI.Condition,SI.Pqty,SI.Cqty,SI.oldmrp,SI.mfgdate,SI.expdate,SI.outerqty,Si.invoiceno," +
@@ -837,11 +835,11 @@ public class SalesReturnHelper {
     }
 
 
-    public double getSalesRetunTotalValue() {
+    public double getSalesRetunTotalValue(Context mContext) {
         double returnValue = 0;
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sb = "select Returnvalue from SalesReturnHeader where RetailerId=" +
@@ -864,9 +862,9 @@ public class SalesReturnHelper {
         return returnValue;
     }
 
-    public double getOrderValue() {
+    public double getOrderValue(Context mContext) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
@@ -888,8 +886,8 @@ public class SalesReturnHelper {
         return 0;
     }
 
-    public double getTotalSalesReturnValue() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+    public double getTotalSalesReturnValue(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -1206,10 +1204,10 @@ public class SalesReturnHelper {
         c.close();
     }
 
-    public int isCreditNoteCreated() {
+    public int isCreditNoteCreated(Context mContext) {
         int flag = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -1228,9 +1226,9 @@ public class SalesReturnHelper {
         return flag;
     }
 
-    public void clearTransaction() {
+    public void clearTransaction(Context mContext) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -1260,7 +1258,7 @@ public class SalesReturnHelper {
 
     public List<ProductMasterBO> updateReplaceQtyWithOutTakingOrder(List<ProductMasterBO> orderList) {
         final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getSalesReturnProducts();
-        if (orderList != null && !orderList.isEmpty()) {
+        if (orderList != null && !orderList.isEmpty() && productMasterList != null) {
             for (ProductMasterBO productMasterBO : productMasterList) {
                 if (productMasterBO.getOrderedPcsQty() == 0 && productMasterBO.getOrderedCaseQty() == 0 && productMasterBO.getOrderedOuterQty() == 0) {
                     if (productMasterBO.getRepPieceQty() > 0 || productMasterBO.getRepCaseQty() > 0 || productMasterBO.getRepOuterQty() > 0) {

@@ -37,6 +37,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.AWSCredentials;
@@ -409,6 +410,12 @@ public class BusinessModel extends Application {
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
     public Timer orderTimer;
+    // used for ProductiveCall
+    public boolean PRD_FOR_ORDER = false;
+    public boolean PRD_FOR_SKT = false;
+    private static final String PRODUCTVIE_CALLS = "PRODUCTIVECALL";
+    private static final String PRD_ORD = "ORD";
+    private static final String PRD_STK = "STK";
 
 
     public BusinessModel() {
@@ -453,7 +460,6 @@ public class BusinessModel extends Application {
         invoiceHeader = new ArrayList<>();
         //payment = new Vector<Object>();
         setRetailerMaster(new Vector<RetailerMasterBO>());
-
 
 
         newOutletHelper = NewOutletHelper.getInstance(this);
@@ -897,13 +903,14 @@ public class BusinessModel extends Application {
 
 
     /**
-     * Download the Invoice of A perticular Retailer Id, and stored in
+     * Download the Invoice of A particular Retailer Id and DocStatus, and stored in
      * invoiceHeader Vector.
      *
      * @param retailerId
+     * @param docStatus
      */
 
-    public void downloadInvoice(String retailerId) {
+    public void downloadInvoice(String retailerId, String docStatus) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -914,11 +921,13 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue)");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
             sb.append(QT(retailerId));
+            sb.append(" AND inv.DocStatus = ");
+            sb.append(QT(docStatus));
             sb.append(" GROUP BY Inv.InvoiceNo");
             sb.append(" ORDER BY Inv.InvoiceDate");
 
@@ -934,6 +943,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setPaidAmount(c.getDouble(3));
                     invocieHeaderBO.setBalance(c.getDouble(4));
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
+                    invocieHeaderBO.setDocRefNo(c.getString(9));
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
@@ -1168,7 +1178,8 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + QT(retailerMasterBO.getRetailerID()));
+                    + QT(retailerMasterBO.getRetailerID()) +
+                    " AND upload='N'");
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);
@@ -1196,7 +1207,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()));
+                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1429,10 +1440,10 @@ public class BusinessModel extends Application {
             downloadIndicativeOrderedRetailer();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.channelID,"
-                            + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, A.isDeviated,"
+                    .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
+                            + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, RBM.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
-                            + " isOrdered, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, A.isVisited,"
+                            + " isOrdered, RBM.isProductive, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, RBM.isVisited,"
                             + " (select count(distinct GrpName) from SbdDistributionMaster where channelid = A.ChannelId) as sbdtgt,"
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
@@ -1501,6 +1512,7 @@ public class BusinessModel extends Application {
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
+                    retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
                     retailer.setClassid(c.getInt(c.getColumnIndex("classid")));
                     retailer.setCategoryid(c.getInt(c.getColumnIndex("categoryid")));
@@ -1513,6 +1525,7 @@ public class BusinessModel extends Application {
                     retailer.setIsDeviated(c.getString(c.getColumnIndex("isDeviated")));
                     retailer.setIsVisited(c.getString(c.getColumnIndex("isVisited")));
                     retailer.setOrdered(c.getString(c.getColumnIndex("isOrdered")));
+                    retailer.setProductive(c.getString(c.getColumnIndex("isProductive")));
                     retailer.setIsNew(c.getString(c.getColumnIndex("is_new")));
                     retailer.setIsDeadStore(c.getString(c.getColumnIndex("isDeadStore")));
                     retailer.setIsGoldStore(c.getInt(c.getColumnIndex("IsGoldStore")));
@@ -1746,13 +1759,14 @@ public class BusinessModel extends Application {
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = (ProductMasterBO) productHelper
+            ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
             if (Integer.parseInt(product.getProductID()) == pdtId) {
                 for (int j = 0; j < product.getLocations().size(); j++) {
-                    if (product.getLocations().get(j).getShelfPiece() > 0 ||
-                            product.getLocations().get(j).getShelfCase() > 0 ||
-                            product.getLocations().get(j).getShelfOuter() > 0) {
+                    if ((product.getLocations().get(j).getShelfPiece() > -1 ||
+                            product.getLocations().get(j).getShelfCase() > -1 ||
+                            product.getLocations().get(j).getShelfOuter() > -1)
+                            || product.getLocations().get(j).getAvailability() > -1) {
                         return true;
                     }
                 }
@@ -2463,8 +2477,9 @@ public class BusinessModel extends Application {
         }
 
 
-        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
-                + " where isdeviated='Y' and isVisited='Y'");
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM " +
+                "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + " where RBM.isdeviated='Y' and RBM.isVisited='Y'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -2476,7 +2491,8 @@ public class BusinessModel extends Application {
         sb = new StringBuffer();
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and isdeviated='Y'");
+        sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
+        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2503,7 +2519,8 @@ public class BusinessModel extends Application {
         }
         c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
                 + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                + "where isVisited='Y' and RMI.isToday='1'");
+                + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + "where RBM.isVisited='Y' and RMI.isToday='1'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -2873,15 +2890,15 @@ public class BusinessModel extends Application {
     public void saveNewInvoice() {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-        salesReturnHelper.getSalesReturnGoods();
+        salesReturnHelper.getSalesReturnGoods(getApplicationContext());
         ArrayList<ProductMasterBO> batchList;
 
-        int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated();
+        int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated(getApplicationContext());
 
         double ordervalue = 0.0;
         if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                 && isCredtNoteCreated != 1) {
-            if (salesReturnHelper.isValueReturned()) {
+            if (salesReturnHelper.isValueReturned(getApplicationContext())) {
                 ordervalue = orderHeaderBO.getOrderValue()
                         - salesReturnHelper.getSaleableValue();
             } else {
@@ -2987,7 +3004,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
                 Commons.print("if" + salesReturnHelper.getSaleableValue());
-                if (salesReturnHelper.isValueReturned())
+                if (salesReturnHelper.isValueReturned(getApplicationContext()))
                     sb.append(salesReturnHelper.getSaleableValue() + ",");
                 else
                     sb.append(0 + ",");
@@ -2999,7 +3016,7 @@ public class BusinessModel extends Application {
             sb.append(this.configurationMasterHelper.discountType + ",");
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned())
+                    && salesReturnHelper.isValueReturned(getApplicationContext()))
                 sb.append(1);
             else
                 sb.append(0);
@@ -3070,7 +3087,7 @@ public class BusinessModel extends Application {
             /** update credit not flag in sales return header **/
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned()) {
+                    && salesReturnHelper.isValueReturned(getApplicationContext())) {
                 db.executeQ("update SalesReturnHeader set credit_flag=2 where RetailerID="
                         + QT(getRetailerMasterBO().getRetailerID()));
             }
@@ -4015,7 +4032,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK");
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", -1);
 
                 }
             }
@@ -4063,7 +4080,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2 from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -4086,10 +4103,11 @@ public class BusinessModel extends Application {
                     int facing = orderDetailCursor.getInt(13);
                     int pouring = orderDetailCursor.getInt(14);
                     int cocktail = orderDetailCursor.getInt(15);
+                    int availability = orderDetailCursor.getInt(16);
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode);
+                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability);
 
                 }
                 orderDetailCursor.close();
@@ -4109,7 +4127,9 @@ public class BusinessModel extends Application {
      */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
-                                         int locationId, int isDistributed, int isListed, String reasonID, int audit, int isOwn, int facing, int pouring, int cocktail, String menuCode) {
+                                         int locationId, int isDistributed, int isListed, String reasonID,
+                                         int audit, int isOwn, int facing, int pouring, int cocktail,
+                                         String menuCode, int availability) {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
@@ -4136,6 +4156,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setFacingQty(facing);
                     product.getLocations().get(j).setIsPouring(pouring);
                     product.getLocations().get(j).setCockTailQty(cocktail);
+                    product.getLocations().get(j).setAvailability(availability);
 
                     return;
                 }
@@ -4572,6 +4593,15 @@ public class BusinessModel extends Application {
                     }
 
 
+                }
+            } else {
+                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
            /* if (responseVector != null) {
@@ -5711,8 +5741,9 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                            + " WHERE (RMI.isToday=1 or isDeviated='Y')");
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                            + " WHERE (RMI.isToday=1 or RBM.isDeviated='Y')");
             if (c != null) {
                 if (c.getCount() > 0) {
                     c.moveToNext();
@@ -5727,8 +5758,9 @@ public class BusinessModel extends Application {
 
             Cursor c1 = db
                     .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                            + " WHERE IsGoldStore=1 and (RMI.isToday=1 or isDeviated='Y')");
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                            + " WHERE IsGoldStore=1 and (RMI.isToday=1 or RBM.isDeviated='Y')");
             if (c1 != null) {
                 if (c1.getCount() > 0) {
                     c1.moveToNext();
@@ -5993,12 +6025,14 @@ public class BusinessModel extends Application {
                     || beatMasterHealper.getTodayBeatMasterBO() == null
                     || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
                 c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                        + "where   isdeviated='Y' or RMI.isToday='1'");
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
             } else {
                 c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                        + " where   isdeviated='Y' or RMI.isToday='1'");
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
             }
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -6030,7 +6064,9 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = null;
-            c = db.selectSQL("select count(distinct retailerid) from retailermaster where isvisited='Y'");// and
+            c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM" +
+                    " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID" +
+                    " where RBM.isvisited='Y'");// and
             // isdeviated='N'
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -6051,8 +6087,9 @@ public class BusinessModel extends Application {
     /**
      * This method will return the productive retailers count for the Day. For
      * Van Seller, this method will get distinct retailer count from
-     * InvoiceTable and For Pre-seller from OrderHeader. Deviated retailers
-     * productivity wont be considered for deviated retailers.
+     * InvoiceTable and For Pre-seller from OrderHeader if PRD_FOR_ORDER is TRUE and from ClosingStockHeader if PRD_FOR_STK is true.
+     * This config is computed through loadProductiveCallsConfig()
+     * Deviated retailer productivity wont be considered for deviated retailers.
      *
      * @return ProductiveCallsForTheDay
      */
@@ -6073,18 +6110,30 @@ public class BusinessModel extends Application {
                 } else {
                     c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
                             + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
-                            + " where r.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
+                            + "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = r.RetailerID"
+                            + " where RBM.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
                 }
             } else {
                 // c =
                 // db.selectSQL("select distinct(RetailerId) from OrderHeader");
-                if (beatMasterHealper.getTodayBeatMasterBO() == null
-                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                    c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
-                } else {
-                    c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
-                            + "o.retailerid=r.retailerid ");// where
-                    // r.isdeviated='N'
+                loadProductiveCallsConfig();
+                if (PRD_FOR_ORDER) {
+                    if (beatMasterHealper.getTodayBeatMasterBO() == null
+                            || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
+                    } else {
+                        c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                                + "o.retailerid=r.retailerid ");// where
+                        // r.isdeviated='N'
+                    }
+                } else if (PRD_FOR_SKT) {
+                    if (beatMasterHealper.getTodayBeatMasterBO() == null
+                            || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                    } else {
+                        c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                                + "CSH.RetailerID=RM.RetailerID ");
+                    }
                 }
             }
             if (c != null) {
@@ -6101,6 +6150,40 @@ public class BusinessModel extends Application {
         }
 
         return productive_calls;
+    }
+
+    /* This method will download the config for the productivecall. Based on the RField
+    * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
+
+    public void loadProductiveCallsConfig() {
+        try {
+            PRD_FOR_ORDER = false;
+            PRD_FOR_SKT = false;
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1'";
+
+            Cursor c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(PRD_ORD))
+                        PRD_FOR_ORDER = true;
+                    else if (c.getString(0).equalsIgnoreCase(PRD_STK))
+                        PRD_FOR_SKT = true;
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("loadProductiveCallsConfigs " + e);
+        }
     }
 
     /**
@@ -6156,8 +6239,9 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            db.updateSQL("Update RetailerMaster set isVisited='Y' where RetailerID ="
-                    + getRetailerMasterBO().getRetailerID());
+            db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
+                    + getRetailerMasterBO().getRetailerID()
+                    + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
             db.closeDB();
 
@@ -6179,6 +6263,34 @@ public class BusinessModel extends Application {
         }
     }
 
+    private void updateIsStockCheck() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            db.updateSQL("Update RetailerBeatMapping set isProductive='Y' where RetailerID ="
+                    + getRetailerMasterBO().getRetailerID()+" and BeatID=" + getRetailerMasterBO().getBeatID());
+
+            db.closeDB();
+
+            // update loaded retailerMaster flag.
+            int siz = getRetailerMaster().size();
+            for (int i = 0; i < siz; i++) {
+                RetailerMasterBO ret = retailerMaster.get(i);
+                if (ret.getRetailerID().equals(
+                        getRetailerMasterBO().getRetailerID())) {
+                    ret.setProductive("Y");
+                }
+            }
+
+            // Updated selected object flag
+            getRetailerMasterBO().setProductive("Y");
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
     boolean hasStockInOrder() {
         int siz = productHelper.getProductMaster().size();
         if (siz == 0)
@@ -6194,7 +6306,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getShelfOuter() > -1
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0)
+                        || product.getLocations().get(j).getWHOuter() > 0
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6221,7 +6334,8 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getCockTailQty() > 0
                         || product.getIsListed() > 0
                         || product.getIsDistributed() > 0
-                        || !product.getReasonID().equals("0"))
+                        || !product.getReasonID().equals("0")
+                        || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
         }
@@ -6243,6 +6357,7 @@ public class BusinessModel extends Application {
                     if (product.getLocations().get(j).getShelfPiece() == -1
                             && product.getLocations().get(j).getShelfCase() == -1
                             && product.getLocations().get(j).getShelfOuter() == -1
+                            && product.getLocations().get(j).getAvailability() == 0
                             && product.getReasonID().equals("0"))
                         return false;
                 }
@@ -6274,6 +6389,10 @@ public class BusinessModel extends Application {
                 closingStockCursor.close();
             }
 
+            if(PRD_FOR_SKT) // Update is Productive only when the config is enabled.
+                updateIsStockCheck();
+
+
             //Weightage Calculation
             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 fitscoreHelper.getWeightage(getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
@@ -6304,7 +6423,7 @@ public class BusinessModel extends Application {
             // ClosingStock Detail entry
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3";
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
 
             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";
@@ -6329,7 +6448,8 @@ public class BusinessModel extends Application {
                                 || product.getLocations().get(j).getIsPouring() > 0
                                 || product.getLocations().get(j).getCockTailQty() > 0
                                 || product.getLocations().get(j).getFacingQty() > 0
-                                || product.getLocations().get(j).getAudit() != 2) {
+                                || product.getLocations().get(j).getAudit() != 2
+                                || product.getLocations().get(j).getAvailability() > -1) {
 
                             int count = product.getLocations().get(j)
                                     .getShelfPiece()
@@ -6378,14 +6498,16 @@ public class BusinessModel extends Application {
                                     + "," + product.getPcUomid()
                                     + "," + rField1
                                     + "," + rField2
-                                    + "," + rField3;
+                                    + "," + rField3
+                                    + "," + product.getLocations().get(j).getAvailability();
+
 
                             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 int pieces = (shelfCase * product.getCaseSize())
                                         + (shelfOuter * product.getOutersize())
                                         + shelfPiece;
                                 productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + (productWeightage > 0 ? productWeightage : 0);
+                                values = values + "," + productWeightage;
                                 sum = sum + productWeightage;
                             }
 
@@ -6414,7 +6536,8 @@ public class BusinessModel extends Application {
                                     || taggedProduct.getLocations().get(j).getIsPouring() > 0
                                     || taggedProduct.getLocations().get(j).getCockTailQty() > 0
                                     || taggedProduct.getLocations().get(j).getFacingQty() > 0
-                                    || taggedProduct.getLocations().get(j).getAudit() != 2) {
+                                    || taggedProduct.getLocations().get(j).getAudit() != 2
+                                    || taggedProduct.getLocations().get(j).getAvailability() > -1) {
 
                                 int count = taggedProduct.getLocations().get(j)
                                         .getShelfPiece()
@@ -6463,7 +6586,9 @@ public class BusinessModel extends Application {
                                         + "," + taggedProduct.getPcUomid()
                                         + "," + rField1
                                         + "," + rField2
-                                        + "," + rField3;
+                                        + "," + rField3
+                                        + "," + taggedProduct.getLocations().get(j).getAvailability();
+
 
                                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                     int pieces = (shelfCase * taggedProduct.getCaseSize())
@@ -7387,7 +7512,7 @@ public class BusinessModel extends Application {
                             schemeProduct.setOrderedOuterQty(0);
 
                             // excluding tax values
-                            productHelper.excludeProductTax(schemeProduct, taxBO, true);
+                            productHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
 
                             //inserting free product tax details to db
                             productHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
@@ -8152,6 +8277,15 @@ public class BusinessModel extends Application {
 
 
                 }
+            } else {
+                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
 
@@ -8257,7 +8391,7 @@ public class BusinessModel extends Application {
                 int count = 0;
                 int fnames_size = fnames.length;
                 for (String str : fnames) {
-                    if ((str != null) && (str.length() > 0)) {
+                    if ((str != null) && !fNameStarts.equals("") && (str.length() > 0)) {
                         if (str.startsWith(fNameStarts)) {
                             count++;
                         }
@@ -8521,6 +8655,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID() +
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW')" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
@@ -8553,7 +8688,7 @@ public class BusinessModel extends Application {
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
-                            + " and AD.upload='N' group by SM.groupName");
+                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW') and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
@@ -8588,7 +8723,7 @@ public class BusinessModel extends Application {
                     .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
                             "INNER JOIN  AnswerHeader AH ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid " +
-                            "where AH.menuCode in('MENU_SURVEY')");
+                            "where AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW')");
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     return (c.getDouble(0));
@@ -8613,7 +8748,7 @@ public class BusinessModel extends Application {
                     .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
-                            + " where menuCode in('MENU_SURVEY') group by AH.retailerid");
+                            + " where menuCode in('MENU_SURVEY','MENU_SURVEY_SW') group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
@@ -8641,7 +8776,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN AnswerHeader AH  ON AH.uid=AD.uid " +
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   and " +
-                            "SM.qid=AD.qid where SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AH.retailerid");
+                            "SM.qid=AD.qid where (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW') and AD.upload='N' group by AH.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     for (RetailerMasterBO bo : retailerMaster) {
@@ -8669,7 +8804,7 @@ public class BusinessModel extends Application {
                             "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid " +
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid  and SM.qid=AD.qid " +
                             "where AD.retailerid=" + bo.getRetailerID() +
-                            " and SMA.menucode='MENU_SURVEY' and AD.upload='N' group by AD.retailerid");
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW') and AD.upload='N' group by AD.retailerid");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     bo.setCurrentFitScore(c.getDouble(0));
@@ -11016,18 +11151,18 @@ public class BusinessModel extends Application {
             String invid = userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated();
+            int isCredtNoteCreated = SalesReturnHelper.getInstance(this).isCreditNoteCreated(getApplicationContext());
             double discountPercentage = collectionHelper.getSlabwiseDiscountpercentage();
 
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-            salesReturnHelper.getSalesReturnGoods();
+            salesReturnHelper.getSalesReturnGoods(getApplicationContext());
 
             ArrayList<ProductMasterBO> batchList;
 
             double ordervalue = 0.0;
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
-                if (salesReturnHelper.isValueReturned()) {
+                if (salesReturnHelper.isValueReturned(getApplicationContext())) {
                     ordervalue = orderHeaderBO.getOrderValue()
                             - salesReturnHelper.getSaleableValue();
                 } else {
@@ -11108,7 +11243,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1) {
                 Commons.print("if" + salesReturnHelper.getSaleableValue());
-                if (salesReturnHelper.isValueReturned())
+                if (salesReturnHelper.isValueReturned(getApplicationContext()))
                     sb.append(salesReturnHelper.getSaleableValue() + ",");
                 else
                     sb.append(0 + ",");
@@ -11120,7 +11255,7 @@ public class BusinessModel extends Application {
             sb.append(this.configurationMasterHelper.discountType + ",");
             if (configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCredtNoteCreated != 1
-                    && salesReturnHelper.isValueReturned())
+                    && salesReturnHelper.isValueReturned(getApplicationContext()))
                 sb.append(1);
             else
                 sb.append(0);

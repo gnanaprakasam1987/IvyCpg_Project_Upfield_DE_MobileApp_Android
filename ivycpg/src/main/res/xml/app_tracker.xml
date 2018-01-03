@@ -44,7 +44,7 @@
 
     <screenName name="com.ivy.sd.png.view.NonFieldActivity">Non Field Activity</screenName>
     <screenName name="com.ivy.sd.png.view.AttendanceActivity">Attendance</screenName>
-    <screenName name="com.ivy.sd.png.view.NonFieldActivityTwo">In and Out</screenName>
+    <screenName name="com.ivy.sd.png.view.TimeTrackingActivity">In and Out</screenName>
     <screenName name="com.ivy.sd.png.view.WebViewPlanActivity">WebView Plan</screenName>
     <screenName name="com.ivy.sd.png.view.TLAttendanceActivity">ReAllocation</screenName>
 

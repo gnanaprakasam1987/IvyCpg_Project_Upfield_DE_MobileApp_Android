@@ -1202,4 +1202,7 @@
     <string name="delivery_rep_code">Rep Code</string>
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
 
+    <!-- Order summary success dialog message -->
+    <string name="delivery_date_is">Delivery Date is: </string>
+
 </resources>

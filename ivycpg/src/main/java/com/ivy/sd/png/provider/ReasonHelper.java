@@ -379,7 +379,8 @@ public class ReasonHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "update retailermaster set isDeviated='Y' where retailerid=" + retailerid;
+            String sql = "update RetailerBeatMapping set isDeviated='Y' where retailerid=" + retailerid +
+                    "AND ";
             db.executeQ(sql);
 
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
@@ -504,7 +505,7 @@ public class ReasonHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             reason = new ReasonMaster();
-            reason.setReasonDesc("Select Reason");
+            reason.setReasonDesc(context.getResources().getString(R.string.select_reason));
             ordfreasonlist.add(reason);
             Cursor c = db.selectSQL(getReasonFromStdListMaster("FFR"));
             if (c.getCount() > 0) {

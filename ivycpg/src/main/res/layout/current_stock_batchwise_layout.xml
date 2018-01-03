@@ -1,36 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    android:orientation="horizontal" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-         android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:background="@color/list_title_bg_color">
 
         <TextView
+            android:id="@+id/text_product_name"
             style="?attr/customListTitle"
-            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="5"
             android:text="@string/product_name" />
-        
-        <TextView
-            android:id="@+id/batchTitle"
-            style="?attr/customListTitle"
-            android:layout_width="@dimen/sih_width_stock_view"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
 
-            android:visibility="gone"
-            android:tag="batch_no"
-            android:text="@string/batch_no" />
         <TextView
             android:id="@+id/sih_cs_title"
             style="?attr/customListTitle"
-            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:visibility="gone"
@@ -39,7 +31,7 @@
         <TextView
             android:id="@+id/sih_ou_title"
             style="?attr/customListTitle"
-            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:visibility="gone"
@@ -48,7 +40,7 @@
         <TextView
             android:id="@+id/sihtitle"
             style="?attr/customListTitle"
-            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
 

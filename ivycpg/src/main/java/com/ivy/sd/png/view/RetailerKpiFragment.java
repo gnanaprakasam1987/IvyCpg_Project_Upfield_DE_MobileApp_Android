@@ -132,7 +132,7 @@ public class RetailerKpiFragment extends IvyBaseFragment {
 
                                 if (retailerKPIBO.getListCode().equals(VOLUME)) {
                                     mMon1_Ach1TV.setText(retailerKPIBO.getAchievement() + "");
-                                    mVolumeTV.setText(retailerKPIBO.getListCode());
+                                    mVolumeTV.setText(retailerKPIBO.getListName());
 
 
                                 } else if (retailerKPIBO.getListCode().equals(LINES)) {

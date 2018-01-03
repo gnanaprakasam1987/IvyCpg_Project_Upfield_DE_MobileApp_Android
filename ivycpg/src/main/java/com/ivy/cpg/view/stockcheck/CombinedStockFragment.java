@@ -271,8 +271,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (getActionBar() != null)
-                    setScreenTitle(getResources().getString(R.string.filter));
+                /*if (getActionBar() != null)
+                    setScreenTitle(getResources().getString(R.string.filter));*/
                 getActivity().supportInvalidateOptionsMenu();
             }
         };
@@ -1026,6 +1026,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
@@ -1297,6 +1299,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
@@ -1356,7 +1360,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             try {
                 // save price check
                 if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                    priceTrackingHelper.savePriceTransaction(mylist);
+                    priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), mylist);
 
                 // save near expiry
                 bmodel.saveNearExpiry();
@@ -1764,6 +1768,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         try {
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.filter));
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFragment frag = (FilterFragment) fm
                     .findFragmentByTag("filter");
@@ -1843,6 +1849,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             QUANTITY = null;
 
             mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.competitor_filter));
 
             android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();

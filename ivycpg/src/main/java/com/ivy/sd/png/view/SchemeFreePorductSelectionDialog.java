@@ -302,9 +302,11 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 
                             @Override
                             public void onClick(View v) {
-                                QUANTITY = holder.quantityET;
-                                QUANTITY.requestFocus();
-                                QUANTITY.setCursorVisible(false);
+                                if (mBmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+                                    QUANTITY = holder.quantityET;
+                                    QUANTITY.requestFocus();
+                                    QUANTITY.setCursorVisible(false);
+                                }
                             }
                         });
 

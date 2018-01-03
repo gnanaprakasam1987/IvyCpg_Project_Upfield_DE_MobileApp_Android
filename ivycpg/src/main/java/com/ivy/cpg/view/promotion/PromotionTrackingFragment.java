@@ -182,7 +182,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         loadReason();
-        promotionHelper.downloadPromotionRating();
+        promotionHelper.downloadPromotionRating(getContext().getApplicationContext());
         ArrayList<StandardListBO> ratingList = promotionHelper.getRatingList();
         if (ratingList != null) {
             mRatingAdapter = new ArrayAdapter<>(getActivity(),
@@ -210,7 +210,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         }
         if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
-
 
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -922,7 +921,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         holder.etPromoQty.setInputType(inType);
                         holder.etPromoQty.selectAll();
                         holder.etPromoQty.requestFocus();
-                        inputManager.hideSoftInputFromWindow(null, 0);
+                        inputManager.hideSoftInputFromWindow(holder.etPromoQty.getWindowToken(), 0);
                         return true;
                     }
                 });
@@ -1065,7 +1064,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                promotionHelper.savePromotionDetails();
+                promotionHelper.savePromotionDetails(getContext().getApplicationContext());
                 promotionHelper.deleteUnusedImages();
                 businessModel.updateIsVisitedFlag();
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PROMO);
@@ -1196,12 +1195,18 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 if (mSelectedIdByLevelId.size() == 0 || businessModel.isMapEmpty(mSelectedIdByLevelId)) {
                     promoList.addAll(items);
                 } else {
-                    for (LevelBO levelBO : mParentIdList) {
-                        for (PromotionBO promoBO : items) {
-                            if (levelBO.getProductID() == promoBO.getProductId()) {
-                                promoList.add(promoBO);
-                            }
+                    if (mFilterText.length() > 0) {
+                        for (LevelBO levelBO : mParentIdList) {
+                            for (PromotionBO promoBO : items) {
+                                if (levelBO.getProductID() == promoBO.getProductId()) {
+                                    promoList.add(promoBO);
+                                }
 
+                            }
+                        }
+                    } else {
+                        for (PromotionBO promoBO : items) {
+                            promoList.add(promoBO);
                         }
                     }
                 }
@@ -1215,4 +1220,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        promotionHelper.clearInstance();
+    }
 }

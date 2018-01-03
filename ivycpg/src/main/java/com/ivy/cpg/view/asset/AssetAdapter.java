@@ -30,6 +30,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -78,10 +79,9 @@ public class AssetAdapter extends BaseAdapter {
         this.mAssetPresenter=mAssetPresenter;
         this.mFragment=mFragment;
 
-        String select_reason = "Select Reason";
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc(select_reason);
+        reason1.setReasonDesc(context.getResources().getString(R.string.select_reason));
         mAssetReasonList = mAssetPresenter.getAssetReasonList();
         mAssetReasonList.add(0, reason1);
 
@@ -91,6 +91,12 @@ public class AssetAdapter extends BaseAdapter {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         String select_condition = "Select Condition";
+        try {
+            if (LabelsMasterHelper.getInstance(context).applyLabels("select_condition") != null)
+                select_condition = LabelsMasterHelper.getInstance(context).applyLabels("select_condition");
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
         ReasonMaster reason3 = new ReasonMaster();
         reason3.setConditionID(Integer.toString(0));
         reason3.setReasonDesc(select_condition);
@@ -295,11 +301,11 @@ public class AssetAdapter extends BaseAdapter {
                                 + holder.assetBO.getSerialNo() + "_"
                                 + Commons.now(Commons.DATE);
 
-/*
-                        assetPresenter.mSelectedAssetID = holder.assetBO
+
+                        mAssetPresenter.mSelectedAssetID = holder.assetBO
                                 .getAssetID();
-                        assetPresenter.mSelectedImageName = imageName;
-                        assetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();*/
+                        mAssetPresenter.mSelectedImageName = imageName;
+                        mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
                                 fileNameStarts);
@@ -512,20 +518,32 @@ public class AssetAdapter extends BaseAdapter {
                 holder.photoBTN.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_photo_camera_blue_24dp));
         }
 
-        if (holder.assetBO.getAvailQty() == 1) {
-            holder.availQtyRB.setChecked(true);
+
+
+        if (holder.assetBO.getExecutorQty() == 1) {
+            holder.execQtyRB.setChecked(true);
         } else {
-            holder.availQtyRB.setChecked(false);
+            holder.execQtyRB.setChecked(false);
         }
 
-        if (assetTrackingHelper.SHOW_ASSET_BARCODE)
+        if (assetTrackingHelper.SHOW_ASSET_BARCODE) {
             if (holder.assetBO.getScanComplete() == 1) {
                 holder.availQtyRB.setChecked(true);
                 holder.availQtyRB.setEnabled(false);
-            } else {
+            } else  if (holder.assetBO.getAvailQty() == 1) {
+                holder.availQtyRB.setChecked(true);
+            }
+            else {
                 holder.availQtyRB.setChecked(false);
                 holder.availQtyRB.setEnabled(true);
             }
+        } else {
+            if (holder.assetBO.getAvailQty() == 1) {
+                holder.availQtyRB.setChecked(true);
+            } else {
+                holder.availQtyRB.setChecked(false);
+            }
+        }
 
 
         return row;

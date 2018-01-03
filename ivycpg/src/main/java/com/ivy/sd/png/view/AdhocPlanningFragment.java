@@ -673,15 +673,24 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
-                if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
-                    bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
+                    if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
+                        bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
+                    } else {
+                        if (mSelectedUserBO != null)
+                            bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedUserBO.getUserid(), false);
+                    }
                 } else {
-                    if (mSelectedUserBO != null)
-                        bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedUserBO.getUserid(), false);
+                    bmodel.synchronizationHelper.downloadRetailerByRetailerName(mRetailerEdt.getText().toString().trim());
                 }
             } else {
-                bmodel.synchronizationHelper.downloadRetailerByRetailerName(mRetailerEdt.getText().toString().trim());
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
             }
 
         }
@@ -707,21 +716,40 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            bool = false;
-            ArrayList<RetailerMasterBO> retailerList = new ArrayList<>();
-            retailerList.addAll(mSecondRetailerList);
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                bool = false;
+                ArrayList<RetailerMasterBO> retailerList = new ArrayList<>();
+                retailerList.addAll(mSecondRetailerList);
 
-            ArrayList<String> temp = new ArrayList<>();
-            for (RetailerMasterBO bo : mSecondRetailerList) {
-                temp.add(bo.getRetailerID());
-            }
+                /*ArrayList<String> temp = new ArrayList<>();
+                for (RetailerMasterBO bo : mSecondRetailerList) {
+                    temp.add(bo.getRetailerID());
+                }*/
+                HashMap<String, Boolean> isRetailerExists = new HashMap<>();
 
-            for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y")) && !temp.contains(bo.getRetailerID())) {
-                    retailerList.add(bo);
+
+                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
+                    isRetailerExists.put(bo.getRetailerID(), true);
+                    if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+                        if ((bmodel.configurationMasterHelper.SHOW_ALL_ROUTES || bo.getIsPlanned().equals("Y"))) {
+                            retailerList.add(bo);
+                        }
+                    }
+                }
+                for (int i = 0; i < mSecondRetailerList.size(); i++) {
+                    if (!isRetailerExists.containsKey(mSecondRetailerList.get(i).getRetailerID())) {
+                        retailerList.add(mSecondRetailerList.get(i));
+                    }
+                }
+                bmodel.synchronizationHelper.downloadMasterListBySelectedRetailer(retailerList, SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION);
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
             }
-            bmodel.synchronizationHelper.downloadMasterListBySelectedRetailer(retailerList, SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION);
         }
     }
 

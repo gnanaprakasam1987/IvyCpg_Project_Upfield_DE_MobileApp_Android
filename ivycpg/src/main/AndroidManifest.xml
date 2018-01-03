@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1240"
-    android:versionName="124.0.728">
+    android:versionCode="1250"
+    android:versionName="2.125.0.872">
 
 
     <supports-screens
@@ -132,6 +132,7 @@
         </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
+        <service android:name="com.ivy.sd.png.model.CatalogImageDownloadService" />
 
         <receiver
             android:name="com.ivy.sd.png.view.GcmBroadcastReceiver"
@@ -270,10 +271,10 @@
             android:name="com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.CompetitorTrackingActivity"
+            android:name="com.ivy.cpg.view.competitor.CompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivyretail.views.SubCompetitorTrackingActivity"
+            android:name="com.ivy.cpg.view.competitor.SubCompetitorTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.planogram.PlanoGramActivity"
@@ -627,7 +628,7 @@
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldActivityTwo"
+            android:name="com.ivy.sd.png.view.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"

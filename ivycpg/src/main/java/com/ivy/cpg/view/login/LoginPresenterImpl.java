@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
@@ -24,6 +26,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.CatalogImageDownloadService;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -63,6 +66,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private SharedPreferences mLastSyncSharedPref;
     private int mIterateCount = 0;
     private TransferUtility transferUtility;
+    private String initialLanguage = "en";
+    private SharedPreferences sharedPrefs;
 
     LoginPresenterImpl(Context context) {
         this.context = context;
@@ -83,7 +88,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     public void loadInitialData() {
         syncDone = businessModel.userMasterHelper.getSyncStatus();
         if (syncDone) {
-            loginHelper.loadPasswordConfiguration();
+            loginHelper.loadPasswordConfiguration(context);
             businessModel.userMasterHelper.downloadDistributionDetails();
             if (loginHelper.IS_PASSWORD_ENCRYPTED)
                 businessModel.synchronizationHelper.setEncryptType();
@@ -94,11 +99,10 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
         businessModel.synchronizationHelper.loadErrorCode();
         /* Set default language */
-        SharedPreferences sharedPrefs = PreferenceManager
+        sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        String initialLanguage = "en";
 
-        if (!Locale.getDefault().getLanguage().equals(
+        if (!Locale.getDefault().equals(
                 sharedPrefs.getString("languagePref", LANGUAGE))) {
             initialLanguage = sharedPrefs.getString("languagePref", LANGUAGE);
             Locale locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
@@ -112,11 +116,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         // Getting back date
         DataMembers.backDate = sharedPrefs.getString("backDate", "");
 
-        // When language preference is changed, recreate the activity.
-        if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
-                LANGUAGE))) {
-            loginView.reload();
-        }
+        reloadActivity();
 
         mLastSyncSharedPref = context.getSharedPreferences("lastSync", MODE_PRIVATE);
         mPasswordLockCountPref = context.getSharedPreferences("passwordlock", MODE_PRIVATE);
@@ -137,6 +137,13 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    public void reloadActivity() {
+        // When language preference is changed, recreate the activity.
+        if (!initialLanguage.equals(sharedPrefs.getString("languagePref",
+                LANGUAGE))) {
+            loginView.reload();
+        }
+    }
     /**
      * Saves the last sync date and time in shared preferences
      */
@@ -169,7 +176,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     @Override
     public void getSupportNo() {
-        loginView.setSupportNoTV(loginHelper.getSupportNo());
+        loginView.setSupportNoTV(loginHelper.getSupportNo(context));
     }
 
     /*
@@ -212,7 +219,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            return loginHelper.reStoreDB();
+            return loginHelper.reStoreDB(context);
         }
 
         @Override
@@ -256,7 +263,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public void checkLogin() {
         if (loginHelper.SHOW_CHANGE_PASSWORD) {
-            String createdDate = loginHelper.getPasswordCreatedDate();
+            String createdDate = loginHelper.getPasswordCreatedDate(context);
             if (createdDate != null && !createdDate.equals("")) {
                 int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
@@ -291,6 +298,10 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
+        loginHelper.loadPasswordConfiguration(context);
+        businessModel.userMasterHelper.downloadDistributionDetails();
+        if (loginHelper.IS_PASSWORD_ENCRYPTED)
+            businessModel.synchronizationHelper.setEncryptType();
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
             if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
                 loginView.goToHomeScreen();
@@ -499,18 +510,27 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (!result) {
-                if (loginHelper.isPasswordReset()) {
-                    loginView.dismissAlertDialog();
-                    loginView.resetPassword();
-                } else {
-                    businessModel.synchronizationHelper.deleteUrlDownloadMaster();
-                    new UrlDownloadData().execute();
-                }
+            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!result) {
+                    if (loginHelper.isPasswordReset(context)) {
+                        loginView.dismissAlertDialog();
+                        loginView.resetPassword();
+                    } else {
+                        businessModel.synchronizationHelper.deleteUrlDownloadMaster();
+                        new UrlDownloadData().execute();
+                    }
 
+                } else {
+                    loginView.dismissAlertDialog();
+                    loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+                }
             } else {
-                loginView.dismissAlertDialog();
-                loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+                String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
             }
 
         }
@@ -939,7 +959,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
 
-        ArrayList<S3ObjectSummary> filesList = new ArrayList<>();
 
         protected void onPreExecute() {
 
@@ -947,48 +966,50 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Commons.print("CaTALOG IMAGE download start");
             try {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
+                if (android.os.Build.VERSION.SDK_INT > 9) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
 
-                businessModel.getimageDownloadURL();
-                businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
+                    businessModel.getimageDownloadURL();
+                    businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                    initializeTransferUtility();
 
-                BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                        ConfigurationMasterHelper.SECRET_KEY);
-                AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                            ConfigurationMasterHelper.SECRET_KEY);
+                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
 
-                ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
-                List<S3ObjectSummary> files = listing.getObjectSummaries();
+                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
+                    List<S3ObjectSummary> files = listing.getObjectSummaries();
 
-                while (listing.isTruncated()) {
-                    listing = s3.listNextBatchOfObjects(listing);
-                    files.addAll(listing.getObjectSummaries());
-                }
+                    while (listing.isTruncated()) {
+                        listing = s3.listNextBatchOfObjects(listing);
+                        files.addAll(listing.getObjectSummaries());
+                    }
 
-                if (files != null && files.size() > 0) {
-
-                    businessModel.synchronizationHelper.insertImageDetails(files);
-                    filesList = new ArrayList<>();
-                    for (int i = 0; i < files.size(); i++) {
-                        S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
-                        s3ObjectSummary.setBucketName(DataMembers.CATALOG);
-                        s3ObjectSummary.setKey(files.get(i).getKey());
-                        s3ObjectSummary.setETag("R");
-                        filesList.add(s3ObjectSummary);
+                    if (files != null && files.size() > 0) {
+                        businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime(files.size() + "");
+                        businessModel.synchronizationHelper.insertImageDetails(files);
                     }
                 }
+                return "";
             } catch (Exception e) {
                 Commons.printException(e);
+                return "Error";
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            loginView.callCatalogImageDownload(filesList, transferUtility);
+            if (!s.equalsIgnoreCase("Error")) {
+                Intent intent = new Intent(context, CatalogImageDownloadService.class);
+                context.startService(intent);
+            }
+
         }
+
     }
 
     public void callCatalogImageDownload() {

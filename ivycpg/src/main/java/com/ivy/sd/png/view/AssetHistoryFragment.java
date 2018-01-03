@@ -41,7 +41,7 @@ public class AssetHistoryFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
-        View view = inflater.inflate(R.layout.fragment_asset_history, container,
+        view = inflater.inflate(R.layout.fragment_asset_history, container,
                 false);
 
         return view;

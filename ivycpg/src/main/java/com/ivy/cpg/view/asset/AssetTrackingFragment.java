@@ -88,7 +88,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
-        assetPresenter=new AssetPresenterImpl(mBModel,assetTrackingHelper);
+        assetPresenter = new AssetPresenterImpl(getContext(), mBModel, assetTrackingHelper);
         assetPresenter.setView(this);
     }
 
@@ -504,12 +504,13 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 Commons.print(TAG + "," +
                         "Camera Activity : Successfully Captured.");
                 assetPresenter.updateImageName();
+                adapter.notifyDataSetChanged();
 
             } else {
                 Commons.print(TAG + "," + "Camera Activity : Canceled");
             }
         } else if (requestCode == MOVEMENT_ASSET) {
-            assetTrackingHelper.loadDataForAssetPOSM(MENU_ASSET);
+            assetTrackingHelper.loadDataForAssetPOSM(getActivity().getApplicationContext(), MENU_ASSET);
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -716,5 +717,11 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     public void updateDate(Date date, String tag) {
         adapter.updateDate(date,tag);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        assetTrackingHelper.clear();
     }
 }

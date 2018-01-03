@@ -35,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -43,7 +42,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThread;
-import com.ivy.sd.png.model.DownloaderThreadCatalog;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -61,10 +59,8 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.ivy.sd.png.view.CatalogImagesDownlaod.activityHandlerCatalog;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
@@ -165,6 +161,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
             loginPresenter.assignServerUrl();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loginPresenter.reloadActivity();
     }
 
     private void updateImageViews() {
@@ -323,7 +325,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                                         R.string.please_check_username_and_password), false);
                     } else {
                         int count = loginPresenter.getPasswordLockCount();
-                        mForgotPasswordTV.setVisibility(View.VISIBLE);
+                        if (mForgotPasswordTV != null)
+                            mForgotPasswordTV.setVisibility(View.VISIBLE);
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
                             dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
@@ -434,7 +437,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues();
+                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
                         businessModel.activationHelper.clearAppUrl();
                         businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                         try {
@@ -496,7 +499,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
                     if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
                         try {
-                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster();
+                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster(getApplicationContext());
                             startActivity(new Intent(LoginScreen.this, LoginScreen.class));
                             finish();
                             break;
@@ -637,18 +640,20 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
     @Override
     public void showForgotPassword() {
-        mForgotPasswordTV.setVisibility(View.VISIBLE);
-        mForgotPasswordTV.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editTextUserName.getText().toString().equals("")) {
-                    businessModel.userNameTemp = editTextUserName.getText().toString();
-                    loginPresenter.callForgetPassword();
-                } else {
-                    editTextUserName.setError(getResources().getString(R.string.enter_username));
+        if (mForgotPasswordTV != null) {
+            mForgotPasswordTV.setVisibility(View.VISIBLE);
+            mForgotPasswordTV.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!editTextUserName.getText().toString().equals("")) {
+                        businessModel.userNameTemp = editTextUserName.getText().toString();
+                        loginPresenter.callForgetPassword();
+                    } else {
+                        editTextUserName.setError(getResources().getString(R.string.enter_username));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -726,6 +731,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        LoginHelper.getInstance(LoginScreen.this).clearInstance();
     }
 
 
@@ -806,15 +812,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     loginPresenter.callDistributorDownload();
                 }
         }
-    }
-
-    @Override
-    public void callCatalogImageDownload(ArrayList<S3ObjectSummary> imgUrls, TransferUtility transferUtility) {
-        Thread downloaderThread = new DownloaderThreadCatalog(LoginScreen.this,
-                activityHandlerCatalog, imgUrls,
-                businessModel.userMasterHelper.getUserMasterBO()
-                        .getUserid(), transferUtility);
-        downloaderThread.start();
     }
 
     @Override

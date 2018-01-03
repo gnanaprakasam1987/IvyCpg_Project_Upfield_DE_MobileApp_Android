@@ -58,10 +58,10 @@
     <string name="m2">M-2</string>
     <string name="m3">M-3</string>
 
-    <string name="visit_frequency" >-0</string>
-    <string name="baidu_from" >From : </string>
-    <string name="baidu_to" >To : </string>
-    <string name="zero_zero" >0.0</string>
+    <string name="visit_frequency">-0</string>
+    <string name="baidu_from">From : </string>
+    <string name="baidu_to">To : </string>
+    <string name="zero_zero">0.0</string>
     <string name="io">IO</string>
     <string name="co">CO</string>
 
@@ -70,6 +70,7 @@
         <item quantity="one">Password Expires in a day</item>
         <item quantity="other">Password Expires in %d days</item>
     </plurals>
+
 
     <string name="tax_not_availble_for_some_product">Tax not available for some Product.</string>
     <string name="free">Free</string>
@@ -147,8 +148,6 @@
     <string name="exceed_limt">Exceeds the Limit</string>
 
     <string name="executed">Is Executed</string>
-    <!-- Order summary success dialog message -->
-    <string name="delivery_date_is">Delivery Date is: </string>
 
     <string name="share_invoice_using">Share invoice using..</string>
     <string name="error_in_creating_pdf">Error in creating pdf.</string>
@@ -158,6 +157,10 @@
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
+    <string name="enter_contact_name">Kindly Enter Contact Name</string>
+    <string name="enter_contact_number">Kindly Enter Contact Number</string>
+    <string name="enter_docref_number">Kindly Enter DocRef Number</string>
+    <string name="get_signature">Kindly get Signature</string>
     <string name="downloading_rpt">Downloading Report</string>
 
     <string name="time_in">Time In</string>
@@ -165,7 +168,6 @@
     <string name="sales_value">Sales value</string>
     <string name="duration">Duration</string>
 
-    <string name="old_order_volume">Original value</string>
 
     <string name="partial_delivery">Partial Delivery</string>
     <string name="total_vol">Total Volume</string>
@@ -199,4 +201,29 @@
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
+    <string name="doc_exchanged">Doc Exchanged</string>
+    <string name="fetching_location">Fetching Location</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="location_not_captured">Location not captured.</string>
+    <string name="location_captured">Location captured.</string>
+
+    <string name="last_image_download_time">Last downloaded time : </string>
+    <string name="fetching_location_pls_wait">Fetching location. Please wait for %d seconds</string>
+    <plurals name="fetching_location">
+        <item quantity="zero">Fetching location.</item>
+        <item quantity="one">Fetching location. Please wait for a second.</item>
+        <item quantity="other">Fetching location. Please wait for %d seconds</item>
+    </plurals>
+    <string name="order_not_allowed_for_retailer">Order taking not allowed for this retailer.</string>
+
+    <string name="competitor_filter">Competitor Filter</string>
+    <string name="error_e26">Unauthorized access</string>
+    <string name="error_e27">DeviceId mismatch</string>
+    <string name="new_retailer">New Retailer</string>
+
+    <string name="sign_captured_already">Signature already captured. Do you want to delete and re-capture?</string>
+    <string name="post_dated_demand_draft_notallow">Post dated Demand Draft Not Allowed</string>
+    <string name="post_dated_rtgs_notallow">Post dated RTGS Not Allowed</string>
+    <string name="prev_dated_demand_draft_notallow">Previous Dated Demand Draft Not Allowed</string>
+    <string name="prev_dated_rtgs_notallow">Previous Dated RTGS Not Allowed</string>
 </resources>

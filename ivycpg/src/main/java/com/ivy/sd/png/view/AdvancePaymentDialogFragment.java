@@ -215,7 +215,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
             String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            updateDate(new Date(todayDate),"" );
+            updateDate(new Date(todayDate), "");
         }
 
     }
@@ -537,9 +537,20 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         try {
             if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate))//this for checking today date since before method not woking for today date
                 if (date.before(new Date())) {
-                    Toast.makeText(getActivity(), getResources().getString(
-                            R.string.prev_dated_cheque_notallow),
-                            Toast.LENGTH_SHORT).show();
+
+                    if (mSelectedPaymentBO.getCashMode().equals(StandardListMasterConstants.DEMAND_DRAFT))
+                        Toast.makeText(getActivity(), getResources().getString(
+                                R.string.prev_dated_demand_draft_notallow),
+                                Toast.LENGTH_SHORT).show();
+                    else if (mSelectedPaymentBO.getCashMode().equals(StandardListMasterConstants.RTGS))
+                        Toast.makeText(getActivity(), getResources().getString(
+                                R.string.prev_dated_rtgs_notallow),
+                                Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), getResources().getString(
+                                R.string.prev_dated_cheque_notallow),
+                                Toast.LENGTH_SHORT).show();
+
                     return;
                 }
         } catch (Exception e) {

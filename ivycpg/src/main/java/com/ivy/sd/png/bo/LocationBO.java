@@ -35,6 +35,8 @@ public class LocationBO {
     private String feedback = "";
     private int productID;
     private int photoid;
+    private int availability = -1;
+
 
     ArrayList<CS_StockReasonBO> lstStockReasons;
 
@@ -362,6 +364,14 @@ public class LocationBO {
 
     public void setLstStockReasons(ArrayList<CS_StockReasonBO> lstStockReasons) {
         this.lstStockReasons = lstStockReasons;
+    }
+
+    public int getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(int availability) {
+        this.availability = availability;
     }
 
 }

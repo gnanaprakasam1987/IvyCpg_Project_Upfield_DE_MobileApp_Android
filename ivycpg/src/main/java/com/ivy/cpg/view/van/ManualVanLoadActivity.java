@@ -421,22 +421,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
                             new calculateLiability().execute();
                         } else {
-
-                            if (bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDistributorid() == selectedSubDepotId) {
-                                showDialog(1);
-                            } else {
-                                if (!bmodel.vanmodulehelper
-                                        .isSecondaryDistributorDone()) {
-                                    showDialog(1);
-                                } else {
-                                    bmodel.showAlert(
-                                            getResources().getString(
-                                                    R.string.sec_dist_loaded), 0);
-                                }
-                            }
-
-
+                            showDialog(1);
                         }
                     } else
                         bmodel.showAlert(
@@ -772,9 +757,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     if ("BarCode".equals(mSelectedFilter)) {
                         if (ret.getBarcode() != null && ret.getBarcode()
                                 .toLowerCase()
-                                .contains(
-                                        mEdtSearchproductName.getText().toString()
-                                                .toLowerCase()))
+                                .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
                             mylist.add(ret);
 
                     } else if ("GCAS Code".equals(mSelectedFilter)) {
@@ -789,9 +772,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                             R.string.product_name).equals(mSelectedFilter))) {
                         if (ret.getProductshortname() != null && ret.getProductshortname()
                                 .toLowerCase()
-                                .contains(
-                                        mEdtSearchproductName.getText().toString()
-                                                .toLowerCase()))
+                                .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
                             mylist.add(ret);
                     }
                 }

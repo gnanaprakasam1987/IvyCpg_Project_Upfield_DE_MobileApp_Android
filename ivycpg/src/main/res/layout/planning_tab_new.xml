@@ -4,33 +4,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        app:titleTextColor="@android:color/white"
-        android:background="@drawable/retailer_toolbar_bg"
-        android:fitsSystemWindows="true"
-        android:visibility="gone"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="@dimen/toolbar_elevation">
-        <TextView
-            android:id="@+id/titleToolBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:textSize="@dimen/margin_26px"
-            android:layout_gravity="top"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/toolbar_title"
-            android:gravity="left|top"/>
-    </android.support.v7.widget.Toolbar>-->
-    <!-- <include
-         android:id="@+id/toolbar"
-         layout="@layout/material_tool_bar"
-         />-->
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_image_height"
@@ -42,9 +16,10 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/toolbar_image_top"
+        android:orientation="vertical">
 
         <include layout="@layout/visit_fragment_title_layout" />
 
@@ -64,7 +39,8 @@
                 android:text="Stores"
                 android:textColor="@color/store_label"
                 android:textSize="@dimen/highlight_normal"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tag="store_title" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -104,8 +80,8 @@
                     android:layout_marginBottom="-2dp"
                     android:layout_marginTop="-2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/ic_cross_line"
-                     />
+                    android:background="@drawable/ic_cross_line" />
+
                 <ImageView
                     android:id="@+id/map_viewchange"
                     android:layout_width="@dimen/profile_23dp"

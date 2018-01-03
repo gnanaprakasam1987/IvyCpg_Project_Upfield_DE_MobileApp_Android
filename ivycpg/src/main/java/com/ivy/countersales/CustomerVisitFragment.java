@@ -323,7 +323,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
                     HashMap<String, String> mHeaderLst = bmodel.mCounterSalesHelper.downloadCustomerHeaderInformation("", false);
                     if (mHeaderLst != null && !mHeaderLst.isEmpty()) {
-                        mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bmodel,false);
+                        mHistoryDialog = new CShistoryDialog(getActivity(), mHeaderLst, bmodel, false);
                         mHistoryDialog.show();
                         mHistoryDialog.setCancelable(false);
                         mHistoryDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -669,8 +669,16 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            bmodel.synchronizationHelper.downloadCustomerSearch(edt_contact.getText().toString());
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                bmodel.synchronizationHelper.downloadCustomerSearch(edt_contact.getText().toString());
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -752,6 +760,7 @@ public class CustomerVisitFragment extends IvyBaseFragment implements View.OnCli
 
     class loadSummaryScreen extends AsyncTask<String, Void, Void> {
         AlertDialog alertDialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

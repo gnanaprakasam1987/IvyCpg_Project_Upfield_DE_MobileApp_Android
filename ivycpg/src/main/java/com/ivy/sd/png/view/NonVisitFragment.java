@@ -526,16 +526,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        if (bmodel.configurationMasterHelper.SHOW_RETAILER_SEARCH) {
-            menu.findItem(R.id.search).setVisible(true);
-        }
-
-        //Mansoor// non visit framgent deviate screen floating joinc call not required
-    /*    if (calledBy.equals(MENU_VISIT)) {
-            *//** Enable or disable the Joint Call menu according to Configuration **//*
-            menu.findItem(R.id.menu_joincall).setVisible(
-                    bmodel.configurationMasterHelper.SHOW_JOINT_CALL);
-        }*/
+        menu.findItem(R.id.search).setVisible(true);
 
         if (bmodel.configurationMasterHelper.SHOW_DEVIATION) {
             menu.findItem(R.id.menu_deviate_retailers).setVisible(true);
@@ -1113,7 +1104,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)//to show retailer location
                 holder.outletLocation.setText(retailerObj.getRField4());
             else
-                holder.outletLocation.setVisibility(View.GONE);
+                holder.outletLocation.setVisibility(View.INVISIBLE);
 
             holder.outletAddress.setText(retailerObj.getAddress1());
             holder.ref = position;

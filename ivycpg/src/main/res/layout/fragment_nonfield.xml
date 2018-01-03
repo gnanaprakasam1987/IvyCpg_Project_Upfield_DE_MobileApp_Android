@@ -268,7 +268,8 @@
                                 android:gravity="left"
                                 android:text="@string/text_leave_type"
                                 android:textColor="@android:color/black"
-                                android:textSize="@dimen/font_small" />
+                                android:textSize="@dimen/font_small"
+                                android:tag="leave_type" />
 
                             <Spinner
                                 android:id="@+id/spn_leaves"
@@ -458,5 +459,6 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="No data to display"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:tag="no_data" />
 </LinearLayout>

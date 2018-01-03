@@ -81,10 +81,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private ArrayList<String> fiveFilter_productIDs;
     private Vector<ProductMasterBO> items;
     private String brandbutton;
-    private String generalbutton;
     private int mSelectedBrandID = 0;
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
+    private String generalbutton = GENERAL;
     private Button mBtn_Search, mBtn_clear;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     public ListView lvwplist;
@@ -817,7 +817,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             mDrawerLayout.closeDrawers();
 
             // Change the Brand button Name
-            brandbutton = mFilterText;
+            brandbutton = (mFilterText == null ? BRAND : mFilterText);
 
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalbutton;

@@ -1186,6 +1186,10 @@
     <string name="delivery_rep_code">Rep Code</string>
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
 
+    <!-- Order summary success dialog message -->
+    <string name="delivery_date_is">Delivery Date is: </string>
+    <string name="old_order_volume">Original value</string>
+
     <string-array name="task_tab_header">
         <item>ທັງ​ໜົດ</item>
         <item>ກຳ​ນົດ​ໃຫ້</item>

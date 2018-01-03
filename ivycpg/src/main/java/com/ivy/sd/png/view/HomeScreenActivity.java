@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -81,6 +83,10 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
                 super.onDrawerSlide(drawerView, slideOffset);
 
                 float moveFactor = (drawerView.getWidth() * slideOffset);
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm!=null && imm.isActive())
+                    imm.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     content_frame.setTranslationX(moveFactor);

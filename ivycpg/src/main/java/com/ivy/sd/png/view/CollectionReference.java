@@ -1,8 +1,18 @@
 package com.ivy.sd.png.view;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,15 +20,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -29,11 +47,17 @@ import com.ivy.sd.png.util.DataMembers;
 import java.util.ArrayList;
 
 public class CollectionReference extends IvyBaseActivityNoActionBar {
-    private BusinessModel bmodel;
+    private static final String TAG = "CollectionReference";
+    private static BusinessModel bmodel;
     private Toolbar toolbar;
     private ArrayList<InvoiceHeaderBO> mInvioceList;
     private ListView mCollectionLV;
     private Button btnSave;
+    private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private String mErrorMsg = "";
+    private String mSelectedBill = "";
+    private MyAdapter mCollectionAdapter;
+    private static final int REQUEST_SIGNAATURE_CAPTURE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +92,28 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
 
         }
 
+        //Set Data for Spinner Adapter
+        spinnerAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout);
+        spinnerAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        ReasonMaster reasonBO;
+        reasonBO = new ReasonMaster();
+        reasonBO.setReasonID("-1");
+        reasonBO.setReasonDesc(getResources().getString(R.string.select_reason));
+        reasonBO.setReasonCategory("NONE");
+        spinnerAdapter.add(reasonBO);
+        for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
+            if (temp.getReasonCategory().equalsIgnoreCase("INVT"))
+                spinnerAdapter.add(temp);
+        }
+        reasonBO = new ReasonMaster();
+        reasonBO.setReasonID("0");
+        reasonBO.setReasonDesc(getResources().getString(R.string.other_reason));
+        reasonBO.setReasonCategory("NONE");
+        spinnerAdapter.add(reasonBO);
+
+
         mCollectionLV = (ListView) findViewById(R.id.list);
         btnSave = (Button) findViewById(R.id.btn_save);
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -81,7 +127,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 }
             }
             if (mInvioceList != null && mInvioceList.size() > 0) {
-                MyAdapter mCollectionAdapter = new MyAdapter();
+                mCollectionAdapter = new MyAdapter();
                 mCollectionLV.setAdapter(mCollectionAdapter);
                 btnSave.setEnabled(true);
             } else {
@@ -94,10 +140,44 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SaveAsyncTask().execute();
+                if (isValidate())
+                    new SaveAsyncTask().execute();
+                else
+                    Toast.makeText(CollectionReference.this, mErrorMsg, Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    private boolean isValidate() {
+        for (InvoiceHeaderBO invoiceHeaderBO : mInvioceList) {
+            if (invoiceHeaderBO.getDocExchange() == 0 && invoiceHeaderBO.getDocReasonId().equals("-1")) {
+                mErrorMsg = "Kindly " + getResources().getString(R.string.select_reason);
+                return false;
+            }
+            if (invoiceHeaderBO.getDocExchange() == 0 && invoiceHeaderBO.getDocReasonId().equals("0") && invoiceHeaderBO.getDocRemark().toString().length() == 0) {
+                mErrorMsg = getResources().getString(R.string.enter_remarks);
+                return false;
+            }
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactName().toString().length() == 0) {
+                mErrorMsg = getResources().getString(R.string.enter_contact_name);
+                return false;
+            }
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactNo().toString().length() == 0) {
+                mErrorMsg = getResources().getString(R.string.enter_contact_number);
+                return false;
+            }
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocRefNo().toString().length() == 0) {
+                mErrorMsg = getResources().getString(R.string.enter_docref_number);
+                return false;
+            }
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().toString().length() == 0) {
+                mErrorMsg = getResources().getString(R.string.get_signature);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -143,6 +223,12 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etDocRef = (EditText) row.findViewById(R.id.etdocRef);
                 holder.etContactName = (EditText) row.findViewById(R.id.etcontactName);
                 holder.etContactNo = (EditText) row.findViewById(R.id.etcontactNo);
+                holder.cbDocExchange = (CheckBox) row.findViewById(R.id.cbDocExchange);
+                holder.spReason = (Spinner) row.findViewById(R.id.spreason);
+                holder.etRemark = (EditText) row.findViewById(R.id.etremark);
+                holder.llDocReason = (LinearLayout) row.findViewById(R.id.lldocReason);
+                holder.llDocRemark = (LinearLayout) row.findViewById(R.id.lldocRemark);
+                holder.ivSignature = (ImageView) row.findViewById(R.id.ivSign);
 
                 ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 ((TextView) row.findViewById(R.id.tvpaidamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -150,6 +236,9 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 ((TextView) row.findViewById(R.id.docRefTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 ((TextView) row.findViewById(R.id.contactNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 ((TextView) row.findViewById(R.id.contactNoTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.DocExcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.DocReasonTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.remarkTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 holder.tvInvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.invAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.balanceAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -157,6 +246,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etDocRef.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.etContactName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.etContactNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.etRemark.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 holder.etDocRef.addTextChangedListener(new TextWatcher() {
@@ -225,6 +315,108 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     }
                 });
 
+                holder.etRemark.addTextChangedListener(new TextWatcher() {
+                    public void afterTextChanged(Editable s) {
+                        String qty = s.toString();
+                        if (!"".equals(qty)) {
+                            holder.invoiceHeaderBO.setDocRemark(qty);
+                        } else {
+                            holder.invoiceHeaderBO.setDocRemark("");
+                        }
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                    }
+                });
+
+                holder.spReason.setAdapter(spinnerAdapter);
+                holder.spReason
+                        .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            public void onItemSelected(
+                                    AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                                ReasonMaster reString = (ReasonMaster) holder.spReason
+                                        .getSelectedItem();
+
+                                holder.invoiceHeaderBO.setDocReasonId(reString
+                                        .getReasonID());
+
+                                if (reString.getReasonID().equals("0")) {
+                                    holder.llDocRemark.setVisibility(View.VISIBLE);
+                                    holder.etRemark.setText("");
+                                } else {
+                                    holder.llDocRemark.setVisibility(View.GONE);
+                                }
+
+                            }
+
+                            public void onNothingSelected(
+                                    AdapterView<?> parent) {
+                            }
+                        });
+
+                holder.cbDocExchange.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if (isChecked) {
+                            holder.llDocReason.setVisibility(View.GONE);
+                            holder.llDocRemark.setVisibility(View.GONE);
+                            holder.invoiceHeaderBO.setDocExchange(1);
+                            holder.etContactName.setEnabled(true);
+                            holder.etContactNo.setEnabled(true);
+                            holder.etDocRef.setEnabled(true);
+                            holder.invoiceHeaderBO.setDocReasonId("");
+                            holder.invoiceHeaderBO.setDocRemark("");
+                        } else {
+                            holder.llDocReason.setVisibility(View.VISIBLE);
+                            holder.spReason.setSelection(0);
+                            holder.invoiceHeaderBO.setDocExchange(0);
+                        }
+
+                    }
+                });
+
+                holder.ivSignature.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mSelectedBill = holder.invoiceHeaderBO.getInvoiceNo();
+                        if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
+                            if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, holder.invoiceHeaderBO.getDocSignImage())) {
+                                DialogFragment dialog = new signatureExistingAlert();
+                                Bundle args = new Bundle();
+                                args.putString("title", getResources().getString(
+                                        R.string.word_photocaptured_delete_retake));
+                                args.putString("imgName", holder.invoiceHeaderBO.getDocSignImage());
+                                dialog.setArguments(args);
+                                dialog.show(getSupportFragmentManager(), "sign");
+
+                            } else {
+
+                                Intent i = new Intent(CollectionReference.this,
+                                        CaptureSignatureActivity.class);
+                                i.putExtra("fromModule", "COL_REF");
+                                startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
+                                bmodel.configurationMasterHelper.setSignatureTitle("Signature");
+                            }
+                        } else {
+                            Intent i = new Intent(CollectionReference.this,
+                                    CaptureSignatureActivity.class);
+                            i.putExtra("fromModule", "COL_REF");
+                            startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
+                            bmodel.configurationMasterHelper.setSignatureTitle("Signature");
+                        }
+                    }
+                });
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -238,6 +430,15 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             holder.etDocRef.setText(holder.invoiceHeaderBO.getDocRefNo());
             holder.etContactName.setText(holder.invoiceHeaderBO.getContactName());
             holder.etContactNo.setText(holder.invoiceHeaderBO.getContactNo());
+            holder.cbDocExchange.setChecked((holder.invoiceHeaderBO.getDocExchange() == 1) ? true : false);
+
+            if (holder.invoiceHeaderBO.getDocReasonId() != null) {
+                holder.spReason.setSelection(getReasonIndex(holder.invoiceHeaderBO.getDocReasonId()));
+            }
+            holder.etRemark.setText(holder.invoiceHeaderBO.getDocRemark());
+            if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
+                holder.ivSignature.setColorFilter(ContextCompat.getColor(CollectionReference.this, R.color.font_green), android.graphics.PorterDuff.Mode.MULTIPLY);
+            }
 
             return row;
         }
@@ -251,6 +452,12 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         EditText etDocRef;
         EditText etContactName;
         EditText etContactNo;
+        CheckBox cbDocExchange;
+        Spinner spReason;
+        EditText etRemark;
+        LinearLayout llDocReason;
+        LinearLayout llDocRemark;
+        ImageView ivSignature;
 
         InvoiceHeaderBO invoiceHeaderBO;
     }
@@ -262,6 +469,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(String... arg0) {
             try {
                 bmodel.collectionHelper.saveCollectionReference(mInvioceList);
+                bmodel.saveModuleCompletion("MENU_COLLECTION_REF");
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);
@@ -284,6 +492,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             // result is the value returned from doInBackground
 
             progressDialogue.dismiss();
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
 
             Toast.makeText(CollectionReference.this,
                     getResources().getString(R.string.saved_successfully),
@@ -302,4 +512,75 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 DataMembers.actHomeScreenTwo);
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
+
+    public int getReasonIndex(String reasonId) {
+        if (spinnerAdapter.getCount() == 0)
+            return 0;
+        int len = spinnerAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            ReasonMaster s = spinnerAdapter.getItem(i);
+            if (s.getReasonID().equals(reasonId))
+                return i;
+        }
+        return -1;
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Commons.print(TAG + ",onActivityResult " + resultCode);
+        switch (requestCode) {
+            case REQUEST_SIGNAATURE_CAPTURE:
+                if (resultCode == Activity.RESULT_OK) {
+                    for (InvoiceHeaderBO invoiceHeaderBO : mInvioceList) {
+                        if (mSelectedBill.equals(invoiceHeaderBO.getInvoiceNo())) {
+                            invoiceHeaderBO.setDocSignPath(data.getStringExtra("SERVER_PATH"));
+                            invoiceHeaderBO.setDocSignImage(data.getStringExtra("IMAGE_NAME"));
+                            mCollectionAdapter.notifyDataSetChanged();
+                            break;
+                        }
+
+                    }
+                }
+                break;
+
+        }
+    }
+
+    @SuppressLint("ValidFragment")
+    public static class signatureExistingAlert extends DialogFragment {
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            //   return super.onCreateDialog(savedInstanceState);
+
+            Bundle args = getArguments();
+            String title = args.getString("title");
+            final String imgName = args.getString("imgName");
+
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(title)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                    imgName);
+                            Intent i = new Intent(getActivity(),
+                                    CaptureSignatureActivity.class);
+                            i.putExtra("fromModule", "COL_REF");
+                            startActivityForResult(i, REQUEST_SIGNAATURE_CAPTURE);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .create();
+        }
+    }
+
 }

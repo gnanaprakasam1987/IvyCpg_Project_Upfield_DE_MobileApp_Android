@@ -1,6 +1,7 @@
 package com.ivy.sd.png.provider;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.os.Message;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.StringInputStream;
@@ -61,6 +63,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -219,6 +222,7 @@ SynchronizationHelper {
     private ArrayList<String> mUserRetailerTranDownloadUrlList;
     private HashMap<String, String> mErrorMessageByErrorCode;
     private String mSecurityKey = "";
+    private String mAuthErrorCode = "";
     private HashMap<String, JSONObject> mJsonObjectResponseByTableName = new HashMap<String, JSONObject>();
 
     private ArrayList<RetailerMasterBO> mRetailerListByLocOrUserWise;
@@ -228,6 +232,10 @@ SynchronizationHelper {
 
     public String getSecurityKey() {
         return mSecurityKey;
+    }
+
+    public String getAuthErroCode() {
+        return mAuthErrorCode;
     }
 
     public int getmRetailerWiseIterateCount() {
@@ -572,6 +580,24 @@ SynchronizationHelper {
         }
     }
 
+    private void updateOrderStatus() {
+        //Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' where RetailerID in(Select RetailerID from OrderHeader)
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            db.updateSQL("Update RetailerMaster set isOrdered = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+
+            db.updateSQL("Update RetailerBeatMapping set isVisited = 'Y' " +
+                    "where RetailerID in(Select RetailerID from OrderHeader)");
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
     public boolean checkSIHTable() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -738,10 +764,10 @@ SynchronizationHelper {
 
             /** Added following line to fix the Order split download issues. **/
             if (!bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                bmodel.synchronizationHelper.deleteOrderHistory();
+                deleteOrderHistory();
             }
 
-            bmodel.synchronizationHelper.deleteDBFromSD();
+            deleteDBFromSD();
 
             try {
 
@@ -2015,7 +2041,7 @@ SynchronizationHelper {
                 sb.append("msqQty, dUomQty, mrp, RField1, RField2, RField3, wsih, IsAlloc,  dOuomQty, dOuomid,  CaseBarcode, ");
                 sb.append("OuterBarcode, isReturnable, suggestqty, isMust, maxQty, stdpcs, stdcase, stdouter, issalable, baseprice, ");
                 sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription) ");
-                sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, IFNULL(A.piecebarcode,0) , P.vat, P.isfocus, ");
+                sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, (CASE WHEN IFNULL(A.piecebarcode,'') = '' THEN P.barcode ELSE A.piecebarcode END), P.vat, P.isfocus, ");
                 sb.append("IFNULL(A.caseUomId,0), P.msqQty, IFNULL(A.caseqty,0), P.mrp, P.RField1, P.RField2, P.RField3, P.wsih, P.IsAlloc,  ");
                 sb.append("IFNULL(A.boxqty,0), IFNULL(A.boxUomId,0),  IFNULL(A.casebarcode,0), IFNULL(A.boxbarcode,0), P.isReturnable, ");
                 sb.append("P.suggestqty, P.isMust, P.maxQty, P.stdpcs, P.stdcase, P.stdouter, P.issalable,P.baseprice, IFNULL(A.pieceUomId,0), ");
@@ -2219,6 +2245,8 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E23", context.getResources().getString(R.string.error_e23));
         mErrorMessageByErrorCode.put("E24", context.getResources().getString(R.string.error_e24));
         mErrorMessageByErrorCode.put("E25", context.getResources().getString(R.string.user_account_locked));
+        mErrorMessageByErrorCode.put("E26", context.getResources().getString(R.string.error_e26));
+        mErrorMessageByErrorCode.put("E27", context.getResources().getString(R.string.error_e27));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
     }
@@ -2247,25 +2275,28 @@ SynchronizationHelper {
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
-        try {
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam("userinfo", headerinfo);
-            if (data != null) {
-                http.addParam("data", data);
-            }
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam("userinfo", headerinfo);
+                if (data != null) {
+                    http.addParam("data", data);
+                }
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
                 return new Vector<>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException("" + e);
+        } else {
             return new Vector<>();
         }
-
     }
 
     public static final String USER_IDENTITY = "UserIdentity";
@@ -2281,21 +2312,25 @@ SynchronizationHelper {
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
-        try {
+        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url.toString(), null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                http.addParam(USER_IDENTITY, RSAEncrypt(jsonObject.toString()));
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<String>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException(e);
                 return new Vector<String>();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException(e);
+        } else {
             return new Vector<String>();
         }
 
@@ -2359,6 +2394,7 @@ SynchronizationHelper {
 
         try {
             mSecurityKey = "";
+            mAuthErrorCode = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("LoginId", bmodel.userNameTemp);
@@ -2381,6 +2417,22 @@ SynchronizationHelper {
             //http.addHeader(REQUEST_INFO, getHeaderInfo());
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));//passing encrypted jsonObj
             http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (!result.isEmpty()) {
+                for (String s : result) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            mAuthErrorCode = jsonObject.get("ErrorCode").toString();
+                            mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+                            break;
+                        }
+                    }
+                }
+            }
 
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
@@ -2397,6 +2449,7 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
             mSecurityKey = "";
+            mAuthErrorCode = "";
         }
     }
 
@@ -3395,7 +3448,7 @@ SynchronizationHelper {
             }
             String url;
             if (flag == DataMembers.SYNCSIHUPLOAD) {
-                url = bmodel.synchronizationHelper.getUploadUrl("UPLDSIH");
+                url = getUploadUrl("UPLDSIH");
                 if (url.length() == 0) {
                     responceMessage = 2;
                     return responceMessage;
@@ -3472,6 +3525,15 @@ SynchronizationHelper {
                     }
 
 
+                }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -3817,7 +3879,17 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
+
             if (response == 1) {
 
                 db.updateSQL("Update " + DataMembers.tbl_TransactionSequence
@@ -3948,40 +4020,44 @@ SynchronizationHelper {
     public String downloadSessionId(String url) {
         updateAuthenticateToken();
         String sessionId = "";
-        try {
+        if (mAuthErrorCode.equals(AUTHENTICATION_SUCCESS_CODE)) {
+            try {
 
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url, null);
-            http.addHeader(SECURITY_HEADER, mSecurityKey);
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-            jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
-            http.setParamsJsonObject(jsonObj);
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url, null);
+                http.addHeader(SECURITY_HEADER, mSecurityKey);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+                jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+                jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
+                http.setParamsJsonObject(jsonObj);
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
+                http.connectMe();
+                Vector<String> result = http.getResult();
 
-            if (!result.isEmpty()) {
-                for (String s : result) {
-                    JSONObject jsonObject = new JSONObject(s);
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Data")) {
-                            sessionId = jsonObject.getJSONArray("Data").get(0).toString();
-                            sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                if (!result.isEmpty()) {
+                    for (String s : result) {
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Data")) {
+                                sessionId = jsonObject.getJSONArray("Data").get(0).toString();
+                                sessionId = sessionId.replaceAll("[\\[\\],\"]", "");
+                            }
                         }
                     }
+
                 }
+                return sessionId;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return sessionId;
 
             }
+        } else {
             return sessionId;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return sessionId;
-
         }
 
 
@@ -4285,7 +4361,7 @@ SynchronizationHelper {
             jsonFormatter.addParameter("VanId", bmodel.userMasterHelper
                     .getUserMasterBO().getVanId());
             String LastDayClose = "";
-            if (bmodel.synchronizationHelper.isDayClosed()) {
+            if (isDayClosed()) {
                 LastDayClose = bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate();
             }
@@ -4294,9 +4370,9 @@ SynchronizationHelper {
                     .getUserMasterBO().getBranchId());
             jsonFormatter.addParameter("DownloadedDataDate", bmodel.userMasterHelper
                     .getUserMasterBO().getDownloadDate());
-            jsonFormatter.addParameter("DataValidationKey", bmodel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+            jsonFormatter.addParameter("DataValidationKey", generateChecksum(jsonobj.toString()));
             Commons.print(jsonFormatter.getDataInJson());
-            String appendurl = bmodel.synchronizationHelper.getUploadUrl("UPLDRET");
+            String appendurl = getUploadUrl("UPLDRET");
             if (appendurl.length() == 0)
                 return 2 + "";
             Vector<String> responseVector = bmodel.synchronizationHelper
@@ -4330,6 +4406,15 @@ SynchronizationHelper {
 
 
                 }
+            } else {
+                if (!getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = getErrormessageByErrorCode().get(getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         } catch (SQLException | JSONException e) {
             Commons.printException("" + e);
@@ -4338,6 +4423,7 @@ SynchronizationHelper {
     }
 
     public boolean validateUser(String username, String password) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
@@ -4455,7 +4541,7 @@ SynchronizationHelper {
     }
 
     public void loadMethodsNew() {
-        bmodel.synchronizationHelper.setmJsonObjectResponseBytableName(null);
+        setmJsonObjectResponseBytableName(null);
 
         // If usermaster get updated
         bmodel.userMasterHelper.downloadUserDetails();
@@ -4475,10 +4561,12 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.getPrinterConfig();
 
         if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            bmodel.synchronizationHelper.backUpPreviousDayOrder();
-
+            backUpPreviousDayOrder();
+            deleteOrderHistory();
         }
-        bmodel.synchronizationHelper.deleteOrderHistory();
+        if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
+            updateOrderStatus();
+        }
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
@@ -4527,12 +4615,12 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            LoginHelper.getInstance(context).onGCMRegistration();
+            LoginHelper.getInstance(context).onGCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
-            bmodel.synchronizationHelper.setEncryptType();
+            setEncryptType();
 
         bmodel.printHelper.deletePrintFileAfterDownload(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/" + DataMembers.PRINT_FILE_PATH + "/");
@@ -4554,12 +4642,12 @@ SynchronizationHelper {
             return NEXT_METHOD.NON_DISTRIBUTOR_DOWNLOAD;
         } else if (!isLastVisitTranDownloadDone
                 && bmodel.configurationMasterHelper.isLastVisitTransactionDownloadConfigEnabled()) {
-            if (bmodel.synchronizationHelper.getmRetailerWiseIterateCount() <= 0) {
+            if (getmRetailerWiseIterateCount() <= 0) {
                 isLastVisitTranDownloadDone = true;
             }
             return NEXT_METHOD.LAST_VISIT_TRAN_DOWNLOAD;
         } else if (!isSihDownloadDone
-                && !bmodel.synchronizationHelper.getSIHUrl().equals("")) {
+                && !getSIHUrl().equals("")) {
             isSihDownloadDone = true;
             return NEXT_METHOD.SIH_DOWNLOAD;
         } else if (bmodel.isDigitalContentAvailable()) {
@@ -4721,41 +4809,57 @@ SynchronizationHelper {
     }
 
     public void insertImageDetails(List<S3ObjectSummary> filesList) {
+        Commons.print("insert start time " + SDUtil.now(SDUtil.TIME));
+        android.database.sqlite.SQLiteDatabase database;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+            database = db.getWritableDatabase();
+            database.beginTransaction();
             String columns = "Key,lastModified";
-
+            ContentValues values = new ContentValues();
             for (int i = 0; i < filesList.size(); i++) {
+                values.put("Key", filesList.get(i).getKey());
+                values.put("lastModified", filesList.get(i).getLastModified() + "");
+                values.put("Flag", 0);
 
-                String values = bmodel.QT(filesList.get(i).getKey())
+                /*String values = bmodel.QT(filesList.get(i).getKey())
                         + ","
-                        + bmodel.QT(filesList.get(i).getLastModified() + "");
+                        + bmodel.QT(filesList.get(i).getLastModified() + "");*/
 
-                db.insertSQL("CatalogImagesDetails", columns, values);
+                database.insert("CatalogImagesDetails", columns, values);
             }
+            database.setTransactionSuccessful();
+            database.endTransaction();
             db.closeDB();
+            Commons.print("insert end time " + SDUtil.now(SDUtil.TIME));
         } catch (Exception e) {
             Commons.printException("insertImageDetails" + e);
         }
     }
 
+    private List<S3ObjectSummary> filesList;
+
     public List<S3ObjectSummary> getImageDetails() {
-        List<S3ObjectSummary> filesList = new ArrayList<>();
+        filesList = new ArrayList<>();
         S3ObjectSummary fileData;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT * from CatalogImagesDetails");
 
+            Cursor c = db.selectSQL("Select * from CatalogImagesDetails where Flag != 1");
+            /*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
+                    "INNER JOIN ProductMaster PM ON CID.Key = '" + DataMembers.S3_ROOT_DIRECTORY + "/Product/ProductCatalog/'" +
+                    "|| PM.pCode ||'.jpg' AND PM.PLid = (Select Max(LevelId) from ProductLevel) Where CID.Flag != 1");
+*/
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
                     fileData = new S3ObjectSummary();
                     fileData.setKey(c.getString(c.getColumnIndex("Key")));
+                    fileData.setBucketName(DataMembers.S3_ROOT_DIRECTORY);
                     fileData.setETag(c.getString(c.getColumnIndex("lastModified")));
                     filesList.add(fileData);
                 }
@@ -4765,6 +4869,7 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("Error catalog images list", e);
         }
+        Commons.print("File List size " + filesList.size());
         return filesList;
     }
 
@@ -4774,20 +4879,26 @@ SynchronizationHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "Key,lastModified";
-
+            String columns = "Key,lastModified,Flag";
+            android.database.sqlite.SQLiteDatabase database = db.getWritableDatabase();
+            database.beginTransaction();
             for (S3ObjectSummary s3ObjectSummary : filesList) {
-                db.deleteSQL("CatalogImagesDetails", "Key=" + bmodel.QT(s3ObjectSummary.getKey()), false);
+                database.delete("CatalogImagesDetails", "Key=?", new String[]{bmodel.QT(s3ObjectSummary.getKey())});
             }
 
             for (int i = 0; i < filesList.size(); i++) {
 
-                String values = bmodel.QT(filesList.get(i).getKey())
+                /*String values = bmodel.QT(filesList.get(i).getKey())
                         + ","
-                        + bmodel.QT(filesList.get(i).getLastModified() + "");
-
-                db.insertSQL("CatalogImagesDetails", columns, values);
+                        + bmodel.QT(filesList.get(i).getLastModified() + "") + "," + 0;*/
+                ContentValues values = new ContentValues();
+                values.put("Key", filesList.get(i).getKey());
+                values.put("lastModified", filesList.get(i).getLastModified() + "");
+                values.put("Flag", 0);
+                database.insert("CatalogImagesDetails", columns, values);
             }
+            database.setTransactionSuccessful();
+            database.endTransaction();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("insertImageDetails" + e);
@@ -4811,27 +4922,123 @@ SynchronizationHelper {
         }
     }
 
-    public int getCatalogImagesCount() {
-        DBUtil db = null;
-        int count = 0;
+    public void clearCatalogImages() {
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
+            db.executeQ("Delete from CatalogImagesDetails");
+            deleteFiles(getStorageDir(context.getResources().getString(R.string.app_name)));
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("deleteImageDetails" + e);
+        }
+    }
 
-            Cursor c = db
-                    .selectSQL("select COUNT(Key) from CatalogImagesDetails");
-            if (c != null) {
-                if (c.moveToFirst())
-                    count = c.getInt(0);
+    public void deleteFiles(File file) {
+
+        if (file.exists()) {
+            String deleteCmd = "rm -r " + file.getAbsolutePath();
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+            } catch (IOException e) {
             }
-            Commons.print("Count of getImagesCount ," + count + "");
-            c.close();
-            db.close();
+        }
+    }
+
+    /* Flag - Download Status
+    *  0 - Download Failed / Not yet downloaded
+    *  1 - Download Success */
+    //private static int update_count = 0;
+    public void updateFlagInCatalogImage(HashMap<String, Integer> downloadImageStatus) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            //update_count++;
+            db.createDataBase();
+            db.openDataBase();
+            android.database.sqlite.SQLiteDatabase database = db.getWritableDatabase();
+            database.beginTransaction();
+            for (String keys : downloadImageStatus.keySet()) {
+                Commons.print("Key" + keys + ", " + downloadImageStatus.get(keys));
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("Flag", downloadImageStatus.get(keys));
+                database.update("CatalogImagesDetails", contentValues, "Key=?", new String[]{keys});
+            }
+            Commons.print("Catalog image update ");
+            database.setTransactionSuccessful();
+            database.endTransaction();
+            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return count;
+    }
+
+    public int getCatalogImagesCount() {
+        return totalCatalogImageCount;
+    }
+
+    public void setCatalogImageDownloadFinishTime(String count) {
+        String filename = "log";
+        String string = SDUtil.now(SDUtil.DATE_TIME) + "\n";
+        FileOutputStream outputStream;
+        Commons.print("time " + string);
+        try {
+            Commons.print("FilePath " + getStorageDir(context.getResources().getString(R.string.app_name)) + "/" + filename);
+            outputStream = new FileOutputStream(getStorageDir(context.getResources().getString(R.string.app_name)) + "/" + filename);//context.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            outputStream.write(count.getBytes());
+
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    int totalCatalogImageCount = 0;
+
+    public String getLastDownloadedDateTime() {
+        //Find the directory for the SD Card using the API
+        File sdcard = getStorageDir(context.getResources().getString(R.string.app_name));
+
+//Get the text file
+        File file = new File(sdcard, "log");
+        if (file.exists()) {
+//Read text from file
+            StringBuilder text = new StringBuilder();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                int count = 0;
+                while ((line = br.readLine()) != null) {
+                    if (count == 0) {
+                        text.append(line);
+                    } else {
+                        totalCatalogImageCount = Integer.parseInt(line);
+                    }
+                    Commons.print("read line" + line);
+                    count++;
+                }
+                br.close();
+                Commons.print("Last downloaded time " + text);
+                return text.toString();
+            } catch (IOException e) {
+                Commons.print("error" + e.getMessage());
+            }
+        }
+        return "";
+    }
+
+    public File getStorageDir(String folderName) {
+
+        File docsFolder = new File(Environment.getExternalStorageDirectory(), folderName);
+        if (!docsFolder.exists()) {
+            docsFolder.mkdir();
+        }
+        return docsFolder;
+
     }
 }
