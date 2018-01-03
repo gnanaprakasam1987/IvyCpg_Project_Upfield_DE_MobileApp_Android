@@ -4859,8 +4859,10 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setSchemeDescription(c.getString(2));
                     schemeBO.setDisplayPeriodStart(c.getString(3));
                     schemeBO.setDisplayPeriodEnd(c.getString(4));
-                    schemeBO.setPayoutFrequency(c.getString(5));
-                    schemeBO.setQualifier(c.getString(6));
+                    schemeBO.setBookingPeriodStart(c.getString(5));
+                    schemeBO.setBookingPeriodEnd(c.getString(6));
+                    schemeBO.setPayoutFrequency(c.getString(7));
+                    schemeBO.setQualifier(c.getString(8));
                     mDisplaySchemeMasterList.add(schemeBO);
                 }
             }
@@ -4872,6 +4874,79 @@ public class SchemeDetailsMasterHelper {
             }
             Commons.printException("" + e);
         }
+    }
+
+    /**
+     * Download display scheme applicable products
+     */
+    public ArrayList<SchemeBO> downloadDisplaySchemeSlabs(Context mContext, String schemeId) {
+        ArrayList<SchemeBO> mSlabList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select slabid,slabDesc,getType,value from DisplaySchemeSlab");
+            sb.append(" WHERE schemeid=" + schemeId);
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                SchemeBO schemeBO;
+                while (c.moveToNext()) {
+                    schemeBO = new SchemeBO();
+                    schemeBO.setSchemeId(c.getString(0));
+                    schemeBO.setSchemeDescription(c.getString(1));
+                    schemeBO.setGetType(c.getString(2));
+                    schemeBO.setDisplaySchemeValue(c.getString(3));
+
+                    mSlabList.add(schemeBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+
+        return mSlabList;
+    }
+
+    /**
+     * Download display scheme applicable products
+     */
+    public ArrayList<Integer> downloadDisplaySchemeProducts(Context mContext, String schemeId) {
+        ArrayList<Integer> mProductList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select productId from DisplaySchemeProduct");
+            sb.append(" WHERE schemeid=" + schemeId);
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mProductList.add(c.getInt(0));
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+
+        return mProductList;
     }
 
 }

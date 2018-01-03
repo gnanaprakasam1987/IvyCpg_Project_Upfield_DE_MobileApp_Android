@@ -2,6 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -100,6 +101,18 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
             holder.text_scheme_name.setText(scheme.getProductName());
             holder.text_scheme_desc.setText(scheme.getScheme());
 
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(DisplaySchemeActivity.this, DisplaySchemeDetailActivity.class);
+                    intent.putExtra("menuName", getIntent().getExtras().getString("menuName"));
+                    intent.putExtra("schemeName", scheme.getProductName());
+                    intent.putExtra("schemeId", scheme.getSchemeId());
+                    startActivity(intent);
+                    //finish();
+                }
+            });
+
         }
 
 
@@ -110,11 +123,13 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView text_scheme_name, text_scheme_desc;
+            CardView card;
 
             public ViewHolder(View v) {
                 super(v);
                 text_scheme_name = (TextView) v.findViewById(R.id.text_scheme_name);
                 text_scheme_desc = (TextView) v.findViewById(R.id.text_scheme_desc);
+                card = (CardView) v.findViewById(R.id.card);
 
                 text_scheme_name.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 text_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

@@ -231,5 +231,7 @@
     <string name="display_period">Display period</string>
     <string name="booking_period">Booking period</string>
     <string name="qualifiers">Qualifiers</string>
+    <string name="slabs">Slabs</string>
+    <string name="get_type">Get type</string>
 
 </resources>

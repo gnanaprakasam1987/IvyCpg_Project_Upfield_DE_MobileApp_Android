@@ -806,6 +806,10 @@
             android:name="com.ivy.sd.png.view.DisplaySchemeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DisplaySchemeDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

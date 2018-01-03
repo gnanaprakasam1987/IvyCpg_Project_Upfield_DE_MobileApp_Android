@@ -609,6 +609,7 @@ public class SchemeBO {
 	}
 
 
+    // Display scheme fields
     public String getDisplayPeriodStart() {
         return displayPeriodStart;
     }
@@ -659,5 +660,14 @@ public class SchemeBO {
 
     private String displayPeriodStart, displayPeriodEnd, BookingPeriodStart, BookingPeriodEnd, payoutFrequency, qualifier;
 
+    public String getDisplaySchemeValue() {
+        return displaySchemeValue;
+    }
+
+    public void setDisplaySchemeValue(String displaySchemeValue) {
+        this.displaySchemeValue = displaySchemeValue;
+    }
+
+    private String displaySchemeValue;
 
 }
