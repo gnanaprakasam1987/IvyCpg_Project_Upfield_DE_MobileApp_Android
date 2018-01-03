@@ -1213,21 +1213,21 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                                 bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
                                 bmodel.setVisitretailerMaster(startVistitRetailers);
-                                startvisit = calledBy.equals(MENU_PLANNING);
+                                startVisit = calledBy.equals(MENU_PLANNING);
 
-                                if (!profileclick) {
-                                    profileclick = true;
+                                if (!profileClick) {
+                                    profileClick = true;
                                     if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                         bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
                                     }
                                     Intent i = new Intent(getActivity(), ProfileActivity.class);
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    if (isFromPlannning) {
+                                    if (isFromPlanning) {
                                         i.putExtra("From", MENU_PLANNING);
                                         i.putExtra("isPlanning", true);
                                     } else {
                                         i.putExtra("From", MENU_VISIT);
-                                        i.putExtra("visit", startvisit);
+                                        i.putExtra("visit", startVisit);
                                         i.putExtra("locvisit", true);
                                     }
 
@@ -1247,21 +1247,21 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                             bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
                             bmodel.setVisitretailerMaster(startVistitRetailers);
-                            startvisit = calledBy.equals(MENU_PLANNING);
+                            startVisit = calledBy.equals(MENU_PLANNING);
 
-                            if (!profileclick) {
-                                profileclick = true;
+                            if (!profileClick) {
+                                profileClick = true;
                                 if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                     bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
                                 }
                                 Intent i = new Intent(getActivity(), ProfileActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                if (isFromPlannning) {
+                                if (isFromPlanning) {
                                     i.putExtra("From", MENU_PLANNING);
                                     i.putExtra("isPlanning", true);
                                 } else {
                                     i.putExtra("From", MENU_VISIT);
-                                    i.putExtra("visit", startvisit);
+                                    i.putExtra("visit", startVisit);
                                     i.putExtra("locvisit", true);
                                 }
 
@@ -1867,21 +1867,21 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                         bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
                         bmodel.setVisitretailerMaster(startVistitRetailers);
-                        startvisit = calledBy.equals(MENU_PLANNING);
+                        startVisit = calledBy.equals(MENU_PLANNING);
 
-                        if (!profileclick) {
-                            profileclick = true;
+                        if (!profileClick) {
+                            profileClick = true;
                             if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                 bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
                             }
                             Intent i = new Intent(getActivity(), ProfileActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            if (isFromPlannning) {
+                            if (isFromPlanning) {
                                 i.putExtra("From", MENU_PLANNING);
                                 i.putExtra("isPlanning", true);
                             } else {
                                 i.putExtra("From", MENU_VISIT);
-                                i.putExtra("visit", startvisit);
+                                i.putExtra("visit", startVisit);
                                 i.putExtra("locvisit", true);
                             }
 
