@@ -57,6 +57,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SHOW_RETAILER_LOCATION = "RTRS26";
     public static final String CODE_SHOW_ALL_ROUTE_FILTER = "RTRS27";
     public static final String CODE_SHOW_MISSED_RETAILER = "RTRS28";
+    public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -817,6 +818,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_WEEK_ROUTE;
     public boolean SHOW_RETAILER_LOCATION;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
+    public boolean VALIDATE_TRADE_COVERAGE;//RTRS9
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -1800,6 +1802,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_PROFILE_LOC1 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC1) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC1) : false;
         this.SHOW_PROFILE_LOC3 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) : false;
         this.SHOW_MISSED_RETAILER = hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) : false;
+        this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
         this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;

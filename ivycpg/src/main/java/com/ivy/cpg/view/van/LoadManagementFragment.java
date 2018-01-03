@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.WebViewPlanActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -76,6 +77,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private static final String MENU_VANLOAD_STOCK_VIEW = "MENU_VANLOAD_STOCK_VIEW";
     private static final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
     private static final String MENU_VAN_PLANOGRAM = "MENU_VAN_PLANOGRAM";
+    private static final String MENU_LOAD_WEBVIEW = "MENU_LOAD_WEBVIEW";
     private BusinessModel bmodel;
     private Intent vanloadintent;
     private Intent stockViewIntent;
@@ -425,6 +427,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 currenStockViewBatchWiseIntent.putExtra("screentitle",
                         menuItem.getMenuName());
                 new DownloadCurrentStockBAtchWise().execute();
+                break;
+            case MENU_LOAD_WEBVIEW:
+                if (bmodel.isOnline()) {
+                    Intent i = new Intent(getActivity(), WebViewLoadMgmtActivity.class);
+                    i.putExtra("screentitle", menuItem.getMenuName());
+                    startActivity(i);
+                    getActivity().finish();
+                } else
+                    Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+
                 break;
             default:
                 break;

@@ -148,6 +148,8 @@
     <string name="exceed_limt">Exceeds the Limit</string>
 
     <string name="executed">Is Executed</string>
+    <!-- Order summary success dialog message -->
+    <string name="delivery_date_is">Delivery Date is: </string>
 
     <string name="share_invoice_using">Share invoice using..</string>
     <string name="error_in_creating_pdf">Error in creating pdf.</string>
@@ -168,6 +170,7 @@
     <string name="sales_value">Sales value</string>
     <string name="duration">Duration</string>
 
+    <string name="old_order_volume">Original value</string>
 
     <string name="partial_delivery">Partial Delivery</string>
     <string name="total_vol">Total Volume</string>
@@ -226,4 +229,6 @@
     <string name="post_dated_rtgs_notallow">Post dated RTGS Not Allowed</string>
     <string name="prev_dated_demand_draft_notallow">Previous Dated Demand Draft Not Allowed</string>
     <string name="prev_dated_rtgs_notallow">Previous Dated RTGS Not Allowed</string>
+    <string name="validating_retailer_visit">Validating Retailer Visit</string>
+    <string name="validation_msg">Contact Supervisor to Visit Retailer</string>
 </resources>
