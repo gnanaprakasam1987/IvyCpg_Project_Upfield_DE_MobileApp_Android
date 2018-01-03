@@ -233,5 +233,7 @@
     <string name="qualifiers">Qualifiers</string>
     <string name="slabs">Slabs</string>
     <string name="get_type">Get type</string>
+    <string name="products">Products</string>
+    <string name="free_products">Free products</string>
 
 </resources>

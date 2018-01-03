@@ -4888,8 +4888,8 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
-            sb.append("Select slabid,slabDesc,getType,value from DisplaySchemeSlab");
-            sb.append(" WHERE schemeid=" + schemeId);
+            sb.append("Select A.slabid,A.slabDesc,A.getType,A.value from DisplaySchemeSlab A");
+            sb.append(" WHERE A.schemeid=" + schemeId);
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -4904,6 +4904,39 @@ public class SchemeDetailsMasterHelper {
                     mSlabList.add(schemeBO);
                 }
             }
+
+            if (mSlabList.size() > 0) {
+                sb = new StringBuffer();
+                sb.append("Select slabid,productid,qty,uomid,UM.listname from DisplaySchemeSlabFOC A");
+                sb.append(" LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON A.uomid = UM.ListId ");
+                sb.append(" WHERE schemeid=" + schemeId);
+                c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    SchemeProductBO productBO;
+                    while (c.moveToNext()) {
+
+
+                        for (SchemeBO bo : mSlabList) {
+                            if (bo.getSchemeId().equals(c.getString(0))) {
+
+                                productBO = new SchemeProductBO();
+                                productBO.setProductId(c.getString(1));
+                                productBO.setProductName(bmodel.productHelper.getProductMasterBOById(c.getString(1)).getProductName());
+                                productBO.setQuantityMaximum(c.getInt(2));
+                                productBO.setUomID(c.getInt(3));
+                                productBO.setUomDescription(c.getString(4));
+
+                                if (bo.getFreeProducts() == null) {
+                                    bo.setFreeProducts(new ArrayList<SchemeProductBO>());
+                                }
+                                bo.getFreeProducts().add(productBO);
+                            }
+                        }
+                    }
+                }
+            }
+
+
             c.close();
             db.closeDB();
         } catch (Exception e) {
@@ -4919,8 +4952,8 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download display scheme applicable products
      */
-    public ArrayList<Integer> downloadDisplaySchemeProducts(Context mContext, String schemeId) {
-        ArrayList<Integer> mProductList = new ArrayList<>();
+    public ArrayList<String> downloadDisplaySchemeProducts(Context mContext, String schemeId) {
+        ArrayList<String> mProductList = new ArrayList<>();
         DBUtil db = null;
         try {
 
@@ -4934,7 +4967,7 @@ public class SchemeDetailsMasterHelper {
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    mProductList.add(c.getInt(0));
+                    mProductList.add(bmodel.productHelper.getProductMasterBOById((c.getString(0))).getProductName());
                 }
             }
             c.close();

@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/footer">
 
-    </ListView>
-</LinearLayout>
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/screen_bg_color"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_divider_height"
+            android:background="@color/divider_view_color" />
+
+        <Button
+            android:id="@+id/done"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/target_top_margin"
+            android:onClick="CallAnalysisClick"
+            android:text="@string/done"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</RelativeLayout>

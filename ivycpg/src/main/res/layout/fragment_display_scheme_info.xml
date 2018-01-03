@@ -12,6 +12,7 @@
         card_view:cardBackgroundColor="@color/WHITE"
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
+        android:layout_margin="@dimen/dimen_5dp"
 
         >
 
@@ -24,26 +25,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="1"
                 android:layout_marginTop="@dimen/dimen_5dp">
-
                 <TextView
                     style="?attr/customListItemPrimary"
-                    android:layout_width="@dimen/dimen_0dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/scheme_name"
-                    android:layout_weight=".4" />
-
-                <TextView
                     android:id="@+id/text_scheme_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_micro_small"
-                    android:layout_weight=".6" />
+                    android:textSize="@dimen/font_small" />
             </LinearLayout>
 
-
+            <View
+                android:id="@+id/view_dotted"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:background="@drawable/line_dotted" />
             <LinearLayout
                 android:id="@+id/layout_display_period"
                 android:layout_width="match_parent"
@@ -54,15 +50,15 @@
 
                 <TextView
                     android:id="@+id/label_display_period"
-                    style="?attr/customListItemPrimary"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/display_period"
-                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:textSize="@dimen/font_micro_small"
                     android:layout_weight=".4" />
 
                 <TextView
+                    style="?attr/customListItemPrimary"
                     android:id="@+id/text_display_period"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -80,15 +76,15 @@
 
                 <TextView
                     android:id="@+id/label_booking_period"
-                    style="?attr/customListItemPrimary"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/booking_period"
-                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:textSize="@dimen/font_micro_small"
                     android:layout_weight=".4" />
 
                 <TextView
+                    style="?attr/customListItemPrimary"
                     android:id="@+id/text_booking_period"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
@@ -106,15 +102,15 @@
 
                 <TextView
                     android:id="@+id/label_qualifiers"
-                    style="?attr/customListItemPrimary"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/qualifiers"
-                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:textSize="@dimen/font_micro_small"
                     android:layout_weight=".4" />
 
                 <TextView
+                    style="?attr/customListItemPrimary"
                     android:id="@+id/text_qualifiers"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
@@ -126,12 +122,47 @@
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_products"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/card">
+        android:gravity="center_vertical"
+        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardElevation="5dp"
+        card_view:contentPadding="5dp"
+        android:layout_below="@+id/card"
+        android:layout_margin="@dimen/dimen_5dp">
 
-    </android.support.v7.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="?attr/customListItemPrimary"
+                android:id="@+id/text_product_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_small"
+                android:text="@string/products" />
+
+            <View
+                android:id="@+id/view_dotted_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:background="@drawable/line_dotted" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dimen_5dp"
+
+                >
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

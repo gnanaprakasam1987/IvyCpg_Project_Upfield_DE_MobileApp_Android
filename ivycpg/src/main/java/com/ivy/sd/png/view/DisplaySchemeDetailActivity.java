@@ -162,6 +162,9 @@ public class DisplaySchemeDetailActivity extends IvyBaseActivityNoActionBar {
             String tabName = tabLayout.getTabAt(position).getText().toString();
             if (tabName.equalsIgnoreCase("Info")) {
                 DisplaySchemeInfoFragment fragment = new DisplaySchemeInfoFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("schemeId", mSelectedSchemeId);
+                fragment.setArguments(bundle);
                 return fragment;
             } else if (tabName.equals("Slab")) {
                 return new DisplaySchemeSlabFragment();

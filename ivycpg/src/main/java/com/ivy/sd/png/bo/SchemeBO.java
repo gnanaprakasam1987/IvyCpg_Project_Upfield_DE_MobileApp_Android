@@ -670,4 +670,14 @@ public class SchemeBO {
 
     private String displaySchemeValue;
 
+	public boolean isSchemeSelected() {
+		return isSchemeSelected;
+	}
+
+	public void setSchemeSelected(boolean schemeSelected) {
+		isSchemeSelected = schemeSelected;
+	}
+
+	private boolean isSchemeSelected;
+
 }

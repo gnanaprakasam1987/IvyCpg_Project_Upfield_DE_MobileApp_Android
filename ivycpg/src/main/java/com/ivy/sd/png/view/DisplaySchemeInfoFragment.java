@@ -46,6 +46,12 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initializeViews();
+    }
 
     private void initializeViews() {
 
@@ -58,7 +64,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
         label_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         TextView textView_scheme_desc = (TextView) getView().findViewById(R.id.text_scheme_desc);
-        textView_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
+        textView_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         TextView textView_display_period = (TextView) getView().findViewById(R.id.text_display_period);
         TextView textView_booking_period = (TextView) getView().findViewById(R.id.text_booking_period);
         TextView textView_qualifier = (TextView) getView().findViewById(R.id.text_qualifiers);
@@ -75,12 +81,18 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
             }
         }
 
+        getView().findViewById(R.id.view_dotted).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        getView().findViewById(R.id.view_dotted_line).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        TextView text_products_label = (TextView) getView().findViewById(R.id.text_product_title);
+        text_products_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         listView = (RecyclerView) getView().findViewById(R.id.list);
-        listView.setHasFixedSize(false);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        listView.setHasFixedSize(true);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
 
-        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList());
+        ArrayList<String> mProductList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeProducts(getActivity().getApplicationContext(), mSelectedSchemeId);
+
+        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mProductList);
         listView.setAdapter(mAdapter);
     }
 
@@ -88,7 +100,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initializeViews();
+
     }
 
 
