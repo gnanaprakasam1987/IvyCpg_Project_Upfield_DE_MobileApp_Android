@@ -2,7 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +76,12 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
         }
 
         listView = (RecyclerView) getView().findViewById(R.id.list);
+        listView.setHasFixedSize(false);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        listView.setLayoutManager(mLayoutManager);
+
+        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList());
+        listView.setAdapter(mAdapter);
     }
 
     @Override
@@ -97,17 +103,15 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.row_display_scheme, parent, false);
+                    .inflate(R.layout.row_display_scheme_info, parent, false);
 
             return new ViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            final String scheme = items.get(position);
 
-            holder.text_scheme_name.setText(scheme.getProductName());
-            holder.text_scheme_desc.setText(scheme.getScheme());
+            holder.text_product_name.setText(items.get(position));
 
         }
 
@@ -118,17 +122,13 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView text_scheme_name, text_scheme_desc;
-            CardView card;
+            TextView text_product_name;
 
             public ViewHolder(View v) {
                 super(v);
-                text_scheme_name = (TextView) v.findViewById(R.id.text_scheme_name);
-                text_scheme_desc = (TextView) v.findViewById(R.id.text_scheme_desc);
-                card = (CardView) v.findViewById(R.id.card);
+                text_product_name = (TextView) v.findViewById(R.id.text_product_name);
 
-                text_scheme_name.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                text_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                text_product_name.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             }
 
