@@ -19,6 +19,7 @@ import static com.ivy.sd.png.asean.view.R.id.tab_layout;
 
 /**
  * Created by Rajkumar on 2/1/18.
+ * Display scheme detail screen
  */
 
 public class DisplaySchemeDetailActivity extends IvyBaseActivityNoActionBar {
@@ -73,7 +74,7 @@ public class DisplaySchemeDetailActivity extends IvyBaseActivityNoActionBar {
             }
 
             final ViewPagerAdapter adapter = new ViewPagerAdapter
-                    (this.getSupportFragmentManager(), tabLayout.getTabCount(), null);
+                    (this.getSupportFragmentManager(), tabLayout.getTabCount());
             viewPager.setAdapter(adapter);
             viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -92,50 +93,6 @@ public class DisplaySchemeDetailActivity extends IvyBaseActivityNoActionBar {
                 public void onTabReselected(TabLayout.Tab tab) {
                 }
             });
-           /* TextView header_label_products=(TextView)findViewById(R.id.header_label_products);
-            TextView header_label_slab=(TextView)findViewById(R.id.header_label_slab);
-            header_label_products.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            header_label_slab.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-            findViewById(R.id.card).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-
-            LinearLayout layout_slab=(LinearLayout)findViewById(R.id.layout_slab);
-           // layout_slab.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            View slabView;
-            LayoutInflater inflater = LayoutInflater.from(this);
-            ArrayList<SchemeBO> mSlabList=businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getApplicationContext(),mSelectedSchemeId);
-            for(SchemeBO bo:mSlabList){
-                slabView = inflater.inflate(R.layout.row_display_scheme_slabs, null);
-                slabView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-                TextView text_slabName=(TextView)slabView.findViewById(R.id.text_slab_name);
-                TextView text_getType=(TextView)slabView.findViewById(R.id.text_type);
-                TextView text_Value=(TextView)slabView.findViewById(R.id.text_value);
-
-                text_slabName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                text_getType.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                text_Value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-                text_slabName.setText(bo.getScheme());
-                text_getType.setText(bo.getGetType());
-                text_Value.setText(bo.getDisplaySchemeValue());
-
-                layout_slab.addView(slabView);
-            }
-
-            ArrayList<Integer> mProductIdList=businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeProducts(getApplicationContext(),mSelectedSchemeId);
-           *//* LinearLayout layout_products=(LinearLayout)findViewById(R.id.layout_products);
-            for(Integer productId:mProductIdList){
-                ProductMasterBO productMasterBO =businessModel.productHelper.getProductMasterBOById(String.valueOf(productId));
-                if(productMasterBO!=null){
-                    TextView textView = new TextView(this);
-                    textView.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-                    textView.setText(productMasterBO.getProductName());
-                    layout_products.addView(textView);
-                }
-            }*/
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -148,12 +105,10 @@ public class DisplaySchemeDetailActivity extends IvyBaseActivityNoActionBar {
     public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final int mNumOfTabs;
-        private final Bundle bundleAdapter;
 
-        ViewPagerAdapter(FragmentManager fm, int NumOfTabs, Bundle bundleAdapter) {
+        ViewPagerAdapter(FragmentManager fm, int NumOfTabs) {
             super(fm);
             this.mNumOfTabs = NumOfTabs;
-            this.bundleAdapter = bundleAdapter;
         }
 
         @Override

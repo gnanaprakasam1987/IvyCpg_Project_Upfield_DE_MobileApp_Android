@@ -24,7 +24,8 @@ import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
 
 /**
- * Created by ivyuser on 3/1/18.
+ * Created by Rajkumar on 3/1/
+ * Display scheme slabs
  */
 
 public class DisplaySchemeSlabFragment extends IvyBaseFragment {
@@ -70,6 +71,7 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
                     mSlabList.add(bo);
                 }
             }
+
             //ArrayList<SchemeBO> mSlabList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getActivity().getApplicationContext(), mSelectedSchemeId);
             RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mSlabList);
             recyclerView.setAdapter(mAdapter);

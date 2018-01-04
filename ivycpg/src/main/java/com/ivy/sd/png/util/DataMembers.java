@@ -618,6 +618,9 @@ public class DataMembers {
     private static final String tbl_NonFieldActivity = "NonFieldActivity";
     private static final String tbl_NonFieldActivity_cols = "Uid,UserId,Date,ReasonId,Remarks,DistributorId";
 
+    public static final String tbl_display_scheme_enrollment_header = "DisplaySchemeEnrollmentHeader";
+    public static final String tbl_display_scheme_enrollment_cols = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -787,6 +790,7 @@ public class DataMembers {
         uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
         uploadColumn.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
         uploadColumn.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
+        uploadColumn.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
 
     }
 
@@ -914,6 +918,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_orderHeaderRequest, tbl_OrderHeaderRequest_cols);
         uploadColumnWithRetailer.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
         uploadColumnWithRetailer.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
+        uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
