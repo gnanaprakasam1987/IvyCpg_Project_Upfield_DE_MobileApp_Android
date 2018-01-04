@@ -3522,6 +3522,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 bmodel.schemeDetailsMasterHelper.downloadDisplayScheme(getApplicationContext());
+                bmodel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getApplicationContext());
                 if (bmodel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList().size() > 0) {
                     Intent i = new Intent(this,
                             DisplaySchemeActivity.class);

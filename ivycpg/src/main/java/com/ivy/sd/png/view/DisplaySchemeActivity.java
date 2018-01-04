@@ -10,13 +10,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
@@ -30,45 +34,79 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
     BusinessModel businessModel;
     RecyclerView recyclerView;
     Toolbar toolbar;
+    RecyclerViewAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_display_scheme);
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        try {
+            setContentView(R.layout.activity_display_scheme);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        businessModel = (BusinessModel) getApplicationContext();
-        businessModel.setContext(this);
+            businessModel = (BusinessModel) getApplicationContext();
+            businessModel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
+                setScreenTitle(title);
+            }
+
+
+            recyclerView = (RecyclerView) findViewById(R.id.list_scheme);
+            recyclerView.setHasFixedSize(false);
+            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList());
+            recyclerView.setAdapter(mAdapter);
+
+            Button button_save = (Button) findViewById(R.id.btn_next);
+            button_save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isDataAvailable()) {
+                        if (businessModel.schemeDetailsMasterHelper.saveDisplayScheme(getApplicationContext())) {
+                            Toast.makeText(DisplaySchemeActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(DisplaySchemeActivity.this,
+                                    HomeScreenTwo.class));
+                            finish();
+                        } else {
+                            Toast.makeText(DisplaySchemeActivity.this, getResources().getString(R.string.saved_Failed), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(DisplaySchemeActivity.this, getResources().getString(R.string.no_data_exists), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } catch (Exception ex) {
+            Commons.printException(ex);
         }
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
-            setScreenTitle(title);
-        }
-
-
-        recyclerView = (RecyclerView) findViewById(R.id.list_scheme);
-        recyclerView.setHasFixedSize(false);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-
-        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList());
-        recyclerView.setAdapter(mAdapter);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+
             startActivity(new Intent(DisplaySchemeActivity.this,
                     HomeScreenTwo.class));
             finish();
@@ -113,6 +151,12 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
                 }
             });
 
+            if (isSchemeSelected(scheme.getSchemeId())) {
+                holder.imageView_selected.setVisibility(View.VISIBLE);
+            } else {
+                holder.imageView_selected.setVisibility(View.GONE);
+            }
+
         }
 
 
@@ -124,12 +168,14 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView text_scheme_name, text_scheme_desc;
             CardView card;
+            ImageView imageView_selected;
 
             public ViewHolder(View v) {
                 super(v);
                 text_scheme_name = (TextView) v.findViewById(R.id.text_scheme_name);
                 text_scheme_desc = (TextView) v.findViewById(R.id.text_scheme_desc);
                 card = (CardView) v.findViewById(R.id.card);
+                imageView_selected = (ImageView) v.findViewById(R.id.ivAvailable);
 
                 text_scheme_name.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 text_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -138,5 +184,30 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
 
 
         }
+
+
+    }
+
+    private boolean isSchemeSelected(String schemeId) {
+        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
+            if (schemeId.equals(String.valueOf(schemeBO.getParentId()))) {
+                if (schemeBO.isSchemeSelected()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isDataAvailable() {
+        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
+            if (schemeBO.isSchemeSelected()) {
+                return true;
+            }
+
+        }
+
+        return false;
     }
 }

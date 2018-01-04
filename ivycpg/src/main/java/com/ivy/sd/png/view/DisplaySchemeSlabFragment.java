@@ -19,6 +19,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
@@ -57,22 +58,32 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
 
     private void initializeViews() {
 
-        recyclerView = (RecyclerView) getView().findViewById(R.id.list);
-        recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        try {
+            recyclerView = (RecyclerView) getView().findViewById(R.id.list);
+            recyclerView.setHasFixedSize(true);
+            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<SchemeBO> mSlabList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getActivity().getApplicationContext(), mSelectedSchemeId);
-        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mSlabList);
-        recyclerView.setAdapter(mAdapter);
-
-        Button button_done = (Button) getView().findViewById(R.id.done);
-        button_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+            ArrayList<SchemeBO> mSlabList = new ArrayList<>();
+            for (SchemeBO bo : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
+                if (String.valueOf(bo.getParentId()).equals(mSelectedSchemeId)) {
+                    mSlabList.add(bo);
+                }
             }
-        });
+            //ArrayList<SchemeBO> mSlabList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getActivity().getApplicationContext(), mSelectedSchemeId);
+            RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mSlabList);
+            recyclerView.setAdapter(mAdapter);
+
+            Button button_done = (Button) getView().findViewById(R.id.done);
+            button_done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().finish();
+                }
+            });
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +129,11 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
                 }
             }
             holder.text_value.setText(schemeBO.getDisplaySchemeValue());
+            if (schemeBO.isSchemeSelected()) {
+                holder.imageView_Available.setVisibility(View.VISIBLE);
+            } else {
+                holder.imageView_Available.setVisibility(View.GONE);
+            }
 
             holder.imageView_free_products.setOnClickListener(new View.OnClickListener() {
                 @Override
