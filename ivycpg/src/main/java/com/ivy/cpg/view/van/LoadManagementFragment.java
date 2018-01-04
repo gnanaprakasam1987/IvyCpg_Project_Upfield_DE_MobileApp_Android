@@ -51,7 +51,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.WebViewPlanActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;

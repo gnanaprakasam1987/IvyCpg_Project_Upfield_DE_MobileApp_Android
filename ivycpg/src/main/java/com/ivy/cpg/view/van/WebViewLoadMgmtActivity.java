@@ -21,7 +21,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;
 import java.util.Locale;

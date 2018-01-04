@@ -149,6 +149,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_SOS_PROJ = "MENU_SOS_PROJ";
     public static final String MENU_DELIVERY_ORDER = "MENU_DELIVERY_ORDER";
     public static final String MENU_FIT_DASH = "MENU_FIT_DASH";
+    public static final String MENU_DISPLAY_SCHEME = "MENU_DISPLAY_SCHEME";
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";
@@ -3524,6 +3525,35 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             i.putExtra("menuCode", menu.getConfigCode());
             startActivity(i);
             finish();
+        } else if (menu.getConfigCode().equals(MENU_DISPLAY_SCHEME) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                bmodel.schemeDetailsMasterHelper.downloadDisplayScheme(getApplicationContext());
+                bmodel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getApplicationContext());
+                if (bmodel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList().size() > 0) {
+                    Intent i = new Intent(this,
+                            DisplaySchemeActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("menuName", menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.data_not_mapped),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
         } else {
             isCreated = false;
         }

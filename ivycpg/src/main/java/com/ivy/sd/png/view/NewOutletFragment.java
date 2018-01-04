@@ -493,7 +493,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     .equalsIgnoreCase("USER")) {
                 mUserList = bmodel.userMasterHelper.downloadAllUser();
 
-            }else if ("ATTRIBUTE"
+            } else if ("ATTRIBUTE"
                     .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 isAttribute = true;
                 bmodel.newOutletAttributeHelper.downloadAttributeParentList();
@@ -2634,7 +2634,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
-        }else if (code.equals("USER")) {
+        } else if (code.equals("USER")) {
             for (int i = 0; i < mUserList.size(); i++) {
                 if (mUserList.get(i).getUserid() == outlet.getUserId()) {
                     return i;
@@ -3651,6 +3651,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         return layout;
 
     }
+
     private void updateBeat(int userid) {
 
         routeAdapter = new ArrayAdapter<>(getActivity(),
@@ -3727,7 +3728,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 mCommonAttributeList.addAll(bmodel.newOutletAttributeHelper.getmCommonAttributeList());
 
         } else if (isFromChannel) {
-            if(getView()!=null) {
+            if (getView() != null) {
                 parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
                 if (parentLayout != null) {
                     for (int i = 0; i < parentLayout.getChildCount(); i++) {
