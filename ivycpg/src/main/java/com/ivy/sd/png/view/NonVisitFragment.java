@@ -1104,7 +1104,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)//to show retailer location
                 holder.outletLocation.setText(retailerObj.getRField4());
             else
-                holder.outletLocation.setVisibility(View.GONE);
+                holder.outletLocation.setVisibility(View.INVISIBLE);
 
             holder.outletAddress.setText(retailerObj.getAddress1());
             holder.ref = position;

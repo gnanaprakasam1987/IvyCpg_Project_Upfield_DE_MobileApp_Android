@@ -289,7 +289,7 @@ public class DataMembers {
     private static final String tbl_retailerEditAttribute = "RetailerEditAttribute";
     private static final String tbl_orderHeaderRequest = "OrderHeaderRequest";
     private static final String tbl_orderDetailRequest = "OrderDetailRequest";
-    private static final String tbl_retailerPotential = "RetailerPotential";
+    public static final String tbl_retailerPotential = "RetailerPotential";
 
     private static final String tbl_deviateReasontableupload = "deviateReasontable";
     private static final String tbl_SbdMerchandisingHeaderupload = "SbdMerchandisingHeader";
@@ -353,7 +353,7 @@ public class DataMembers {
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score";
 
-    private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score,isAvailable";
+    private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score";
     private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid";
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName";
@@ -515,7 +515,7 @@ public class DataMembers {
     private static final String tbl_UserFeedBack_cols = "UId,DateTime,TypeLovId,Feedback,Rating";
 
     public static final String tbl_van_delivery_header = "VanDeliveryHeader";
-    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid,contactName,contactNo";
+    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid,contactName,contactNo,SignaturePath";
     public static final String tbl_van_delivery_detail = "VanDeliveryDetail";
     private static final String tbl_van_delivery_detail_cols = "Uid,Pid,Uomid,Batchid,invoiceqty,Deliveredqty,Returnqty";
 
@@ -1084,7 +1084,7 @@ public class DataMembers {
         uploadNewRetailerColumn.put(tbl_retailerpriorityproducts, tbl_retailerpriorityproducts_cols);
         uploadNewRetailerColumn.put(tbl_retailerAttribute, tbl_retailerAttributeupload_cols);
         uploadNewRetailerColumn.put(tbl_orderHeaderRequest, tbl_OrderHeaderRequest_cols);
-        uploadNewRetailerColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
+        //uploadNewRetailerColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
         uploadNewRetailerColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
 
     }

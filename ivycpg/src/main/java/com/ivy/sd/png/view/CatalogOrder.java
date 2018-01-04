@@ -165,7 +165,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private int totalAllQty = 0;
     private TextView totalQtyTV;
     private File appImageFolderPath;
-
+    private String OrderTxt = "Order";
+    private String OrderedTxt = "Ordered";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -196,6 +197,15 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         nextBtn = (Button) findViewById(R.id.btn_next);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
         nextBtn.setOnClickListener(this);
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels("catalog_order") != null)
+                OrderTxt = bmodel.labelsMasterHelper.applyLabels("catalog_order");
+            if (bmodel.labelsMasterHelper.applyLabels("catalog_ordered") != null)
+                OrderedTxt = bmodel.labelsMasterHelper.applyLabels("catalog_ordered");
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -2247,11 +2257,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0) {
-                    holder.list_view_order_btn.setText("Ordered - " + holder.productObj.getOrderedPcsQty() + "");
+                    holder.list_view_order_btn.setText(OrderedTxt + " - " + holder.productObj.getOrderedPcsQty() + "");
                     holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
-                    holder.list_view_order_btn.setText("ORDER");
+                    holder.list_view_order_btn.setText(OrderTxt);
                 }
             }
             if (holder.pdt_image != null) {

@@ -96,7 +96,7 @@ public class BeatMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            Cursor c = db.selectSQL("SELECT " + DataMembers.tbl_beatMaster_cols
+            Cursor c = db.selectSQL("SELECT distinct " + DataMembers.tbl_beatMaster_cols
                     + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " +
                     "ifnull((SELECT UserId FROM" + DataMembers.tbl_beatMaster +
                     " WHERE UserId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "),0)");
@@ -107,6 +107,7 @@ public class BeatMasterHelper {
                     beat.setBeatId(c.getInt(0));
                     beat.setBeatDescription(c.getString(1));
                     beat.setToday(c.getInt(2));
+                    beat.setUserId(c.getInt(3));
                     getBeatMaster().add(beat);
                 }
                 c.close();
@@ -126,7 +127,7 @@ public class BeatMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            Cursor c = db.selectSQL("SELECT " + DataMembers.tbl_beatMaster_cols
+            Cursor c = db.selectSQL("SELECT distinct " + DataMembers.tbl_beatMaster_cols
                     + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " + userId);
             if (c != null) {
                 beatList = new ArrayList<>();

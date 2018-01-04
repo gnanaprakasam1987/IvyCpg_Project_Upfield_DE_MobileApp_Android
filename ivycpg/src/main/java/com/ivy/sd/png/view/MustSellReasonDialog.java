@@ -42,8 +42,8 @@ public class MustSellReasonDialog extends Dialog {
 			((Button) findViewById(R.id.btn_continue)).setText(getOwnerActivity().getResources().getString(R.string.ok));
 			dataAdapter = new ArrayAdapter<ReasonMaster>(getOwnerActivity(),
 					android.R.layout.simple_spinner_item);
-			dataAdapter.add(new ReasonMaster(0 + "", "Select Reason"));
-			loadMustSellReason();
+            dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
+            loadMustSellReason();
 			dataAdapter
 					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

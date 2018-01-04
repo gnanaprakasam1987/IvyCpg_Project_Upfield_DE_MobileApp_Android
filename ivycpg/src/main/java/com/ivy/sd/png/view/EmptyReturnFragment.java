@@ -147,10 +147,10 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
-                bmodel.mSelectedActivityName);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(
-                R.drawable.icon_stock);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(null);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setScreenTitle(bmodel.mSelectedActivityName);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon

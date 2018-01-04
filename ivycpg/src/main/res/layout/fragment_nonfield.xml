@@ -459,5 +459,6 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="No data to display"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:tag="no_data" />
 </LinearLayout>

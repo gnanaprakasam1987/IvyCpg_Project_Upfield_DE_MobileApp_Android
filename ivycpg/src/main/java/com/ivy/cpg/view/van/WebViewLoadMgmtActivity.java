@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.van;
 
 
 import android.app.AlertDialog;
@@ -21,14 +21,15 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * Created by rajkumar.s on 10-05-2016.
+ * Created by mansoor.k on 27-12-2017.
  */
-public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements ApplicationConfigs {
+public class WebViewLoadMgmtActivity extends IvyBaseActivityNoActionBar implements ApplicationConfigs {
     WebView webView;
     String token = "";
     HashMap<String, String> reqHeader;
@@ -87,7 +88,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle("SO Visit Plan");
+            setScreenTitle(getIntent().getStringExtra("screentitle"));
 //            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //           // Used to remove the app logo actionbar icon and set title as home
@@ -96,11 +97,11 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
         }
 
 
-        bmodel.reportHelper.downloadWebViewPlanAuthUrl("WEBVIEW_PLAN");
+        bmodel.reportHelper.downloadWebViewPlanAuthUrl("WEBVIEW_LD_MGMT");
         if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
             new DownloadToken().execute();
         else
-            Toast.makeText(WebViewPlanActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
+            Toast.makeText(WebViewLoadMgmtActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -108,7 +109,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
 
 
         if (item.getItemId() == android.R.id.home) {
-            Intent in = new Intent(WebViewPlanActivity.this, HomeScreenActivity.class);
+            Intent in = new Intent(WebViewLoadMgmtActivity.this, LoadManagementScreen.class);
             startActivity(in);
             finish();
             return true;
@@ -127,7 +128,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
 
         protected void onPreExecute() {
 
-            builder = new AlertDialog.Builder(WebViewPlanActivity.this);
+            builder = new AlertDialog.Builder(WebViewLoadMgmtActivity.this);
 
             customProgressDialog(builder, getResources().getString(R.string.Authenticating));
             alertDialog = builder.create();
@@ -149,7 +150,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
             }
 
             if (!token.equals("")) {
-                bmodel.reportHelper.downloadWebViewPlanUrl("WEBVIEW_PLAN");
+                bmodel.reportHelper.downloadWebViewPlanUrl("WEBVIEW_LD_MGMT");
                 if (!bmodel.reportHelper.getWebViewPlanUrl().equals("")) {
 
                     reqHeader = new HashMap<>();
@@ -163,10 +164,10 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
                     webView.loadUrl(bmodel.reportHelper.getWebViewPlanUrl(), reqHeader);
                     webView.setWebViewClient(new WebViewClient());
                 } else {
-                    Toast.makeText(WebViewPlanActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
+                    Toast.makeText(WebViewLoadMgmtActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(WebViewPlanActivity.this, R.string.Error_Authentication, Toast.LENGTH_LONG).show();
+                Toast.makeText(WebViewLoadMgmtActivity.this, R.string.Error_Authentication, Toast.LENGTH_LONG).show();
             }
 
         }

@@ -4423,6 +4423,7 @@ SynchronizationHelper {
     }
 
     public boolean validateUser(String username, String password) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
         boolean isPwd;
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {

@@ -132,7 +132,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             photoNamePath = BusinessModel.photoPath + "/";
 
             loadReason();
-            mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
+            //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
             if (savedInstanceState != null) {
                 filterId = savedInstanceState.getInt("id");
             }

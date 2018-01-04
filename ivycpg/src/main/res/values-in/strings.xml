@@ -1185,6 +1185,10 @@
     <string name="delivery_rep_code">Kode Rep</string>
     <string name="maximum_count_is_exceed">Jumlah Maksimum Melebihi</string>
 
+    <!-- Order summary success dialog message -->
+    <string name="delivery_date_is">Delivery Date is: </string>
+    <string name="old_order_volume">Original value</string>
+
     <string-array name="task_tab_header">
         <item>All</item>
         <item>Assigned</item>
