@@ -1,11 +1,9 @@
 package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -1290,7 +1288,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } else if (!hasOrderScreen && "Y".equals(retailerObj.getIsVisited())) {
                         holder.line_order_without_invoice
                                 .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
-                    } else if (("Y").equals(retailerObj.getIsVisited()) ||retailerObj.isHasNoVisitReason()) {
+                    } else if (("Y").equals(retailerObj.getIsVisited()) || retailerObj.isHasNoVisitReason()) {
                         holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
                     } else if (("Y").equals(retailerObj.getIsDeadStore())) {
                         holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Burgundy));
