@@ -58,45 +58,47 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
     private void initializeViews() {
 
         try {
-            TextView label_display_period = (TextView) getView().findViewById(R.id.label_display_period);
-            TextView label_booking_period = (TextView) getView().findViewById(R.id.label_booking_period);
-            TextView label_qualifier = (TextView) getView().findViewById(R.id.label_qualifiers);
+            if (getView() != null) {
+                TextView label_display_period = (TextView) getView().findViewById(R.id.label_display_period);
+                TextView label_booking_period = (TextView) getView().findViewById(R.id.label_booking_period);
+                TextView label_qualifier = (TextView) getView().findViewById(R.id.label_qualifiers);
 
-            label_display_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            label_booking_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            label_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                label_display_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                label_booking_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                label_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-            TextView textView_scheme_desc = (TextView) getView().findViewById(R.id.text_scheme_desc);
-            textView_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            TextView textView_display_period = (TextView) getView().findViewById(R.id.text_display_period);
-            TextView textView_booking_period = (TextView) getView().findViewById(R.id.text_booking_period);
-            TextView textView_qualifier = (TextView) getView().findViewById(R.id.text_qualifiers);
-            textView_display_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            textView_booking_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            textView_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                TextView textView_scheme_desc = (TextView) getView().findViewById(R.id.text_scheme_desc);
+                textView_scheme_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                TextView textView_display_period = (TextView) getView().findViewById(R.id.text_display_period);
+                TextView textView_booking_period = (TextView) getView().findViewById(R.id.text_booking_period);
+                TextView textView_qualifier = (TextView) getView().findViewById(R.id.text_qualifiers);
+                textView_display_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                textView_booking_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                textView_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList()) {
-                if (schemeBO.getSchemeId().equals(mSelectedSchemeId)) {
-                    textView_scheme_desc.setText(schemeBO.getScheme());
-                    textView_display_period.setText(schemeBO.getDisplayPeriodStart() + " - " + schemeBO.getDisplayPeriodEnd());
-                    textView_booking_period.setText(schemeBO.getBookingPeriodStart() + " - " + schemeBO.getBookingPeriodEnd());
-                    textView_qualifier.setText(schemeBO.getQualifier());
+                for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList()) {
+                    if (schemeBO.getSchemeId().equals(mSelectedSchemeId)) {
+                        textView_scheme_desc.setText(schemeBO.getScheme());
+                        textView_display_period.setText(schemeBO.getDisplayPeriodStart() + " - " + schemeBO.getDisplayPeriodEnd());
+                        textView_booking_period.setText(schemeBO.getBookingPeriodStart() + " - " + schemeBO.getBookingPeriodEnd());
+                        textView_qualifier.setText(schemeBO.getQualifier());
+                    }
                 }
+
+                getView().findViewById(R.id.view_dotted).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                getView().findViewById(R.id.view_dotted_line).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                TextView text_products_label = (TextView) getView().findViewById(R.id.text_product_title);
+                text_products_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                listView = (RecyclerView) getView().findViewById(R.id.list);
+                listView.setHasFixedSize(true);
+                final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                listView.setLayoutManager(mLayoutManager);
+
+                ArrayList<String> mProductList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeProducts(getActivity().getApplicationContext(), mSelectedSchemeId);
+
+                RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mProductList);
+                listView.setAdapter(mAdapter);
             }
-
-            getView().findViewById(R.id.view_dotted).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            getView().findViewById(R.id.view_dotted_line).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            TextView text_products_label = (TextView) getView().findViewById(R.id.text_product_title);
-            text_products_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            listView = (RecyclerView) getView().findViewById(R.id.list);
-            listView.setHasFixedSize(true);
-            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            listView.setLayoutManager(mLayoutManager);
-
-            ArrayList<String> mProductList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeProducts(getActivity().getApplicationContext(), mSelectedSchemeId);
-
-            RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mProductList);
-            listView.setAdapter(mAdapter);
         } catch (Exception ex) {
             Commons.printException(ex);
         }

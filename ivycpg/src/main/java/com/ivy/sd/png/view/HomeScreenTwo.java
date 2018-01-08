@@ -149,7 +149,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_SOS_PROJ = "MENU_SOS_PROJ";
     public static final String MENU_DELIVERY_ORDER = "MENU_DELIVERY_ORDER";
     public static final String MENU_FIT_DASH = "MENU_FIT_DASH";
-    public static final String MENU_DISPLAY_SCHEME = "MENU_DISPLAY_SCHEME";
+    public static final String MENU_DISPLAY_SCHEME = "MENU_DISPLAY_SCH";
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";

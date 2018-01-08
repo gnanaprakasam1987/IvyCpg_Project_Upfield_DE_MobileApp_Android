@@ -4835,6 +4835,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Download display scheme
+     * @param mContext Current context
      */
     public void downloadDisplayScheme(Context mContext) {
         mDisplaySchemeMasterList = new ArrayList<>();
@@ -4876,7 +4877,7 @@ public class SchemeDetailsMasterHelper {
         }
     }
 
-    public ArrayList<SchemeBO> getmDisplaySchemeSlabs() {
+    public ArrayList<SchemeBO> getDisplaySchemeSlabs() {
         if (mDisplaySchemeSlabs == null) {
             mDisplaySchemeSlabs = new ArrayList<>();
         }
@@ -4991,6 +4992,12 @@ public class SchemeDetailsMasterHelper {
     }
 
 
+    /**
+     * Saving display scheme in transaction table
+     *
+     * @param mContext Current context
+     * @return Is Saved
+     */
     public boolean saveDisplayScheme(Context mContext) {
         DBUtil db = null;
         try {
@@ -5002,7 +5009,7 @@ public class SchemeDetailsMasterHelper {
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            for (SchemeBO schemeBO : getmDisplaySchemeSlabs()) {
+            for (SchemeBO schemeBO : getDisplaySchemeSlabs()) {
                 if (schemeBO.isSchemeSelected()) {
 
                     sb.append(id + ",");

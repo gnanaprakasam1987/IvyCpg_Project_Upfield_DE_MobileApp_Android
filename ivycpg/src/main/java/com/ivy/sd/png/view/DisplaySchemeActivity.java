@@ -142,11 +142,13 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(DisplaySchemeActivity.this, DisplaySchemeDetailActivity.class);
-                    intent.putExtra("menuName", getIntent().getExtras().getString("menuName"));
-                    intent.putExtra("schemeName", scheme.getProductName());
-                    intent.putExtra("schemeId", scheme.getSchemeId());
-                    startActivity(intent);
+                    if (getIntent().getExtras() != null) {
+                        Intent intent = new Intent(DisplaySchemeActivity.this, DisplaySchemeDetailActivity.class);
+                        intent.putExtra("menuName", getIntent().getExtras().getString("menuName"));
+                        intent.putExtra("schemeName", scheme.getProductName());
+                        intent.putExtra("schemeId", scheme.getSchemeId());
+                        startActivity(intent);
+                    }
                     //finish();
                 }
             });
@@ -188,8 +190,14 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
 
     }
 
+    /**
+     * To check given scheme id is selected or not
+     *
+     * @param schemeId Scheme Id
+     * @return iS Selected
+     */
     private boolean isSchemeSelected(String schemeId) {
-        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
+        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
             if (schemeId.equals(String.valueOf(schemeBO.getParentId()))) {
                 if (schemeBO.isSchemeSelected()) {
                     return true;
@@ -200,8 +208,12 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
         return false;
     }
 
+    /**
+     * To check data available to save
+     * @return IS available or not
+     */
     private boolean isDataAvailable() {
-        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
+        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
             if (schemeBO.isSchemeSelected()) {
                 return true;
             }
