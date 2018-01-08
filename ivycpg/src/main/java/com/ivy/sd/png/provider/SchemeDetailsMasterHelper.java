@@ -5022,13 +5022,14 @@ public class SchemeDetailsMasterHelper {
 
 
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb;
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeSlabs()) {
                 if (schemeBO.isSchemeSelected()) {
 
+                    sb = new StringBuffer();
                     sb.append(id + ",");
                     sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
                     sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");
@@ -5123,12 +5124,12 @@ public class SchemeDetailsMasterHelper {
             cursor.close();
 
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb;
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeTrackingList()) {
-
+                sb = new StringBuffer();
                 sb.append(id + ",");
                 sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
                 sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");

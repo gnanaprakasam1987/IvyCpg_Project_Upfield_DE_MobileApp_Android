@@ -3547,6 +3547,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
                 }
+                ;
             } else {
                 Toast.makeText(
                         this,

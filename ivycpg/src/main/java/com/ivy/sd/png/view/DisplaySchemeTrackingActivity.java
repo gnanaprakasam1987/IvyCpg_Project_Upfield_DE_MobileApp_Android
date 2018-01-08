@@ -56,6 +56,12 @@ public class DisplaySchemeTrackingActivity extends IvyBaseActivityNoActionBar {
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
 
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
+                setScreenTitle(title);
+            }
+
             recyclerView = (RecyclerView) findViewById(R.id.list_scheme);
             recyclerView.setHasFixedSize(false);
             final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -127,8 +133,10 @@ public class DisplaySchemeTrackingActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
                     if (scheme.isSchemeSelected()) {
+                        scheme.setSchemeSelected(false);
                         holder.imageView_selected.setVisibility(View.GONE);
                     } else {
+                        scheme.setSchemeSelected(true);
                         holder.imageView_selected.setVisibility(View.VISIBLE);
                     }
                 }
