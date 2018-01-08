@@ -942,7 +942,6 @@
     <string name="batch_created_successfully">Batch Telah Sukses Dibuat.</string>
     <string name="error_e01">Koneksi Jaringan Ke Server Bermasalah</string>
     <string name="error_e02">Username Dan Password Salah</string>
-    <string name="error_e03">Gudang Tidak Ditetapkan Ke User Tersebut</string>
     <string name="error_e04">Data Tidak Cocok Ketika Melakukan Pengunduhan Data</string>
     <string name="error_e05">Tutup Kunjungan Belum Selesai</string>
     <string name="error_e06">Tidak Ada Koneksi Internet Di Perangkat Ini</string>

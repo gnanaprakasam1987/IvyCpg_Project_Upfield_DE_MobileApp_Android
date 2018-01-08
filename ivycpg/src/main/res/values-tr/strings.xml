@@ -942,7 +942,6 @@
     <string name="batch_created_successfully">Batch created successfully.</string>
     <string name="error_e01">Server bağlantı hatası</string>
     <string name="error_e02">Kullanıcı adı ve Şifre Hatalı</string>
-    <string name="error_e03">Depo kullanıcaya atanmamış</string>
     <string name="error_e04">İndirilirken data eşleşmedi</string>
     <string name="error_e05">Ziyaret bitirme henüz tamamlanmadı</string>
     <string name="error_e06">Cihazda internet bağlantısı yok</string>
