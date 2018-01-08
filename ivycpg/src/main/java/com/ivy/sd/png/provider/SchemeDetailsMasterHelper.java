@@ -5064,6 +5064,11 @@ public class SchemeDetailsMasterHelper {
         return mDisplaySchemeTrackingList;
     }
 
+    /**
+     * Download display scheme tracking masters
+     *
+     * @param mContext Current context
+     */
     public void downloadDisplaySchemeTracking(Context mContext) {
         DBUtil db = null;
         try {
@@ -5071,7 +5076,7 @@ public class SchemeDetailsMasterHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String query = "Select schemeId,schemeDesc,slabId,slabDesc from DisplaySchemeTrackingMaster";
+            String query = "Select distinct schemeId,schemeDesc,slabId,slabDesc from DisplaySchemeTrackingMaster";
             query += " WHERE retailerId=" + bmodel.getRetailerMasterBO().getRetailerID();
 
             Cursor c = db.selectSQL(query);

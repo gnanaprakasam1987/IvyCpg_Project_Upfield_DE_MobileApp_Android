@@ -1428,6 +1428,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_SCH)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_SCH_TRACK)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
                 }
 
             }
@@ -3527,7 +3543,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             i.putExtra("menuCode", menu.getConfigCode());
             startActivity(i);
             finish();
-        } else if (menu.getConfigCode().equals(MENU_DISPLAY_SCH) && hasLink == 1) {
+        } else if (menu.getConfigCode().equals(MENU_DISPLAY_SCH_TRACK) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
