@@ -60,29 +60,31 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
     private void initializeViews() {
 
         try {
-            recyclerView = (RecyclerView) getView().findViewById(R.id.list);
-            recyclerView.setHasFixedSize(true);
-            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(mLayoutManager);
+            if (getView() != null) {
+                recyclerView = (RecyclerView) getView().findViewById(R.id.list);
+                recyclerView.setHasFixedSize(true);
+                final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(mLayoutManager);
 
-            ArrayList<SchemeBO> mSlabList = new ArrayList<>();
-            for (SchemeBO bo : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeSlabs()) {
-                if (String.valueOf(bo.getParentId()).equals(mSelectedSchemeId)) {
-                    mSlabList.add(bo);
+                ArrayList<SchemeBO> mSlabList = new ArrayList<>();
+                for (SchemeBO bo : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
+                    if (String.valueOf(bo.getParentId()).equals(mSelectedSchemeId)) {
+                        mSlabList.add(bo);
+                    }
                 }
+
+                //ArrayList<SchemeBO> mSlabList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getActivity().getApplicationContext(), mSelectedSchemeId);
+                RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mSlabList);
+                recyclerView.setAdapter(mAdapter);
+
+                Button button_done = (Button) getView().findViewById(R.id.done);
+                button_done.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().finish();
+                    }
+                });
             }
-
-            //ArrayList<SchemeBO> mSlabList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeSlabs(getActivity().getApplicationContext(), mSelectedSchemeId);
-            RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mSlabList);
-            recyclerView.setAdapter(mAdapter);
-
-            Button button_done = (Button) getView().findViewById(R.id.done);
-            button_done.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getActivity().finish();
-                }
-            });
         } catch (Exception ex) {
             Commons.printException(ex);
         }
@@ -117,17 +119,19 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
             if (schemeBO.getGetType().equalsIgnoreCase("QTY")) {
                 holder.imageView_free_products.setVisibility(View.VISIBLE);
                 holder.text_value.setVisibility(View.GONE);
-                holder.text_type.setText("Free Products");
+                holder.text_type.setText(getResources().getString(R.string.free_products));
             } else {
                 holder.imageView_free_products.setVisibility(View.GONE);
                 holder.text_value.setVisibility(View.VISIBLE);
 
                 if (schemeBO.getGetType().equalsIgnoreCase("VALUE")) {
-                    holder.text_type.setText("Amount");
+                    holder.text_type.setText(getResources().getString(R.string.amount));
                 } else if (schemeBO.getGetType().equalsIgnoreCase("PER")) {
-                    holder.text_type.setText("Percentage");
+                    holder.text_type.setText(getResources().getString(R.string.percentage));
                 } else if (schemeBO.getGetType().equalsIgnoreCase("EPER")) {
-                    holder.text_type.setText("Percentage");
+                    holder.text_type.setText(getResources().getString(R.string.percentage));
+                } else if (schemeBO.getGetType().equalsIgnoreCase("PRICE")) {
+                    holder.text_type.setText(getResources().getString(R.string.price));
                 }
             }
             holder.text_value.setText(schemeBO.getDisplaySchemeValue());
