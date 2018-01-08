@@ -97,6 +97,7 @@ public class SchemeDetailsMasterHelper {
     private HashMap<String, SchemeProductBO> mFreeProductBOBySchemeidWithPid;
     private SparseArray<ArrayList<String>> mProductidListByAlreadyApplySchemeId;
     private ArrayList<SchemeProductBO> mOffInvoiceSchemeFreeProductList;
+    private ArrayList<SchemeBO> mDisplaySchemeMasterList;
 
     /**
      * Method to load all scheme related methods
@@ -4827,6 +4828,208 @@ public class SchemeDetailsMasterHelper {
 
     private List<SchemeBO> mSchemePromotion;
 
+
+    public ArrayList<SchemeBO> getmDisplaySchemeMasterList() {
+        return mDisplaySchemeMasterList;
+    }
+
+    /**
+     * Download display scheme
+     */
+    public void downloadDisplayScheme(Context mContext) {
+        mDisplaySchemeMasterList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select DM.schemeId,schemeShortDesc,schemeDesc,DisplayPeriodStart,DisplayPeriodEnd,BookingPeriodStart,BookingPeriodEnd");
+            sb.append(",PayoutFrequency,qualifiers from DisplaySchemeMaster DM INNER JOIN DisplaySchemeMapping DMP ON DMP.schemeId=DM.schemeId");
+            sb.append(" WHERE DMP.retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                SchemeBO schemeBO;
+                while (c.moveToNext()) {
+                    schemeBO = new SchemeBO();
+                    schemeBO.setSchemeId(c.getString(0));
+                    schemeBO.setSchemeParentName(c.getString(1));
+                    schemeBO.setSchemeDescription(c.getString(2));
+                    schemeBO.setDisplayPeriodStart(c.getString(3));
+                    schemeBO.setDisplayPeriodEnd(c.getString(4));
+                    schemeBO.setBookingPeriodStart(c.getString(5));
+                    schemeBO.setBookingPeriodEnd(c.getString(6));
+                    schemeBO.setPayoutFrequency(c.getString(7));
+                    schemeBO.setQualifier(c.getString(8));
+                    mDisplaySchemeMasterList.add(schemeBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+    }
+
+    public ArrayList<SchemeBO> getmDisplaySchemeSlabs() {
+        if (mDisplaySchemeSlabs == null) {
+            mDisplaySchemeSlabs = new ArrayList<>();
+        }
+        return mDisplaySchemeSlabs;
+    }
+
+    private ArrayList<SchemeBO> mDisplaySchemeSlabs;
+    /**
+     * Download display scheme applicable products
+     */
+    public ArrayList<SchemeBO> downloadDisplaySchemeSlabs(Context mContext) {
+        mDisplaySchemeSlabs = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select A.slabid,A.slabDesc,A.getType,A.value,A.schemeid from DisplaySchemeSlab A");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                SchemeBO schemeBO;
+                while (c.moveToNext()) {
+                    schemeBO = new SchemeBO();
+                    schemeBO.setSchemeId(c.getString(0));
+                    schemeBO.setSchemeDescription(c.getString(1));
+                    schemeBO.setGetType(c.getString(2));
+                    schemeBO.setDisplaySchemeValue(c.getString(3));
+                    schemeBO.setParentId(c.getInt(4));
+
+                    mDisplaySchemeSlabs.add(schemeBO);
+                }
+            }
+
+            //update free products
+            if (mDisplaySchemeSlabs.size() > 0) {
+                sb = new StringBuffer();
+                sb.append("Select slabid,productid,qty,uomid,UM.listname from DisplaySchemeSlabFOC A");
+                sb.append(" LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON A.uomid = UM.ListId ");
+
+                c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    SchemeProductBO productBO;
+                    while (c.moveToNext()) {
+
+                        for (SchemeBO bo : mDisplaySchemeSlabs) {
+                            if (bo.getSchemeId().equals(c.getString(0))) {
+
+                                productBO = new SchemeProductBO();
+                                productBO.setProductId(c.getString(1));
+                                productBO.setProductName(bmodel.productHelper.getProductMasterBOById(c.getString(1)).getProductName());
+                                productBO.setQuantityMaximum(c.getInt(2));
+                                productBO.setUomID(c.getInt(3));
+                                productBO.setUomDescription(c.getString(4));
+
+                                if (bo.getFreeProducts() == null) {
+                                    bo.setFreeProducts(new ArrayList<SchemeProductBO>());
+                                }
+                                bo.getFreeProducts().add(productBO);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+
+        return mDisplaySchemeSlabs;
+    }
+
+    /**
+     * Download display scheme applicable products
+     */
+    public ArrayList<String> downloadDisplaySchemeProducts(Context mContext, String schemeId) {
+        ArrayList<String> mProductList = new ArrayList<>();
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("Select productId from DisplaySchemeProduct");
+            sb.append(" WHERE schemeid=" + schemeId);
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mProductList.add(bmodel.productHelper.getProductMasterBOById((c.getString(0))).getProductName());
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+
+        return mProductList;
+    }
+
+
+    public boolean saveDisplayScheme(Context mContext) {
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
+            StringBuffer sb = new StringBuffer();
+            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            for (SchemeBO schemeBO : getmDisplaySchemeSlabs()) {
+                if (schemeBO.isSchemeSelected()) {
+
+                    sb.append(id + ",");
+                    sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                    sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");
+                    sb.append(bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
+                    sb.append(bmodel.getRetailerMasterBO().getRetailerID() + ",");
+                    sb.append(schemeBO.getParentId() + ",");
+                    sb.append(schemeBO.getSchemeId());
+
+                    db.insertSQL(DataMembers.tbl_display_scheme_enrollment_header, columns,
+                            sb.toString());
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+
+            return false;
+        }
+
+
+    }
 }
 
 

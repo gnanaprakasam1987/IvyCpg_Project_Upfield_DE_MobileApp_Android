@@ -149,7 +149,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(null);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         setScreenTitle(bmodel.mSelectedActivityName);
 
         // ActionBarDrawerToggle ties together the the proper interactions

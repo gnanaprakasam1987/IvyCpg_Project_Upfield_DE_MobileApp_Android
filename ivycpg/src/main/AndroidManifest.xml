@@ -85,9 +85,9 @@
         android:name="com.ivy.sd.png.model.BusinessModel"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:largeHeap="true"
         android:icon="@drawable/launchericon"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/MVPTheme.Blue">
 
         <provider
@@ -423,8 +423,7 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.ivy.cpg.view.van.LoadManagementScreen"
             android:exported="false"
@@ -677,6 +676,9 @@
             android:name="com.ivy.sd.png.view.WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.cpg.view.van.WebViewLoadMgmtActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
@@ -798,10 +800,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.PlanDeviationActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DisplaySchemeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.DisplaySchemeDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

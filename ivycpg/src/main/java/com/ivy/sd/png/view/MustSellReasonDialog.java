@@ -44,8 +44,8 @@ public class MustSellReasonDialog extends Dialog {
 					android.R.layout.simple_spinner_item);
             dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
             loadMustSellReason();
-			dataAdapter
-					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            dataAdapter
+                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 			reason_spnr.setAdapter(dataAdapter);
 			((Button) findViewById(R.id.btn_continue))

@@ -226,4 +226,17 @@
     <string name="post_dated_rtgs_notallow">Post dated RTGS Not Allowed</string>
     <string name="prev_dated_demand_draft_notallow">Previous Dated Demand Draft Not Allowed</string>
     <string name="prev_dated_rtgs_notallow">Previous Dated RTGS Not Allowed</string>
+    <string name="validating_retailer_visit">Validating Retailer Visit</string>
+    <string name="validation_msg">Contact Supervisor to Visit Retailer</string>
+
+
+    <!-- Display scheme -->
+    <string name="display_period">Display period</string>
+    <string name="booking_period">Booking period</string>
+    <string name="qualifiers">Qualifiers</string>
+    <string name="slabs">Slabs</string>
+    <string name="get_type">Get type</string>
+    <string name="products">Products</string>
+    <string name="free_products">Free products</string>
+
 </resources>
