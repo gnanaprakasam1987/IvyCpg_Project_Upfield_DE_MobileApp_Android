@@ -97,7 +97,11 @@ public class SchemeDetailsMasterHelper {
     private HashMap<String, SchemeProductBO> mFreeProductBOBySchemeidWithPid;
     private SparseArray<ArrayList<String>> mProductidListByAlreadyApplySchemeId;
     private ArrayList<SchemeProductBO> mOffInvoiceSchemeFreeProductList;
+
+    //Display Scheme
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
+    private ArrayList<SchemeBO> mDisplaySchemeSlabs;
+    private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
 
     /**
      * Method to load all scheme related methods
@@ -4884,7 +4888,7 @@ public class SchemeDetailsMasterHelper {
         return mDisplaySchemeSlabs;
     }
 
-    private ArrayList<SchemeBO> mDisplaySchemeSlabs;
+
     /**
      * Download display scheme applicable products
      */
@@ -5004,6 +5008,19 @@ public class SchemeDetailsMasterHelper {
 
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
+
+            Cursor cursor = db
+                    .selectSQL("SELECT Tid FROM DisplaySchemeEnrollmentHeader WHERE distributorId = "
+                            + bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+            if (cursor.getCount() > 0) {
+                db.deleteSQL(DataMembers.tbl_display_scheme_enrollment_header,
+                        "distributorId=" + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
+                                + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID()
+                                + " and upload='N'", false);
+            }
+            cursor.close();
+
+
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
             StringBuffer sb = new StringBuffer();
             String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -5023,6 +5040,108 @@ public class SchemeDetailsMasterHelper {
                     db.insertSQL(DataMembers.tbl_display_scheme_enrollment_header, columns,
                             sb.toString());
                 }
+            }
+
+            return true;
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+
+            return false;
+        }
+
+
+    }
+
+
+    public ArrayList<SchemeBO> getDisplaySchemeTrackingList() {
+        if (mDisplaySchemeTrackingList == null) {
+            mDisplaySchemeTrackingList = new ArrayList<>();
+        }
+        return mDisplaySchemeTrackingList;
+    }
+
+    public void downloadDisplaySchemeTracking(Context mContext) {
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String query = "Select schemeId,schemeDesc,slabId,slabDesc from DisplaySchemeTrackingMaster";
+            query += " WHERE retailerId=" + bmodel.getRetailerMasterBO().getRetailerID();
+
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                mDisplaySchemeTrackingList = new ArrayList<>();
+                SchemeBO schemeBO;
+                while (c.moveToNext()) {
+                    schemeBO = new SchemeBO();
+                    schemeBO.setParentId(c.getInt(0));
+                    schemeBO.setSchemeParentName(c.getString(1));
+                    schemeBO.setSchemeId(c.getString(2));
+                    schemeBO.setSchemeDescription(c.getString(3));
+
+                    mDisplaySchemeTrackingList.add(schemeBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if (db != null) {
+                db.closeDB();
+            }
+            Commons.printException("" + e);
+        }
+
+    }
+
+    /**
+     * Saving display scheme tracking detail in transaction table
+     *
+     * @param mContext Current context
+     * @return Is Saved
+     */
+    public boolean saveDisplaySchemeTracking(Context mContext) {
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor cursor = db
+                    .selectSQL("SELECT Tid FROM DisplaySchemeTrackingHeader WHERE distributorId = "
+                            + bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+            if (cursor.getCount() > 0) {
+                db.deleteSQL(DataMembers.tbl_display_scheme_tracking_header,
+                        "distributorId=" + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
+                                + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID()
+                                + " and upload='N'", false);
+            }
+            cursor.close();
+
+            String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
+            StringBuffer sb = new StringBuffer();
+            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            for (SchemeBO schemeBO : getDisplaySchemeTrackingList()) {
+
+                sb.append(id + ",");
+                sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");
+                sb.append(bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
+                sb.append(bmodel.getRetailerMasterBO().getRetailerID() + ",");
+                sb.append(schemeBO.getParentId() + ",");
+                sb.append(schemeBO.getSchemeId() + ",");
+                if (schemeBO.isSchemeSelected())
+                    sb.append("1");
+                else sb.append("0");
+
+                db.insertSQL(DataMembers.tbl_display_scheme_tracking_header, columns,
+                        sb.toString());
             }
 
             return true;
