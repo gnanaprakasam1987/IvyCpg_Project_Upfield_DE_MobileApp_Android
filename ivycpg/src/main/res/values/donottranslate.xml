@@ -239,4 +239,6 @@
     <string name="products">Products</string>
     <string name="free_products">Free products</string>
 
+    <string name="error_e03">User not allowed to proceed. Contact Admin</string>
+
 </resources>

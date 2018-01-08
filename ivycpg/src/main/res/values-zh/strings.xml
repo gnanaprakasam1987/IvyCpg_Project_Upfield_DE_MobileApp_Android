@@ -939,7 +939,6 @@
     <string name="batch_created_successfully">批次创建成功。</string>
     <string name="error_e01">服务器连接错误</string>
     <string name="error_e02">用户名和密码不正确</string>
-    <string name="error_e03">未分配给用户的仓库</string>
     <string name="error_e04">下载时数据不匹配</string>
     <string name="error_e05">结束拜访尚未完成</string>
     <string name="error_e06">设备中没有网络连接</string>

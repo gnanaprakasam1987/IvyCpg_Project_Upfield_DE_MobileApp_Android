@@ -953,7 +953,6 @@
     <string name="batch_created_successfully">Batch created successfully.</string>
     <string name="error_e01">Server connectivity error</string>
     <string name="error_e02">UserName and Password Not Correct</string>
-    <string name="error_e03">Warehouse not assigned to user</string>
     <string name="error_e04">Data mismatch while download</string>
     <string name="error_e05">Close call not yet done</string>
     <string name="error_e06">No internet connection in device</string>
