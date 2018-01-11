@@ -254,6 +254,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/llBranch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dimens_6dp"
@@ -276,6 +277,65 @@
                                 android:layout_gravity="center"
                                 android:background="@android:color/transparent"
                                 android:gravity="center|left" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llbankbranch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:orientation="vertical"
+                                android:padding="@dimen/dimens_6dp">
+
+                                <TextView
+                                    android:id="@+id/tv_bankname_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/bank_name"
+                                    android:textColor="@color/Black"
+                                    android:textSize="@dimen/text_sz_small"
+                                    android:textStyle="bold" />
+
+                                <EditText
+                                    android:id="@+id/edit_bankname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/cheque_no_height"
+                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                                    android:inputType="text"
+                                    android:maxLength="25" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:orientation="vertical"
+                                android:padding="@dimen/dimens_6dp">
+
+                                <TextView
+                                    android:id="@+id/tv_branchname_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/branch_area"
+                                    android:textColor="@color/Black"
+                                    android:textSize="@dimen/text_sz_small"
+                                    android:textStyle="bold" />
+
+                                <EditText
+                                    android:id="@+id/edit_branchname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/cheque_no_height"
+                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                                    android:inputType="text"
+                                    android:maxLength="25" />
+                            </LinearLayout>
 
                         </LinearLayout>
 

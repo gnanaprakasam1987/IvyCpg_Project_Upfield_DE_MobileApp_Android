@@ -71,6 +71,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:maxLength="25"
                     android:layout_gravity="left|center"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/highlight_small"/>

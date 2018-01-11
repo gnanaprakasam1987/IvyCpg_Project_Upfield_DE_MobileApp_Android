@@ -1318,8 +1318,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(OrderSummary.this);
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        bmodel.synchronizationHelper.deleteFiles(
-                                                PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
@@ -1352,8 +1353,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         alertDialog.show();
                                         // clear scheme free products
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        bmodel.synchronizationHelper.deleteFiles(
-                                                PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
                                         clearSchemeFreeProduct();
                                         new deleteStockAndOrder().execute();
                                         new MyThread(OrderSummary.this,
@@ -1624,8 +1626,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(OrderSummary.this);
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        bmodel.synchronizationHelper.deleteFiles(
-                                                PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
@@ -1712,8 +1715,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        bmodel.synchronizationHelper.deleteFiles(
-                                                PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
                                         Intent i = new Intent(OrderSummary.this,
                                                 CaptureSignatureActivity.class);
                                         i.putExtra("fromModule", "ORDER");
@@ -2111,7 +2115,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         } else if (i1 == R.id.menu_edit) {
             clearSchemeFreeProduct();
-            bmodel.productHelper.clearDiscountQuantity();
+            if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG)
+                bmodel.productHelper.clearDiscountQuantity();
             if (bmodel.remarksHelper.getRemarksBO().getModuleCode() == null
                     || bmodel.remarksHelper.getRemarksBO().getModuleCode()
                     .length() == 0)
