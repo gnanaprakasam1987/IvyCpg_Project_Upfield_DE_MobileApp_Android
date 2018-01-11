@@ -96,71 +96,71 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
             if ((SDUtil.compareDate(ApplicationConfigs.expiryDate,
                     SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") < 0))
                 finish();
-        } else {
+        }
 
-            loginPresenter = new LoginPresenterImpl(getApplicationContext());
-            loginPresenter.setView(this);
+        loginPresenter = new LoginPresenterImpl(getApplicationContext());
+        loginPresenter.setView(this);
 
-            loginPresenter.loadInitialData();
+        loginPresenter.loadInitialData();
 
-            //progressDialog = null;
+        //progressDialog = null;
 
-            mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
-            mForgotPasswordTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
+        mForgotPasswordTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-            editTextUserName = (EditText) findViewById(R.id.EditText011);
-            editTextUserName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editTextUserName = (EditText) findViewById(R.id.EditText011);
+        editTextUserName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-            editTextPassword = (EditText) findViewById(R.id.EditText022);
-            editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editTextPassword = (EditText) findViewById(R.id.EditText022);
+        editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-            Button buttonLogin = (Button) findViewById(R.id.loginButton);
-            buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button buttonLogin = (Button) findViewById(R.id.loginButton);
+        buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-            loginPresenter.getSupportNo();
+        loginPresenter.getSupportNo();
 
-            updateImageViews();
+        updateImageViews();
 
-            ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
-            btn_setting.setOnClickListener(new OnClickListener() {
+        ImageView btn_setting = (ImageView) findViewById(R.id.iv_setting);
+        btn_setting.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(LoginScreen.this,
-                            UserSettingsActivity.class);
-                    i.putExtra("isFromLogin", true);
-                    startActivity(i);
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginScreen.this,
+                        UserSettingsActivity.class);
+                i.putExtra("isFromLogin", true);
+                startActivity(i);
 
-                }
-            });
+            }
+        });
 
             /* Display version information on the login screen. */
-            TextView version = (TextView) findViewById(R.id.version);
-            version.setText(getResources().getString(R.string.version)
-                    + businessModel.getApplicationVersionName());
-            version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        TextView version = (TextView) findViewById(R.id.version);
+        version.setText(getResources().getString(R.string.version)
+                + businessModel.getApplicationVersionName());
+        version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-            LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
-            ll_footer.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
+        ll_footer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    startActivity(new Intent(LoginScreen.this, About.class));
+                startActivity(new Intent(LoginScreen.this, About.class));
 
-                }
-            });
+            }
+        });
 
-            loginPresenter.checkDB();
+        loginPresenter.checkDB();
 
             /* Register receiver to receive download status. */
-            IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
-            filter.addCategory(Intent.CATEGORY_DEFAULT);
-            receiver = new MyReceiver();
-            registerReceiver(receiver, filter);
+        IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new MyReceiver();
+        registerReceiver(receiver, filter);
 
-            loginPresenter.assignServerUrl();
-        }
+        loginPresenter.assignServerUrl();
+
     }
 
     @Override

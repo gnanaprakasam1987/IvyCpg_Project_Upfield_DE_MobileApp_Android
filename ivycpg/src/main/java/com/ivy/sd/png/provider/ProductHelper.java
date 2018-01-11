@@ -6068,13 +6068,22 @@ public class ProductHelper {
             int totalQty = productBO.getOrderedPcsQty()
                     + productBO.getOrderedCaseQty() * productBO.getCaseSize()
                     + productBO.getOrderedOuterQty() * productBO.getOutersize();
+
+            double line_total_price = (productBO.getOrderedCaseQty() * productBO
+                    .getCsrp())
+                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+
             double totalValue = 0.0;
-            if (productBO.getSchemeAppliedValue() > 0) {
-                totalValue = productBO.getSchemeAppliedValue();
-            } else {
+
+            if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productBO.getBatchwiseProductCount() > 0) {
                 totalValue = bmodel.schemeDetailsMasterHelper
                         .getbatchWiseTotalValue(productBO);
+            } else {
+                totalValue = line_total_price;
+
             }
+
             if (isCompanyDiscount) {
                 totalValue = totalValue - productBO.getDistributorTypeDiscount();
             }
@@ -8367,6 +8376,7 @@ public class ProductHelper {
             product.setD2(0);
             product.setD3(0);
             product.setDA(0);
+            product.setApplyValue(0);
         }
     }
 
