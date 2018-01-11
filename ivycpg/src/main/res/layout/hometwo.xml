@@ -17,6 +17,7 @@
             android:layout_height="@dimen/profile_collopsing_layout_height"
             app:contentScrim="?attr/primarycolor"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -33,15 +34,16 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"/>
+                    android:background="@android:color/transparent" />
             </FrameLayout>
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
             <FrameLayout
                 android:id="@+id/main_framelayout_title"
                 android:layout_width="match_parent"
@@ -57,8 +59,8 @@
                     android:id="@+id/retailer_name_header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/img_layout"
@@ -140,10 +142,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_margin3"
+                    android:tag="store_activities"
                     android:text="Store activities"
                     android:textColor="#000000"
-                    android:textSize="@dimen/font_medium"
-                    android:tag="store_activities" />
+                    android:textSize="@dimen/font_medium" />
 
                 <View
                     android:layout_width="1dp"
@@ -213,8 +215,8 @@
 
         <Button
             android:id="@+id/btn_call_analysis"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_gravity="center"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="right"
             android:layout_margin="@dimen/target_top_margin"
             android:onClick="CallAnalysisClick"
             android:tag="call_analysis"

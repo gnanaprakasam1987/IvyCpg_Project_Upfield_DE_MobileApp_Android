@@ -3160,7 +3160,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD);
-
+                    mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
@@ -3209,7 +3209,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD_ASSET);
-
+                    mSODAssetHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODAssetActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
@@ -3259,7 +3259,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOSKU);
-
+                    mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSKUActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)

@@ -2772,49 +2772,6 @@ public class ReportHelper {
         return tot;
     }
 
-    public void downloadWebViewAuthUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-
-            db.openDataBase();
-            webViewAuthUrl = "";
-            Cursor c1 = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = 'WEB_VIEW'");
-            if (c1 != null) {
-                if (c1.moveToNext()) {
-                    webViewAuthUrl = DataMembers.SERVER_URL + "/" + c1.getString(0);
-                }
-                c1.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            webViewAuthUrl = "";
-        }
-    }
-
-    public void downloadWebViewLandingUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            webViewPlanUrl = "";
-            Cursor c1 = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_PLAN' AND ListType = 'WEB_VIEW'");
-            if (c1 != null) {
-                while (c1.moveToNext()) {
-                    webViewPlanUrl = c1.getString(0);
-                }
-                c1.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            webViewPlanUrl = "";
-        }
-    }
-
 
     public String getUserName() {
         return userName;

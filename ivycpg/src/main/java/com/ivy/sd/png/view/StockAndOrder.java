@@ -33,6 +33,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -6087,15 +6088,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             TypedArray typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
+            final int indicator_color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
             Button tab;
             tab = new Button(this);
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tab.setTextColor(color);
             tab.setMaxLines(1);
-            tab.setTextSize(getResources().getDimensionPixelSize(R.dimen.special_filter_item_text_size));
+            tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tab.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
             tab.setWidth(width);
             tab.setOnClickListener(new OnClickListener() {
@@ -6120,7 +6122,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Button tv_selection_identifier = new Button(this);
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
-            tv_selection_identifier.setBackgroundColor(color);
+            tv_selection_identifier.setBackgroundColor(indicator_color);
             /*if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
                 updateGeneralText(GENERAL);
@@ -6140,7 +6142,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             View view1 = findViewById(R.id.root).findViewWithTag(config.getConfigCode() + config.getMenuName());
             if (((String) tag).equalsIgnoreCase(config.getConfigCode())) {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     ((TextView) view).setText(config.getMenuName() + "(" + mylist.size() + ")");
                 }
                 if (view1 instanceof Button) {
@@ -6150,7 +6151,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             } else {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     ((TextView) view).setText(config.getMenuName());
                 }
                 if (view1 instanceof Button) {

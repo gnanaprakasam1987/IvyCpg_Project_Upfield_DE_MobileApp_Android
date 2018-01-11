@@ -305,7 +305,6 @@ public class ReportMenufragment extends IvyBaseFragment {
 
             holder.config = configTemp;
 
-            holder.menuBTN.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_bg1));
             holder.menuBTN.setText(configTemp.getMenuName());
             holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
