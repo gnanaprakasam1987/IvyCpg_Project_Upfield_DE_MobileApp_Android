@@ -11,25 +11,26 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/footer_bg"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:padding="@dimen/target_top_margin"
-            android:layout_weight="1">
+            android:padding="@dimen/target_top_margin">
 
             <TextView
                 android:id="@+id/old_order_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="og_value"
                 android:text="@string/old_order_volume"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/greyed_text_size"
-                android:tag="og_value" />
+                android:textSize="@dimen/greyed_text_size" />
 
 
             <TextView
@@ -46,8 +47,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,6 +78,17 @@
 
             </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/saveButton"
+            style="?attr/roundedCustomButtonSmall"
+
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -121,8 +133,10 @@
                     android:layout_gravity="right|center"
                     android:layout_margin="@dimen/list_margin"
                     android:background="@drawable/icon_close"
+                    android:backgroundTint="@color/white"
                     android:gravity="right"
                     android:text="" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -221,8 +235,8 @@
                                 style="?attr/customListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="3"
                                 android:layout_marginLeft="@dimen/list_margin"
+                                android:layout_weight="3"
                                 android:gravity="center|left"
                                 android:text="@string/product_name" />
 

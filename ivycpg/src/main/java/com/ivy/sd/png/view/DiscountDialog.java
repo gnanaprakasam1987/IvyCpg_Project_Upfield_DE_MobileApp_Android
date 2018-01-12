@@ -37,7 +37,7 @@ import java.util.Vector;
 public class DiscountDialog extends Dialog implements OnClickListener {
     private BusinessModel bmodel;
     private Context context;
-    private Button back;
+    private Button back,saveButton;
     private TextView totalval, oldTotalValue;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
@@ -72,8 +72,10 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
         bmodel = (BusinessModel) context.getApplicationContext();
         back = (Button) findViewById(R.id.closeButton);
+        saveButton=(Button)findViewById(R.id.saveButton);
         back.setOnClickListener(this);
-
+        saveButton.setOnClickListener(this);
+        saveButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         totalval = (TextView) findViewById(R.id.totalValue);
         oldTotalValue = (TextView) findViewById(R.id.oldTotalValue);
         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -253,6 +255,15 @@ public class DiscountDialog extends Dialog implements OnClickListener {
     public void onClick(View v) {
         Button b = (Button) v;
         if (b == back) {
+
+            disListner.onDismiss(this);
+            if(d1==null)
+                bmodel.productHelper.clearDiscountQuantity();
+            else
+                this.initAct.onResume();
+            // dismiss();
+        }
+        if (b == saveButton) {
 
             disListner.onDismiss(this);
             this.initAct.onResume();
