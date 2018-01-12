@@ -45,6 +45,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
     private String append = "",  d1 = "0";
     private OrderSummary initAct;
     double sum = 0;
+    private Double result=0.0;
     private double totalOrderValue;
     OnDismissListener disListner;
 
@@ -93,7 +94,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         ((TextView) findViewById(R.id.tvTotalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.minmax)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
@@ -257,17 +258,18 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         if (b == back) {
 
             disListner.onDismiss(this);
-            if(d1==null)
-                bmodel.productHelper.clearDiscountQuantity();
-            else
+            if(result>0) {
+
                 this.initAct.onResume();
-            // dismiss();
+            }
+            else
+                bmodel.productHelper.clearDiscountQuantity();
+                //this.initAct.onResume();
         }
         if (b == saveButton) {
 
             disListner.onDismiss(this);
             this.initAct.onResume();
-            // dismiss();
         }
     }
 
@@ -434,13 +436,13 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                         .findViewById(R.id.min_max);
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.pieceqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.pieceqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.d1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.da.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.min_max.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
                 if (!bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS)
@@ -617,38 +619,39 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             holder.caseSize = holder.productObj.getCaseSize();
             holder.stockInHand = holder.productObj.getSIH();
 
-            holder.mrp.setText("Price: "
+            holder.mrp.setText("Price : "
                     + bmodel.formatValue(holder.productObj.getSrp()) + "");
 
 
             holder.outerQty
-                    .setText(context.getResources().getString(R.string.item_outer) + ":" + holder.productObj.getOrderedOuterQty() + "");
+                    .setText(context.getResources().getString(R.string.item_outer) + " : " + holder.productObj.getOrderedOuterQty() + "");
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(holder.caseqty.getTag()) != null)
                     holder.caseqty.setText(bmodel.labelsMasterHelper
-                            .applyLabels(holder.caseqty.getTag()) + ":" + holder.productObj.getOrderedCaseQty());
+                            .applyLabels(holder.caseqty.getTag()) + " : " + holder.productObj.getOrderedCaseQty());
                 else
-                    holder.caseqty.setText(context.getResources().getString(R.string.item_case) + ":" + holder.productObj.getOrderedCaseQty());
+                    holder.caseqty.setText(context.getResources().getString(R.string.item_case) + " : " + holder.productObj.getOrderedCaseQty());
 
             } catch (Exception e) {
                 Commons.printException(e);
-                holder.caseqty.setText(context.getResources().getString(R.string.item_case) + ":" + holder.productObj.getOrderedCaseQty());
+                holder.caseqty.setText(context.getResources().getString(R.string.item_case) + " : " + holder.productObj.getOrderedCaseQty());
             }
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(holder.pieceqty.getTag()) != null)
                     holder.pieceqty.setText(bmodel.labelsMasterHelper
-                            .applyLabels(holder.pieceqty.getTag()) + ":" + holder.productObj.getOrderedPcsQty());
+                            .applyLabels(holder.pieceqty.getTag()) + " : " + holder.productObj.getOrderedPcsQty());
                 else
-                    holder.pieceqty.setText(context.getResources().getString(R.string.item_piece) + ":" + holder.productObj.getOrderedPcsQty());
+                    holder.pieceqty.setText(context.getResources().getString(R.string.item_piece) + " : " + holder.productObj.getOrderedPcsQty());
 
             } catch (Exception e) {
                 Commons.printException(e);
-                holder.pieceqty.setText(context.getResources().getString(R.string.item_piece) + ":" + holder.productObj.getOrderedPcsQty());
+                holder.pieceqty.setText(context.getResources().getString(R.string.item_piece) + " : " + holder.productObj.getOrderedPcsQty());
             }
 
 
             holder.d1.setText(holder.productObj.getD1() + "");
 
+            result=Double.parseDouble(""+holder.productObj.getD1());
             if (holder.productObj.getOuUomid() == 0 || !holder.productObj.isOuterMapped()) {
                 holder.outerQty.setEnabled(false);
             } else {
