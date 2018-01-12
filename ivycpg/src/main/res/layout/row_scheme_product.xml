@@ -328,6 +328,7 @@
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:maxLength="5"
                         android:layout_margin="4dp"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size" />
