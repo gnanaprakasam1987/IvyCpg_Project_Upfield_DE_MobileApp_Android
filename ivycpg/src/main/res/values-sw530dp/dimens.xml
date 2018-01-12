@@ -70,7 +70,7 @@
     <dimen name="non_visit_list_item_height_width">60dp</dimen>
 
     <!-- New Design - Common Themes -->
-    <dimen name="tab_selection_identifier_height">5dp</dimen>
+    <dimen name="tab_selection_identifier_height">4dp</dimen>
 
 
     <dimen name="list_header_height">50dp</dimen>
