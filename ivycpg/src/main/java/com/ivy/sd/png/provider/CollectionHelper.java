@@ -1626,7 +1626,7 @@ public class CollectionHelper {
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
             collectionGroupId = payID;
 
-            String columns = "uid,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,datetime,billnumber,refid,StatusLovId,groupid";
+            String columns = "uid,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,datetime,billnumber,refid,StatusLovId,groupid,BankName,BranchName";
             StringBuffer sb = new StringBuffer();
             String chequeNo = "";
             if (paymentBO.getCashMode().equals(StandardListMasterConstants.CHEQUE))
@@ -1637,6 +1637,8 @@ public class CollectionHelper {
             sb.append("," + bmodel.QT(paymentBO.getChequeDate()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + bmodel.QT(payTypeID));
             sb.append("," + bmodel.QT(paymentBO.getImageName()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",0,0");
             sb.append("," + listid + "," + payID);
+            sb.append("," + bmodel.QT(paymentBO.getBankName()));
+            sb.append("," + bmodel.QT(paymentBO.getBranchName()));
 
             modeID = bmodel.getStandardListIdAndType(
                     "CNAP",

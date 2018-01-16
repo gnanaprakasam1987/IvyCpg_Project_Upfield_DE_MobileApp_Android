@@ -87,6 +87,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     private ArrayList<InvoiceHeaderBO> mInvioceList;
     private double mTotalInvoiceAmt = 0;
     private int rcheckedId = 0;
+    private EditText mBankET;
+    private EditText mBranchET;
 
     @Override
     public void onAttach(Context context) {
@@ -236,6 +238,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     private void loadBankDetails() {
         mBankSpin = (Spinner) getView().findViewById(R.id.bankName);
         mBranchSpin = (Spinner) getView().findViewById(R.id.bankArea);
+        mBankET = (EditText) getView().findViewById(R.id.edit_bankname);
+        mBranchET = (EditText) getView().findViewById(R.id.edit_branchname);
         mBankDetailsList = bmodel.collectionHelper.getBankMasterBO();
         mBranchDetailsList = bmodel.collectionHelper.getBranchMasterBO();
         ArrayAdapter<BankMasterBO> bankSpinnerAdapter = new ArrayAdapter<>(
@@ -243,7 +247,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         bankSpinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         BankMasterBO mm = new BankMasterBO();
-        mm.setBankId(0);
+        mm.setBankId(-1);
         mm.setBankName(getActivity().getResources().getString(
                 R.string.sel_bank));
         bankSpinnerAdapter.add(mm);
@@ -252,6 +256,11 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             BankMasterBO ret = mBankDetailsList.get(i);
             bankSpinnerAdapter.add(ret);
         }
+        BankMasterBO otherMasterBO = new BankMasterBO();
+        otherMasterBO.setBankId(0);
+        bankSpinnerAdapter.add(otherMasterBO);
+        otherMasterBO.setBankName(getResources().getString(R.string.tab_text_others));
+
         mBankSpin.setAdapter(bankSpinnerAdapter);
 
         mBankSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -260,14 +269,19 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 BankMasterBO bank = (BankMasterBO) mBankSpin.getSelectedItem();
 
                 if (bank.getBankId() == 0) {
+                    ((LinearLayout) getView().findViewById(R.id.llBranch)).setVisibility(View.GONE);
+                    ((LinearLayout) getView().findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
                     mBranchSpin.setSelection(0);
                     if (mSelectedPaymentBO != null) {
                         mSelectedPaymentBO.setBankID("0");
                         mSelectedPaymentBO.setBranchId("0");
-                        updateBranchSpinner("0");
+                        mBankET.setText(mSelectedPaymentBO.getBankName());
+                        mBranchET.setText(mSelectedPaymentBO.getBranchName());
                     }
 
                 } else {
+                    ((LinearLayout) getView().findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
+                    ((LinearLayout) getView().findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
                     String bankID = String.valueOf(bank.getBankId());
                     if (mSelectedPaymentBO != null) {
                         mSelectedPaymentBO.setBankID(bankID);
@@ -288,10 +302,10 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
                 BranchMasterBO branch = (BranchMasterBO) mBranchSpin
                         .getSelectedItem();
-                if (branch.getBranchID().equals("0")) {
+                if (branch.getBranchID().equals("-1")) {
 
                     if (mSelectedPaymentBO != null)
-                        mSelectedPaymentBO.setBranchId("0");
+                        mSelectedPaymentBO.setBranchId("-1");
                 } else {
 
                     if (mSelectedPaymentBO != null)
@@ -303,6 +317,41 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             }
         });
 
+
+        mBankET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mSelectedPaymentBO.setBankName(s.toString());
+            }
+        });
+
+        mBranchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mSelectedPaymentBO.setBranchName(s.toString());
+            }
+        });
+
     }
 
     private void updateBranchSpinner(String bankID) {
@@ -311,7 +360,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         branchSpinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         BranchMasterBO mm = new BranchMasterBO();
-        mm.setBranchID("0");
+        mm.setBranchID("-1");
         mm.setBranchName(getActivity().getResources().getString(
                 R.string.sel_branch));
         branchSpinnerAdapter.add(mm);
@@ -323,7 +372,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             }
         }
         mBranchSpin.setAdapter(branchSpinnerAdapter);
-        if (!mSelectedPaymentBO.getBranchId().equals("0")) {
+        if (!mSelectedPaymentBO.getBranchId().equals("-1")) {
             for (int k = 1; k < branchSpinnerAdapter.getCount(); k++) {
                 BranchMasterBO branchMasterBO = branchSpinnerAdapter.getItem(k);
                 if (branchMasterBO.getBranchID().equals(mSelectedPaymentBO.getBranchId())) {
@@ -576,8 +625,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             paymentBO.setAmount(0);
             paymentBO.setChequeDate("");
             paymentBO.setChequeNumber("");
-            paymentBO.setBankID("0");
-            paymentBO.setBranchId("0");
+            paymentBO.setBankID("-1");
+            paymentBO.setBranchId("-1");
 
             mCollectAmtET.setText("");
             mCollectAmtET.setHint("Enter Amount");
@@ -615,13 +664,13 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                                     R.string.please_select_cheque_date), Toast.LENGTH_SHORT)
                             .show();
                     return false;
-                } else if (mSelectedPaymentBO.getBankID() == null || mSelectedPaymentBO.getBankID().equals("0")) {
+                } else if (mSelectedPaymentBO.getBankID() == null || mSelectedPaymentBO.getBankID().equals("-1")) {
                     Toast.makeText(
                             getActivity(),
                             getActivity().getResources().getString(
                                     R.string.sel_bank), Toast.LENGTH_SHORT).show();
                     return false;
-                } else if (mSelectedPaymentBO.getBranchId() == null || mSelectedPaymentBO.getBranchId().equals("0")) {
+                } else if (mSelectedPaymentBO.getBranchId() == null || mSelectedPaymentBO.getBranchId().equals("-1")) {
                     Toast.makeText(
                             getActivity(),
                             getActivity().getResources().getString(
@@ -763,20 +812,24 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             else if (rcheckedId == 1)
                 clearPaymentObject(StandardListMasterConstants.CHEQUE);
 
-            FragmentManager fm = getFragmentManager();
-            PrintCountDialogFragment dialogFragment = new PrintCountDialogFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("title", getResources().getString(R.string.advance_payment_title));
-            bundle.putString("textviewTitle", getActivity().getResources().getString(R.string.advancepayment_saved_do_u_print));
-            bundle.putInt("isfrom", 1);
-            dialogFragment.setArguments(bundle);
-            dialogFragment.show(fm, "Sample Fragment");
+            if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                FragmentManager fm = getFragmentManager();
+                PrintCountDialogFragment dialogFragment = new PrintCountDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("title", getResources().getString(R.string.advance_payment_title));
+                bundle.putString("textviewTitle", getActivity().getResources().getString(R.string.advancepayment_saved_do_u_print));
+                bundle.putInt("isfrom", 1);
+                dialogFragment.setArguments(bundle);
+                dialogFragment.show(fm, "Sample Fragment");
+            } else {
+                dismiss();
+            }
 
         }
     }
 
     private void updateBankAndBranchSelectedItem() {
-        if ("".equals(mSelectedPaymentBO.getBankID()) || (0 + "").equals(mSelectedPaymentBO.getBranchId())) {
+        if ("".equals(mSelectedPaymentBO.getBankID()) || (-1 + "").equals(mSelectedPaymentBO.getBranchId())) {
             mBankSpin.setSelection(0);
         } else {
             if (mBankDetailsList != null && mBankDetailsList.size() > 0) {
