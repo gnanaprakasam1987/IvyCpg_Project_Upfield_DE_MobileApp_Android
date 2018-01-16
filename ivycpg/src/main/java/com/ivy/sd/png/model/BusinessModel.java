@@ -241,6 +241,7 @@ public class BusinessModel extends Application {
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     public String invoiceDisount;
+    private String remarkType = "0";
     //public boolean filtershowall = false;
     public String userNameTemp, passwordTemp;
     public RetailerMasterBO retailerMasterBO;
@@ -687,6 +688,14 @@ public class BusinessModel extends Application {
 
     public void setRField2(String rField2) {
         this.rField2 = rField2;
+    }
+
+    public String getRemarkType() {
+        return remarkType;
+    }
+
+    public void setRemarkType(String remarkType) {
+        this.remarkType = remarkType;
     }
 
     public String getStockCheckRemark() {
@@ -7011,7 +7020,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -7084,7 +7093,8 @@ public class BusinessModel extends Application {
                     + "," + QT(orderHeaderBO.getSignatureName()) // internal column imgName
                     + "," + QT(printFilePath)
                     + "," + QT(getRField1())
-                    + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME));
+                    + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME))
+                    + "," + getRemarkType();
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);

@@ -84,7 +84,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface {
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,OrderConfirmationDialog.OnConfirmationResult {
 
     /**
      * views *
@@ -102,6 +102,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private ImageView icAmountSpilitup;
     AmountSplitupDialog dialogFragment;
     LinearLayout icAmountSpilitup_lty;
+    private  OrderConfirmationDialog orderConfirmationDialog;
     /**
      * Objects *
      */
@@ -2219,7 +2220,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 delievery_date.getText().toString(),
                                                 ConfigurationMasterHelper.outDateFormat));
 
-                        build = new AlertDialog.Builder(OrderSummary.this);
+
+                        orderConfirmationDialog=new OrderConfirmationDialog(this,false);
+                        orderConfirmationDialog.show();
+                        orderConfirmationDialog.setCancelable(false);
+                        return;
+
+                       /* build = new AlertDialog.Builder(OrderSummary.this);
 
                         customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                         alertDialog = build.create();
@@ -2250,7 +2257,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             }
                         } else {
                             isClick = false;
-                        }
+                        }*/
                     }
                 } else {
                     isClick = false;
@@ -2386,7 +2393,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 }
 
                                 bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
-                                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+
+                                orderConfirmationDialog=new OrderConfirmationDialog(this,false);
+                                orderConfirmationDialog.show();
+                                orderConfirmationDialog.setCancelable(false);
+                                return;
+
+                               /* if (bmodel.configurationMasterHelper.IS_INVOICE) {
                                     build = new AlertDialog.Builder(OrderSummary.this);
 
                                     customProgressDialog(build, getResources().getString(R.string.saving_invoice));
@@ -2407,7 +2420,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 updateOffInvoiceSchemeInProductOBJ();
 
 
-                                new MyThread(this, DataMembers.SAVEINVOICE).start();
+                                new MyThread(this, DataMembers.SAVEINVOICE).start();*/
                             }
                         } else {
                             isClick = false;
@@ -3522,6 +3535,84 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
         }
+    }
+
+    @Override
+    public void save(boolean isInvoice) {
+        try {
+            if (orderConfirmationDialog != null)
+                orderConfirmationDialog.dismiss();
+
+            if (isInvoice) {
+
+                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+                    build = new AlertDialog.Builder(OrderSummary.this);
+
+                    customProgressDialog( build,  getResources().getString(R.string.saving_invoice));
+                    alertDialog = build.create();
+                    alertDialog.show();
+                } else {
+                    build = new AlertDialog.Builder(OrderSummary.this);
+
+                    customProgressDialog( build, getResources().getString(R.string.saving_new_order));
+                    alertDialog = build.create();
+                    alertDialog.show();
+                }
+                if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                    getFocusandAndMustSellOrderedProducts();
+
+                //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
+                updateOffInvoiceSchemeInProductOBJ();
+
+                new MyThread(this, DataMembers.SAVEINVOICE).start();
+            } else {
+
+                build = new AlertDialog.Builder(OrderSummary.this);
+
+                customProgressDialog( build,  getResources().getString(R.string.saving_new_order));
+                alertDialog = build.create();
+                alertDialog.show();
+                if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                    getFocusandAndMustSellOrderedProducts();
+
+                if (bmodel.hasOrder()) {
+
+                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
+                            && bmodel.configurationMasterHelper.IS_INVOICE) {
+                        bmodel.batchAllocationHelper
+                                .loadFreeProductBatchList();
+                    }
+
+                    if (bmodel.mSelectedModule == 3) {
+                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+
+                        new MyThread(OrderSummary.this,
+                                DataMembers.SAVEORDERANDSTOCK).start();
+                    } else {
+                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+
+                        new MyThread(OrderSummary.this,
+                                DataMembers.SAVEORDERANDSTOCK).start();
+                        bmodel.saveModuleCompletion("MENU_STK_ORD");
+                    }
+
+
+                } else {
+                    isClick = false;
+                }
+
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        isClick=false;
     }
 
 }

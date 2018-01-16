@@ -2,9 +2,11 @@ package com.ivy.sd.png.provider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
@@ -34,6 +36,7 @@ import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -9099,6 +9102,45 @@ public class ProductHelper {
             Commons.print(e.getMessage());
         }
     }
+
+
+    public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context){
+        ArrayList<ConfigureBO> list = new ArrayList<>();
+        try {
+
+            SharedPreferences sharedPrefs = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cur = db
+                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                            + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                            + " and lang="+bmodel.QT(language));
+
+            if (cur != null && cur.getCount() > 0) {
+                ConfigureBO configureBO;
+                while (cur.moveToNext()) {
+                    configureBO = new ConfigureBO();
+                    configureBO.setConfigCode(cur.getString(0));
+                    configureBO.setMenuName(cur.getString(1));
+                    configureBO.setMandatory(cur.getInt(2));
+                    list.add(configureBO);
+                }
+                cur.close();
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return  new ArrayList<>();
+        }
+        return list;
+    }
+
 }
 
 

@@ -36,13 +36,16 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     private EditText rField2;
     private Spinner spnRField1;
     private LinearLayout textInputLayout2;
-    private LinearLayout textInputLayout3;
+    private LinearLayout textInputLayout3,layout_remark;
     private LinearLayout lnrRField1;
     private BusinessModel bmodel;
     @SuppressLint("ValidFragment")
     private final String mModuleName;
-    boolean isSpinnerAvailable = false;
+
     ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private LinearLayout layout_remark_type;
+    private Spinner spinner_remark_type;
+    boolean isSpinnerAvailable;
 
     public RemarksDialog(String moduleName) {
         super();
@@ -69,6 +72,11 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         textInputLayout2 = (LinearLayout) view.findViewById(R.id.editText_layout2);
         textInputLayout3 = (LinearLayout) view.findViewById(R.id.editText_layout3);
         lnrRField1 = (LinearLayout) view.findViewById(R.id.lnrRField1);
+
+        layout_remark=(LinearLayout)view.findViewById(R.id. editText_layout1);
+        layout_remark_type=(LinearLayout)view.findViewById(R.id. layout_remark_type);
+        spinner_remark_type=(Spinner) view.findViewById(R.id. spinner_remark_type);
+
         DisplayMetrics outMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay()
                 .getMetrics(outMetrics);
@@ -142,14 +150,43 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                                 }
                             });
                         }
-                        //rField1.setVisibility(lnrRField1.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 
                     } else if (token.contains("RF2")) {
                         textInputLayout3.setVisibility(View.VISIBLE);
                     }
+                    else if (token.contains("REMD")) {
+                        layout_remark_type.setVisibility(View.VISIBLE);
+                        layout_remark.setVisibility(View.GONE);
+
+                        bmodel.reasonHelper.downloadRemarksType();
+                        spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                                R.layout.spinner_bluetext_layout);
+                        spinnerAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select_remarks_type)));
+                        int count = 0, selectedPos = -1;
+                        for (ReasonMaster temp : bmodel.reasonHelper
+                                .getRemarksType()) {
+                            if (temp.getReasonDesc().equals(bmodel.getRemarkType()))
+                                selectedPos = count + 1;
+                            spinnerAdapter.add(temp);
+                            count++;
+                        }
+                        spinnerAdapter
+                                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        spinner_remark_type.setAdapter(spinnerAdapter);
+                        spinner_remark_type.setSelection(selectedPos);
+                        spinner_remark_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
+                    }
                 }
-//                textInputLayout2.setVisibility(View.VISIBLE);
-//                textInputLayout3.setVisibility(View.VISIBLE);
                 if (bmodel.getOrderHeaderNote() != null) {
                     remarks.setText(bmodel.getOrderHeaderNote());
                 } else {
@@ -165,6 +202,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 } else {
                     rField2.setText("");
                 }
+
                 break;
             case "MENU_CLOSING":
                 Commons.print("Remarks Dialog ," + " MENU CLOSING called");
@@ -246,6 +284,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     bmodel.setRField1((isSpinnerAvailable) ?
                             ((ReasonMaster) spnRField1.getSelectedItem()).getReasonDesc() : rField1.getText().toString());
                     bmodel.setRField2(rField2.getText().toString());
+                    bmodel.setRemarkType(((ReasonMaster) spinner_remark_type.getSelectedItem()).getReasonID());
                     break;
                 case "MENU_CLOSING":
                     bmodel.setStockCheckRemark(remarks.getText().toString());

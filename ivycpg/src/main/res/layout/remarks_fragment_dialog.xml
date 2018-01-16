@@ -56,28 +56,6 @@
                 android:textSize="@dimen/font_small"></EditText>
         </LinearLayout>
 
-        <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:id="@+id/editText_layout1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="25dp"-->
-        <!--android:layout_marginRight="25dp"-->
-        <!--android:layout_marginTop="35dp">-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/remarks"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
-        <!--android:hint="@string/enter_remark_to_set"-->
-        <!--android:maxLength="50"-->
-        <!--android:maxLines="1"-->
-        <!--android:paddingLeft="6dp"-->
-        <!--android:paddingRight="6dp"-->
-        <!--android:textSize="@dimen/font_small"-->
-        <!--android:tag="@string/remark"></EditText>-->
-        <!--</android.support.design.widget.TextInputLayout>-->
 
         <LinearLayout
             android:id="@+id/editText_layout2"
@@ -115,30 +93,6 @@
                 android:textSize="@dimen/font_small"></EditText>
         </LinearLayout>
 
-        <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:id="@+id/editText_layout2"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="25dp"-->
-        <!--android:layout_marginRight="25dp"-->
-        <!--android:layout_marginTop="35dp"-->
-        <!--android:visibility="gone">-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/rField1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
-        <!--android:hint="@string/rfield1"-->
-        <!--android:maxLength="50"-->
-        <!--android:maxLines="1"-->
-        <!--android:paddingLeft="6dp"-->
-        <!--android:paddingRight="6dp"-->
-        <!--android:textSize="@dimen/font_small"-->
-        <!--android:tag="@string/field1"></EditText>-->
-
-        <!--</android.support.design.widget.TextInputLayout>-->
 
         <LinearLayout
             android:id="@+id/lnrRField1"
@@ -170,29 +124,6 @@
                 android:overlapAnchor="false" />
         </LinearLayout>
 
-        <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:id="@+id/editText_layout3"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="25dp"-->
-        <!--android:layout_marginRight="25dp"-->
-        <!--android:layout_marginTop="35dp"-->
-        <!--android:visibility="gone">-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/rField2"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"-->
-        <!--android:hint="@string/rfield2"-->
-        <!--android:maxLength="50"-->
-        <!--android:maxLines="1"-->
-        <!--android:paddingLeft="6dp"-->
-        <!--android:paddingRight="6dp"-->
-        <!--android:textSize="@dimen/font_small"-->
-        <!--android:tag="@string/field2"></EditText>-->
-        <!--</android.support.design.widget.TextInputLayout>-->
 
         <LinearLayout
             android:id="@+id/editText_layout3"
@@ -229,6 +160,34 @@
                 android:paddingRight="6dp"
                 android:tag="@string/remark"
                 android:textSize="@dimen/font_small"></EditText>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_remark_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/remarks_type_label"
+                android:textColor="@color/GRAY_TEXT"
+                android:textSize="@dimen/list_primary" />
+
+            <Spinner
+                android:id="@+id/spinner_remark_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:overlapAnchor="false" />
         </LinearLayout>
     </LinearLayout>
 

@@ -3230,6 +3230,19 @@ public class ConfigurationMasterHelper {
 
                 }
             }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_STK_ORD) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+
+                    LOAD_REMARKS_FIELD_STRING = c.getString(0);
+                }
+                c.close();
+            }
+
             if (IS_INITIATIVE) {
                 codeValue = null;
                 sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
