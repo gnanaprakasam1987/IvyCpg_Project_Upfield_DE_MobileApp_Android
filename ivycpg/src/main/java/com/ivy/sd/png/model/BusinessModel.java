@@ -200,10 +200,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10943,7 +10945,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        String path = HomeScreenFragment.photoPath;
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -10966,6 +10968,37 @@ public class BusinessModel extends Application {
         } catch (IOException e) {
             Commons.printException(e);
         }
+    }
+
+
+    /**
+     * read text from given file and convert to string object
+     * and store in object
+     * @param fileName
+     */
+    public void readBuilder(String fileName){
+        String path=getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE+"/";
+        File file = new File(path+fileName);
+        StringBuilder sb=new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+
+
+            String st;
+            while ((st = br.readLine()) != null) {
+                sb.append(st);
+                sb.append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        mCommonPrintHelper.setInvoiceData(sb);
+
     }
 
     private void copyFile(File sourceFile, String path, String filename) {

@@ -35,6 +35,7 @@ public class DataMembers {
     public static final String MVP = "MVP";
     public static final String LOYALTY_POINTS = "LLTY";
     public static final String PRINT = "PRINT";
+    public static final String PRINTFILE = "PRINTFILE";
     public static final String PROFILE = "PRO";
     public static final String CATALOG = "CAT";
     public static final String USER = "USER";

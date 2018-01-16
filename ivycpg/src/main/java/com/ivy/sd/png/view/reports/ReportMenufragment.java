@@ -158,6 +158,8 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_ARCHV_RPT,
+                    R.drawable.icon_reports);
 
             menuIcons.put(StandardListMasterConstants.MENU_PRDVOL_RPT,
                     R.drawable.icon_reports);
@@ -245,7 +247,14 @@ public class ReportMenufragment extends IvyBaseFragment {
                 }
             }
 
-        } else {
+        } else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_ARCHV_RPT))
+        {
+            if (bmodel.isOnline()) {
+                intoreportacti(config);
+            }
+            else
+                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+        }else {
             intoreportacti(config);
         }
 

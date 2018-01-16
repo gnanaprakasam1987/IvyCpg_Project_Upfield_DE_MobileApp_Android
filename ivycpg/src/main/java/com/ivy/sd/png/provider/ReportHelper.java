@@ -3404,4 +3404,128 @@ public class ReportHelper {
         }
     }
 
+    public void prepareArchiveFileDownload(String filePath){
+        bmodel.setDigitalContentURLS(new HashMap<String, String>());
+
+        boolean isAmazonUpload=false;
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+        if (c != null) {
+            while (c.moveToNext()) {
+                isAmazonUpload = true;
+            }
+        }
+        c.close();
+
+        if (!isAmazonUpload) {
+            c = db
+                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DataMembers.img_Down_URL = c.getString(0);
+                }
+            }
+
+        }
+        else  {
+            c = db
+                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DataMembers.img_Down_URL = c.getString(0) + "/";
+                }
+            }
+
+        }
+
+        bmodel.getDigitalContentURLS().put(
+                DataMembers.img_Down_URL + filePath,
+                DataMembers.PRINTFILE);
+
+        c.close();
+        c = null;
+        db.closeDB();
+    }
+
+
+    public void downloadWebViewArchAuthUrl() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    webViewAuthUrl = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (!"".equals(webViewAuthUrl)) {
+                Cursor c1 = db
+                        .selectSQL("select ListName from StandardListMaster where ListCode='AUTH' AND ListType = 'WEBVIEW_ARCH'");
+                if (c1 != null) {
+                    if (c1.moveToNext()) {
+                        webViewAuthUrl += c1.getString(0);
+                    }
+                    c1.close();
+                }
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            webViewAuthUrl = "";
+        }
+    }
+
+
+    public void downloadWebViewArchUrl() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    webViewArchUrl = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (!"".equals(webViewArchUrl)) {
+                Cursor c1 = db
+                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION' AND ListType = 'WEBVIEW_ARCH'");
+                if (c1 != null) {
+                    while (c1.moveToNext()) {
+                        webViewArchUrl += c1.getString(0);
+                    }
+                    c1.close();
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            webViewArchUrl = "";
+        }
+    }
+
+
+    public String getWebViewArchUrl() {
+        return webViewArchUrl;
+    }
+
+    public void setWebViewArchUrl(String webViewArchUrl) {
+        this.webViewArchUrl = webViewArchUrl;
+    }
+
+    private String webViewArchUrl = "";
+
 }

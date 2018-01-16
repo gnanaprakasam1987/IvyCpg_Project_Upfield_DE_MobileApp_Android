@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  */
 public class DownloaderThreadNew extends Thread {
     private static final int DOWNLOAD_BUFFER_SIZE = 4096;
-    private File mTranDevicePath, mAppDevicePath, mFolderPath, mPrintDevicePath;
+    private File mTranDevicePath, mAppDevicePath, mFolderPath, mPrintDevicePath,mPrintFileDevicePath;
 
     public static final int CONNECTION_TIME_OUT = 10000;
 
@@ -127,6 +127,13 @@ public class DownloaderThreadNew extends Thread {
                                 + userID
                                 + DataMembers.PRINT);
 
+                mPrintFileDevicePath = new File(
+                        parentActivity
+                                .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                + "/"
+                                + userID
+                                + DataMembers.PRINTFILE);
+
 
                 if (!mTranDevicePath.exists())
                     mTranDevicePath.mkdir();
@@ -136,6 +143,9 @@ public class DownloaderThreadNew extends Thread {
 
                 if (!mPrintDevicePath.exists())
                     mPrintDevicePath.mkdir();
+
+                if (!mPrintFileDevicePath.exists())
+                    mPrintFileDevicePath.mkdir();
 
                 String mFileName = "";
 
@@ -157,7 +167,7 @@ public class DownloaderThreadNew extends Thread {
                 FileOutputStream fileStream;
 
                 boolean availe_flag = false;
-                File mfile, appfile, mPrintFile;
+                File mfile, appfile, mPrintFile,mPrintFormatFile;
                 // AmazonS3Client s3 = null;
 
                 if (isAmazonUpload) {
@@ -206,6 +216,11 @@ public class DownloaderThreadNew extends Thread {
                                 outFile = new File(mPrintDevicePath + "/"
                                         + mFileName.replaceAll("%20", " "));
 
+                            } else if (folderName
+                                    .equalsIgnoreCase(DataMembers.PRINTFILE)) {
+                                outFile = new File(mPrintFileDevicePath + "/"
+                                        + mFileName.replaceAll("%20", " "));
+
                             } else {
 
                                 mFolderPath = new File(mTranDevicePath + "/"
@@ -220,6 +235,7 @@ public class DownloaderThreadNew extends Thread {
                             mfile = new File(mTranDevicePath + "/" + folderName + "/" + mFileName);
                             appfile = new File(mAppDevicePath + "/" + mFileName);
                             mPrintFile = new File(mPrintDevicePath + "/" + mFileName);
+                            mPrintFormatFile=new File(mPrintFileDevicePath + "/" + mFileName);
 
                             if (mfile.exists()) {
                                 availe_flag = true;
@@ -227,7 +243,9 @@ public class DownloaderThreadNew extends Thread {
                                 availe_flag = true;
                             } else if (mPrintFile.exists()) {
                                 availe_flag = true;
-                            } else {
+                            } else if (mPrintFormatFile.exists()) {
+                                availe_flag = true;
+                            }else {
                                 availe_flag = false;
                             }
                             if (!availe_flag) {

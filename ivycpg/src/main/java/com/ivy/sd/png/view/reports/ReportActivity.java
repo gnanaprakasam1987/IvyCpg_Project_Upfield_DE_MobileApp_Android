@@ -100,6 +100,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private InventoryReportFragment mInventoryReport;
     private SellerMapViewReportFragment mSellerMapviewReport;
     private SellerPerformanceReportFragment mSellerPerformReport;
+    private WebViewArchivalReportFragment webViewArchivalReportFragment;
+
     private Toolbar toolbar;
 
     @SuppressLint("NewApi")
@@ -225,6 +227,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mSellerMapviewReport = new SellerMapViewReportFragment();
         mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet=new OutletPerformanceReportFragmnet();
+        webViewArchivalReportFragment=new WebViewArchivalReportFragment();
 
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
@@ -693,6 +696,13 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_ARCHV_RPT)) {
+            transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setSubtitle(config.getMenuName());
+            transaction.commit();
         }
         // Commit the transaction
     }
