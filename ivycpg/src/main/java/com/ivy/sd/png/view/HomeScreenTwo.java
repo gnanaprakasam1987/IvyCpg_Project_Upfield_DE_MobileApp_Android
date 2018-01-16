@@ -1536,6 +1536,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                 if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
+                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                        bmodel.productHelper.downloadCompetitorFiveFilterLevels();
+                    }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                     if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                         bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
@@ -2893,6 +2896,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
 
                 if (priceTrackingHelper.IS_LOAD_PRICE_COMPETITOR) {
+                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                        bmodel.productHelper.downloadCompetitorFiveFilterLevels();
+                    }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
                     bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
                 }
