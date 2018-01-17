@@ -2988,7 +2988,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -3060,6 +3060,10 @@ public class BusinessModel extends Application {
             sb.append("," + getRetailerMasterBO().getCreditDays());
             sb.append("," + QT(printFilePath));
             sb.append("," + QT(timeStampid));
+            sb.append("," + getRemarkType());
+            sb.append("," + QT(getRField1()));
+            sb.append("," + QT(getRField2()));
+            sb.append("," + QT(getRField3()));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -7029,7 +7033,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -7103,7 +7107,7 @@ public class BusinessModel extends Application {
                     + "," + QT(printFilePath)
                     + "," + QT(getRField1())
                     + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME))
-                    + "," + getRemarkType();
+                    + "," + getRemarkType()+ "," + QT(getRField3()) ;
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -7439,8 +7443,6 @@ public class BusinessModel extends Application {
                 Commons.printException(e);
             }
             setOrderHeaderNote("");
-            setRField1("");
-            setRField2("");
             orderHeaderBO.setPO("");
             getOrderHeaderBO().setRemark("");
             getOrderHeaderBO().setRField1("");

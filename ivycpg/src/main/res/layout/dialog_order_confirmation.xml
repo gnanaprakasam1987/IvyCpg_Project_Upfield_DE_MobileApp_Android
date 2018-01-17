@@ -33,6 +33,7 @@
         android:weightSum="10"
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/dimen_8dp"
+        android:visibility="gone"
         >
 
         <TextView
@@ -53,8 +54,8 @@
         android:drawableRight="@drawable/ic_arrow_drop_down"
         android:hint="@string/search"
         android:maxLines="1"
-        android:textColor="?attr/colorAccent"
-        android:textColorHint="?attr/colorAccent"
+        android:textColor="?attr/primarycolor"
+        android:textColorHint="?attr/primarycolor"
         android:textSize="@dimen/spinner_normal"
         android:layout_weight="6"/>
     </LinearLayout>
@@ -146,6 +147,35 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_order_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/dimen_8dp"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/label_order_value"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_primary"
+            android:text="@string/order_value"
+            android:layout_weight="4"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/text_order_value"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_primary"
+            android:layout_weight="6"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layout_delivery_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -153,6 +183,7 @@
         android:weightSum="10"
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/dimen_8dp"
+        android:visibility="gone"
         >
 
         <TextView
@@ -173,6 +204,7 @@
             android:gravity="center"/>
     </LinearLayout>
 
+
     <LinearLayout
         android:id="@+id/layout_note"
         android:layout_width="match_parent"
@@ -181,6 +213,7 @@
         android:weightSum="10"
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/dimen_8dp"
+        android:visibility="gone"
         >
 
         <TextView
