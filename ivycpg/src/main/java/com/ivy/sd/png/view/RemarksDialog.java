@@ -105,6 +105,16 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                                 .applyLabels(view.findViewById(
                                         R.id.rField2)
                                         .getTag()));
+
+                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.remark_type_label).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.remark_type_label))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(view.findViewById(
+                                            R.id.remark_type_label)
+                                            .getTag()));
+
+
         } catch (Exception e) {
             Commons.printException(e);
         }

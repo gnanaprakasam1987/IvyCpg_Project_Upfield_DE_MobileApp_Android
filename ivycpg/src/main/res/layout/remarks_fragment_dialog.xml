@@ -174,10 +174,12 @@
             >
 
             <TextView
+                android:id="@+id/remark_type_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/remarks_type_label"
+                android:tag="remark_type"
                 android:textColor="@color/GRAY_TEXT"
                 android:textSize="@dimen/list_primary" />
 
