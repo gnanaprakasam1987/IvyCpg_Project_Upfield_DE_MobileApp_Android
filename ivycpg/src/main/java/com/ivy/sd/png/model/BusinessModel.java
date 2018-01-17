@@ -361,6 +361,7 @@ public class BusinessModel extends Application {
     private String orderHeaderNote = "";
     private String rField1 = "";
     private String rField2 = "";
+    private String rField3 = "";
     private String saleReturnNote = "";
     private String assetRemark = "";
     private String note = "";
@@ -688,6 +689,14 @@ public class BusinessModel extends Application {
 
     public void setRField2(String rField2) {
         this.rField2 = rField2;
+    }
+
+    public String getRField3() {
+        return rField3;
+    }
+
+    public void setRField3(String rField3) {
+        this.rField3 = rField3;
     }
 
     public String getRemarkType() {

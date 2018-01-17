@@ -39,6 +39,7 @@ public class ReasonHelper {
     private ArrayList<ReasonMaster> remarksType;
     private ArrayList<ReasonMaster> shipmentType;
     private ArrayList<ReasonMaster> paymentType;
+    private ArrayList<ReasonMaster> distributionChannelType;
 
     private ReasonHelper(Context context) {
         this.context = context;
@@ -817,11 +818,43 @@ public class ReasonHelper {
         }
     }
 
+
     public ArrayList<ReasonMaster> getPayTermType() {
         if(paymentType==null){
             paymentType=new ArrayList<>();
         }
         return paymentType;
+    }
+
+    public void downloadDistChannelType() {
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'DIST_CHANNEL_TYPE'";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                distributionChannelType = new ArrayList<>();
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    distributionChannelType.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+    }
+
+    public ArrayList<ReasonMaster> getDistributionChannelType() {
+        if(distributionChannelType==null){
+            distributionChannelType=new ArrayList<>();
+        }
+        return distributionChannelType;
     }
 
 }

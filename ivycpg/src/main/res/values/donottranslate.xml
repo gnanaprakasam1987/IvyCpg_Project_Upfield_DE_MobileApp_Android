@@ -252,5 +252,9 @@
 
     <string name="shipment_mandatory">Please select shipment type</string>
     <string name="pay_term_mandatory">Please select payterm type</string>
+    <string name="dist_channel_mandatory">Please select Distribution channel</string>
+    <string name="select_channel">Select channel</string>
+    <string name="supplier_label">Supplier</string>
+    <string name="note_label">Note</string>
 
 </resources>
