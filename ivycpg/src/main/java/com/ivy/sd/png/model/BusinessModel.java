@@ -3061,12 +3061,12 @@ public class BusinessModel extends Application {
             }
  /* insert tax details in Sqlite */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-                taxHelper.updateTaxList(invid, db);
+                taxHelper.insertInvoiceTaxList(invid, db);
             }
 
 			/* insert Product wise tax details in Sqlite */
             if (configurationMasterHelper.IS_APPLY_PRODUCT_TAX)
-                taxHelper.updateProductTaxList(invid, db);
+                taxHelper.insertProductTaxList(invid, db);
             /* update free products sih ends */
             // update Invoiceid in InvoiceDiscountDetail table
             if (configurationMasterHelper.SHOW_DISCOUNT || configurationMasterHelper.discountType == 1 || configurationMasterHelper.discountType == 2 || configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
@@ -7402,7 +7402,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.TAX_SHOW_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !configurationMasterHelper.IS_INVOICE) {
                 taxHelper.downloadBillWiseTaxDetails();
                 taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
-                taxHelper.updateTaxListInOrderId(uid, db);
+                taxHelper.insertOrderTaxList(uid, db);
             }
 
             productHelper.updateBillEntryDiscInOrderHeader(db, uid);

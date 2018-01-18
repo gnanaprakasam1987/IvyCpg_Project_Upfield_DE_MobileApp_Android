@@ -263,7 +263,7 @@ public class TaxHelper {
      * @param invoiceid
      * @author rajesh.k Method to use insert tax details in SQLite
      */
-    public void updateTaxList(String invoiceid, DBUtil db) {
+    public void insertInvoiceTaxList(String invoiceid, DBUtil db) {
 
         if (mBillTaxList != null) {
             String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue";
@@ -288,7 +288,7 @@ public class TaxHelper {
      * @param db
      * @author rajesh.k Method to use insert tax details in SQLite
      */
-    public void updateTaxListInOrderId(String orderId, DBUtil db) {
+    public void insertOrderTaxList(String orderId, DBUtil db) {
 
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
@@ -314,7 +314,7 @@ public class TaxHelper {
      * @param invoiceid
      * @author Felix Method to use insert product tax details in SQLite
      */
-    public void updateProductTaxList(String invoiceid, DBUtil db) {
+    public void insertProductTaxList(String invoiceid, DBUtil db) {
 
         if (mTaxProdList != null) {//
             String columns = "RetailerId,invoiceid,pid,taxRate,taxType,taxValue";
