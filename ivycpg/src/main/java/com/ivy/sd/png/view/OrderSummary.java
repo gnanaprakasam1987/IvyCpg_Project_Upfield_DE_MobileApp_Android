@@ -627,7 +627,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.configurationMasterHelper.SHOW_TAX) {
             // Apply Exclude Item level Tax  in Product
-            bmodel.productHelper.updateProductWiseTax();
+            bmodel.taxHelper.updateProductWiseTax();
         }
 
         totalval.setText(bmodel.formatValue(totalOrderValue));
@@ -723,9 +723,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         for (ProductMasterBO bo : mOrderedProductList) {
             float finalAmount = 0;
 
-            if (bmodel.productHelper.getmTaxListByProductId() != null) {
-                if (bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
-                    for (TaxBO taxBO : bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID())) {
+            if (bmodel.taxHelper.getmTaxListByProductId() != null) {
+                if (bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
                             finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
                         }
@@ -2437,8 +2437,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isTaxAvailableForAllOrderedProduct() {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if (bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()) == null
-                    || bmodel.productHelper.getmTaxListByProductId().get(bo.getProductID()).size() == 0) {
+            if (bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()) == null
+                    || bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() == 0) {
                 return false;
             }
         }

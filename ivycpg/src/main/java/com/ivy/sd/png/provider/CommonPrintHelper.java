@@ -1314,17 +1314,17 @@ public class CommonPrintHelper {
         StringBuffer sb = new StringBuffer();
 
         // load tax details
-        bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+        bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
         // load tax product details
-        bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+        bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
-        ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+        ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
 
         if (groupIdList != null) {
 
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
-            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.productHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
+            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.taxHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1384,9 +1384,9 @@ public class CommonPrintHelper {
 
                                             //batch wise product's calculation
                                             if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                                if (bmodel.productHelper.getmTaxBoBatchProduct().get(productid) != null) {
+                                                if (bmodel.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxBoBatchProduct().get(productid)) {
+                                                    for (TaxBO productTaxBo : bmodel.taxHelper.getmTaxBoBatchProduct().get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1397,9 +1397,9 @@ public class CommonPrintHelper {
                                                 }
                                             } else {
                                                 //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-                                                if (bmodel.productHelper.getmTaxListByProductId().get(productid) != null) {
+                                                if (bmodel.taxHelper.getmTaxListByProductId().get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxListByProductId().get(productid)) {
+                                                    for (TaxBO productTaxBo : bmodel.taxHelper.getmTaxListByProductId().get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1497,7 +1497,7 @@ public class CommonPrintHelper {
     private void getBillLevelTaxValue() {
         try {
             mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
 
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
@@ -1527,7 +1527,7 @@ public class CommonPrintHelper {
     private String printBillLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
         try {
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;

@@ -315,13 +315,13 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
             }
 
-            bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-            bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-            ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+            bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+            ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
 
             if (groupIdList != null) {
                 for (TaxBO taxBO : groupIdList) {
-                    HashSet<Double> percentagerList = bmodel.productHelper.getTaxPercentagerListByGroupId().get(taxBO.getGroupId());
+                    HashSet<Double> percentagerList = bmodel.taxHelper.getTaxPercentagerListByGroupId().get(taxBO.getGroupId());
                     if (percentagerList != null) {
                         totaltaxCount = totaltaxCount + (percentagerList.size());
                     }
@@ -597,9 +597,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
 
 // apply item level tax
 
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
 
-            SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
+            SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
 
             mTaxcontainerLL.removeAllViews();
             if (groupIdList != null) {
@@ -818,11 +818,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
 
 
-                ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+                ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
 
                 if (groupIdList != null) {
                     for (TaxBO taxBO : groupIdList) {
-                        LinkedHashSet<TaxBO> percentagerList = bmodel.productHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
+                        LinkedHashSet<TaxBO> percentagerList = bmodel.taxHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
                         if (percentagerList != null) {
                             totaltaxCount = totaltaxCount + (percentagerList.size());
                         }
@@ -1237,9 +1237,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     //print tax
                     x = x + 100;
 
-                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
+                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
 
-                    SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
+                    SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
                     if (groupIdList != null) {
                         String taxDesc = "";
                         String previousTaxDesc = "";

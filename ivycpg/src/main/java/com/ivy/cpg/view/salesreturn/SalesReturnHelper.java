@@ -1103,9 +1103,9 @@ public class SalesReturnHelper {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                bmodel.productHelper.downloadTaxDetails();
+                bmodel.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
-                final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+                final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
 
                 StringBuffer sb;
                 double totalTaxRate = 0;

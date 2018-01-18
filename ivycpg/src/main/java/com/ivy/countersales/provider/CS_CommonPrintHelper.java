@@ -1270,12 +1270,12 @@ public class CS_CommonPrintHelper {
      */
     private String getProductLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
-        bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-        bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-        ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+        bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+        bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+        ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
         if (groupIdList != null) {
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
+            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1360,7 +1360,7 @@ public class CS_CommonPrintHelper {
     private void getBillLevelTaxValue() {
         try {
             mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
 
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
@@ -1390,7 +1390,7 @@ public class CS_CommonPrintHelper {
     private String printBillLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
         try {
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;

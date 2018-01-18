@@ -510,8 +510,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     }
                     if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                        bmodel.productHelper.downloadExcludeProductTaxDetails();
-                        bmodel.productHelper.updateProductWiseTax();
+                        bmodel.taxHelper.downloadProductTaxDetails();
+                        bmodel.taxHelper.updateProductWiseTax();
                     }
 
                     bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);

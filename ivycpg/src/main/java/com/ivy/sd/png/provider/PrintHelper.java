@@ -771,13 +771,13 @@ public class PrintHelper {
                     }
                 }
 
-                bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-                bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-                ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+                bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+                ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
 
                 if (groupIdList != null) {
                     for (TaxBO taxBO : groupIdList) {
-                        LinkedHashSet<TaxBO> percentagerList = bmodel.productHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
+                        LinkedHashSet<TaxBO> percentagerList = bmodel.taxHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
                         if (percentagerList != null) {
                             totaltaxCount = totaltaxCount + (percentagerList.size());
                         }
@@ -1122,8 +1122,8 @@ public class PrintHelper {
                     //print tax
                     x = x + 100;
 
-                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
-                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
+                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
+                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
 
                     if (groupIdList != null) {
                         String taxDesc;
@@ -1533,7 +1533,7 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    final double taxAmount = bmodel.productHelper.getTotalBillTaxAmount(fromorder);
+                    final double taxAmount = bmodel.taxHelper.getTotalBillTaxAmount(fromorder);
                     sb.append(bmodel.formatValue(taxAmount) + " \r\n");
 
                     x = x + 30;

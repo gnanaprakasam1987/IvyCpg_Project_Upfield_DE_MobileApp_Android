@@ -909,7 +909,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             ZFPLib zfp = mChatService.zfplib;
             zfp.openFiscalBon(1, "0000", false, false, false);
             boolean mgoldenstore = false;
-            mTax = bmodel.productHelper.getTaxSumProdList();
+            mTax = bmodel.taxHelper.getTaxSumProdList();
             // int siz = bmodel.productHelper.getProductMaster().size();
             for (ProductMasterBO productBO : mProducts) {
 

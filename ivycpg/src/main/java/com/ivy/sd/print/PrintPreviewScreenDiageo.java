@@ -270,7 +270,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
             else
                 mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
-            mTax = bmodel.productHelper.getTaxList();
+            mTax = bmodel.taxHelper.getBillTaxList();
 
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             updateproducts();
