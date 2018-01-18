@@ -79,6 +79,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_shipment_label.setText(configureBO.getMenuName());
 
                     if (configureBO.getMandatory() == 1) {
+                        findViewById(R.id.shipment_mandatory).setVisibility(View.VISIBLE);
                         isMandatory_shipment = true;
                     }
                     businessModel.reasonHelper.downloadShipmentType();
@@ -112,6 +113,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_payment_label.setText(configureBO.getMenuName());
 
                     if (configureBO.getMandatory() == 1) {
+                        findViewById(R.id.payment_mandatory).setVisibility(View.VISIBLE);
                         isMandatory_payterm = true;
                     }
 
@@ -147,6 +149,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_channel_label.setText(configureBO.getMenuName());
 
                     if (configureBO.getMandatory() == 1) {
+                        findViewById(R.id.channel_mandatory).setVisibility(View.VISIBLE);
                         isMandatory_channel = true;
                     }
 
@@ -277,17 +280,15 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         layout_note = (LinearLayout) findViewById(R.id.layout_note);
         layout_order_value = (LinearLayout) findViewById(R.id.layout_order_value);
 
-        TextView titleBar = (TextView) findViewById(R.id.titleBar);
         TextView text_label = (TextView) findViewById(R.id.text_label);
 
-        titleBar.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         textView_delivery.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_order_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         textView_shipment_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_payment_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        text_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        text_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_channel_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_supplier_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_delivery_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

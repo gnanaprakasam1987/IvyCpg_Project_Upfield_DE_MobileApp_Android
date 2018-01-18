@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

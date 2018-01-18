@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.graphics.Color;
 import android.os.Bundle;

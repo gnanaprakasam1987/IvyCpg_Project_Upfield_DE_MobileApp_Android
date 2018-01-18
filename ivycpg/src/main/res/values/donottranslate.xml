@@ -257,6 +257,7 @@
     <string name="supplier_label">Supplier</string>
     <string name="note_label">Note</string>
     <string name="this_is_exceptional_order">This is an exceptional order.</string>
+    <string name="confirm">Confirm</string>
     <!-- Order confirmation dialog -->
 
 </resources>
