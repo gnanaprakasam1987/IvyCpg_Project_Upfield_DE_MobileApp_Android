@@ -882,6 +882,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
 
+    public static final String CODE_TIME_APPLY = "FUN18";//change Code value
+    public boolean SHOW_TIME_VIEW;
+    public static final String CODE_SPINNER_APPLY = "FUN19";//change Code value
+    public boolean SHOW_SPINNER;
+
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
