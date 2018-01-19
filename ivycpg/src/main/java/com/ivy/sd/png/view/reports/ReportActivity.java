@@ -24,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.OrderReportFrag;
 import com.ivy.cpg.view.reports.OrderReportFragment;
 import com.ivy.cpg.view.reports.PreviousDayOrderReportFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -72,7 +71,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private DSRTodayReportFragment dsrtodayreportfragment;
     private DSRMTDReportFragment dsrmtdreportfragment;
     private InitiativeReportFragment initiativereportfragment;
-    private OrderReportFrag ordrepfrag;
     private TaskReportFragment taskreportfragment;
     private QuestionReportFragment questionReportFragment;
     private CurrentStockBatchViewFragment currentStockBatchViewFragment;
@@ -206,7 +204,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         dsrtodayreportfragment = new DSRTodayReportFragment();
         dsrmtdreportfragment = new DSRMTDReportFragment();
         initiativereportfragment = new InitiativeReportFragment();
-        ordrepfrag = new OrderReportFrag();
         taskreportfragment = new TaskReportFragment();
         questionReportFragment = new QuestionReportFragment();
         currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
@@ -332,10 +329,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.commit();
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ORDER_REPORT)) {
-            if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                transaction.replace(R.id.fragment_content, ordrepfrag);
-            } else
-                transaction.replace(R.id.fragment_content, orderFragment);
+            transaction.replace(R.id.fragment_content, orderFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());

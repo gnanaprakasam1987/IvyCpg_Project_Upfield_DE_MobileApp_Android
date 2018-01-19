@@ -3528,4 +3528,27 @@ public class ReportHelper {
 
     private String webViewArchUrl = "";
 
+    public double getTotValues(Context mContext) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select sum(ordervalue)from "
+                    + DataMembers.tbl_orderHeader + " where  upload='N'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    double i = c.getDouble(0);
+                    c.close();
+                    db.closeDB();
+                    return i;
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return 0;
+    }
 }

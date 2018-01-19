@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:padding="6dp"
+        android:paddingTop="@dimen/dimen_5dp"
+        android:paddingBottom="@dimen/dimen_5dp"
         android:text="@string/do_u_want_to_save"
         android:textColor="?attr/primarycolor" />
 
@@ -30,7 +31,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center"
+            android:gravity="start"
             android:text="@string/supplier_label"
             android:textColor="@color/GRAY_TEXT"
             android:textSize="@dimen/list_primary" />
@@ -47,7 +48,8 @@
             android:maxLines="1"
             android:textColor="?attr/primarycolor"
             android:textColorHint="?attr/primarycolor"
-            android:textSize="@dimen/spinner_normal" />
+            android:textSize="@dimen/spinner_normal"
+            android:gravity="center"/>
     </LinearLayout>
 
     <LinearLayout
@@ -64,7 +66,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center_horizontal"
+            android:gravity="start"
             android:orientation="horizontal">
 
             <TextView
@@ -107,7 +109,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center_horizontal"
+            android:gravity="start"
             android:orientation="horizontal">
 
             <TextView
@@ -150,7 +152,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center_horizontal"
+            android:gravity="start"
             android:orientation="horizontal">
 
             <TextView
@@ -222,7 +224,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center"
+            android:gravity="start"
             android:text="@string/delivery_date_label"
             android:textSize="@dimen/list_primary" />
 
@@ -251,7 +253,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="center"
+            android:gravity="start"
             android:text="@string/note_label"
             android:textSize="@dimen/list_primary" />
 
@@ -284,13 +286,15 @@
             android:id="@+id/btn_cancel"
             style="?attr/roundedCustomButtonSmallGrey"
             android:text="@string/cancel"
-            android:textColor="@color/black_bg1" />
+            android:textColor="@color/black_bg1"
+            android:textAllCaps="false"/>
 
         <Button
             android:id="@+id/btn_ok"
             style="?attr/roundedCustomButtonSmall"
             android:layout_marginLeft="15dp"
-            android:text="@string/confirm" />
+            android:text="@string/confirm"
+            android:textAllCaps="false"/>
     </LinearLayout>
 
 </LinearLayout>
