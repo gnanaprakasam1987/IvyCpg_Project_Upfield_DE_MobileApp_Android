@@ -254,7 +254,7 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
                     ret);
             orderreportdetail.putExtra("TotalLines", ret.getLPC());
             orderreportdetail.putExtra("TotalValue", ret.getOrderTotal());
-            orderreportdetail.setClass(getActivity(), Orderreportdetail.class);
+            orderreportdetail.setClass(getActivity(), OrderReportDetail.class);
             startActivityForResult(orderreportdetail, 0);
 
 			/*

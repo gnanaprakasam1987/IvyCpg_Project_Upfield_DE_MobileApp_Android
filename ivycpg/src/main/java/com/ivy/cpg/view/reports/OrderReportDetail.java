@@ -2,6 +2,7 @@ package com.ivy.cpg.view.reports;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,14 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -25,61 +24,51 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
+public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
-    /**
-     * Called when the activity is first created.
-     */
+
     private Button back;
-    private ArrayList<OrderReportBO> mylist;
-    private ListView lvwplist;
-    private TextView outletname, txttotal, productName, totalLines, tv_lbl_total_lines, TextView51;
-    private BusinessModel bmodel;
+    private ArrayList<OrderReportBO> list;
+    private ListView listView;
+    private TextView  text_total, totalLines, tv_lbl_total_lines;
+    private BusinessModel businessModel;
     private OrderReportBO obj;
     private boolean isFromOrderReport;
     private double TotalValue;
     private String TotalLines;
-    private Toolbar toolbar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        // WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_order_report_detail);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
+        businessModel = (BusinessModel) getApplicationContext();
+        businessModel.setContext(this);
 
-
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         totalLines = (TextView) findViewById(R.id.txttotallines);
         tv_lbl_total_lines = (TextView) findViewById(R.id.lbl_total_lines);
-        outletname = (TextView) findViewById(R.id.BtnBrandPrev);
-        productName = (TextView) findViewById(R.id.productName);
-        TextView51= (TextView) findViewById(R.id.TextView51);
-        TextView51.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tv_lbl_total_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        TextView outletName = (TextView) findViewById(R.id.BtnBrandPrev);
+        TextView label_total = (TextView) findViewById(R.id.TextView51);
+        label_total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        tv_lbl_total_lines.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         try {
             back = (Button) findViewById(R.id.btnPersBack);
             back.setOnClickListener(this);
 
             try {
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.cqty).getTag()) != null)
                     ((TextView) findViewById(R.id.cqty))
-                            .setText(bmodel.labelsMasterHelper
+                            .setText(businessModel.labelsMasterHelper
                                     .applyLabels(findViewById(R.id.cqty)
                                             .getTag()));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.outid).getTag()) != null)
                     ((TextView) findViewById(R.id.outid))
-                            .setText(bmodel.labelsMasterHelper
+                            .setText(businessModel.labelsMasterHelper
                                     .applyLabels(findViewById(R.id.outid)
                                             .getTag()));
             } catch (Exception e) {
@@ -91,7 +80,7 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
 
             if (extras != null) {
                 if (extras.containsKey("OBJ")) {
-                    obj = (OrderReportBO) extras
+                    obj = extras
                             .getParcelable("OBJ");
 
                 }
@@ -107,12 +96,13 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
                 }
             }
 
-            txttotal = (TextView) findViewById(R.id.txttotal);
-            outletname.setText(getResources().getString(R.string.order_report)
-                    + obj.getRetailerName());
+            text_total = (TextView) findViewById(R.id.txttotal);
+            String value=getResources().getString(R.string.order_report)
+                    + obj.getRetailerName();
+            outletName.setText(value);
 
-            lvwplist = (ListView) findViewById(R.id.lvwplistorddet);
-            lvwplist.setCacheColorHint(0);
+            listView = (ListView) findViewById(R.id.lvwplistorddet);
+            listView.setCacheColorHint(0);
 
             setSupportActionBar(toolbar);
             // Set title to toolbar
@@ -128,31 +118,30 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            /** on off case,piece,outer Title **/
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+            if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
                 findViewById(R.id.cqty).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+            if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
                 findViewById(R.id.outid).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+            if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                 findViewById(R.id.outercqty).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+            if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
                 findViewById(R.id.title_weight).setVisibility(View.GONE);
 
-            if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
+            if (!businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
                 findViewById(R.id.TextView51).setVisibility(View.GONE);
                 findViewById(R.id.txttotal).setVisibility(View.GONE);
             }
-            if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
+            if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                 findViewById(R.id.lpc).setVisibility(View.GONE);
             }
 
 
             String orderID = obj.getOrderID();
             if (isFromOrderReport)
-                mylist = bmodel.reportHelper.downloadOrderreportdetail(orderID);
+                list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
 
             else
-                mylist = bmodel.reportHelper
+                list = businessModel.reportHelper
                         .downloadPVSOrderreportdetail(orderID);
             updateOrderDetailsGrid();
         } catch (Exception e) {
@@ -165,43 +154,25 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         // double total = 0;
 
         // Show alert if error loading data.
-        if (mylist == null) {
-            bmodel.showAlert(
+        if (list == null) {
+            businessModel.showAlert(
                     getResources().getString(R.string.unable_to_load_data), 0);
             return;
         }
         // Show alert if no order exist.
-        if (mylist.size() == 0) {
-            bmodel.showAlert(
+        if (list.size() == 0) {
+            businessModel.showAlert(
                     getResources().getString(R.string.no_orders_available), 0);
             return;
         }
 
-        // Calculate the total order value.
-        // for (OrderReportBO ret : mylist) {
-        // total = total + ret.getTot();
-        // }
 
-        /**
-         * set total lines value in textview
-         * **/
-
-        double avglinesorderbooking;
-
-        if (isFromOrderReport)
-            avglinesorderbooking = bmodel.reportHelper
-                    .getavglinesfororderbooking("OrderHeader");
-        else
-            avglinesorderbooking = bmodel.reportHelper
-                    .getavglinesfororderbooking("PVSOrderHeader");
-
-
-        if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES) {
-            if (bmodel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
-                totalLines.setText(bmodel.reportHelper.getTotalQtyfororder(obj.getOrderID()) + "");
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
+            if (businessModel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
+                totalLines.setText(String.valueOf(businessModel.reportHelper.getTotalQtyfororder(obj.getOrderID())));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
-                totalLines.setText(TotalLines + "");
+                totalLines.setText(TotalLines);
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_line));
             }
 
@@ -212,19 +183,15 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         }
 
 
-        // Format and set on the lable
-        txttotal.setText(SDUtil.format(TotalValue,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        text_total.setText(SDUtil.format(TotalValue,
+                businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-        // Load listview.
-        MyAdapter mSchedule = new MyAdapter(mylist);
-        lvwplist.setAdapter(mSchedule);
+        MyAdapter mSchedule = new MyAdapter(list);
+        listView.setAdapter(mSchedule);
     }
 
-    public void onNothingSelected(AdapterView<?> arg0) {
 
-    }
 
     int pos;
 
@@ -232,49 +199,49 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
         ArrayList<OrderReportBO> items;
 
         MyAdapter(ArrayList<OrderReportBO> items) {
-            super(Orderreportdetail.this, R.layout.row_orderdetail_report,
+            super(OrderReportDetail.this, R.layout.row_orderdetail_report,
                     items);
             this.items = items;
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView,@NonNull ViewGroup parent) {
             final ViewHolder holder;
             pos = position;
-            bmodel = (BusinessModel) getApplicationContext();
+            businessModel = (BusinessModel) getApplicationContext();
 
-            bmodel.setContext(Orderreportdetail.this);
-            OrderReportBO orderreport = (OrderReportBO) items
+            businessModel.setContext(OrderReportDetail.this);
+            OrderReportBO orderReportBO =  items
                     .get(pos);
             View row = convertView;
-            bmodel = (BusinessModel) getApplicationContext();
+            businessModel = (BusinessModel) getApplicationContext();
 
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 row = inflater.inflate(R.layout.row_orderdetail_report, parent,
                         false);
                 holder = new ViewHolder();
-                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
-                holder.tvwpsname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME1);
+                holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
-                holder.tvwqty = (TextView) row.findViewById(R.id.PRDQTY);
-                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
+                holder.text_value = (TextView) row.findViewById(R.id.PRDVAL);
+                holder.text_quantity = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.text_caseQuantity = (TextView) row.findViewById(R.id.PRDCASEQTY);
                 holder.outerQty = (TextView) row
                         .findViewById(R.id.outerCaseQty);
-                holder.tvbatchid = (TextView) row.findViewById(R.id.prdbatchid);
+                holder.text_batchId = (TextView) row.findViewById(R.id.prdbatchid);
                 holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
 
-                /** hide Pcs,case,outer **/
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    holder.tvcaseqty.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.tvwqty.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    holder.text_caseQuantity.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    holder.text_quantity.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
                     holder.tvWeight.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    holder.tvwval.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
+                    holder.text_value.setVisibility(View.GONE);
                 }
 
                 row.setOnClickListener(new OnClickListener() {
@@ -290,27 +257,29 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
             }
 
 
-            holder.tvwpsname.setText(orderreport.getProductShortName());
-            holder.tvwpsname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.tvbatchid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.productShortName.setText(orderReportBO.getProductShortName());
+            holder.productShortName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.text_batchId.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            holder.productName = orderreport.getProductName();
-            holder.tvcaseqty.setText(orderreport.getCQty() + "");
-            holder.tvwqty.setText(orderreport.getPQty() + "");
-            holder.tvwval.setText(bmodel.formatValue((orderreport.getTot()))
-                    + "");
-            holder.outerQty.setText(orderreport.getOuterOrderedCaseQty() + "");
-            if (orderreport.getBatchNo() != null && !orderreport.getBatchNo().equals("null"))
-                holder.tvbatchid.setText("Batch No : " + orderreport.getBatchNo());
-            else holder.tvbatchid.setText("" + " ");
+            holder.productName = orderReportBO.getProductName();
+            holder.text_caseQuantity.setText(String.valueOf(orderReportBO.getCQty()));
+            holder.text_quantity.setText(String.valueOf(orderReportBO.getPQty()));
+            holder.text_value.setText(businessModel.formatValue((orderReportBO.getTot())));
+            holder.outerQty.setText(String.valueOf(orderReportBO.getOuterOrderedCaseQty()));
+            if (orderReportBO.getBatchNo() != null && !orderReportBO.getBatchNo().equals("null")) {
+                String value="Batch No : " + orderReportBO.getBatchNo();
+                holder.text_batchId.setText(value);
+            }
+            else holder.text_batchId.setText("");
 
-            holder.tvwpsname.setTextColor(holder.outerQty.getTextColors());
-            if (orderreport.getIsCrown() == 1)
-                holder.tvwpsname.setTextColor(Color.BLUE);
-            else if (orderreport.getIsBottleReturn() == 1)
-                holder.tvwpsname.setTextColor(Color.GREEN);
-            holder.tvWeight.setText("WGT :"+orderreport.getTotalQty() * orderreport.getWeight() + "");
-            holder.tvWeight.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.productShortName.setTextColor(holder.outerQty.getTextColors());
+            if (orderReportBO.getIsCrown() == 1)
+                holder.productShortName.setTextColor(Color.BLUE);
+            else if (orderReportBO.getIsBottleReturn() == 1)
+                holder.productShortName.setTextColor(Color.GREEN);
+            String weight="WGT :"+orderReportBO.getTotalQty() * orderReportBO.getWeight();
+            holder.tvWeight.setText(weight);
+            holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             return (row);
@@ -318,15 +287,12 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
     }
 
     class ViewHolder {
-        String ref;// product id
         String productName;
-        TextView tvwpsname;
-        TextView tvwval, tvwqty, tvcaseqty, outerQty, tvbatchid, tvWeight;
-        ProductMasterBO productBO;
+        TextView productShortName;
+        TextView text_value, text_quantity , text_caseQuantity, outerQty, text_batchId, tvWeight;
     }
 
     public void onClick(View comp) {
-        // TODO Auto-generated method stub
         Button btn = (Button) comp;
         if (btn == back) {
             super.onDestroy();
@@ -336,8 +302,6 @@ public class Orderreportdetail extends IvyBaseActivityNoActionBar implements
     }
 
     public void onBackPressed() {
-        // do something on back.
-        return;
     }
 
     @Override

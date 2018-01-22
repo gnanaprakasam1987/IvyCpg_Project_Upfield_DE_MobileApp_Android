@@ -524,7 +524,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             intent.putExtra("isFromOrder", true);
             intent.putExtra("TotalValue", ret.getOrderTotal());
             intent.putExtra("TotalLines", ret.getLPC());
-            intent.setClass(getActivity(), Orderreportdetail.class);
+            intent.setClass(getActivity(), OrderReportDetail.class);
             startActivityForResult(intent, 0);
 
 
