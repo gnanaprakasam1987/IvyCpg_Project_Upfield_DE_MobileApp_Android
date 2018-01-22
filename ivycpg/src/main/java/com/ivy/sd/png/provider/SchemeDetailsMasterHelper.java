@@ -2457,7 +2457,7 @@ public class SchemeDetailsMasterHelper {
 
 					productBO = new ProductMasterBO();
 					productBO.setProductID(c.getString(0));
-					productBO.setBatchid(c.getString(1));
+					productBO.setBatchId(c.getString(1));
 
 					productBO.setTotalamount(c.getDouble(3));
 

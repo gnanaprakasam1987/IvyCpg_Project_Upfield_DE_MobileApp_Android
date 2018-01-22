@@ -52,6 +52,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -104,6 +105,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private Vector<ProductMasterBO> items;
     // Adapter used for Load Reason
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private HashMap<Integer, Integer>  mCompetitorSelectedIdByLevelId;
 
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     private InputMethodManager inputManager;
@@ -127,7 +129,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private int mTotalScreenWidth = 0;
     private boolean isFromChild;
     private Button mBtnFilterPopup;
-    private String selectedCompetitorId = "";
     private Object selectedTabTag;
     private int x, y;
     private HorizontalScrollView hscrl_spl_filter;
@@ -480,7 +481,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         try {
 
             if (mSelectedBrandID == -1) {
-                selectedCompetitorId = "";
+                mCompetitorSelectedIdByLevelId=new HashMap<>();
             }
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -905,13 +906,18 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else
                 menu.findItem(R.id.menu_scheme).setVisible(true);
 
-            if (bmodel.productHelper.getCompetitorFilterList() != null && bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && !selectedCompetitorId.equals("")) {
-                menu.findItem(R.id.menu_competitor_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER &&mCompetitorSelectedIdByLevelId!=null) {
+                for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
+                    if (mSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_competitor_filter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
 
             }
 
@@ -1255,7 +1261,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            selectedCompetitorId = "";
+            mCompetitorSelectedIdByLevelId=new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1288,7 +1294,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         if (!tag.toString().equalsIgnoreCase("All")) {
-            selectedCompetitorId = "";
+            mCompetitorSelectedIdByLevelId=new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1601,7 +1607,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
-            selectedCompetitorId = "";
+            mCompetitorSelectedIdByLevelId=new HashMap<>();
+
         }
         mylist = new ArrayList<>();
         //
@@ -1868,7 +1875,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             // set Fragmentclass Arguments
             CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
             Bundle b = new Bundle();
-            b.putString("selectedCompetitorId", selectedCompetitorId);
+            b.putSerializable("selectedFilter", mCompetitorSelectedIdByLevelId);
             fragobj.setCompetitorFilterInterface(this);
             fragobj.setArguments(b);
             ft.replace(R.id.right_drawer, fragobj, "competitor filter");
@@ -1879,34 +1886,32 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateCompetitorProducts(String filterId) {
-        selectedCompetitorId = filterId;
+    public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
+
+        this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;
+        this.mSelectedIdByLevelId=new HashMap<>();// clearing product filter
+
+        mSelectedBrandID = -1;
+        generalbutton = GENERAL;
         if (mylist != null) {
             mylist.clear();
         }
-        if (!selectedCompetitorId.equals("")) {
-            mSelectedIdByLevelId = new HashMap<>();
-            mSelectedBrandID = -1;
-            generalbutton = GENERAL;
-        }
 
-        /* if five filter is previously selected replace the filtered content */
-        /*if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false && selectedCompetitorId.equals("")) {
-            updatefromFiveLevelFilter(parentidList, mSelectedIdByLevelId, mAttributeProducts, filtertext);
-        } else {*/
         Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
-        if (filterId != null && !filterId.isEmpty()) {
-            for (ProductMasterBO sku : items) {
-                if (Integer.parseInt(filterId) == sku.getCompParentId()) {
-                    mylist.add(sku);
+        if (parentIdList != null && !parentIdList.isEmpty()) {
+            for(CompetitorFilterLevelBO mParentBO:parentIdList) {
+                for (ProductMasterBO sku : items) {
+                    if(mParentBO.getProductId()==sku.getCompParentId()) {
+                        mylist.add(sku);
+                    }
                 }
             }
         } else {
             mylist.addAll(items);
         }
+
         mDrawerLayout.closeDrawers();
         refreshList();
-        //}
         if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
             if (hscrl_spl_filter != null)
                 hscrl_spl_filter.scrollTo(x, y);
@@ -1914,7 +1919,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         getActivity().invalidateOptionsMenu();
-
-
     }
+
 }

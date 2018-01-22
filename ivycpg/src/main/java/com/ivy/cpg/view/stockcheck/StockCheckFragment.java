@@ -59,6 +59,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -127,6 +128,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private StockCheckPresenterImpl stockCheckPresenter;
     private AlertDialog alertDialog;
+    private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -446,9 +448,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
     }
 
+
+
     @Override
-    public void updateCompetitorProducts(String filterId) {
-        stockCheckPresenter.updateCompetitorFilteredProducts(filterId);
+    public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
+        stockCheckPresenter.updateCompetitorFilteredProducts(parentIdList,  mSelectedIdByLevelId,  filterText) ;
     }
 
     class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -1316,7 +1320,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (businessModel.productHelper.getCompetitorFilterList() != null && businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+            if ( businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
             /*if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
@@ -1326,12 +1330,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }*/
 
-            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER
-                    && !stockCheckPresenter.selectedCompetitorId.equals("")) {
-                menu.findItem(R.id.menu_competitor_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId!=null) {
+                for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
+                    if (mCompetitorSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_competitor_filter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
 
             }
+
             if (!businessModel.configurationMasterHelper.SHOW_REMARKS_STK_CHK) {
                 stockCheckPresenter.hideRemarksButton();
                 menu.findItem(R.id.menu_remarks).setVisible(false);
@@ -1663,7 +1672,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            stockCheckPresenter.selectedCompetitorId = "";
+            stockCheckPresenter.mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
     }
@@ -1694,7 +1703,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            stockCheckPresenter.selectedCompetitorId = "";
+            stockCheckPresenter.mCompetitorSelectedIdByLevelId=new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1988,7 +1997,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             // set Fragmentclass Arguments
             CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
             Bundle b = new Bundle();
-            b.putString("selectedCompetitorId", stockCheckPresenter.selectedCompetitorId);
+            b.putSerializable("selectedFilter", mCompetitorSelectedIdByLevelId);
             fragobj.setCompetitorFilterInterface(this);
             fragobj.setArguments(b);
             ft.replace(R.id.right_drawer, fragobj, "competitor filter");

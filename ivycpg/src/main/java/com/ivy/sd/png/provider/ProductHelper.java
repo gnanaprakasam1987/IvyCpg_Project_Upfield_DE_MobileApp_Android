@@ -2,9 +2,11 @@ package com.ivy.sd.png.provider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
@@ -34,6 +36,7 @@ import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -137,6 +140,9 @@ public class ProductHelper {
     private SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId;
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
+
+    private  HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
+    private Vector<CompetitorFilterLevelBO> mCompetitorSequenceValues;
 
 
     public int getmSelectedLocationIndex() {
@@ -760,6 +766,167 @@ public class ProductHelper {
             } else {
                 mfilterlevelBo.put(mProductLevelId, pfilterlevel);
             }
+            c.close();
+            db.close();
+        }
+    }
+
+    public void downloadCompetitorFiveFilterLevels() {
+
+
+        List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
+
+        if(mLevels.size()>0) {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String contentLevelId=mLevels.get(mLevels.size()-1);
+
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                    + " where "
+                    + " PL.LevelID =" + mLevels.get(0));
+            if (mLevels.size()>2) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(1));
+            }
+            if (mLevels.size()>3) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(2));
+            }
+            if (mLevels.size()>4) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(3));
+            }
+            if (mLevels.size()>5) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(4));
+            }
+            Cursor listCursor = db.selectSQL(stringBuffer.toString());
+
+            CompetitorFilterLevelBO mLevelBO;
+            mCompetitorSequenceValues = new Vector<>();
+            while (listCursor.moveToNext()) {
+
+                mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setProductId(listCursor.getInt(0));
+                mLevelBO.setLevelName(listCursor.getString(1));
+                mLevelBO.setSequence(listCursor.getInt(2));
+
+                mCompetitorSequenceValues.add(mLevelBO);
+            }
+
+            listCursor.close();
+
+            int mContentLevel = 0;
+            int loopEnd = 0;
+
+            if (!contentLevelId.equals("0")) {
+                Cursor seqCur = db
+                        .selectSQL("SELECT IFNULL(PL.Sequence,0) "
+                                + "FROM ProductLevel PL "
+                                + "WHERE  PL.levelid=" + contentLevelId);
+                if (seqCur.moveToNext()) {
+                    mContentLevel = seqCur.getInt(0);
+                }
+                seqCur.close();
+            }
+
+            mCompetitorFilterlevelBo = new HashMap<>();
+
+            try {
+
+                if (mCompetitorSequenceValues.size() > 0) {
+
+                    loopEnd = mContentLevel - mCompetitorSequenceValues.get(0).getSequence()
+                            + 1;
+                    loadCompetitorParentFilter(loopEnd, mCompetitorSequenceValues.get(0).getProductId());
+
+                    for (int i = 1; i < mCompetitorSequenceValues.size(); i++) {
+                        loopEnd = mContentLevel
+                                - mCompetitorSequenceValues.get(i - 1).getSequence() + 1;
+
+                        loadCompetitorChildFilter(loopEnd,
+                                mCompetitorSequenceValues.get(i).getSequence(),
+                                mCompetitorSequenceValues.get(i - 1).getSequence(),
+                                mCompetitorSequenceValues.get(i).getProductId(),
+                                mCompetitorSequenceValues.get(i - 1).getProductId());
+                    }
+                }
+
+            } catch (Exception e) {
+                Commons.print(e.getMessage());
+            }
+        }
+    }
+
+    private void loadCompetitorParentFilter(int loopEnd, int mProductLevelId){
+        //Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid
+
+        Vector<CompetitorFilterLevelBO> mFilterLevel;
+
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        db.openDataBase();
+
+        String query = "SELECT DISTINCT CPM1.CPID,CPM1.CPName FROM CompetitorProductMaster CPM1";
+
+        for (int i = 2; i <= loopEnd; i++)
+            query = query + " INNER JOIN CompetitorProductMaster CPM" + i + " ON CPM" + i
+                    + ".CPTid = CPM" + (i - 1) + ".CPID";
+
+        query = query
+                + " WHERE CPM1.PLid = " + mProductLevelId + " Order By CPM1.RowId";
+
+        Cursor c = db.selectSQL(query);
+
+        if (c != null) {
+
+            mFilterLevel = new Vector<>();
+            while (c.moveToNext()) {
+                CompetitorFilterLevelBO mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setProductId(c.getInt(0));
+                mLevelBO.setLevelName(c.getString(1));
+                mFilterLevel.add(mLevelBO);
+            }
+            mCompetitorFilterlevelBo.put(mProductLevelId, mFilterLevel);
+            c.close();
+        }
+
+    }
+
+    private void loadCompetitorChildFilter(int loopEnd, int mChildLevel,
+                                           int mParentLevel, int mLevelId, int mParentLevelId) {
+
+        int filterGap = mChildLevel - mParentLevel + 1;
+
+        String query = "SELECT DISTINCT CPM1.CPID, CPM" + filterGap + ".CPID,  CPM"
+                + filterGap + ".CPName FROM CompetitorProductMaster CPM1 ";
+
+        for (int i = 2; i <= loopEnd; i++)
+            query = query + " INNER JOIN CompetitorProductMaster CPM" + i + " ON CPM" + i
+                    + ".CPTid = CPM" + (i - 1) + ".CPID";
+
+        query = query + " WHERE CPM1.PLid = " + mParentLevelId
+                + " Order By CPM" + filterGap + ".RowId,CPM1.RowId";
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(query);
+        Vector<CompetitorFilterLevelBO> mFilterLevel;
+        if (c != null) {
+            mFilterLevel = new Vector<>();
+            while (c.moveToNext()) {
+                CompetitorFilterLevelBO mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setParentId(c.getInt(0));
+                mLevelBO.setProductId(c.getInt(1));
+                mLevelBO.setLevelName(c.getString(2));
+                mFilterLevel.add(mLevelBO);
+            }
+            mCompetitorFilterlevelBo.put(mLevelId, mFilterLevel);
             c.close();
             db.close();
         }
@@ -6744,18 +6911,23 @@ public class ProductHelper {
             int mFiltrtLevel = 0;
             int mContentLevel = 0;
 
-            Cursor filterCur = db
-                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
-                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  " + bmodel.configurationMasterHelper.COMPETITOR_FILTER_TYPE +
-                            " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
-                            "where Sequence = (Select max(Sequence) from ProductLevel))");
 
-            if (filterCur != null) {
-                if (filterCur.moveToNext()) {
-                    mFiltrtLevel = filterCur.getInt(0);
-                    mContentLevel = filterCur.getInt(1);
+            if(mCompetitorSequenceValues!=null&&mCompetitorSequenceValues.size()>0) {
+                mFiltrtLevel = mCompetitorSequenceValues.get(mCompetitorSequenceValues.size() - 1).getSequence();
+            }
+
+            List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
+
+            if(mLevels.size()>0) {
+                Cursor filterCur = db
+                        .selectSQL("SELECT Distinct IFNULL(Sequence,0) FROM ProductLevel" +
+                                " where levelId = " + mLevels.get(mLevels.size() - 1));
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mContentLevel = filterCur.getInt(0);
+                    }
+                    filterCur.close();
                 }
-                filterCur.close();
             }
 
             int loopEnd = mContentLevel - mFiltrtLevel + 1;
@@ -9087,7 +9259,7 @@ public class ProductHelper {
                 competitorFilterList = new ArrayList<CompetitorFilterLevelBO>();
                 while (c.moveToNext()) {
                     competitorBO = new CompetitorFilterLevelBO();
-                    competitorBO.setProductId(c.getString(0));
+                    competitorBO.setProductId(c.getInt(0));
                     competitorBO.setProductName(c.getString(1));
                     competitorBO.setLevelName(c.getString(2));
                     competitorFilterList.add(competitorBO);
@@ -9099,6 +9271,56 @@ public class ProductHelper {
             Commons.print(e.getMessage());
         }
     }
+
+
+    public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context){
+        ArrayList<ConfigureBO> list = new ArrayList<>();
+        try {
+
+            SharedPreferences sharedPrefs = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cur = db
+                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                            + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                            + " and lang="+bmodel.QT(language));
+
+            if (cur != null && cur.getCount() > 0) {
+                ConfigureBO configureBO;
+                while (cur.moveToNext()) {
+                    configureBO = new ConfigureBO();
+                    configureBO.setConfigCode(cur.getString(0));
+                    configureBO.setMenuName(cur.getString(1));
+                    configureBO.setMandatory(cur.getInt(2));
+                    list.add(configureBO);
+                }
+                cur.close();
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            return  new ArrayList<>();
+        }
+        return list;
+    }
+
+    public HashMap<Integer, Vector<CompetitorFilterLevelBO>> getCompetitorFiveLevelFilters() {
+
+        return mCompetitorFilterlevelBo;
+
+    }
+
+    public Vector<CompetitorFilterLevelBO> getCompetitorSequenceValues() {
+        return mCompetitorSequenceValues;
+
+    }
+
 }
 
 
