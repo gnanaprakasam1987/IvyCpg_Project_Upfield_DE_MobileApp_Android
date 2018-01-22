@@ -66,7 +66,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     private TextView text_totalOrderValue, text_averagePreOrPost;
     private ListView listView;
     private Button xlsExport;
+
     private BusinessModel businessModel;
+
     private ArrayList<OrderReportBO> list;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

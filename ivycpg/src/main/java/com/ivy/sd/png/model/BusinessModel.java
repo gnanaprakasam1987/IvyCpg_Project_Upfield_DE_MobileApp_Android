@@ -187,7 +187,7 @@ import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
-import com.ivy.sd.png.view.reports.InvoiceReportDetail;
+import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;

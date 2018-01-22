@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,12 +40,15 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     private TextView totalOrderValue, mAveragePrePost;
     private ListView listView;
+
     private BusinessModel businessModel;
+    private InvoiceReportBO mSelectedInvoiceReportBO;
+
     private Vector<InvoiceReportBO> list;
+
     private int mRetailerId = 0;
     private double mTotalAmount;
     private String mInvoiceId = "";
-    private InvoiceReportBO mSelectedInvoiceReportBO;
     private boolean isClicked;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

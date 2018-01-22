@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports;
+package com.ivy.sd.png.view.reports;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.OrderReportDetail;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;

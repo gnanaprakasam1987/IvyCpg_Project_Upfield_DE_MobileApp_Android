@@ -31,14 +31,17 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
 
     private Button back;
-    private ArrayList<OrderReportBO> list;
     private ListView listView;
     private TextView  text_total, totalLines, tv_lbl_total_lines;
+
     private BusinessModel businessModel;
     private OrderReportBO obj;
+
     private boolean isFromOrderReport;
     private double TotalValue;
     private String TotalLines;
+
+    private ArrayList<OrderReportBO> list;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +56,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         totalLines = (TextView) findViewById(R.id.txttotallines);
         tv_lbl_total_lines = (TextView) findViewById(R.id.lbl_total_lines);
         TextView outletName = (TextView) findViewById(R.id.BtnBrandPrev);
-        TextView label_total = (TextView) findViewById(R.id.TextView51);
+        TextView label_total = (TextView) findViewById(R.id.label_totalValue);
         label_total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tv_lbl_total_lines.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
@@ -131,7 +134,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 findViewById(R.id.title_weight).setVisibility(View.GONE);
 
             if (!businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
-                findViewById(R.id.TextView51).setVisibility(View.GONE);
+                findViewById(R.id.label_totalValue).setVisibility(View.GONE);
                 findViewById(R.id.txttotal).setVisibility(View.GONE);
             }
             if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
