@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -68,7 +67,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     private ListView listView;
     private Button xlsExport;
     private BusinessModel businessModel;
-    private ArrayList<ReportonorderbookingBO> list;
+    private ArrayList<OrderReportBO> list;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -140,8 +139,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
             if (businessModel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
                 int totalQty = 0;
-                for (ReportonorderbookingBO bo : list)
-                    totalQty = totalQty + businessModel.reportHelper.getTotalQtyfororder(bo.getorderID());
+                for (OrderReportBO bo : list)
+                    totalQty = totalQty + businessModel.reportHelper.getTotalQtyfororder(bo.getOrderID());
                 totalLines.setText(String.valueOf(totalQty ));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
@@ -287,15 +286,15 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         }
 
         // Calculate the total order value.
-        for (ReportonorderbookingBO ret : list) {
-            mTotalValue = mTotalValue + SDUtil.convertToDouble(SDUtil.format(ret.getordertot(),
+        for (OrderReportBO ret : list) {
+            mTotalValue = mTotalValue + SDUtil.convertToDouble(SDUtil.format(ret.getOrderTotal(),
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         }
 
         if (businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             // Calculate the total order value.
-            for (ReportonorderbookingBO ret : list) {
+            for (OrderReportBO ret : list) {
                 try {
                     String str[] = ret.getDist().split("/");
                     pre = pre + Integer.parseInt(str[0]);
@@ -339,10 +338,10 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
     }
 
-    class MyAdapter extends ArrayAdapter<ReportonorderbookingBO> {
-        ArrayList<ReportonorderbookingBO> items;
+    class MyAdapter extends ArrayAdapter<OrderReportBO> {
+        ArrayList<OrderReportBO> items;
 
-        private MyAdapter(ArrayList<ReportonorderbookingBO> items) {
+        private MyAdapter(ArrayList<OrderReportBO> items) {
             super(getActivity(), R.layout.row_order_report, items);
             this.items = items;
         }
@@ -351,7 +350,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         public View getView(int position, View convertView, @NotNull ViewGroup parent) {
             final ViewHolder holder;
 
-            ReportonorderbookingBO orderreport = items
+            OrderReportBO reportBO = items
                     .get(position);
             View row = convertView;
 
@@ -406,7 +405,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             }
 
-			holder.text_retailerName.setText(orderreport.getretailerName());
+			holder.text_retailerName.setText(reportBO.getRetailerName());
             holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 			holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -424,21 +423,21 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             try {
                 if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
-                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + orderreport.getmMustSellCount();
+                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + reportBO.getMustSellCount();
                     holder.tvMustSellCount.setText(value);
                 } else {
-                    String value=getResources().getString(R.string.must_sell) + " : " + orderreport.getmMustSellCount();
+                    String value=getResources().getString(R.string.must_sell) + " : " + reportBO.getMustSellCount();
                     holder.tvMustSellCount.setText(value);
-                    holder.text_mustSellCount.setText(String.valueOf(orderreport.getmMustSellCount()));
+                    holder.text_mustSellCount.setText(String.valueOf(reportBO.getMustSellCount()));
 
                 }
                 if (businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) != null) {
-                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + orderreport.getmFocusBrandCount();
+                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + reportBO.getFocusBrandCount();
                     holder.tvFocusBrandCount.setText(value);
                 } else {
-                    String value=getResources().getString(R.string.focus_brand) + " : " + orderreport.getmFocusBrandCount();
+                    String value=getResources().getString(R.string.focus_brand) + " : " + reportBO.getFocusBrandCount();
                     holder.tvFocusBrandCount.setText(value);
-                    holder.focus_brand_count1.setText(String.valueOf(orderreport.getmFocusBrandCount()));
+                    holder.focus_brand_count1.setText(String.valueOf(reportBO.getFocusBrandCount()));
 
                 }
 
@@ -449,16 +448,16 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 Commons.printException(e);
             }
 
-            holder.text_orderValue.setText(businessModel.formatValue((orderreport
-                    .getordertot())));
-            holder.text_LPC.setText(orderreport.getlpc());
-            holder.tvwDist.setText(orderreport.getDist());
-            holder.tvOrderNo.setText(orderreport.getorderID());
-            holder.tvWeight.setText(String.valueOf(orderreport.getWeight()));
+            holder.text_orderValue.setText(businessModel.formatValue((reportBO
+                    .getOrderTotal())));
+            holder.text_LPC.setText(reportBO.getLPC());
+            holder.tvwDist.setText(reportBO.getDist());
+            holder.tvOrderNo.setText(reportBO.getOrderID());
+            holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
 
 
             if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                if (orderreport.getIsVanSeller() == 1)
+                if (reportBO.getIsVanSeller() == 1)
                     holder.tv_seller_type.setText("V");
                 else
                     holder.tv_seller_type.setText("P");
@@ -466,7 +465,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder.tv_seller_type.setVisibility(View.INVISIBLE);
             }
 
-            if (orderreport.getUpload().equalsIgnoreCase("Y")) {
+            if (reportBO.getUpload().equalsIgnoreCase("Y")) {
                 holder.text_retailerName.setTextColor(getResources().getColor(
                         R.color.GREEN));
                 holder.text_orderValue.setTextColor(getResources().getColor(
@@ -487,9 +486,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             try {
                 String delivery_date;
                 if (businessModel.mSelectedModule == 3) {
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(orderreport.getorderID()), ConfigurationMasterHelper.outDateFormat);
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getOrderID()), ConfigurationMasterHelper.outDateFormat);
                 } else
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(orderreport.getreatilerId()),ConfigurationMasterHelper.outDateFormat);
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getRetailerId()),ConfigurationMasterHelper.outDateFormat);
 
                 if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                     String value=businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
@@ -517,14 +516,14 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         try {
-            ReportonorderbookingBO ret = list
+            OrderReportBO ret = list
                     .get(arg2);
             Intent intent = new Intent();
             intent.putExtra("OBJ",
                     ret);
             intent.putExtra("isFromOrder", true);
-            intent.putExtra("TotalValue", ret.getordertot());
-            intent.putExtra("TotalLines", ret.getlpc());
+            intent.putExtra("TotalValue", ret.getOrderTotal());
+            intent.putExtra("TotalLines", ret.getLPC());
             intent.setClass(getActivity(), Orderreportdetail.class);
             startActivityForResult(intent, 0);
 

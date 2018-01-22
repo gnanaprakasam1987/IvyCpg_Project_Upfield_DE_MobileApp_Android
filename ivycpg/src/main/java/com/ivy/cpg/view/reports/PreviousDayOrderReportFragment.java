@@ -17,9 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.Orderreportdetail;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -35,7 +33,7 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
     private ListView lvwplist;
     private Button xlsExport;
     private BusinessModel bmodel;
-    private ArrayList<ReportonorderbookingBO> mylist;
+    private ArrayList<OrderReportBO> mylist;
     private View view;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -145,13 +143,13 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
         }
 
         // Calculate the total order value.
-        for (ReportonorderbookingBO ret : mylist) {
-            totalvalue = totalvalue + ret.getordertot();
+        for (OrderReportBO ret : mylist) {
+            totalvalue = totalvalue + ret.getOrderTotal();
         }
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
             // Calculate the total order value.
-            for (ReportonorderbookingBO ret : mylist) {
+            for (OrderReportBO ret : mylist) {
                 try {
                     String str[] = ret.getDist().split("/");
                     pre = pre + Integer.parseInt(str[0]);
@@ -190,10 +188,10 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
 
     }
 
-    class MyAdapter extends ArrayAdapter<ReportonorderbookingBO> {
-        ArrayList<ReportonorderbookingBO> items;
+    class MyAdapter extends ArrayAdapter<OrderReportBO> {
+        ArrayList<OrderReportBO> items;
 
-        private MyAdapter(ArrayList<ReportonorderbookingBO> items) {
+        private MyAdapter(ArrayList<OrderReportBO> items) {
             super(getActivity(), R.layout.row_order_report, items);
             this.items = items;
         }
@@ -201,7 +199,7 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
 
-            ReportonorderbookingBO orderreport = (ReportonorderbookingBO) items
+            OrderReportBO orderreport = (OrderReportBO) items
                     .get(position);
             View row = convertView;
 
@@ -230,12 +228,12 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
 
             }
 
-            holder.tvwrname.setText(orderreport.getretailerName());
+            holder.tvwrname.setText(orderreport.getRetailerName());
             holder.tvwvalue.setText(bmodel.formatValue((orderreport
-                    .getordertot())) + "");
-            holder.tvwlpc.setText(orderreport.getlpc());
+                    .getOrderTotal())) + "");
+            holder.tvwlpc.setText(orderreport.getLPC());
             holder.dist.setText(orderreport.getDist());
-            holder.tvOrderNo.setText(orderreport.getorderID());
+            holder.tvOrderNo.setText(orderreport.getOrderID());
             return (row);
         }
     }
@@ -249,13 +247,13 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // TODO Auto-generated method stub
         try {
-            ReportonorderbookingBO ret = (ReportonorderbookingBO) mylist
+            OrderReportBO ret = (OrderReportBO) mylist
                     .get(arg2);
             Intent orderreportdetail = new Intent();
             orderreportdetail.putExtra("OBJ",
                     ret);
-            orderreportdetail.putExtra("TotalLines", ret.getlpc());
-            orderreportdetail.putExtra("TotalValue", ret.getordertot());
+            orderreportdetail.putExtra("TotalLines", ret.getLPC());
+            orderreportdetail.putExtra("TotalValue", ret.getOrderTotal());
             orderreportdetail.setClass(getActivity(), Orderreportdetail.class);
             startActivityForResult(orderreportdetail, 0);
 

@@ -22,7 +22,7 @@
             android:text="@string/product_name" />
 
         <TextView
-            android:id="@+id/batchid"
+            android:id="@+id/batchId"
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

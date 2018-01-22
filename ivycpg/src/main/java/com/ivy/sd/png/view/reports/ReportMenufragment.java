@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -59,7 +59,7 @@ public class ReportMenufragment extends IvyBaseFragment {
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
     private ActionBar actionBar;
-    private ArrayList<ReportonorderbookingBO> mylist;
+    private ArrayList<OrderReportBO> mylist;
     private Vector<InvoiceReportBO> mylist1;
     private Vector<ConfigureBO> mDayList;
 

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -36,9 +36,9 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 	private ListView lvwplist;
 	private Button xlsExport;
 	private BusinessModel bmodel;
-	private ArrayList<ReportonorderbookingBO> mylist;
+	private ArrayList<OrderReportBO> mylist;
 	private View view;
-	private ReportonorderbookingBO mSelectedReportBO;
+	private OrderReportBO mSelectedReportBO;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -160,13 +160,13 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		}
 
 		// Calculate the total order value.
-		for (ReportonorderbookingBO ret : mylist) {
-			totalvalue = totalvalue + ret.getordertot();
+		for (OrderReportBO ret : mylist) {
+			totalvalue = totalvalue + ret.getOrderTotal();
 		}
 
 		if (bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
 			// Calculate the total order value.
-			for (ReportonorderbookingBO ret : mylist) {
+			for (OrderReportBO ret : mylist) {
 				try {
 					String str[] = ret.getDist().split("/");
 					pre = pre + Integer.parseInt(str[0]);
@@ -203,10 +203,10 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
 	}
 
-	class MyAdapter extends ArrayAdapter<ReportonorderbookingBO> {
-		ArrayList<ReportonorderbookingBO> items;
+	class MyAdapter extends ArrayAdapter<OrderReportBO> {
+		ArrayList<OrderReportBO> items;
 
-		private MyAdapter(ArrayList<ReportonorderbookingBO> items) {
+		private MyAdapter(ArrayList<OrderReportBO> items) {
 			super(getActivity(), R.layout.row_order_report, items);
 			this.items = items;
 		}
@@ -214,7 +214,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		public View getView(int position, View convertView, ViewGroup parent) {
 			final ViewHolder holder;
 
-			ReportonorderbookingBO orderreport = (ReportonorderbookingBO) items
+			OrderReportBO orderreport = (OrderReportBO) items
 					.get(position);
 			View row = convertView;
 
@@ -242,12 +242,12 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
 			}
 
-			holder.tvwrname.setText(orderreport.getDistributorname());
+			holder.tvwrname.setText(orderreport.getDistributorName());
 			holder.tvwvalue.setText(bmodel.formatValue((orderreport
-					.getordertot())) + "");
-			holder.tvwlpc.setText(orderreport.getlpc());
+					.getOrderTotal())) + "");
+			holder.tvwlpc.setText(orderreport.getLPC());
 			holder.tvwDist.setText(orderreport.getDist());
-			holder.tvOrderNo.setText(orderreport.getorderID());
+			holder.tvOrderNo.setText(orderreport.getOrderID());
 			;
 
 			if (orderreport.getUpload().equalsIgnoreCase("Y")) {
@@ -283,7 +283,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		// TODO Auto-generated method stub
 		try {
 
-			ReportonorderbookingBO ret = (ReportonorderbookingBO) mylist
+			OrderReportBO ret = (OrderReportBO) mylist
 					.get(arg2);
 			bmodel.reportHelper.updateDistributor(ret.getDistributorId()+"");
 			bmodel.productHelper
@@ -293,8 +293,8 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 			orderreportdetail.putExtra("OBJ",
 					ret);
 			orderreportdetail.putExtra("isFromOrder", true);
-			orderreportdetail.putExtra("TotalValue", ret.getordertot());
-			orderreportdetail.putExtra("TotalLines", ret.getlpc());
+			orderreportdetail.putExtra("TotalValue", ret.getOrderTotal());
+			orderreportdetail.putExtra("TotalLines", ret.getLPC());
 			orderreportdetail.setClass(getActivity(), DistOrderreportdetail.class);
 			startActivityForResult(orderreportdetail, 0);
 
