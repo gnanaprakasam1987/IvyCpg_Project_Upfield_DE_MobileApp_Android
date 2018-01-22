@@ -90,6 +90,7 @@ public class CommonPrintHelper {
 
     private static String TAG_PRODUCT_CODE = "prod_code";
     private static String TAG_PRODUCT_NAME = "prod_name";
+    private static String TAG_HSN_CODE = "hsn_code";
 
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
@@ -760,6 +761,8 @@ public class CommonPrintHelper {
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription() + "";
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                    mProductValue = prod.getProductCode();
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -907,6 +910,8 @@ public class CommonPrintHelper {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                                 mProductValue = prod.getDescription() + "";
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1035,6 +1040,8 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint((schemeProductBO.getLineValue() - schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
