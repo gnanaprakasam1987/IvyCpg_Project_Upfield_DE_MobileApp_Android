@@ -31,7 +31,6 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
 
     private TextView totalOrderValue, averageLines, mavg_pre_post, totalLines;
     private ListView lvwplist;
-    private Button xlsExport;
     private BusinessModel bmodel;
     private ArrayList<OrderReportBO> mylist;
     private View view;
@@ -59,10 +58,8 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
         averageLines = (TextView) view.findViewById(R.id.txtavglines);
         mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
         totalLines = (TextView) view.findViewById(R.id.txttotallines);
-        xlsExport = (Button) view.findViewById(R.id.xlsExport);
         lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
-        xlsExport.setOnClickListener(this);
         lvwplist.setOnItemClickListener(this);
 
         mylist = bmodel.reportHelper.downloadPVSOrderreport();
@@ -105,18 +102,6 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
     }
 
     public void onClick(View comp) {
-        Button vw = (Button) comp;
-        if (vw == xlsExport) {
-            if (bmodel.synchronizationHelper.isExternalStorageAvailable()) {
-                new JExcelExport().execute();
-            } else {
-                Toast.makeText(
-                        getActivity(),
-                        getResources().getString(
-                                R.string.external_storage_not_available),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
 
     }
 
@@ -130,7 +115,6 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.unable_to_load_data),
                     Toast.LENGTH_SHORT).show();
-            xlsExport.setVisibility(View.GONE);
             return;
         }
         // Show alert if no order exist.
@@ -138,7 +122,6 @@ public class PreviousDayOrderReportFragment extends IvyBaseFragment implements
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_orders_available),
                     Toast.LENGTH_SHORT).show();
-            xlsExport.setVisibility(View.GONE);
             return;
         }
 

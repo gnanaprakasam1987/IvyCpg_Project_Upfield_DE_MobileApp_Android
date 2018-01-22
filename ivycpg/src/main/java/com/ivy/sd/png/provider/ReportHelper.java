@@ -3551,4 +3551,55 @@ public class ReportHelper {
 
         return 0;
     }
+
+    /**
+     * Download retailer master for invoice reports
+     * @param context Context
+     * @param mRetailerId Retailer Id
+     */
+    public void downloadRetailerMaster(Context context,int mRetailerId) {
+        try {
+            RetailerMasterBO retailer = new RetailerMasterBO();
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
+                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
+                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " where A.retailerid=" + mRetailerId);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    retailer = new RetailerMasterBO();
+                    retailer.setRetailerID(c.getString(0));
+                    retailer.setGroupId(c.getInt(1));
+                    retailer.setSubchannelid(c.getInt(2));
+                    retailer.setRpTypeCode(c.getString(3));
+                    retailer.setRetailerCode(c.getString(4));
+                    retailer.setRetailerName(c.getString(5));
+                    retailer.setAddress1(c.getString(6));
+                    retailer.setTinnumber(c.getString(7));
+                    retailer.setCredit_invoice_count(c.getString(8));
+                    retailer.setAddress2(c.getString(9));
+                    retailer.setAddress3(c.getString(10));
+                    retailer.setTaxTypeId(c.getInt(c
+                            .getColumnIndex("TaxTypeId")));
+                    retailer.setLocationId(c.getInt(c
+                            .getColumnIndex("locationid")));
+                    retailer.setRfield2(c.getString(13));
+                    retailer.setSameZone(c.getInt(14));
+                    retailer.setGSTNumber(c.getString(15));
+                    retailer.setTinExpDate(c.getString(16));
+
+                }
+                c.close();
+            }
+
+            bmodel.setRetailerMasterBO(retailer);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 }

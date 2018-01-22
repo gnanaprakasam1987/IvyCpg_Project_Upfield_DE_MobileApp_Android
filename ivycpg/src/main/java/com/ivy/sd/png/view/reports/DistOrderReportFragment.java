@@ -34,7 +34,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 	private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
 			totalLines;
 	private ListView lvwplist;
-	private Button xlsExport;
 	private BusinessModel bmodel;
 	private ArrayList<OrderReportBO> mylist;
 	private View view;
@@ -63,10 +62,8 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
 		mlpc = (TextView) view.findViewById(R.id.lpc);
 		totalLines = (TextView) view.findViewById(R.id.txttotallines);
-		xlsExport = (Button) view.findViewById(R.id.xlsExport);
 		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
-		xlsExport.setOnClickListener(this);
 		lvwplist.setOnItemClickListener(this);
 
 		mylist = bmodel.reportHelper.downloadDistributorOrderReport();
@@ -88,7 +85,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 		}
 		if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES)
 			totalLines.setText(avglinesorderbooking + "");
-		xlsExport.setVisibility(View.GONE);
 
 		if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
 			view.findViewById(R.id.lbl_avg_lines).setVisibility(View.GONE);
@@ -131,10 +127,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 	}
 
 	public void onClick(View comp) {
-		Button vw = (Button) comp;
-		if (vw == xlsExport) {
-			new XlsExport().execute();
-		}
 
 	}
 
@@ -147,7 +139,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 			Toast.makeText(getActivity(),
 					getResources().getString(R.string.unable_to_load_data),
 					Toast.LENGTH_SHORT).show();
-			xlsExport.setVisibility(View.GONE);
 			return;
 		}
 		// Show alert if no order exist.
@@ -155,7 +146,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 			Toast.makeText(getActivity(),
 					getResources().getString(R.string.no_orders_available),
 					Toast.LENGTH_SHORT).show();
-			xlsExport.setVisibility(View.GONE);
 			return;
 		}
 

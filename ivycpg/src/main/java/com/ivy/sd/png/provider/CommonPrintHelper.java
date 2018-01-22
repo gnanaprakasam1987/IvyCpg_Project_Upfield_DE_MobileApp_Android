@@ -742,7 +742,7 @@ public class CommonPrintHelper {
                             + (prod.getOrderedCaseQty() * prod.getCsrp())
                             + (prod.getOrderedPcsQty() * prod.getSrp());
                     mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
-                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue);
+                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue.replace(",",""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
                     mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());

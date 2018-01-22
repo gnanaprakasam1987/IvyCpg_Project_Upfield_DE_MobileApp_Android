@@ -24,6 +24,9 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
+/**
+ * Order Report Detail Screen
+ */
 public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
 
