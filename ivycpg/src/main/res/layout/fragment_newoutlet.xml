@@ -57,6 +57,7 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:textAllCaps="false"
                 android:onClick="onClick"
                 android:text="@string/add_label" />
 

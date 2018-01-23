@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1182,15 +1183,16 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
+            final int indicator_color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
             Button tab;
             tab = new Button(getActivity());
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tab.setTextColor(color);
             tab.setMaxLines(1);
-            tab.setTextSize(getResources().getDimension(R.dimen.special_filter_item_text_size));
+            tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tab.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
             tab.setWidth(width);
             tab.setOnClickListener(new OnClickListener() {
@@ -1219,7 +1221,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             Button tv_selection_identifier = new Button(getActivity());
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
-            tv_selection_identifier.setBackgroundColor(color);
+            tv_selection_identifier.setBackgroundColor(indicator_color);
             if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
                 updateGeneralText(GENERAL);
@@ -1241,7 +1243,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             View view1 = getView().findViewWithTag(config.getConfigCode() + config.getMenuName());
             if (tag == config.getConfigCode()) {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     ((TextView) view).setText(config.getMenuName() + "(" + mylist.size() + ")");
                 }
                 if (view1 instanceof Button) {
@@ -1251,7 +1252,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             } else {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     ((TextView) view).setText(config.getMenuName());
                 }
                 if (view1 instanceof Button) {
@@ -1273,7 +1273,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             View view1 = pview.findViewWithTag(config.getConfigCode() + config.getMenuName());
             if (tag == config.getConfigCode()) {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     ((TextView) view).setText(config.getMenuName() + "(" + mylist.size() + ")");
                 }
                 if (view1 instanceof Button) {
@@ -1283,7 +1282,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
             } else {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     ((TextView) view).setText(config.getMenuName());
                 }
                 if (view1 instanceof Button) {

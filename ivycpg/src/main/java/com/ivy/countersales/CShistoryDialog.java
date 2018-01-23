@@ -153,7 +153,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
             TextView txtVw = new TextView(context);
             txtVw.setGravity(Gravity.CENTER);
             txtVw.setWidth((int) scale);
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             txtVw.setTextColor(color);
             txtVw.setMaxLines(1);
             txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_small));
@@ -172,7 +172,7 @@ public class CShistoryDialog extends Dialog implements View.OnClickListener {
             TextView txtVw = new TextView(context);
             txtVw.setGravity(Gravity.CENTER);
             txtVw.setWidth((int) scale);
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             txtVw.setTextColor(color);
             txtVw.setMaxLines(1);
             txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_small));

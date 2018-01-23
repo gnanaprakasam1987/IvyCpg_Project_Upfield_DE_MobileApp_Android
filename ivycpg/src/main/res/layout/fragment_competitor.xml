@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             app:tabGravity="fill"
-            app:tabMaxWidth="1500dp"
+            app:tabMaxWidth="2500dp"
             app:tabMode="scrollable" />
 
 

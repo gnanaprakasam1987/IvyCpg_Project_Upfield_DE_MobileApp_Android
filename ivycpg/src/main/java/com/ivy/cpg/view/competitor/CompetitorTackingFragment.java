@@ -96,9 +96,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         lvcategorylist = (ListView) view.findViewById(R.id.lvcategorylist);
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
 
-        float scale = getContext().getResources().getDisplayMetrics().widthPixels;
-        scale = scale / bmodel.competitorTrackingHelper.getCompanyList().size();
-//        scale=scale/3;
+
         TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
 
@@ -106,26 +104,24 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 
         CompanyBO companyBO;
         for (int i = 0; i < bmodel.competitorTrackingHelper.getCompanyList().size(); i++) {
-//        for(int i=0;i<3;i++){
             companyBO = bmodel.competitorTrackingHelper.getCompanyList().get(i);
             TabLayout.Tab tab = tabLayout.newTab();
 
             TextView txtVw = new TextView(getActivity());
             txtVw.setGravity(Gravity.CENTER);
-            txtVw.setWidth((int) scale);
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             txtVw.setTextColor(color);
             txtVw.setMaxLines(1);
             txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             txtVw.setText(companyBO.getCompetitorName());
-            txtVw.setAllCaps(true);
 
             tab.setTag(companyBO.getCompetitorid());
             tab.setCustomView(txtVw);
             tabLayout.addTab(tab);
         }
-        changeTabsFont();
+
         mSelectedCompany = (int) tabLayout.getTabAt(0).getTag();
+
         updateList();
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
@@ -166,22 +162,6 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 
     }
 
-    private void changeTabsFont() {
-
-        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-        int tabsCount = vg.getChildCount();
-        for (int j = 0; j < tabsCount; j++) {
-            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-            int tabChildsCount = vgTab.getChildCount();
-            for (int i = 0; i < tabChildsCount; i++) {
-                View tabViewChild = vgTab.getChildAt(i);
-                if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                }
-            }
-        }
-    }
-
 
     @Override
     public void onStart() {
@@ -216,7 +196,6 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override

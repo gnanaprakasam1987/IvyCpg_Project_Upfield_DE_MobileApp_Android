@@ -35,6 +35,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1916,7 +1917,6 @@ public class BusinessModel extends Application {
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
-
                     for (RetailerMasterBO retailer : getRetailerMaster()) {
                         if (retailer.getRetailerID().equals(c.getString(1))) {
                             retailer.setSurveyHistoryScore(c.getInt(0));
@@ -9615,6 +9615,13 @@ public class BusinessModel extends Application {
 //        alertTitle.setTypeface(configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 //        TextViewCompat.setTextAppearance(alertTitle, typearr.getResourceId(R.styleable.MyTextView_textTitleStyle, 0));
 //        alertTitle.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        postiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
         // Set title divider color
         int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
         View titleDivider = dialog.findViewById(titleDividerId);
