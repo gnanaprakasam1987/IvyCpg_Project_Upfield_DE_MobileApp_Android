@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter;
 
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -35,7 +36,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     public int mSelectedLocationIndex;
     public String generalButton;
     private String brandButton;
-    public String selectedCompetitorId = "";
+    public HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
     private Vector<LevelBO> parentidList;
     private String filtertext;
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
@@ -211,7 +212,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             return;
         }
         if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
-            selectedCompetitorId = "";
+            mCompetitorSelectedIdByLevelId=new HashMap<>();
         }
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
         //
@@ -548,7 +549,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     }
                 }
             }
-            selectedCompetitorId = "";
+            mCompetitorSelectedIdByLevelId=new HashMap<>();
             stockCheckView.updateListFromFilter(stockList);
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -698,20 +699,20 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     /*
     * Update competitor filtered products
     * */
-    public void updateCompetitorFilteredProducts(String filterId) {
-        selectedCompetitorId = filterId;
-        /*if (mylist != null) {
-            mylist.clear();
-        }*/
-        if (!selectedCompetitorId.equals("")) {
-            mSelectedIdByLevelId = new HashMap<>();
-        }
+
+    public void updateCompetitorFilteredProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
+      //  this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;
+        this.mSelectedIdByLevelId=new HashMap<>();// clearing product filter
+      //  this.filtertext = filterText;
+
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
-        if (filterId != null && !filterId.isEmpty()) {
-            for (ProductMasterBO sku : items) {
-                if (Integer.parseInt(filterId) == sku.getCompParentId()) {
-                    stockList.add(sku);
+        if (parentIdList != null && !parentIdList.isEmpty()) {
+            for(CompetitorFilterLevelBO mParentBO:parentIdList) {
+                for (ProductMasterBO sku : items) {
+                    if(mParentBO.getProductId()==sku.getCompParentId()) {
+                        stockList.add(sku);
+                    }
                 }
             }
         } else {
@@ -723,8 +724,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         generalButton = GENERAL;
         putValueToFilterMap("");
 
-
     }
+
+
 
     /**
      * Load selected reason name in the Screen

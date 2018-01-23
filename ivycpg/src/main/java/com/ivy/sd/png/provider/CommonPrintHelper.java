@@ -92,6 +92,7 @@ public class CommonPrintHelper implements TaxInterface {
 
     private static String TAG_PRODUCT_CODE = "prod_code";
     private static String TAG_PRODUCT_NAME = "prod_name";
+    private static String TAG_HSN_CODE = "hsn_code";
 
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
@@ -751,7 +752,7 @@ public class CommonPrintHelper implements TaxInterface {
                             + (prod.getOrderedCaseQty() * prod.getCsrp())
                             + (prod.getOrderedPcsQty() * prod.getSrp());
                     mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
-                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue);
+                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue.replace(",",""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
                     mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());
@@ -769,6 +770,8 @@ public class CommonPrintHelper implements TaxInterface {
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription() + "";
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                    mProductValue = prod.getProductCode();
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -916,6 +919,8 @@ public class CommonPrintHelper implements TaxInterface {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                                 mProductValue = prod.getDescription() + "";
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1044,6 +1049,8 @@ public class CommonPrintHelper implements TaxInterface {
                                 mProductValue = formatValueInPrint((schemeProductBO.getLineValue() - schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {

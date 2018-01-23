@@ -347,6 +347,33 @@ SynchronizationHelper {
     }
 
     /**
+     * This will return number of Text files left in mobile SDCard.
+     *
+     * @return File count
+     */
+    public int countTextFiles() {
+        int fileSize = 0;
+        try {
+            File f = new File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                            + "/" + DataMembers.photoFolderName + "/");
+            if (f.exists()) {
+                File files[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+
+                        return fileName.endsWith(".txt");
+                    }
+                });
+                fileSize = files.length;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return fileSize;
+    }
+
+
+    /**
      * this will update status flag in DayClose Table
      *
      * @param status

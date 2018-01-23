@@ -234,7 +234,7 @@
     <color name="keypad_betwn_color">#444444</color>
     <color name="footer_lbl_text_color">#a1a1a1</color>
     <color name="footer_value_text_color">#ffffff</color>
-    <color name="list_header_secendory_text_color">#80ffffff</color>
+    <color name="list_header_secendory_text_color">#ffffff</color>
     <color name="list_odd_item_bg">#26f3f3f3</color>
     <color name="list_even_item_bg">#ffffff</color>
 

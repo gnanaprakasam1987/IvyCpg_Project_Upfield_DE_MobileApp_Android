@@ -32,7 +32,7 @@ import com.ivy.sd.png.bo.InitiativeReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.MerchandisingposmBO;
 import com.ivy.sd.png.bo.OrderDetail;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -259,11 +259,11 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 hasInititative = true;
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT12")) {
                 int pre = 0, post = 0;
-                ArrayList<ReportonorderbookingBO> mylist = bmodel.reportHelper
+                ArrayList<OrderReportBO> mylist = bmodel.reportHelper
                         .downloadOrderreport();
 
                 // Calculate the total order value.
-                for (ReportonorderbookingBO ret : mylist) {
+                for (OrderReportBO ret : mylist) {
                     try {
                         String str[] = ret.getDist().split("/");
                         pre = pre + Integer.parseInt(str[0]);
@@ -307,7 +307,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT15")) {
                 int value = 0;
                 Vector<InvoiceReportBO> mylist;
-                ArrayList<ReportonorderbookingBO> myOrder;
+                ArrayList<OrderReportBO> myOrder;
                 if (bmodel.configurationMasterHelper.IS_INVOICE) {
                     mylist = bmodel.reportHelper.downloadInvoicereport();
                     for (InvoiceReportBO inv : mylist) {
@@ -321,8 +321,8 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
                 } else {
                     myOrder = bmodel.reportHelper.downloadOrderreport();
-                    for (ReportonorderbookingBO inv : myOrder) {
-                        value += inv.getordertot();
+                    for (OrderReportBO inv : myOrder) {
+                        value += inv.getOrderTotal();
                     }
                     if (value > 0)
                         con.setMenuNumber(bmodel.formatValue((double) value
