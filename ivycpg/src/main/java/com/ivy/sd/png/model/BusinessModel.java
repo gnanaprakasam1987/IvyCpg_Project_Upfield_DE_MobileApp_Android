@@ -73,6 +73,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
@@ -141,7 +142,6 @@ import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
-import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -183,7 +183,6 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InvoicePrintZebra;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
-import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
@@ -191,7 +190,6 @@ import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
-import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -302,9 +300,6 @@ public class BusinessModel extends Application implements TaxInterface {
     //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
-    // Retail Hepler Class and Independent super
-    public OrderSplitHelper orderSplitHelper = null;
-    //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -481,7 +476,6 @@ public class BusinessModel extends Application implements TaxInterface {
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);
 
-        orderSplitHelper = OrderSplitHelper.getInstance(this);
         //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
         groomingHelper = GroomingHelper.getInstance(this);
@@ -579,9 +573,6 @@ public class BusinessModel extends Application implements TaxInterface {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actPhotocapture)) {
             myIntent = new Intent(ctxx, PhotoCaptureActivity.class);
-            ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals("OrderSplitMasterScreen")) {
-            myIntent = new Intent(ctxx, OrderSplitMasterScreen.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals("AcknowledgementActivity")) {
             myIntent = new Intent(ctxx, AcknowledgementActivity.class);
@@ -3495,12 +3486,8 @@ public class BusinessModel extends Application implements TaxInterface {
 			 * ); sb.append(QT(retailerId) + " and invoiceStatus=0");
 			 */
 
-            String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(OH.is_splitted_order = 0 AND OH.is_processed = 0)"
-                    : "(OH.is_splitted_order = 0 OR OH.is_processed = 0)";
-
             sb.append("Select Distinct OH.OrderID from OrderHeader OH INNER JOIN OrderDetail OD on OH.OrderID = OD.OrderID ");
-            sb.append(" where OH.upload='N'AND " + temp
-                    + " and OH.RetailerID =");
+            sb.append(" where OH.upload='N' and OH.RetailerID =");
             sb.append(QT(retailerId) + " and OH.invoiceStatus = 0 and sid=" + getRetailerMasterBO().getDistributorId());
 
             // Add new for check vansales or presales at runtime
@@ -3666,16 +3653,9 @@ public class BusinessModel extends Application implements TaxInterface {
         String date = "";
         // Order Header
         String sql = null;
-        if (mSelectedModule == 3) {
-            sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                    + " where OrderID =" + QT(retailerId); // Its Order Id not
-            // retailer ID for
-            // mSelectedModule =
-            // 3;
-        } else {
-            sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                    + " where RetailerID=" + QT(retailerId);
-        }
+
+        sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
+                + " where RetailerID=" + QT(retailerId);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
@@ -3726,8 +3706,7 @@ public class BusinessModel extends Application implements TaxInterface {
 
             } else { // This is for IS having more that one odrer for same
                 // retailer case handled
-                String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                        : "(is_splitted_order = 0 OR is_processed = 0)";
+
 
                 sb.append("select OD.OrderID,ifnull(po,''),ifnull(remark,''),OrderValue,LinesPerCall,");
                 if (configurationMasterHelper.discountType == 1) {
@@ -3741,7 +3720,7 @@ public class BusinessModel extends Application implements TaxInterface {
                         + DataMembers.tbl_orderHeader + " OD ");
 
                 sb.append(" left join InvoiceDiscountDetail ID on OD.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
-                sb.append(" where OD.upload='N' AND " + temp + " and OD.RetailerID="
+                sb.append(" where OD.upload='N' and OD.RetailerID="
                         + QT(retailerId) + " and invoiceStatus=0");
 
             }
@@ -4840,10 +4819,6 @@ public class BusinessModel extends Application implements TaxInterface {
                     frm.setResult(frm.RESULT_OK, intent);
                     frm.finish();
 
-                } else if (idd == DataMembers.NOTIFY_ORDER_DELETED_FOR_ORDERSPLIT) {
-                    OrderSummary frm = (OrderSummary) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx, "OrderSplitMasterScreen");
                 } else if (idd == DataMembers.NOTIFY_INVOICE_SAVED) {
                     if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BixolonIIPrint")) {
@@ -6886,23 +6861,6 @@ public class BusinessModel extends Application implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
 
-            if (mSelectedModule == 3) {
-                orderSplitHelper.insertSplittedOrder(getRetailerMasterBO()
-                        .getRetailerID(), deleteSpliteOrderID);
-                Cursor orderDetailCursor = db
-                        .selectSQL("SELECT is_splitted_order FROM OrderHeader WHERE OrderID = "
-                                + QT(this.getOrderid()));
-                if (orderDetailCursor.getCount() > 0) {
-                    orderDetailCursor.moveToNext();
-                    orderHeaderBO.setIsSplitted(orderDetailCursor.getInt(0));
-                }
-                orderDetailCursor.close();
-                db.deleteSQL("OrderHeader", "OrderID=" + this.getOrderid(),
-                        false);
-                db.deleteSQL("OrderDetail", "OrderID=" + this.getOrderid(),
-                        false);
-            }
-
             if (configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
                 db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
                         false);
@@ -6977,14 +6935,12 @@ public class BusinessModel extends Application implements TaxInterface {
                         // same retailer
                         // case handled
                         orderDetailCursor.close();
-                        String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                                : "(is_splitted_order = 0 OR is_processed = 0)";
+
                         sb = null;
                         sb = new StringBuffer();
                         sb.append("select OrderID from OrderHeader where RetailerID=");
                         sb.append(getRetailerMasterBO().getRetailerID());
-                        sb.append(" and upload='N' and " + temp
-                                + " and invoicestatus = 0");
+                        sb.append(" and upload='N' and invoicestatus = 0");
                         if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
                             sb.append(" and OrderID=" + QT(selectedOrderId));
                         }
@@ -7043,11 +6999,8 @@ public class BusinessModel extends Application implements TaxInterface {
             // For Malaysian User is_Process is 1 and IS is_process 0, it will
             // mot
             // affect the already working malaysian users
-            int isProcess = 0;
-            if (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                isProcess = 0;
-            else
-                isProcess = 1;
+            int isProcess = 1;
+
             SupplierMasterBO supplierBO;
             if (retailerMasterBO.getSupplierBO() != null) {
                 supplierBO = retailerMasterBO.getSupplierBO();
@@ -7133,7 +7086,7 @@ public class BusinessModel extends Application implements TaxInterface {
                     + "," + QT(printFilePath)
                     + "," + QT(getRField1())
                     + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME))
-                    + "," + getRemarkType()+ "," + QT(getRField3()) ;
+                    + "," + getRemarkType() + "," + QT(getRField3());
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -7143,14 +7096,6 @@ public class BusinessModel extends Application implements TaxInterface {
             if (configurationMasterHelper.IS_HANGINGORDER) {
                 updateHangingOrder(getRetailerMasterBO());
             }
-
-
-            if (mSelectedModule == 3) {
-                db.executeQ("update OrderHeader set is_splitted_order="
-                        + orderHeaderBO.getIsSplitted() + " where OrderID ="
-                        + this.getOrderid());
-            }
-
             getRetailerMasterBO()
                     .setTotalLines(orderHeaderBO.getLinesPerCall());
 
@@ -8885,15 +8830,14 @@ public class BusinessModel extends Application implements TaxInterface {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                    : "(is_splitted_order = 0 OR is_processed = 0)";
+
             if (getOrderHeaderNote() != null
                     && getOrderHeaderNote().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET remark =" + QT(getOrderHeaderNote())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setOrderHeaderNote("");
                 getOrderHeaderBO().setRemark("");
@@ -8903,8 +8847,8 @@ public class BusinessModel extends Application implements TaxInterface {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET RField1 =" + QT(getRField1())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setRField1("");
                 getOrderHeaderBO().setRField1("");
@@ -8914,8 +8858,8 @@ public class BusinessModel extends Application implements TaxInterface {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET RField2 =" + QT(getRField2())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setRField2("");
                 getOrderHeaderBO().setRField2("");
@@ -8925,8 +8869,8 @@ public class BusinessModel extends Application implements TaxInterface {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET po =" + QT(orderHeaderBO.getPO()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 orderHeaderBO.setPO("");
             }
@@ -8936,8 +8880,8 @@ public class BusinessModel extends Application implements TaxInterface {
                         + " SET deliveryDate ="
                         + QT(orderHeaderBO.getDeliveryDate()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 orderHeaderBO.setDeliveryDate("");
             }
@@ -11040,13 +10984,14 @@ public class BusinessModel extends Application implements TaxInterface {
     /**
      * read text from given file and convert to string object
      * and store in object
+     *
      * @param fileName
      */
-    public void readBuilder(String fileName){
-        String path=getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE+"/";
-        File file = new File(path+fileName);
-        StringBuilder sb=new StringBuilder();
+    public void readBuilder(String fileName) {
+        String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE + "/";
+        File file = new File(path + fileName);
+        StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -11059,7 +11004,7 @@ public class BusinessModel extends Application implements TaxInterface {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

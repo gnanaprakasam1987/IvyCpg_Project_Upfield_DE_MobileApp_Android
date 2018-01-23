@@ -89,7 +89,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, TaxInterface,OrderConfirmationDialog.OnConfirmationResult  {
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, TaxInterface, OrderConfirmationDialog.OnConfirmationResult {
 
     /**
      * views *
@@ -107,7 +107,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private ImageView icAmountSpilitup;
     AmountSplitupDialog dialogFragment;
     LinearLayout icAmountSpilitup_lty;
-    private  OrderConfirmationDialog orderConfirmationDialog;
+    private OrderConfirmationDialog orderConfirmationDialog;
     /**
      * Objects *
      */
@@ -220,8 +220,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             finish();
         }
 
-        if (bmodel.mSelectedModule == 1 || bmodel.mSelectedModule == 2
-                || bmodel.mSelectedModule == 3) {
+        if (bmodel.mSelectedModule == 1 || bmodel.mSelectedModule == 2) {
             bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
         }
@@ -302,15 +301,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.isEdit()) {
 
-            if (bmodel.mSelectedModule == 3) {
-                delievery_date.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        bmodel.getDeliveryDate(bmodel.getOrderid()),
-                        ConfigurationMasterHelper.outDateFormat));
-            } else
-                delievery_date.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        bmodel.getDeliveryDate(bmodel.getRetailerMasterBO()
-                                .getRetailerID()),
-                        ConfigurationMasterHelper.outDateFormat));
+            delievery_date.setText(DateUtil.convertFromServerDateToRequestedFormat(
+                    bmodel.getDeliveryDate(bmodel.getRetailerMasterBO()
+                            .getRetailerID()),
+                    ConfigurationMasterHelper.outDateFormat));
         } else {
             delievery_date.setText(nextDate);
 
@@ -1571,12 +1565,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                     OrderSummary.this,
                                                     HomeScreenActivity.class);
                                             startActivity(i);
-                                        } else if (bmodel.mSelectedModule == 3) {
-                                            Intent i = new Intent(
-                                                    OrderSummary.this,
-                                                    OrderSplitMasterScreen.class);
-                                            startActivity(i);
-
                                         } else {
                                             Intent i = new Intent(
                                                     OrderSummary.this,
@@ -2221,7 +2209,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 ConfigurationMasterHelper.outDateFormat));
 
 
-                        orderConfirmationDialog=new OrderConfirmationDialog(this,false,mOrderedProductList,totalOrderValue);
+                        orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
                         orderConfirmationDialog.show();
                         orderConfirmationDialog.setCancelable(false);
                         return;
@@ -2362,7 +2350,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                 bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
-                                orderConfirmationDialog=new OrderConfirmationDialog(this,true,mOrderedProductList,totalOrderValue);
+                                orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                                 orderConfirmationDialog.show();
                                 orderConfirmationDialog.setCancelable(false);
                                 return;
@@ -2450,8 +2438,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     Commons.print("test," + bmodel.mSelectedModule + ">>"
                             + bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
                             + ">>>" + hidealert);
-                    if (bmodel.mSelectedModule == 1
-                            || bmodel.mSelectedModule == 3) {
+                    if (bmodel.mSelectedModule == 1) {
                         showDialog(3);
                     } else {
                         if (bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
@@ -2554,18 +2541,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 try {
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getApplicationContext();
-                    if (bmodel.mSelectedModule == 3) {
-                        bmodel.showAlert(
-                                getResources().getString(
-                                        R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
-                                DataMembers.NOTIFY_ORDER_DELETED_FOR_ORDERSPLIT);
-                    } else
-                        bmodel.showAlert(
-                                getResources().getString(
-                                        R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
-                                DataMembers.NOTIFY_ORDER_SAVED);
+
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.order_deleted_sucessfully)
+                                    + bmodel.getOrderid(),
+                            DataMembers.NOTIFY_ORDER_SAVED);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -3530,13 +3511,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bmodel.configurationMasterHelper.IS_INVOICE) {
                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                    customProgressDialog( build,  getResources().getString(R.string.saving_invoice));
+                    customProgressDialog(build, getResources().getString(R.string.saving_invoice));
                     alertDialog = build.create();
                     alertDialog.show();
                 } else {
                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                    customProgressDialog( build, getResources().getString(R.string.saving_new_order));
+                    customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                     alertDialog = build.create();
                     alertDialog.show();
                 }
@@ -3551,7 +3532,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 build = new AlertDialog.Builder(OrderSummary.this);
 
-                customProgressDialog( build,  getResources().getString(R.string.saving_new_order));
+                customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                 alertDialog = build.create();
                 alertDialog.show();
                 if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
@@ -3566,18 +3547,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 .loadFreeProductBatchList();
                     }
 
-                    if (bmodel.mSelectedModule == 3) {
-                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
-                        new MyThread(OrderSummary.this,
-                                DataMembers.SAVEORDERANDSTOCK).start();
-                    } else {
-                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+                    bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
-                        new MyThread(OrderSummary.this,
-                                DataMembers.SAVEORDERANDSTOCK).start();
-                        bmodel.saveModuleCompletion("MENU_STK_ORD");
-                    }
+                    new MyThread(OrderSummary.this,
+                            DataMembers.SAVEORDERANDSTOCK).start();
+                    bmodel.saveModuleCompletion("MENU_STK_ORD");
 
 
                 } else {
@@ -3586,15 +3561,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
 
     @Override
     public void dismiss() {
-        isClick=false;
+        isClick = false;
     }
 
 }

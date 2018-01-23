@@ -151,7 +151,6 @@ public class DataMembers {
 
     public static final int NOTIFY_EXPORT_SUCCESS = 69;
     public static final int NOTIFY_EXPORT_FAILURE = 70;
-    public static final int NOTIFY_ORDER_DELETED_FOR_ORDERSPLIT = 73;
 
     public static final int NOTIFY_TOKENT_AUTHENTICATION_FAIL = 74;
     public static final int NOTIFY_URL_NOT_CONFIGURED = 1050;

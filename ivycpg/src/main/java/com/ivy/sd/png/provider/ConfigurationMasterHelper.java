@@ -239,7 +239,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DEVICE_STATUS = "FUN05";
     private static final String CODE_STKPRO_SPL_FILTER = "STKPRO12";
     private static final String CODE_TOTAL_LINES = "ORDB32";
-    private static final String CODE_ORDER_PROCESS_DIALOG = "FUN06";
     // Added in V40
     private static final String CODE_SO_SPLIT = "SOSPLIT";
     private static final String CODE_SO_COPY = "SOCOPY";
@@ -756,7 +755,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STKPRO_SPL_FILTER;
     public boolean SHOW_TOTAL_LINES;
     public boolean SHOW_TOTAL_QTY_IN_ORDER_REPORT;
-    public boolean SHOW_ORDER_PROCESS_DIALOG;
     public boolean SHOW_DOWNLOAD_ALERT;
     public boolean SHOW_SIH_IN_PNAME;
     public boolean SHOW_CURRENT_STDQTY;
@@ -1721,7 +1719,6 @@ public class ConfigurationMasterHelper {
             if (hashMapHHTModuleOrder.get(CODE_TOTAL_LINES) == 1)
                 SHOW_TOTAL_QTY_IN_ORDER_REPORT = true;
         }
-        this.SHOW_ORDER_PROCESS_DIALOG = hashMapHHTModuleConfig.get(CODE_ORDER_PROCESS_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PROCESS_DIALOG) : false;
         this.SHOW_MULTIPAYMENT = hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) : false;
         this.SHOW_DOWNLOAD_ALERT = hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) : false;
         this.SHOW_SIH_IN_PNAME = hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) : false;

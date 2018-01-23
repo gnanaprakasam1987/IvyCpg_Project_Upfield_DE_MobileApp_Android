@@ -533,13 +533,6 @@
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitMasterScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitDetailsScreenWithFilters"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
         <!-- IvyRetail Integration Classes -->
         <activity
             android:name="com.ivy.sd.png.view.JoinCallActivity"

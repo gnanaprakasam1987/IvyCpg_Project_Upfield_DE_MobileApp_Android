@@ -113,17 +113,17 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         listView.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
 
-		listView.setOnItemClickListener(this);
-        TextView text_totalValueTitle=(TextView) view.findViewById(R.id.totalvaluetitle);
-        TextView lab_dist_pre_post=(TextView) view.findViewById(R.id.lab_dist_pre_post);
+        listView.setOnItemClickListener(this);
+        TextView text_totalValueTitle = (TextView) view.findViewById(R.id.totalvaluetitle);
+        TextView lab_dist_pre_post = (TextView) view.findViewById(R.id.lab_dist_pre_post);
         text_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		list = businessModel.reportHelper.downloadOrderreport();
-		updateOrderGrid();
-		int mLPC = businessModel.reportHelper
-				.getavglinesfororderbooking("OrderHeader");
-		if (businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
+        text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        list = businessModel.reportHelper.downloadOrderreport();
+        updateOrderGrid();
+        int mLPC = businessModel.reportHelper
+                .getavglinesfororderbooking("OrderHeader");
+        if (businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
 
             double mTotalOutlets = businessModel.reportHelper
                     .getorderbookingCount("OrderHeader");
@@ -143,7 +143,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 int totalQty = 0;
                 for (OrderReportBO bo : list)
                     totalQty = totalQty + businessModel.reportHelper.getTotalQtyfororder(bo.getOrderID());
-                totalLines.setText(String.valueOf(totalQty ));
+                totalLines.setText(String.valueOf(totalQty));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
                 totalLines.setText(String.valueOf(mLPC));
@@ -160,11 +160,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             totalLines.setVisibility(View.GONE);
             view.findViewById(R.id.lbl_total_lines).setVisibility(View.GONE);
 
-		}
-		if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-			view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.VISIBLE);
-			view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.VISIBLE);
-			view.findViewById(R.id.dist).setVisibility(View.VISIBLE);
+        }
+        if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+            view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.dist).setVisibility(View.VISIBLE);
 
         }
         if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
@@ -201,11 +201,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         }
 
 
-		try {
-			if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
-					R.id.outna).getTag()) != null)
-				((TextView) view.findViewById(R.id.outna))
-						.setText(businessModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
+        try {
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.outna).getTag()) != null)
+                ((TextView) view.findViewById(R.id.outna))
+                        .setText(businessModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
             ((TextView) view.findViewById(R.id.outna)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
@@ -315,7 +315,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     mPostAverage = (float) post / (float) list.size();
                 }
 
-                String value=SDUtil.format(mPreAverage, 1, 0) + "/"
+                String value = SDUtil.format(mPreAverage, 1, 0) + "/"
                         + SDUtil.format(mPostAverage, 1, 0);
                 text_averagePreOrPost.setText(value);
 
@@ -348,7 +348,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             this.items = items;
         }
 
-        @Override @NonNull
+        @Override
+        @NonNull
         public View getView(int position, View convertView, @NotNull ViewGroup parent) {
             final ViewHolder holder;
 
@@ -407,37 +408,37 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             }
 
-			holder.text_retailerName.setText(reportBO.getRetailerName());
+            holder.text_retailerName.setText(reportBO.getRetailerName());
             holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvOrderNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.text_delivery_date.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {
                 if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
-                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + reportBO.getMustSellCount();
+                    String value = businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + reportBO.getMustSellCount();
                     holder.tvMustSellCount.setText(value);
                 } else {
-                    String value=getResources().getString(R.string.must_sell) + " : " + reportBO.getMustSellCount();
+                    String value = getResources().getString(R.string.must_sell) + " : " + reportBO.getMustSellCount();
                     holder.tvMustSellCount.setText(value);
                     holder.text_mustSellCount.setText(String.valueOf(reportBO.getMustSellCount()));
 
                 }
                 if (businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) != null) {
-                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + reportBO.getFocusBrandCount();
+                    String value = businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + reportBO.getFocusBrandCount();
                     holder.tvFocusBrandCount.setText(value);
                 } else {
-                    String value=getResources().getString(R.string.focus_brand) + " : " + reportBO.getFocusBrandCount();
+                    String value = getResources().getString(R.string.focus_brand) + " : " + reportBO.getFocusBrandCount();
                     holder.tvFocusBrandCount.setText(value);
                     holder.focus_brand_count1.setText(String.valueOf(reportBO.getFocusBrandCount()));
 
@@ -487,16 +488,14 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             try {
                 String delivery_date;
-                if (businessModel.mSelectedModule == 3) {
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getOrderID()), ConfigurationMasterHelper.outDateFormat);
-                } else
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getRetailerId()),ConfigurationMasterHelper.outDateFormat);
+
+                delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
                 if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
-                    String value=businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
+                    String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
                     holder.text_delivery_date.setText(value);
                 } else {
-                    String value=getResources().getString(R.string.delivery_date_label) + " : " + delivery_date;
+                    String value = getResources().getString(R.string.delivery_date_label) + " : " + delivery_date;
                     holder.text_delivery_date.setText(value);
                 }
             } catch (Exception e) {
@@ -528,7 +527,6 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             intent.putExtra("TotalLines", ret.getLPC());
             intent.setClass(getActivity(), OrderReportDetail.class);
             startActivityForResult(intent, 0);
-
 
 
         } catch (Exception e) {
