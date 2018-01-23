@@ -13,6 +13,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
@@ -40,7 +42,7 @@ import java.util.regex.Pattern;
 /**
  * Created by subramanian.r on 03-02-2016.
  */
-public class CommonPrintHelper {
+public class CommonPrintHelper implements TaxInterface {
     private Context context;
     private BusinessModel bmodel;
     private static CommonPrintHelper instance = null;
@@ -160,6 +162,13 @@ public class CommonPrintHelper {
     public int height_image = 100;
     private double mSchemeValueByAmountType = 0;
     private double netSchemeAmount = 0;
+
+    private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct;//local variable to get data from tax interface
+    private HashMap<String, ArrayList<TaxBO>> mTaxListByProductId;
+    private ArrayList<TaxBO> mBillTaxList;
+    private ArrayList<TaxBO> mGroupIdList;
+    private LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId;
+    private SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
@@ -1313,18 +1322,32 @@ public class CommonPrintHelper {
     private String getProductLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
 
-        // load tax details
-        bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-        // load tax product details
-        bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+        if (bmodel.configurationMasterHelper.IS_GST) {
+            // load tax details
+            bmodel.taxGstHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            // load tax product details
+            bmodel.taxGstHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
-        ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
+        } else {
+            // load tax details
+            bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            // load tax product details
+            bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+
+        }
+
+        ArrayList<TaxBO> groupIdList = mGroupIdList;
 
         if (groupIdList != null) {
 
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
-            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.taxHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = mTaxBOByGroupId;
+            HashMap<String, HashSet<String>> productListByGroupId = mProductIdByTaxGroupId;
+            HashMap<String, HashSet<String>> freeProductListByGroupId;
+            if (bmodel.configurationMasterHelper.IS_GST) {
+                freeProductListByGroupId = bmodel.taxGstHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            } else {
+                freeProductListByGroupId = bmodel.taxHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            }
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1384,9 +1407,9 @@ public class CommonPrintHelper {
 
                                             //batch wise product's calculation
                                             if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                                if (bmodel.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
+                                                if (mTaxBoBatchProduct.get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.taxHelper.getmTaxBoBatchProduct().get(productid)) {
+                                                    for (TaxBO productTaxBo : mTaxBoBatchProduct.get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1397,9 +1420,9 @@ public class CommonPrintHelper {
                                                 }
                                             } else {
                                                 //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-                                                if (bmodel.taxHelper.getmTaxListByProductId().get(productid) != null) {
+                                                if (mTaxListByProductId.get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.taxHelper.getmTaxListByProductId().get(productid)) {
+                                                    for (TaxBO productTaxBo : mTaxListByProductId.get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1497,7 +1520,7 @@ public class CommonPrintHelper {
     private void getBillLevelTaxValue() {
         try {
             mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
+            final ArrayList<TaxBO> taxList = mBillTaxList;
 
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
@@ -1527,7 +1550,7 @@ public class CommonPrintHelper {
     private String printBillLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
         try {
-            final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
+            final ArrayList<TaxBO> taxList = mBillTaxList;
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
@@ -1923,12 +1946,13 @@ public class CommonPrintHelper {
     /**
      * read text from given file and convert to string object
      * and store in object
+     *
      * @param fileName
      */
-    public void readBuilder(String fileName){
-        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+ DataMembers.PRINT_FILE_PATH+"/";
-        File file = new File(path+fileName);
-        StringBuilder sb=new StringBuilder();
+    public void readBuilder(String fileName) {
+        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.PRINT_FILE_PATH + "/";
+        File file = new File(path + fileName);
+        StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -1941,11 +1965,55 @@ public class CommonPrintHelper {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         setInvoiceData(sb);
+
+    }
+
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+        if (mBillTaxList != null)
+            this.mBillTaxList = mBillTaxList;
+        else
+            this.mBillTaxList = new ArrayList<TaxBO>();
+
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+        this.mTaxListByProductId = mTaxListByProductId;
+
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+        this.mProductIdByTaxGroupId = mProductIdByTaxGroupId;
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+        if (mGroupIdList != null)
+            this.mGroupIdList = mGroupIdList;
+        else
+            this.mGroupIdList = new ArrayList<TaxBO>();
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+        this.mTaxBOByGroupId = mTaxBOByGroupId;
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+        this.mTaxBoBatchProduct = mTaxBoBatchProduct;
 
     }
 }

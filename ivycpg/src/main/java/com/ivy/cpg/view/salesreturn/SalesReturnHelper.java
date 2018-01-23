@@ -3,6 +3,7 @@ package com.ivy.cpg.view.salesreturn;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.SparseArray;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -12,16 +13,21 @@ import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
-public class SalesReturnHelper {
+public class SalesReturnHelper implements TaxInterface {
 
     private final BusinessModel bmodel;
     private String lpcValue;
@@ -59,6 +65,7 @@ public class SalesReturnHelper {
     public boolean IS_PRD_CNT_DIFF_SR;
 
     private double totalValue = 0;
+    private ArrayList<TaxBO> mBillTaxList;
 
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
@@ -1103,9 +1110,12 @@ public class SalesReturnHelper {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                bmodel.taxHelper.downloadBillWiseTaxDetails();
+                if (bmodel.configurationMasterHelper.IS_GST)
+                    bmodel.taxGstHelper.downloadBillWiseTaxDetails();
+                else
+                    bmodel.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
-                final ArrayList<TaxBO> taxList = bmodel.taxHelper.getBillTaxList();
+                final ArrayList<TaxBO> taxList = mBillTaxList;
 
                 StringBuffer sb;
                 double totalTaxRate = 0;
@@ -1272,4 +1282,41 @@ public class SalesReturnHelper {
 
     }
 
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+        if (mBillTaxList != null)
+            this.mBillTaxList = mBillTaxList;
+        else
+            this.mBillTaxList = new ArrayList<TaxBO>();
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+
+    }
 }

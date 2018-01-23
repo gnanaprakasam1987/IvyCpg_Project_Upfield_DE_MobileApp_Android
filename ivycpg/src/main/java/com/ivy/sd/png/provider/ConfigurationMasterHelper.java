@@ -319,7 +319,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DROPSIZE = "DROPSIZE";
     private static final String CODE_STOCK_COMPETITOR = "STOCK_COMPETITOR";
 
-    private static final String CODE_APPLY_PRODUCT_TAX = "TAXINPROD";
     private static final String CODE_SIH_SPLIT = "SIHSPLIT";
     private static final String CODE_HIDE_TARGET_PLAN = "TARGET_PLAN";
     private static final String CODE_SHOW_REJECT_BTN = "STK_REJECT";
@@ -791,7 +790,6 @@ public class ConfigurationMasterHelper {
     public String LOAD_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
 
-    public boolean IS_APPLY_PRODUCT_TAX;
     public boolean SHOW_SIH_SPLIT;
     public boolean IS_SHOW_TARGET_PLAN;
     public boolean IS_SHOW_REJECT_BTN;
@@ -1761,7 +1759,6 @@ public class ConfigurationMasterHelper {
         this.IS_ADD_NEW_BATCH = hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) != null ? hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) : false;
         this.SHOW_PRINT_BUTTON = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT) : false;
         this.SHOW_BUTTON_PRINT01 = hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) : false;
-        this.IS_APPLY_PRODUCT_TAX = hashMapHHTModuleConfig.get(CODE_APPLY_PRODUCT_TAX) != null ? hashMapHHTModuleConfig.get(CODE_APPLY_PRODUCT_TAX) : false;
         this.SHOW_SIH_SPLIT = hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) : false;
         this.SHOW_GOLD_STORE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) : false;
         this.IS_SHOW_TARGET_PLAN = hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) : false;

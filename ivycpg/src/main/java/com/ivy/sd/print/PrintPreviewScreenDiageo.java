@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -56,10 +58,14 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
-public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
+public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar implements TaxInterface {
 
     private TextView distName, distadd, distTelno, invoiceno, customername,
             address, phcontact, salesdate, totFullStockCs, totFullStockPc,
@@ -113,6 +119,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
     TextView tv_scheme_discount;
 
     private int printDoneCount = 0;
+    private ArrayList<TaxBO> mBillTaxList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -270,7 +277,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
             else
                 mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
-            mTax = bmodel.taxHelper.getBillTaxList();
+            mTax = mBillTaxList;
 
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             updateproducts();
@@ -2280,5 +2287,44 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
         // bmodel.productHelper.clearOrderTable();
         // force the garbage collector to run
         System.gc();
+    }
+
+
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+        if (mBillTaxList != null)
+            this.mBillTaxList = mBillTaxList;
+        else
+            this.mBillTaxList = new ArrayList<TaxBO>();
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+
     }
 }

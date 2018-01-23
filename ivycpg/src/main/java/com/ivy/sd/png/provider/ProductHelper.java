@@ -1547,7 +1547,10 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                bmodel.taxHelper.downloadProductTaxDetails();
+                if (bmodel.configurationMasterHelper.IS_GST)
+                    bmodel.taxGstHelper.downloadProductTaxDetails();
+                else
+                    bmodel.taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)
@@ -2197,8 +2200,12 @@ public class ProductHelper {
 
             db.closeDB();
 
-            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER)
-                bmodel.taxHelper.downloadProductTaxDetails();
+            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+                if (bmodel.configurationMasterHelper.IS_GST)
+                    bmodel.taxGstHelper.downloadProductTaxDetails();
+                else
+                    bmodel.taxHelper.downloadProductTaxDetails();
+            }
 
 
         } catch (Exception e) {
@@ -4188,6 +4195,7 @@ public class ProductHelper {
         }
 
     }
+
     public ArrayList<BomRetunBo> getBomReturnProducts() {
         return bomReturnProducts;
     }
@@ -5073,9 +5081,6 @@ public class ProductHelper {
             }
         }
     }
-
-
-
 
 
     public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
@@ -6104,7 +6109,6 @@ public class ProductHelper {
     public ArrayList<AttributeBO> getmAttributeTypes() {
         return mAttributeTypes;
     }
-
 
 
     protected double getTotalBillwiseDiscount() {
@@ -7820,7 +7824,10 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                bmodel.taxHelper.downloadProductTaxDetails();
+                if (bmodel.configurationMasterHelper.IS_GST)
+                    bmodel.taxGstHelper.downloadProductTaxDetails();
+                else
+                    bmodel.taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)

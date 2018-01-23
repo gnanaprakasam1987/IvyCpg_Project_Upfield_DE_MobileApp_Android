@@ -20,11 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
- * Created by mansoor on 17/1/18.
+ * Created by mansoor on 19/1/18.
  */
 
-public class TaxHelper {
-    private static TaxHelper instance = null;
+public class TaxGstHelper {
+
+    private static TaxGstHelper instance = null;
     private BusinessModel mBusinessModel;
     private Context mContext;
     private TaxInterface mTaxInterface;
@@ -46,14 +47,14 @@ public class TaxHelper {
         mTaxInterface.updateBillTaxList(mBillTaxList);
     }
 
-    public static TaxHelper getInstance(Context context) {
+    public static TaxGstHelper getInstance(Context context) {
         if (instance == null)
-            instance = new TaxHelper(context);
+            instance = new TaxGstHelper(context);
 
         return instance;
     }
 
-    private TaxHelper(Context context) {
+    private TaxGstHelper(Context context) {
         this.mBusinessModel = (BusinessModel) context;
         this.mContext = context;
         this.mTaxInterface = (TaxInterface) context;
@@ -74,39 +75,6 @@ public class TaxHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = null;
-            int seqToSwap = 0;
-            int locationId = 0;
-
-            //Location not needed if GST applied
-            if (mBusinessModel.configurationMasterHelper.IS_LOCATION_WISE_TAX_APPLIED) {
-                c = db.selectSQL("SELECT (SELECT Sequence FROM LocationLevel WHERE id = " +
-                        "(SELECT LocLevelId FROM LocationMaster WHERE LocId = " +
-                        "(SELECT locationid FROM RetailerMaster WHERE RetailerID = '" +
-                        mBusinessModel.getRetailerMasterBO().getRetailerID() + "'))) - " +
-                        "(SELECT Sequence FROM LocationLevel WHERE id = " +
-                        "(SELECT Id FROM LocationLevel WHERE Code = '"
-                        + mBusinessModel.configurationMasterHelper.STRING_LOCATION_WISE_TAX_APPLIED + "'))");
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        seqToSwap = c.getInt(0) + 1;
-                    }
-                }
-                c.close();
-
-                String query = "SELECT LOC_MAS" + seqToSwap + ".LocId FROM LocationMaster LOC_MAS1";
-                for (int i = 2; i <= seqToSwap; i++)
-                    query += " INNER JOIN LocationMaster LOC_MAS" + i + " ON LOC_MAS"
-                            + (i - 1) + ".LocParentId = LOC_MAS" + i + ".LocId";
-                query += " WHERE LOC_MAS1.LocId  = '" + mBusinessModel.getRetailerMasterBO().getLocationId() + "'";
-                c = db.selectSQL(query);
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        locationId = c.getInt(0);
-                    }
-                }
-                c.close();
-
-            }
 
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
@@ -118,10 +86,9 @@ public class TaxHelper {
 
             sb.append("where PTM.TaxTypeId = "
                     + mBusinessModel.getRetailerMasterBO().getTaxTypeId());
-            if (mBusinessModel.configurationMasterHelper.IS_LOCATION_WISE_TAX_APPLIED) {
-                sb.append(" AND PTM.locationid = " + locationId);
-            }
+            sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
             sb.append("  order by A.pid");
+
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 TaxBO taxBo;
@@ -529,19 +496,23 @@ public class TaxHelper {
                                             if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
                                                 taxRate += taxBO.getTaxRate();
                                             }
+                                            calculateTaxOnTax(productBo, taxBO, false);
                                         }
 
                                     } else {
                                         if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
                                             taxRate += taxBO.getTaxRate();
                                         }
+                                        calculateTaxOnTax(productBo, taxBO, false);
                                     }
                                 } else {
                                     if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
                                         taxRate += taxBO.getTaxRate();
                                     }
+                                    calculateTaxOnTax(productBo, taxBO, false);
                                 }
                             }
+                            //  calculateTotalTaxForProduct(productBo);
                             calculateProductExcludeTax(productBo, taxRate);
 
                         }
@@ -552,6 +523,153 @@ public class TaxHelper {
 
     }
 
+
+    // Excluding tax value from product total value and setting it in taxlist(mTaxListByProductId) against to product id
+    public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
+
+        double productPriceWithoutTax = 0.0;
+        double taxAmount = 0.0;
+
+        if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+            //Allowing only parent tax type
+
+            if (productMasterBO.getBatchwiseProductCount() > 0 && mBusinessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                // If batch available
+
+                ArrayList<ProductMasterBO> batchList = mBusinessModel.batchAllocationHelper
+                        .getBatchlistByProductID().get(productMasterBO.getProductID());
+                if (batchList != null) {
+                    mTaxBoByBatchProduct = new HashMap<>();
+                    TaxBO batchTaxBO = null;
+                    for (ProductMasterBO batchProductBO : batchList) {
+                        if (batchProductBO.getOrderedPcsQty() > 0
+                                || batchProductBO.getOrderedCaseQty() > 0
+                                || batchProductBO.getOrderedOuterQty() > 0) {
+                            // calculating tax value batchwise
+
+                            batchTaxBO = cloneTaxBo(taxBO);
+
+                            productPriceWithoutTax = batchProductBO.getDiscount_order_value() / (1 + (batchTaxBO.getTaxRate() / 100));
+                            taxAmount = productPriceWithoutTax * batchTaxBO.getTaxRate() / 100;
+
+                            batchTaxBO.setTotalTaxAmount(taxAmount);
+                            batchTaxBO.setTaxableAmount(productPriceWithoutTax);
+                            if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) == null)
+                                taxBOArrayList.add(batchTaxBO);
+
+                            if (mTaxBoBatchProduct == null)
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+                            else if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) != null)
+                                mTaxBoBatchProduct.get(batchProductBO.getProductID()).add(batchTaxBO);
+                            else
+                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
+
+                            if (mTaxBoBatchProduct.size() > 0)
+                                mTaxInterface.updateTaxBoBatchProduct(mTaxBoBatchProduct);
+
+                            mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchTaxBO);
+
+
+                        }
+                    }
+
+                    HashMap<String, TaxBO> tempList = new HashMap<>();
+                    if (batchTaxBO != null)
+                        tempList.put(taxBO.getTaxType(), batchTaxBO);
+                    excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
+
+                }
+            } else {
+                // calculating tax value
+
+                productPriceWithoutTax = productMasterBO.getDiscount_order_value() / (1 + (taxBO.getTaxRate() / 100));
+                taxAmount = productPriceWithoutTax * taxBO.getTaxRate() / 100;
+
+                //setting tax and taxable amount against to each tax object
+                taxBO.setTotalTaxAmount(taxAmount);
+                taxBO.setTaxableAmount(productPriceWithoutTax);
+
+                // calculating tax amount for child taxes..
+                HashMap<String, TaxBO> tempList = new HashMap<>();
+                tempList.put(taxBO.getTaxType(), taxBO);
+                excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
+            }
+        }
+
+    }
+
+
+    // excluding child tax value if available for parent(mParentTaxBoByTaxType) tax
+    // recursive call used to calculate tax value for every(child of child..) child.
+    private void excludeChildTaxIfAvailable(ProductMasterBO productMasterBO, HashMap<String, TaxBO> mParentTaxBoByTaxType, boolean isFreeProduct) {
+
+
+        try {
+
+            double completeParentTaxAmount = 0.0;
+            double childTaxAmount = 0.0;
+            HashMap<String, TaxBO> mTempParentTaxBoByTaxType = new HashMap<>();
+
+            for (String parentTaxType : mParentTaxBoByTaxType.keySet()) {
+
+                for (TaxBO childTaxBO : (!isFreeProduct ? mTaxListByProductId.get(productMasterBO.getProductID()) : mBusinessModel.getmFreeProductTaxListByProductId().get(productMasterBO.getProductID()))) {
+                    if (childTaxBO.getParentType().equals(mParentTaxBoByTaxType.get(parentTaxType).getTaxType())) {
+                        // child tax available
+
+                        if (productMasterBO.getBatchwiseProductCount() > 0 && mBusinessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                            ArrayList<ProductMasterBO> batchList = mBusinessModel.batchAllocationHelper
+                                    .getBatchlistByProductID().get(productMasterBO.getProductID());
+                            if (batchList != null) {
+                                // batch available
+                                for (ProductMasterBO batchProductBO : batchList) {
+                                    if (batchProductBO.getOrderedPcsQty() > 0
+                                            || batchProductBO.getOrderedCaseQty() > 0
+                                            || batchProductBO.getOrderedOuterQty() > 0) {
+
+                                        TaxBO batchChildTaxBO = cloneTaxBo(childTaxBO);
+
+                                        completeParentTaxAmount = mTaxBoByBatchProduct.get(batchProductBO.getProductID() + batchProductBO.getBatchid()).getTotalTaxAmount() / (1 + (batchChildTaxBO.getTaxRate() / 100));
+                                        childTaxAmount = completeParentTaxAmount * batchChildTaxBO.getTaxRate() / 100;
+
+                                        batchChildTaxBO.setTotalTaxAmount(childTaxAmount);
+                                        batchChildTaxBO.setTaxableAmount(mTaxBoByBatchProduct.get(batchProductBO.getProductID() + batchProductBO.getBatchid()).getTotalTaxAmount());
+
+                                        mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchChildTaxBO);
+
+                                        mTempParentTaxBoByTaxType.put(childTaxBO.getTaxType(), childTaxBO);
+
+                                    }
+                                }
+                            }
+                        } else {
+
+                            // calculating tax values for child tax..
+                            completeParentTaxAmount = mParentTaxBoByTaxType.get(parentTaxType).getTotalTaxAmount() / (1 + (childTaxBO.getTaxRate() / 100));
+                            childTaxAmount = completeParentTaxAmount * childTaxBO.getTaxRate() / 100;
+
+                            childTaxBO.setTotalTaxAmount(childTaxAmount);
+                            childTaxBO.setTaxableAmount(mParentTaxBoByTaxType.get(parentTaxType).getTotalTaxAmount());
+
+                            mTempParentTaxBoByTaxType.put(childTaxBO.getTaxType(), childTaxBO);
+                        }
+
+
+                    }
+
+                }
+
+
+            }
+
+            // Recursive call until current taxBo has child
+            if (mTempParentTaxBoByTaxType.size() > 0) {
+                excludeChildTaxIfAvailable(productMasterBO, mTempParentTaxBoByTaxType, isFreeProduct);
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+    }
 
     public TaxBO cloneTaxBo(TaxBO taxBO) {
 
@@ -680,6 +798,21 @@ public class TaxHelper {
         values = null;
 
 
+    }
+
+    public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,
+                                                    String productId, TaxBO taxBO) {
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+        StringBuffer values = new StringBuffer();
+
+        values.append(orderId + "," + productId + ","
+                + taxBO.getTaxRate() + ",");
+        values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
+                + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
+        values.append("," + taxBO.getGroupId() + ",1");
+        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+        db.insertSQL("OrderTaxDetails", columns, values.toString());
+        values = null;
     }
 
     /**

@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
@@ -39,7 +41,7 @@ import java.util.regex.Pattern;
 
 import javax.mail.Folder;
 
-public class PrintHelper {
+public class PrintHelper implements TaxInterface {
     private final Context mContext;
     private final BusinessModel bmodel;
     private static PrintHelper instance = null;
@@ -59,6 +61,9 @@ public class PrintHelper {
     private final ArrayList<BomRetunBo> mEmptyLiaProductsForAdapter = new ArrayList<>();
     private final ArrayList<BomRetunBo> mEmptyRetProductsForAdapter = new ArrayList<>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<>();
+    private ArrayList<TaxBO> mGroupIdList;
+    private LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId;
+    private SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId;
 
     private PrintHelper(Context context) {
         this.mContext = context;
@@ -770,14 +775,20 @@ public class PrintHelper {
                         }
                     }
                 }
+                if (bmodel.configurationMasterHelper.IS_GST) {
+                    bmodel.taxGstHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                    bmodel.taxGstHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+                } else {
+                    bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                    bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+                }
 
-                bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-                bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-                ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
+
+                ArrayList<TaxBO> groupIdList = mGroupIdList;
 
                 if (groupIdList != null) {
                     for (TaxBO taxBO : groupIdList) {
-                        LinkedHashSet<TaxBO> percentagerList = bmodel.taxHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
+                        LinkedHashSet<TaxBO> percentagerList = mTaxBOByGroupId.get(taxBO.getGroupId());
                         if (percentagerList != null) {
                             totaltaxCount = totaltaxCount + (percentagerList.size());
                         }
@@ -1122,8 +1133,8 @@ public class PrintHelper {
                     //print tax
                     x = x + 100;
 
-                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
-                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
+                    HashMap<String, HashSet<String>> productListByGroupId = mProductIdByTaxGroupId;
+                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = mTaxBOByGroupId;
 
                     if (groupIdList != null) {
                         String taxDesc;
@@ -1533,7 +1544,12 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    final double taxAmount = bmodel.taxHelper.getTotalBillTaxAmount(fromorder);
+                    double taxAmount;
+                    if (bmodel.configurationMasterHelper.IS_GST)
+                        taxAmount = bmodel.taxGstHelper.getTotalBillTaxAmount(fromorder);
+                    else
+                        taxAmount = bmodel.taxHelper.getTotalBillTaxAmount(fromorder);
+
                     sb.append(bmodel.formatValue(taxAmount) + " \r\n");
 
                     x = x + 30;
@@ -2842,7 +2858,7 @@ public class PrintHelper {
      * When save invoice print file created and stored in mobile
      * this method will be deleted print file while downloading
      */
-    public void deletePrintFileAfterDownload(String path){
+    public void deletePrintFileAfterDownload(String path) {
         try {
             File folder = new File(path);
 
@@ -2853,8 +2869,47 @@ public class PrintHelper {
 
             }
             folder.delete();
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+        this.mProductIdByTaxGroupId = mProductIdByTaxGroupId;
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+        if (mGroupIdList != null)
+            this.mGroupIdList = mGroupIdList;
+        else
+            this.mGroupIdList = new ArrayList<TaxBO>();
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+        this.mTaxBOByGroupId = mTaxBOByGroupId;
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+
     }
 }

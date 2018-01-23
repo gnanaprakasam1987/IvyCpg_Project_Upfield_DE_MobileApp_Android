@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +53,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.model.ScreenReceiver;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -80,11 +82,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface {
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, TaxInterface {
 
     /**
      * views *
@@ -175,6 +180,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public void setDiscountDialog(boolean discountDialog) {
         isDiscountDialog = discountDialog;
     }
+
+    private HashMap<String, ArrayList<TaxBO>> mTaxListByProductId;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -553,17 +561,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             .getOsrp());
                 }
 
-                if (bmodel.configurationMasterHelper.IS_APPLY_PRODUCT_TAX) {
-                    if (productBO.getTaxes() != null && productBO.getTaxes().size() > 0) {
-                        for (TaxBO taxBO : productBO.getTaxes()) {
-                            vatAmount = vatAmount + line_total_price
-                                    * taxBO.getTaxRate() / 100;
-                        }
-                    }
-
-                    line_total_price = line_total_price + vatAmount;
-                }
-
                 /** Set the calculated values in productBO **/
                 productBO.setDiscount_order_value(line_total_price);
                 productBO.setSchemeAppliedValue(line_total_price);
@@ -627,7 +624,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.configurationMasterHelper.SHOW_TAX) {
             // Apply Exclude Item level Tax  in Product
-            bmodel.taxHelper.updateProductWiseTax();
+            if (bmodel.configurationMasterHelper.IS_GST)
+                bmodel.taxGstHelper.updateProductWiseTax();
+            else
+                bmodel.taxHelper.updateProductWiseTax();
         }
 
         totalval.setText(bmodel.formatValue(totalOrderValue));
@@ -723,9 +723,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         for (ProductMasterBO bo : mOrderedProductList) {
             float finalAmount = 0;
 
-            if (bmodel.taxHelper.getmTaxListByProductId() != null) {
-                if (bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
-                    for (TaxBO taxBO : bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
+            if (mTaxListByProductId != null) {
+                if (mTaxListByProductId.get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : mTaxListByProductId.get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
                             finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
                         }
@@ -2437,8 +2437,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isTaxAvailableForAllOrderedProduct() {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if (bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()) == null
-                    || bmodel.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() == 0) {
+            if (mTaxListByProductId.get(bo.getProductID()) == null
+                    || mTaxListByProductId.get(bo.getProductID()).size() == 0) {
                 return false;
             }
         }
@@ -3522,6 +3522,42 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
         }
+    }
+
+
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+        this.mTaxListByProductId = mTaxListByProductId;
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+
     }
 
 }

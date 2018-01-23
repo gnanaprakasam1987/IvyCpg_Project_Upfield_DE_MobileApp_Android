@@ -39,6 +39,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -53,12 +54,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
+public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar implements TaxInterface {
 
     private TextView distName, distName2, invoiceno, salesdate;
     private String mInvoiceno;
@@ -99,7 +101,10 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
     private SparseArray<ArrayList<Integer>> mDiscountIdListByTypeId;
     private SparseArray<Double> mDiscountValueByTypeId;
     private Toolbar toolbar;
-
+    private ArrayList<TaxBO> mGroupIdList;
+    private LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId;
+    private LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId;
+    private SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -314,14 +319,18 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     schemeFreeList = null;
                 }
             }
-
-            bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-            bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-            ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
+            if(bmodel.configurationMasterHelper.IS_GST) {
+                bmodel.taxGstHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                bmodel.taxGstHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+            }else{
+                bmodel.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                bmodel.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+            }
+            ArrayList<TaxBO> groupIdList = mGroupIdList;
 
             if (groupIdList != null) {
                 for (TaxBO taxBO : groupIdList) {
-                    HashSet<Double> percentagerList = bmodel.taxHelper.getTaxPercentagerListByGroupId().get(taxBO.getGroupId());
+                    HashSet<Double> percentagerList = mTaxPercentagerListByGroupId.get(taxBO.getGroupId());
                     if (percentagerList != null) {
                         totaltaxCount = totaltaxCount + (percentagerList.size());
                     }
@@ -597,9 +606,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
 
 // apply item level tax
 
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId = mProductIdByTaxGroupId;
 
-            SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
+            SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = mTaxBOByGroupId;
 
             mTaxcontainerLL.removeAllViews();
             if (groupIdList != null) {
@@ -817,12 +826,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     }
                 }
 
-
-                ArrayList<TaxBO> groupIdList = bmodel.taxHelper.getGroupIdList();
+                ArrayList<TaxBO> groupIdList = mGroupIdList;
 
                 if (groupIdList != null) {
                     for (TaxBO taxBO : groupIdList) {
-                        LinkedHashSet<TaxBO> percentagerList = bmodel.taxHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
+                        LinkedHashSet<TaxBO> percentagerList = mTaxBOByGroupId.get(taxBO.getGroupId());
                         if (percentagerList != null) {
                             totaltaxCount = totaltaxCount + (percentagerList.size());
                         }
@@ -1237,9 +1245,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     //print tax
                     x = x + 100;
 
-                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.taxHelper.getProductIdByTaxGroupId();
+                    HashMap<String, HashSet<String>> productListByGroupId = mProductIdByTaxGroupId;
 
-                    SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = bmodel.taxHelper.getGroupDesc2ByGroupId();
+                    SparseArray<LinkedHashSet<TaxBO>> taxListByGroupId = mTaxBOByGroupId;
                     if (groupIdList != null) {
                         String taxDesc = "";
                         String previousTaxDesc = "";
@@ -1729,5 +1737,44 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
         // bmodel.productHelper.clearOrderTable();
         // force the garbage collector to run
         System.gc();
+    }
+
+
+    @Override
+    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
+
+    }
+
+    @Override
+    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
+
+    }
+
+    @Override
+    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
+        this.mProductIdByTaxGroupId = mProductIdByTaxGroupId;
+    }
+
+    @Override
+    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
+        if (mGroupIdList != null)
+            this.mGroupIdList = mGroupIdList;
+        else
+            this.mGroupIdList = new ArrayList<TaxBO>();
+    }
+
+    @Override
+    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
+        this.mTaxPercentagerListByGroupId = mTaxPercentagerListByGroupId;
+    }
+
+    @Override
+    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
+        this.mTaxBOByGroupId = mTaxBOByGroupId;
+    }
+
+    @Override
+    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
+
     }
 }

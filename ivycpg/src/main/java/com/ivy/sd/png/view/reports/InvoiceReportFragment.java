@@ -37,7 +37,7 @@ import java.util.Vector;
 
 public class InvoiceReportFragment extends IvyBaseFragment implements
         OnClickListener, OnItemClickListener {
-    private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,totalqtyTV,outid,invoicenotitle,totalvaluetitle,lbl_total_qty,lbl_avg_lines;
+    private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post, totalqtyTV, outid, invoicenotitle, totalvaluetitle, lbl_total_qty, lbl_avg_lines;
     private ListView lvwplist;
     private Button xlsExport;
     private BusinessModel bmodel;
@@ -55,8 +55,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-       View view = inflater.inflate(R.layout.fragment_invoice_report_new,
-               container, false);
+        View view = inflater.inflate(R.layout.fragment_invoice_report_new,
+                container, false);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -69,18 +69,17 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
         totalOrderValue = (TextView) view.findViewById(R.id.txttotal);
         averageLines = (TextView) view.findViewById(R.id.txtavglines);
-        outid=(TextView) view.findViewById(R.id.outid);
-        invoicenotitle=(TextView) view.findViewById(R.id.invoicenotitle);
+        outid = (TextView) view.findViewById(R.id.outid);
+        invoicenotitle = (TextView) view.findViewById(R.id.invoicenotitle);
         mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
         mlpc = (TextView) view.findViewById(R.id.lpc);
-        totalqtyTV=(TextView)view.findViewById(R.id.txttotalqty);
-        totalvaluetitle=(TextView)view.findViewById(R.id.totalvaluetitle);
-        lbl_total_qty=(TextView)view.findViewById(R.id.lbl_total_qty);
-        lbl_avg_lines=(TextView)view.findViewById(R.id.lbl_avg_lines);
+        totalqtyTV = (TextView) view.findViewById(R.id.txttotalqty);
+        totalvaluetitle = (TextView) view.findViewById(R.id.totalvaluetitle);
+        lbl_total_qty = (TextView) view.findViewById(R.id.lbl_total_qty);
+        lbl_avg_lines = (TextView) view.findViewById(R.id.lbl_avg_lines);
         totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_total_qty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_avg_lines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
 
 
         xlsExport = (Button) view.findViewById(R.id.xlsExport);
@@ -102,7 +101,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             double totoutlets = bmodel.reportHelper
                     .getorderbookingCount("InvoiceMaster");
             double result = avglinesorderbooking / totoutlets;
-            Commons.print("average lines,"+ result + " " + totoutlets + " "
+            Commons.print("average lines," + result + " " + totoutlets + " "
                     + avglinesorderbooking);
             String resultS = result + "";
             if (resultS.equals(getResources().getString(R.string.nan))) {
@@ -148,11 +147,11 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             totalQty = totalQty
                     + ret.getQty();
 
-        totalqtyTV.setText(totalQty+"");
+        totalqtyTV.setText(totalQty + "");
 
         if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
-           view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
+            view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.dist).setVisibility(View.GONE);
             view.findViewById(R.id.view00).setVisibility(View.GONE);
 
@@ -285,7 +284,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         // Calculate the total order value.
         for (InvoiceReportBO ret : mylist) {
 
-            totalvalue = totalvalue + SDUtil.convertToDouble(ret.getInvoiceAmount()+"");
+            totalvalue = totalvalue + SDUtil.convertToDouble(ret.getInvoiceAmount() + "");
         }
         if (bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             // Calculate the total order value.
@@ -336,7 +335,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
 
-            InvoiceReportBO orderreport =  items.get(position);
+            InvoiceReportBO orderreport = items.get(position);
             View row = convertView;
 
             if (row == null) {
@@ -352,14 +351,14 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 holder.tvinvoiceNo = (TextView) row.findViewById(R.id.invoice_number);
                 holder.llcancel = (LinearLayout) row.findViewById(R.id.ll_cancel);
                 holder.tvWeight = (TextView) row.findViewById(R.id.tv_weight);
-                holder.tvTaxValue=(TextView)row.findViewById(R.id.tv_tax_value);
-                holder.tvDiscValue=(TextView)row.findViewById(R.id.tv_priceoff_value);
+                holder.tvTaxValue = (TextView) row.findViewById(R.id.tv_tax_value);
+                holder.tvDiscValue = (TextView) row.findViewById(R.id.tv_priceoff_value);
 
-                holder.lpctxt=(TextView)row.findViewById(R.id.lpctxt);
-                holder.disttxtview=(TextView)row.findViewById(R.id.disttxtview);
-                holder.tv_weighttxt=(TextView)row.findViewById(R.id.tv_weighttxt);
-                holder.tv_tax_valuetxtview=(TextView)row.findViewById(R.id.tv_tax_valuetxtview);
-                holder.tv_priceoff_valuetxt=(TextView)row.findViewById(R.id.tv_priceoff_valuetxt);
+                holder.lpctxt = (TextView) row.findViewById(R.id.lpctxt);
+                holder.disttxtview = (TextView) row.findViewById(R.id.disttxtview);
+                holder.tv_weighttxt = (TextView) row.findViewById(R.id.tv_weighttxt);
+                holder.tv_tax_valuetxtview = (TextView) row.findViewById(R.id.tv_tax_valuetxtview);
+                holder.tv_priceoff_valuetxt = (TextView) row.findViewById(R.id.tv_priceoff_valuetxt);
 
                 ((View) row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 holder.lpctxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -424,18 +423,17 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
                 holder.tvWeight.setVisibility(View.GONE);
-                holder.tv_weighttxt.setVisibility(View.GONE);
+            holder.tv_weighttxt.setVisibility(View.GONE);
 
-            if(bmodel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT){
+            if (bmodel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
                 holder.tvTaxValue.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.tvTaxValue.setVisibility(View.VISIBLE);
             }
 
-            if(bmodel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT)
-            {
+            if (bmodel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT) {
                 holder.tvDiscValue.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.tvDiscValue.setVisibility(View.VISIBLE);
             }
 
@@ -463,8 +461,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         InvoiceReportBO invoiceReportBO;
         String ref;// product id
         TextView tvwrname;
-        TextView tvwvol, tvwvalue, tvwlpc, tvwDist,tvTaxValue,tvDiscValue,lpctxt,disttxtview
-            ,tv_weighttxt,tv_tax_valuetxtview,tv_priceoff_valuetxt;;
+        TextView tvwvol, tvwvalue, tvwlpc, tvwDist, tvTaxValue, tvDiscValue, lpctxt, disttxtview, tv_weighttxt, tv_tax_valuetxtview, tv_priceoff_valuetxt;
+        ;
         TextView tvinvoiceNo;
         TextView tvWeight;
         Button btnCancel;
@@ -480,12 +478,12 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON||bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE||bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA){
-                    InvoiceReportBO inv =  mylist.get(params[0]);
+                if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
+                    InvoiceReportBO inv = mylist.get(params[0]);
                     totalamount = inv.getInvoiceAmount();
                     bmodel.setOrderid(inv.getOrderID());
                     minvoiceid = inv.getInvoiceNumber();
-                }else{
+                } else {
                     downloadRetailerMaster(retailerid);
                     //bmodel.productHelper.downloadProductFilter("");
                     if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
@@ -510,13 +508,17 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     }
                     if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                        bmodel.taxHelper.downloadProductTaxDetails();
-                        bmodel.taxHelper.updateProductWiseTax();
+                        if (bmodel.configurationMasterHelper.IS_GST) {
+                            bmodel.taxGstHelper.downloadProductTaxDetails();
+                            bmodel.taxGstHelper.updateProductWiseTax();
+                        } else {
+                            bmodel.taxHelper.downloadProductTaxDetails();
+                            bmodel.taxHelper.updateProductWiseTax();
+                        }
+
                     }
 
                     bmodel.productHelper.updateBillWiseDiscountInObj(minvoiceid);
-
-
                     bmodel.setOrderid(inv.getOrderID());
                 }
 
@@ -528,8 +530,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         }
 
         protected void onPreExecute() {
-		/*	progressDialogue = ProgressDialog.show(getActivity(),
-					DataMembers.SD, getResources().getString(R.string.loading),
+        /*	progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.loading),
 					true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
@@ -579,7 +581,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                             + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
                             + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
-                            + " where A.retailerid="+ retailerid);
+                            + " where A.retailerid=" + retailerid);
             if (c != null) {
                 if (c.moveToNext()) {
                     retailer = new RetailerMasterBO();
@@ -654,8 +656,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                                                         int whichButton) {
                                     }
                                 }).create();
-                //bmodel.applyAlertDialogTheme(builder);
-                //break;
+            //bmodel.applyAlertDialogTheme(builder);
+            //break;
         }
         return null;
     }
