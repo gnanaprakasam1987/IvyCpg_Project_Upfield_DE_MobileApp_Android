@@ -155,15 +155,9 @@ public class ReturnFragment extends IvyBaseFragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isReasonAvailable()) {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
+                //implemented lot and invoice number validation like Reason validation ie only after any pc/cs/outer is entered
+                if (!isReasonAndOtherFieldsAvailable()) {
                     return;
-                }
-                for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
-                    if (sb.getInvoiceno().equals("") || sb.getLotNumber().equals("")) {
-                        Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
                 }
                 if (isReasonDuplicated()) {
                     Toast.makeText(getActivity(),
@@ -209,17 +203,17 @@ public class ReturnFragment extends IvyBaseFragment {
             String message = "";
             if (s == 0) {
                 message = "Invalid Sales Return!";
-            }else if (s == 1) {
+            } else if (s == 1) {
                 message = "Valid Sales Return!";
             } else if (s == 2) {
                 message = "Unable to process validation!";
             }
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra("position", holderPosition);
-                intent.putExtra("top", holderTop);
-                getActivity().setResult(RESULT_OK, intent);
-                getActivity().finish();
+            Intent intent = new Intent();
+            intent.putExtra("position", holderPosition);
+            intent.putExtra("top", holderTop);
+            getActivity().setResult(RESULT_OK, intent);
+            getActivity().finish();
 
         }
     }
@@ -240,10 +234,19 @@ public class ReturnFragment extends IvyBaseFragment {
 
 
     }
-    private boolean isReasonAvailable() {
+
+    private boolean isReasonAndOtherFieldsAvailable() {
         for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
-            if (sb.getReasonID().equals("0") && (sb.getCaseQty() > 0 || sb.getPieceQty() > 0 || sb.getOuterQty() > 0))
-                return false;
+            if (sb.getCaseQty() > 0 || sb.getPieceQty() > 0 || sb.getOuterQty() > 0) {
+                if (sb.getReasonID().equals("0")) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
+                        (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                    Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
         }
 
         return true;
