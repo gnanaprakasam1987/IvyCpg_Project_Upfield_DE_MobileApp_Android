@@ -54,7 +54,7 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
         edtEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         txtEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        if(retailerEmailId.length()>0)
+        if(!TextUtils.isEmpty(retailerEmailId))
             txtEmail.setText(retailerEmailId);
         else
             txtEmail.setText(""+getResources().getString(R.string.no_email_id));
