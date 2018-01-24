@@ -5,16 +5,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
+import com.ivy.sd.png.model.CompetitorFilterInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,CompetitorFilterInterface {
 
     private Toolbar toolbar;
 
@@ -104,5 +106,13 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+    }
+
+    @Override
+    public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        PriceTrackFragment fragment = (PriceTrackFragment) fm
+                .findFragmentById(R.id.price_track_fragment);
+        fragment.updateCompetitorProducts(parentIdList,mSelectedIdByLevelId,filterText);
     }
 }

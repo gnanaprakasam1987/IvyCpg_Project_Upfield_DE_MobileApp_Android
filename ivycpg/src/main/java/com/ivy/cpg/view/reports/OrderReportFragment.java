@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,10 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +25,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,16 +57,19 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+/**
+ * Order report main screen
+ */
 public class OrderReportFragment extends IvyBaseFragment implements OnClickListener,
         OnItemClickListener {
 
-    private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
-            totalLines, tv_lbl_total_lines, totalvaluetitle, lab_dist_pre_post;
-    private ListView lvwplist;
+    private TextView text_totalOrderValue, text_averagePreOrPost;
+    private ListView listView;
     private Button xlsExport;
-    private BusinessModel bmodel;
-    private ArrayList<ReportonorderbookingBO> mylist;
-    private View view;
+
+    private BusinessModel businessModel;
+
+    private ArrayList<OrderReportBO> list;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,124 +78,123 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
-        view = inflater.inflate(R.layout.fragment_order_report, container, false);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        View view = inflater.inflate(R.layout.fragment_order_report, container, false);
+        businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.setContext(getActivity());
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
-        totalOrderValue = (TextView) view.findViewById(R.id.txttotal);
-        averageLines = (TextView) view.findViewById(R.id.txtavglines);
-        mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
-        mlpc = (TextView) view.findViewById(R.id.lpc);
-        totalLines = (TextView) view.findViewById(R.id.txttotallines);
-        tv_lbl_total_lines = (TextView) view.findViewById(R.id.lbl_total_lines);
+
+        text_totalOrderValue = (TextView) view.findViewById(R.id.txttotal);
+        TextView averageLines = (TextView) view.findViewById(R.id.txtavglines);
+        text_averagePreOrPost = (TextView) view.findViewById(R.id.txt_dist_pre_post);
+        TextView text_LPC = (TextView) view.findViewById(R.id.lpc);
+        TextView totalLines = (TextView) view.findViewById(R.id.txttotallines);
+        TextView tv_lbl_total_lines = (TextView) view.findViewById(R.id.lbl_total_lines);
 
         xlsExport = (Button) view.findViewById(R.id.btn_export);
-        if (bmodel.configurationMasterHelper.IS_EXPORT_ORDER_REPORT) {
+        if (businessModel.configurationMasterHelper.IS_EXPORT_ORDER_REPORT) {
             xlsExport.setVisibility(View.VISIBLE);
         }
 
-        if (bmodel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL) {
+        if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL) {
             xlsExport.setText(getResources().getString(R.string.export_and_email));
-        } else if (bmodel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_SHARE) {
+        } else if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_SHARE) {
             xlsExport.setText(getResources().getString(R.string.export_and_share));
         } else {
             xlsExport.setText(getResources().getString(R.string.export));
         }
-        lvwplist = (ListView) view.findViewById(R.id.list);
-        lvwplist.setCacheColorHint(0);
+        listView = (ListView) view.findViewById(R.id.list);
+        listView.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
 
-		lvwplist.setOnItemClickListener(this);
-		totalvaluetitle=(TextView) view.findViewById(R.id.totalvaluetitle);
-		lab_dist_pre_post=(TextView) view.findViewById(R.id.lab_dist_pre_post);
-        mlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		totalvaluetitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		lab_dist_pre_post.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-		mylist = bmodel.reportHelper.downloadOrderreport();
+		listView.setOnItemClickListener(this);
+        TextView text_totalValueTitle=(TextView) view.findViewById(R.id.totalvaluetitle);
+        TextView lab_dist_pre_post=(TextView) view.findViewById(R.id.lab_dist_pre_post);
+        text_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+		list = businessModel.reportHelper.downloadOrderreport();
 		updateOrderGrid();
-		int avglinesorderbooking = bmodel.reportHelper
+		int mLPC = businessModel.reportHelper
 				.getavglinesfororderbooking("OrderHeader");
-		if (bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+		if (businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
 
-            double totoutlets = bmodel.reportHelper
+            double mTotalOutlets = businessModel.reportHelper
                     .getorderbookingCount("OrderHeader");
-            double result = avglinesorderbooking / totoutlets;
+            double result = mLPC / mTotalOutlets;
             String resultS = result + "";
             if (resultS.equals(getResources().getString(R.string.nan))) {
-                averageLines.setText("" + 0);
+                averageLines.setText(String.valueOf(0));
             } else {
-                averageLines.setText("" + SDUtil.roundIt(result, 2));
+                averageLines.setText(SDUtil.roundIt(result, 2));
             }
 
         }
-        if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES)
-            totalLines.setText(avglinesorderbooking + "");
-        if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES) {
-            if (bmodel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES)
+            totalLines.setText(String.valueOf(mLPC));
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
+            if (businessModel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
                 int totalQty = 0;
-                for (ReportonorderbookingBO bo : mylist)
-                    totalQty = totalQty + bmodel.reportHelper.getTotalQtyfororder(bo.getorderID());
-                totalLines.setText(totalQty + "");
+                for (OrderReportBO bo : list)
+                    totalQty = totalQty + businessModel.reportHelper.getTotalQtyfororder(bo.getOrderID());
+                totalLines.setText(String.valueOf(totalQty ));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
-                totalLines.setText(avglinesorderbooking + "");
+                totalLines.setText(String.valueOf(mLPC));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_line));
             }
 
         }
-        //xlsExport.setVisibility(View.GONE);
 
-        if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+        if (!businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
             view.findViewById(R.id.lbl_avg_lines).setVisibility(View.GONE);
             averageLines.setVisibility(View.GONE);
-            // mlpc.setVisibility(View.GONE);
         }
-        if (!bmodel.configurationMasterHelper.SHOW_TOTAL_LINES) {
+        if (!businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
             totalLines.setVisibility(View.GONE);
             view.findViewById(R.id.lbl_total_lines).setVisibility(View.GONE);
 
 		}
-		if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+		if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
 			view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.VISIBLE);
 			view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.VISIBLE);
 			view.findViewById(R.id.dist).setVisibility(View.VISIBLE);
 
         }
-        if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+        if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.dist).setVisibility(View.GONE);
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         }
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
             view.findViewById(R.id.weighttitle).setVisibility(View.GONE);
         else {
             try {
-                if (bmodel.labelsMasterHelper.applyLabels(getActivity().findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(getActivity().findViewById(
                         R.id.weighttitle).getTag()) != null)
                     ((TextView) getActivity().findViewById(R.id.weighttitle))
-                            .setText(bmodel.labelsMasterHelper
+                            .setText(businessModel.labelsMasterHelper
                                     .applyLabels(getActivity().findViewById(R.id.weighttitle)
                                             .getTag()));
-                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             } catch (Exception e) {
                 Commons.printException(e);
             }
         }
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.weighttitle).getTag()) != null)
                 ((TextView) view.findViewById(R.id.weighttitle))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
+                        .setText(businessModel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.weighttitle).getTag()));
         } catch (Exception e) {
             Commons.printException(e);
@@ -201,45 +202,45 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
 
 		try {
-			if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+			if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
 					R.id.outna).getTag()) != null)
 				((TextView) view.findViewById(R.id.outna))
-						.setText(bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+						.setText(businessModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
         }
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.lpc).getTag()) != null)
                 ((TextView) view.findViewById(R.id.lpc))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
+                        .setText(businessModel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.lpc).getTag()));
-            ((TextView) view.findViewById(R.id.lpc)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) view.findViewById(R.id.lpc)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         } catch (Exception e) {
             Commons.printException(e);
         }
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.outid).getTag()) != null)
                 ((TextView) view.findViewById(R.id.outid))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(businessModel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
                                         R.id.outid)
                                         .getTag()));
-            ((TextView) view.findViewById(R.id.outid)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) view.findViewById(R.id.outid)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         } catch (Exception e) {
             Commons.printException(e);
         }
 
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.lab_total_value).getTag()) != null)
                 ((TextView) view.findViewById(R.id.lab_total_value))
-                        .setText(bmodel.labelsMasterHelper
+                        .setText(businessModel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
                                         R.id.lab_total_value)
                                         .getTag()));
@@ -247,9 +248,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             Commons.printException(e);
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
-            totalOrderValue.setVisibility(View.GONE);
-            totalvaluetitle.setVisibility(View.GONE);
+        if (!businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
+            text_totalOrderValue.setVisibility(View.GONE);
+            text_totalValueTitle.setVisibility(View.GONE);
         }
 
         return view;
@@ -266,11 +267,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     }
 
     private void updateOrderGrid() {
-        double totalvalue = 0;
+        double mTotalValue = 0;
         int pre = 0, post = 0;
 
         // Show alert if error loading data.
-        if (mylist == null) {
+        if (list == null) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.unable_to_load_data),
                     Toast.LENGTH_SHORT).show();
@@ -278,7 +279,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             return;
         }
         // Show alert if no order exist.
-        if (mylist.size() == 0) {
+        if (list.size() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_orders_available),
                     Toast.LENGTH_SHORT).show();
@@ -287,70 +288,71 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         }
 
         // Calculate the total order value.
-        for (ReportonorderbookingBO ret : mylist) {
-            totalvalue = totalvalue + SDUtil.convertToDouble(SDUtil.format(ret.getordertot(),
-                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        for (OrderReportBO ret : list) {
+            mTotalValue = mTotalValue + SDUtil.convertToDouble(SDUtil.format(ret.getOrderTotal(),
+                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                    0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         }
 
-        if (bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+        if (businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             // Calculate the total order value.
-            for (ReportonorderbookingBO ret : mylist) {
+            for (OrderReportBO ret : list) {
                 try {
                     String str[] = ret.getDist().split("/");
                     pre = pre + Integer.parseInt(str[0]);
                     post = post + Integer.parseInt(str[1]);
                 } catch (Exception e) {
-                    // TODO: handle exception
                     Commons.printException(e);
                 }
 
             }
-            float preavg = 0, postavg = 0;
-            if (mylist.size() > 0) {
+            float mPreAverage = 0, mPostAverage = 0;
+            if (list.size() > 0) {
                 if (pre > 0) {
-                    preavg = (float) pre / (float) mylist.size();
+                    mPreAverage = (float) pre / (float) list.size();
                 }
                 if (post > 0) {
-                    postavg = (float) post / (float) mylist.size();
+                    mPostAverage = (float) post / (float) list.size();
                 }
 
-                mavg_pre_post.setText(SDUtil.format(preavg, 1, 0) + "/"
-                        + SDUtil.format(postavg, 1, 0));
+                String value=SDUtil.format(mPreAverage, 1, 0) + "/"
+                        + SDUtil.format(mPostAverage, 1, 0);
+                text_averagePreOrPost.setText(value);
 
             } else {
-                mavg_pre_post.setText("0/0");
+                text_averagePreOrPost.setText("0/0");
             }
 
         }
-        // Format and set on the lable
-        if (!bmodel.configurationMasterHelper.SHOW_NETAMOUNT_IN_REPORT)
-            totalOrderValue.setText(SDUtil.format(totalvalue,
-                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        // Format and set on the label
+        if (!businessModel.configurationMasterHelper.SHOW_NETAMOUNT_IN_REPORT)
+            text_totalOrderValue.setText(SDUtil.format(mTotalValue,
+                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                    businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         else
-            totalOrderValue.setText(SDUtil.format(getTotValues() - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
-                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    bmodel.configurationMasterHelper.VALUE_COMMA_COUNT, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+            text_totalOrderValue.setText(SDUtil.format(businessModel.reportHelper.getTotValues(getActivity().getApplicationContext()) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
+                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                    businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-        // Load listview.
-        MyAdapter mSchedule = new MyAdapter(mylist);
-        lvwplist.setAdapter(mSchedule);
+        // Load ListView
+        MyAdapter mSchedule = new MyAdapter(list);
+        listView.setAdapter(mSchedule);
 
     }
 
-    class MyAdapter extends ArrayAdapter<ReportonorderbookingBO> {
-        ArrayList<ReportonorderbookingBO> items;
+    class MyAdapter extends ArrayAdapter<OrderReportBO> {
+        ArrayList<OrderReportBO> items;
 
-        private MyAdapter(ArrayList<ReportonorderbookingBO> items) {
+        private MyAdapter(ArrayList<OrderReportBO> items) {
             super(getActivity(), R.layout.row_order_report, items);
             this.items = items;
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @Override @NonNull
+        public View getView(int position, View convertView, @NotNull ViewGroup parent) {
             final ViewHolder holder;
 
-            ReportonorderbookingBO orderreport = (ReportonorderbookingBO) items
+            OrderReportBO reportBO = items
                     .get(position);
             View row = convertView;
 
@@ -359,39 +361,38 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 row = inflater
                         .inflate(R.layout.row_order_report, parent, false);
                 holder = new ViewHolder();
-                holder.tvwrname = (TextView) row.findViewById(R.id.PRDNAME);
-                holder.ordertxt = (TextView) row.findViewById(R.id.ordertxt);
+                holder.text_retailerName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.label_orderNumber = (TextView) row.findViewById(R.id.ordertxt);
                 holder.text_delivery_date = (TextView) row.findViewById(R.id.text_delivery_date);
                 holder.tvFocusBrandCount = (TextView) row.findViewById(R.id.focus_brand_count);
                 holder.tvMustSellCount = (TextView) row.findViewById(R.id.mustsell_count);
 
-                holder.tvwvalue = (TextView) row.findViewById(R.id.PRDMRP);
-                holder.tvwlpc = (TextView) row.findViewById(R.id.PRDRP);
+                holder.text_orderValue = (TextView) row.findViewById(R.id.PRDMRP);
+                holder.text_LPC = (TextView) row.findViewById(R.id.PRDRP);
                 holder.tvwDist = (TextView) row.findViewById(R.id.dist_txt);
                 holder.tvOrderNo = (TextView) row.findViewById(R.id.orderno);
                 holder.tvWeight = (TextView) row.findViewById(R.id.tv_weight);
-                holder.weighttitle = (TextView) row.findViewById(R.id.weighttitle);
+                holder.label_weight = (TextView) row.findViewById(R.id.weighttitle);
                 holder.tv_seller_type = (TextView) row.findViewById(R.id.tv_seller_type);
-                holder.tvlpc = (TextView) row.findViewById(R.id.lpc);
-                holder.tvoutid = (TextView) row.findViewById(R.id.outid);
-                holder.focusbrandlabel = (TextView) row.findViewById(R.id.focusbrand_label);
-                holder.mustselllabel = (TextView) row.findViewById(R.id.mustsell_label);
+                holder.label_LPC = (TextView) row.findViewById(R.id.lpc);
+                holder.label_PreORPost = (TextView) row.findViewById(R.id.outid);
+                holder.label_focusBrand = (TextView) row.findViewById(R.id.focusbrand_label);
+                holder.label_MustSell = (TextView) row.findViewById(R.id.mustsell_label);
                 holder.focus_brand_count1 = (TextView) row.findViewById(R.id.focus_brand_count1);
-                holder.mustsellcount = (TextView) row.findViewById(R.id.mustsellcount);
-                ((View) row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                holder.text_mustSellCount = (TextView) row.findViewById(R.id.mustsellcount);
+                (row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     holder.tvWeight.setVisibility(View.GONE);
-                    holder.weighttitle.setVisibility(View.GONE);
+                    holder.label_weight.setVisibility(View.GONE);
                 }
-                if (!bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT)
+                if (!businessModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT)
                     holder.tvFocusBrandCount.setVisibility(View.GONE);
-                //holder.focus_brand_count1.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                    holder.tvMustSellCount.setVisibility(View.GONE);
-                //	holder.mustsellcount.setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
+                if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                    holder.tvMustSellCount.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
                     holder.text_delivery_date.setVisibility(View.GONE);
 
 
@@ -400,66 +401,65 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder = (ViewHolder) row.getTag();
             }
 
-            if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-                holder.tvoutid.setVisibility(View.GONE);
+            if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+                holder.label_PreORPost.setVisibility(View.GONE);
                 holder.tvwDist.setVisibility(View.GONE);
 
             }
 
-			holder.tvwrname.setText(orderreport.getretailerName());
-            holder.tvwrname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.tvwvalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.ordertxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvOrderNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.text_delivery_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvMustSellCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvFocusBrandCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-			holder.tvlpc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.weighttitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.tvoutid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.focusbrandlabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-			holder.mustselllabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.text_retailerName.setText(reportBO.getRetailerName());
+            holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvOrderNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.text_delivery_date.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+			holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+			holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {
-                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.mustsell_count).getTag()) != null) {
-                    holder.tvMustSellCount.setText(bmodel.labelsMasterHelper.applyLabels(row
-                            .findViewById(R.id.mustsell_count).getTag()) + " : " + orderreport.getmMustSellCount());
+                if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
+                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + reportBO.getMustSellCount();
+                    holder.tvMustSellCount.setText(value);
                 } else {
-                    holder.tvMustSellCount.setText(getResources().getString(R.string.must_sell) + " : " + orderreport.getmMustSellCount());
-                    holder.mustsellcount.setText(" " + " " + orderreport.getmMustSellCount());
+                    String value=getResources().getString(R.string.must_sell) + " : " + reportBO.getMustSellCount();
+                    holder.tvMustSellCount.setText(value);
+                    holder.text_mustSellCount.setText(String.valueOf(reportBO.getMustSellCount()));
 
                 }
-                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                        R.id.focus_brand_count).getTag()) != null) {
-                    holder.tvFocusBrandCount.setText(bmodel.labelsMasterHelper.applyLabels(row
-                            .findViewById(R.id.focus_brand_count).getTag()) + " : " + orderreport.getmFocusBrandCount());
+                if (businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) != null) {
+                    String value=businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + reportBO.getFocusBrandCount();
+                    holder.tvFocusBrandCount.setText(value);
                 } else {
-                    holder.tvFocusBrandCount.setText(getResources().getString(R.string.focus_brand) + " : " + orderreport.getmFocusBrandCount());
-                    holder.focus_brand_count1.setText(" " + " " + orderreport.getmFocusBrandCount());
+                    String value=getResources().getString(R.string.focus_brand) + " : " + reportBO.getFocusBrandCount();
+                    holder.tvFocusBrandCount.setText(value);
+                    holder.focus_brand_count1.setText(String.valueOf(reportBO.getFocusBrandCount()));
 
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    holder.tvwvalue.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
+                    holder.text_orderValue.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 Commons.printException(e);
             }
 
-            //	holder.focus_brand_count1.setText(orderreport.getmFocusBrandCount());
-            //	holder.mustsellcount.setText(orderreport.getmMustSellCount());
-            holder.tvwvalue.setText(bmodel.formatValue((orderreport
-                    .getordertot())) + "");
-            holder.tvwlpc.setText(orderreport.getlpc());
-            holder.tvwDist.setText(orderreport.getDist());
-            holder.tvOrderNo.setText(orderreport.getorderID());
-            holder.tvWeight.setText(orderreport.getWeight() + "");
+            holder.text_orderValue.setText(businessModel.formatValue((reportBO
+                    .getOrderTotal())));
+            holder.text_LPC.setText(reportBO.getLPC());
+            holder.tvwDist.setText(reportBO.getDist());
+            holder.tvOrderNo.setText(reportBO.getOrderID());
+            holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
 
 
-            if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                if (orderreport.getIsVanSeller() == 1)
+            if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (reportBO.getIsVanSeller() == 1)
                     holder.tv_seller_type.setText("V");
                 else
                     holder.tv_seller_type.setText("P");
@@ -467,12 +467,12 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder.tv_seller_type.setVisibility(View.INVISIBLE);
             }
 
-            if (orderreport.getUpload().equalsIgnoreCase("Y")) {
-                holder.tvwrname.setTextColor(getResources().getColor(
+            if (reportBO.getUpload().equalsIgnoreCase("Y")) {
+                holder.text_retailerName.setTextColor(getResources().getColor(
                         R.color.GREEN));
-                holder.tvwvalue.setTextColor(getResources().getColor(
+                holder.text_orderValue.setTextColor(getResources().getColor(
                         R.color.GREEN));
-                holder.tvwlpc.setTextColor(getResources().getColor(
+                holder.text_LPC.setTextColor(getResources().getColor(
                         R.color.GREEN));
                 holder.tvwDist.setTextColor(getResources().getColor(
                         R.color.GREEN));
@@ -487,70 +487,57 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             try {
                 String delivery_date;
-                if (bmodel.mSelectedModule == 3) {
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(bmodel.getDeliveryDate(orderreport.getorderID()), bmodel.configurationMasterHelper.outDateFormat);
+                if (businessModel.mSelectedModule == 3) {
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getOrderID()), ConfigurationMasterHelper.outDateFormat);
                 } else
-                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(bmodel.getDeliveryDate(orderreport.getreatilerId()), bmodel.configurationMasterHelper.outDateFormat);
+                    delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getRetailerId()),ConfigurationMasterHelper.outDateFormat);
 
-                if (bmodel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
-                    holder.text_delivery_date.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date);
+                if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
+                    String value=businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
+                    holder.text_delivery_date.setText(value);
                 } else {
-                    holder.text_delivery_date.setText(getResources().getString(R.string.delivery_date_label) + " : " + delivery_date);
+                    String value=getResources().getString(R.string.delivery_date_label) + " : " + delivery_date;
+                    holder.text_delivery_date.setText(value);
                 }
             } catch (Exception e) {
                 Commons.printException(e);
             }
 
-		/*	TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-				row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-			} else {
-				row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-			}*/
+
             return (row);
         }
     }
 
     class ViewHolder {
-        String ref;// product id
-        TextView tvwrname, ordertxt;
-        TextView tvwvol, tvwvalue, tvwlpc, tvwDist, tvWeight, tvlpc, tvoutid, focus_brand_count1, mustsellcount;
+        TextView text_retailerName, label_orderNumber;
+        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
         TextView text_delivery_date;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, weighttitle, focusbrandlabel, mustselllabel;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell;
 
     }
 
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
         try {
-            ReportonorderbookingBO ret = (ReportonorderbookingBO) mylist
+            OrderReportBO ret = list
                     .get(arg2);
-            Intent orderreportdetail = new Intent();
-            orderreportdetail.putExtra("OBJ",
+            Intent intent = new Intent();
+            intent.putExtra("OBJ",
                     ret);
-            orderreportdetail.putExtra("isFromOrder", true);
-            orderreportdetail.putExtra("TotalValue", ret.getordertot());
-            orderreportdetail.putExtra("TotalLines", ret.getlpc());
-            orderreportdetail.setClass(getActivity(), Orderreportdetail.class);
-            startActivityForResult(orderreportdetail, 0);
+            intent.putExtra("isFromOrder", true);
+            intent.putExtra("TotalValue", ret.getOrderTotal());
+            intent.putExtra("TotalLines", ret.getLPC());
+            intent.setClass(getActivity(), OrderReportDetail.class);
+            startActivityForResult(intent, 0);
 
-			/*
-             * FragmentTransaction ft=getFragmentManager().beginTransaction();
-			 * ft.replace(R.id.realtabcontent, new
-			 * OrderReportDetailFragment(),"orderdetail");
-			 * ft.addToBackStack(null); ft.commit();
-			 */
+
 
         } catch (Exception e) {
-            // TODO: handle exception
             Commons.printException(e);
         }
     }
 
     public void onBackPressed() {
 
-        // do something on back.
-        return;
     }
 
     class XlsExport extends AsyncTask<Void, Void, Boolean> {
@@ -572,7 +559,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         protected Boolean doInBackground(Void... params) {
             try {
 
-                ArrayList<String> columnNames = new ArrayList<String>();
+                ArrayList<String> columnNames = new ArrayList<>();
                 columnNames.add("Distributor");
                 columnNames.add("UserCode");
                 columnNames.add("UserName");
@@ -587,25 +574,25 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 columnNames.add("OrderQty(Outer)");
                 columnNames.add("DeliveryDate");
 
-                bmodel.reportHelper
+                businessModel.reportHelper
                         .downloadOrderReportToExport();
-                HashMap<String, ArrayList<ArrayList<String>>> mOrderDetailsByDistributorName = bmodel.reportHelper
+                HashMap<String, ArrayList<ArrayList<String>>> mOrderDetailsByDistributorName = businessModel.reportHelper
                         .getmOrderDetailsByDistributorName();
 
 
                 for (String distributorName : mOrderDetailsByDistributorName.keySet()) {
 
                     ArrayList<JExcelHelper.ExcelBO> mExcelBOList = new ArrayList<>();
-                    JExcelHelper.ExcelBO excel = bmodel.mJExcelHelper.new ExcelBO();
+                    JExcelHelper.ExcelBO excel = businessModel.mJExcelHelper.new ExcelBO();
                     excel.setSheetName(distributorName);
                     excel.setColumnNames(columnNames);
                     excel.setColumnValues(mOrderDetailsByDistributorName.get(distributorName));
                     mExcelBOList.add(excel);
-                    bmodel.mJExcelHelper.createExcel("OrderReport_" + distributorName + ".xls", mExcelBOList);
+                    businessModel.mJExcelHelper.createExcel("OrderReport_" + distributorName + ".xls", mExcelBOList);
                 }
 
-                if (bmodel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL)
-                    bmodel.reportHelper.downloadOrderEmailAccountCredentials();
+                if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL)
+                    businessModel.reportHelper.downloadOrderEmailAccountCredentials();
 
 
             } catch (Exception e) {
@@ -627,11 +614,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
                 try {
 
-                    if (bmodel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_SHARE) {
+                    if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_SHARE) {
                         Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
                         ArrayList<Uri> uriList = new ArrayList<>();
-                        for (String distributorName : bmodel.reportHelper
+                        for (String distributorName : businessModel.reportHelper
                                 .getmOrderDetailsByDistributorName().keySet()) {
                             File newFile = new File(getActivity().getExternalFilesDir(null) + "", "OrderReport_" + distributorName + ".xls");
                             uriList.add(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", newFile));
@@ -645,10 +632,10 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                         //sharingIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
 
                         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_order_report_using)));
-                    } else if (bmodel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL) {
+                    } else if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL) {
 
-                        if (bmodel.reportHelper.getUserName() != null && !bmodel.reportHelper.getUserName().equals("")
-                                && bmodel.reportHelper.getUserPassword() != null && !bmodel.reportHelper.getUserPassword().equals(""))
+                        if (businessModel.reportHelper.getUserName() != null && !businessModel.reportHelper.getUserName().equals("")
+                                && businessModel.reportHelper.getUserPassword() != null && !businessModel.reportHelper.getUserPassword().equals(""))
                             new SendMail(getActivity()
                                     , "Order Report", "PFA").execute();
                         else
@@ -700,36 +687,35 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
             Properties props = System.getProperties();// new Properties();
 
-            //Configuring properties for gmail
+            //Configuring properties for G-MAIL
             props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.socketFactory.port", "587");
             props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "587");
             props.put("mail.smtp.starttls.enable", "true");
-            //  props.put("mail.debug",true);
 
             //Creating a new session
             session = Session.getDefaultInstance(props,
                     new javax.mail.Authenticator() {
                         //Authenticating the password
                         protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(bmodel.reportHelper.getUserName(), bmodel.reportHelper.getUserPassword());
+                            return new PasswordAuthentication(businessModel.reportHelper.getUserName(), businessModel.reportHelper.getUserPassword());
                         }
                     });
 
             try {
 
-                // sendind distributor wise..
-                for (String distributorName : bmodel.reportHelper
+                // sending distributor wise..
+                for (String distributorName : businessModel.reportHelper
                         .getmOrderDetailsByDistributorName().keySet()) {
 
                     //not allowed if email not available
-                    if (bmodel.reportHelper.getmEmailIdByDistributorName().get(distributorName) != null) {
+                    if (businessModel.reportHelper.getmEmailIdByDistributorName().get(distributorName) != null) {
 
                         Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress(bmodel.reportHelper.getUserName()));
-                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(bmodel.reportHelper.getmEmailIdByDistributorName().get(distributorName)));
+                        message.setFrom(new InternetAddress(businessModel.reportHelper.getUserName()));
+                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(businessModel.reportHelper.getmEmailIdByDistributorName().get(distributorName)));
                         message.setSubject(subject);
                         message.setText(body);
                         //  mm.setContent(message,"text/html; charset=utf-8");
@@ -805,34 +791,12 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                                                         int whichButton) {
                                     }
                                 });
-                bmodel.applyAlertDialogTheme(builder);
+                businessModel.applyAlertDialogTheme(builder);
                 break;
 
         }
         return null;
     }
 
-    private double getTotValues() {
-        try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db.selectSQL("select sum(ordervalue)from "
-                    + DataMembers.tbl_orderHeader + " where  upload='N'");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    double i = c.getDouble(0);
-                    c.close();
-                    db.closeDB();
-                    return i;
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
-        return 0;
-    }
 }

@@ -241,4 +241,23 @@
 
     <string name="error_e03">User not allowed to proceed. Contact Admin</string>
 
+
+    <!-- Order confirmation dialog -->
+    <string name="select_remarks_type">Select Remark Type</string>
+    <string name="remarks_type_label">Remarks Type</string>
+    <string name="shipment_type_label">Shipment Type</string>
+    <string name="payment_type_label">Payment Type</string>
+    <string name="do_u_want_to_save">Do you want to save?</string>
+    <string name="select_shipment_type">Select Shipment Type</string>
+    <string name="select_pay_term_type">Select PayTerm Type</string>
+    <string name="shipment_mandatory">Please select shipment type</string>
+    <string name="pay_term_mandatory">Please select payterm type</string>
+    <string name="dist_channel_mandatory">Please select Distribution channel</string>
+    <string name="select_channel">Select channel</string>
+    <string name="supplier_label">Supplier</string>
+    <string name="note_label">Note</string>
+    <string name="this_is_exceptional_order">This is an exceptional order.</string>
+    <string name="confirm">Confirm</string>
+    <!-- Order confirmation dialog -->
+
 </resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/txt_send_to"
+        style="?attr/customListItemPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dimen_10dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/blue_btn_normal_border"
+        android:text="Enter Email ID"/>
+    <TextView
+        android:id="@+id/txt_email"
+        style="?attr/customListItemPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center|left"
+        android:paddingLeft="@dimen/dimen_10dp"
+        android:text="@string/email"/>
+    <EditText
+        android:id="@+id/edt_email"
+        android:layout_height="@dimen/dimens_50dp"
+        android:layout_width="match_parent"
+        android:gravity="center|left"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="@dimen/dimen_10dp"
+        android:hint="@string/email"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/dimen_2dp"
+            android:text="@string/cancel"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_send"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/dimen_2dp"
+            android:text="@string/sending_email"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -35,6 +35,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -187,7 +188,7 @@ import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
-import com.ivy.sd.png.view.reports.InvoiceReportDetail;
+import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -200,10 +201,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -239,6 +242,7 @@ public class BusinessModel extends Application {
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     public String invoiceDisount;
+    private String remarkType = "0";
     //public boolean filtershowall = false;
     public String userNameTemp, passwordTemp;
     public RetailerMasterBO retailerMasterBO;
@@ -358,6 +362,7 @@ public class BusinessModel extends Application {
     private String orderHeaderNote = "";
     private String rField1 = "";
     private String rField2 = "";
+    private String rField3 = "";
     private String saleReturnNote = "";
     private String assetRemark = "";
     private String note = "";
@@ -685,6 +690,22 @@ public class BusinessModel extends Application {
 
     public void setRField2(String rField2) {
         this.rField2 = rField2;
+    }
+
+    public String getRField3() {
+        return rField3;
+    }
+
+    public void setRField3(String rField3) {
+        this.rField3 = rField3;
+    }
+
+    public String getRemarkType() {
+        return remarkType;
+    }
+
+    public void setRemarkType(String remarkType) {
+        this.remarkType = remarkType;
     }
 
     public String getStockCheckRemark() {
@@ -1896,7 +1917,6 @@ public class BusinessModel extends Application {
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
-
                     for (RetailerMasterBO retailer : getRetailerMaster()) {
                         if (retailer.getRetailerID().equals(c.getString(1))) {
                             retailer.setSurveyHistoryScore(c.getInt(0));
@@ -2968,7 +2988,7 @@ public class BusinessModel extends Application {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + invoiceNumber + ".txt";
 
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3";
             StringBuffer sb = new StringBuffer();
             sb.append(QT(invid) + ",");
             sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -3040,6 +3060,10 @@ public class BusinessModel extends Application {
             sb.append("," + getRetailerMasterBO().getCreditDays());
             sb.append("," + QT(printFilePath));
             sb.append("," + QT(timeStampid));
+            sb.append("," + getRemarkType());
+            sb.append("," + QT(getRField1()));
+            sb.append("," + QT(getRField2()));
+            sb.append("," + QT(getRField3()));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -7009,7 +7033,7 @@ public class BusinessModel extends Application {
             setInvoiceDate(new String(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), configurationMasterHelper.outDateFormat)));
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3";
 
             String printFilePath = "";
             if (configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -7082,7 +7106,8 @@ public class BusinessModel extends Application {
                     + "," + QT(orderHeaderBO.getSignatureName()) // internal column imgName
                     + "," + QT(printFilePath)
                     + "," + QT(getRField1())
-                    + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME));
+                    + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME))
+                    + "," + getRemarkType()+ "," + QT(getRField3()) ;
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -7418,8 +7443,6 @@ public class BusinessModel extends Application {
                 Commons.printException(e);
             }
             setOrderHeaderNote("");
-            setRField1("");
-            setRField2("");
             orderHeaderBO.setPO("");
             getOrderHeaderBO().setRemark("");
             getOrderHeaderBO().setRField1("");
@@ -9592,6 +9615,13 @@ public class BusinessModel extends Application {
 //        alertTitle.setTypeface(configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 //        TextViewCompat.setTextAppearance(alertTitle, typearr.getResourceId(R.styleable.MyTextView_textTitleStyle, 0));
 //        alertTitle.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        postiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
         // Set title divider color
         int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
         View titleDivider = dialog.findViewById(titleDividerId);
@@ -10943,7 +10973,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        String path = HomeScreenFragment.photoPath;
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -10966,6 +10996,37 @@ public class BusinessModel extends Application {
         } catch (IOException e) {
             Commons.printException(e);
         }
+    }
+
+
+    /**
+     * read text from given file and convert to string object
+     * and store in object
+     * @param fileName
+     */
+    public void readBuilder(String fileName){
+        String path=getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE+"/";
+        File file = new File(path+fileName);
+        StringBuilder sb=new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+
+
+            String st;
+            while ((st = br.readLine()) != null) {
+                sb.append(st);
+                sb.append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        mCommonPrintHelper.setInvoiceData(sb);
+
     }
 
     private void copyFile(File sourceFile, String path, String filename) {

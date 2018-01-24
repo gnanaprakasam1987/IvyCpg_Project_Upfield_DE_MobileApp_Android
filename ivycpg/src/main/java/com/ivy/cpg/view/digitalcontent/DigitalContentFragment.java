@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -37,6 +38,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -691,7 +693,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 }
 
                 tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
                 viewPager = (ViewPager) view.findViewById(R.id.pager);
                 adapter = new PagerAdapter
@@ -715,9 +716,26 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
                 viewPager.setCurrentItem(mSelectedTab);
+                changeTabsFont();
             }
 
 
+        }
+
+        private void changeTabsFont() {
+
+            ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+            int tabsCount = vg.getChildCount();
+            for (int j = 0; j < tabsCount; j++) {
+                ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+                int tabChildsCount = vgTab.getChildCount();
+                for (int i = 0; i < tabChildsCount; i++) {
+                    View tabViewChild = vgTab.getChildAt(i);
+                    if (tabViewChild instanceof TextView) {
+                        ((TextView) tabViewChild).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    }
+                }
+            }
         }
 
         /**

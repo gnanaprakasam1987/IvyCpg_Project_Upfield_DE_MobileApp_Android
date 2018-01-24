@@ -42,13 +42,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.TaxBO;
@@ -106,7 +104,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, EmailDialog.onSendButtonClickListnor {
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, EmailDialog.onSendButtonClickListnor,OrderConfirmationDialog.OnConfirmationResult {
 
     /**
      * views *
@@ -124,6 +122,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private ImageView icAmountSpilitup;
     AmountSplitupDialog dialogFragment;
     LinearLayout icAmountSpilitup_lty;
+    private  OrderConfirmationDialog orderConfirmationDialog;
     /**
      * Objects *
      */
@@ -1594,7 +1593,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                             .now(SDUtil.TIME));
                                         }
                                         bmodel.productHelper.clearOrderTable();
-                                        //finish();
+                                        finish();
                                         if (bmodel.mSelectedModule == 1) {
                                             Intent i = new Intent(
                                                     OrderSummary.this,
@@ -2225,6 +2224,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
+
                     if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
                         // If GST enabled then, every ordered product should have tax
                         bmodel.showAlert(
@@ -3717,5 +3717,83 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             startActivity(i);
         }
     }
+    @Override
+    public void save(boolean isInvoice) {
+        try {
+            if (orderConfirmationDialog != null)
+                orderConfirmationDialog.dismiss();
+
+            if (isInvoice) {
+
+                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+                    build = new AlertDialog.Builder(OrderSummary.this);
+
+                    customProgressDialog( build,  getResources().getString(R.string.saving_invoice));
+                    alertDialog = build.create();
+                    alertDialog.show();
+                } else {
+                    build = new AlertDialog.Builder(OrderSummary.this);
+
+                    customProgressDialog( build, getResources().getString(R.string.saving_new_order));
+                    alertDialog = build.create();
+                    alertDialog.show();
+                }
+                if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                    getFocusandAndMustSellOrderedProducts();
+
+                //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
+                updateOffInvoiceSchemeInProductOBJ();
+
+                new MyThread(this, DataMembers.SAVEINVOICE).start();
+            } else {
+
+                build = new AlertDialog.Builder(OrderSummary.this);
+
+                customProgressDialog( build,  getResources().getString(R.string.saving_new_order));
+                alertDialog = build.create();
+                alertDialog.show();
+                if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                    getFocusandAndMustSellOrderedProducts();
+
+                if (bmodel.hasOrder()) {
+
+                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
+                            && bmodel.configurationMasterHelper.IS_INVOICE) {
+                        bmodel.batchAllocationHelper
+                                .loadFreeProductBatchList();
+                    }
+
+                    if (bmodel.mSelectedModule == 3) {
+                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+
+                        new MyThread(OrderSummary.this,
+                                DataMembers.SAVEORDERANDSTOCK).start();
+                    } else {
+                        bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+
+                        new MyThread(OrderSummary.this,
+                                DataMembers.SAVEORDERANDSTOCK).start();
+                        bmodel.saveModuleCompletion("MENU_STK_ORD");
+                    }
+
+
+                } else {
+                    isClick = false;
+                }
+
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        isClick=false;
+    }
+
 
 }

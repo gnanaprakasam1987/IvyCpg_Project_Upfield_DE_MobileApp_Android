@@ -27,6 +27,7 @@ import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -100,8 +101,8 @@ public class NonVisitReasonDialog extends Dialog implements OnClickListener {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.obj = items.get(position);
             holder.retailerName.setText(holder.obj.getRetailerName());
-            holder.retailerAddr.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Regular.ttf"));
-            holder.retailerName.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Medium.ttf"));
+            holder.retailerAddr.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.retailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             //holder.retailerAddr.setText(holder.obj.getDate());
             holder.value.setAdapter(spinnerAdapter);
             TypedArray typearr = mContext.getTheme().obtainStyledAttributes(R.styleable.MyTextView);

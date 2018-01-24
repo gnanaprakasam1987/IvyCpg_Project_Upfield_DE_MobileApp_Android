@@ -818,7 +818,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && bmodel.synchronizationHelper.countImageFiles() > 0) {
+                            && (bmodel.synchronizationHelper.countImageFiles() > 0||bmodel.synchronizationHelper.countTextFiles()>0)) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(

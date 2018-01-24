@@ -24,6 +24,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -127,6 +129,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private StockCheckPresenterImpl stockCheckPresenter;
     private AlertDialog alertDialog;
+    private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -310,6 +313,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
 
     }
+
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
@@ -446,9 +450,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
     }
 
+
+
     @Override
-    public void updateCompetitorProducts(String filterId) {
-        stockCheckPresenter.updateCompetitorFilteredProducts(filterId);
+    public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
+        stockCheckPresenter.updateCompetitorFilteredProducts(parentIdList,  mSelectedIdByLevelId,  filterText) ;
     }
 
     class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -753,9 +759,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 .setShelfPiece(-1);
                                     }
 
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                        holder.total
-                                                .setText(totValue + "");
+                                    int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    holder.total
+                                            .setText(totValue + "");
                                     if (totValue > 0) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
@@ -801,9 +807,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 .setShelfCase(-1);
                                     }
 
-                                        int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                        holder.total
-                                                .setText(totValue + "");
+                                    int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                    holder.total
+                                            .setText(totValue + "");
                                     if (totValue > 0) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
@@ -862,9 +868,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             }
 
 
-                                int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                holder.total
-                                        .setText(totValue + "");
+                            int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                            holder.total
+                                    .setText(totValue + "");
                             if (totValue > 0) {
                                 holder.mReason.setEnabled(false);
                                 holder.mReason.setSelected(false);
@@ -1316,7 +1322,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if (businessModel.productHelper.getCompetitorFilterList() != null && businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+            if ( businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
             /*if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
@@ -1326,12 +1332,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }*/
 
-            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER
-                    && !stockCheckPresenter.selectedCompetitorId.equals("")) {
-                menu.findItem(R.id.menu_competitor_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId!=null) {
+                for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
+                    if (mCompetitorSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_competitor_filter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
 
             }
+
             if (!businessModel.configurationMasterHelper.SHOW_REMARKS_STK_CHK) {
                 stockCheckPresenter.hideRemarksButton();
                 menu.findItem(R.id.menu_remarks).setVisible(false);
@@ -1439,7 +1450,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     private void FiveFilterFragment() {
@@ -1584,14 +1594,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             TypedArray typeArr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typeArr.getColor(R.styleable.MyTextView_textColor, 0);
+            final int indicator_color = typeArr.getColor(R.styleable.MyTextView_accentcolor, 0);
             Button tab = new Button(getActivity());
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tab.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tab.setTextColor(color);
             tab.setMaxLines(1);
-            tab.setTextSize(getResources().getDimension(R.dimen.special_filter_item_text_size));
+            tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tab.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
             tab.setWidth(width);
             tab.setOnClickListener(new OnClickListener() {
@@ -1621,7 +1632,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             Button tv_selection_identifier = new Button(getActivity());
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
-            tv_selection_identifier.setBackgroundColor(color);
+            tv_selection_identifier.setBackgroundColor(indicator_color);
             if (i == 0) {
                 tv_selection_identifier.setVisibility(View.VISIBLE);
                 updateGeneralText("");
@@ -1643,7 +1654,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             View view1 = getView().findViewWithTag(config.getConfigCode() + config.getMenuName());
             if (tag == config.getConfigCode()) {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     ((TextView) view).setText(config.getMenuName() + "(" + stockList.size() + ")");
                 }
                 if (view1 instanceof Button) {
@@ -1653,7 +1663,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             } else {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     ((TextView) view).setText(config.getMenuName());
                 }
                 if (view1 instanceof Button) {
@@ -1663,7 +1672,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            stockCheckPresenter.selectedCompetitorId = "";
+            stockCheckPresenter.mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
     }
@@ -1674,7 +1683,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             View view1 = pview.findViewWithTag(config.getConfigCode() + config.getMenuName());
             if (tag == config.getConfigCode()) {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     ((TextView) view).setText(config.getMenuName() + "(" + stockList.size() + ")");
                 }
                 if (view1 instanceof Button) {
@@ -1684,7 +1692,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             } else {
                 if (view instanceof TextView) {
-                    ((TextView) view).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     ((TextView) view).setText(config.getMenuName());
                 }
                 if (view1 instanceof Button) {
@@ -1694,7 +1701,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            stockCheckPresenter.selectedCompetitorId = "";
+            stockCheckPresenter.mCompetitorSelectedIdByLevelId=new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1988,7 +1995,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             // set Fragmentclass Arguments
             CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
             Bundle b = new Bundle();
-            b.putString("selectedCompetitorId", stockCheckPresenter.selectedCompetitorId);
+            b.putSerializable("selectedFilter", mCompetitorSelectedIdByLevelId);
             fragobj.setCompetitorFilterInterface(this);
             fragobj.setArguments(b);
             ft.replace(R.id.right_drawer, fragobj, "competitor filter");
