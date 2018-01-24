@@ -19,7 +19,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/toolbar_image_top"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingRight="@dimen/dimen_2dp"
+        android:paddingLeft="@dimen/dimen_2dp">
 
         <include layout="@layout/visit_fragment_title_layout" />
 

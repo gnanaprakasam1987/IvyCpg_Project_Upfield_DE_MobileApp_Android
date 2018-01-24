@@ -93,22 +93,23 @@
                             android:id="@+id/retailer_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/highlight_small"
-                            tools:text="Apollo Healthcare" />
+                            android:text="Apollo Healthcare"
+                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
+                            />
 
                         <TextView
                             android:id="@+id/retailer_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_margin_top_minus"
-                            android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/font_medium"
-                            tools:text="Ghatkopar (w)" />
+                            android:textSize="@dimen/font_small"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"
+                            tools:text="Ghatkopar (w)"
+                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
+                            />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -167,7 +168,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
@@ -180,7 +182,10 @@
                 app:tabMaxWidth="1500dp"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="?attr/colorAccent"
-                app:tabTextColor="@color/tab_unselcted_text_color" />
+                app:tabTextColor="@color/tab_unselcted_text_color"
+                android:layout_margin="@dimen/dimen_1dp"
+                app:tabBackground="@drawable/tab_unselected_indicator"
+                />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
