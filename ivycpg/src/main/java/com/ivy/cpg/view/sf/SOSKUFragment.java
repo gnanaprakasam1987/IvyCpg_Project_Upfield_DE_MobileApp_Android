@@ -142,9 +142,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
+        if (getActionBar() != null) {
             setScreenTitle(
                     mSFHelper.mSelectedActivityName);
         }
@@ -155,15 +153,15 @@ public class SOSKUFragment extends IvyBaseFragment implements
                 R.string.close
         ) {
             public void onDrawerClosed(View view) {
-                if (actionBar != null) {
-                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
+                if (getActionBar() != null) {
+                    setScreenTitle(mSFHelper.mSelectedActivityName);
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (actionBar != null) {
-                    actionBar.setTitle(getResources().getString(R.string.filter));
+                if (getActionBar() != null) {
+                    setScreenTitle(getResources().getString(R.string.filter));
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -180,6 +178,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
         tvSelectedName = (TextView) view.findViewById(R.id.levelName);
         Button btn_save = (Button) view.findViewById(R.id.btn_save);
+        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
@@ -198,6 +197,11 @@ public class SOSKUFragment extends IvyBaseFragment implements
         super.onStart();
 
 
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(mSFHelper.mSelectedActivityName);
+            getActionBar().setElevation(0);
+        }
 
         updateBrandText(BRAND, mSelectedFilterId);
 
@@ -575,7 +579,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
     }
 
     /**
-     *    Five level filter
+     * Five level filter
      */
 
     private void FiveFilterFragment() {
@@ -875,8 +879,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
     /**
      * Shows alert dialog to denote image availability
+     *
      * @param imageNameStarts Image Name
-     * @param  mProductId     Product Id
+     * @param mProductId      Product Id
      */
     private void showFileDeleteAlert(final String mProductId,
                                      final String imageNameStarts) {
@@ -1300,4 +1305,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
     }
 
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
 }

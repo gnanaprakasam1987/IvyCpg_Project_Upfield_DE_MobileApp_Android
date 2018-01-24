@@ -231,7 +231,7 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
-                android:id="@+id/TextView51"
+                android:id="@+id/label_totalValue"
                 style="?textFieldStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -248,7 +248,7 @@
                 style="?textFieldStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/TextView51"
+                android:layout_below="@+id/label_totalValue"
                 android:layout_span="1"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"

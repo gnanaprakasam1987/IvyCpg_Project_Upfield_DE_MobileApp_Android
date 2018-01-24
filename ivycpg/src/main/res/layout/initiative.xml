@@ -12,8 +12,6 @@
         android:background="@color/footer_bg"
         android:orientation="horizontal">
 
-
-
         <Button
             android:id="@+id/btn_next"
             style="?attr/roundedCustomButtonSmall"

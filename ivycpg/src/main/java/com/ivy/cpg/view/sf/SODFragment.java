@@ -156,12 +156,7 @@ public class SODFragment extends IvyBaseFragment implements
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-            setScreenTitle(
-                    mSFHelper.mSelectedActivityName);
-        }
+
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
                 mDrawerLayout,
@@ -169,17 +164,16 @@ public class SODFragment extends IvyBaseFragment implements
                 R.string.close
         ) {
             public void onDrawerClosed(View view) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(mSFHelper.mSelectedActivityName);
+                if (getActionBar() != null) {
+                    setScreenTitle(
+                            mSFHelper.mSelectedActivityName);
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(getResources().getString(R.string.filter));
+                if (getActionBar() != null) {
+                    setScreenTitle(getResources().getString(R.string.filter));
                 }
                 getActivity().supportInvalidateOptionsMenu();
             }
@@ -188,6 +182,7 @@ public class SODFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
         Button btn_save = (Button) view.findViewById(R.id.btn_save);
+        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
@@ -220,6 +215,12 @@ public class SODFragment extends IvyBaseFragment implements
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
+        }
+
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(mSFHelper.mSelectedActivityName);
+            getActionBar().setElevation(0);
         }
 
         // load location filter
@@ -1448,5 +1449,10 @@ public class SODFragment extends IvyBaseFragment implements
             }
         }
     }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
 
 }

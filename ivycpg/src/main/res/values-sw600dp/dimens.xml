@@ -407,7 +407,7 @@
 
 
     <!-- New Design - Common Themes -->
-    <dimen name="tab_selection_identifier_height">10dp</dimen>
+    <dimen name="tab_selection_identifier_height">5dp</dimen>
 
 
     <dimen name="list_header_height">50dp</dimen>
@@ -781,7 +781,7 @@
 
     <!-- List header text size -->
     <dimen name="list_header_text_size">12sp</dimen>
-    <dimen name="list_header_secondary_text_size">10sp</dimen>
+    <dimen name="list_header_secondary_text_size">11sp</dimen>
 
     <!-- Button text size -->
     <dimen name="btn_small_round_corner_text_size">14sp</dimen>

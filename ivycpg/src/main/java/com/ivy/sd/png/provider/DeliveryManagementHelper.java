@@ -171,7 +171,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                     if(product!=null) {
                         if (productid == c.getInt(0) && batchid == c.getInt(5)) {
                             invoiceProductBO.setProductID(c.getString(0));
-                            invoiceProductBO.setBatchid(c.getInt(5) + "");
+                            invoiceProductBO.setBatchId(c.getInt(5) + "");
                             invoiceProductBO.setBatchNo(c.getString(6));
                             invoiceProductBO.setProductShortName(product.getProductShortName());
                             invoiceProductBO.setCheked(true);
@@ -202,7 +202,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                                 mInvoiceDetailsList.add(invoiceProductBO);
 
                             invoiceProductBO.setProductID(c.getString(0));
-                            invoiceProductBO.setBatchid(c.getInt(5)+"");
+                            invoiceProductBO.setBatchId(c.getInt(5)+"");
                             invoiceProductBO.setProductShortName(product.getProductShortName());
                             invoiceProductBO.setCheked(true);
                             invoiceProductBO.setBatchNo(c.getString(6));

@@ -84,7 +84,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
         }
-        bmodel.reportHelper.downloadWebViewAuthUrl();
+        bmodel.reportHelper.downloadWebViewPlanAuthUrl("WEB_VIEW");
         if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
             new DownloadToken().execute();
         else
@@ -138,7 +138,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             }
 
             if (!token.equals("")) {
-                bmodel.reportHelper.downloadWebViewLandingUrl();
+                bmodel.reportHelper.downloadWebViewPlanUrl("WEB_VIEW");
                 if (!bmodel.reportHelper.getWebViewPlanUrl().equals("")) {
 
 

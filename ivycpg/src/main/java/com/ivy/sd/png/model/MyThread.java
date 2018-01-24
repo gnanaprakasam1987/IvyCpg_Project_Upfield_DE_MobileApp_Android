@@ -424,8 +424,7 @@ public class MyThread extends Thread {
             bmodel.saveOrder();
 
             bmodel.setOrderHeaderNote("");
-            bmodel.setRField1("");
-            bmodel.setRField2("");
+
             // Upadte isVisited Flag
             bmodel.updateIsVisitedFlag();
 
@@ -454,6 +453,11 @@ public class MyThread extends Thread {
 
                 bmodel.saveNewInvoice();
             }
+
+            bmodel.setRField1("");
+            bmodel.setRField2("");
+            bmodel.setRField3("");
+
             // If Bottle Return Credit Limit Enabled , then substract the bottle
             // return value in Bottle Return CreditLimit in Retailer Master
             if (bmodel.configurationMasterHelper.SHOW_BOTTLE_CREDITLIMIT)

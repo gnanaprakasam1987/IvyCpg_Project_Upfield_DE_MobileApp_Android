@@ -1536,6 +1536,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                 if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
+                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                        bmodel.productHelper.downloadCompetitorFiveFilterLevels();
+                    }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                     if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                         bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
@@ -2893,6 +2896,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
 
                 if (priceTrackingHelper.IS_LOAD_PRICE_COMPETITOR) {
+                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                        bmodel.productHelper.downloadCompetitorFiveFilterLevels();
+                    }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
                     bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
                 }
@@ -3160,7 +3166,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD);
-
+                    mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
@@ -3209,7 +3215,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOD_ASSET);
-
+                    mSODAssetHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODAssetActivity.class);
                     if (isFromChild)
                         intent.putExtra("isFromChild", isFromChild);
@@ -3259,7 +3265,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             MENU_SOSKU);
-
+                    mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSKUActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                     if (isFromChild)

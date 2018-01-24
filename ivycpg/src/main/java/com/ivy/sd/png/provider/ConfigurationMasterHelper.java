@@ -178,6 +178,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_STK_ORD_SRP_SEC = "ORDB26";
     private static final String CODE_SHOW_SPL_FILTER = "ORDB27";
     private static final String CODE_SHOW_COMPETITOR_FILTER = "FUN62";
+    public static String COMPETITOR_FILTER_LEVELS;
     private static final String CODE_SHOW_MVP_DRAWER = "MVP01";
     private static final String CODE_LAT = "PROFILE08";
     private static final String CODE_LONG = "PROFILE31";
@@ -1952,7 +1953,9 @@ public class ConfigurationMasterHelper {
         ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
         this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
-        ConfigurationMasterHelper.COMPETITOR_FILTER_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_COMPETITOR_FILTER) : 1;
+        if(SHOW_COMPETITOR_FILTER){
+            downloadCompetitorFilterLevels();
+        }
 
         this.SHOW_VANGPS_VALIDATION = hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_VANGPS_VALIDATION) : false;
         ConfigurationMasterHelper.vanDistance = hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) != null ? hashMapHHTModuleOrder.get(CODE_VANGPS_VALIDATION) : 0;
@@ -2723,6 +2726,31 @@ public class ConfigurationMasterHelper {
         return config;
     }
 
+    public void downloadCompetitorFilterLevels(){
+        try{
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='"+CODE_SHOW_COMPETITOR_FILTER+"' and Flag=1 ";
+            Cursor c = db.selectSQL(sql);
+            if(c.getCount()>0){
+                while (c.moveToNext()){
+                    COMPETITOR_FILTER_LEVELS=c.getString(0);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException( e);
+        }
+
+    }
+
     public void loadDeliveryUOMConfiguration() {
         try {
 
@@ -3239,6 +3267,19 @@ public class ConfigurationMasterHelper {
 
                 }
             }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_STK_ORD) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+
+                    LOAD_REMARKS_FIELD_STRING = c.getString(0);
+                }
+                c.close();
+            }
+
             if (IS_INITIATIVE) {
                 codeValue = null;
                 sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

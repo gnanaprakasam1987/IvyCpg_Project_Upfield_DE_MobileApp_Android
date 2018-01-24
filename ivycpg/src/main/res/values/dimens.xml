@@ -439,7 +439,7 @@
     <!-- Login screen -->
 
     <!-- New Design - Common Themes -->
-    <dimen name="tab_selection_identifier_height">3dp</dimen>
+    <dimen name="tab_selection_identifier_height">4dp</dimen>
 
 
     <dimen name="list_header_height">40dp</dimen>
@@ -820,7 +820,7 @@
 
     <!-- List header text size -->
     <dimen name="list_header_text_size">10sp</dimen>
-    <dimen name="list_header_secondary_text_size">8sp</dimen>
+    <dimen name="list_header_secondary_text_size">9sp</dimen>
 
     <!-- Button text size -->
     <dimen name="btn_small_round_corner_text_size">10sp</dimen>

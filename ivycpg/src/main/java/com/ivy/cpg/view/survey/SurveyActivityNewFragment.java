@@ -332,7 +332,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
             tabOne.setGravity(Gravity.CENTER);
             tabOne.setWidth((int) scale);
-            tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tabOne.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tabOne.setText(surveyHelperNew.getSurvey().get(i)
                     .getSurveyName());
@@ -527,15 +527,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabPos = tab.getPosition();
-        if (tabPos != 0) {
-            TabLayout.Tab tab1 = tabLayout.getTabAt(0);
-            if (tab1 != null) {
-                TextView text = (TextView) tab1.getCustomView();
-                text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            }
-        }
-        TextView text = (TextView) tab.getCustomView();
-        text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
         surveyHelperNew.mSelectedSurvey = Integer.parseInt(tab.getTag()
                 .toString());
         for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
@@ -572,8 +564,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-        TextView text = (TextView) tab.getCustomView();
-        text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
     }
 
     @Override

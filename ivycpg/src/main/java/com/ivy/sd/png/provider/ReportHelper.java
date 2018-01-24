@@ -18,6 +18,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
@@ -26,7 +27,6 @@ import com.ivy.sd.png.bo.ProductivityReportBO;
 import com.ivy.sd.png.bo.PromotionTrackingReportBO;
 import com.ivy.sd.png.bo.QuestionReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
@@ -102,12 +102,12 @@ public class ReportHelper {
      * This method will download the orderHeader details like OrderId,RetailerId
      * and Name , OrderValue and LPC
      *
-     * @return ArrayList<ReportonorderbookingBO>
+     * @return ArrayList<OrderReportBO>
      */
-    public ArrayList<ReportonorderbookingBO> downloadOrderreport() {
-        ArrayList<ReportonorderbookingBO> reportordbooking = null;
+    public ArrayList<OrderReportBO> downloadOrderreport() {
+        ArrayList<OrderReportBO> reportordbooking = null;
         try {
-            ReportonorderbookingBO orderreport;
+            OrderReportBO orderreport;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -122,18 +122,18 @@ public class ReportHelper {
             if (c != null) {
                 reportordbooking = new ArrayList<>();
                 while (c.moveToNext()) {
-                    orderreport = new ReportonorderbookingBO();
-                    orderreport.setorderID(c.getString(0));
-                    orderreport.setreatilerId(c.getString(1));
-                    orderreport.setretailerName(c.getString(2));
-                    orderreport.setordertot(c.getDouble(3));
-                    orderreport.setlpc(c.getString(4));
+                    orderreport = new OrderReportBO();
+                    orderreport.setOrderID(c.getString(0));
+                    orderreport.setRetailerId(c.getString(1));
+                    orderreport.setRetailerName(c.getString(2));
+                    orderreport.setOrderTotal(c.getDouble(3));
+                    orderreport.setLPC(c.getString(4));
                     orderreport.setDist(c.getString(5) + "/" + c.getString(6));
                     orderreport.setUpload(c.getString(c
                             .getColumnIndex("upload")));
                     orderreport.setWeight(c.getFloat(c.getColumnIndex("totalWeight")));
-                    orderreport.setmFocusBrandCount(c.getInt(9));
-                    orderreport.setmMustSellCount(c.getInt(10));
+                    orderreport.setFocusBrandCount(c.getInt(9));
+                    orderreport.setMustSellCount(c.getInt(10));
                     orderreport.setIsVanSeller(c.getInt(11));
                     reportordbooking.add(orderreport);
                 }
@@ -146,11 +146,11 @@ public class ReportHelper {
         return reportordbooking;
     }
 
-    public ArrayList<ReportonorderbookingBO> downloadDistributorOrderReport() {
+    public ArrayList<OrderReportBO> downloadDistributorOrderReport() {
         DBUtil db = null;
-        ArrayList<ReportonorderbookingBO> reportdistordbooking = null;
+        ArrayList<OrderReportBO> reportdistordbooking = null;
         try {
-            ReportonorderbookingBO orderreport;
+            OrderReportBO orderreport;
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -162,12 +162,12 @@ public class ReportHelper {
             reportdistordbooking = new ArrayList<>();
             if (c != null) {
                 while (c.moveToNext()) {
-                    orderreport = new ReportonorderbookingBO();
-                    orderreport.setorderID(c.getString(0));
+                    orderreport = new OrderReportBO();
+                    orderreport.setOrderID(c.getString(0));
                     orderreport.setDistributorId(c.getInt(1));
-                    orderreport.setDistributorname(c.getString(2));
-                    orderreport.setordertot(c.getDouble(3));
-                    orderreport.setlpc(c.getString(4));
+                    orderreport.setDistributorName(c.getString(2));
+                    orderreport.setOrderTotal(c.getDouble(3));
+                    orderreport.setLPC(c.getString(4));
 
                     orderreport.setUpload(c.getString(5));
                     reportdistordbooking.add(orderreport);
@@ -356,13 +356,13 @@ public class ReportHelper {
      * ProductName,CaseQty,PcsQty,TotalAmount.
      *
      * @param orderID
-     * @return ArrayList<ReportonorderbookingBO> reportorddetbooking
+     * @return ArrayList<OrderReportBO> reportorddetbooking
      */
-    public ArrayList<ReportonorderbookingBO> downloadOrderreportdetail(
+    public ArrayList<OrderReportBO> downloadOrderreportdetail(
             String orderID) {
-        ArrayList<ReportonorderbookingBO> reportorddetbooking = null;
+        ArrayList<OrderReportBO> reportorddetbooking = null;
         try {
-            ReportonorderbookingBO orderdetreport;
+            OrderReportBO orderdetreport;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -375,14 +375,14 @@ public class ReportHelper {
                 reportorddetbooking = new ArrayList<>();
                 while (c.moveToNext()) {
 
-                    orderdetreport = new ReportonorderbookingBO();
-                    orderdetreport.setProductname(c.getString(0));
-                    orderdetreport.setProductshortname(c.getString(1));
+                    orderdetreport = new OrderReportBO();
+                    orderdetreport.setProductName(c.getString(0));
+                    orderdetreport.setProductShortName(c.getString(1));
                     orderdetreport.setCQty(c.getInt(2));
                     orderdetreport.setPQty(c.getInt(3));
                     orderdetreport.setTot(c.getFloat(4));
                     orderdetreport.setOuterOrderedCaseQty(c.getInt(5));
-                    orderdetreport.setBatchid(c.getInt(7));
+                    orderdetreport.setBatchId(c.getInt(7));
                     orderdetreport.setBatchNo(c.getString(8));
                     orderdetreport.setWeight(c.getFloat(9));
                     orderdetreport.setTotalQty(c.getInt(10));
@@ -397,8 +397,8 @@ public class ReportHelper {
         return reportorddetbooking;
     }
 
-    public ArrayList<ReportonorderbookingBO> distOrderReportDetail(String orderId) {
-        ArrayList<ReportonorderbookingBO> distributorOrderList = null;
+    public ArrayList<OrderReportBO> distOrderReportDetail(String orderId) {
+        ArrayList<OrderReportBO> distributorOrderList = null;
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -435,8 +435,8 @@ public class ReportHelper {
         return distributorOrderList;
     }
 
-    private void setDistOrderReportDetails(String pname, String pSname, String pid, int qty, int uomid, int uomCount, int batchid, String batchnum, float totalValue, ArrayList<ReportonorderbookingBO> distReportList) {
-        ReportonorderbookingBO reportonorderbookingBO;
+    private void setDistOrderReportDetails(String pname, String pSname, String pid, int qty, int uomid, int uomCount, int batchid, String batchnum, float totalValue, ArrayList<OrderReportBO> distReportList) {
+        OrderReportBO orderReportBO;
 
         if (distReportList == null) {
             distReportList = new ArrayList<>();
@@ -446,63 +446,63 @@ public class ReportHelper {
         if (productBo != null) {
             int size = distReportList.size();
             if (size > 0) {
-                reportonorderbookingBO = distReportList.get(size - 1);
-                if (pid.equals(reportonorderbookingBO.getProductid()) &&
-                        batchid == reportonorderbookingBO.getBatchid()) {
+                orderReportBO = distReportList.get(size - 1);
+                if (pid.equals(orderReportBO.getProductId()) &&
+                        batchid == orderReportBO.getBatchId()) {
                     if (uomid == productBo.getPcUomid()) {
-                        reportonorderbookingBO.setPQty(qty);
+                        orderReportBO.setPQty(qty);
 
                     } else if (uomid == productBo.getCaseUomId()) {
-                        reportonorderbookingBO.setCQty(qty);
+                        orderReportBO.setCQty(qty);
 
                     } else if (uomCount == productBo.getOuUomid()) {
-                        reportonorderbookingBO.setOuterOrderedCaseQty(qty);
+                        orderReportBO.setOuterOrderedCaseQty(qty);
                     }
-                    reportonorderbookingBO.setTot(reportonorderbookingBO.getTot() + totalValue);
+                    orderReportBO.setTot(orderReportBO.getTot() + totalValue);
                     distReportList.remove(size - 1);
-                    distReportList.add(size - 1, reportonorderbookingBO);
+                    distReportList.add(size - 1, orderReportBO);
 
 
                 } else {
-                    reportonorderbookingBO = new ReportonorderbookingBO();
-                    reportonorderbookingBO.setProductname(pname);
-                    reportonorderbookingBO.setProductshortname(pSname);
-                    reportonorderbookingBO.setProductid(pid);
-                    reportonorderbookingBO.setBatchid(batchid);
-                    reportonorderbookingBO.setBatchNo(batchnum);
+                    orderReportBO = new OrderReportBO();
+                    orderReportBO.setProductName(pname);
+                    orderReportBO.setProductShortName(pSname);
+                    orderReportBO.setProductId(pid);
+                    orderReportBO.setBatchId(batchid);
+                    orderReportBO.setBatchNo(batchnum);
                     if (uomid == productBo.getPcUomid()) {
-                        reportonorderbookingBO.setPQty(qty);
+                        orderReportBO.setPQty(qty);
 
                     } else if (uomid == productBo.getCaseUomId()) {
-                        reportonorderbookingBO.setCQty(qty);
+                        orderReportBO.setCQty(qty);
 
                     } else if (uomCount == productBo.getOuUomid()) {
-                        reportonorderbookingBO.setOuterOrderedCaseQty(qty);
+                        orderReportBO.setOuterOrderedCaseQty(qty);
                     }
-                    reportonorderbookingBO.setTot(totalValue);
-                    distReportList.add(reportonorderbookingBO);
+                    orderReportBO.setTot(totalValue);
+                    distReportList.add(orderReportBO);
 
 
                 }
 
             } else {
-                reportonorderbookingBO = new ReportonorderbookingBO();
-                reportonorderbookingBO.setProductname(pname);
-                reportonorderbookingBO.setProductshortname(pSname);
-                reportonorderbookingBO.setProductid(pid);
-                reportonorderbookingBO.setBatchid(batchid);
-                reportonorderbookingBO.setBatchNo(batchnum);
+                orderReportBO = new OrderReportBO();
+                orderReportBO.setProductName(pname);
+                orderReportBO.setProductShortName(pSname);
+                orderReportBO.setProductId(pid);
+                orderReportBO.setBatchId(batchid);
+                orderReportBO.setBatchNo(batchnum);
                 if (uomid == productBo.getPcUomid()) {
-                    reportonorderbookingBO.setPQty(qty);
+                    orderReportBO.setPQty(qty);
 
                 } else if (uomid == productBo.getCaseUomId()) {
-                    reportonorderbookingBO.setCQty(qty);
+                    orderReportBO.setCQty(qty);
 
                 } else if (uomCount == productBo.getOuUomid()) {
-                    reportonorderbookingBO.setOuterOrderedCaseQty(qty);
+                    orderReportBO.setOuterOrderedCaseQty(qty);
                 }
-                reportonorderbookingBO.setTot(totalValue);
-                distReportList.add(reportonorderbookingBO);
+                orderReportBO.setTot(totalValue);
+                distReportList.add(orderReportBO);
             }
 
 
@@ -572,12 +572,12 @@ public class ReportHelper {
      * This method will download the previous day orderHeader details like
      * OrderId,RetailerId and Name , OrderValue and LPC
      *
-     * @return ArrayList<ReportonorderbookingBO>
+     * @return ArrayList<OrderReportBO>
      */
-    public ArrayList<ReportonorderbookingBO> downloadPVSOrderreport() {
-        ArrayList<ReportonorderbookingBO> reportordbooking = null;
+    public ArrayList<OrderReportBO> downloadPVSOrderreport() {
+        ArrayList<OrderReportBO> reportordbooking = null;
         try {
-            ReportonorderbookingBO orderreport;
+            OrderReportBO orderreport;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -588,12 +588,12 @@ public class ReportHelper {
 
                 reportordbooking = new ArrayList<>();
                 while (c.moveToNext()) {
-                    orderreport = new ReportonorderbookingBO();
-                    orderreport.setorderID(c.getString(0));
-                    orderreport.setreatilerId(c.getString(1));
-                    orderreport.setretailerName(c.getString(2));
-                    orderreport.setordertot(c.getDouble(3));
-                    orderreport.setlpc(c.getString(4));
+                    orderreport = new OrderReportBO();
+                    orderreport.setOrderID(c.getString(0));
+                    orderreport.setRetailerId(c.getString(1));
+                    orderreport.setRetailerName(c.getString(2));
+                    orderreport.setOrderTotal(c.getDouble(3));
+                    orderreport.setLPC(c.getString(4));
                     orderreport.setDist(c.getString(5));
                     reportordbooking.add(orderreport);
                 }
@@ -659,13 +659,13 @@ public class ReportHelper {
      * order. ProductName,CaseQty,PcsQty,TotalAmount.
      *
      * @param orderID
-     * @return ArrayList<ReportonorderbookingBO> reportorddetbooking
+     * @return ArrayList<OrderReportBO> reportorddetbooking
      */
-    public ArrayList<ReportonorderbookingBO> downloadPVSOrderreportdetail(
+    public ArrayList<OrderReportBO> downloadPVSOrderreportdetail(
             String orderID) {
-        ArrayList<ReportonorderbookingBO> reportorddetbooking = null;
+        ArrayList<OrderReportBO> reportorddetbooking = null;
         try {
-            ReportonorderbookingBO orderdetreport;
+            OrderReportBO orderdetreport;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -678,14 +678,14 @@ public class ReportHelper {
                 reportorddetbooking = new ArrayList<>();
                 while (c.moveToNext()) {
 
-                    orderdetreport = new ReportonorderbookingBO();
-                    orderdetreport.setProductname(c.getString(0));
-                    orderdetreport.setProductshortname(c.getString(1));
+                    orderdetreport = new OrderReportBO();
+                    orderdetreport.setProductName(c.getString(0));
+                    orderdetreport.setProductShortName(c.getString(1));
                     orderdetreport.setCQty(c.getInt(2));
                     orderdetreport.setPQty(c.getInt(3));
                     orderdetreport.setTot(c.getFloat(4));
                     orderdetreport.setOuterOrderedCaseQty(c.getInt(5));
-                    orderdetreport.setProductid(c.getString(6));
+                    orderdetreport.setProductId(c.getString(6));
                     reportorddetbooking.add(orderdetreport);
                 }
                 c.close();
@@ -786,7 +786,7 @@ public class ReportHelper {
      * ,RetailerCode,RetailerName,OrderNo,SKUCode,SKUDescription
      * ,QrderQty(pcs),DeliveryDate for Export
      *
-     * @return ArrayList<ReportonorderbookingBO>
+     * @return ArrayList<OrderReportBO>
      */
     public ArrayList<ArrayList<String>> downloadPreviousOrderForExport() {
         ArrayList<ArrayList<String>> rows = new ArrayList<>();
@@ -2839,49 +2839,6 @@ public class ReportHelper {
         return tot;
     }
 
-    public void downloadWebViewAuthUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-
-            db.openDataBase();
-            webViewAuthUrl = "";
-            Cursor c1 = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_AUTH' AND ListType = 'WEB_VIEW'");
-            if (c1 != null) {
-                if (c1.moveToNext()) {
-                    webViewAuthUrl = DataMembers.SERVER_URL + "/" + c1.getString(0);
-                }
-                c1.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            webViewAuthUrl = "";
-        }
-    }
-
-    public void downloadWebViewLandingUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            webViewPlanUrl = "";
-            Cursor c1 = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='ACTION_PLAN' AND ListType = 'WEB_VIEW'");
-            if (c1 != null) {
-                while (c1.moveToNext()) {
-                    webViewPlanUrl = c1.getString(0);
-                }
-                c1.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-            webViewPlanUrl = "";
-        }
-    }
-
 
     public String getUserName() {
         return userName;
@@ -3471,4 +3428,202 @@ public class ReportHelper {
         }
     }
 
+    public void prepareArchiveFileDownload(String filePath){
+        bmodel.setDigitalContentURLS(new HashMap<String, String>());
+
+        boolean isAmazonUpload=false;
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+        if (c != null) {
+            while (c.moveToNext()) {
+                isAmazonUpload = true;
+            }
+        }
+        c.close();
+
+        if (!isAmazonUpload) {
+            c = db
+                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DataMembers.img_Down_URL = c.getString(0);
+                }
+            }
+
+        }
+        else  {
+            c = db
+                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DataMembers.img_Down_URL = c.getString(0) + "/";
+                }
+            }
+
+        }
+
+        bmodel.getDigitalContentURLS().put(
+                DataMembers.img_Down_URL + filePath,
+                DataMembers.PRINTFILE);
+
+        c.close();
+        c = null;
+        db.closeDB();
+    }
+
+
+    public void downloadWebViewArchAuthUrl() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    webViewAuthUrl = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (!"".equals(webViewAuthUrl)) {
+                Cursor c1 = db
+                        .selectSQL("select ListName from StandardListMaster where ListCode='AUTH' AND ListType = 'WEBVIEW_ARCH'");
+                if (c1 != null) {
+                    if (c1.moveToNext()) {
+                        webViewAuthUrl += c1.getString(0);
+                    }
+                    c1.close();
+                }
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            webViewAuthUrl = "";
+        }
+    }
+
+
+    public void downloadWebViewArchUrl() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    webViewArchUrl = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (!"".equals(webViewArchUrl)) {
+                Cursor c1 = db
+                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION' AND ListType = 'WEBVIEW_ARCH'");
+                if (c1 != null) {
+                    while (c1.moveToNext()) {
+                        webViewArchUrl += c1.getString(0);
+                    }
+                    c1.close();
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            webViewArchUrl = "";
+        }
+    }
+
+
+    public String getWebViewArchUrl() {
+        return webViewArchUrl;
+    }
+
+    public void setWebViewArchUrl(String webViewArchUrl) {
+        this.webViewArchUrl = webViewArchUrl;
+    }
+
+    private String webViewArchUrl = "";
+
+    public double getTotValues(Context mContext) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select sum(ordervalue)from "
+                    + DataMembers.tbl_orderHeader + " where  upload='N'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    double i = c.getDouble(0);
+                    c.close();
+                    db.closeDB();
+                    return i;
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Download retailer master for invoice reports
+     * @param context Context
+     * @param mRetailerId Retailer Id
+     */
+    public void downloadRetailerMaster(Context context,int mRetailerId) {
+        try {
+            RetailerMasterBO retailer = new RetailerMasterBO();
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
+                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
+                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " where A.retailerid=" + mRetailerId);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    retailer = new RetailerMasterBO();
+                    retailer.setRetailerID(c.getString(0));
+                    retailer.setGroupId(c.getInt(1));
+                    retailer.setSubchannelid(c.getInt(2));
+                    retailer.setRpTypeCode(c.getString(3));
+                    retailer.setRetailerCode(c.getString(4));
+                    retailer.setRetailerName(c.getString(5));
+                    retailer.setAddress1(c.getString(6));
+                    retailer.setTinnumber(c.getString(7));
+                    retailer.setCredit_invoice_count(c.getString(8));
+                    retailer.setAddress2(c.getString(9));
+                    retailer.setAddress3(c.getString(10));
+                    retailer.setTaxTypeId(c.getInt(c
+                            .getColumnIndex("TaxTypeId")));
+                    retailer.setLocationId(c.getInt(c
+                            .getColumnIndex("locationid")));
+                    retailer.setRfield2(c.getString(13));
+                    retailer.setSameZone(c.getInt(14));
+                    retailer.setGSTNumber(c.getString(15));
+                    retailer.setTinExpDate(c.getString(16));
+
+                }
+                c.close();
+            }
+
+            bmodel.setRetailerMasterBO(retailer);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 }

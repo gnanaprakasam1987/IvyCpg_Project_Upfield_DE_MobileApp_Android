@@ -138,10 +138,10 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
             TextView txtVw = new TextView(getActivity());
             txtVw.setGravity(Gravity.CENTER);
             txtVw.setWidth((int) scale);
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             txtVw.setTextColor(color);
             txtVw.setMaxLines(1);
-            txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+            txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             txtVw.setText(standardListBO.getListName());
             txtVw.setAllCaps(true);
 
