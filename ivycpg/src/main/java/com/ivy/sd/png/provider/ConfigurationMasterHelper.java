@@ -447,6 +447,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_RID_CONCEDER_AS_DSTID = "FUN64";
     public boolean IS_SHOW_RID_CONCEDER_AS_DSTID;
 
+    public static final String CODE_TIME_APPLY = "COMPDATE";//change Code value
+    public boolean SHOW_TIME_VIEW;
+    public static final String CODE_REASON_SPINNER_APPLY = "RSID";//change Code value
+    public boolean SHOW_SPINNER;
     /**
      * RoadActivity config *
      */
@@ -882,11 +886,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
 
-    public static final String CODE_TIME_APPLY = "FUN18";//change Code value
-    public boolean SHOW_TIME_VIEW;
-    public static final String CODE_SPINNER_APPLY = "FUN19";//change Code value
-    public boolean SHOW_SPINNER;
-
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -1223,6 +1222,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_COMB_STOCK_SP;
     public boolean SHOW_COMB_STOCK_SHELF_OUTER;
     public boolean SHOW_COMB_STOCK_CB;
+
+    public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL=true;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -2155,6 +2156,9 @@ public class ConfigurationMasterHelper {
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
+
+        this.SHOW_TIME_VIEW = hashMapHHTModuleConfig.get(CODE_TIME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TIME_APPLY) : false;
+        this.SHOW_SPINNER = hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) : false;
 
 
 

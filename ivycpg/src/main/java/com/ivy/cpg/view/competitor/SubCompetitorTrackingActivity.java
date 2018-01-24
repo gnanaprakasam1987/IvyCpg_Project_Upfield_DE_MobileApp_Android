@@ -77,7 +77,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     static String outPutDateFormat;
     private String imageName, imagePath;
     private CompetitorBO masterObj = null;
-    ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private ArrayAdapter<ReasonMaster> spinnerAdapter;
     // Disable Motorola ET1 Scanner Plugin
     private final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
     private final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
@@ -358,14 +358,14 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 if (!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
                     ((LinearLayout) convertView.findViewById(R.id.ll_photoView)).setVisibility(View.GONE);
                 }
-                /*if (!bmodel.configurationMasterHelper.SHOW_TIME_VIEW) {
+                if (!bmodel.configurationMasterHelper.SHOW_TIME_VIEW) {
                     ((Button)convertView.findViewById(R.id.btn_fromdate)).setVisibility(View.GONE);
                     ((Button)convertView.findViewById(R.id.btn_todate)).setVisibility(View.GONE);
-                }*/
+                }
 
-                /*if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
+                if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
                     ((Spinner)convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
-                }*/
+                }
 
                 holder.checkBox
                         .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -498,22 +498,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 });
 
 
-                holder.spnReason.setAdapter(spinnerAdapter);
-                holder.spnReason
-                        .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            public void onItemSelected(AdapterView<?> parent,
-                                                       View view, int position, long id) {
-
-                                /*ReasonMaster reString = (ReasonMaster) holder.spnReason
-                                        .getSelectedItem();*/
 
 
-
-                            }
-
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
-                        });
                 convertView.setTag(holder);
 
             } else {
@@ -545,6 +531,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setToDate(holder.btnToDate.getText()
                         .toString());
+                //holder.mCompTrackBO.setReasonID(resonId);
                 holder.btnPhoto.setEnabled(false);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.edtComFeedback.setEnabled(false);
@@ -593,6 +580,38 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             } else {
                 convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
             }
+            holder.spnReason.setAdapter(spinnerAdapter);
+            holder.spnReason
+                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> parent,
+                                                   View view, int position, long id) {
+
+                            ReasonMaster reString = (ReasonMaster) holder.spnReason
+                                    .getSelectedItem();
+
+                            if (reString.getReasonID().equals("-1")) {
+                                holder.mCompTrackBO.setReasonID(0);
+                            } else {
+                                holder.mCompTrackBO.setReasonID(SDUtil
+                                        .convertToInt(reString.getReasonID()));
+
+                            }
+
+                        }
+
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+            if (holder.mCompTrackBO!=null&&holder.mCompTrackBO.getReasonID()!=0) {
+                holder.spnReason.setSelection(getReasonIndex("1"));
+            } else {
+                holder.spnReason.setSelection(getReasonIndex(holder.mCompTrackBO.getReasonID()
+                        + ""));
+            }
+            holder.spnReason.setSelected(true);
+
             return convertView;
         }
     }
@@ -987,7 +1006,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         ReasonMaster reason = new ReasonMaster();
-        reason.setReasonID("-1");
+        reason.setReasonID("1");
         reason.setReasonDesc(getResources().getString(R.string.other_reason));
         reason.setReasonCategory("COMP_RSN");
 
@@ -1000,12 +1019,19 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         if (!(spinnerAdapter.getCount() > 0)) {
             ReasonMaster reasonMasterBo = new ReasonMaster();
             reasonMasterBo.setReasonDesc(getResources().getString(R.string.select_reason));
-            reasonMasterBo.setReasonID("0");
+            reasonMasterBo.setReasonID("-1");
             spinnerAdapter.add(reasonMasterBo);
         }
         spinnerAdapter.add(reason);
     }
-    /*private int getReasonIndex(String reasonId) {
+    /**
+     * Get the selected reason id, iterate and get position and set in the
+     * spinner item
+     *
+     * @param reasonId Reason Id
+     * @return Index of reason Id
+     */
+    private int getReasonIndex(String reasonId) {
         if (spinnerAdapter.getCount() == 0)
             return 0;
         int len = spinnerAdapter.getCount();
@@ -1019,5 +1045,5 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             }
         }
         return -1;
-    }*/
+    }
 }

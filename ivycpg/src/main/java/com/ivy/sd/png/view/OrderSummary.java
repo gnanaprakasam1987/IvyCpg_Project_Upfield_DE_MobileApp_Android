@@ -5,15 +5,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,11 +42,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.TaxBO;
@@ -82,9 +87,26 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface {
+import javax.activation.CommandMap;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.activation.MailcapCommandMap;
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, EmailDialog.onSendButtonClickListnor {
 
     /**
      * views *
@@ -781,6 +803,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     }
 
+    @Override
+    public void setEmailAddress(String value) {
+        Commons.print("EmailId=="+value);
+        new SendMail(this,"Read","Test",value).execute();
+
+    }
+
     private class ProductExpandableAdapter extends BaseExpandableListAdapter {
 
         @Override
@@ -1394,6 +1423,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         // clear scheme free products
                                         clearSchemeFreeProduct();
                                         finish();
+
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
                                         Bundle extras = getIntent().getExtras();
@@ -1564,7 +1594,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                             .now(SDUtil.TIME));
                                         }
                                         bmodel.productHelper.clearOrderTable();
-                                        finish();
+                                        //finish();
                                         if (bmodel.mSelectedModule == 1) {
                                             Intent i = new Intent(
                                                     OrderSummary.this,
@@ -1577,7 +1607,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             startActivity(i);
 
                                         } else {
-                                            Intent i = new Intent(
+                                            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
+                                            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
+                                            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+                                            bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
+
+                                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
+                                           /* Intent i = new Intent(
                                                     OrderSummary.this,
                                                     HomeScreenTwo.class);
                                             Bundle extras = getIntent().getExtras();
@@ -1585,7 +1622,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                                                 i.putExtra("CurrentActivityCode", mActivityCode);
                                             }
-                                            startActivity(i);
+                                            startActivity(i);*/
+                                            if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+                                                new ShowEmailDialog().execute();
+                                                //isClick = false;
+                                                //return;
+                                            }
                                         }
                                     }
                                 });
@@ -2183,7 +2225,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
-
                     if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
                         // If GST enabled then, every ordered product should have tax
                         bmodel.showAlert(
@@ -3521,6 +3562,159 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
             }
+        }
+    }
+
+    private class ShowEmailDialog extends AsyncTask <Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            if(mOrderedProductList.size()>0) {
+
+                return true;
+            }
+            else {
+                Toast.makeText(bmodel, "No data to store", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL && aBoolean) {
+                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+                EmailDialog dialog = new EmailDialog(
+                        "MENU_STK_ORD",OrderSummary.this);
+                dialog.setCancelable(false);
+                dialog.show(ft, "MENU_STK_ORD");
+            }
+        }
+    }
+
+    public class SendMail extends AsyncTask<Void, Void, Boolean> {
+
+        Session session;
+
+        Context mContext;
+        private String subject;
+        private String body;
+        private final String emailId="ivyandroiddev@gmail.com";//remove this field
+        private final String password="ivyandroiddev";//remove this field
+        private String email;
+
+        ProgressDialog progressDialog;
+
+        public SendMail(Context ctx, String subject, String message,String email) {
+            this.mContext = ctx;
+
+            this.subject = subject;
+            this.body = message;
+            this.email=email;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(mContext, getResources().getString(R.string.sending_email), getResources().getString(R.string.please_wait_some_time), false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            Properties props = System.getProperties();// new Properties();
+
+            //Configuring properties for gmail
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.socketFactory.port", "587");
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.starttls.enable", "true");
+            //  props.put("mail.debug",true);
+
+            //Creating a new session
+            session = Session.getDefaultInstance(props,
+                    new javax.mail.Authenticator() {
+                        //Authenticating the password
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(emailId,password);
+                        }
+                    });
+
+            try {
+
+                // sendind distributor wise..
+                /*for (String distributorName : bmodel.reportHelper
+                        .getmOrderDetailsByDistributorName().keySet()) {*/
+
+                    //not allowed if email not available
+                    //if (bmodel.reportHelper.getmEmailIdByDistributorName().get(distributorName) != null) {
+
+                        javax.mail.Message message = new MimeMessage(session);
+                        message.setFrom(new InternetAddress(emailId));
+                        message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(email));
+                        message.setSubject(subject);
+                        message.setText(body);
+                        //  mm.setContent(message,"text/html; charset=utf-8");
+
+                        BodyPart bodyPart = new MimeBodyPart();
+                        bodyPart.setText(body);//Content(message,"text/html");
+
+                        //Attachment
+                        DataSource source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +"/"+DataMembers.IVYDIST_PATH+"/"+
+                                StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid() + ".txt");
+                        bodyPart.setDataHandler(new DataHandler(source));
+                        bodyPart.setFileName("OrderDetails" + ".txt");
+
+                        MimeMultipart multiPart = new MimeMultipart();
+                        multiPart.addBodyPart(bodyPart);
+                        message.setContent(multiPart);
+
+                        Thread.currentThread().setContextClassLoader(getClassLoader());
+
+                        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+                        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+                        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+                        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+                        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+                        mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
+
+                        //sending mail
+                        Transport.send(message);
+                    //}
+                //}
+            } catch (Exception ex) {
+                Commons.printException(ex);
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSent) {
+            super.onPostExecute(isSent);
+
+            progressDialog.dismiss();
+
+            if (isSent) {
+                Toast.makeText(OrderSummary.this, getResources().getString(R.string.email_sent),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(OrderSummary.this, getResources().getString(R.string.error_in_sending_email),
+                        Toast.LENGTH_SHORT).show();
+            }
+            Intent i = new Intent(OrderSummary.this,
+                    HomeScreenTwo.class);
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                i.putExtra("CurrentActivityCode", mActivityCode);
+            }
+            startActivity(i);
         }
     }
 
