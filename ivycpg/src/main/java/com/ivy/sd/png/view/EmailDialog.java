@@ -65,11 +65,8 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
         //edtEmail.setWidth(outMetrics.widthPixels);
 
         Button send = (Button) view.findViewById(R.id.btn_send);
-        Button cancel = (Button) view.findViewById(R.id.btn_cancel);
-        cancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         send.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         send.setOnClickListener(this);
-        cancel.setOnClickListener(this);
         return view;
     }
 
@@ -86,10 +83,6 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
             else
                 Toast.makeText(bmodel, "Email is not valid", Toast.LENGTH_SHORT).show();
 
-
-        } else if (i == R.id.btn_cancel) {
-            listner.onCancelDialog();
-            dismiss();
         }
     }
     public final static boolean isValidEmail(CharSequence target) {
@@ -99,7 +92,6 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
     public interface onSendButtonClickListnor
     {
         void setEmailAddress(String value);
-        void onCancelDialog();
     }
 
 }
