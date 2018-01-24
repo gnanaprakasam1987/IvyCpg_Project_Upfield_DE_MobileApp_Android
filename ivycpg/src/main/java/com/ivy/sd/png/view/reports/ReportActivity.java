@@ -100,6 +100,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private InventoryReportFragment mInventoryReport;
     private SellerMapViewReportFragment mSellerMapviewReport;
     private SellerPerformanceReportFragment mSellerPerformReport;
+    private SalesReturnReportFragment salesReturnReport;
     private Toolbar toolbar;
 
     @SuppressLint("NewApi")
@@ -190,6 +191,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         stockreportfragmentnew.setArguments(getIntent().getExtras());
         collectionReportFragment = new CollectionReportFragment();
         collectionReportFragment.setArguments(getIntent().getExtras());
+        salesReturnReport = new SalesReturnReportFragment();
+        salesReturnReport.setArguments(getIntent().getExtras());
         creditNoteReportFragment = new CreditNoteReportFragment();
         creditNoteReportFragment.setArguments(getIntent().getExtras());
         taskReportFragment = new TaskExecutionReportFragment();
@@ -693,6 +696,14 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
+        }else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_SALES_REPORT)) {
+            transaction.replace(R.id.fragment_content, salesReturnReport);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
         }
         // Commit the transaction
     }

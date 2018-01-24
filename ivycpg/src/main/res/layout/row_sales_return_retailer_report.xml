@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_4dp">
+
+    <LinearLayout
+        android:id="@+id/retailer_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/retailerNameTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:text="Retailer Name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_medium" />
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:text="Product Name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_medium" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/icon_drop_list"
+        android:layout_height="@dimen/icon_drop_list"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dimen_14dp"
+        android:src="@drawable/activity_icon_next" />
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_below="@id/retailer_ll"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dimen_12dp"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        android:background="@color/new_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_4dp"
+        android:visibility="visible" />
+</RelativeLayout>

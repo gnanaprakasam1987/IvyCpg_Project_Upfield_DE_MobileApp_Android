@@ -3,7 +3,9 @@ package com.ivy.sd.png.view;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -64,6 +66,7 @@ public class ReturnFragment extends IvyBaseFragment {
     private View view;
     static Button dateBtn;
     private int holderPosition, holderTop;
+    private ProgressDialog alertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +88,8 @@ public class ReturnFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
+        bmodel.configurationMasterHelper.checkSalesReturnValidateConfig();
+        bmodel.configurationMasterHelper.checkSalesReturnSignConfig();
         Pid = getArguments().getString("pid");
         holderPosition = getArguments().getInt("position", 0);
         holderTop = getArguments().getInt("top", 0);
@@ -155,25 +159,69 @@ public class ReturnFragment extends IvyBaseFragment {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                if(isReasonDuplicated()){
+                for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
+                    if (sb.getInvoiceno().equals("") || sb.getLotNumber().equals("")) {
+                        Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+                if (isReasonDuplicated()) {
                     Toast.makeText(getActivity(),
                             R.string.reason_duplicated,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                    removeEmptyRow();
+                removeEmptyRow();
+
+                if (bmodel.configurationMasterHelper.IS_SALES_RETURN_VALIDATE) {
+                    new validateSalesReturn().execute();
+                } else {
                     Intent intent = new Intent();
                     intent.putExtra("position", holderPosition);
                     intent.putExtra("top", holderTop);
                     getActivity().setResult(RESULT_OK, intent);
                     getActivity().finish();
-
-
+                }
             }
         });
 
+    }
+    class validateSalesReturn extends AsyncTask<Integer, Integer, Integer> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            alertDialog = new ProgressDialog(getActivity());
+            alertDialog.setMessage(getResources().getString(R.string.validating_sales));
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            return bmodel.synchronizationHelper.validateSalesReturn(productMasterBO);
+        }
+
+        @Override
+        protected void onPostExecute(Integer s) {
+            super.onPostExecute(s);
+            alertDialog.dismiss();
+            String message = "";
+            if (s == 0) {
+                message = "Invalid Sales Return!";
+            }else if (s == 1) {
+                message = "Valid Sales Return!";
+            } else if (s == 2) {
+                message = "Unable to process validation!";
+            }
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("position", holderPosition);
+                intent.putExtra("top", holderTop);
+                getActivity().setResult(RESULT_OK, intent);
+                getActivity().finish();
+
+        }
     }
 
     private boolean isReasonDuplicated() {
@@ -238,6 +286,10 @@ public class ReturnFragment extends IvyBaseFragment {
         item.setProductShortName(productMasterBO.getProductShortName());
         item.setOldMrp(productMasterBO.getMRP());
         item.setSrpedit(productMasterBO.getSrp());
+        //changes done for validation
+        Long timeStamp = System.currentTimeMillis();
+        item.setRowId(timeStamp.toString());
+        item.setStatus("2");
         productMasterBO.getSalesReturnReasonList().add(item);
 
     }
@@ -308,11 +360,11 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                if (!salesReturnHelper.SHOW_SALES_RET_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                if (!salesReturnHelper.SHOW_SALES_RET_PCS)
                     ((LinearLayout) row.findViewById(R.id.ll_piece)).setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
 
                 if (!salesReturnHelper.SHOW_SAL_RET_OLD_MRP)
@@ -585,6 +637,22 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.srpedit.selectAll();
                         holder.srpedit.requestFocus();
 
+                        return true;
+                    }
+                });
+                //without following listener text is added beside existing "0"
+                holder.invoiceno.setOnTouchListener(new View.OnTouchListener() {
+                    public boolean onTouch(View v, MotionEvent event) {
+
+                        mSelectedET = holder.invoiceno;
+                        int inType = holder.invoiceno.getInputType();
+                        holder.invoiceno.setInputType(InputType.TYPE_NULL);
+                        holder.invoiceno.onTouchEvent(event);
+                        holder.invoiceno.setInputType(inType);
+                        holder.invoiceno.selectAll();
+                        holder.invoiceno.requestFocus();
+                        inputManager.hideSoftInputFromWindow(
+                                mSelectedET.getWindowToken(), 0);
                         return true;
                     }
                 });

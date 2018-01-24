@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="@dimen/dimen_60dp"
+    android:layout_marginBottom="@dimen/dimen_60dp"
     android:background="@drawable/background_noise">
     <LinearLayout
         android:id="@+id/LL_titleBar"
@@ -26,18 +28,18 @@
 
         <Button
             android:id="@+id/okButton"
-            android:layout_width="50dp"
-            android:layout_height="fill_parent"
+            android:layout_width="@dimen/profile_header_img_width"
+            android:layout_height="@dimen/profile_header_img_height"
             android:layout_gravity="right|center"
             android:background="@drawable/ok_tick"
             android:gravity="right"
-            android:text="" />
+            android:text=""
+            android:layout_margin="@dimen/dimens_4dp"/>
     </LinearLayout>
 <HorizontalScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@+id/LL_titleBar"
-    android:layout_marginTop="@dimen/dimen_10dp">
+    android:layout_below="@+id/LL_titleBar">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,60 +48,74 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:layout_marginBottom="@dimen/dimen_10dp">
             <TextView
                 android:id="@+id/productnametitle"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                 android:layout_height="match_parent"
-                android:text="@string/product_name" />
+                android:text="@string/product_name"
+                android:paddingLeft="@dimen/dimen_4dp"/>
             <TextView
                 android:id="@+id/io_case_Title"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="io_case"
-                android:text="@string/io" />
+                android:text="@string/io"
+                android:gravity="center"/>
             <TextView
                 android:id="@+id/co_case_Title"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="co_case"
-                android:text="@string/co" />
+                android:text="@string/co"
+                android:gravity="center"/>
             <TextView
                 android:id="@+id/caseTitle"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_case"
-                android:text="@string/item_case" />
+                android:text="@string/item_case"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/outercaseTitle"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_outer"
-                android:text="@string/item_outer" />
+                android:text="@string/item_outer"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/pcsTitle"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_piece"
-                android:text="@string/item_piece" />
+                android:text="@string/item_piece"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/reasonTitle"
-                style="?attr/customListTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="@dimen/meter_value_width_large"
                 android:layout_height="wrap_content"
                 android:tag="reasontitle"
-                android:text="@string/reason" />
+                android:text="@string/reason"
+                android:gravity="center"/>
 
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/dotted_line"/>
+
         <ListView
             android:id="@+id/lv_products"
             android:layout_width="fill_parent"

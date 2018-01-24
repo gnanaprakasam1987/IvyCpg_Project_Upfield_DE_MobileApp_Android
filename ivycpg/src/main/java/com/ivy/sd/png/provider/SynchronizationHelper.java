@@ -35,10 +35,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
@@ -2301,6 +2303,34 @@ SynchronizationHelper {
         }
     }
 
+    public Vector<String> getUploadResponseForSalesReturn(String headerinfo, String data,
+                                                          String appendurl) {
+        // Update Security key
+        updateAuthenticateToken();
+        StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);
+        try {
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url.toString(), null);
+            http.addHeader(SECURITY_HEADER, mSecurityKey);
+            http.addParam("userInfo", headerinfo);
+            if (data != null) {
+                http.addParam("SalesReturnValidate", data);
+            }
+            http.connectMe();
+            Vector<String> result = http.getResult();
+            if (result == null) {
+                return new Vector<>();
+            }
+            return result;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return new Vector<>();
+        }
+    }
+
+
     public static final String USER_IDENTITY = "UserIdentity";
 
     public Vector<String> getUploadResponseForgotPassword(JSONObject jsonObject,
@@ -3911,6 +3941,124 @@ SynchronizationHelper {
         return responceMessage;
     }
 
+    public int validateSalesReturn(ProductMasterBO productMasterBO) {
+        responceMessage = 2;
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            JSONObject jsonObjData = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            List<SalesReturnReasonBO> salesReturnReasonList = productMasterBO.getSalesReturnReasonList();
+            for (int i = 0; i < salesReturnReasonList.size(); i++) {
+                JSONObject job = new JSONObject();
+                job.put("itemId", salesReturnReasonList.get(i).getRowId());
+                job.put("RetailerCode", bmodel.getRetailerMasterBO().getRetailerCode());
+                job.put("invoiceno", salesReturnReasonList.get(i).getInvoiceno());
+                job.put("LotNumber", salesReturnReasonList.get(i).getLotNumber());
+                job.put("productcode", productMasterBO.getProductCode());
+                job.put("status", salesReturnReasonList.get(i).getStatus());
+                jsonArray.put(job);
+            }
+            jsonObjData.put("SalesReturnValidate", jsonArray);
+
+            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+            try {
+                jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+                jsonFormatter.addParameter("DistributorId", bmodel.userMasterHelper
+                        .getUserMasterBO().getDistributorid());
+                jsonFormatter.addParameter("BranchId", bmodel.userMasterHelper
+                        .getUserMasterBO().getBranchId());
+                jsonFormatter.addParameter("LoginId", bmodel.userMasterHelper
+                        .getUserMasterBO().getLoginName());
+                jsonFormatter.addParameter("DeviceId",
+                        bmodel.activationHelper.getIMEINumber());
+                jsonFormatter.addParameter("VersionCode",
+                        bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
+                        .getUserMasterBO().getOrganizationId());
+                if (isDayClosed()) {
+                    int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                            bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                            "yyyy/MM/dd");
+                    if (varianceDwnDate == 0) {
+                        jsonFormatter.addParameter("MobileDate",
+                                Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                    }
+                    if (varianceDwnDate > 0) {
+                        jsonFormatter.addParameter("MobileDate",
+                                getLastTransactedDate());
+                    }
+                } else
+                    jsonFormatter.addParameter("MobileDate",
+                            Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+
+                jsonFormatter.addParameter("MobileUTCDateTime",
+                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("DownloadedDataDate",
+                        bmodel.userMasterHelper.getUserMasterBO().getDownloadDate());
+                jsonFormatter.addParameter("VanId", bmodel.userMasterHelper
+                        .getUserMasterBO().getVanId());
+                jsonFormatter.addParameter("platform", "Android");
+                jsonFormatter.addParameter("osversion",
+                        android.os.Build.VERSION.RELEASE);
+                jsonFormatter.addParameter("firmware", "");
+                jsonFormatter.addParameter("model", Build.MODEL);
+                String LastDayClose = "";
+                if (isDayClosed()) {
+                    LastDayClose = bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate();
+                }
+                jsonFormatter.addParameter("LastDayClose", LastDayClose);
+                jsonFormatter.addParameter("DataValidationKey", generateChecksum(jsonObjData.toString()));
+                Commons.print(jsonFormatter.getDataInJson());
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+
+            Vector<String> responseVector = getUploadResponseForSalesReturn(jsonFormatter.getDataInJson(),
+                    jsonObjData.toString(), "/SIDSalesReturnValidation/Validate");
+
+            if (responseVector.size() > 0) {
+                for (String s : responseVector) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                            String errorCode = jsonObject.getString(key);
+                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                JSONArray dataReturn = jsonObject.getJSONArray(JSON_DATA_KEY);
+                                ArrayList<String> arlstValues = new ArrayList<>();
+                                for (int i = 0; i < dataReturn.length(); i++) {
+                                    JSONArray value = (JSONArray) dataReturn.get(i);
+                                    salesReturnReasonList.get(i).setStatus(value.get(1).toString());
+                                    arlstValues.add(value.get(1).toString());
+                                }
+                                if (arlstValues.contains("0")) {
+                                    responceMessage = 0;
+                                } else {
+                                    responceMessage = 1;
+                                }
+                            } else {
+                                responceMessage = 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return 0;
+        }
+        return responceMessage;
+    }
 
     /**
      * Upload Ends
