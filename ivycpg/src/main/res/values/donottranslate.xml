@@ -241,6 +241,12 @@
 
     <string name="error_e03">User not allowed to proceed. Contact Admin</string>
 
+    <string name="validating_sales">Validating Sales..</string>
+    <string name="quantity">Quantity</string>
+    <string name="total_amount">Total Amount</string>
+
+    <string name="reason_for_ordered_prods">Reason for Ordered Products</string>
+
 
     <!-- Order confirmation dialog -->
     <string name="select_remarks_type">Select Remark Type</string>
