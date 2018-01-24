@@ -266,6 +266,4 @@
     <string name="confirm">Confirm</string>
     <!-- Order confirmation dialog -->
 
-    <!-- Email Dialog-->
-    <string name="no_email_id">There is no retailer email id to show</string>
 </resources>
