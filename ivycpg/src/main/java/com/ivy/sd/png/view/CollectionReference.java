@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -65,7 +66,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         setContentView(R.layout.activity_collection_reference);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-
+        bmodel.configurationMasterHelper.checkCollectionDocConfig();
         initializeItems();
 
     }
@@ -159,14 +160,14 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 mErrorMsg = getResources().getString(R.string.enter_remarks);
                 return false;
             }
-            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactName().toString().length() == 0) {
-                mErrorMsg = getResources().getString(R.string.enter_contact_name);
-                return false;
-            }
-            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactNo().toString().length() == 0) {
-                mErrorMsg = getResources().getString(R.string.enter_contact_number);
-                return false;
-            }
+//            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactName().toString().length() == 0) {
+//                mErrorMsg = getResources().getString(R.string.enter_contact_name);
+//                return false;
+//            }
+//            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactNo().toString().length() == 0) {
+//                mErrorMsg = getResources().getString(R.string.enter_contact_number);
+//                return false;
+//            }
             if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocRefNo().toString().length() == 0) {
                 mErrorMsg = getResources().getString(R.string.enter_docref_number);
                 return false;
@@ -174,6 +175,12 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().toString().length() == 0) {
                 mErrorMsg = getResources().getString(R.string.get_signature);
                 return false;
+            }
+            if (bmodel.configurationMasterHelper.IS_DOC_SIGN) {
+                if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().toString().length() == 0) {
+                    mErrorMsg = getResources().getString(R.string.get_signature);
+                    return false;
+                }
             }
         }
 
@@ -438,6 +445,17 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             holder.etRemark.setText(holder.invoiceHeaderBO.getDocRemark());
             if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
                 holder.ivSignature.setColorFilter(ContextCompat.getColor(CollectionReference.this, R.color.font_green), android.graphics.PorterDuff.Mode.MULTIPLY);
+            }
+            if (!bmodel.configurationMasterHelper.IS_DOC_SIGN) {
+                holder.ivSignature.setVisibility(View.GONE);
+            }
+
+            if (!bmodel.configurationMasterHelper.IS_DOC_REFNO) {
+                holder.etDocRef.setFocusable(false);
+                holder.etDocRef.setEnabled(false);
+                holder.etDocRef.setCursorVisible(false);
+                holder.etDocRef.setKeyListener(null);
+                holder.etDocRef.setBackgroundColor(Color.TRANSPARENT);
             }
 
             return row;
