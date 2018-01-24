@@ -2975,7 +2975,7 @@ public class SchemeDetailsMasterHelper {
 
             if (isFromCounterSale) {
                 sb.append(0 + "," + 0);
-            } else if (bmodel.configurationMasterHelper.IS_GST) {
+            } else if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                 if (freeProductBO.getUomID() == productBO.getCaseUomId()
                         && productBO.getCaseUomId() != 0) {
@@ -3038,7 +3038,7 @@ public class SchemeDetailsMasterHelper {
                     sb.append("," + schemeBO.getSchemeId());
                     sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
 
-                    if (bmodel.configurationMasterHelper.IS_GST) {
+                    if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                         sb.append(productBo.getSrp());
                         sb.append("," + bmodel.formatValue(schemeProductBo.getTaxAmount()));
@@ -4839,6 +4839,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Download display scheme
+     *
      * @param mContext Current context
      */
     public void downloadDisplayScheme(Context mContext) {

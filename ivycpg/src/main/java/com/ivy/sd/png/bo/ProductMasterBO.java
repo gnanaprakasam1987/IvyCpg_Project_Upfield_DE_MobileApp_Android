@@ -504,6 +504,8 @@ public class ProductMasterBO {
         this.csFreePiece = productBO.getCsFreePiece();
         this.csTotal = productBO.getCsTotal();
         this.isSchemeDiscount = productBO.isSchemeDiscount();
+        this.hsnId = productBO.getHsnId();
+        this.hsnCode = productBO.getHsnCode();
     }
 
     // ******* Location ********
@@ -1794,4 +1796,23 @@ public class ProductMasterBO {
     }
 
     private int compParentId;
+
+    private int hsnId;
+    private String hsnCode;
+
+    public int getHsnId() {
+        return hsnId;
+    }
+
+    public void setHsnId(int hsnId) {
+        this.hsnId = hsnId;
+    }
+
+    public String getHsnCode() {
+        return hsnCode;
+    }
+
+    public void setHsnCode(String hsnCode) {
+        this.hsnCode = hsnCode;
+    }
 }

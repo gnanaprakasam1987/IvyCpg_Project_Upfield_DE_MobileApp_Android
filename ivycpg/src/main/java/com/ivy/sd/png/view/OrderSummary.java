@@ -2168,7 +2168,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
-                    if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
+                    if ((bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
                         // If GST enabled then, every ordered product should have tax
                         bmodel.showAlert(
                                 getResources()
@@ -2225,7 +2225,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = false;
 
 
-            if (bmodel.configurationMasterHelper.IS_GST && !isTaxAvailableForAllOrderedProduct()) {
+            if ((bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
                 // If GST enabled then, every ordered product should have tax
                 bmodel.showAlert(
                         getResources()

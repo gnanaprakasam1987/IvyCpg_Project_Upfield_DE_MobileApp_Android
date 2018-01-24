@@ -107,7 +107,10 @@ public class TaxGstHelper implements TaxInterface {
 
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
-            sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
+            if (mBusinessModel.configurationMasterHelper.IS_GST)
+                sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
+            if(mBusinessModel.configurationMasterHelper.IS_GST_HSN)
+                sb.append("inner JOIN ProductTaxMaster PTM on  PTM.HSNId = A.HSNId ");
             sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
             sb.append("inner JOIN (select listid from standardlistmaster where  listcode='ITEM' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid ");

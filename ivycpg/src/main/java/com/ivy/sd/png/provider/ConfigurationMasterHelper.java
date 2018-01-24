@@ -1171,6 +1171,7 @@ public class ConfigurationMasterHelper {
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
+    public boolean IS_GST_HSN;
 
     public String CODE_ORDER_REPORT_EXPORT_METHOD = "ORDRPT01";
     public boolean IS_EXPORT_ORDER_REPORT;
@@ -1947,7 +1948,7 @@ public class ConfigurationMasterHelper {
         ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
         this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
-        if(SHOW_COMPETITOR_FILTER){
+        if (SHOW_COMPETITOR_FILTER) {
             downloadCompetitorFilterLevels();
         }
 
@@ -2214,7 +2215,9 @@ public class ConfigurationMasterHelper {
                     String RField = c.getString(0);
                     if (RField.equals("GST_IN")) {
                         IS_GST = true;
-
+                    }
+                    if (RField.equals("GST_HSN")) {
+                        IS_GST_HSN = true;
                     }
 
                 }
@@ -2720,19 +2723,19 @@ public class ConfigurationMasterHelper {
         return config;
     }
 
-    public void downloadCompetitorFilterLevels(){
-        try{
+    public void downloadCompetitorFilterLevels() {
+        try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='"+CODE_SHOW_COMPETITOR_FILTER+"' and Flag=1 ";
+                    + " where hhtCode='" + CODE_SHOW_COMPETITOR_FILTER + "' and Flag=1 ";
             Cursor c = db.selectSQL(sql);
-            if(c.getCount()>0){
-                while (c.moveToNext()){
-                    COMPETITOR_FILTER_LEVELS=c.getString(0);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    COMPETITOR_FILTER_LEVELS = c.getString(0);
                 }
                 c.close();
             }
@@ -2740,7 +2743,7 @@ public class ConfigurationMasterHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException( e);
+            Commons.printException(e);
         }
 
     }

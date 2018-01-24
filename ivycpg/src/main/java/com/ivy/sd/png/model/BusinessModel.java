@@ -7332,7 +7332,7 @@ public class BusinessModel extends Application {
             // start insert scheme details
             try {
 
-                if (configurationMasterHelper.IS_GST) {
+                if (configurationMasterHelper.IS_GST||configurationMasterHelper.IS_GST_HSN) {
                     //update tax for scheme free product
                     //tax and price details are taken from ordered product which has highest tax rate.
                     // Also inserting in invoiceTaxDetail

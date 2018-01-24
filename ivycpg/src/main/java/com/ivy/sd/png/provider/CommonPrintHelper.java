@@ -1388,7 +1388,7 @@ public class CommonPrintHelper {
                                     } else {
 
                                         //To print child tax..
-                                        if (bmodel.configurationMasterHelper.IS_GST) {
+                                        if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                                             //batch wise product's calculation
                                             if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
@@ -1425,7 +1425,7 @@ public class CommonPrintHelper {
                             }
 
 
-                            if (bmodel.configurationMasterHelper.IS_GST) {
+                            if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
                                 //Tax can be applied to Free products, so below set of code is used..
                                 if (taxFreeProductList != null) {
                                     for (String productid : taxFreeProductList) {// free products
