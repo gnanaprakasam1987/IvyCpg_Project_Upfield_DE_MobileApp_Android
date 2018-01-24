@@ -2196,7 +2196,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         return;
                     }
 
-                    if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && !bmodel.isReasonProvided()) {
+                    if ((bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !bmodel.isReasonProvided()) {
                         indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bmodel);
                         indicativeReasonDialog.show();
                         isClick = false;
@@ -2348,7 +2348,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             return;
                         }
                         if (bmodel.hasOrder()) {
-                            if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && !bmodel.isReasonProvided()) {
+                            if ((bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !bmodel.isReasonProvided()) {
                                 indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bmodel);
                                 indicativeReasonDialog.show();
                                 isClick = false;

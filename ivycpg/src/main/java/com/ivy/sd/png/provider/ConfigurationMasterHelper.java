@@ -405,6 +405,7 @@ public class ConfigurationMasterHelper {
 
     public static final String CODE_SHOW_ONLY_INDICATIVE_ORDER = "FUN45";
     public boolean IS_SHOW_ONLY_INDICATIVE_ORDER;
+    public boolean IS_SHOW_ORDER_REASON;
 
     private static final String CODE_SEND_EMAIL_STATEMENT_FOR_DELIVERY = "FUN09";
     public boolean IS_SEND_EMAIL_STATEMENT_FOR_DELIVERY;
@@ -1075,7 +1076,7 @@ public class ConfigurationMasterHelper {
     public boolean COLL_CHEQUE_MODE;
     private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
 
-    private static final String CODE_DOC_REF_NO= "COLL16";
+    private static final String CODE_DOC_REF_NO = "COLL16";
     public boolean SHOW_DOC_REF_NO;
 
 
@@ -1222,6 +1223,15 @@ public class ConfigurationMasterHelper {
 
     public int MVPTheme = 0;
     public String fontSize = "";
+
+    private static final String CODE_DOC_REF = "DOCREF";
+    public boolean IS_DOC_SIGN;
+    public boolean IS_DOC_REFNO;
+
+    private static final String CODE_SALES_RETURN_VALIDATE = "SR13";
+    public boolean IS_SALES_RETURN_VALIDATE;
+    private static final String CODE_SALES_RETURN_SIGN = "SR14";
+    public boolean IS_SALES_RETURN_SIGN;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1431,6 +1441,7 @@ public class ConfigurationMasterHelper {
             }
             db.closeDB();
             loadOrderAndStockConfiguration(0);
+            loadOrderReasonDialog();
             getDateFormat();
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
@@ -2153,7 +2164,6 @@ public class ConfigurationMasterHelper {
 
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
-
 
 
     }
@@ -3215,7 +3225,6 @@ public class ConfigurationMasterHelper {
                         SHOW_COMB_STOCK_CB = true;
 
 
-
                 }
             }
 
@@ -3484,7 +3493,7 @@ public class ConfigurationMasterHelper {
                     codeValue = c.getString(0);
                 }
             }
-            if (codeValue != null) {
+            if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
                     LOAD_MAX_DELIVERY_DATE = Integer.parseInt(codeSplit[0]);
@@ -3759,7 +3768,7 @@ public class ConfigurationMasterHelper {
                 codeValue = c.getString(0);
             }
         }
-        if (codeValue != null) {
+        if (codeValue != null && !codeValue.equals("")) {
             String codeSplit[] = codeValue.split(",");
             for (String temp : codeSplit) {
                 if (temp.equals("PROFF"))
@@ -4504,6 +4513,86 @@ public class ConfigurationMasterHelper {
         }
     }
 
+    public void checkCollectionDocConfig() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+        try {
+            db.openDataBase();
+            String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
+                    bmodel.QT(CODE_DOC_REF);
+            Cursor c = db.selectSQL(sb);
+            String codeValue = "";
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+            }
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (temp.equals("SIGN"))
+                        IS_DOC_SIGN = true;
+                    else if (temp.equals("REFNO"))
+                        IS_DOC_REFNO = true;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+    }
+
+    public void checkSalesReturnValidateConfig() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+        try {
+            db.openDataBase();
+            String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
+                    bmodel.QT(CODE_SALES_RETURN_VALIDATE);
+            Cursor c = db.selectSQL(sb);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        IS_SALES_RETURN_VALIDATE = true;
+                    } else {
+                        IS_SALES_RETURN_VALIDATE = false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+    }
+
+    public void checkSalesReturnSignConfig() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+        try {
+            db.openDataBase();
+            String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
+                    bmodel.QT(CODE_SALES_RETURN_SIGN);
+            Cursor c = db.selectSQL(sb);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        IS_SALES_RETURN_SIGN = true;
+                    } else {
+                        IS_SALES_RETURN_SIGN = false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+    }
+
     /**
      * Method to use download password policy
      */
@@ -4950,5 +5039,30 @@ public class ConfigurationMasterHelper {
             return true;
         }
         return false;
+    }
+
+    public void loadOrderReasonDialog() {
+
+        try {
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_ONLY_INDICATIVE_ORDER)
+                    + " and flag=2";
+            IS_SHOW_ORDER_REASON = false;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+
+                while (c.moveToNext()) {
+                    IS_SHOW_ORDER_REASON = true;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Unable to load the configurations " + e);
+        }
     }
 }

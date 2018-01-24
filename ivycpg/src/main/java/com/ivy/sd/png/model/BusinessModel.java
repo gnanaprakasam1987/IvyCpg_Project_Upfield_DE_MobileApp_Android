@@ -2415,14 +2415,20 @@ public class BusinessModel extends Application {
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
-            if (product.getOrderedCaseQty() > 0)
-                if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
+            if(configurationMasterHelper.IS_SHOW_ORDER_REASON){
+                if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                     if (product.getSoreasonId() == 0)
                         return false;
+                }
+            }else {
+                if (product.getOrderedCaseQty() > 0)
+                    if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
+                        if (product.getSoreasonId() == 0)
+                            return false;
+            }
         }
         return true;
     }
-
 
     public ArrayList<InvoiceHeaderBO> getInvoiceHeaderBO() {
         return invoiceHeader;
@@ -2525,8 +2531,8 @@ public class BusinessModel extends Application {
         }
 
         c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
-                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                + "where RMI.isToday='1'");
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                + " where RMI.isToday='1'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -2540,7 +2546,7 @@ public class BusinessModel extends Application {
         c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
                 + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
                 + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
-                + "where RBM.isVisited='Y' and RMI.isToday='1'");
+                + " where RBM.isVisited='Y' and RMI.isToday='1'");//space added before where condition
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -6293,7 +6299,7 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             db.updateSQL("Update RetailerBeatMapping set isProductive='Y' where RetailerID ="
-                    + getRetailerMasterBO().getRetailerID()+" and BeatID=" + getRetailerMasterBO().getBeatID());
+                    + getRetailerMasterBO().getRetailerID() + " and BeatID=" + getRetailerMasterBO().getBeatID());
 
             db.closeDB();
 
@@ -6413,7 +6419,7 @@ public class BusinessModel extends Application {
                 closingStockCursor.close();
             }
 
-            if(PRD_FOR_SKT) // Update is Productive only when the config is enabled.
+            if (PRD_FOR_SKT) // Update is Productive only when the config is enabled.
                 updateIsStockCheck();
 
 

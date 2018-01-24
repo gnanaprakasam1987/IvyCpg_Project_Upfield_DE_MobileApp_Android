@@ -47,7 +47,7 @@
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/-"
                     android:gravity="left|center_vertical"
                     android:maxLength="25"
                     android:text="@string/zero" />
