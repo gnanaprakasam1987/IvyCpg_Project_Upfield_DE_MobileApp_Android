@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.TaxInterface;
@@ -23,11 +24,10 @@ import java.util.LinkedHashSet;
  * Created by mansoor on 17/1/18.
  */
 
-public class TaxHelper {
+public class TaxHelper implements TaxInterface{
     private static TaxHelper instance = null;
     private BusinessModel mBusinessModel;
     private Context mContext;
-    private TaxInterface mTaxInterface;
 
     private ArrayList<TaxBO> mBillTaxList = new ArrayList<TaxBO>();
     private ArrayList<String> mProductTaxList;
@@ -40,10 +40,41 @@ public class TaxHelper {
     private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct = null;//used for batch wise product's
     private ArrayList<TaxBO> taxBOArrayList = null;
 
-    //Clear billTaxList after saving salesReturn
-    public void clearBillTaxList() {
-        mBillTaxList.clear();
-        mTaxInterface.updateBillTaxList(mBillTaxList);
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct() {
+        return mTaxBoBatchProduct;
+    }
+
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxListByProductId() {
+        return mTaxListByProductId;
+    }
+
+
+    public ArrayList<TaxBO> getBillTaxList() {
+        if (mBillTaxList != null) {
+            return mBillTaxList;
+        }
+        return new ArrayList<TaxBO>();
+    }
+
+    public ArrayList<TaxBO> getGroupIdList() {
+        if (mGroupIdList != null) {
+            return mGroupIdList;
+        }
+        return new ArrayList<TaxBO>();
+    }
+
+    public LinkedHashMap<String, HashSet<String>> getProductIdByTaxGroupId() {
+        return mProductIdByTaxGroupId;
+    }
+
+    public LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId() {
+        return mTaxPercentagerListByGroupId;
+    }
+
+    public SparseArray<LinkedHashSet<TaxBO>> getTaxBoByGroupId() {
+        return mTaxBOByGroupId;
     }
 
     public static TaxHelper getInstance(Context context) {
@@ -56,14 +87,12 @@ public class TaxHelper {
     private TaxHelper(Context context) {
         this.mBusinessModel = (BusinessModel) context;
         this.mContext = context;
-        this.mTaxInterface = (TaxInterface) context;
     }
 
 
     /**
      * @author rajesh.k Method to use download product wise tax details
      */
-
     public void downloadProductTaxDetails() {
 
         mProductTaxList = new ArrayList<String>();
@@ -114,8 +143,6 @@ public class TaxHelper {
             sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
             sb.append("inner JOIN (select listid from standardlistmaster where  listcode='ITEM' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid ");
-
-
             sb.append("where PTM.TaxTypeId = "
                     + mBusinessModel.getRetailerMasterBO().getTaxTypeId());
             if (mBusinessModel.configurationMasterHelper.IS_LOCATION_WISE_TAX_APPLIED) {
@@ -165,7 +192,6 @@ public class TaxHelper {
                 }
                 if (taxList.size() > 0) {
                     mTaxListByProductId.put(productid, taxList);
-                    mTaxInterface.updateTaxListByProductId(mTaxListByProductId);
                 }
 
             }
@@ -205,11 +231,10 @@ public class TaxHelper {
                     taxBO.setSequence(c.getString(2));
                     taxBO.setTaxDesc(c.getString(3));
                     taxBO.setParentType(c.getString(4));
-                    taxBO.setTaxTypeId(c.getInt(5));
+                    taxBO.setApplyLevelId(c.getInt(5));
 
                     mBillTaxList.add(taxBO);
                 }
-                mTaxInterface.updateBillTaxList(mBillTaxList);
 
             }
             c.close();
@@ -345,18 +370,10 @@ public class TaxHelper {
 
                 if (taxPercentagelist.size() > 0) {
                     mTaxPercentagerListByGroupId.put(groupid, taxPercentagelist);
-                    mTaxInterface.updateTaxPercentageListByGroupID(mTaxPercentagerListByGroupId);
                 }
                 if (taxList.size() > 0) {
                     mTaxBOByGroupId.put(groupid, taxList);
-                    mTaxInterface.updateTaxBoByGroupId(mTaxBOByGroupId);
                 }
-
-                if (mGroupIdList.size() > 0) {
-                    mTaxInterface.updateGroupIdList(mGroupIdList);
-                }
-
-
             }
             db.closeDB();
         } catch (Exception e) {
@@ -416,7 +433,6 @@ public class TaxHelper {
                 }
                 if (producttaxlist.size() > 0) {
                     mProductIdByTaxGroupId.put(groupid, producttaxlist);
-                    mTaxInterface.updateProductIdbyTaxGroupId(mProductIdByTaxGroupId);
                 }
 
 
@@ -556,7 +572,17 @@ public class TaxHelper {
     public TaxBO cloneTaxBo(TaxBO taxBO) {
 
         return new TaxBO(taxBO.getTaxType(), taxBO.getTaxRate(), taxBO.getSequence(), taxBO.getTaxDesc(), taxBO.getParentType(), taxBO.getTotalTaxAmount()
-                , taxBO.getPid(), taxBO.getTaxTypeId(), taxBO.getMinValue(), taxBO.getMaxValue(), taxBO.getApplyRange(), taxBO.getGroupId(), taxBO.getTaxDesc2());
+                , taxBO.getPid(), taxBO.getApplyLevelId(), taxBO.getMinValue(), taxBO.getMaxValue(), taxBO.getApplyRange(), taxBO.getGroupId(), taxBO.getTaxDesc2());
+    }
+
+    @Override
+    public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
+
+    }
+
+    @Override
+    public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db, String productId, TaxBO taxBO) {
+
     }
 
     private void calculateProductExcludeTax(ProductMasterBO productBO,

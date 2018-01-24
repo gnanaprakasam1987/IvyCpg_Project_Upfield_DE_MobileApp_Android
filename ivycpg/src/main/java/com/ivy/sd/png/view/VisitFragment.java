@@ -59,6 +59,8 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
+import com.ivy.sd.png.provider.TaxGstHelper;
+import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.ProfileActivity;
@@ -524,6 +526,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        if (bmodel.configurationMasterHelper.IS_GST)
+            bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(getActivity());
+        else
+            bmodel.productHelper.taxHelper = TaxHelper.getInstance(getActivity());
+
         return view;
     }
 
@@ -1585,7 +1593,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.ll_score2.setVisibility(View.GONE);
                 holder.imgLine2.setVisibility(View.GONE);
             }
-
 
 
             if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {

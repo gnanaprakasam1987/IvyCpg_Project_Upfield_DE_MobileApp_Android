@@ -255,6 +255,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     /**
      * Alert dialog for delete
+     *
      * @return return dialog instance
      */
     protected Dialog deleteAlertDialog() {
@@ -450,7 +451,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     businessModel.setOrderid(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
-                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
+                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
                     if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
                         businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
                     else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
@@ -473,13 +474,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     }
                     if (businessModel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                        if (businessModel.configurationMasterHelper.IS_GST) {
-                            businessModel.taxGstHelper.downloadProductTaxDetails();
-                            businessModel.taxGstHelper.updateProductWiseTax();
-                        } else {
-                            businessModel.taxHelper.downloadProductTaxDetails();
-                            businessModel.taxHelper.updateProductWiseTax();
-                        }
+                        businessModel.productHelper.taxHelper.downloadProductTaxDetails();
+                        businessModel.productHelper.taxHelper.updateProductWiseTax();
                     }
 
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);

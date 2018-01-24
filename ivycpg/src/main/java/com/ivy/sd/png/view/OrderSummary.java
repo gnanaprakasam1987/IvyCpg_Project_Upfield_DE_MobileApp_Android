@@ -89,7 +89,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface, TaxInterface, OrderConfirmationDialog.OnConfirmationResult {
+public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener, StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,OrderConfirmationDialog.OnConfirmationResult {
 
     /**
      * views *
@@ -181,8 +181,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public void setDiscountDialog(boolean discountDialog) {
         isDiscountDialog = discountDialog;
     }
-
-    private HashMap<String, ArrayList<TaxBO>> mTaxListByProductId;
 
 
     @Override
@@ -619,10 +617,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.configurationMasterHelper.SHOW_TAX) {
             // Apply Exclude Item level Tax  in Product
-            if (bmodel.configurationMasterHelper.IS_GST)
-                bmodel.taxGstHelper.updateProductWiseTax();
-            else
-                bmodel.taxHelper.updateProductWiseTax();
+                bmodel.productHelper.taxHelper.updateProductWiseTax();
         }
 
         totalval.setText(bmodel.formatValue(totalOrderValue));
@@ -718,9 +713,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         for (ProductMasterBO bo : mOrderedProductList) {
             float finalAmount = 0;
 
-            if (mTaxListByProductId != null) {
-                if (mTaxListByProductId.get(bo.getProductID()) != null) {
-                    for (TaxBO taxBO : mTaxListByProductId.get(bo.getProductID())) {
+            if (bmodel.productHelper.taxHelper.getmTaxListByProductId() != null) {
+                if (bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
                             finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
                         }
@@ -2384,8 +2379,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isTaxAvailableForAllOrderedProduct() {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if (mTaxListByProductId.get(bo.getProductID()) == null
-                    || mTaxListByProductId.get(bo.getProductID()).size() == 0) {
+            if (bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) == null
+                    || bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() == 0) {
                 return false;
             }
         }
@@ -3462,42 +3457,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
         }
-    }
-
-
-    @Override
-    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
-
-    }
-
-    @Override
-    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
-        this.mTaxListByProductId = mTaxListByProductId;
-    }
-
-    @Override
-    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
-
-    }
-
-    @Override
-    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
-
-    }
-
-    @Override
-    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
-
     }
 
     @Override

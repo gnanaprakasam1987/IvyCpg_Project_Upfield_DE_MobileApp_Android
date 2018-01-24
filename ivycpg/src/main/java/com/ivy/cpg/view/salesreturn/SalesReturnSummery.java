@@ -563,10 +563,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             if (!salesReturnHelper.IS_APPLY_TAX_IN_SR) {
-                if (bmodel.configurationMasterHelper.IS_GST)
-                    bmodel.taxGstHelper.clearBillTaxList();
-                else
-                    bmodel.taxHelper.clearBillTaxList();
+                    bmodel.productHelper.taxHelper.getBillTaxList().clear();
             }
 
             bmodel.saveModuleCompletion("MENU_SALES_RET");

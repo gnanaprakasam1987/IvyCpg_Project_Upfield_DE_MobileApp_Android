@@ -36,6 +36,7 @@ import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -117,7 +118,7 @@ public class ProductHelper {
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
 
-    private  HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
+    private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
     private Vector<CompetitorFilterLevelBO> mCompetitorSequenceValues;
 
 
@@ -186,6 +187,9 @@ public class ProductHelper {
     }
 
     private HashMap<Integer, Integer> mProductidOrderByEntryMap = new HashMap<>();
+
+    public TaxInterface taxHelper;
+
 
     private ProductHelper(Context context) {
         this.mContext = context;
@@ -752,28 +756,28 @@ public class ProductHelper {
 
         List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
 
-        if(mLevels.size()>0) {
+        if (mLevels.size() > 0) {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String contentLevelId=mLevels.get(mLevels.size()-1);
+            String contentLevelId = mLevels.get(mLevels.size() - 1);
 
 
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
                     + " where "
                     + " PL.LevelID =" + mLevels.get(0));
-            if (mLevels.size()>2) {
+            if (mLevels.size() > 2) {
                 stringBuffer.append(" OR PL.LevelID =" + mLevels.get(1));
             }
-            if (mLevels.size()>3) {
+            if (mLevels.size() > 3) {
                 stringBuffer.append(" OR PL.LevelID =" + mLevels.get(2));
             }
-            if (mLevels.size()>4) {
+            if (mLevels.size() > 4) {
                 stringBuffer.append(" OR PL.LevelID =" + mLevels.get(3));
             }
-            if (mLevels.size()>5) {
+            if (mLevels.size() > 5) {
                 stringBuffer.append(" OR PL.LevelID =" + mLevels.get(4));
             }
             Cursor listCursor = db.selectSQL(stringBuffer.toString());
@@ -834,7 +838,7 @@ public class ProductHelper {
         }
     }
 
-    private void loadCompetitorParentFilter(int loopEnd, int mProductLevelId){
+    private void loadCompetitorParentFilter(int loopEnd, int mProductLevelId) {
         //Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid
 
         Vector<CompetitorFilterLevelBO> mFilterLevel;
@@ -1714,10 +1718,7 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                if (bmodel.configurationMasterHelper.IS_GST)
-                    bmodel.taxGstHelper.downloadProductTaxDetails();
-                else
-                    bmodel.taxHelper.downloadProductTaxDetails();
+                taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)
@@ -2368,10 +2369,8 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                if (bmodel.configurationMasterHelper.IS_GST)
-                    bmodel.taxGstHelper.downloadProductTaxDetails();
-                else
-                    bmodel.taxHelper.downloadProductTaxDetails();
+                taxHelper.downloadProductTaxDetails();
+
             }
 
 
@@ -6001,13 +6000,13 @@ public class ProductHelper {
             int mContentLevel = 0;
 
 
-            if(mCompetitorSequenceValues!=null&&mCompetitorSequenceValues.size()>0) {
+            if (mCompetitorSequenceValues != null && mCompetitorSequenceValues.size() > 0) {
                 mFiltrtLevel = mCompetitorSequenceValues.get(mCompetitorSequenceValues.size() - 1).getSequence();
             }
 
             List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
 
-            if(mLevels.size()>0) {
+            if (mLevels.size() > 0) {
                 Cursor filterCur = db
                         .selectSQL("SELECT Distinct IFNULL(Sequence,0) FROM ProductLevel" +
                                 " where levelId = " + mLevels.get(mLevels.size() - 1));
@@ -7996,10 +7995,7 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                if (bmodel.configurationMasterHelper.IS_GST)
-                    bmodel.taxGstHelper.downloadProductTaxDetails();
-                else
-                    bmodel.taxHelper.downloadProductTaxDetails();
+                taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)
@@ -8312,7 +8308,7 @@ public class ProductHelper {
     }
 
 
-    public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context){
+    public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context) {
         ArrayList<ConfigureBO> list = new ArrayList<>();
         try {
 
@@ -8328,7 +8324,7 @@ public class ProductHelper {
             Cursor cur = db
                     .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
                             + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang="+bmodel.QT(language));
+                            + " and lang=" + bmodel.QT(language));
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;
@@ -8341,10 +8337,9 @@ public class ProductHelper {
                 }
                 cur.close();
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
-            return  new ArrayList<>();
+            return new ArrayList<>();
         }
         return list;
     }

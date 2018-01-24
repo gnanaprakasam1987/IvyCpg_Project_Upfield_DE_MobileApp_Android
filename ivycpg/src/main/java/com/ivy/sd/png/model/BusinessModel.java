@@ -235,7 +235,7 @@ import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class BusinessModel extends Application implements TaxInterface {
+public class BusinessModel extends Application {
 
     // to show the time taken on call analysis
 
@@ -333,8 +333,6 @@ public class BusinessModel extends Application implements TaxInterface {
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
     public FitScoreHelper fitscoreHelper;
-    public TaxHelper taxHelper;
-    public TaxGstHelper taxGstHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
@@ -393,7 +391,6 @@ public class BusinessModel extends Application implements TaxInterface {
 
     private Vector<ProductMasterBO> finalProductList = new Vector<>();
     private HashMap<String, RetailerMasterBO> mRetailerBOByRetailerid;
-    private HashMap<String, ArrayList<TaxBO>> mTaxListByProductId;
 
     //
 
@@ -461,8 +458,10 @@ public class BusinessModel extends Application implements TaxInterface {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
+        /*// if norml tax
         taxHelper = TaxHelper.getInstance(this);
-        taxGstHelper = TaxGstHelper.getInstance(this);
+        // else
+        taxHelper=TaxGstHelper.getInstance(this);*/
 
         /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
@@ -2384,8 +2383,8 @@ public class BusinessModel extends Application implements TaxInterface {
         float taxAmount = 0;
         try {
             ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
-            if (mTaxListByProductId.get(productId) != null) {
-                for (TaxBO taxBO : mTaxListByProductId.get(productId)) {
+            if (productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
+                for (TaxBO taxBO : productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
                     if (taxBO.getParentType().equals("0")) {
                         taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
                     }
@@ -2934,20 +2933,14 @@ public class BusinessModel extends Application implements TaxInterface {
 		 * getting tax detail from order value
 		 */
         if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-            if (configurationMasterHelper.IS_GST)
-                taxGstHelper.downloadBillWiseTaxDetails();
-            else
-                taxHelper.downloadBillWiseTaxDetails();
+            productHelper.taxHelper.downloadBillWiseTaxDetails();
+
 
             ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
                     configurationMasterHelper.VALUE_PRECISION_COUNT,
                     0, configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-            double totalTaxValue;
-            if (configurationMasterHelper.IS_GST)
-                totalTaxValue = taxGstHelper.applyBillWiseTax(ordervalue);
-            else
-                totalTaxValue = taxHelper.applyBillWiseTax(ordervalue);
+            final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
 
             if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                 ordervalue = ordervalue + totalTaxValue;
@@ -3094,10 +3087,8 @@ public class BusinessModel extends Application implements TaxInterface {
             }
  /* insert tax details in Sqlite */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-                if (configurationMasterHelper.IS_GST)
-                    taxGstHelper.insertInvoiceTaxList(invid, db);
-                else
-                    taxHelper.insertInvoiceTaxList(invid, db);
+                productHelper.taxHelper.insertInvoiceTaxList(invid, db);
+
             }
 
             /* update free products sih ends */
@@ -3110,13 +3101,8 @@ public class BusinessModel extends Application implements TaxInterface {
 
             // update Invoiceid in InvoiceTaxDetail table
             if (configurationMasterHelper.SHOW_TAX) {
-                if (configurationMasterHelper.IS_GST)
-                    taxGstHelper.updateInvoiceIdInProductLevelTax(db, invid,
-                            this.getOrderid());
-                else
-                    taxHelper.updateInvoiceIdInProductLevelTax(db, invid,
-                            this.getOrderid());
-
+                productHelper.taxHelper.updateInvoiceIdInProductLevelTax(db, invid,
+                        this.getOrderid());
             }
 
             /** update invoicecreateed in SalesReturnHeader **/
@@ -7333,10 +7319,8 @@ public class BusinessModel extends Application implements TaxInterface {
 */
             // insert itemlevel tax in SQLite
             if (configurationMasterHelper.SHOW_TAX) {
-                if (configurationMasterHelper.IS_GST)
-                    taxGstHelper.saveProductLeveltax(uid, db);
-                else
-                    taxHelper.saveProductLeveltax(uid, db);
+                productHelper.taxHelper.saveProductLeveltax(uid, db);
+
             }
 
             // start insert scheme details
@@ -7396,15 +7380,9 @@ public class BusinessModel extends Application implements TaxInterface {
             }
 
             if (configurationMasterHelper.TAX_SHOW_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !configurationMasterHelper.IS_INVOICE) {
-                if (configurationMasterHelper.IS_GST) {
-                    taxGstHelper.downloadBillWiseTaxDetails();
-                    taxGstHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
-                    taxGstHelper.insertOrderTaxList(uid, db);
-                } else {
-                    taxHelper.downloadBillWiseTaxDetails();
-                    taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
-                    taxHelper.insertOrderTaxList(uid, db);
-                }
+                    productHelper.taxHelper.downloadBillWiseTaxDetails();
+                    productHelper.taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
+                    productHelper.taxHelper.insertOrderTaxList(uid, db);
             }
 
             productHelper.updateBillEntryDiscInOrderHeader(db, uid);
@@ -7451,7 +7429,7 @@ public class BusinessModel extends Application implements TaxInterface {
 
             // getting product which has more tax
             for (ProductMasterBO prod : mOrderedProductList) {
-                for (TaxBO taxBO : mTaxListByProductId.get(prod.getProductID())) {
+                for (TaxBO taxBO : productHelper.taxHelper.getmTaxListByProductId().get(prod.getProductID())) {
                     if (taxBO.getTaxRate() > largestTax) {
                         largestTax = taxBO.getTaxRate();
                         productIdHasLargetTax = prod.getProductID();
@@ -7494,11 +7472,9 @@ public class BusinessModel extends Application implements TaxInterface {
 
                         // cloning highest tax list  for scheme free product
                         ArrayList<TaxBO> clonedTaxList = new ArrayList<>();
-                        for (TaxBO bo : mTaxListByProductId.get(productWithMaxTaxRate.getProductID())) {
-                            if (configurationMasterHelper.IS_GST)
-                                clonedTaxList.add(taxGstHelper.cloneTaxBo(bo));
-                            else
-                                clonedTaxList.add(taxHelper.cloneTaxBo(bo));
+                        for (TaxBO bo : productHelper.taxHelper.getmTaxListByProductId().get(productWithMaxTaxRate.getProductID())) {
+                            clonedTaxList.add(productHelper.taxHelper.cloneTaxBo(bo));
+
                         }
 
                         mFreeProductTaxListByProductId.put(schemeProductBO.getProductId(), clonedTaxList);
@@ -7518,10 +7494,10 @@ public class BusinessModel extends Application implements TaxInterface {
                             schemeProduct.setOrderedOuterQty(0);
 
                             // excluding tax values
-                            taxGstHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
+                            productHelper.taxHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
 
                             //inserting free product tax details to db
-                            taxGstHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
+                            productHelper.taxHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
 
                             totalTaxAmount += taxBO.getTotalTaxAmount();
                         }
@@ -11221,19 +11197,14 @@ public class BusinessModel extends Application implements TaxInterface {
 		 * getting tax detail from order value
 		 */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-                if (configurationMasterHelper.IS_GST)
-                    taxGstHelper.downloadBillWiseTaxDetails();
-                else
-                    taxHelper.downloadBillWiseTaxDetails();
+
+                    productHelper.taxHelper.downloadBillWiseTaxDetails();
+
                 ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
                         configurationMasterHelper.VALUE_PRECISION_COUNT,
                         0, configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-                double totalTaxValue;
-                if (configurationMasterHelper.IS_GST)
-                    totalTaxValue = taxGstHelper.applyBillWiseTax(ordervalue);
-                else
-                    totalTaxValue = taxHelper.applyBillWiseTax(ordervalue);
+               final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
 
                 if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                     ordervalue = ordervalue + totalTaxValue;
@@ -11851,43 +11822,6 @@ public class BusinessModel extends Application implements TaxInterface {
         return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
-
-
-    @Override
-    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
-
-    }
-
-    @Override
-    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
-        this.mTaxListByProductId = mTaxListByProductId;
-    }
-
-    @Override
-    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
-
-    }
-
-    @Override
-    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
-
-    }
-
-    @Override
-    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
-
-    }
-
 }
 
 

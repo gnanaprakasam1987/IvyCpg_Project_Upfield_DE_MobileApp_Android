@@ -472,13 +472,10 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     }
                     if (businessModel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                        if (businessModel.configurationMasterHelper.IS_GST) {
-                            businessModel.taxGstHelper.downloadProductTaxDetails();
-                            businessModel.taxGstHelper.updateProductWiseTax();
-                        } else {
-                            businessModel.taxHelper.downloadProductTaxDetails();
-                            businessModel.taxHelper.updateProductWiseTax();
-                        }
+
+                            businessModel.productHelper.taxHelper.downloadProductTaxDetails();
+                            businessModel.productHelper.taxHelper.updateProductWiseTax();
+
                     }
 
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);

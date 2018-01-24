@@ -65,7 +65,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
-public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar implements TaxInterface {
+public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
 
     private TextView distName, distadd, distTelno, invoiceno, customername,
             address, phcontact, salesdate, totFullStockCs, totFullStockPc,
@@ -119,7 +119,6 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar impleme
     TextView tv_scheme_discount;
 
     private int printDoneCount = 0;
-    private ArrayList<TaxBO> mBillTaxList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -277,7 +276,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar impleme
             else
                 mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
-            mTax = mBillTaxList;
+            mTax = bmodel.productHelper.taxHelper.getBillTaxList();
 
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             updateproducts();
@@ -2287,44 +2286,5 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar impleme
         // bmodel.productHelper.clearOrderTable();
         // force the garbage collector to run
         System.gc();
-    }
-
-
-    @Override
-    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
-        if (mBillTaxList != null)
-            this.mBillTaxList = mBillTaxList;
-        else
-            this.mBillTaxList = new ArrayList<TaxBO>();
-    }
-
-    @Override
-    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
-
-    }
-
-    @Override
-    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
-
-    }
-
-    @Override
-    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
-
-    }
-
-    @Override
-    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
-
     }
 }

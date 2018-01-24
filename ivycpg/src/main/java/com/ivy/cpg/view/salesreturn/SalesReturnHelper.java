@@ -27,7 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
-public class SalesReturnHelper implements TaxInterface {
+public class SalesReturnHelper {
 
     private final BusinessModel bmodel;
     private String lpcValue;
@@ -65,7 +65,6 @@ public class SalesReturnHelper implements TaxInterface {
     public boolean IS_PRD_CNT_DIFF_SR;
 
     private double totalValue = 0;
-    private ArrayList<TaxBO> mBillTaxList;
 
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
@@ -1110,12 +1109,9 @@ public class SalesReturnHelper implements TaxInterface {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                if (bmodel.configurationMasterHelper.IS_GST)
-                    bmodel.taxGstHelper.downloadBillWiseTaxDetails();
-                else
-                    bmodel.taxHelper.downloadBillWiseTaxDetails();
+                    bmodel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
-                final ArrayList<TaxBO> taxList = mBillTaxList;
+                final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 
                 StringBuffer sb;
                 double totalTaxRate = 0;
@@ -1137,7 +1133,7 @@ public class SalesReturnHelper implements TaxInterface {
                     totalTaxValue = totalTaxValue + taxValue;
                     sb = new StringBuffer();
                     sb.append(uid + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",");
-                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getTaxTypeId() + "," + taxValue + "," + 0);
+                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getApplyLevelId() + "," + taxValue + "," + 0);
 
                     db.insertSQL(DataMembers.tbl_SalesReturn_tax_Details, columns, sb.toString());
                 }
@@ -1279,44 +1275,6 @@ public class SalesReturnHelper implements TaxInterface {
             }
         }
         return orderList;
-
-    }
-
-    @Override
-    public void updateBillTaxList(ArrayList<TaxBO> mBillTaxList) {
-        if (mBillTaxList != null)
-            this.mBillTaxList = mBillTaxList;
-        else
-            this.mBillTaxList = new ArrayList<TaxBO>();
-    }
-
-    @Override
-    public void updateTaxListByProductId(HashMap<String, ArrayList<TaxBO>> mTaxListByProductId) {
-
-    }
-
-    @Override
-    public void updateProductIdbyTaxGroupId(LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId) {
-
-    }
-
-    @Override
-    public void updateGroupIdList(ArrayList<TaxBO> mGroupIdList) {
-
-    }
-
-    @Override
-    public void updateTaxPercentageListByGroupID(LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoByGroupId(SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId) {
-
-    }
-
-    @Override
-    public void updateTaxBoBatchProduct(HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct) {
 
     }
 }

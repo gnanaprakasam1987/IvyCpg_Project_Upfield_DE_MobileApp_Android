@@ -23,12 +23,11 @@ import java.util.LinkedHashSet;
  * Created by mansoor on 19/1/18.
  */
 
-public class TaxGstHelper {
+public class TaxGstHelper implements TaxInterface {
 
     private static TaxGstHelper instance = null;
     private BusinessModel mBusinessModel;
     private Context mContext;
-    private TaxInterface mTaxInterface;
 
     private ArrayList<TaxBO> mBillTaxList = new ArrayList<TaxBO>();
     private ArrayList<String> mProductTaxList;
@@ -41,10 +40,41 @@ public class TaxGstHelper {
     private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct = null;//used for batch wise product's
     private ArrayList<TaxBO> taxBOArrayList = null;
 
-    //Clear billTaxList after saving salesReturn
-    public void clearBillTaxList() {
-        mBillTaxList.clear();
-        mTaxInterface.updateBillTaxList(mBillTaxList);
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct() {
+        return mTaxBoBatchProduct;
+    }
+
+
+    public HashMap<String, ArrayList<TaxBO>> getmTaxListByProductId() {
+        return mTaxListByProductId;
+    }
+
+
+    public ArrayList<TaxBO> getBillTaxList() {
+        if (mBillTaxList != null) {
+            return mBillTaxList;
+        }
+        return new ArrayList<TaxBO>();
+    }
+
+    public ArrayList<TaxBO> getGroupIdList() {
+        if (mGroupIdList != null) {
+            return mGroupIdList;
+        }
+        return new ArrayList<TaxBO>();
+    }
+
+    public LinkedHashMap<String, HashSet<String>> getProductIdByTaxGroupId() {
+        return mProductIdByTaxGroupId;
+    }
+
+    public LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId() {
+        return mTaxPercentagerListByGroupId;
+    }
+
+    public SparseArray<LinkedHashSet<TaxBO>> getTaxBoByGroupId() {
+        return mTaxBOByGroupId;
     }
 
     public static TaxGstHelper getInstance(Context context) {
@@ -57,7 +87,6 @@ public class TaxGstHelper {
     private TaxGstHelper(Context context) {
         this.mBusinessModel = (BusinessModel) context;
         this.mContext = context;
-        this.mTaxInterface = (TaxInterface) context;
     }
 
 
@@ -99,7 +128,6 @@ public class TaxGstHelper {
                 while (c.moveToNext()) {
                     taxBo = new TaxBO();
                     taxBo.setPid(c.getInt(0));
-
                     taxBo.setTaxRate(c.getDouble(2));
                     taxBo.setTaxDesc(c.getString(3));
                     taxBo.setTaxType(c.getString(4));
@@ -132,7 +160,6 @@ public class TaxGstHelper {
                 }
                 if (taxList.size() > 0) {
                     mTaxListByProductId.put(productid, taxList);
-                    mTaxInterface.updateTaxListByProductId(mTaxListByProductId);
                 }
 
             }
@@ -172,11 +199,10 @@ public class TaxGstHelper {
                     taxBO.setSequence(c.getString(2));
                     taxBO.setTaxDesc(c.getString(3));
                     taxBO.setParentType(c.getString(4));
-                    taxBO.setTaxTypeId(c.getInt(5));
+                    taxBO.setApplyLevelId(c.getInt(5));
 
                     mBillTaxList.add(taxBO);
                 }
-                mTaxInterface.updateBillTaxList(mBillTaxList);
 
             }
             c.close();
@@ -312,15 +338,9 @@ public class TaxGstHelper {
 
                 if (taxPercentagelist.size() > 0) {
                     mTaxPercentagerListByGroupId.put(groupid, taxPercentagelist);
-                    mTaxInterface.updateTaxPercentageListByGroupID(mTaxPercentagerListByGroupId);
                 }
                 if (taxList.size() > 0) {
                     mTaxBOByGroupId.put(groupid, taxList);
-                    mTaxInterface.updateTaxBoByGroupId(mTaxBOByGroupId);
-                }
-
-                if (mGroupIdList.size() > 0) {
-                    mTaxInterface.updateGroupIdList(mGroupIdList);
                 }
 
 
@@ -383,7 +403,6 @@ public class TaxGstHelper {
                 }
                 if (producttaxlist.size() > 0) {
                     mProductIdByTaxGroupId.put(groupid, producttaxlist);
-                    mTaxInterface.updateProductIdbyTaxGroupId(mProductIdByTaxGroupId);
                 }
 
 
@@ -564,8 +583,6 @@ public class TaxGstHelper {
                             else
                                 mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
 
-                            if (mTaxBoBatchProduct.size() > 0)
-                                mTaxInterface.updateTaxBoBatchProduct(mTaxBoBatchProduct);
 
                             mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchTaxBO);
 
@@ -674,7 +691,7 @@ public class TaxGstHelper {
     public TaxBO cloneTaxBo(TaxBO taxBO) {
 
         return new TaxBO(taxBO.getTaxType(), taxBO.getTaxRate(), taxBO.getSequence(), taxBO.getTaxDesc(), taxBO.getParentType(), taxBO.getTotalTaxAmount()
-                , taxBO.getPid(), taxBO.getTaxTypeId(), taxBO.getMinValue(), taxBO.getMaxValue(), taxBO.getApplyRange(), taxBO.getGroupId(), taxBO.getTaxDesc2());
+                , taxBO.getPid(), taxBO.getApplyLevelId(), taxBO.getMinValue(), taxBO.getMaxValue(), taxBO.getApplyRange(), taxBO.getGroupId(), taxBO.getTaxDesc2());
     }
 
     private void calculateProductExcludeTax(ProductMasterBO productBO,
@@ -868,4 +885,5 @@ public class TaxGstHelper {
         }
         return taxValue;
     }
+
 }
